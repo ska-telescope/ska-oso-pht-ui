@@ -33,15 +33,27 @@ let loginRedirectTriggered = false;
 export const mapAxiosError = (error: AxiosError): Error => {
   if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
     return new Error('Request timed out. Please try again.');
-  } else if (error.code === 'ESOCKETTIMEDOUT') {
-    return new Error('Connection timed out. Please check your internet connection and try again.');
-  } else if (error.response) {
-    return new Error(`Server responded with an error: ${error.response.status}`);
-  } else if (error.request) {
-    return new Error('No response received from the server.');
-  } else {
-    return new Error(`An error occurred: ${error.message}`);
   }
+  if (error.code === 'ESOCKETTIMEDOUT') {
+    return new Error('Connection timed out. Please check your internet connection and try again.');
+  }
+
+  if (error.response?.data?.detail) {
+    // This is one of the ska-oso-services errors
+    return new Error(
+      `${error.response?.data?.title || 'Server responded with an error'}: ${error.response?.data?.detail}`
+    );
+  }
+
+  if (error.response?.status) {
+    return new Error(`Server responded with an error: ${error.response.status}`);
+  }
+
+  if (error.request) {
+    return new Error('No response received from the server.');
+  }
+
+  return new Error(`An error occurred: ${error.message}`);
 };
 
 export const createRequestInterceptor =

@@ -10,16 +10,20 @@ import {
   PIXEL_SIZE_UNIT_DEFAULT,
   POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
-  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
+  STATUS_ERROR,
   TAPER_DEFAULT,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
-import { generateId, getDefaultObservationLowAA2 } from '../helpers';
-import { calculateSensCalcData } from '../sensCalc/sensCalc';
+import {
+  generateCalibrationId,
+  generateDataProductId,
+  generateObsSetId,
+  getDefaultObservationLowAA2
+} from '../helpers';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
 import {
   DataProductSDPNew,
@@ -31,10 +35,10 @@ import {
   SDPVisibilitiesContinuumData
 } from '../types/dataProduct';
 import Observation from '../types/observation';
-import { SensCalcResults } from '../types/sensCalcResults';
 import Target from '../types/target';
 import Proposal from '@utils/types/proposal.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
+import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 
 interface DefaultsResults {
   success: boolean;
@@ -60,7 +64,7 @@ export const newObservationForMode = (
   const defaultObservation = getDefaultObservationLowAA2(observationMode);
   return {
     ...defaultObservation,
-    id: generateId('obs-', 6),
+    id: generateObsSetId(),
     type: RECOGNISED_OBSERVATION_MODES.includes(observationMode)
       ? observationMode
       : defaultObservation.type,
@@ -71,7 +75,7 @@ export const newObservationForMode = (
 export const newCalibrationStrategy = (observationId: string): CalibrationStrategy => {
   return {
     observatoryDefined: true,
-    id: generateId('cal-', 6),
+    id: generateCalibrationId(),
     observationIdRef: observationId,
     calibrators: null,
     notes: null
@@ -181,7 +185,7 @@ export const HiddenSDPData = (
 export const newDataProductsForMode = (observation: Observation) => {
   const data = SDPData(observation);
   const newDSP: DataProductSDPNew = {
-    id: generateId('SDP-', 6),
+    id: generateDataProductId(),
     observationId: observation.id,
     data
   };
@@ -189,7 +193,7 @@ export const newDataProductsForMode = (observation: Observation) => {
   const hiddenData = HiddenSDPData(observation);
   if (hiddenData) {
     const hiddenDataProduct = {
-      id: generateId('SDP-', 6),
+      id: generateDataProductId(),
       observationId: observation.id,
       data: hiddenData
     };
@@ -197,15 +201,6 @@ export const newDataProductsForMode = (observation: Observation) => {
   }
 
   return [newDSP];
-};
-
-const getSensCalcData = async (
-  observation: Observation,
-  target: Target,
-  dataProductSDP: DataProductSDPNew
-): Promise<SensCalcResults | string> => {
-  const response = await calculateSensCalcData(observation, target, dataProductSDP);
-  return response?.error ? response?.error : (response as SensCalcResults);
 };
 
 export default async function autoLinking(
@@ -237,27 +232,10 @@ export default async function autoLinking(
   // but only the one the user selects in the dropdown to be linked via the results
   const mainDataProduct = newDataProducts[0];
 
-  const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+  const sensCalcResult = await getSensCalc(newObservation, target, mainDataProduct);
 
-  let sensCalcResult = undefined;
-
-  if (!isSSO) {
-    sensCalcResult = await getSensCalcData(newObservation, target, mainDataProduct);
-
-    const isValidSensCalcResult = (r: any): boolean =>
-      !!r &&
-      !r.error && // { error: string } failures
-      !r.detail && // { title, detail } validation failures
-      Array.isArray(r.section1); // a real result has sections; failures don't
-
-    // if a specific error message from backend → surface it
-    if (typeof sensCalcResult === 'string') {
-      return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
-    }
-
-    if (!isValidSensCalcResult(sensCalcResult)) {
-      return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
-    }
+  if (sensCalcResult?.statusGUI == STATUS_ERROR) {
+    return { success: false, error: sensCalcResult.error };
   }
 
   const targetObservation: TargetObservation = {

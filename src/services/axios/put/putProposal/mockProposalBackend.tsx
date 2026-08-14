@@ -27,8 +27,8 @@ export const MockProposalBackend: ProposalBackend = {
   observation_info: {
     targets: [
       {
-        target_id: 'target',
-        name: 'target',
+        target_id: 'target-123',
+        name: 'target1',
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
@@ -49,7 +49,7 @@ export const MockProposalBackend: ProposalBackend = {
         }
       },
       {
-        target_id: 'target2',
+        target_id: 'target-456',
         name: 'target2',
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
@@ -71,7 +71,7 @@ export const MockProposalBackend: ProposalBackend = {
         }
       },
       {
-        target_id: 'M2',
+        target_id: 'target-789',
         name: 'M2',
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
@@ -166,7 +166,7 @@ export const MockProposalBackend: ProposalBackend = {
       {
         observation_set_ref: 'obs-obR1Ej',
         data_product_ref: 'SDP-2',
-        target_ref: 'M2',
+        target_ref: 'target-123',
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {
@@ -229,8 +229,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
   observation_info: {
     targets: [
       {
-        target_id: 'm2',
-        name: 'm2',
+        target_id: 'target-123',
+        name: 'target1',
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
@@ -325,7 +325,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
       {
         observation_set_ref: 'obs-arMIoY',
         data_product_ref: 'SDP-1',
-        target_ref: 'm2',
+        target_ref: 'target-123',
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {

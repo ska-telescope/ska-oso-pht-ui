@@ -19,7 +19,6 @@ import {
   PAGE_CALIBRATION,
   PAGE_LINKING,
   REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_SSO,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
@@ -41,11 +40,11 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
-import { generateId } from '@/utils/helpers';
-import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
+import { generateCalibrationId } from '@/utils/helpers';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
+import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
@@ -150,7 +149,7 @@ export default function LinkingPage() {
     target: Target,
     observationId: string,
     dataProductsSDPId: string,
-    results: any
+    results?: SensCalcResults
   ) => {
     const temp = {
       observationId: observationId,
@@ -172,7 +171,7 @@ export default function LinkingPage() {
   };
 
   const deleteObservationTargetAndCalibration = (row: any) => {
-    function filterRecords(id: number) {
+    function filterRecords(id: string) {
       return getProposal().targetObservation?.filter(
         (item) => !(item.observationId === currRec?.id2 && item.targetId === id)
       );
@@ -203,7 +202,7 @@ export default function LinkingPage() {
 
   /* This type is required for the DataGrid showing the Targets */
   type ElementT = {
-    id: number;
+    id: string;
     name: string;
     raStr: string;
     decStr: string;
@@ -225,23 +224,13 @@ export default function LinkingPage() {
     target: Target,
     dataProductSDP: DataProductSDPNew
   ) => {
-    const response = await calculateSensCalcData(observation, target, dataProductSDP);
-    if (response) {
-      if (response.error) {
-        const errMsg = response.error;
-        notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
-      }
-      setSensCalc(response, target, observation.id, dataProductSDP.id);
+    const response = await getSensCalc(observation, target, dataProductSDP);
+    if (response?.error) {
+      const errMsg = response.error;
+      notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
     }
-  };
 
-  const setSensCalc = (
-    results: any,
-    target: Target,
-    observationId: string,
-    dataProductsSDPId: string
-  ) => {
-    updateTargetObservationStorage(target, observationId, dataProductsSDPId, results);
+    updateTargetObservationStorage(target, observation.id, dataProductSDP.id, response);
   };
 
   const closeDeleteDialog = () => {
@@ -272,7 +261,6 @@ export default function LinkingPage() {
       targetId: target.id,
       dataProductsSDPId: currRec.id ?? '',
       sensCalc: {
-        id: target.id,
         title: target.name,
         statusGUI: STATUS_PARTIAL,
         error: ''
@@ -280,7 +268,7 @@ export default function LinkingPage() {
     };
     const calibration: CalibrationStrategy = {
       observatoryDefined: true,
-      id: generateId('cal-'),
+      id: generateCalibrationId(),
       observationIdRef: currRec.id2,
       calibrators: null,
       notes: null
@@ -288,7 +276,7 @@ export default function LinkingPage() {
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 
-  const isTargetSelected = (targetId: number) =>
+  const isTargetSelected = (targetId: string) =>
     (getProposal().targetObservation ?? []).filter(
       (entry) => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
     ).length > 0;
@@ -304,7 +292,7 @@ export default function LinkingPage() {
   const checkPartials = () => {
     const proposal = getProposal();
     const results = proposal?.targetObservation?.find(
-      (p) => p.sensCalc.statusGUI === STATUS_PARTIAL
+      (p) => p.sensCalc?.statusGUI === STATUS_PARTIAL
     );
     if (results) {
       const target = proposal.targets?.find((e) => e.id === results.targetId);
@@ -312,12 +300,7 @@ export default function LinkingPage() {
       const dataProductSDP = proposal.dataProductSDP?.find(
         (d) => d.id === results.dataProductsSDPId
       );
-      if (
-        observation &&
-        target &&
-        target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value &&
-        dataProductSDP
-      ) {
+      if (observation && target && dataProductSDP) {
         getSensCalcData(observation, target, dataProductSDP);
       }
     }
@@ -363,7 +346,7 @@ export default function LinkingPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getSensCalcForTargetGrid = (targetId: number) =>
+  const getSensCalcForTargetGrid = (targetId: string) =>
     getProposal()?.targetObservation?.find(
       (p) => p.observationId === currRec?.id2 && p.targetId === targetId
     )?.sensCalc;
@@ -376,7 +359,7 @@ export default function LinkingPage() {
     return currRec?.Obs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
   };
 
-  const getSensCalcSingle = (id: number, field: string) => {
+  const getSensCalcSingle = (id: string, field: string) => {
     const isPST = elementsO.find((e) => e.id2 === currRec?.id2)?.type === TYPE_PST;
     return (
       <SensCalcDisplaySingle
@@ -638,7 +621,7 @@ export default function LinkingPage() {
   const filteredByDataProduct = (id: string) => {
     const results: SensCalcResults[] = [];
     getProposal()?.targetObservation?.forEach((rec) => {
-      if (rec.dataProductsSDPId === id) {
+      if (rec.dataProductsSDPId === id && rec.sensCalc != undefined) {
         results.push(rec.sensCalc);
       }
     });

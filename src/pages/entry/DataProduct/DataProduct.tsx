@@ -29,7 +29,6 @@ import {
   DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
-  FOOTER_SPACER,
   FREQUENCY_AVERAGING_DEFAULT,
   IMAGE_SIZE_DEFAULT,
   IMAGE_SIZE_UNIT_DEFAULT,
@@ -71,17 +70,13 @@ import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging'
 import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
 import BitDepthField from '@/components/fields/bitDepth/bitDepth';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { generateId } from '@/utils/helpers';
+import { generateDataProductId } from '@/utils/helpers';
 import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
 import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
-import {
-  DataProductSDPNew,
-  SDPImageContinuumData,
-  SDPVisibilitiesContinuumData
-} from '@/utils/types/dataProduct';
+import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
@@ -91,7 +86,6 @@ import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObserv
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
-const PAGE_PREFIX = 'SDP';
 const COL = 6;
 const COL_MID = 8;
 
@@ -384,7 +378,7 @@ export default function DataProduct({ data }: DataProductProps) {
     return [
       ...dataProducts,
       {
-        id: generateId('SDP-', 6),
+        id: generateDataProductId(),
         observationId: observation.id,
         data: hiddenData
       }
@@ -552,7 +546,7 @@ export default function DataProduct({ data }: DataProductProps) {
       if (fallbackObservation?.id && !observationId) {
         setObservationId(fallbackObservation.id);
       }
-      setId(generateId(PAGE_PREFIX, 6));
+      setId(generateDataProductId());
     }
   }, []);
 
