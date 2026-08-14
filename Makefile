@@ -77,13 +77,13 @@ endif
 # skatelescope/$(K8S_CHART) to whatever is newest in CAR. Pin the chart to this
 # pipeline's version so a deployment always installs the release it was built
 # from, rather than the latest chart that happens to be published at the time.
-CAR_DEPLOY_CHECK := $(shell echo $(KUBE_NAMESPACE) | egrep 'staging-|prod-')
+CAR_DEPLOY_CHECK := $(shell echo $(KUBE_NAMESPACE) | grep -E 'staging-|prod-')
 ifneq ($(CAR_DEPLOY_CHECK),)
 K8S_CHART_PARAMS += --version $(VERSION)
 endif
 
 # PRODUCTION DEPLOYMENT CONFIG
-ENV_CHECK := $(shell echo $(KUBE_NAMESPACE) | egrep 'prod-ska-oso-pht-ui')
+ENV_CHECK := $(shell echo $(KUBE_NAMESPACE) | grep -E 'prod-ska-oso-pht-ui')
 ifneq ($(ENV_CHECK),)
 
 PRODUCTION_URL=sv-ideas.skao.int
@@ -141,7 +141,7 @@ K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
 
 
 # For the test, dev and integration environment, use the freshly built image in the GitLab registry
-ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')
+ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep -E 'test|dev|integration')
 ifneq ($(ENV_CHECK),)
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA) \
 	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui
