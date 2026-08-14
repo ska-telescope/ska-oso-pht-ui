@@ -16,6 +16,7 @@ import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import Investigator from '../../../utils/types/investigator';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import { useApplySaveMetadata } from '@/utils/update/mergeProposalSaveMetadata/useApplySaveMetadata';
 import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
@@ -41,6 +42,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
+  const applySaveMetadata = useApplySaveMetadata();
   const { isSV } = useOSDAccessors();
 
   const [firstName, setFirstName] = React.useState('');
@@ -154,6 +156,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
     if (response && !('error' in response)) {
+      applySaveMetadata(response);
       notifySuccess(t('saveBtn.success'));
     } else {
       notifyError(
