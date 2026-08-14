@@ -97,7 +97,7 @@ import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
-import { updateSensCalcDebounced } from '@/utils/update/sensCalc/updateSensCalc';
+import { scheduleSensCalcUpdate } from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
@@ -296,7 +296,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (!dataProductSDP) {
       return;
     }
-    updateSensCalcDebounced(tmp, newObservation, dataProductSDP, setProposal);
+    scheduleSensCalcUpdate(tmp, newObservation, dataProductSDP, setProposal);
   };
 
   const addObservationToProposal = () => {

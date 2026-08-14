@@ -6,8 +6,8 @@ import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import DataProduct from './DataProduct';
 
-const { mockUpdateSensCalcDebounced } = vi.hoisted(() => ({
-  mockUpdateSensCalcDebounced: vi.fn()
+const { mockScheduleSensCalcUpdate } = vi.hoisted(() => ({
+  mockScheduleSensCalcUpdate: vi.fn()
 }));
 
 const wrapper = (component: React.ReactElement) => {
@@ -32,7 +32,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   storageObject: { useStore: () => mockStoreReturn }
 }));
 vi.mock('@/utils/update/sensCalc/updateSensCalc', () => ({
-  updateSensCalcDebounced: mockUpdateSensCalcDebounced
+  scheduleSensCalcUpdate: mockScheduleSensCalcUpdate
 }));
 
 vi.mock('@/utils/helpers', () => ({ generateId: () => 'SDP000001' }));
@@ -174,7 +174,7 @@ describe('DataProduct component', () => {
   };
 
   beforeEach(() => {
-    mockUpdateSensCalcDebounced.mockClear();
+    mockScheduleSensCalcUpdate.mockClear();
     mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
     mockStoreReturn = {
       application: { content2: { observations: [], dataProductSDP: [] } },
@@ -270,7 +270,7 @@ describe('DataProduct component', () => {
     });
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
-    expect(mockUpdateSensCalcDebounced).not.toHaveBeenCalled();
+    expect(mockScheduleSensCalcUpdate).not.toHaveBeenCalled();
     expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
   });
 
@@ -281,12 +281,12 @@ describe('DataProduct component', () => {
       error: ''
     });
 
-    expect(mockUpdateSensCalcDebounced).toHaveBeenCalledWith(
+    expect(mockScheduleSensCalcUpdate).toHaveBeenCalledWith(
       expect.any(Object),
       expect.objectContaining({ id: 'OBS1' }),
       expect.objectContaining({ id: 'DP1' }),
       expect.any(Function),
-      false
+      0
     );
   });
 

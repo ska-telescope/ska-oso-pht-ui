@@ -75,7 +75,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
-import { updateSensCalcDebounced } from '@/utils/update/sensCalc/updateSensCalc';
+import { scheduleSensCalcUpdate } from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
@@ -167,10 +167,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [rotationMeasure, setRotationMeasure] = React.useState(1);
 
   const [polarisationsError, setPolarisationsError] = React.useState('');
-  const dataProductUpdateToSkip = React.useRef<{
-    id: string;
-    observationId: string;
-  } | null>(null);
+  const loadedDataProduct = React.useRef<DataProductSDPNew | null>(null);
 
   const maxObservationsReached = () =>
     baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
@@ -436,18 +433,13 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!newDataProduct) {
       return;
     }
-    const updateToSkip = dataProductUpdateToSkip.current;
-    if (updateToSkip) {
-      dataProductUpdateToSkip.current = null;
-      if (
-        updateToSkip.id === newDataProduct.id &&
-        updateToSkip.observationId === newDataProduct.observationId
-      ) {
-        if (!hasSensCalcResults(proposal, newDataProduct.observationId)) {
-          updateSensCalcDebounced(proposal, observation!, newDataProduct, setProposal, false);
-        }
-        return;
+    const loaded = loadedDataProduct.current;
+    loadedDataProduct.current = null;
+    if (loaded?.id === newDataProduct.id && loaded.observationId === newDataProduct.observationId) {
+      if (!hasSensCalcResults(proposal, newDataProduct.observationId)) {
+        scheduleSensCalcUpdate(proposal, observation!, newDataProduct, setProposal, 0);
       }
+      return;
     }
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const dataProductSDP = ensureHiddenDataProduct(
@@ -459,7 +451,7 @@ export default function DataProduct({ data }: DataProductProps) {
       dataProductSDP
     };
     setProposal(proposalForSensCalc);
-    updateSensCalcDebounced(proposalForSensCalc, observation!, newDataProduct, setProposal);
+    scheduleSensCalcUpdate(proposalForSensCalc, observation!, newDataProduct, setProposal);
   };
 
   const updateStorageProposal = () => {
@@ -539,7 +531,7 @@ export default function DataProduct({ data }: DataProductProps) {
     };
     setProposal(proposalForSensCalc);
     dataProductIn(nextLinkedDataProduct);
-    updateSensCalcDebounced(proposalForSensCalc, observation, nextLinkedDataProduct, setProposal);
+    scheduleSensCalcUpdate(proposalForSensCalc, observation, nextLinkedDataProduct, setProposal);
   };
 
   /* ------------------------------------------- */
@@ -558,7 +550,7 @@ export default function DataProduct({ data }: DataProductProps) {
       );
 
       const dataProductToLoad = linkedDataProduct ?? selectedDataProduct;
-      dataProductUpdateToSkip.current = dataProductToLoad;
+      loadedDataProduct.current = dataProductToLoad;
       dataProductIn(dataProductToLoad);
     } else {
       const fallbackObservation =

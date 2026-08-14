@@ -29,7 +29,7 @@ export const updateSensCalc = async (
   if (!proposal.targetObservation) return [];
   const inputsAreValid = areSensCalcInputsValid(ob, dp);
 
-  const updated = await Promise.all(
+  return Promise.all(
     proposal.targetObservation
       .filter(
         (targetObservation) =>
@@ -48,7 +48,7 @@ export const updateSensCalc = async (
           };
         }
 
-        if (!target || !dp) {
+        if (!target) {
           return targetObservation;
         }
 
@@ -60,19 +60,17 @@ export const updateSensCalc = async (
         };
       })
   );
-
-  return updated;
 };
 
 let sensCalcDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 let latestSensCalcRequestId = 0;
 
-export const updateSensCalcDebounced = (
+export const scheduleSensCalcUpdate = (
   proposal: Proposal,
   ob: Observation,
   dp: DataProductSDPNew,
   setProposal: (proposal: Proposal) => void,
-  debounce = true
+  delay = SENS_CALC_DEBOUNCE_MS
 ) => {
   if (sensCalcDebounceTimer) {
     clearTimeout(sensCalcDebounceTimer);
@@ -87,8 +85,8 @@ export const updateSensCalcDebounced = (
     }
   };
 
-  if (debounce && areSensCalcInputsValid(ob, dp)) {
-    sensCalcDebounceTimer = setTimeout(() => void applyUpdate(), SENS_CALC_DEBOUNCE_MS);
+  if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
+    sensCalcDebounceTimer = setTimeout(() => void applyUpdate(), delay);
   } else {
     void applyUpdate();
   }

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import updateSensCalc, { updateSensCalcDebounced } from './updateSensCalc';
+import updateSensCalc, { scheduleSensCalcUpdate } from './updateSensCalc';
 import {
   DP_TYPE_IMAGES,
   IW_BRIGGS,
@@ -181,8 +181,8 @@ describe('updateSensCalc', () => {
       supplied: { ...observation.supplied, value: 2 }
     };
 
-    updateSensCalcDebounced(proposalBase, observation, dp, setProposal);
-    updateSensCalcDebounced(proposalBase, latestObservation, dp, setProposal);
+    scheduleSensCalcUpdate(proposalBase, observation, dp, setProposal);
+    scheduleSensCalcUpdate(proposalBase, latestObservation, dp, setProposal);
 
     expect(getSensCalc).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(500);
@@ -191,7 +191,7 @@ describe('updateSensCalc', () => {
     expect(setProposal).toHaveBeenCalledTimes(1);
     vi.clearAllMocks();
 
-    updateSensCalcDebounced(proposalBase, observation, dp, setProposal, false);
+    scheduleSensCalcUpdate(proposalBase, observation, dp, setProposal, 0);
     await vi.advanceTimersByTimeAsync(0);
     expect(getSensCalc).toHaveBeenCalledTimes(1);
     vi.clearAllMocks();
@@ -201,8 +201,8 @@ describe('updateSensCalc', () => {
       supplied: { ...observation.supplied, value: Number.NaN }
     };
 
-    updateSensCalcDebounced(proposalBase, observation, dp, setProposal);
-    updateSensCalcDebounced(proposalBase, invalidObservation, dp, setProposal);
+    scheduleSensCalcUpdate(proposalBase, observation, dp, setProposal);
+    scheduleSensCalcUpdate(proposalBase, invalidObservation, dp, setProposal);
     await vi.advanceTimersByTimeAsync(0);
     expect(getSensCalc).not.toHaveBeenCalled();
     expect(setProposal.mock.calls[0][0].targetObservation?.[0].sensCalc?.statusGUI).toBe(
