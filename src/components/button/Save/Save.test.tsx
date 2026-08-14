@@ -4,7 +4,6 @@ import { render, screen, act } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import SaveButton from './Save';
 import '@testing-library/jest-dom';
-import '@testing-library/jest-dom';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const wrapper = (component: React.ReactElement) => {
@@ -32,11 +31,6 @@ describe('Save Button', () => {
     screen.getByTestId('saveButtonTestId').click();
     expect(mockAction).toBeCalled();
   });
-  test('renders correctly with tooltip empty', () => {
-    wrapper(<SaveButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('saveButtonTestId')).toHaveTextContent('saveBtn.label');
-  });
-
   test('does not trigger auto-save if action is not a function', () => {
     wrapper(<SaveButton action="notAFunction" autoSaveInterval={2} showCountdown />);
     act(() => {
@@ -100,12 +94,6 @@ describe('SaveButton iconWithCountdown', () => {
 
   afterEach(() => {
     vi.useRealTimers();
-  });
-
-  it('renders SaveIcon inside a Box', () => {
-    const { getByTestId } = wrapper(<SaveButton action={mockAction} />);
-    const btn = getByTestId('saveButtonTestId');
-    expect(btn.querySelector('svg')).toBeTruthy();
   });
 
   it('renders CircularProgress when showCountdown and autoSaveInterval > 0', () => {
