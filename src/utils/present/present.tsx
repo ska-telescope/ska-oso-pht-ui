@@ -66,7 +66,7 @@ const normalizeDateString = (input: string): string => {
   return match ? `${match[1]}-${match[2]}-${match[3]}T${input.slice(match[0].length)}` : input;
 };
 
-const parseDate = (input: string): Date | null => {
+export const parseDate = (input: string): Date | null => {
   const date = new Date(normalizeDateString(input));
   return isNaN(date.getTime()) ? null : date;
 };

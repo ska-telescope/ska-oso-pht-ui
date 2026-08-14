@@ -65,13 +65,9 @@ describe('Save Button', () => {
     // wrapped in StrictMode in main.tsx. Two PutProposal calls and two
     // whole-proposal store writes per tick is a dev-only bug that no other test
     // would catch.
-    render(
+    wrapper(
       <React.StrictMode>
-        <StoreProvider>
-          <ThemeA11yProvider>
-            <SaveButton action={mockAction} autoSaveInterval={2} />
-          </ThemeA11yProvider>
-        </StoreProvider>
+        <SaveButton action={mockAction} autoSaveInterval={2} />
       </React.StrictMode>
     );
 

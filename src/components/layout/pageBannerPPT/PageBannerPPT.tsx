@@ -229,6 +229,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   }, [application.content1]);
 
+  // The save button and the label it annotates must appear and disappear together.
+  const showSaveControls = () =>
+    (loggedIn || cypressToken) && getProposal().id !== null && pages.includes(pageNo);
+
   const buttonsLeft = () => (
     <Grid
       container
@@ -244,21 +248,21 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         )}
         {!backPage && <HomeButton />}
       </Grid>
-      <Grid>
-        {(loggedIn || cypressToken) && getProposal().id !== null && pages.includes(pageNo) && (
-          <SaveButton
-            testId={'saveBtn'}
-            disabled={isDisableEndpoints()}
-            action={handleSave}
-            autoSaveInterval={AUTO_SAVE_INTERVAL}
-          />
-        )}
-      </Grid>
-      <Grid>
-        {(loggedIn || cypressToken) && getProposal().id !== null && pages.includes(pageNo) && (
-          <LastSaved lastUpdated={getProposal().lastUpdated} />
-        )}
-      </Grid>
+      {showSaveControls() && (
+        <>
+          <Grid>
+            <SaveButton
+              testId={'saveBtn'}
+              disabled={isDisableEndpoints()}
+              action={handleSave}
+              autoSaveInterval={AUTO_SAVE_INTERVAL}
+            />
+          </Grid>
+          <Grid>
+            <LastSaved lastUpdated={getProposal().lastUpdated} />
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 

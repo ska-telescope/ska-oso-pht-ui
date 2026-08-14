@@ -32,6 +32,11 @@ export const useApplySaveMetadata = () => {
     // Counted rather than flagged: several components hold this hook at once,
     // and StrictMode runs setup -> cleanup -> setup in development.
     consumers += 1;
+    // latestProposal is deliberately not released on the last unmount. The
+    // snapshot is written during render but this cleanup runs between
+    // StrictMode's setup -> cleanup -> setup, so clearing it there leaves it
+    // null through the remount that follows - dropping every later save in
+    // development.
     return () => {
       consumers -= 1;
     };

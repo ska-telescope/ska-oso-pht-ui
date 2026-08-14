@@ -1,5 +1,6 @@
 import { Metadata } from '../../types/metadata';
 import { Proposal, ProposalBackend } from '../../types/proposal';
+import { parseDate } from '../../present/present';
 
 /**
  * Whether `incoming` describes a save later than the one already held.
@@ -10,27 +11,32 @@ import { Proposal, ProposalBackend } from '../../types/proposal';
  * backend's, which surfaces later as an optimistic-concurrency failure.
  */
 const isNewerThanHeld = (current: Proposal, incoming: Metadata): boolean => {
-  const heldStamp = current.metadata?.last_modified_on ?? current.lastUpdated;
-  const heldTime = Date.parse(heldStamp ?? '');
-  const incomingTime = Date.parse(incoming.last_modified_on);
+  // parseDate, rather than Date.parse, so the compact YYYYMMDDT... form the
+  // backend also emits is understood here as it is everywhere else.
+  const held = parseDate(current.metadata?.last_modified_on ?? current.lastUpdated);
+  const incomingDate = parseDate(incoming.last_modified_on);
 
   // Nothing to order by - an absent stamp on a freshly created proposal, or an
   // unparseable one from either side. Accept, rather than freeze the label on
   // the strength of a comparison that never worked.
-  if (Number.isNaN(heldTime) || Number.isNaN(incomingTime)) {
+  if (!held || !incomingDate) {
     return true;
   }
+  const heldTime = held.getTime();
+  const incomingTime = incomingDate.getTime();
   if (incomingTime !== heldTime) {
     return incomingTime > heldTime;
   }
 
-  // Same instant: only a higher version carries anything new. Date.parse
-  // truncates the backend's microseconds, so two saves within the same
-  // millisecond land here rather than ordering on time alone.
+  // Same instant: only a higher version carries anything new. Parsing truncates
+  // the backend's microseconds, so two saves within the same millisecond land
+  // here rather than ordering on time alone.
   const heldVersion = current.metadata?.version ?? current.version;
-  return typeof incoming.version === 'number' && typeof heldVersion === 'number'
-    ? incoming.version > heldVersion
-    : false;
+  return (
+    typeof incoming.version === 'number' &&
+    typeof heldVersion === 'number' &&
+    incoming.version > heldVersion
+  );
 };
 
 /**

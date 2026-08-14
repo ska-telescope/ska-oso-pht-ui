@@ -3,6 +3,7 @@ import React from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { useTheme } from '@mui/system';
 import BaseButton from '../Base/Button';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface SaveButtonProps {
   title?: string;
@@ -27,7 +28,7 @@ export default function SaveButton({
 }: SaveButtonProps) {
   const theme = useTheme();
   const [countdown, setCountdown] = React.useState(autoSaveInterval);
-  const [warn, setWarn] = React.useState(false);
+  const [warn, setWarn] = useAutoClearingState(false, 600); // flashes the icon on auto-save
 
   // The countdown is tracked here as well as in state so the tick can decide
   // whether to save *outside* any setState updater. StrictMode double-invokes
@@ -44,8 +45,7 @@ export default function SaveButton({
 
         if (elapsed && typeof action === 'function') {
           action(true); // trigger auto-save; the flag suppresses the success toast
-          setWarn(true); // switch to warning color
-          setTimeout(() => setWarn(false), 600); // revert after 600ms
+          setWarn(true); // switch to warning color, reverts on its own
         }
       }, 1000);
 

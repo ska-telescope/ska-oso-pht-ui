@@ -1,5 +1,6 @@
 import {
   cypressToken,
+  DEFAULT_USER,
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
   SKA_OSO_SERVICES_URL,
@@ -11,33 +12,33 @@ import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import MappingPutProposal from './putProposalMapping.tsx';
 import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 
-// A real PUT bumps the metadata version on every save. Mirroring that keeps
-// successive mock saves distinguishable even when two land inside the same
-// millisecond, which is all mergeProposalSaveMetadata has to order them by.
-let mockSaveVersion = 0;
-
 export function mockPutProposal(proposal?: Proposal) {
   const mapped = MappingPutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
-  mockSaveVersion += 1;
+
+  const metadata: Metadata = {
+    // A real PUT bumps the version on every save. Deriving it from the proposal
+    // in hand - which the previous response's metadata was merged into - keeps
+    // successive mock saves distinguishable even when two land inside the same
+    // millisecond, which is all mergeProposalSaveMetadata has to order them by.
+    version: (proposal?.version ?? 0) + 1,
+    created_by: DEFAULT_USER,
+    created_on: '2025-07-03T16:20:37.088Z',
+    last_modified_by: DEFAULT_USER,
+    last_modified_on: new Date().toISOString(),
+    pdm_version: '18.2.0'
+  };
 
   return {
     ...mapped,
     // Echo the id actually saved. mergeProposalSaveMetadata drops a response
     // whose prsl_id is not the proposal in hand, so returning the fixture's id
     // would leave the label inert for every other proposal.
-    ...(proposal?.id ? { prsl_id: proposal.id } : {}),
+    prsl_id: proposal?.id || mapped.prsl_id,
     // MappingPutProposal builds the outbound request body, which carries no
     // metadata - but the last-saved label is driven entirely by the response's.
     // Without this the label never appears under USE_LOCAL_DATA or cypressToken,
     // and the e2e suite cannot exercise or assert it.
-    metadata: {
-      version: mockSaveVersion,
-      created_by: 'DefaultUser',
-      created_on: '2025-07-03T16:20:37.088Z',
-      last_modified_by: 'DefaultUser',
-      last_modified_on: new Date().toISOString(),
-      pdm_version: '18.2.0'
-    } as Metadata
+    metadata
   };
 }
 

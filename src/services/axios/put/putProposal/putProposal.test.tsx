@@ -57,9 +57,14 @@ describe('Helper Functions', () => {
     expect(result.prsl_id).toBe('prsl-elsewhere-0001');
   });
 
-  test('mockPutProposal advances the version on every save', () => {
-    const first = mockPutProposal();
-    const second = mockPutProposal();
+  test('mockPutProposal advances the version of the proposal being saved', () => {
+    // Each response is merged back into the proposal, so successive saves see an
+    // ever-higher version - which is what breaks a same-millisecond tie in
+    // mergeProposalSaveMetadata.
+    const first = mockPutProposal({ ...MockProposalFrontend, version: 4 });
+    expect(first.metadata.version).toBe(5);
+
+    const second = mockPutProposal({ ...MockProposalFrontend, version: first.metadata.version });
     expect(second.metadata.version).toBeGreaterThan(first.metadata.version);
   });
 
