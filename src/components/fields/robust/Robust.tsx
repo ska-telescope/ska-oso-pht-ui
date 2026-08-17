@@ -8,7 +8,6 @@ interface RobustFieldProps {
   disabled?: boolean;
   onFocus?: () => void;
   label: string;
-  required?: boolean;
   setValue: (nextValue: number) => void;
   suffix?: React.ReactNode;
   value: number;
