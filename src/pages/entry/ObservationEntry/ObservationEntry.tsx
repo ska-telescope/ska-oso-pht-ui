@@ -1000,8 +1000,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       return entry.units;
     };
 
-    const { t } = useScopedTranslation();
-    const { setHelp } = useHelp();
     const FIELD = 'suppliedValue';
     const minValue = 0;
     const maxValue =
