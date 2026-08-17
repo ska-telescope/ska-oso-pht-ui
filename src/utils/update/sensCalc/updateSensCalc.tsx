@@ -6,8 +6,6 @@ import TargetObservation from '@/utils/types/targetObservation';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
 
-const SENS_CALC_DEBOUNCE_MS = 500;
-
 const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
   isSuppliedValueValid({
     type: ob?.supplied?.type,
@@ -60,36 +58,6 @@ export const updateSensCalc = async (
         };
       })
   );
-};
-
-let sensCalcDebounceTimer: ReturnType<typeof setTimeout> | null = null;
-let latestSensCalcRequestId = 0;
-
-export const scheduleSensCalcUpdate = (
-  proposal: Proposal,
-  ob: Observation,
-  dp: DataProductSDPNew,
-  setProposal: (proposal: Proposal) => void,
-  delay = SENS_CALC_DEBOUNCE_MS
-) => {
-  if (sensCalcDebounceTimer) {
-    clearTimeout(sensCalcDebounceTimer);
-  }
-  const requestId = ++latestSensCalcRequestId;
-
-  const applyUpdate = async () => {
-    sensCalcDebounceTimer = null;
-    const targetObservation = await updateSensCalc(proposal, ob, dp);
-    if (requestId === latestSensCalcRequestId) {
-      setProposal({ ...proposal, targetObservation });
-    }
-  };
-
-  if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
-    sensCalcDebounceTimer = setTimeout(() => void applyUpdate(), delay);
-  } else {
-    void applyUpdate();
-  }
 };
 
 export default updateSensCalc;

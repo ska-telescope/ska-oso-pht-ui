@@ -75,7 +75,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
-import { scheduleSensCalcUpdate } from '@/utils/update/sensCalc/updateSensCalc';
+import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
@@ -83,11 +83,13 @@ import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMe
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
 import TargetObservation from '@/utils/types/targetObservation';
 import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
+import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 const COL = 6;
 const COL_MID = 8;
+const SENS_CALC_DEBOUNCE_MS = 500;
 
 interface DataProductProps {
   data?: DataProductSDPNew;
@@ -107,6 +109,9 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const latestProposalRef = React.useRef(getProposal());
+  const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestSensCalcRequestIdRef = React.useRef(0);
 
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [id, setId] = React.useState('');
@@ -168,6 +173,48 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const [polarisationsError, setPolarisationsError] = React.useState('');
   const loadedDataProduct = React.useRef<DataProductSDPNew | null>(null);
+
+  const persistProposal = (proposal: Proposal) => {
+    latestProposalRef.current = proposal;
+    setProposal(proposal);
+  };
+
+  const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
+    isSuppliedValueValid({
+      type: ob?.supplied?.type,
+      value: ob?.supplied?.value,
+      units: ob?.supplied?.units
+    }) && isDataProductRobustValid(dp);
+
+  const scheduleLocalSensCalcUpdate = (
+    ob: Observation,
+    dp: DataProductSDPNew,
+    delay = SENS_CALC_DEBOUNCE_MS
+  ) => {
+    if (sensCalcDebounceTimerRef.current) {
+      clearTimeout(sensCalcDebounceTimerRef.current);
+    }
+    const requestId = ++latestSensCalcRequestIdRef.current;
+
+    const applyUpdate = async () => {
+      sensCalcDebounceTimerRef.current = null;
+      const proposalForCalc = latestProposalRef.current;
+      const targetObservation = await updateSensCalc(proposalForCalc, ob, dp);
+
+      if (requestId !== latestSensCalcRequestIdRef.current) {
+        return;
+      }
+
+      const mergedProposal = { ...latestProposalRef.current, targetObservation };
+      persistProposal(mergedProposal);
+    };
+
+    if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
+      sensCalcDebounceTimerRef.current = setTimeout(() => void applyUpdate(), delay);
+    } else {
+      void applyUpdate();
+    }
+  };
 
   const maxObservationsReached = () =>
     baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
@@ -437,7 +484,7 @@ export default function DataProduct({ data }: DataProductProps) {
     loadedDataProduct.current = null;
     if (loaded?.id === newDataProduct.id && loaded.observationId === newDataProduct.observationId) {
       if (!hasSensCalcResults(proposal, newDataProduct.observationId)) {
-        scheduleSensCalcUpdate(proposal, observation!, newDataProduct, setProposal, 0);
+        scheduleLocalSensCalcUpdate(observation!, newDataProduct, 0);
       }
       return;
     }
@@ -450,8 +497,8 @@ export default function DataProduct({ data }: DataProductProps) {
       ...proposal,
       dataProductSDP
     };
-    setProposal(proposalForSensCalc);
-    scheduleSensCalcUpdate(proposalForSensCalc, observation!, newDataProduct, setProposal);
+    persistProposal(proposalForSensCalc);
+    scheduleLocalSensCalcUpdate(observation!, newDataProduct);
   };
 
   const updateStorageProposal = () => {
@@ -529,12 +576,24 @@ export default function DataProduct({ data }: DataProductProps) {
       dataProductSDP: dataProductsAfterReset,
       targetObservation: linkedTargetObservations
     };
-    setProposal(proposalForSensCalc);
+    persistProposal(proposalForSensCalc);
     dataProductIn(nextLinkedDataProduct);
-    scheduleSensCalcUpdate(proposalForSensCalc, observation, nextLinkedDataProduct, setProposal);
+    scheduleLocalSensCalcUpdate(observation, nextLinkedDataProduct);
   };
 
   /* ------------------------------------------- */
+
+  React.useEffect(() => {
+    latestProposalRef.current = getProposal();
+  }, [application.content2]);
+
+  React.useEffect(() => {
+    return () => {
+      if (sensCalcDebounceTimerRef.current) {
+        clearTimeout(sensCalcDebounceTimerRef.current);
+      }
+    };
+  }, []);
 
   React.useEffect(() => {
     setHelp('observations.dp');

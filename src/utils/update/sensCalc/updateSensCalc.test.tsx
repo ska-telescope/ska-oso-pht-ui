@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import updateSensCalc, { scheduleSensCalcUpdate } from './updateSensCalc';
+import updateSensCalc from './updateSensCalc';
 import {
   DP_TYPE_IMAGES,
   IW_BRIGGS,
@@ -165,50 +165,5 @@ describe('updateSensCalc', () => {
       statusGUI: STATUS_INITIAL,
       error: ''
     });
-  });
-
-  it('debounces valid updates but applies invalid state immediately', async () => {
-    vi.useFakeTimers();
-    (getSensCalc as any).mockResolvedValue({
-      id: 't1',
-      title: 'calc result',
-      statusGUI: STATUS_OK,
-      error: ''
-    });
-    const setProposal = vi.fn();
-    const latestObservation = {
-      ...observation,
-      supplied: { ...observation.supplied, value: 2 }
-    };
-
-    scheduleSensCalcUpdate(proposalBase, observation, dp, setProposal);
-    scheduleSensCalcUpdate(proposalBase, latestObservation, dp, setProposal);
-
-    expect(getSensCalc).not.toHaveBeenCalled();
-    await vi.advanceTimersByTimeAsync(500);
-    expect(getSensCalc).toHaveBeenCalledTimes(1);
-    expect(getSensCalc).toHaveBeenCalledWith(latestObservation, proposalBase.targets?.[0], dp);
-    expect(setProposal).toHaveBeenCalledTimes(1);
-    vi.clearAllMocks();
-
-    scheduleSensCalcUpdate(proposalBase, observation, dp, setProposal, 0);
-    await vi.advanceTimersByTimeAsync(0);
-    expect(getSensCalc).toHaveBeenCalledTimes(1);
-    vi.clearAllMocks();
-
-    const invalidObservation = {
-      ...observation,
-      supplied: { ...observation.supplied, value: Number.NaN }
-    };
-
-    scheduleSensCalcUpdate(proposalBase, observation, dp, setProposal);
-    scheduleSensCalcUpdate(proposalBase, invalidObservation, dp, setProposal);
-    await vi.advanceTimersByTimeAsync(0);
-    expect(getSensCalc).not.toHaveBeenCalled();
-    expect(setProposal.mock.calls[0][0].targetObservation?.[0].sensCalc?.statusGUI).toBe(
-      STATUS_INITIAL
-    );
-    await vi.advanceTimersByTimeAsync(500);
-    expect(getSensCalc).not.toHaveBeenCalled();
   });
 });

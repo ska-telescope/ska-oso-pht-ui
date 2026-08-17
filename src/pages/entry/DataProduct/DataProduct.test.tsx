@@ -7,7 +7,7 @@ import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import DataProduct from './DataProduct';
 
 const { mockScheduleSensCalcUpdate } = vi.hoisted(() => ({
-  mockScheduleSensCalcUpdate: vi.fn()
+  mockScheduleSensCalcUpdate: vi.fn(async () => [])
 }));
 
 const wrapper = (component: React.ReactElement) => {
@@ -32,7 +32,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   storageObject: { useStore: () => mockStoreReturn }
 }));
 vi.mock('@/utils/update/sensCalc/updateSensCalc', () => ({
-  scheduleSensCalcUpdate: mockScheduleSensCalcUpdate
+  default: mockScheduleSensCalcUpdate
 }));
 
 vi.mock('@/utils/helpers', () => ({ generateId: () => 'SDP000001' }));
@@ -282,11 +282,13 @@ describe('DataProduct component', () => {
     });
 
     expect(mockScheduleSensCalcUpdate).toHaveBeenCalledWith(
-      expect.any(Object),
+      expect.objectContaining({
+        observations: expect.any(Array),
+        dataProductSDP: expect.any(Array),
+        targetObservation: expect.any(Array)
+      }),
       expect.objectContaining({ id: 'OBS1' }),
-      expect.objectContaining({ id: 'DP1' }),
-      expect.any(Function),
-      0
+      expect.objectContaining({ id: 'DP1' })
     );
   });
 
