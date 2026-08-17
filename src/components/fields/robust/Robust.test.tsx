@@ -8,6 +8,7 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
 }));
 
 describe('<Robust /> behavior', () => {
+  const noop = () => undefined;
   const getField = () => screen.getByRole('spinbutton');
   const spin = (direction: 'ArrowUp' | 'ArrowDown', nextValue: string) => {
     const field = getField();
@@ -19,12 +20,12 @@ describe('<Robust /> behavior', () => {
   };
 
   test('renders robust numeric input', () => {
-    render(<Robust label="Robust" value={0} />);
+    render(<Robust label="Robust" value={0} setValue={noop} />);
     expect(getField()).toBeInTheDocument();
   });
 
   test('applies spinner bounds and step for robust range', () => {
-    render(<Robust label="Robust" value={0} />);
+    render(<Robust label="Robust" value={0} setValue={noop} />);
     const field = getField();
     expect(field).toHaveAttribute('step', '0.1');
     expect(field).toHaveAttribute('min', '-2');
