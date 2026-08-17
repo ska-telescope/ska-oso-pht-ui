@@ -4,7 +4,7 @@ import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MSENTRA_API_URI } from '@/utils/constants';
 import { getUseIndigo } from '@/utils/authConfig';
 import { env } from '@/env';
-import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
+import { getLocalToken, isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
 
 export enum LogLevel {
   Error,
@@ -84,6 +84,14 @@ export const createRequestInterceptor =
           instance.loginRedirect(loginRequest);
         }
         return Promise.reject(error);
+      }
+    } else if (isLocalhost()) {
+      // No real MSAL session (e.g. a headless Cypress run) - fall back to a locally-supplied
+      // token the same way the shared axiosClient does, instead of silently sending no
+      // Authorization header at all.
+      const token = await getLocalToken();
+      if (token) {
+        request.headers['Authorization'] = `Bearer ${token}`;
       }
     }
     return request;

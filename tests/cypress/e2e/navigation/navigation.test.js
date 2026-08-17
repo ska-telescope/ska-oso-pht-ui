@@ -3,7 +3,8 @@ import {
   createStandardProposalSession,
   checkStatusIndicatorDisabled,
   verifyStatusIndicatorLabel,
-  clearLocalStorage
+  clearLocalStorage,
+  isLiveMode
 } from '../common/common.js';
 import { standardUser } from '../users/users.js';
 
@@ -38,7 +39,12 @@ describe('Verify navigation', () => {
     verifyStatusIndicatorLabel('statusId9', 'Calibration');
   });
 
-  it('Proposal: Verify page banner has correct items', () => {
+  it('Proposal: Verify page banner has correct items', function () {
+    // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
+    // one is seeded) - stub-only until one is, this isn't a test-code fix.
+    if (isLiveMode()) {
+      this.skip();
+    }
     createStandardProposalSession(standardUser);
     //Verify navigation in page banner is correct after proposal creation
     verifyStatusIndicatorLabel('statusId0', 'Title');

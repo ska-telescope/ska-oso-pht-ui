@@ -1,5 +1,6 @@
 import {
   cypressToken,
+  cypressLiveMode,
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
   SKA_OSO_SERVICES_URL,
@@ -19,7 +20,8 @@ async function PutProposal(
   proposal: Proposal,
   status?: string
 ): Promise<ProposalBackend | { error: string }> {
-  if (USE_LOCAL_DATA || cypressToken) {
+  // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
+  if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
     return mockPutProposal();
   }
 

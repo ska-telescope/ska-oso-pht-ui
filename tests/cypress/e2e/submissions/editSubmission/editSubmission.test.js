@@ -34,7 +34,8 @@ import {
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
   createScienceIdeaSession,
-  createStandardProposalSession
+  createStandardProposalSession,
+  isLiveMode
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -49,7 +50,14 @@ describe('Edit Proposal', () => {
       clearLocalStorage();
     });
 
-    it('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', () => {
+    it('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', function () {
+      // The PDF upload step needs real AWS S3 credentials, sourced from Vault in a proper
+      // deployment - our local minikube deploy of ska-oso-services runs with vault.enabled=false
+      // (see its Makefile), which injects a dummy AWS key/secret instead, so any live upload
+      // fails. Skip until that's addressed; this isn't a test-code fix.
+      if (isLiveMode()) {
+        this.skip();
+      }
       createScienceIdeaSession(standardUser, {
         'cypress:proposalEdit': 'true',
         'cypress:scienceVerificationIdea': 'true'
@@ -106,7 +114,12 @@ describe('Edit Proposal', () => {
     it(
       'Proposal Flow: Edit a basic proposal, ensure proposal is valid and then submit',
       { jiraKey: 'XTP-71405' },
-      () => {
+      function () {
+        // No standard/PI-proposal cycle exists in the real backend yet (only a Science
+        // Verification one is seeded) - stub-only until one is, this isn't a test-code fix.
+        if (isLiveMode()) {
+          this.skip();
+        }
         createStandardProposalSession(standardUser, { 'cypress:proposalEdit': 'true' });
         mockValidateAPI();
 

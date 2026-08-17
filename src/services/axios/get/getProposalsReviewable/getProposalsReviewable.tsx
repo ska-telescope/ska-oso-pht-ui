@@ -3,7 +3,8 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   OSO_SERVICES_PROPOSAL_PATH,
-  cypressToken
+  cypressToken,
+  cypressLiveMode
 } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
@@ -17,7 +18,10 @@ export function GetMockProposalList(): Proposal[] {
 async function GetProposalsReviewable(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<Proposal[] | string> {
-  if (USE_LOCAL_DATA || cypressToken) {
+  // cypressToken alone would also catch live-mode Cypress runs (which still set a - real - token
+  // locally, see liveAuth.js), so exclude those explicitly rather than always mocking under
+  // Cypress regardless of mode.
+  if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
     return GetMockProposalList();
   }
 

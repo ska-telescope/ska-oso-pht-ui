@@ -2,7 +2,8 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   OSO_SERVICES_PANEL_PATH,
-  cypressToken
+  cypressToken,
+  cypressLiveMode
 } from '@utils/constants.ts';
 import { Panel, PanelBackend } from '@utils/types/panel.tsx';
 import { PanelProposal, PanelProposalBackend } from '@utils/types/panelProposal.tsx';
@@ -67,7 +68,8 @@ export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
 async function GetPanelList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<Panel[] | string> {
-  if (USE_LOCAL_DATA || cypressToken) {
+  // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
+  if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
     return GetMockPanelList();
   }
 

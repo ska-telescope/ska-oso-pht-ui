@@ -16,7 +16,8 @@ import {
   verifyOsdDataMaxTargets,
   verifyTargetInTargetTable,
   createScienceIdeaSession,
-  createStandardProposalSession
+  createStandardProposalSession,
+  isLiveMode
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -147,7 +148,12 @@ describe('Science Verification: Target entry validation', () => {
 });
 
 describe('Proposal Flow: Target entry validation', () => {
-  beforeEach(() => {
+  beforeEach(function () {
+    // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
+    // one is seeded) - stub-only until one is, this isn't a test-code fix.
+    if (isLiveMode()) {
+      this.skip();
+    }
     createStandardProposalSession(standardUser);
     clickStatusIconNav('statusId4'); //Click to target page
     pageConfirmed('TARGET');

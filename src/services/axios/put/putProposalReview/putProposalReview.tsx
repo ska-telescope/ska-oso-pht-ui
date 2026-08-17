@@ -1,5 +1,6 @@
 import {
   cypressToken,
+  cypressLiveMode,
   OSO_SERVICES_REVIEWS_PATH,
   REVIEW_TYPE,
   SKA_OSO_SERVICES_URL,
@@ -73,7 +74,8 @@ async function PutProposalReview(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   review: ProposalReview
 ): Promise<ProposalReview | { error: string }> {
-  if (USE_LOCAL_DATA || cypressToken) {
+  // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
+  if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
     return putMockProposalReview();
   }
 

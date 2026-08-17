@@ -2,7 +2,8 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   OSO_SERVICES_REVIEWS_PATH,
-  cypressToken
+  cypressToken,
+  cypressLiveMode
 } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
@@ -29,7 +30,8 @@ export function GetMockProposalReviewList(mock = MockProposalReviewListBackend):
 async function GetProposalReviewList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<ProposalReview[] | string> {
-  if (USE_LOCAL_DATA || cypressToken) {
+  // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
+  if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
     return GetMockProposalReviewList();
   }
 

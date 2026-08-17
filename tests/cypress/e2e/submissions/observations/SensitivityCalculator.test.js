@@ -12,12 +12,18 @@ import {
   clickAddDataProductEntry,
   selectOptionFromDropdown,
   verifyDataInTable,
-  createStandardProposalSession
+  createStandardProposalSession,
+  isLiveMode
 } from '../../common/common.js';
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 import { standardUser } from '../../users/users.js';
 
-beforeEach(() => {
+beforeEach(function () {
+  // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
+  // one is seeded) - stub-only until one is, this isn't a test-code fix.
+  if (isLiveMode()) {
+    this.skip();
+  }
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
   createStandardProposalSession(standardUser);
   clickStatusIconNav('statusId4'); //Click to target page
