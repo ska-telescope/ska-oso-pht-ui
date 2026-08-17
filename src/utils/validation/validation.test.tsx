@@ -430,6 +430,22 @@ describe('validateSDPPage robust rules', () => {
     });
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
+
+  it('transitions Data Product breadcrumb status from STATUS_OK to STATUS_ERROR when robust becomes invalid', () => {
+    const validProposal = makeProposalWithDataProduct({
+      dataProductType: DP_TYPE_IMAGES,
+      weighting: IW_BRIGGS,
+      robust: 0
+    });
+    expect(validateSDPPage(validProposal)).toBe(STATUS_OK);
+
+    const invalidProposal = makeProposalWithDataProduct({
+      dataProductType: DP_TYPE_IMAGES,
+      weighting: IW_BRIGGS,
+      robust: 2.1
+    });
+    expect(validateSDPPage(invalidProposal)).toBe(STATUS_ERROR);
+  });
 });
 
 describe('validateObservationPage supplied rules', () => {
@@ -502,5 +518,19 @@ describe('validateObservationPage supplied rules', () => {
       targetObservation: [{ targetId: '1', observationId: 'obs-1' }]
     };
     expect(validateObservationPage(proposal as any, true)).toBe(STATUS_ERROR);
+  });
+
+  it('transitions Observation breadcrumb status from STATUS_OK to STATUS_ERROR when supplied becomes invalid', () => {
+    const validProposal = {
+      observations: [baseObservation],
+      targetObservation: []
+    };
+    expect(validateObservationPage(validProposal as any, false)).toBe(STATUS_OK);
+
+    const invalidProposal = {
+      observations: [{ ...baseObservation, supplied: { ...baseObservation.supplied, value: -1 } }],
+      targetObservation: []
+    };
+    expect(validateObservationPage(invalidProposal as any, false)).toBe(STATUS_ERROR);
   });
 });
