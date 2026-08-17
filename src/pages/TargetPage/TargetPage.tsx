@@ -4,9 +4,23 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
-import { validateTargetPage } from '../../utils/validation/validation';
+import {
+  validateTargetPage,
+  validateObservationPage,
+  validateSDPPage,
+  validateLinkingPage,
+  validateCalibrationPage
+} from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
-import { PAGE_TARGET, TARGET_OPTION } from '../../utils/constants';
+import {
+  PAGE_TARGET,
+  PAGE_OBSERVATION,
+  STATUS_OK,
+  TARGET_OPTION,
+  PAGE_DATA_PRODUCTS,
+  PAGE_LINKING,
+  PAGE_CALIBRATION
+} from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetListSection from './TargetListSection/targetListSection';
@@ -24,12 +38,48 @@ export default function TargetPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { isSV } = useOSDAccessors();
-
+  const { isSV, autoLink } = useOSDAccessors();
   const getProposalState = () => application.content1 as number[];
+
   const setTheProposalState = () => {
-    const status = validateTargetPage(getProposal());
-    updateAppContent1(getProposalState().map((v, i) => (i === PAGE ? status : v)));
+    const proposal = getProposal();
+    const currentState = getProposalState();
+    const targetStatus = validateTargetPage(proposal);
+
+    const observationStatus =
+      targetStatus === STATUS_OK
+        ? validateObservationPage(proposal, autoLink)
+        : currentState[PAGE_OBSERVATION];
+
+    const sdpStatus =
+      targetStatus === STATUS_OK ? validateSDPPage(proposal) : currentState[PAGE_DATA_PRODUCTS];
+
+    const linkingStatus =
+      targetStatus === STATUS_OK ? validateLinkingPage(proposal) : currentState[PAGE_LINKING];
+
+    const calibrationStatus =
+      targetStatus === STATUS_OK
+        ? validateCalibrationPage(proposal)
+        : currentState[PAGE_CALIBRATION];
+
+    const nextState = currentState.map((v, i) => {
+      switch (i) {
+        case PAGE_TARGET:
+          return targetStatus;
+        case PAGE_OBSERVATION:
+          return observationStatus;
+        case PAGE_DATA_PRODUCTS:
+          return sdpStatus;
+        case PAGE_LINKING:
+          return linkingStatus;
+        case PAGE_CALIBRATION:
+          return calibrationStatus;
+        default:
+          return v;
+      }
+    });
+
+    updateAppContent1(nextState);
   };
 
   React.useEffect(() => {
