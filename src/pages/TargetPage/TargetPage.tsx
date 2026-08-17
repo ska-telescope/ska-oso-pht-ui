@@ -50,17 +50,11 @@ export default function TargetPage() {
       if (i === PAGE_TARGET) {
         return targetStatus;
       }
-      return v;
-    });
 
-    if (targetStatus !== STATUS_OK) {
-      if (nextState.some((status, i) => status !== currentState[i])) {
-        updateAppContent1(nextState);
+      if (targetStatus !== STATUS_OK) {
+        return v;
       }
-      return;
-    }
 
-    const validatedState = nextState.map((v, i) => {
       switch (i) {
         case PAGE_OBSERVATION:
           return validateObservationPage(proposal, autoLink);
@@ -75,8 +69,8 @@ export default function TargetPage() {
       }
     });
 
-    if (validatedState.some((status, i) => status !== currentState[i])) {
-      updateAppContent1(validatedState);
+    if (nextState.some((status, i) => status !== currentState[i])) {
+      updateAppContent1(nextState);
     }
   };
 
