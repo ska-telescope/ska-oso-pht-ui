@@ -75,7 +75,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
-import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
+import fetchSensCalcPatches, { applySensCalcPatches } from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
@@ -198,13 +198,16 @@ export default function DataProduct({ data }: DataProductProps) {
 
     const applyUpdate = async () => {
       sensCalcDebounceTimerRef.current = null;
-      const proposalForCalc = latestProposalRef.current;
-      const targetObservation = await updateSensCalc(proposalForCalc, ob, dp);
+      const sensCalcPatches = await fetchSensCalcPatches(latestProposalRef.current, ob, dp);
 
       if (requestId !== latestSensCalcRequestIdRef.current) {
         return;
       }
 
+      const targetObservation = applySensCalcPatches(
+        latestProposalRef.current.targetObservation,
+        sensCalcPatches
+      );
       const mergedProposal = { ...latestProposalRef.current, targetObservation };
       persistProposal(mergedProposal);
     };
