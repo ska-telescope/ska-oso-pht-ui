@@ -9,7 +9,8 @@ import {
   validateObservationPage,
   validateSDPPage,
   validateLinkingPage,
-  validateCalibrationPage
+  validateCalibrationPage,
+  useIsObservationFrequencyOutOfRange
 } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import {
@@ -39,6 +40,7 @@ export default function TargetPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV, autoLink } = useOSDAccessors();
+  const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
   const getProposalState = () => application.content1 as number[];
 
   const setTheProposalState = () => {
@@ -52,12 +54,25 @@ export default function TargetPage() {
       }
 
       if (targetStatus !== STATUS_OK) {
-        return v;
+        switch (i) {
+          case PAGE_OBSERVATION:
+          case PAGE_DATA_PRODUCTS:
+          case PAGE_LINKING:
+          case PAGE_CALIBRATION:
+            return 1;
+          default:
+            return v;
+        }
       }
 
       switch (i) {
-        case PAGE_OBSERVATION:
-          return validateObservationPage(proposal, autoLink);
+        case PAGE_OBSERVATION: {
+          const obsStatus = validateObservationPage(proposal, autoLink);
+          const hasFrequencyIssue = (proposal.observations ?? []).some((obs) =>
+            isObservationFrequencyOutOfRange(obs)
+          );
+          return obsStatus === STATUS_OK && hasFrequencyIssue ? 1 : obsStatus;
+        }
         case PAGE_DATA_PRODUCTS:
           return validateSDPPage(proposal);
         case PAGE_LINKING:
