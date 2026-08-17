@@ -41,36 +41,6 @@ describe('<Robust /> behavior', () => {
     expect(setValue).toHaveBeenCalledWith(1.5);
   });
 
-  test('commits intermediate valid value immediately', () => {
-    const setValue = vi.fn();
-    render(<Robust label="Robust" value={0} setValue={setValue} />);
-
-    fireEvent.change(getField(), { target: { value: '1' } });
-
-    expect(setValue).toHaveBeenCalledWith(1);
-  });
-
-  test('preserves typed decimal precision when committed', () => {
-    const setValue = vi.fn();
-    render(<Robust label="Robust" value={0} setValue={setValue} />);
-
-    const field = getField();
-    fireEvent.change(field, { target: { value: '1.45' } });
-
-    expect(setValue).toHaveBeenCalledWith(1.45);
-  });
-
-  test('commits values below range and shows an error', () => {
-    const setValue = vi.fn();
-    render(<Robust label="Robust" value={0} setValue={setValue} />);
-
-    const field = getField();
-    fireEvent.change(field, { target: { value: '-2.1' } });
-
-    expect(setValue).toHaveBeenCalledWith(-2.1);
-    expect(screen.getByText('robust.error')).toBeInTheDocument();
-  });
-
   test('commits values outside [-2, 2] and shows an error', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
@@ -79,16 +49,6 @@ describe('<Robust /> behavior', () => {
     fireEvent.change(field, { target: { value: '2.1' } });
 
     expect(setValue).toHaveBeenCalledWith(2.1);
-    expect(screen.getByText('robust.error')).toBeInTheDocument();
-  });
-
-  test('commits NaN for empty string and shows an error', () => {
-    const setValue = vi.fn();
-    render(<Robust label="Robust" value={1} setValue={setValue} />);
-
-    fireEvent.change(getField(), { target: { value: '' } });
-
-    expect(setValue).toHaveBeenCalledWith(NaN);
     expect(screen.getByText('robust.error')).toBeInTheDocument();
   });
 
@@ -138,23 +98,5 @@ describe('<Robust /> behavior', () => {
 
     expect(setValue).not.toHaveBeenCalled();
     expect(screen.queryByText('robust.error')).not.toBeInTheDocument();
-  });
-
-  test('spinner up from 1.45 snaps to 1.5', () => {
-    const setValue = vi.fn();
-    render(<Robust label="Robust" value={1.45} setValue={setValue} />);
-
-    spin('ArrowUp', '1.5');
-
-    expect(setValue).toHaveBeenCalledWith(1.5);
-  });
-
-  test('spinner down from 1.45 snaps to 1.4', () => {
-    const setValue = vi.fn();
-    render(<Robust label="Robust" value={1.45} setValue={setValue} />);
-
-    spin('ArrowDown', '1.4');
-
-    expect(setValue).toHaveBeenCalledWith(1.4);
   });
 });

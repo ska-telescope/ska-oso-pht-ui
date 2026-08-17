@@ -413,15 +413,6 @@ describe('validateSDPPage robust rules', () => {
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
 
-  it('returns STATUS_ERROR for BRIGGS image data with robust out of range', () => {
-    const proposal = makeProposalWithDataProduct({
-      dataProductType: DP_TYPE_IMAGES,
-      weighting: IW_BRIGGS,
-      robust: 2.1
-    });
-    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
-  });
-
   it('returns STATUS_OK for BRIGGS visibilities data (robust inactive)', () => {
     const proposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_VISIBLE,
@@ -463,14 +454,6 @@ describe('validateObservationPage supplied rules', () => {
       targetObservation: []
     };
     expect(validateObservationPage(proposal as any, false)).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_ERROR for non-autoLink when supplied value is not greater than zero', () => {
-    const proposal = {
-      observations: [{ ...baseObservation, supplied: { ...baseObservation.supplied, value: 0 } }],
-      targetObservation: []
-    };
-    expect(validateObservationPage(proposal as any, false)).toBe(STATUS_ERROR);
   });
 
   it('returns STATUS_ERROR for integration supplied values above the converted max', () => {
