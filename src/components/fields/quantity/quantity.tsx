@@ -1,6 +1,9 @@
 import { Box, FormHelperText, TextField } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
+import type { ComponentProps } from 'react';
 import { useNumericInput } from '@/utils/hooks/useNumericInput';
+
+type DropDownProps = ComponentProps<typeof DropDown>;
 
 interface QuantityFieldProps {
   value: number;
@@ -20,7 +23,7 @@ interface QuantityFieldProps {
   onUnitsFocus?: () => void;
   units?: number;
   setUnits?: (unit: number) => void;
-  unitOptions?: DropDownProps;
+  unitOptions?: DropDownProps['options'];
   unitsTestId?: string;
 }
 
