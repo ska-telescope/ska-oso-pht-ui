@@ -9,8 +9,7 @@ import {
   validateObservationPage,
   validateSDPPage,
   validateLinkingPage,
-  validateCalibrationPage,
-  useIsObservationFrequencyOutOfRange
+  validateCalibrationPage
 } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import {
@@ -40,7 +39,6 @@ export default function TargetPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV, autoLink } = useOSDAccessors();
-  const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
   const getProposalState = () => application.content1 as number[];
 
   const setTheProposalState = () => {
@@ -48,45 +46,40 @@ export default function TargetPage() {
     const currentState = getProposalState();
     const targetStatus = validateTargetPage(proposal);
 
+    const observationStatus =
+      targetStatus === STATUS_OK
+        ? validateObservationPage(proposal, autoLink)
+        : currentState[PAGE_OBSERVATION];
+
+    const sdpStatus =
+      targetStatus === STATUS_OK ? validateSDPPage(proposal) : currentState[PAGE_DATA_PRODUCTS];
+
+    const linkingStatus =
+      targetStatus === STATUS_OK ? validateLinkingPage(proposal) : currentState[PAGE_LINKING];
+
+    const calibrationStatus =
+      targetStatus === STATUS_OK
+        ? validateCalibrationPage(proposal)
+        : currentState[PAGE_CALIBRATION];
+
     const nextState = currentState.map((v, i) => {
-      if (i === PAGE_TARGET) {
-        return targetStatus;
-      }
-
-      if (targetStatus !== STATUS_OK) {
-        switch (i) {
-          case PAGE_OBSERVATION:
-          case PAGE_DATA_PRODUCTS:
-          case PAGE_LINKING:
-          case PAGE_CALIBRATION:
-            return 1;
-          default:
-            return v;
-        }
-      }
-
       switch (i) {
-        case PAGE_OBSERVATION: {
-          const obsStatus = validateObservationPage(proposal, autoLink);
-          const hasFrequencyIssue = (proposal.observations ?? []).some((obs) =>
-            isObservationFrequencyOutOfRange(obs)
-          );
-          return obsStatus === STATUS_OK && hasFrequencyIssue ? 1 : obsStatus;
-        }
+        case PAGE_TARGET:
+          return targetStatus;
+        case PAGE_OBSERVATION:
+          return observationStatus;
         case PAGE_DATA_PRODUCTS:
-          return validateSDPPage(proposal);
+          return sdpStatus;
         case PAGE_LINKING:
-          return validateLinkingPage(proposal);
+          return linkingStatus;
         case PAGE_CALIBRATION:
-          return validateCalibrationPage(proposal);
+          return calibrationStatus;
         default:
           return v;
       }
     });
 
-    if (nextState.some((status, i) => status !== currentState[i])) {
-      updateAppContent1(nextState);
-    }
+    updateAppContent1(nextState);
   };
 
   React.useEffect(() => {
