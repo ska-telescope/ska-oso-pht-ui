@@ -36,7 +36,7 @@ export default function LastSaved({ lastUpdated }: LastSavedProps) {
   }
 
   return (
-    <Typography variant="caption" data-testid="lastSavedTestId">
+    <Typography variant="caption" data-testid="lastSavedTestId" sx={{ whiteSpace: 'pre-line' }}>
       {t('saveBtn.lastSaved', { value })}
     </Typography>
   );

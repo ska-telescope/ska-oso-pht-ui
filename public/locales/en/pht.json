@@ -1134,7 +1134,7 @@
   },
   "saveBtn": {
     "label": "Save",
-    "lastSaved": "Last saved: {{value}}",
+    "lastSaved": "Last saved:\n{{value}}",
     "success": "Saved",
     "tooltip": "Saves the proposal in the current state to the database"
   },
