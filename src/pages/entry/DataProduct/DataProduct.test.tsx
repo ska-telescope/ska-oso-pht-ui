@@ -2,7 +2,13 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import DataProduct from './DataProduct';
+
+const { mockFetchSensCalcPatches } = vi.hoisted(() => ({
+  mockFetchSensCalcPatches: vi.fn(async () => [])
+}));
 
 const wrapper = (component: React.ReactElement) => {
   return render(component);
@@ -25,9 +31,16 @@ let mockStoreReturn: any = {
 vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   storageObject: { useStore: () => mockStoreReturn }
 }));
+vi.mock('@/utils/update/sensCalc/updateSensCalc', () => ({
+  default: mockFetchSensCalcPatches,
+  applySensCalcPatches: (existing: any[] = []) => existing
+}));
 
 vi.mock('@/utils/helpers', () => ({ generateId: () => 'SDP000001' }));
-vi.mock('@/utils/present/present', () => ({ presentUnits: (val: string) => `unit(${val})` }));
+vi.mock('@/utils/present/present', () => ({
+  presentUnits: (val: string) => `unit(${val})`,
+  presentValue: (val: string) => val
+}));
 
 // Safe constants mock
 vi.mock('@/utils/constants.ts', async (importOriginal) => {
@@ -122,8 +135,47 @@ vi.mock('@/components/button/Add/Add', () => ({
 
 describe('DataProduct component', () => {
   const theme = createTheme();
+  const existingDataProduct = {
+    id: 'DP1',
+    observationId: 'OBS1',
+    data: { dataProductType: 1 }
+  } as DataProductSDPNew;
+
+  const renderExistingDataProduct = (sensCalc: SensCalcResults) => {
+    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: 'continuum',
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            }
+          ],
+          dataProductSDP: [existingDataProduct],
+          targetObservation: [
+            {
+              observationId: 'OBS1',
+              dataProductsSDPId: 'DP1',
+              targetId: 'T1',
+              sensCalc
+            }
+          ]
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={existingDataProduct} />
+      </ThemeProvider>
+    );
+  };
 
   beforeEach(() => {
+    mockFetchSensCalcPatches.mockClear();
     mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
     mockStoreReturn = {
       application: { content2: { observations: [], dataProductSDP: [] } },
@@ -209,6 +261,36 @@ describe('DataProduct component', () => {
     );
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
+  });
+
+  it('uses persisted sensitivity results without recalculating when the edit page loads', () => {
+    renderExistingDataProduct({
+      title: 'Target 1',
+      statusGUI: 0,
+      section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }]
+    });
+
+    expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
+    expect(mockFetchSensCalcPatches).not.toHaveBeenCalled();
+    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
+  });
+
+  it('immediately calculates missing sensitivity results when the edit page loads', () => {
+    renderExistingDataProduct({
+      title: 'Target 1',
+      statusGUI: 3,
+      error: ''
+    });
+
+    expect(mockFetchSensCalcPatches).toHaveBeenCalledWith(
+      expect.objectContaining({
+        observations: expect.any(Array),
+        dataProductSDP: expect.any(Array),
+        targetObservation: expect.any(Array)
+      }),
+      expect.objectContaining({ id: 'OBS1' }),
+      expect.objectContaining({ id: 'DP1' })
+    );
   });
 
   it('persists a data product when a valid observation is explicitly selected', async () => {

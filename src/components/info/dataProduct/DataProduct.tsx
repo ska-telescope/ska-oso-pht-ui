@@ -76,6 +76,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
       <RobustField
         label={t('robust.label')}
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.robust}
+        setValue={() => undefined}
         disabled
       />
     );

@@ -6,6 +6,7 @@ import {
   SDPSpectralData,
   SDPVisibilitiesContinuumData
 } from '../types/dataProduct';
+import { z } from 'zod';
 import Observation from '../types/observation';
 import {
   DETECTED_FILTER_BANK_VALUE,
@@ -14,13 +15,20 @@ import {
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  INTEGRATION_TIME_UNITS,
+  IW_BRIGGS,
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
+  SENSITIVITY_UNITS,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
+  SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+  SUPPLIED_TYPE_INTEGRATION,
+  SUPPLIED_TYPE_SENSITIVITY,
   TELESCOPE_LOW_NUM,
+  TIME_HOURS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -29,8 +37,14 @@ import {
   ZOOM_CHANNELS_DEFAULT_LOW
 } from './../constants';
 import Proposal from './../types/proposal';
-import { countWords, frequencyConversion, isFrequencyRangeOutOfBand } from '../helpers';
+import {
+  countWords,
+  frequencyConversion,
+  isFrequencyRangeOutOfBand,
+  timeConversion
+} from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
+import { robustSchema } from '../../components/fields/robust/Robust';
 import {
   channelsToBandwidthHz,
   getZoomResolutionHz,
@@ -38,6 +52,55 @@ import {
   isCentralFrequencyOnChannelGrid
 } from '../zoomWindow';
 import phtTranslations from '../../../public/locales/en/pht.json';
+
+type SuppliedValueInput = {
+  type?: number;
+  value?: number;
+  units?: number;
+};
+
+const numberLiteralEnum = <T extends number>(values: readonly T[]) => {
+  if (values.length === 0) {
+    throw new Error('Unit enum must define at least one allowed value.');
+  }
+  return z.union(
+    values.map((value) => z.literal(value)) as [z.ZodLiteral<T>, ...z.ZodLiteral<T>[]]
+  );
+};
+
+const integrationUnitSchema = numberLiteralEnum(INTEGRATION_TIME_UNITS.map((unit) => unit.id));
+const sensitivityUnitSchema = numberLiteralEnum(SENSITIVITY_UNITS.map((unit) => unit.id));
+
+const suppliedValueBaseSchema = z.object({
+  value: z.number().finite().gt(0)
+});
+const suppliedIntegrationSchema = suppliedValueBaseSchema
+  .extend({
+    type: z.literal(SUPPLIED_TYPE_INTEGRATION),
+    units: integrationUnitSchema
+  })
+  .superRefine((supplied, ctx) => {
+    const maxValue = timeConversion(
+      SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+      TIME_HOURS,
+      supplied.units
+    );
+    if (supplied.value > maxValue) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Supplied value must be <= ${maxValue} for selected unit.`
+      });
+    }
+  });
+const suppliedSensitivitySchema = suppliedValueBaseSchema.extend({
+  type: z.literal(SUPPLIED_TYPE_SENSITIVITY),
+  units: sensitivityUnitSchema
+});
+
+export const suppliedValueSchema = z.union([suppliedIntegrationSchema, suppliedSensitivitySchema]);
+
+export const isSuppliedValueValid = (supplied: SuppliedValueInput): boolean =>
+  suppliedValueSchema.safeParse(supplied).success;
 
 export const validateTitlePage = (proposal: Proposal) => {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
@@ -88,18 +151,29 @@ export const validateSciencePage = (proposal: Proposal) => {
 export const validateTargetPage = (proposal: Proposal) =>
   proposal?.targets?.length ? STATUS_OK : STATUS_ERROR;
 
+const hasValidSuppliedValue = (observation: Observation): boolean => {
+  const supplied = observation?.supplied;
+  return isSuppliedValueValid({
+    type: supplied?.type,
+    value: supplied?.value,
+    units: supplied?.units
+  });
+};
+
 export const validateObservationPage = (proposal: Proposal, autoLink: boolean) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasObservations = () =>
     Array.isArray(proposal?.observations) && proposal.observations.length > 0;
+  const hasSuppliedErrors = () =>
+    (proposal?.observations ?? []).some((obs) => !hasValidSuppliedValue(obs));
 
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
   if (autoLink) {
-    const count = hasTargetObservations() ? 2 : 0;
+    const count = hasTargetObservations() && !hasSuppliedErrors() ? 2 : 0;
     return result[count];
   } else {
-    const count = hasObservations() ? 2 : 0;
+    const count = hasObservations() && !hasSuppliedErrors() ? 2 : 0;
     return result[count];
   }
 };
@@ -247,11 +321,29 @@ export const checkDP = (proposal: Proposal): number => {
   return 0;
 };
 
+const isRobustInRange = (value: unknown): boolean =>
+  typeof value === 'number' && Number.isFinite(value) && robustSchema.safeParse(value).success;
+
+export const isDataProductRobustValid = (dataProduct: DataProductSDPNew): boolean => {
+  const data = dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined;
+  const dataProductType = Number(
+    (data as SDPImageContinuumData | undefined)?.dataProductType ?? DP_TYPE_IMAGES
+  );
+  const usesRobust = Number(data?.weighting) === IW_BRIGGS && dataProductType === DP_TYPE_IMAGES;
+  // Mirrors RobustField constraints in UI: robust is only active/required for BRIGGS image modes.
+  if (!usesRobust) return true;
+  return isRobustInRange(data?.robust);
+};
+
 export const validateSDPPage = (proposal: Proposal) => {
-  const result = [STATUS_ERROR, STATUS_OK];
-  const count =
-    Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
-  return result[count];
+  const dataProducts = proposal?.dataProductSDP;
+  if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
+    return STATUS_ERROR;
+  }
+  const hasInvalidRobust = dataProducts.some(
+    (dataProduct) => !isDataProductRobustValid(dataProduct)
+  );
+  return hasInvalidRobust ? STATUS_ERROR : STATUS_OK;
 };
 
 export const validateSRCPage = () => STATUS_OK;
