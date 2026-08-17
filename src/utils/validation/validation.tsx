@@ -20,6 +20,7 @@ import {
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
+  SENSITIVITY_UNITS,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
@@ -28,7 +29,6 @@ import {
   SUPPLIED_TYPE_SENSITIVITY,
   TELESCOPE_LOW_NUM,
   TIME_HOURS,
-  TIME_UNITS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -59,14 +59,17 @@ type SuppliedValueInput = {
   units?: number;
 };
 
-const SuppliedUnitsEnum = TIME_UNITS.reduce<Record<string, number>>((acc, unit) => {
-  acc[unit.value] = unit.id;
-  return acc;
-}, {});
-const IntegrationUnitsEnum = INTEGRATION_TIME_UNITS.reduce<Record<string, number>>((acc, unit) => {
-  acc[unit.value] = unit.id;
-  return acc;
-}, {});
+const numberLiteralEnum = <T extends number>(values: readonly T[]) => {
+  if (values.length === 0) {
+    throw new Error('Unit enum must define at least one allowed value.');
+  }
+  return z.union(
+    values.map((value) => z.literal(value)) as [z.ZodLiteral<T>, ...z.ZodLiteral<T>[]]
+  );
+};
+
+const integrationUnitSchema = numberLiteralEnum(INTEGRATION_TIME_UNITS.map((unit) => unit.id));
+const sensitivityUnitSchema = numberLiteralEnum(SENSITIVITY_UNITS.map((unit) => unit.id));
 
 const suppliedValueBaseSchema = z.object({
   value: z.number().finite().gt(0)
@@ -74,7 +77,7 @@ const suppliedValueBaseSchema = z.object({
 const suppliedIntegrationSchema = suppliedValueBaseSchema
   .extend({
     type: z.literal(SUPPLIED_TYPE_INTEGRATION),
-    units: z.nativeEnum(IntegrationUnitsEnum)
+    units: integrationUnitSchema
   })
   .superRefine((supplied, ctx) => {
     const maxValue = timeConversion(
@@ -91,7 +94,7 @@ const suppliedIntegrationSchema = suppliedValueBaseSchema
   });
 const suppliedSensitivitySchema = suppliedValueBaseSchema.extend({
   type: z.literal(SUPPLIED_TYPE_SENSITIVITY),
-  units: z.nativeEnum(SuppliedUnitsEnum)
+  units: sensitivityUnitSchema
 });
 
 export const suppliedValueSchema = z.union([suppliedIntegrationSchema, suppliedSensitivitySchema]);
