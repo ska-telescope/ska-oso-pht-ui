@@ -46,26 +46,30 @@ export default function TargetPage() {
     const currentState = getProposalState();
     const targetStatus = validateTargetPage(proposal);
 
-    if (targetStatus === STATUS_OK) {
-      const nextState = currentState.map((v, i) => {
-        switch (i) {
-          case PAGE_TARGET:
-            return targetStatus;
-          case PAGE_OBSERVATION:
-            return validateObservationPage(proposal, autoLink);
-          case PAGE_DATA_PRODUCTS:
-            return validateSDPPage(proposal);
-          case PAGE_LINKING:
-            return validateLinkingPage(proposal);
-          case PAGE_CALIBRATION:
-            return validateCalibrationPage(proposal);
-          default:
-            return v;
-        }
-      });
+    const nextState = currentState.map((v, i) => {
+      if (i === PAGE_TARGET) {
+        return targetStatus;
+      }
 
-      updateAppContent1(nextState);
-    }
+      if (targetStatus !== STATUS_OK) {
+        return v;
+      }
+
+      switch (i) {
+        case PAGE_OBSERVATION:
+          return validateObservationPage(proposal, autoLink);
+        case PAGE_DATA_PRODUCTS:
+          return validateSDPPage(proposal);
+        case PAGE_LINKING:
+          return validateLinkingPage(proposal);
+        case PAGE_CALIBRATION:
+          return validateCalibrationPage(proposal);
+        default:
+          return v;
+      }
+    });
+
+    updateAppContent1(nextState);
   };
 
   React.useEffect(() => {
