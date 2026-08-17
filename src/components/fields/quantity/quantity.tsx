@@ -1,4 +1,4 @@
-import { Box, TextField } from '@mui/material';
+import { Box, FormHelperText, TextField } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { useNumericInput } from '@/utils/hooks/useNumericInput';
 
@@ -56,38 +56,40 @@ export default function QuantityField({
   });
 
   return (
-    <Box pt={2} display="flex" alignItems="flex-end" gap={1}>
-      <TextField
-        variant="standard"
-        type="number"
-        fullWidth
-        helperText={error}
-        label={label}
-        value={text}
-        error={!!error}
-        onChange={(e) => handleChange(e.target.value)}
-        onFocus={onFocus}
-        slotProps={{
-          htmlInput: {
-            min: minValue,
-            max: maxValue,
-            step: step
-          }
-        }}
-        required={required}
-      />
-      <Box>
-        <DropDown
-          options={unitOptions}
-          testId={unitsTestId}
-          value={units}
-          disabled={disabled}
-          setValue={setUnits}
+    <Box pt={2}>
+      <Box display="flex" alignItems="flex-end" gap={1}>
+        <TextField
+          variant="standard"
+          type="number"
+          fullWidth
           label={label}
-          onFocus={onUnitsFocus}
-          InputProps={{ disableUnderline: true }}
+          value={text}
+          error={!!error}
+          onChange={(e) => handleChange(e.target.value)}
+          onFocus={onFocus}
+          slotProps={{
+            htmlInput: {
+              min: minValue,
+              max: maxValue,
+              step: step
+            }
+          }}
+          required={required}
         />
+        <Box>
+          <DropDown
+            options={unitOptions}
+            testId={unitsTestId}
+            value={units}
+            disabled={disabled}
+            setValue={setUnits}
+            label={label}
+            onFocus={onUnitsFocus}
+            InputProps={{ disableUnderline: true }}
+          />
+        </Box>
       </Box>
+      <FormHelperText error={!!error}>{error || ' '}</FormHelperText>
     </Box>
   );
 }
