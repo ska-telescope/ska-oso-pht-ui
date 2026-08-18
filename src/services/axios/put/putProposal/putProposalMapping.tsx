@@ -128,7 +128,7 @@ export const getReferenceCoordinate = (
   }
 };
 
-const getTargets = (targets: Target[]): TargetBackend[] => {
+export const getTargets = (targets: Target[]): TargetBackend[] => {
   const mappedTargets = targets.map((tar) => ({
     name: tar.name,
     target_id: tar.id,
