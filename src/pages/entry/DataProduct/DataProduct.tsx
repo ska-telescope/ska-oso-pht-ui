@@ -189,6 +189,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [rotationMeasure, setRotationMeasure] = React.useState(1);
 
   const [polarisationsError, setPolarisationsError] = React.useState('');
+  const hasInitializedDataProduct = React.useRef(false);
 
   const maxObservationsReached = () =>
     baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
@@ -470,6 +471,9 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const updateStorageProposal = () => {
+    if (!hasInitializedDataProduct.current) {
+      return;
+    }
     if (osdCyclePolicy?.maxDataProducts === 1) {
       isEdit() ? updateToProposal() : addToProposal();
     }
@@ -581,6 +585,7 @@ export default function DataProduct({ data }: DataProductProps) {
       }
       setId(generateId(PAGE_PREFIX, 6));
     }
+    hasInitializedDataProduct.current = true;
   }, []);
 
   React.useEffect(() => {
