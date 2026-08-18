@@ -73,7 +73,7 @@ import {
 } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 import {
   CalibrationStrategy,

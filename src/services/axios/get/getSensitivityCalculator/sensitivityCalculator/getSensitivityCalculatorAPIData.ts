@@ -1,4 +1,3 @@
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import { Telescope } from '@ska-telescope/ska-gui-local-storage';
 import Observation from '../../../../../utils/types/observation';
 import Target from '../../../../../utils/types/target';
