@@ -111,6 +111,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const latestProposalRef = React.useRef(getProposal());
+  const hasInitializedDataProduct = React.useRef(false);
   const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestSensCalcRequestIdRef = React.useRef(0);
 
@@ -511,8 +512,15 @@ export default function DataProduct({ data }: DataProductProps) {
       return;
     }
     const loaded = loadedDataProduct.current;
+    const existingDataProduct = (proposal.dataProductSDP ?? []).find(
+      (dp) => dp.id === newDataProduct.id && dp.observationId === newDataProduct.observationId
+    );
     loadedDataProduct.current = null;
-    if (loaded?.id === newDataProduct.id && loaded.observationId === newDataProduct.observationId) {
+    if (
+      loaded?.id === newDataProduct.id &&
+      loaded.observationId === newDataProduct.observationId &&
+      existingDataProduct
+    ) {
       if (!hasSensCalcResults(proposal, newDataProduct.observationId)) {
         scheduleLocalSensCalcUpdate(observation!, newDataProduct, 0);
       }
