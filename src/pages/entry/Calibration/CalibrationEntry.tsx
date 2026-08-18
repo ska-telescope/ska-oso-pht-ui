@@ -15,9 +15,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import {
   CalibrationStrategy,
-  CalibrationStrategyBackend,
   Calibrator,
-  FluxCalBackend
 } from '@/utils/types/calibrationStrategy';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
@@ -25,6 +23,8 @@ import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibra
 import Target from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
+import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
+import TargetObservation from '@utils/types/targetObservation.tsx';
 
 const GAP = 4;
 const BACK_PAGE = PAGE_CALIBRATION;
@@ -54,31 +54,12 @@ function calibratorArrayToSet(list: Calibrator[]): CalibratorSet {
   };
 }
 
-function calibratorToFluxCal(calibrator: Calibrator | null): FluxCalBackend | null {
-  if (!calibrator) {
-    return null;
-  }
-  return {
-    kind: 'flux',
-    name: calibrator.name
-  };
-}
-
-function calibratorSetToFluxCalList(calibrators: CalibratorSet): FluxCalBackend[] {
-  if (!calibrators.beforeEachScan || !calibrators.afterEachScan) {
-    throw new Error('error.CALIBRATION_MISSING_BEFORE_OR_AFTER');
-  }
-  return [
-    calibratorToFluxCal(calibrators.beforeEachScan) as FluxCalBackend,
-    calibratorToFluxCal(calibrators.afterEachScan) as FluxCalBackend
-  ];
-}
-
 export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const { t } = useScopedTranslation();
   const locationProperties = useLocation();
   const loggedIn = isLoggedIn();
   const { observatoryConstants, osdCyclePolicy } = useOSDAccessors();
+  const authAxiosClient = useAxiosAuthClient();
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
   const PAGE = isEdit() ? PAGE_CALIBRATION_UPDATE : PAGE_CALIBRATION_ADD;
@@ -109,20 +90,50 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     setNotes(inRec.notes ? inRec.notes : '');
   };
 
-  const calibrationOut = (): CalibrationStrategyBackend=> {
-    return {
-      observatory_defined: observatoryDefined,
-      calibration_id: id,
-      observation_set_ref: observationIdRef,
-      calibrators: calibratorSetToFluxCalList(calibrators),
-      notes: notes
-    };
+const calibrationOut = (): CalibrationStrategy => {
+  return {
+    observatoryDefined: observatoryDefined,
+    id: id,
+    observationIdRef: observationIdRef,
+    calibrators: calibratorSetToCalibratorList(calibrators), // Calibrator[], not FluxCalBackend[]
+    notes: notes
   };
+};
+
+function calibratorSetToCalibratorList(calibrators: CalibratorSet): Calibrator[] {
+  if (!calibrators.beforeEachScan || !calibrators.afterEachScan) {
+    throw new Error('error.CALIBRATION_MISSING_BEFORE_OR_AFTER');
+  }
+  return [calibrators.beforeEachScan, calibrators.afterEachScan];
+}
 
   /**************************************************************/
 
-async function getCalibratorData() {
-  const response = await GetCalibratorList();
+  const getTargetObservation = (): TargetObservation | undefined => {
+  const proposal = getProposal();
+  if (!proposal?.targetObservation || proposal.targetObservation.length === 0) {
+    return undefined;
+  }
+  return proposal.targetObservation.find(to => to.observationId === observationIdRef);
+};
+
+const getTargetFromProposal = (targetObservation: TargetObservation): Target | undefined => {
+  const proposal = getProposal();
+  return proposal?.targets?.find(t => t.id === targetObservation.targetId);
+};
+
+const getObservationFromProposal = (targetObservation: TargetObservation): Observation | undefined => {
+  const proposal = getProposal();
+  return proposal?.observations?.find(o => o.id === targetObservation.observationId);
+};
+
+async function getCalibratorData(target: Target | undefined, observation: Observation | undefined) {
+  if (!target || !observation) {
+    return false;
+  }
+
+  const response = await GetCalibratorList(authAxiosClient, observation, target);
+
   if (typeof response === 'string') {
     setAxiosViewError(response);
     return false;
@@ -143,7 +154,6 @@ async function getCalibratorData() {
     if (isEdit()) {
       calibrationIn(data ? data : locationProperties.state);
     }
-    getCalibratorData();
   }, []);
 
   React.useEffect(() => {
@@ -152,14 +162,21 @@ async function getCalibratorData() {
 
   // Extend for Proposals when there will be more than one proposal and target as an option
   React.useEffect(() => {
-    const proposal = getProposal();
-    const found = proposal?.targetObservation && proposal.targetObservation.length > 0;
-    const targetId = (found && proposal?.targetObservation?.[0].targetId) ?? null;
-    const target = proposal?.targets?.find((tar) => tar.id === targetId) ?? undefined;
-    setTarget(target);
-    setObservation(found ? proposal?.observations?.[0] : undefined);
-  }, [observationIdRef]);
+    const targetObservation = getTargetObservation();
+    if (!targetObservation) {
+      setTarget(undefined);
+      setObservation(undefined);
+      return;
+    }
 
+    const target = getTargetFromProposal(targetObservation);
+    const observation = getObservationFromProposal(targetObservation);
+
+    setTarget(target);
+    setObservation(observation);
+
+    getCalibratorData(target, observation);
+  }, [observationIdRef]);
   /**************************************************************/
 
   function updateCalibrationOnProposal() {
@@ -216,10 +233,10 @@ async function getCalibratorData() {
     return fieldWrapper(
       <TextEntry
         testId="duration"
-        value={cal ? cal.durationSeconds : 0}
+        value={cal ? cal.durationSeconds / 60. : 0} // this is so we display the duration in minutes
         disabled={true}
         label={t(inLabel)}
-        suffix={t('calibrator.seconds')}
+        suffix={t('calibrator.minutes')}
       />
     );
   };
