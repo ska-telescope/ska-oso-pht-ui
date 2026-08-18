@@ -346,6 +346,7 @@ describe('DataProduct component', () => {
   });
 
   it('loads and saves legacy string bit depths in edit mode', async () => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
     const updateAppContent2 = vi.fn((proposal: any) => {
       mockStoreReturn.application.content2 = proposal;
     });
@@ -386,8 +387,6 @@ describe('DataProduct component', () => {
         String(Number(legacyBitDepth))
       );
     });
-
-    fireEvent.click(screen.getByTestId('addDataProductButtonEntry'));
 
     await waitFor(() => {
       expect(updateAppContent2).toHaveBeenCalled();
