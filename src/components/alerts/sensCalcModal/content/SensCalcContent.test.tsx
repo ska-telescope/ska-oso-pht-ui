@@ -20,11 +20,16 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<SensCalcModalSingle />', () => {
+  test('renders the no-data state when results have not been calculated', () => {
+    wrapper(<SensCalcContent />);
+
+    expect(screen.getByText('sensitivityCalculatorResults.noData')).toBeInTheDocument();
+  });
+
   test('renders correctly ( INITIAL )', () => {
     wrapper(
       <SensCalcContent
         data={{
-          id: 0,
           title: '',
           statusGUI: STATUS_INITIAL,
           error: undefined,
@@ -41,7 +46,6 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          id: 0,
           title: 'm1',
           statusGUI: 0,
           error: undefined,
@@ -101,7 +105,6 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          id: 0,
           title: 'm2',
           statusGUI: 0,
           error: undefined,
@@ -153,7 +156,6 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          id: 0,
           title: 'm2',
           statusGUI: 0,
           error: undefined,
@@ -214,7 +216,6 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          id: 0,
           title: '',
           statusGUI: STATUS_ERROR,
           error: 'SOME ERROR',

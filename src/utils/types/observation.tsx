@@ -6,7 +6,6 @@ type Observation = {
   id: string;
   telescope: number;
   subarray: string;
-  linked: string;
   type: string;
   observingBand: string;
   weather?: number; // only for MID

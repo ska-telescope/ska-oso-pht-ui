@@ -13,7 +13,7 @@ import GroupObservation from '@utils/types/groupObservation.tsx';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails.tsx';
 import { ValueUnitPair } from '@utils/types/valueUnitPair.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
+import { ResultsDetailsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
@@ -42,7 +42,8 @@ import {
   VELOCITY_TYPE,
   TYPE_ZOOM_LONG,
   SA_AA4,
-  REFERENCE_COORDINATE_TYPE_SSO
+  REFERENCE_COORDINATE_TYPE_SSO,
+  STATUS_OK
 } from '@utils/constants.ts';
 import {
   DataProductSDPContinuumVisibilitiesBackend,
@@ -125,7 +126,7 @@ export const getReferenceCoordinate = (
 const getTargets = (targets: Target[]): TargetBackend[] => {
   const mappedTargets = targets.map((tar) => ({
     name: tar.name,
-    target_id: tar.name,
+    target_id: tar.id,
     reference_coordinate: getReferenceCoordinate(tar),
     radial_velocity: {
       quantity: {
@@ -583,104 +584,73 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): string
 const getSpectralSection = (obsType: string) =>
   isContinuum(obsType) || isPST(obsType) ? 'section2' : 'section1';
 
-export const getDataProductRef = (
-  incTarObs: TargetObservation,
-  incDataProductSDP: DataProductSDPNew[]
-) => {
-  return String(
-    incTarObs.dataProductsSDPId ??
-      incDataProductSDP.find((dp) => dp.observationId === incTarObs.observationId)?.id
-  );
-};
-
-const getResults = (
-  incTargetObservations: TargetObservation[],
-  incObs: Observation[],
-  incDataProductSDP: DataProductSDPNew[],
-  incTargets: Target[]
-) => {
+const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
   const resultsArr = [];
-  if (incTargetObservations) {
-    for (const tarObs of incTargetObservations) {
-      // A target-observation that hasn't been (re)calculated yet - e.g. a freshly cloned
-      // proposal, whose links are deliberately reset to this shape with no section3 - has no
-      // sensitivity result to report at all, not just an error one. Skip it rather than reading
-      // section3[0] unguarded, which would throw on the missing array.
-      if (tarObs.sensCalc?.error || !tarObs.sensCalc?.section3?.[0]) {
-        continue;
-      }
+  for (const tarObs of incTargetObservations) {
+    // refs always populate; result/noise blocks are null when there's no sensCalc (SSO, PST)
+    const result: ResultsDetailsBackend = {
+      observation_set_ref: tarObs.observationId,
+      data_product_ref: tarObs.dataProductsSDPId,
+      target_ref: tarObs.targetId,
+      result: null,
+      continuum_confusion_noise: null,
+      spectral_confusion_noise: null,
+      synthesized_beam_size: null
+    };
 
-      const hasSensCalc = !!tarObs.sensCalc;
+    const hasSensCalc = tarObs.sensCalc != undefined && tarObs.sensCalc.statusGUI == STATUS_OK;
+
+    if (hasSensCalc) {
       const obsType = getObsType(tarObs, incObs);
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
-        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+        tarObs.sensCalc!.section3?.[0]?.field === 'sensitivity'
+          ? 'sensitivity'
+          : 'integration_time';
 
-      // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
-      const result: SensCalcResultsBackend = {
-        observation_set_ref: tarObs.observationId,
-        data_product_ref: tarObs.dataProductsSDPId ?? getDataProductRef(tarObs, incDataProductSDP),
-        target_ref: tarObs.sensCalc?.title ?? target?.name, // see note below
-        result: null,
-        continuum_confusion_noise: null,
-        spectral_confusion_noise: null,
-        synthesized_beam_size: null
+      const suppliedRelatedFields =
+        suppliedType === 'sensitivity'
+          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
+          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+
+      result.result = {
+        supplied_type: suppliedType,
+        ...suppliedRelatedFields
       };
 
-      if (hasSensCalc) {
-        const suppliedType =
-          tarObs.sensCalc.section3?.[0]?.field === 'sensitivity'
-            ? 'sensitivity'
-            : 'integration_time';
+      result.continuum_confusion_noise = {
+        value:
+          isContinuum(obsType) || isPST(obsType)
+            ? Number(
+                tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.value
+              )
+            : 0,
+        unit:
+          isContinuum(obsType) || isPST(obsType)
+            ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
+            : ''
+      };
 
-        const suppliedRelatedFields =
-          suppliedType === 'sensitivity'
-            ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
-            : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+      result.synthesized_beam_size = {
+        spectral: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
+          ?.value,
+        continuum:
+          isContinuum(obsType) || isPST(obsType)
+            ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
+            : '',
+        unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
+          ?.units
+      };
 
-        result.result = {
-          supplied_type: suppliedType,
-          ...suppliedRelatedFields
-        };
-
-        result.continuum_confusion_noise = {
-          value:
-            isContinuum(obsType) || isPST(obsType)
-              ? Number(
-                  tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')
-                    ?.value
-                )
-              : 0,
-          unit:
-            isContinuum(obsType) || isPST(obsType)
-              ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
-              : ''
-        };
-
-        result.synthesized_beam_size = {
-          spectral: tarObs.sensCalc[spectralSection]?.find(
-            (o) => o.field === 'spectralSynthBeamSize'
-          )?.value,
-          continuum:
-            isContinuum(obsType) || isPST(obsType)
-              ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
-              : '',
-          unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
-            ?.units
-        };
-
-        result.spectral_confusion_noise = {
-          value: Number(
-            tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
-              ?.value
-          ),
-          unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
-            ?.units
-        };
-      }
-
-      resultsArr.push(result);
+      result.spectral_confusion_noise = {
+        value: Number(
+          tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')?.value
+        ),
+        unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
+          ?.units
+      };
     }
+    resultsArr.push(result);
   }
   return resultsArr;
 };
@@ -754,9 +724,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
           : [],
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
-        proposal.observations as Observation[],
-        proposal.dataProductSDP as DataProductSDPNew[],
-        proposal.targets as Target[]
+        proposal.observations as Observation[]
       )
     }
   };

@@ -5,7 +5,7 @@ import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-com
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
-import { leadZero, trailingZeros } from '@utils/helpers.ts';
+import { generateTargetId, leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import CancelButton from '@/components/button/Cancel/Cancel';
@@ -68,7 +68,7 @@ export default function TargetEntry({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [id, setId] = React.useState(0);
+  const [id, setId] = React.useState('');
   const [name, setName] = React.useState('');
   const [coord1, setCoord1] = React.useState('');
   const [coord2, setCoord2] = React.useState('');
@@ -234,7 +234,7 @@ export default function TargetEntry({
     const incomingKind = target?.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value;
     const incomingIsICRS = incomingKind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     setReferenceCoordinates(incomingKind);
-    setId(target?.id ?? 0);
+    setId(target.id);
     setName(target?.name ?? '');
     setCoord1(incomingIsICRS ? (target.raStr ?? '') : target.l != null ? String(target.l) : '');
     setCoord2(incomingIsICRS ? (target.decStr ?? '') : target.b != null ? String(target.b) : '');
@@ -314,16 +314,9 @@ export default function TargetEntry({
     };
 
     const AddTheTarget = () => {
-      const highest = getProposal()?.targets?.length
-        ? getProposal()?.targets?.reduce((prev, current) =>
-            prev && prev.id > current.id ? prev : current
-          )
-        : null;
-      const highestId = highest ? highest.id : 0;
-
       const baseTarget = {
         kind: referenceCoordinates,
-        id: highestId + 1,
+        id: generateTargetId(),
         name: name ?? '',
         velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT
       };
