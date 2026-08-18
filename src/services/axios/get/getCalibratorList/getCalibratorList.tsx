@@ -1,9 +1,14 @@
-// import {
-//     OSO_SERVICES_CALIBRATORS_PATH,
-//   SKA_OSO_SERVICES_URL,
-//   USE_LOCAL_DATA
-// } from '@utils/constants.ts';
-// import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
+import {
+  OSO_SERVICES_CALIBRATORS_PATH,
+  SKA_OSO_SERVICES_URL,
+  SUPPLIED_TYPE_INTEGRATION,
+  TELESCOPE_LOW_BACKEND_MAPPING,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_BACKEND_MAPPING,
+  TIME_MS,
+  USE_LOCAL_DATA
+} from '@utils/constants.ts';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
 import { MockCalibratorBackendList } from './mockCalibratorListBackend.tsx';
 import {
   CalibrationIntent,
@@ -11,6 +16,9 @@ import {
   CalibratorBackend,
   SelectionStrategy
 } from '@/utils/types/calibrationStrategy.tsx';
+import Target from '@utils/types/target.tsx';
+import Observation from '@utils/types/observation.tsx';
+import {timeConversion } from '@utils/helpers.ts';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -42,15 +50,35 @@ export function GetMockCalibratorList(): Calibrator[] {
   return calibratorList;
 }
 
-async function GetCalibratorList(): Promise<Calibrator[] | string> {
-  // authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  // if (USE_LOCAL_DATA) {
-  return GetMockCalibratorList(); // mocking observatory defined calibrators until new endpoint is ready
-  // }
+async function GetCalibratorList(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  observation: Observation,
+  target: Target,
+): Promise<Calibrator[] | string> {
 
-  /* try {
-    const URL_PATH = `${OSO_SERVICES_CALIBRATORS_PATH}/`;
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+  if (observation.supplied.type !== SUPPLIED_TYPE_INTEGRATION) {
+    return 'error.CALIBRATOR_REQUIRES_INTEGRATION_TIME';
+  }
+
+  const telescopeBackendString =
+    observation.telescope === TELESCOPE_LOW_NUM
+      ? TELESCOPE_LOW_BACKEND_MAPPING
+      : TELESCOPE_MID_BACKEND_MAPPING;
+
+  const scanDurationMs = timeConversion(observation.supplied.value, observation.supplied.units, TIME_MS);
+
+  try {
+    const params = new URLSearchParams({
+      telescope: telescopeBackendString,
+      scan_duration_ms: String(scanDurationMs),
+      strategy: DEFAULT_SELECTION_STRATEGY,
+    });
+    const URL_PATH = `${OSO_SERVICES_CALIBRATORS_PATH}?${params.toString()}`;
+
+    const result = await authAxiosClient.post(
+      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
+      target
+    );
 
     if (!result || !result.data || typeof result.data !== 'object') {
       return 'error.API_UNKNOWN_ERROR';
@@ -61,7 +89,7 @@ async function GetCalibratorList(): Promise<Calibrator[] | string> {
       return e.message;
     }
     return 'error.API_UNKNOWN_ERROR';
-  } */
+  }
 }
 
 export default GetCalibratorList;
