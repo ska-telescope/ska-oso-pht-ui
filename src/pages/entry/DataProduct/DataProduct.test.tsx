@@ -215,7 +215,7 @@ describe('DataProduct component', () => {
 
     const bitDepthField = screen.getByTestId('BitDepthField');
     expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8,16]');
-    expect(bitDepthField).toHaveAttribute('data-value', '16');
+    expect(bitDepthField).toHaveAttribute('data-value', '8');
   });
 
   it('uses the correct bit-depth options and default for PST detected-filterbank mode', () => {

@@ -249,7 +249,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const isFlowThrough = () => getResolvedPstMode() === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getResolvedPstMode() === DETECTED_FILTER_BANK_VALUE;
   const isPulsarTiming = () => getResolvedPstMode() === PULSAR_TIMING_VALUE;
-  const getPstBitDepthDefault = () => (isFlowThrough() ? 16 : 8);
+  const getPstBitDepthDefault = () => 8;
   const getDefaultBitDepth = () =>
     getObservation()?.type === TYPE_PST ? getPstBitDepthDefault() : BIT_DEPTH_DEFAULT;
 
