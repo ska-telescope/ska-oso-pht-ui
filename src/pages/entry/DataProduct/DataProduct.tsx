@@ -19,6 +19,7 @@ import PolarisationsField from '@/components/fields/polarisations/polarisations'
 import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
 import {
   BAND_LOW_STR,
+  BIT_DEPTH,
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
@@ -128,6 +129,11 @@ export default function DataProduct({ data }: DataProductProps) {
     label: value,
     lookup: String(value),
     value
+  }));
+  const defaultBitDepthOptions = BIT_DEPTH.map((el) => ({
+    label: el.value,
+    lookup: String(el.value),
+    value: el.value
   }));
   const [imageSizeValue, setImageSizeValue] = React.useState(IMAGE_SIZE_DEFAULT);
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
@@ -759,11 +765,7 @@ export default function DataProduct({ data }: DataProductProps) {
             ? isFlowThrough()
               ? pstFlowThroughBitDepthOptions
               : pstDedicatedFilterbankBitDepthOptions
-            : BIT_DEPTH.map((el) => ({
-                label: el.value,
-                lookup: String(el.value),
-                value: el.value
-              }))
+            : defaultBitDepthOptions
         }
       />
     );
