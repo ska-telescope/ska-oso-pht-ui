@@ -7,30 +7,25 @@ const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-tecreviewer-1-1994146425';
 
 export const standardUser = {
   name: 'Cypress Default User',
-  group: '',
-  token: 'default-token'
+  group: ''
 };
 
 export const reviewerScience = {
   name: 'Cypress Science Reviewer',
-  group: OPS_REVIEWER_SCIENCE,
-  token: 'science-token'
+  group: OPS_REVIEWER_SCIENCE
 };
 
 export const reviewerTechnical = {
   name: 'Cypress Technical Reviewer',
-  group: EXT_REVIEWER_TECHNICAL,
-  token: 'technical-token'
+  group: EXT_REVIEWER_TECHNICAL
 };
 
 export const reviewerChairman = {
   name: 'Cypress Review Chairman',
-  group: OPS_REVIEW_CHAIR,
-  token: 'chairman-token'
+  group: OPS_REVIEW_CHAIR
 };
 
 export const reviewerAdmin = {
   name: 'Cypress Review Administrator',
-  group: OPS_PROPOSAL_ADMIN,
-  token: 'admin-token'
+  group: OPS_PROPOSAL_ADMIN
 };

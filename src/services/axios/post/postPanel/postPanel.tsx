@@ -1,4 +1,4 @@
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient, { refreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
 import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@/utils/constants';
@@ -51,6 +51,9 @@ async function PostPanel(
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
+    // The backend just granted this user chair/admin group membership on the new panel
+    // (create_membership) - refresh so the next request's token actually reflects it.
+    await refreshAuthToken();
     return result.data as string;
   } catch (e) {
     if (e instanceof Error) {

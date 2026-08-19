@@ -7,7 +7,7 @@ import {
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import useAxiosAuthClient, { refreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
 import { mapping } from '../../get/getProposal/getProposal.tsx';
 import MappingPutProposal from '../../put/putProposal/putProposalMapping.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
@@ -60,7 +60,13 @@ async function PostProposal(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
     );
-    return !result || !result?.data ? { error: 'error.API_UNKNOWN_ERROR' } : mapping(result.data);
+    if (!result || !result?.data) {
+      return { error: 'error.API_UNKNOWN_ERROR' };
+    }
+    // The backend just granted this user admin group membership on the new proposal
+    // (create_membership) - refresh so the next request's token actually reflects it.
+    await refreshAuthToken();
+    return mapping(result.data);
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

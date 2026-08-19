@@ -30,6 +30,30 @@ type MsalInstance = ReturnType<typeof useMsal>['instance'];
 // cancelling every other in-flight request. Only the first should trigger the redirect.
 let loginRedirectTriggered = false;
 
+// Set by useAxiosAuthClient (the only place with access to the MSAL instance/account) so that
+// non-hook callers - e.g. postProposal.tsx, postPanel.tsx - can still trigger a refresh via the
+// plain refreshAuthToken() export below, the same way setLocalTokenProvider lets them reach
+// getLocalToken without a hook.
+let msalForceRefresh: (() => Promise<void>) | null = null;
+
+// Call after any action known to grant new group membership server-side (e.g. creating a
+// proposal or panel, which calls ska-oso-services' create_membership) - acquireTokenSilent
+// normally serves a cached token until it's near expiry, so without this the next request would
+// carry the *pre-creation* token and its stale `groups` claim, and the new SecurityService
+// permission checks (which read groups straight off the token, not a live lookup) would reject
+// actions on the thing the user just created. Best-effort: on failure the caller proceeds with
+// whatever token it already had, same as before this existed.
+export const refreshAuthToken = async (): Promise<void> => {
+  if (!msalForceRefresh) {
+    return;
+  }
+  try {
+    await msalForceRefresh();
+  } catch (error) {
+    console.warn('[axiosAuthClient] refreshAuthToken failed, continuing with existing token:', error);
+  }
+};
+
 export const mapAxiosError = (error: AxiosError): Error => {
   if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
     return new Error('Request timed out. Please try again.');
@@ -113,6 +137,16 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
       return tokenResponse.accessToken;
     });
   }
+
+  // No-ops when there's no real MSAL account (e.g. a headless Cypress run using the localStorage
+  // token bypass instead) - see tests/cypress/e2e/common/liveAuth.js's refreshLiveToken for the
+  // equivalent used there, since there's no MSAL session for forceRefresh to act on in that case.
+  msalForceRefresh = async () => {
+    const account = instance.getAllAccounts()?.[0];
+    if (account) {
+      await instance.acquireTokenSilent({ ...loginRequest, account, forceRefresh: true });
+    }
+  };
 
   const axiosClient = axios.create({
     baseURL,

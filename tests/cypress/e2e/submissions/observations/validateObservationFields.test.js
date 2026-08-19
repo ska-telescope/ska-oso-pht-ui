@@ -12,8 +12,7 @@ import {
   verifyOsdDataProposalClose,
   beginScienceIdeaSession,
   selectScienceVerificationCycle,
-  completeScienceIdeaCreation,
-  isLiveMode
+  completeScienceIdeaCreation
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -23,19 +22,10 @@ describe('SV Flow: Validate Observation Fields', () => {
 
     //Create autoLink submission
     beginScienceIdeaSession(standardUser);
-    // The expected values necessarily differ between modes - the stub fixture's SV cycle isn't
-    // the same cycle a real backend has actually seeded (see clickCycleSelectionSV's comment).
-    if (isLiveMode()) {
-      verifyOsdDataCycleID('TEST_SKAO_2027_1_ID');
-      verifyOsdDataCycleDescription('TEST Low AA2 Science Verification');
-      verifyOsdDataProposalOpen('2026-03-27T12:00:00.000Z');
-      verifyOsdDataProposalClose('2027-04-01T15:00:00.000Z');
-    } else {
-      verifyOsdDataCycleID('SKAO_2027_1_ID');
-      verifyOsdDataCycleDescription('Low AA2 Science Verification'); //verify OSD data
-      verifyOsdDataProposalOpen('20260327T12:00:00.000Z'); //verify OSD data
-      verifyOsdDataProposalClose('20260512T15:00:00.000Z'); //verify OSD data
-    }
+    verifyOsdDataCycleID('TEST_SKAO_2027_1_ID');
+    verifyOsdDataCycleDescription('TEST Low AA2 Science Verification');
+    verifyOsdDataProposalOpen('2026-03-27T12:00:00.000Z');
+    verifyOsdDataProposalClose('2027-04-01T15:00:00.000Z');
     selectScienceVerificationCycle();
     completeScienceIdeaCreation();
     addM2TargetAndAutoLink('Continuum');

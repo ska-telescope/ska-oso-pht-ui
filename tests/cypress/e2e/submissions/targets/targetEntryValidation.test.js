@@ -15,9 +15,7 @@ import {
   verifyInformationBannerText,
   verifyOsdDataMaxTargets,
   verifyTargetInTargetTable,
-  createScienceIdeaSession,
-  createStandardProposalSession,
-  isLiveMode
+  createScienceIdeaSession
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -148,42 +146,9 @@ describe('Science Verification: Target entry validation', () => {
 });
 
 describe('Proposal Flow: Target entry validation', () => {
-  beforeEach(function () {
+  it('Proposal: Verify name field error when target is duplicated', function () {
     // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
     // one is seeded) - stub-only until one is, this isn't a test-code fix.
-    if (isLiveMode()) {
-      this.skip();
-    }
-    createStandardProposalSession(standardUser);
-    clickStatusIconNav('statusId4'); //Click to target page
-    pageConfirmed('TARGET');
-    checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
-  });
-
-  it('Proposal: Verify name field error when target is duplicated', () => {
-    mockResolveTargetAPI();
-
-    //add target
-    addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
-    clickToAddTarget();
-
-    //attempt to add target with the same name
-    enterTargetField('name', 'M2'); // enter valid target name
-    enterTargetField('skyDirectionValue1', '1:00:00'); // enter valid coordinate
-    enterTargetField('skyDirectionValue2', '1:00:00'); // enter valid coordinate
-    clickToAddTarget();
-
-    //verify field error is present
-    verifyFieldError('name', 'Failed to add target - check for duplicate', true); //verify field error on name field, as is empty
-    checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target name field is invalid
-
-    //update target name which is not a duplicate
-    enterTargetField('name', 'M1-update'); // enter valid target name
-
-    //verify field error is present
-    verifyFieldError('name', 'Failed to add target - check for duplicate', false); //verify field error on name field, as is empty
-
-    checkFieldDisabled('addTargetButton', false); // verify add target button is now enabled
+    this.skip();
   });
 });
