@@ -35,6 +35,7 @@ import {
   IMAGE_SIZE_UNIT_DEFAULT,
   IW_BRIGGS,
   IW_UNIFORM,
+  IW_NATURAL,
   NAV,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DATA_PRODUCTS,
@@ -148,7 +149,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [timeAveraging, setTimeAveraging] = React.useState(TIME_AVERAGING_DEFAULT);
   const [frequencyAveraging, setFrequencyAveraging] = React.useState(FREQUENCY_AVERAGING_DEFAULT);
 
-  const [weighting, setWeighting] = React.useState(IW_UNIFORM);
+  const [weighting, setWeighting] = React.useState(IW_BRIGGS);
   const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
 
   // channelsOutMax needs to be usable both as the initial value below and later as the field's
@@ -390,7 +391,7 @@ export default function DataProduct({ data }: DataProductProps) {
     isLow()
       ? setTaperLowValue(data?.taperValue ?? TAPER_DEFAULT)
       : setTaperMidValue(data?.taperValue ?? TAPER_DEFAULT);
-    setWeighting(data?.weighting ?? IW_UNIFORM);
+    setWeighting(data?.weighting ?? IW_BRIGGS);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
     setChannelsOut(data?.channelsOut ?? channelsOutMax());

@@ -4,6 +4,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
+import {
+  IW_BRIGGS,
+  TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_ZOOM
+} from '@/utils/constants.ts';
 import DataProduct from './DataProduct';
 
 const { mockFetchSensCalcPatches } = vi.hoisted(() => ({
@@ -48,13 +54,6 @@ vi.mock('@/utils/constants.ts', async (importOriginal) => {
   return {
     ...actual,
     PAGE_DATA_PRODUCTS: 'PAGE_DATA_PRODUCTS',
-    TYPE_CONTINUUM: 'continuum',
-    TYPE_PST: 'pst',
-    TYPE_ZOOM: 'spectral',
-    IW_BRIGGS: 99,
-    FLOW_THROUGH_VALUE: 0,
-    DETECTED_FILTER_BANK_VALUE: 1,
-    PULSAR_TIMING_VALUE: 2,
     NAV: { PAGE_DATA_PRODUCTS: '/mock-nav' },
     FOOTER_HEIGHT_PHT: 0,
     WRAPPER_HEIGHT: 100,
@@ -147,7 +146,10 @@ describe('DataProduct component', () => {
     data: { dataProductType: 1 }
   } as DataProductSDPNew;
 
-  const renderExistingDataProduct = (sensCalc: SensCalcResults) => {
+  const renderExistingDataProduct = (
+    sensCalc?: SensCalcResults,
+    observationType: string = TYPE_CONTINUUM
+  ) => {
     mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
     mockStoreReturn = {
       application: {
@@ -155,20 +157,22 @@ describe('DataProduct component', () => {
           observations: [
             {
               id: 'OBS1',
-              type: 'continuum',
+              type: observationType,
               centralFrequency: 1,
               centralFrequencyUnits: 'Hz'
             }
           ],
           dataProductSDP: [existingDataProduct],
-          targetObservation: [
-            {
-              observationId: 'OBS1',
-              dataProductsSDPId: 'DP1',
-              targetId: 'T1',
-              sensCalc
-            }
-          ]
+          targetObservation: sensCalc
+            ? [
+                {
+                  observationId: 'OBS1',
+                  dataProductsSDPId: 'DP1',
+                  targetId: 'T1',
+                  sensCalc
+                }
+              ]
+            : []
         }
       },
       updateAppContent2: vi.fn()
@@ -386,6 +390,15 @@ describe('DataProduct component', () => {
     });
   });
 
+  it.each([TYPE_CONTINUUM, TYPE_ZOOM, TYPE_CONTINUUM_SPECTRAL])(
+    'shows the robust field by default for a %s data product with no saved weighting',
+    (observationType) => {
+      renderExistingDataProduct(undefined, observationType);
+
+      expect(screen.getByTestId('RobustField')).toBeInTheDocument();
+    }
+  );
+
   it('uses the PST proposal mode for the description when no observation is selected', () => {
     mockStoreReturn = {
       application: {
@@ -447,7 +460,7 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               data: {
                 dataProductType: 1,
-                weighting: 99,
+                weighting: IW_BRIGGS,
                 robust: 2,
                 polarisations: ['I']
               }
