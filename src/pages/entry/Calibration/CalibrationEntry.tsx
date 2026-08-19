@@ -281,7 +281,7 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
     return fieldWrapper(
       <TextEntry
         testId="integrationTime"
-        value={observation ? observation.supplied.value : undefined}
+        value={observation ? observation.supplied.value : ''}
         disabled={true}
         label={theLabel}
         suffix={theUnits}
