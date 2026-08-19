@@ -11,6 +11,7 @@ import {
   POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
+  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   STATUS_ERROR,
   TAPER_DEFAULT,
   TYPE_CONTINUUM,
@@ -83,6 +84,22 @@ export const newCalibrationStrategy = (observationId: string): CalibrationStrate
 };
 
 /**
+ * Fields shared by every imaging data product default; each mode overrides only what differs.
+ */
+const DEFAULT_IMAGING_DATA = {
+  imageSizeValue: IMAGE_SIZE_DEFAULT,
+  imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
+  pixelSizeValue: PIXEL_SIZE_DEFAULT,
+  pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
+  weighting: IW_UNIFORM,
+  polarisations: POLARISATIONS_DEFAULT,
+  channelsOut: CHANNELS_OUT_DEFAULT,
+  robust: ROBUST_DEFAULT,
+  taperValue: TAPER_DEFAULT,
+  continuumSubtraction: SET_CONTINUUM_SUBSTRACTION_DEFAULT
+};
+
+/**
  * Builds the default data product for the given observation's mode.
  */
 export const SDPData = (
@@ -100,44 +117,16 @@ export const SDPData = (
         dataProductType: PULSAR_TIMING_VALUE
       } as SDPFlowthroughPSTData;
     case TYPE_ZOOM:
-      return {
-        imageSizeValue: IMAGE_SIZE_DEFAULT,
-        imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
-        pixelSizeValue: PIXEL_SIZE_DEFAULT,
-        pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
-        weighting: IW_UNIFORM,
-        polarisations: POLARISATIONS_DEFAULT,
-        channelsOut: CHANNELS_OUT_DEFAULT,
-        robust: ROBUST_DEFAULT,
-        taperValue: TAPER_DEFAULT,
-        continuumSubtraction: true
-      } as SDPSpectralData;
+      return { ...DEFAULT_IMAGING_DATA } as SDPSpectralData;
     case TYPE_CONTINUUM_SPECTRAL:
       return {
-        imageSizeValue: IMAGE_SIZE_DEFAULT,
-        imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
-        pixelSizeValue: PIXEL_SIZE_DEFAULT,
-        pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
-        weighting: IW_UNIFORM,
-        polarisations: POLARISATIONS_DEFAULT,
-        channelsOut: CHANNELS_OUT_MAX_COMBINED,
-        robust: ROBUST_DEFAULT,
-        taperValue: TAPER_DEFAULT,
-        continuumSubtraction: true
+        ...DEFAULT_IMAGING_DATA,
+        channelsOut: CHANNELS_OUT_MAX_COMBINED
       } as SDPSpectralData;
     default:
       return {
-        continuumSubtraction: true,
-        dataProductType: DP_TYPE_IMAGES,
-        imageSizeValue: IMAGE_SIZE_DEFAULT,
-        imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
-        pixelSizeValue: PIXEL_SIZE_DEFAULT,
-        pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
-        weighting: IW_UNIFORM,
-        polarisations: POLARISATIONS_DEFAULT,
-        channelsOut: CHANNELS_OUT_DEFAULT,
-        robust: ROBUST_DEFAULT,
-        taperValue: TAPER_DEFAULT
+        ...DEFAULT_IMAGING_DATA,
+        dataProductType: DP_TYPE_IMAGES
       } as SDPImageContinuumData;
   }
 };
