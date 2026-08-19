@@ -4,7 +4,7 @@ import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
-  IW_UNIFORM,
+  IW_BRIGGS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST_DEFAULT,
@@ -325,7 +325,7 @@ function GetContinuumData(
     },
     numberOfSubBands: observation?.numSubBands ?? 0,
     spectralAveraging: observation?.spectralAveraging ?? 1,
-    imageWeighting: (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IW_UNIFORM,
+    imageWeighting: (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IW_BRIGGS,
     robust: (dataProductSDP?.data as SDPImageContinuumData)?.robust ?? ROBUST_DEFAULT,
     tapering: (dataProductSDP?.data as SDPImageContinuumData)?.taperValue ?? TAPER_DEFAULT
   };

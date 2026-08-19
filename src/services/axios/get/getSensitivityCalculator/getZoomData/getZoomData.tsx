@@ -14,7 +14,7 @@ import {
   TIME_SECS,
   TAPER_DEFAULT,
   ROBUST_DEFAULT,
-  IW_UNIFORM
+  IW_BRIGGS
 } from '@utils/constants';
 import {
   isLow,
@@ -349,7 +349,7 @@ async function GetZoomData(
     },
     spectralAveraging: observation?.spectralAveraging ?? 0,
     spectralResolution: '',
-    imageWeighting: (dataProductSDP?.data as SDPSpectralData)?.weighting ?? IW_UNIFORM,
+    imageWeighting: (dataProductSDP?.data as SDPSpectralData)?.weighting ?? IW_BRIGGS,
     robust: (dataProductSDP?.data as SDPSpectralData)?.robust ?? ROBUST_DEFAULT,
     tapering: (dataProductSDP?.data as SDPSpectralData)?.taperValue ?? TAPER_DEFAULT
   };
