@@ -19,6 +19,7 @@ import PolarisationsField from '@/components/fields/polarisations/polarisations'
 import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
 import {
   BAND_LOW_STR,
+  BIT_DEPTH,
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
@@ -49,6 +50,8 @@ import {
   STATUS_INITIAL,
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
+  PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
+  PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -110,6 +113,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const latestProposalRef = React.useRef(getProposal());
+  const hasInitializedDataProduct = React.useRef(false);
   const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestSensCalcRequestIdRef = React.useRef(0);
 
@@ -118,6 +122,23 @@ export default function DataProduct({ data }: DataProductProps) {
   const [observationId, setObservationId] = React.useState('');
   const [dataProductType, setDataProductType] = React.useState(DP_TYPE_IMAGES);
   const [bitDepth, setBitDepth] = React.useState(BIT_DEPTH_DEFAULT);
+  const pstFlowThroughBitDepthOptions = PST_FLOW_THROUGH_BIT_DEPTH_VALUES.map((value) => ({
+    label: value,
+    lookup: String(value),
+    value
+  }));
+  const pstDedicatedFilterbankBitDepthOptions = PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES.map(
+    (value) => ({
+      label: value,
+      lookup: String(value),
+      value
+    })
+  );
+  const defaultBitDepthOptions = BIT_DEPTH.map((el) => ({
+    label: el.value,
+    lookup: String(el.value),
+    value: el.value
+  }));
   const [imageSizeValue, setImageSizeValue] = React.useState(IMAGE_SIZE_DEFAULT);
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(PIXEL_SIZE_DEFAULT);
@@ -287,6 +308,9 @@ export default function DataProduct({ data }: DataProductProps) {
   const isFlowThrough = () => getResolvedPstMode() === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getResolvedPstMode() === DETECTED_FILTER_BANK_VALUE;
   const isPulsarTiming = () => getResolvedPstMode() === PULSAR_TIMING_VALUE;
+  const getPstBitDepthDefault = () => 8;
+  const getDefaultBitDepth = () =>
+    getObservation()?.type === TYPE_PST ? getPstBitDepthDefault() : BIT_DEPTH_DEFAULT;
 
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
@@ -373,7 +397,15 @@ export default function DataProduct({ data }: DataProductProps) {
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
-    setBitDepth(data?.bitDepth ?? BIT_DEPTH_DEFAULT);
+    const parsedBitDepth =
+      typeof data?.bitDepth === 'string' && data.bitDepth.trim() !== ''
+        ? Number(data.bitDepth)
+        : data?.bitDepth;
+    setBitDepth(
+      typeof parsedBitDepth === 'number' && Number.isFinite(parsedBitDepth)
+        ? parsedBitDepth
+        : getDefaultBitDepth()
+    );
     setOutputFrequencyResolution(data?.outputFrequencyResolution ?? 1);
     setOutputSamplingInterval(data?.outputSamplingInterval ?? 1);
     setDispersionMeasure(data?.dispersionMeasure ?? 1);
@@ -484,8 +516,15 @@ export default function DataProduct({ data }: DataProductProps) {
       return;
     }
     const loaded = loadedDataProduct.current;
+    const existingDataProduct = (proposal.dataProductSDP ?? []).find(
+      (dp) => dp.id === newDataProduct.id && dp.observationId === newDataProduct.observationId
+    );
     loadedDataProduct.current = null;
-    if (loaded?.id === newDataProduct.id && loaded.observationId === newDataProduct.observationId) {
+    if (
+      loaded?.id === newDataProduct.id &&
+      loaded.observationId === newDataProduct.observationId &&
+      existingDataProduct
+    ) {
       if (!hasSensCalcResults(proposal, newDataProduct.observationId)) {
         scheduleLocalSensCalcUpdate(observation!, newDataProduct, 0);
       }
@@ -505,6 +544,9 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const updateStorageProposal = () => {
+    if (!hasInitializedDataProduct.current) {
+      return;
+    }
     if (osdCyclePolicy?.maxDataProducts === 1) {
       isEdit() ? updateToProposal() : addToProposal();
     }
@@ -513,7 +555,7 @@ export default function DataProduct({ data }: DataProductProps) {
   // set correct default polarisations depending on data product type & pst mode from obs type
   const getDefaultPolarisations = (obsType: string, dataProductType: number): string[] => {
     if (obsType === TYPE_PST) {
-      if (dataProductType === FLOW_THROUGH_VALUE) return ['X'];
+      if (dataProductType === FLOW_THROUGH_VALUE) return ['X', 'Y'];
       if (dataProductType === DETECTED_FILTER_BANK_VALUE) return ['I'];
       return [];
     }
@@ -622,6 +664,7 @@ export default function DataProduct({ data }: DataProductProps) {
       }
       setId(generateDataProductId());
     }
+    hasInitializedDataProduct.current = true;
   }, []);
 
   React.useEffect(() => {
@@ -636,6 +679,7 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!isEdit()) {
       const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
+      setBitDepth(getDefaultBitDepth());
       // channelsOut's initial state is set before an observation is selected (so isCombined()
       // can't see it yet) - re-derive it once the observation for this new data product is known.
       setChannelsOut(channelsOutMax());
@@ -800,6 +844,13 @@ export default function DataProduct({ data }: DataProductProps) {
         required
         setValue={setBitDepth}
         value={bitDepth}
+        options={
+          isPST()
+            ? isFlowThrough()
+              ? pstFlowThroughBitDepthOptions
+              : pstDedicatedFilterbankBitDepthOptions
+            : defaultBitDepthOptions
+        }
       />
     );
 
