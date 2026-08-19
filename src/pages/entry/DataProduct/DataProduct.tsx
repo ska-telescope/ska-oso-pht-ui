@@ -993,8 +993,17 @@ export default function DataProduct({ data }: DataProductProps) {
     getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId)?.sensCalc;
 
   const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
-  const isNatural = () =>
-    isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
+  const isNatural = () => {
+    if (!(isSpectral() || (isContinuum() && isDataTypeOne()))) {
+      return false;
+    }
+    const weightValue = Number(weighting);
+    const robustValue = Number(robust);
+    return (
+      weightValue === IW_NATURAL ||
+      (weightValue === IW_BRIGGS && Number.isFinite(robustValue) && robustValue >= 2)
+    );
+  };
 
   return (
     <Box

@@ -15,6 +15,7 @@ import Observation from '../../utils/types/observation';
 import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
 import {
   IW_NATURAL,
+  IW_BRIGGS,
   SA_CUSTOM,
   PAGE_CALIBRATION,
   PAGE_LINKING,
@@ -355,8 +356,15 @@ export default function LinkingPage() {
   const isNatural = () => {
     const dp = elementsO.find((e) => e.id === currRec?.id2)?.dp;
     const weighting =
-      typeof (dp?.data as any)?.weighting === 'string' ? (dp?.data as any).weighting : undefined;
-    return currRec?.Obs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
+      typeof (dp?.data as any)?.weighting === 'string'
+        ? Number((dp?.data as any).weighting)
+        : Number((dp?.data as any)?.weighting ?? -1);
+    const robustValue = Number((dp?.data as any)?.robust ?? 0);
+    return (
+      currRec?.Obs?.subarray !== SA_CUSTOM &&
+      (weighting === IW_NATURAL ||
+        (weighting === IW_BRIGGS && Number.isFinite(robustValue) && robustValue >= 2))
+    );
   };
 
   const getSensCalcSingle = (id: string, field: string) => {

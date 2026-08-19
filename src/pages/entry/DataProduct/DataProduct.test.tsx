@@ -376,4 +376,146 @@ describe('DataProduct component', () => {
 
     expect(screen.getByText('page.7.descContent.pst.1')).toBeInTheDocument();
   });
+
+  it('treats Briggs robust=2 as non-Gaussian sensitivity output', async () => {
+    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: 'continuum',
+              observingBand: 'low',
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            }
+          ],
+          dataProductSDP: [
+            {
+              id: 'DP1',
+              observationId: 'OBS1',
+              data: {
+                dataProductType: 1,
+                weighting: 99,
+                robust: 2,
+                polarisations: ['I']
+              }
+            }
+          ],
+          targetObservation: [
+            {
+              observationId: 'OBS1',
+              dataProductsSDPId: 'DP1',
+              targetId: 'T1',
+              sensCalc: {
+                title: 'Target 1',
+                statusGUI: 0,
+                error: '',
+                section1: [
+                  {
+                    field: 'continuumSynthBeamSize',
+                    value: '0',
+                    units: 'arcsec2'
+                  },
+                  {
+                    field: 'continuumSensitivityWeighted',
+                    value: '7.18',
+                    units: 'Jy/beam'
+                  }
+                ],
+                section2: [],
+                section3: []
+              }
+            }
+          ]
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={mockStoreReturn.application.content2.dataProductSDP[0] as any} />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent(
+        'sensitivityCalculatorResults.nonGaussian'
+      );
+      expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('7.18');
+    });
+  });
+
+  it('keeps uniform weighting out of the non-Gaussian sensitivity path', async () => {
+    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: 'continuum',
+              observingBand: 'low',
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            }
+          ],
+          dataProductSDP: [
+            {
+              id: 'DP1',
+              observationId: 'OBS1',
+              data: {
+                dataProductType: 1,
+                weighting: 1,
+                robust: 2,
+                polarisations: ['I']
+              }
+            }
+          ],
+          targetObservation: [
+            {
+              observationId: 'OBS1',
+              dataProductsSDPId: 'DP1',
+              targetId: 'T1',
+              sensCalc: {
+                title: 'Target 1',
+                statusGUI: 0,
+                error: '',
+                section1: [
+                  {
+                    field: 'continuumSynthBeamSize',
+                    value: '0',
+                    units: 'arcsec2'
+                  },
+                  {
+                    field: 'continuumSensitivityWeighted',
+                    value: '7.18',
+                    units: 'Jy/beam'
+                  }
+                ],
+                section2: [],
+                section3: []
+              }
+            }
+          ]
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={mockStoreReturn.application.content2.dataProductSDP[0] as any} />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('field-continuumSynthBeamSize')).not.toHaveTextContent(
+        'sensitivityCalculatorResults.nonGaussian'
+      );
+      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent('0');
+    });
+  });
 });

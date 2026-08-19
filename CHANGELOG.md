@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: sensitivity calculator results now treat Briggs weighting with robust = 2 like the non-Gaussian beam case, while uniform weighting remains unaffected
 * Bugfix: fix new mode name as 'continuum-spectral'. It now has a default of 4000 output channels
 * Bugfix: central frequency step now goes from even channel to next even channel
 * Changed: updated documentation for some methods
