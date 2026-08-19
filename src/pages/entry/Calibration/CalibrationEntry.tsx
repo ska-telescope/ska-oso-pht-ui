@@ -3,10 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
+import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import {
   PAGE_CALIBRATION,
   PAGE_CALIBRATION_ADD,
-  PAGE_CALIBRATION_UPDATE,
+  PAGE_CALIBRATION_UPDATE, REFERENCE_COORDINATE_TYPE_SSO,
   WRAPPER_HEIGHT
 } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
@@ -25,6 +26,7 @@ import Observation from '@/utils/types/observation';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import TargetObservation from '@utils/types/targetObservation.tsx';
+import { useTheme } from '@mui/material/styles';
 
 const GAP = 4;
 const BACK_PAGE = PAGE_CALIBRATION;
@@ -65,6 +67,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const PAGE = isEdit() ? PAGE_CALIBRATION_UPDATE : PAGE_CALIBRATION_ADD;
   const { application, updateAppContent2 } = storageObject.useStore();
   const { setHelp } = useHelp();
+  const theme = useTheme();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -201,6 +204,8 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
 
   /**************************************************************/
 
+  const isSSO = target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
       p={0}
@@ -326,6 +331,12 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
     );
   };
 
+  const ssoNotSupportedBox = () => (
+    <Alert testId="alertCalibratorSSOId" color={AlertColorTypes.Warning} sx={{ textAlign: 'center' , width: '100%' }}>
+    <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
+  </Alert>
+  );
+
   /**************************************************************/
 
   return (
@@ -344,10 +355,18 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
             <Typography>{t('calibrator.desc')}</Typography>
           </Grid>
           <Grid pr={10}>
-            <BorderedSection title={t('calibrator.observatoryDefined')}>
-              {strategyRow(name1Field, duration1Field, intent1Field)}
-              {strategyRow(targetField, integrationTimeField)}
-              {strategyRow(name2Field, duration2Field, intent2Field)}
+            <BorderedSection title={t('calibrator.observatoryDefined')}
+              borderColor={isSSO ? theme.palette.warning.main : undefined}
+            >
+              {isSSO ? (
+                ssoNotSupportedBox()
+              ) : (
+                <>
+                  {strategyRow(name1Field, duration1Field, intent1Field)}
+                  {strategyRow(targetField, integrationTimeField)}
+                  {strategyRow(name2Field, duration2Field, intent2Field)}
+                </>
+              )}
             </BorderedSection>
           </Grid>
           <Grid>

@@ -1,5 +1,5 @@
 import {
-  OSO_SERVICES_CALIBRATORS_PATH,
+  OSO_SERVICES_CALIBRATORS_PATH, REFERENCE_COORDINATE_TYPE_SSO,
   SKA_OSO_SERVICES_URL,
   SUPPLIED_TYPE_INTEGRATION,
   TELESCOPE_LOW_BACKEND_MAPPING,
@@ -55,6 +55,12 @@ async function GetCalibratorList(
   observation: Observation,
   target: Target,
 ): Promise<Calibrator[] | string> {
+
+  console.log(target.kind)
+
+  if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+    return 'error.CALIBRATOR_NOT_SUPPORTED_FOR_SSO';
+  }
 
   if (observation.supplied.type !== SUPPLIED_TYPE_INTEGRATION) {
     return 'error.CALIBRATOR_REQUIRES_INTEGRATION_TIME';
