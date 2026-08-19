@@ -74,6 +74,8 @@ export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 
 export const BIT_DEPTH = [{ value: 1 }, { value: 2 }, { value: 4 }, { value: 8 }];
+export const PST_FLOW_THROUGH_BIT_DEPTH_VALUES = [1, 2, 4, 8, 16];
+export const PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES = [1, 2, 4, 8];
 
 export const CHANNELS_OUT_MIN = 1;
 export const CHANNELS_OUT_MAX = 40;

@@ -54,8 +54,26 @@ vi.mock('@/components/fields/frequencyAveraging/frequencyAveraging', () => ({
 vi.mock('@/components/fields/continuumSubtraction/continuumSubtraction', () => ({
   default: () => <div data-testid="ContinuumSubtractionField" />
 }));
+vi.mock('@/components/fields/outputFrequencyResolution/outputFrequencyResolution', () => ({
+  default: () => <div data-testid="outputFrequencyResolution" />
+}));
+vi.mock('@/components/fields/outputSamplingInterval/outputSamplingInterval', () => ({
+  default: () => <div data-testid="outputSamplingInterval" />
+}));
+vi.mock('@/components/fields/dispersionMeasure/dispersionMeasure', () => ({
+  default: () => <div data-testid="dispersionMeasure" />
+}));
+vi.mock('@/components/fields/rotationMeasure/rotationMeasure', () => ({
+  default: () => <div data-testid="rotationMeasure" />
+}));
 vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
-  default: () => <div data-testid="BitDepthField" />
+  default: ({ value, options }: any) => (
+    <div
+      data-testid="BitDepthField"
+      data-value={value ?? ''}
+      data-options={JSON.stringify(options?.map((opt: any) => opt.value) ?? [])}
+    />
+  )
 }));
 
 // --- Helper data ---
@@ -188,5 +206,33 @@ describe('DataProduct', () => {
       />
     );
     expect(screen.getByTestId('pulsarTimingValue')).toBeInTheDocument();
+  });
+
+  it('uses the PST-specific bit depth option lists in info display', () => {
+    const { rerender } = wrapper(
+      <DataProduct
+        t={t}
+        sdp={{ ...baseData, data: { ...baseData.data, bitDepth: 16 } }}
+        observation={{
+          ...baseObservation,
+          type: TYPE_PST,
+          pstMode: 0
+        }}
+      />
+    );
+    expect(screen.getByTestId('BitDepthField')).toHaveAttribute('data-options', '[1,2,4,8,16]');
+
+    rerender(
+      <DataProduct
+        t={t}
+        sdp={{ ...baseData, data: { ...baseData.data, bitDepth: 8 } }}
+        observation={{
+          ...baseObservation,
+          type: TYPE_PST,
+          pstMode: DETECTED_FILTER_BANK_VALUE
+        }}
+      />
+    );
+    expect(screen.getByTestId('BitDepthField')).toHaveAttribute('data-options', '[1,2,4,8]');
   });
 });

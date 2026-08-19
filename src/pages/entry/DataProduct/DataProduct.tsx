@@ -50,6 +50,8 @@ import {
   STATUS_INITIAL,
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
+  PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
+  PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -120,16 +122,18 @@ export default function DataProduct({ data }: DataProductProps) {
   const [observationId, setObservationId] = React.useState('');
   const [dataProductType, setDataProductType] = React.useState(DP_TYPE_IMAGES);
   const [bitDepth, setBitDepth] = React.useState(BIT_DEPTH_DEFAULT);
-  const pstFlowThroughBitDepthOptions = [1, 2, 4, 8, 16].map((value) => ({
+  const pstFlowThroughBitDepthOptions = PST_FLOW_THROUGH_BIT_DEPTH_VALUES.map((value) => ({
     label: value,
     lookup: String(value),
     value
   }));
-  const pstDedicatedFilterbankBitDepthOptions = [1, 2, 4, 8].map((value) => ({
-    label: value,
-    lookup: String(value),
-    value
-  }));
+  const pstDedicatedFilterbankBitDepthOptions = PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES.map(
+    (value) => ({
+      label: value,
+      lookup: String(value),
+      value
+    })
+  );
   const defaultBitDepthOptions = BIT_DEPTH.map((el) => ({
     label: el.value,
     lookup: String(el.value),
