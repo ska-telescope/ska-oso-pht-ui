@@ -9,9 +9,17 @@ import {
   verifyUserMenuPanels,
   verifyUserMenuReviews,
   verifyUserMenuDecisions,
-  mockOSDAPI
+  mockOSDAPI,
+  mockResolveTargetAPI,
+  beginScienceIdeaSession,
+  selectScienceVerificationCycle,
+  completeScienceIdeaCreation,
+  addM2TargetAndAutoLink,
+  clickStatusIconNav,
+  pageConfirmed,
+  assignProposalToPanel
 } from '../../common/common';
-import { reviewerScience } from '../users';
+import { reviewerScience, standardUser } from '../users';
 
 describe('Reviewer ( Science )', () => {
   beforeEach(() => {
@@ -44,21 +52,45 @@ describe('Reviewer ( Science )', () => {
     'Science Verification: Perform a review, then validate and submit',
     { jiraKey: 'XTP-96332' },
     function () {
-      // Not verifiable against our local minikube deploy - and not a test-code problem.
-      // ska-oso-services' SecurityService checks group membership straight off the caller's JWT
-      // `groups` claim (no live lookup - see ska_aaa_authhelpers' get_auth_context). When you
-      // create a proposal, create_membership grants the creator's admin group via the User Portal
-      // - but our local deploy's user-portal is a Prism mock (see
-      // charts/ska-oso-services-umbrella/templates/mock-user-portal.yaml) that fakes a 201 Created
-      // without ever talking to real Indigo IAM, so no group is actually created there. Confirmed
-      // empirically: forcing a genuinely fresh token immediately afterwards (see
-      // axiosAuthClient.ts's refreshAuthToken, and cypressTestAuth.js's refreshLiveToken) still
-      // 403s with "You are not a member" - the token's iat lines up exactly with the mock's 201
-      // response, so
-      // the refresh itself works, there's just no real membership anywhere for a fresh token to
-      // ever pick up. Any check on a just-created proposal - by anyone, including its own creator
-      // - will fail here regardless of test code, until this points at a real user-portal
-      // integration.
+      // Creates as astronomer1, a normal PI, and stays astronomer1 for the rest of the flow -
+      // create_proposal (ska-oso-services' prsls.py) already calls create_proposal_groups +
+      // create_membership to grant the creator real admin membership on their own proposal, so at
+      // this level there's nothing extra to do. That only actually lands astronomer1 in the
+      // proposal's real Indigo group if create_membership's User Portal call is a working one -
+      // our local minikube deploy's is a Prism mock (see
+      // charts/ska-oso-services-umbrella/templates/mock-user-portal.yaml) that fakes success
+      // without ever talking to real Indigo, so this flow will 403 here until that's pointed at a
+      // real integration. Not a test-code fix.
+      const title = `Cypress live review test ${Date.now()}`;
+
+      mockResolveTargetAPI();
+      beginScienceIdeaSession(standardUser);
+      selectScienceVerificationCycle();
+      completeScienceIdeaCreation(title);
+
+      // Investigator seeding removed for now (see seedSelfAsInvestigator in common.js, still
+      // available if needed again) - should be redundant once create_membership above is
+      // actually granting real membership, so not worth carrying as dead weight while that's
+      // still unresolved.
+
+      // astronomer1 is chair of pnl-b2 (app:pht:pnl-b2/w/a). update_panel's proposals-field gate
+      // (PanelRules.allowed_to_administer) only checked is_pht_admin() upstream, which would 403 a
+      // chair-only account here despite /a meaning "admin of this panel" everywhere else in the
+      // model (is_chair/is_pi) - patched locally to also accept is_chair(pnl_id), consistent with
+      // its sibling allowed_to_change_members. Flagged upstream; not a test-code workaround.
+      cy.get('@mockCreateSVIdea')
+        .its('response.body.prsl_id')
+        .then((prslId) => assignProposalToPanel('pnl-b2', prslId));
+
+      addM2TargetAndAutoLink('Continuum', 'This is a summary of the science idea.');
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+
+      // The PDF upload step below needs real AWS S3 credentials, sourced from Vault in a proper
+      // deployment - our local minikube deploy of ska-oso-services runs with vault.enabled=false
+      // (see its Makefile), which injects a dummy AWS key/secret instead, so any live upload
+      // fails. Skip until that's addressed; this isn't a test-code fix, and it's unrelated to the
+      // group-membership issue above - fixing one doesn't fix the other.
       this.skip();
     }
   );
