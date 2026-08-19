@@ -47,6 +47,26 @@ import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 
+export const isNonGaussianSensitivityCase = ({
+  subarray,
+  weighting,
+  robust
+}: {
+  subarray?: string;
+  weighting?: number | string | null;
+  robust?: number | string | null;
+}) => {
+  const weightingValue =
+    typeof weighting === 'string' ? Number(weighting) : Number(weighting ?? -1);
+  const robustValue = Number(robust ?? 0);
+
+  return (
+    subarray !== SA_CUSTOM &&
+    (weightingValue === IW_NATURAL ||
+      (weightingValue === IW_BRIGGS && Number.isFinite(robustValue) && robustValue >= 2))
+  );
+};
+
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
   const DATA_GRID_OBSERVATION = '60vh';
@@ -352,19 +372,14 @@ export default function LinkingPage() {
       (p) => p.observationId === currRec?.id2 && p.targetId === targetId
     )?.sensCalc;
 
-  const isCustom = () => currRec?.Obs?.subarray === SA_CUSTOM;
+  const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
   const isNatural = () => {
-    const dp = elementsO.find((e) => e.id === currRec?.id2)?.dp;
-    const weighting =
-      typeof (dp?.data as any)?.weighting === 'string'
-        ? Number((dp?.data as any).weighting)
-        : Number((dp?.data as any)?.weighting ?? -1);
-    const robustValue = Number((dp?.data as any)?.robust ?? 0);
-    return (
-      currRec?.Obs?.subarray !== SA_CUSTOM &&
-      (weighting === IW_NATURAL ||
-        (weighting === IW_BRIGGS && Number.isFinite(robustValue) && robustValue >= 2))
-    );
+    const selectedDp = currRec?.dp ?? elementsO.find((e) => e.id2 === currRec?.id2)?.dp;
+    return isNonGaussianSensitivityCase({
+      subarray: currRec?.subarray ?? currRec?.rec?.subarray,
+      weighting: selectedDp?.data?.weighting,
+      robust: selectedDp?.data?.robust
+    });
   };
 
   const getSensCalcSingle = (id: string, field: string) => {
