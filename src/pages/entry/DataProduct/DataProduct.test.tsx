@@ -76,7 +76,13 @@ vi.mock('@/components/fields/rotationMeasure/rotationMeasure', () => ({
   default: () => <div data-testid="RotationMeasureField" />
 }));
 vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
-  default: () => <div data-testid="BitDepthField" />
+  default: ({ value, options }: { value: number; options?: Array<{ value: number }> }) => (
+    <div
+      data-testid="BitDepthField"
+      data-value={String(value)}
+      data-options={JSON.stringify((options ?? []).map((option) => option.value))}
+    />
+  )
 }));
 vi.mock('@/components/fields/polarisations/polarisations', () => ({
   default: () => <div data-testid="PolarisationsField" />
@@ -240,6 +246,50 @@ describe('DataProduct component', () => {
     const addButton = screen.getByTestId('addDataProductButtonEntry');
     expect(addButton).toBeInTheDocument();
     expect(addButton).toHaveAttribute('disabled');
+  });
+
+  it('uses the correct bit-depth options and default for PST flow-through mode', () => {
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 0, observingBand: 'low' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    const bitDepthField = screen.getByTestId('BitDepthField');
+    expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8,16]');
+    expect(bitDepthField).toHaveAttribute('data-value', '8');
+  });
+
+  it('uses the correct bit-depth options and default for PST detected-filterbank mode', () => {
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1, observingBand: 'low' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    const bitDepthField = screen.getByTestId('BitDepthField');
+    expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8]');
+    expect(bitDepthField).toHaveAttribute('data-value', '8');
   });
 
   it('does not persist a data product when no real observation has been selected', () => {
@@ -516,6 +566,57 @@ describe('DataProduct component', () => {
         'sensitivityCalculatorResults.nonGaussian'
       );
       expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent('0');
+    });
+  });
+
+  it('loads and saves legacy string bit depths in edit mode', async () => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
+    const updateAppContent2 = vi.fn((proposal: any) => {
+      mockStoreReturn.application.content2 = proposal;
+    });
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1, observingBand: 'low' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2
+    };
+
+    const legacyBitDepth = '8';
+    const legacyData = {
+      id: 'DP-LEGACY-8',
+      observationId: 'OBS1',
+      data: {
+        dataProductType: 1,
+        bitDepth: legacyBitDepth,
+        polarisations: ['I'],
+        outputFrequencyResolution: 1,
+        outputSamplingInterval: 1,
+        dispersionMeasure: 1,
+        rotationMeasure: 1
+      }
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={legacyData as any} />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('BitDepthField')).toHaveAttribute(
+        'data-value',
+        String(Number(legacyBitDepth))
+      );
+    });
+
+    await waitFor(() => {
+      expect(updateAppContent2).toHaveBeenCalled();
+      const savedProposal = updateAppContent2.mock.calls.at(-1)[0];
+      const savedDataProduct = savedProposal.dataProductSDP.at(-1);
+      expect(savedDataProduct.data.bitDepth).toBe(Number(legacyBitDepth));
     });
   });
 });

@@ -9,6 +9,7 @@ interface BitDepthFieldProps {
   onFocus?: Function;
   setValue?: Function;
   value: number;
+  options?: Array<{ label?: string | number; lookup?: string | number; value: string | number }>;
 }
 
 export default function BitDepthField({
@@ -16,25 +17,31 @@ export default function BitDepthField({
   required = false,
   onFocus,
   setValue,
-  value
+  value,
+  options
 }: BitDepthFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'bitDepth';
 
-  const options = () =>
-    BIT_DEPTH.map((el) => {
-      return { label: el.value, lookup: el.value, value: el.value };
-    });
+  const resolvedOptions =
+    options ??
+    BIT_DEPTH.map((el) => ({
+      label: String(el.value),
+      lookup: String(el.value),
+      value: Number(el.value)
+    }));
+
+  const resolvedValue = typeof value === 'string' ? Number(value) : value;
 
   return (
     <Box pt={1}>
       <DropDown
         disabled={disabled}
         disabledUnderline={disabled}
-        value={value}
+        value={resolvedValue}
         label={t('bitDepth.label')}
         onFocus={onFocus}
-        options={options()}
+        options={resolvedOptions}
         required={required}
         setValue={setValue}
         testId={FIELD}
