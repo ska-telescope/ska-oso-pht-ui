@@ -14,8 +14,6 @@ import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/singl
 import Observation from '../../utils/types/observation';
 import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
 import {
-  IW_NATURAL,
-  IW_BRIGGS,
   SA_CUSTOM,
   PAGE_CALIBRATION,
   PAGE_LINKING,
@@ -39,6 +37,7 @@ import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
+import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateCalibrationId } from '@/utils/helpers';
@@ -56,15 +55,7 @@ export const isNonGaussianSensitivityCase = ({
   weighting?: number | string | null;
   robust?: number | string | null;
 }) => {
-  const weightingValue =
-    typeof weighting === 'string' ? Number(weighting) : Number(weighting ?? -1);
-  const robustValue = Number(robust ?? 0);
-
-  return (
-    subarray !== SA_CUSTOM &&
-    (weightingValue === IW_NATURAL ||
-      (weightingValue === IW_BRIGGS && Number.isFinite(robustValue) && robustValue >= 2))
-  );
+  return subarray !== SA_CUSTOM && isNonGaussianBeamWeighting(weighting, robust);
 };
 
 export default function LinkingPage() {

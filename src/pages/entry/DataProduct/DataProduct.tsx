@@ -33,7 +33,6 @@ import {
   IMAGE_SIZE_DEFAULT,
   IMAGE_SIZE_UNIT_DEFAULT,
   IW_BRIGGS,
-  IW_NATURAL,
   IW_UNIFORM,
   NAV,
   NOTIFICATION_DELAY_IN_SECONDS,
@@ -83,6 +82,7 @@ import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMe
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
 import TargetObservation from '@/utils/types/targetObservation';
 import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
+import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
 
 const GAP = 5;
@@ -997,12 +997,7 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!(isSpectral() || (isContinuum() && isDataTypeOne()))) {
       return false;
     }
-    const weightValue = Number(weighting);
-    const robustValue = Number(robust);
-    return (
-      weightValue === IW_NATURAL ||
-      (weightValue === IW_BRIGGS && Number.isFinite(robustValue) && robustValue >= 2)
-    );
+    return isNonGaussianBeamWeighting(weighting, robust);
   };
 
   return (
