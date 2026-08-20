@@ -2,7 +2,7 @@ import {
   DEFAULT_EQUATORIAL,
   DEFAULT_GALACTIC,
   FREQUENCY_MHZ,
-  IW_BRIGGS,
+  IMAGE_WEIGHTING_DEFAULT,
   ROBUST_DEFAULT,
   PULSAR_MODE_FOLDED,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
@@ -143,7 +143,7 @@ export const NEW_ZOOM_DATA_LOW: ZoomData = {
   centralFrequency: { value: 200, unit: '2' },
   spectralAveraging: 1,
   spectralResolution: '',
-  imageWeighting: IW_BRIGGS,
+  imageWeighting: IMAGE_WEIGHTING_DEFAULT,
   robust: ROBUST_DEFAULT,
   tapering: 0
 };
@@ -173,7 +173,7 @@ export const NEW_CONTINUUM_DATA_LOW: ContinuumData = {
   centralFrequency: { value: 200, unit: '2' },
   numberOfSubBands: 1,
   spectralAveraging: 1,
-  imageWeighting: IW_BRIGGS,
+  imageWeighting: IMAGE_WEIGHTING_DEFAULT,
   robust: ROBUST_DEFAULT,
   tapering: 0
 };

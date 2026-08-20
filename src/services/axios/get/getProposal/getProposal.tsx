@@ -47,7 +47,7 @@ import {
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
   IMAGE_WEIGHTING,
-  IW_BRIGGS,
+  IMAGE_WEIGHTING_DEFAULT,
   ROBUST_DEFAULT,
   FREQUENCY_STR_MHZ,
   BAND_LOW_STR,
@@ -338,7 +338,8 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
           pixelSizeUnits:
             'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : 0,
           weighting:
-            getWeighting('weight' in script ? script.weight?.weighting : undefined) ?? IW_BRIGGS,
+            getWeighting('weight' in script ? script.weight?.weighting : undefined) ??
+            IMAGE_WEIGHTING_DEFAULT,
           robust:
             'weight' in script && script.weight?.weighting === 'briggs'
               ? Number(script.weight.robust ?? ROBUST_DEFAULT)
