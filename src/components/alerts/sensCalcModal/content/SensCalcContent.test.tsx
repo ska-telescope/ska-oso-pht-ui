@@ -20,6 +20,12 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<SensCalcModalSingle />', () => {
+  test('renders the no-data state when results have not been calculated', () => {
+    wrapper(<SensCalcContent />);
+
+    expect(screen.getByText('sensitivityCalculatorResults.noData')).toBeInTheDocument();
+  });
+
   test('renders correctly ( INITIAL )', () => {
     wrapper(
       <SensCalcContent

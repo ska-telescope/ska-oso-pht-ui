@@ -77,14 +77,9 @@ export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 
-export const BIT_DEPTH = [
-  { value: '1' },
-  { value: '2' },
-  { value: '4' },
-  { value: '8' },
-  { value: '16' },
-  { value: '32' }
-];
+export const BIT_DEPTH = [{ value: 1 }, { value: 2 }, { value: 4 }, { value: 8 }];
+export const PST_FLOW_THROUGH_BIT_DEPTH_VALUES = [1, 2, 4, 8, 16];
+export const PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES = [1, 2, 4, 8];
 
 export const CHANNELS_OUT_MIN = 1;
 export const CHANNELS_OUT_MAX = 40;
@@ -237,7 +232,7 @@ export const IMAGE_SIZE_UNIT_DEFAULT = 0;
 export const PIXEL_SIZE_DEFAULT = 1.3;
 export const PIXEL_SIZE_UNIT_DEFAULT = 2;
 export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
-export const BIT_DEPTH_DEFAULT = 1;
+export const BIT_DEPTH_DEFAULT = 8;
 export const TIME_AVERAGING_DEFAULT = 1;
 export const FREQUENCY_AVERAGING_DEFAULT = 1;
 export const POLARISATIONS_DEFAULT = ['I'];

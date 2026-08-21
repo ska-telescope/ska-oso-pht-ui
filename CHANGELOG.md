@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: sensitivity calculator results now treat Briggs weighting with robust = 2 like the non-Gaussian beam case, while uniform weighting remains unaffected
+* Bugfix: align PST bit-depth defaults with BTN-3489 by setting flow-through and detected-filterbank defaults to 8
 * Bugfix: fix new mode name as 'continuum-spectral'. It now has a default of 4000 output channels
 * Bugfix: central frequency step now goes from even channel to next even channel
 * Changed: updated documentation for some methods
@@ -71,6 +73,10 @@ UNRELEASED
 * Fixed: Long titles hidden with ellipsis and wrap across multiple lines for small viewers
 * Fixed: Title LaTeX is now rendered before truncation in proposal validation/confirmation display, preventing raw LaTeX syntax from being shown
 * Changed: Title LaTeX is now rendered in the proposal submissions table
+* Fixed: Fixed breadcrumb auto validation
+* Changed: More permissive TextField schema for robust and integration time fields allows users to backspace to clear the field and type out-of-range values
+* Changed: Robust and integration time field validation errors propagated to breadcrumbs and gate SensCalc API calls
+* Changed: Debounce SensCalc API calls
 
 10.1.0
 ----------

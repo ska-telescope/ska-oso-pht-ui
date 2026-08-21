@@ -14,7 +14,6 @@ import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/singl
 import Observation from '../../utils/types/observation';
 import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
 import {
-  IW_NATURAL,
   SA_CUSTOM,
   PAGE_CALIBRATION,
   PAGE_LINKING,
@@ -38,6 +37,7 @@ import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
+import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateCalibrationId } from '@/utils/helpers';
@@ -45,6 +45,18 @@ import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+
+export const isNonGaussianSensitivityCase = ({
+  subarray,
+  weighting,
+  robust
+}: {
+  subarray?: string;
+  weighting?: number | string | null;
+  robust?: number | string | null;
+}) => {
+  return subarray !== SA_CUSTOM && isNonGaussianBeamWeighting(weighting, robust);
+};
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
@@ -351,12 +363,14 @@ export default function LinkingPage() {
       (p) => p.observationId === currRec?.id2 && p.targetId === targetId
     )?.sensCalc;
 
-  const isCustom = () => currRec?.Obs?.subarray === SA_CUSTOM;
+  const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
   const isNatural = () => {
-    const dp = elementsO.find((e) => e.id === currRec?.id2)?.dp;
-    const weighting =
-      typeof (dp?.data as any)?.weighting === 'string' ? (dp?.data as any).weighting : undefined;
-    return currRec?.Obs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
+    const selectedDp = currRec?.dp ?? elementsO.find((e) => e.id2 === currRec?.id2)?.dp;
+    return isNonGaussianSensitivityCase({
+      subarray: currRec?.subarray ?? currRec?.rec?.subarray,
+      weighting: selectedDp?.data?.weighting,
+      robust: selectedDp?.data?.robust
+    });
   };
 
   const getSensCalcSingle = (id: string, field: string) => {

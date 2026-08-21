@@ -1,5 +1,6 @@
-import { Grid } from '@mui/material';
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
+import React from 'react';
+import { Grid, TextField } from '@mui/material';
+import { z } from 'zod';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useNumericInput } from '@/utils/hooks/useNumericInput';
 
@@ -7,59 +8,58 @@ interface RobustFieldProps {
   disabled?: boolean;
   onFocus?: () => void;
   label: string;
-  required?: boolean;
-  commitOnBlur?: boolean;
-  setValue?: (nextValue: number) => void;
+  setValue: (nextValue: number) => void;
   suffix?: React.ReactNode;
-  value: string | number;
+  value: number;
   widthButton?: number;
 }
 
-const ROBUST_RANGE = { min: -2, max: 2 };
+export const ROBUST_RANGE = { min: -2, max: 2 };
+export const robustSchema = z.number().min(ROBUST_RANGE.min).max(ROBUST_RANGE.max);
 const ROBUST_STEP = 0.1;
-const FIELD = 'robust';
 
 export default function RobustField({
   disabled = false,
   onFocus = undefined,
   label,
-  required = false,
-  commitOnBlur = true,
-  setValue = undefined,
+  setValue,
   suffix = null,
   value,
   widthButton = 0
 }: RobustFieldProps) {
   const { t } = useScopedTranslation();
-  const { localValue, errorText, handleChange, handleBlur, inputRef } = useNumericInput(
-    Number(value ?? 0),
-    (num) => setValue?.(num),
-    {
-      requiredMessage: t('robust.error'),
-      validate: (num) =>
-        num < ROBUST_RANGE.min || num > ROBUST_RANGE.max ? t('robust.error') : '',
-      commitOnBlur,
-      step: ROBUST_STEP,
-      minValue: ROBUST_RANGE.min,
-      maxValue: ROBUST_RANGE.max
-    }
+  const robustErrorMessage = t('robust.error');
+  const validateRobust = React.useCallback(
+    (num: number) => (robustSchema.safeParse(num).success ? '' : robustErrorMessage),
+    [robustErrorMessage]
   );
+  const { text, error, handleChange } = useNumericInput(value, setValue, {
+    validate: validateRobust,
+    requiredMessage: robustErrorMessage,
+    rangeMessage: robustErrorMessage
+  });
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
-        <NumberEntry
+        <TextField
+          variant="standard"
+          type="number"
+          fullWidth
           disabled={disabled}
-          errorText={errorText}
-          inputRef={inputRef}
+          helperText={error}
           label={label}
-          required={required}
-          testId={FIELD}
-          value={localValue}
-          setValue={handleChange}
-          onBlur={handleBlur}
+          value={text}
+          error={!!error}
+          onChange={(e) => handleChange(e.target.value)}
           onFocus={onFocus}
-          suffix={suffix}
+          slotProps={{
+            htmlInput: {
+              min: ROBUST_RANGE.min,
+              max: ROBUST_RANGE.max,
+              step: ROBUST_STEP
+            }
+          }}
         />
       </Grid>
       <Grid size={{ xs: suffix ? widthButton : 0 }}>{suffix}</Grid>
