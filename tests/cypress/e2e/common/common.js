@@ -298,89 +298,58 @@ export const clickEditIconForRow = (tableTestId, text) => {
     });
 };
 
-// Live mode only: a freshly created proposal has no investigators - the real backend never
-// auto-adds the creator (see ska-oso-services' prsls.py create_proposal, which doesn't touch
-// investigators at all), so validateTeamPage's investigators.length > 0 check fails until someone
-// adds themselves via the Team page. Seeds directly via the REST API instead of that UI path
-// (which needs a real MS-Graph/Vault-backed member search we don't have locally - see
-// delegateEditingRights.test.js). Decodes the caller's own JWT for id/name.
-// Callers should use an account ProposalRules.allowed_to_edit will actually accept - either a
-// real PI/Co-I of this specific proposal (which our local mock user-portal can never grant, since
-// it never talks to real Indigo - see reviewScience.test.js), or a PHT admin (app:pht:
-// ops_proposal_admin), which bypasses per-proposal group membership entirely (facts.is_pht_admin()
-// short-circuits every rule in ProposalRules/PanelRules/ReviewRules).
-// NOTE: this only updates the backend - callers must reload the proposal from a fresh GET (e.g.
-// via clickEditIconForRow from the landing page) before the client-side investigators.length
-// check will see it, since the wizard pages hold proposal state in memory rather than re-fetching.
-export const seedSelfAsInvestigator = (prslId) => {
-  cy.window().then((win) => {
-    const token = win.localStorage.getItem('cypress:token');
-    const basePath = win.env.REACT_APP_SKA_OSO_SERVICES_URL;
-    const url = `${basePath}/pht/prsls/${prslId}`;
-    const headers = { Authorization: `Bearer ${token}` };
-    const claims = JSON.parse(atob(token.split('.')[1]));
-    const [givenName, ...familyParts] = (claims.name || claims.preferred_username).split(' ');
-    const investigator = {
-      user_id: claims.sub,
-      status: 'active',
-      given_name: givenName,
-      family_name: familyParts.join(' ') || givenName,
-      email: `${claims.preferred_username}@community.skao.int`,
-      organization: null,
-      for_phd: false,
-      principal_investigator: true,
-      officeLocation: null,
-      jobTitle: null
-    };
-
-    cy.request({ method: 'GET', url, headers }).then((getResponse) => {
-      cy.request({
-        method: 'PUT',
-        url,
-        headers,
-        body: {
-          ...getResponse.body,
-          investigator_refs: [claims.sub],
-          proposal_info: {
-            ...getResponse.body.proposal_info,
-            investigators: [investigator]
-          }
-        }
-      });
-    });
-  });
-};
-
 // Appends a proposal to a panel's own `proposals` array via a direct PUT, rather than going
-// through /panels/assignments (which needs the *global* app:pht:ops_proposal_admin role). This
-// isn't a workaround - update_panel's own auth check (PanelRules.allowed_to_change_members)
-// already accepts either that role or being chair of this specific panel, and proposal<->panel
-// isn't a real foreign key, just a JSON field on the Panel document - so any account that's
-// really chair of panelId (e.g. astronomer1 on pnl-b2) can legitimately do this itself.
+// through /panels/assignments. This is a temporary workaround for the fact that the real backend's 
+// `/panels/assignments` endpoint can only assign a proposal to a panel for a proposal that has been 
+// submitted and until we are able to attach a PDF to the proposal, we cannot submit it. 
+// TODO: Remove this function once it is possible to asstach a PDF to a proposal and submit it.
 export const assignProposalToPanel = (panelId, prslId) => {
   cy.window().then((win) => {
-    const token = win.localStorage.getItem('cypress:token');
-    const basePath = win.env.REACT_APP_SKA_OSO_SERVICES_URL;
-    const url = `${basePath}/pht/panels/${panelId}`;
-    const headers = { Authorization: `Bearer ${token}` };
+    fetchLiveOpsToken().then((token) => {
+      const basePath = win.env.REACT_APP_SKA_OSO_SERVICES_URL;
+      const url = `${basePath}/pht/panels/${panelId}`;
+      const headers = { Authorization: `Bearer ${token}` };
 
-    cy.request({ method: 'GET', url, headers }).then((getResponse) => {
-      const panel = getResponse.body;
-      const alreadyAssigned = (panel.proposals || []).some((p) => p.prsl_id === prslId);
-      if (alreadyAssigned) {
-        return;
-      }
-      cy.request({
-        method: 'PUT',
-        url,
-        headers,
-        body: {
-          ...panel,
-          proposals: [
-            ...(panel.proposals || []),
-            { prsl_id: prslId, assigned_on: new Date().toISOString() }
-          ]
-        }
+      // panelId is long-lived fixture data on the real staging environment but a fresh/empty 
+      // local ODA won't have it. If the GET 404s, create a new panel 
+      // with the same ID and cycle, then PUT the proposal into it.
+      cy.request({ method: 'GET', url, headers, failOnStatusCode: false }).then((getResponse) => {
+        const panelExists = getResponse.status === 200;
+        const panel = panelExists
+          ? getResponse.body
+          : {
+            panel_id: panelId,
+            name: 'Science Verification',
+            cycle: 'TEST_SKAO_2027_Low_AA2_SV',
+            proposals: []
+          };
+
+        (panelExists
+          ? cy.wrap(null)
+          : cy.request({
+            method: 'POST',
+            url: `${basePath}/pht/panels/create`,
+            headers,
+            body: panel
+          })
+        ).then(() => {
+          const alreadyAssigned = (panel.proposals || []).some((p) => p.prsl_id === prslId);
+          if (alreadyAssigned) {
+            return;
+          }
+          cy.request({
+            method: 'PUT',
+            url,
+            headers,
+            body: {
+              ...panel,
+              proposals: [
+                ...(panel.proposals || []),
+                { prsl_id: prslId, assigned_on: new Date().toISOString() }
+              ]
+            }
+          });
+        });
       });
     });
   });
