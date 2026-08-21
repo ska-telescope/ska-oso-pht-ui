@@ -77,6 +77,7 @@ UNRELEASED
 * Changed: More permissive TextField schema for robust and integration time fields allows users to backspace to clear the field and type out-of-range values
 * Changed: Robust and integration time field validation errors propagated to breadcrumbs and gate SensCalc API calls
 * Changed: Debounce SensCalc API calls
+* Changed: Default image weighting is now Briggs with robust=0 for continuum, spectral and continuum-spectral data products (was uniform)
 
 10.1.0
 ----------
