@@ -20,7 +20,7 @@ const metadata = (over: Partial<Metadata> = {}): Metadata => ({
 // subset under test and cast.
 const proposal = (over: Partial<Proposal> = {}): Proposal =>
   ({
-    id: 'prsl-t0001-20260813-00001',
+    id: 'prp-1',
     title: 'A title',
     lastUpdated: OLD_STAMP,
     lastUpdatedBy: 'olduser',
@@ -30,7 +30,7 @@ const proposal = (over: Partial<Proposal> = {}): Proposal =>
   }) as Proposal;
 
 const response = (over: Partial<ProposalBackend> = {}): ProposalBackend =>
-  ({ prsl_id: 'prsl-t0001-20260813-00001', ...over }) as ProposalBackend;
+  ({ prsl_id: 'prp-1', ...over }) as ProposalBackend;
 
 describe('mergeProposalSaveMetadata', () => {
   test('merges backend metadata while preserving in-memory edits', () => {
@@ -121,12 +121,14 @@ describe('mergeProposalSaveMetadata', () => {
     expect(result.version).toBe(1);
   });
 
-  test('applies the first save, when the held version itself is missing rather than zero', () => {
-    // A proposal snapshot taken before any version has ever been recorded
-    // (e.g. straight off the store, cast loosely at a boundary) can lack a
-    // version field entirely rather than defaulting it to 0 - undefined must
-    // not be compared numerically against the incoming version.
-    const current = { id: 'prsl-t0001-20260813-00001' } as unknown as Proposal;
+  test('applies a save when the held snapshot has no version field', () => {
+    // content2 is untyped and cast to Proposal at the store boundary
+    // (useApplySaveMetadata), and several paths reset it to {} - LandingPage
+    // and GridProposals, on a failed re-fetch - which is truthy and so reaches
+    // here with no version field at all. undefined must not be compared
+    // numerically against the incoming version: 2 > undefined is false, which
+    // would silently drop the save.
+    const current = { id: 'prp-1' } as unknown as Proposal;
 
     const result = mergeProposalSaveMetadata(
       current,
@@ -140,12 +142,12 @@ describe('mergeProposalSaveMetadata', () => {
   test('ignores a response for a different proposal', () => {
     // Leave proposal A with its navigation PUT in flight, open proposal B, and
     // A's response must not stamp B's metadata with A's save time and version.
-    const current = proposal({ id: 'prsl-t0001-20260813-00002' });
+    const current = proposal({ id: 'prp-2' });
 
     const result = mergeProposalSaveMetadata(
       current,
       response({
-        prsl_id: 'prsl-t0001-20260813-00001',
+        prsl_id: 'prp-1',
         metadata: metadata({ version: 2, last_modified_on: NEW_STAMP })
       })
     );
@@ -153,7 +155,12 @@ describe('mergeProposalSaveMetadata', () => {
     expect(result).toBe(current);
   });
 
-  test('applies when either side carries no id, which is not evidence of a mismatch', () => {
+  test('applies a save when the held proposal has no id yet', () => {
+    // content2 legitimately holds an id-less proposal while a PUT for the
+    // proposal just left is still in flight: LandingPage resets it to {} on
+    // mount and on a failed re-fetch, and AddProposal writes NEW_PROPOSAL,
+    // whose id is null. PHT holds useApplySaveMetadata for the whole session,
+    // so that response still arrives here.
     const current = proposal({ id: undefined as unknown as string });
 
     const result = mergeProposalSaveMetadata(

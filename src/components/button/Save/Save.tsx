@@ -30,10 +30,8 @@ export default function SaveButton({
   const [countdown, setCountdown] = React.useState(autoSaveInterval);
   const [warn, setWarn] = useAutoClearingState(false, 600); // flashes the icon on auto-save
 
-  // The countdown is tracked here as well as in state so the tick can decide
-  // whether to save *outside* any setState updater. StrictMode double-invokes
-  // updater functions in development, so triggering the save from inside one
-  // sent two PutProposal calls - and two whole-proposal store writes - per tick.
+  // A ref, not state: the tick needs the live countdown synchronously, and state would be stale
+  // in this closure, while reading it via a setState updater double-fired the save in StrictMode.
   const countdownRef = React.useRef(autoSaveInterval);
 
   React.useEffect(() => {

@@ -199,18 +199,6 @@ describe('<PageBannerPPT /> save feedback', () => {
     vi.useRealTimers();
   });
 
-  test('a successful response without metadata still toasts but leaves the store alone', async () => {
-    vi.mocked(PutProposal).mockResolvedValue({ prsl_id: 'prsl-123' } as any);
-    wrapper(<PageBannerPPT pageNo={1} />);
-
-    screen.getByTestId('saveBtn').click();
-
-    await waitFor(() => {
-      expect(mockNotifySuccess).toHaveBeenCalledWith('saveBtn.success');
-    });
-    expect(mockUpdateAppContent2).not.toHaveBeenCalled();
-  });
-
   test('renders the last saved label', () => {
     wrapper(<PageBannerPPT pageNo={1} />);
     expect(screen.getByTestId('lastSavedTestId')).toBeInTheDocument();

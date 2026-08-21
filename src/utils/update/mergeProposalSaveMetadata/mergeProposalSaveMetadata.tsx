@@ -15,16 +15,15 @@ import { Proposal, ProposalBackend } from '../../types/proposal';
  * formats) that a date comparison would need to work around.
  */
 const isNewerThanHeld = (current: Proposal, incoming: Metadata): boolean => {
-  // Proposal.version is typed as a required number, but the value actually
-  // held in the store (e.g. a freshly loaded or in-flight proposal) can still
-  // arrive without one - so this side needs the same runtime guard as
-  // incoming, which crosses a wire boundary and can legitimately arrive
-  // partial.
+  // Proposal.version is typed as a required number. A proposal that came from
+  // the API always has one. However, content2 is untyped and cast to Proposal
+  // at the store boundary, and there are PHT paths that reset it to {}, so
+  // this needs to be a bit defensive.
   const heldVersion = current.metadata?.version ?? current.version;
 
-  // No version to order by on either side - a malformed/partial response, or
-  // nothing held yet to compare against. Accept, rather than freeze the label
-  // on the strength of a comparison that never worked.
+  // No version to order by on one side or the other - a malformed/partial
+  // response, or nothing usable held to compare against. Accept, rather than
+  // freeze the label on the strength of a comparison that never worked.
   if (typeof incoming.version !== 'number' || typeof heldVersion !== 'number') {
     return true;
   }
@@ -49,8 +48,8 @@ export const mergeProposalSaveMetadata = (
 
   // A response for a different proposal - the user left A with its PUT still in
   // flight and opened B - must never stamp this one with A's save time and
-  // version. Only a positive mismatch blocks: an id absent from either side is
-  // not evidence of one.
+  // version. Only a positive mismatch blocks: an id absent from an ID-less
+  // content2 cast is not evidence of one.
   if (response.prsl_id && current.id && response.prsl_id !== current.id) {
     return current;
   }
