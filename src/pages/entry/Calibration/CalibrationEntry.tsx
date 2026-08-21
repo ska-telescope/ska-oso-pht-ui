@@ -178,8 +178,16 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
     setTarget(target);
     setObservation(observation);
 
+  if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+    setCalibrators({ beforeEachScan: null, afterEachScan: null });
+    return;
+  }
+
+  const calibratorsAlreadyPopulated = calibrators.beforeEachScan || calibrators.afterEachScan;
+  if (!calibratorsAlreadyPopulated) {
     getCalibratorData(target, observation);
-  }, [observationIdRef]);
+  }
+}, [observationIdRef]);
   /**************************************************************/
 
   function updateCalibrationOnProposal() {
