@@ -55,7 +55,6 @@ async function GetCalibratorList(
   target: Target,
 ): Promise<Calibrator[] | string> {
 
-  console.log(target.kind)
 
   if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
     return 'error.CALIBRATOR_NOT_SUPPORTED_FOR_SSO';
