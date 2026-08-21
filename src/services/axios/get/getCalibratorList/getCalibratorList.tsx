@@ -6,7 +6,6 @@ import {
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
   TIME_MS,
-  USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
 import { MockCalibratorBackendList } from './mockCalibratorListBackend.tsx';
