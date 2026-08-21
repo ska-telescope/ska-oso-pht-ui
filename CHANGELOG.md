@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: sensitivity calculator results now treat Briggs weighting with robust = 2 like the non-Gaussian beam case, while uniform weighting remains unaffected
 * Bugfix: align PST bit-depth defaults with BTN-3489 by setting flow-through and detected-filterbank defaults to 8
 * Bugfix: fix new mode name as 'continuum-spectral'. It now has a default of 4000 output channels
 * Bugfix: central frequency step now goes from even channel to next even channel
