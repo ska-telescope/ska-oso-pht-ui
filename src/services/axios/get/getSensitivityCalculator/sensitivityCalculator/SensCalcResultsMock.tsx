@@ -1,5 +1,4 @@
 export const SENSCALC_CONTINUUM_MOCKED = {
-  title: 'DUMMY',
   section1: [
     {
       field: 'continuumSensitivityWeighted',
@@ -65,7 +64,6 @@ export const SENSCALC_CONTINUUM_MOCKED = {
 };
 
 export const SENSCALC_SPECTRAL_MOCKED = {
-  title: 'DUMMY',
   section1: [
     {
       field: 'spectralSensitivityWeighted',

@@ -36,16 +36,23 @@ export type ResultsDetailsBackend = {
 };
 
 export type SensCalcResults = {
-  title?: string;
   statusGUI: STATUS;
   error?: string;
   section1?: ResultsSection[];
   section2?: ResultsSection[];
   section3?: ResultsSection[];
+  displayParams?: DisplayParams;
 };
 
 export type ResultsSection = {
   field: string;
   value: string;
   units?: string;
+};
+
+export type DisplayParams = {
+  targetName: string;
+  bandwidthMHz: number;
+  spectralResolutionKHz: number;
+  integrationTimeH: number;
 };

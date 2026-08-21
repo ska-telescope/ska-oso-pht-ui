@@ -24,7 +24,6 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          title: '',
           statusGUI: STATUS_INITIAL,
           error: undefined,
           section1: undefined,
@@ -40,9 +39,9 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          title: 'm1',
           statusGUI: 0,
           error: undefined,
+          displayParams: { targetName: 'm1' },
           section1: [
             {
               field: 'testField1',
@@ -99,9 +98,9 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          title: 'm2',
           statusGUI: 0,
           error: undefined,
+          displayParams: { targetName: 'm2' },
           section1: [
             {
               field: 'customField1',
@@ -150,9 +149,9 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          title: 'm2',
           statusGUI: 0,
           error: undefined,
+          displayParams: { targetName: 'm2' },
           section1: [
             {
               field: 'naturalField1',
@@ -210,7 +209,6 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         data={{
-          title: '',
           statusGUI: STATUS_ERROR,
           error: 'SOME ERROR',
           section1: undefined,

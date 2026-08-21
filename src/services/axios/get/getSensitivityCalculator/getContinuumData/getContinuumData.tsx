@@ -55,7 +55,6 @@ interface FinalIndividualResults {
 
 export function getFinalResults(
   sensCalcApiResponse: any,
-  target: Target,
   observation: Observation
 ): SensCalcResults {
   const isSuppliedSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
@@ -64,7 +63,6 @@ export function getFinalResults(
   const individualResults = getFinalIndividualResultsForContinuum(sensCalcApiResponse, observation);
 
   const theResults: SensCalcResults = {
-    title: target.name,
     statusGUI: STATUS_OK,
     section1: [],
     ...(isContinuum() && {
@@ -359,6 +357,6 @@ function GetContinuumData(
   const properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData);
-  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, target, observation);
+  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, observation);
 }
 export default GetContinuumData;

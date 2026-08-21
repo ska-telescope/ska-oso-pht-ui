@@ -6,10 +6,11 @@ import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SensCalcContentProps {
-  data: SensCalcResults;
+  data?: SensCalcResults;
   isCustom?: boolean;
   isNatural?: boolean;
-  isSSO?: undefined | boolean;
+  isSSO?: boolean;
+  isPST: boolean;
 }
 
 const GAP = 4;
@@ -19,7 +20,8 @@ export default function SensCalcContent({
   data,
   isCustom = false,
   isNatural = false,
-  isSSO = false
+  isSSO = false,
+  isPST = false
 }: SensCalcContentProps) {
   const { t } = useScopedTranslation();
 
@@ -61,62 +63,72 @@ export default function SensCalcContent({
     );
   };
 
+  if (isPST) {
+    return (
+      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
+        <Typography p={GAP}>{t('page.7.pstUnavailable')}</Typography>
+      </Alert>
+    );
+  }
+
+  if (isSSO) {
+    return (
+      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
+        <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
+      </Alert>
+    );
+  }
+
+  if (data?.error) {
+    return (
+      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
+        <Typography p={GAP}>{data.error}</Typography>
+      </Alert>
+    );
+  }
+
+  if (data?.statusGUI === STATUS_INITIAL || data == undefined) {
+    return (
+      <Alert>
+        <Typography p={GAP}>{t('sensitivityCalculatorResults.noData')}</Typography>
+      </Alert>
+    );
+  }
+
   return (
     <>
-      {isSSO ? (
-        <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-          <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
-        </Alert>
-      ) : data?.statusGUI !== STATUS_INITIAL &&
-        data?.title !== '*SHOW PST MESSAGE*' &&
-        (data?.error === '' || data?.error === undefined) ? (
-        <>
-          {displayElement(
-            t('sensitivityCalculatorResults.targetName'),
-            data.title,
-            '',
-            'targetName'
-          )}
-          {data?.section1 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section1?.map((rec) =>
-            displayElement(
-              t('sensitivityCalculatorResults.' + rec.field),
-              rec.value,
-              rec.units ?? '',
-              rec.field
-            )
-          )}
-          {data?.section2 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section2?.map((rec) =>
-            displayElement(
-              t('sensitivityCalculatorResults.' + rec.field),
-              rec.value,
-              rec.units ?? '',
-              rec.field
-            )
-          )}
-          {data?.section3 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section3?.map((rec) =>
-            displayElement(
-              t('sensitivityCalculatorResults.' + rec.field),
-              rec.value,
-              rec.units ?? '',
-              rec.field
-            )
-          )}
-        </>
-      ) : data?.statusGUI !== STATUS_INITIAL && data?.title === '*SHOW PST MESSAGE*' ? (
-        <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-          <Typography p={GAP}>{t('page.7.pstUnavailable')}</Typography>
-        </Alert>
-      ) : data?.error !== '' && data?.error !== undefined ? (
-        <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-          <Typography p={GAP}>{data.error}</Typography>
-        </Alert>
-      ) : (
-        <Alert>
-          <Typography p={GAP}>{t('sensitivityCalculatorResults.noData')}</Typography>
-        </Alert>
+      {displayElement(
+        t('sensitivityCalculatorResults.targetName'),
+        data.displayParams?.targetName,
+        '',
+        'targetName'
+      )}
+      {data?.section1 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
+      {data?.section1?.map((rec) =>
+        displayElement(
+          t('sensitivityCalculatorResults.' + rec.field),
+          rec.value,
+          rec.units ?? '',
+          rec.field
+        )
+      )}
+      {data?.section2 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
+      {data?.section2?.map((rec) =>
+        displayElement(
+          t('sensitivityCalculatorResults.' + rec.field),
+          rec.value,
+          rec.units ?? '',
+          rec.field
+        )
+      )}
+      {data?.section3 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
+      {data?.section3?.map((rec) =>
+        displayElement(
+          t('sensitivityCalculatorResults.' + rec.field),
+          rec.value,
+          rec.units ?? '',
+          rec.field
+        )
       )}
     </>
   );

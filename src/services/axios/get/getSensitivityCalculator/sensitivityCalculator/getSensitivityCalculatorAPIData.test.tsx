@@ -122,7 +122,6 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     );
     expect(result).to.deep.equal({
       statusGUI: CONSTANTS.STATUS_ERROR,
-      title: 'Sensitivity Calculator API error',
       error: 'Network Error'
     });
   });
@@ -144,7 +143,6 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     );
     expect(result).to.deep.equal({
       statusGUI: CONSTANTS.STATUS_ERROR,
-      title: 'Validation Error',
       error: 'Specified pointing centre is always below the horizon from the SKA LOW site'
     });
   });

@@ -261,7 +261,6 @@ export default function LinkingPage() {
       targetId: target.id,
       dataProductsSDPId: currRec.id ?? '',
       sensCalc: {
-        title: target.name,
         statusGUI: STATUS_PARTIAL,
         error: ''
       }
@@ -363,13 +362,12 @@ export default function LinkingPage() {
     const isPST = elementsO.find((e) => e.id2 === currRec?.id2)?.type === TYPE_PST;
     return (
       <SensCalcDisplaySingle
-        sensCalc={
-          isPST ? { statusGUI: 0, title: '*SHOW PST MESSAGE*' } : getSensCalcForTargetGrid(id)
-        }
+        sensCalc={getSensCalcForTargetGrid(id)}
         show={isTargetSelected(id)}
         field={field}
         isCustom={isCustom()}
         isNatural={isNatural()}
+        isPST={isPST}
       />
     );
   };

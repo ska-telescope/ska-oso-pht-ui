@@ -58,8 +58,7 @@ async function getSensCalc(
     default:
       return {
         statusGUI: STATUS_ERROR,
-        title: 'Unsupported mode for the Sensitivity Calculator',
-        error: `Observation type ${observation.type} not supported.`
+        error: `Observation type ${observation.type} not supported for the Sensitivity Calculator.`
       };
   }
 }

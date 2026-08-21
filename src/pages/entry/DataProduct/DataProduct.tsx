@@ -1101,15 +1101,13 @@ export default function DataProduct({ data }: DataProductProps) {
               }
               title={t('sensitivityCalculatorResults.title')}
             >
-              {isPST() && <Typography variant="subtitle1">{t('page.7.pstUnavailable')}</Typography>}
-              {!isPST() && (
-                <SensCalcContent
-                  data={linkedScData() ?? scData()}
-                  isSSO={isTargetSSO()}
-                  isCustom={isCustom()}
-                  isNatural={isNatural()}
-                />
-              )}
+              <SensCalcContent
+                data={linkedScData() ?? scData()}
+                isSSO={isTargetSSO()}
+                isCustom={isCustom()}
+                isNatural={isNatural()}
+                isPST={isPST()}
+              />
             </BorderedSection>
           )}
         </Grid>

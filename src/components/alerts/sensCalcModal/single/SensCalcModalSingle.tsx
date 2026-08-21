@@ -8,9 +8,10 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface SensCalcDisplaySingleProps {
   open: boolean;
   onClose: Function;
-  data: SensCalcResults;
+  data?: SensCalcResults;
   isCustom: boolean;
   isNatural: boolean;
+  isPst: boolean;
 }
 
 const SIZE = 20;
@@ -20,7 +21,8 @@ export default function SensCalcModalSingle({
   onClose,
   data,
   isCustom,
-  isNatural
+  isNatural,
+  isPst = false
 }: SensCalcDisplaySingleProps) {
   const handleClose = () => {
     onClose();
@@ -44,13 +46,13 @@ export default function SensCalcModalSingle({
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusLoading.' + data.statusGUI),
+                status: t('statusLoading.' + data?.statusGUI),
                 error: ''
               })}
               ariaDescription=""
               testId="statusId"
               icon
-              level={data.statusGUI}
+              level={data?.statusGUI}
               size={SIZE}
               text=""
             />
@@ -65,7 +67,7 @@ export default function SensCalcModalSingle({
         />
       </Card>
       <CardContent>
-        <SensCalcContent data={data} isCustom={isCustom} isNatural={isNatural} />
+        <SensCalcContent data={data} isCustom={isCustom} isNatural={isNatural} isPST={isPst} />
       </CardContent>
     </Dialog>
   );

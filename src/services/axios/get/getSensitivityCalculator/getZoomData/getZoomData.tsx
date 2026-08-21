@@ -55,7 +55,6 @@ interface FinalIndividualResults {
 
 export function getFinalResults(
   sensCalcApiResponse: any,
-  target: Target,
   observation: Observation
 ): SensCalcResults {
   const isSuppliedSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
@@ -63,7 +62,6 @@ export function getFinalResults(
   const individualResults = getFinalIndividualResultsForZoom(sensCalcApiResponse, observation);
 
   const theResults: SensCalcResults = {
-    title: target.name,
     statusGUI: STATUS_OK,
     section1: [],
     section3: [individualResults.results11]
@@ -387,6 +385,6 @@ async function GetZoomData(
     : addPropertiesMID(standardData, zoomData, observation);
 
   // const mapping: Function = undefined;
-  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, target, observation);
+  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, observation);
 }
 export default GetZoomData;

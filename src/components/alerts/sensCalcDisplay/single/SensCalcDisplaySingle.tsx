@@ -4,16 +4,18 @@ import { presentSensCalcError, presentUnits, presentValue } from '@utils/present
 import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
 import { STATUS_OK, TYPE_ZOOM, TYPE_CONTINUUM, STATUS_ERROR } from '../../../../utils/constants';
+import { SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 
 const VALUE = 'value';
 const UNITS = 'units';
 
 interface SensCalcDisplaySingleProps {
-  sensCalc: any;
+  sensCalc?: SensCalcResults;
   show?: boolean;
   field: string;
   isCustom?: boolean;
   isNatural?: boolean;
+  isPST?: boolean;
 }
 
 export default function SensCalcDisplaySingle({
@@ -21,7 +23,8 @@ export default function SensCalcDisplaySingle({
   show = false,
   field,
   isCustom = false,
-  isNatural = false
+  isNatural = false,
+  isPST = false
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -29,7 +32,7 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
-  const ariaStatusMessage = (sensCalc: { statusGUI: string; error: string }) => {
+  const ariaStatusMessage = (sensCalc?: { statusGUI: string; error: string }) => {
     const status = t('statusLoading.' + sensCalc?.statusGUI);
     const error = sensCalc?.error?.length ? t(presentSensCalcError(sensCalc?.error)) : '';
     return t('sensitivityCalculatorResults.status', { status: status, error: error });
@@ -84,6 +87,7 @@ export default function SensCalcDisplaySingle({
           data={sensCalc}
           isCustom={isCustom}
           isNatural={isNatural}
+          isPst={isPST}
         />
       )}
     </>

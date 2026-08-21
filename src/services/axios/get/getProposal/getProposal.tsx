@@ -722,7 +722,6 @@ const getTargetObservation = (
 
     if (result.result != undefined) {
       targetObs.sensCalc = {
-        title: result.target_ref as string,
         statusGUI: 0, // only for UI
         error: '', // only for UI
         section1: getResultsSection1(

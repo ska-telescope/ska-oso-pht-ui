@@ -5,13 +5,11 @@ import Fetch from './Fetch';
 const mockTelescope = { code: 'TEST_TELESCOPE' };
 const mockBaseUrl = '/base';
 const mockProperties = '?prop=value';
-const mockTarget = { name: 'Target1' };
 const mockObservation = { duration: 1000 };
 
-const mockMapping = vi.fn((data, target, observation) => ({
+const mockMapping = vi.fn((data, observation) => ({
   mapped: true,
   data,
-  target,
   observation
 }));
 
@@ -27,16 +25,14 @@ it('should fetch data and map it successfully', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget,
     mockObservation
   );
 
   expect(mockAxiosClient.get).toHaveBeenCalledWith(expect.stringContaining(mockTelescope.code));
-  expect(mockMapping).toHaveBeenCalledWith(mockResponse.data, mockTarget, mockObservation);
+  expect(mockMapping).toHaveBeenCalledWith(mockResponse.data, mockObservation);
   expect(result).toEqual({
     mapped: true,
     data: mockResponse.data,
-    target: mockTarget,
     observation: mockObservation
   });
 });
@@ -56,13 +52,11 @@ it('should handle error with title and detail from response.data', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget,
     mockObservation
   );
 
   expect(result).toEqual({
     statusGUI: STATUS_ERROR,
-    title: 'Sensitivity Calculator API error',
     error: 'Detailed error message'
   });
 });
@@ -82,13 +76,11 @@ it('should handle error with message fallback', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget,
     mockObservation
   );
 
   expect(result).toEqual({
     statusGUI: STATUS_ERROR,
-    title: 'Sensitivity Calculator API error',
     error: 'Fallback error message'
   });
 });
@@ -106,13 +98,11 @@ it('should handle error with generic string fallback', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget,
     mockObservation
   );
 
   expect(result).toEqual({
     statusGUI: STATUS_ERROR,
-    title: 'Sensitivity Calculator API error',
     error: 'api.error'
   });
 });
