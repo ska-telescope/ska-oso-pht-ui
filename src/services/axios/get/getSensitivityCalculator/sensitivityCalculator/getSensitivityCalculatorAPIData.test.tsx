@@ -103,7 +103,10 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       );
 
       expect(getSpy).toHaveBeenCalledWith(
-        expect.stringContaining(`bandwidth_mhz=${expectedBandwidthMhz}`)
+        expect.any(String),
+        expect.objectContaining({
+          params: expect.objectContaining({ bandwidth_mhz: expectedBandwidthMhz })
+        })
       );
       expect(result).to.deep.equal(SENSCALC_CONTINUUM_MOCKED);
     }

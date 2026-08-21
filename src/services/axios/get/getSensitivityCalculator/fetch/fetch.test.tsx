@@ -5,6 +5,7 @@ import Fetch from './Fetch';
 const mockTelescope = { code: 'TEST_TELESCOPE' };
 const mockBaseUrl = '/base';
 const mockProperties = '?prop=value';
+const mockParams = { prop: 'value', n_subbands: 4 };
 const mockObservation = { duration: 1000 };
 
 const mockMapping = vi.fn((data, observation) => ({
@@ -28,8 +29,36 @@ it('should fetch data and map it successfully', async () => {
     mockObservation
   );
 
-  expect(mockAxiosClient.get).toHaveBeenCalledWith(expect.stringContaining(mockTelescope.code));
+  expect(mockAxiosClient.get).toHaveBeenCalledWith(
+    expect.stringContaining(mockTelescope.code),
+    expect.anything()
+  );
   expect(mockMapping).toHaveBeenCalledWith(mockResponse.data, mockObservation);
+  expect(result).toEqual({
+    mapped: true,
+    data: mockResponse.data,
+    observation: mockObservation
+  });
+});
+
+it('should pass object params via axios config', async () => {
+  const mockResponse = { data: { value: 42 } };
+  const mockAxiosClient = {
+    get: vi.fn().mockResolvedValue(mockResponse)
+  };
+
+  const result = await Fetch(
+    mockAxiosClient,
+    mockTelescope,
+    mockBaseUrl,
+    mockParams,
+    mockMapping,
+    mockObservation
+  );
+
+  expect(mockAxiosClient.get).toHaveBeenCalledWith(expect.stringContaining(mockTelescope.code), {
+    params: mockParams
+  });
   expect(result).toEqual({
     mapped: true,
     data: mockResponse.data,

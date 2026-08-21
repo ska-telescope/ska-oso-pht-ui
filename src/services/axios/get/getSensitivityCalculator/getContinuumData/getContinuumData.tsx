@@ -4,12 +4,12 @@ import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  IW_BRIGGS,
   IW_UNIFORM,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST_DEFAULT,
   SA_CUSTOM,
-  SEPARATOR0,
   STATUS_OK,
   TAPER_DEFAULT,
   TIME_HOURS,
@@ -20,24 +20,23 @@ import {
   getSensitivitiesUnitsMapping,
   isLow,
   isSuppliedTime,
-  shiftSensitivity
+  shiftSensitivity,
+  timeConversion
 } from '@utils/helpersSensCalc.ts';
 import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import {
-  addFrequency,
-  addRobustProperty,
-  addTime,
-  addValue,
-  pointingCentre,
-  rxBand
-} from '../submissionEntries/submissionEntries';
 import Target from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
 import Fetch from '../fetch/Fetch';
+import { frequencyConversion } from '@/utils/helpers';
+import {
+  getPointingCentre,
+  getRxBandValue,
+  SensCalcQueryParams
+} from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/sensCalHelpers.ts';
 
 interface FinalIndividualResults {
   results1: ResultsSection;
@@ -233,63 +232,93 @@ const defaultToOne = (value: unknown): number => {
 };
 
 const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {
-  let properties = '';
+  const properties: SensCalcQueryParams = {
+    elevation_limit: Number(standardData.elevation.value),
+    pointing_centre: getPointingCentre(standardData),
+    freq_centre_mhz: frequencyConversion(
+      continuumData.centralFrequency?.value,
+      Number(continuumData.centralFrequency?.unit),
+      FREQUENCY_MHZ
+    ),
+    bandwidth_mhz: frequencyConversion(
+      continuumData.bandwidth?.value,
+      Number(continuumData.bandwidth?.unit),
+      FREQUENCY_MHZ
+    ),
+    spectral_averaging_factor: defaultToOne(continuumData.spectralAveraging),
+    n_subbands: continuumData.numberOfSubBands,
+    weighting_mode: getImageWeightingMapping(continuumData.imageWeighting) ?? ''
+  };
+
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray, SEPARATOR0);
+    properties.subarray_configuration = standardData.subarray;
   } else {
-    properties += addValue('num_stations', standardData.numStations, SEPARATOR0);
+    properties.num_stations = standardData.numStations;
   }
+
   if (isSuppliedTime(continuumData.suppliedType)) {
-    properties += addTime('integration_time_h', continuumData.supplied_0, TIME_HOURS);
+    properties.integration_time_h = timeConversion(
+      continuumData.supplied_0?.value,
+      Number(continuumData.supplied_0?.unit),
+      TIME_HOURS
+    );
   } else {
-    properties += addValue('sensitivity_jy', continuumData.supplied_1.value);
+    properties.sensitivity_jy = continuumData.supplied_1.value;
   }
-  properties += pointingCentre(standardData);
-  properties += addValue('elevation_limit', Number(standardData.elevation.value));
-  properties += addFrequency('freq_centre_mhz', continuumData.centralFrequency, FREQUENCY_MHZ);
-  properties += addValue(
-    'spectral_averaging_factor',
-    defaultToOne(continuumData.spectralAveraging)
-  );
-  properties += addFrequency('bandwidth_mhz', continuumData.bandwidth, FREQUENCY_MHZ);
-  properties += addValue('n_subbands', continuumData.numberOfSubBands);
-  properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
-  properties = addRobustProperty(continuumData, properties);
+
+  if (continuumData.imageWeighting === IW_BRIGGS) {
+    properties.robustness = continuumData.robust;
+  }
+
   return properties;
 };
 
 const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumData) => {
-  let properties = '';
+  const properties: SensCalcQueryParams = {
+    rx_band: getRxBandValue(standardData.observingBand),
+    freq_centre_hz: frequencyConversion(
+      continuumData.centralFrequency?.value,
+      Number(continuumData.centralFrequency?.unit),
+      FREQUENCY_HZ
+    ),
+    bandwidth_hz: frequencyConversion(
+      continuumData.bandwidth?.value,
+      Number(continuumData.bandwidth?.unit),
+      FREQUENCY_HZ
+    ),
+    spectral_averaging_factor: defaultToOne(continuumData.spectralAveraging),
+    pointing_centre: getPointingCentre(standardData),
+    pmv: Number(standardData.weather.value),
+    el: Number(standardData.elevation.value),
+    n_subbands: continuumData.numberOfSubBands,
+    weighting_mode: getImageWeightingMapping(continuumData.imageWeighting) ?? '',
+    taper: continuumData.tapering
+  };
+
   if (isSuppliedTime(continuumData.suppliedType)) {
-    properties += addTime('integration_time_s', continuumData.supplied_0, TIME_SECS, SEPARATOR0);
+    properties.integration_time_s = timeConversion(
+      continuumData.supplied_0?.value,
+      Number(continuumData.supplied_0?.unit),
+      TIME_SECS
+    );
   } else {
-    properties += addValue('supplied_sensitivity', continuumData.supplied_1.value, SEPARATOR0);
-    properties += addValue(
-      'sensitivity_unit',
-      getSensitivitiesUnitsMapping(Number(continuumData.supplied_1.unit))
+    properties.supplied_sensitivity = continuumData.supplied_1.value;
+    properties.sensitivity_unit = getSensitivitiesUnitsMapping(
+      Number(continuumData.supplied_1.unit)
     );
   }
-  properties += rxBand(standardData.observingBand);
 
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray.toUpperCase());
+    properties.subarray_configuration = standardData.subarray.toUpperCase();
   } else {
-    properties += addValue('n_ska', standardData.num15mAntennas);
-    properties += addValue('n_meer', standardData.num13mAntennas);
+    properties.n_ska = standardData.num15mAntennas;
+    properties.n_meer = standardData.num13mAntennas;
   }
-  properties += addFrequency('freq_centre_hz', continuumData.centralFrequency, FREQUENCY_HZ);
-  properties += addFrequency('bandwidth_hz', continuumData.bandwidth, FREQUENCY_HZ);
-  properties += addValue(
-    'spectral_averaging_factor',
-    defaultToOne(continuumData.spectralAveraging)
-  );
-  properties += pointingCentre(standardData);
-  properties += addValue('pmv', Number(standardData.weather.value));
-  properties += addValue('el', Number(standardData.elevation.value));
-  properties += addValue('n_subbands', continuumData.numberOfSubBands);
-  properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
-  properties += addValue('taper', continuumData.tapering);
-  properties = addRobustProperty(continuumData, properties);
+
+  if (continuumData.imageWeighting === IW_BRIGGS) {
+    properties.robustness = continuumData.robust;
+  }
+
   return properties;
 };
 
