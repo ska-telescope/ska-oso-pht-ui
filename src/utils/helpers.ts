@@ -11,7 +11,8 @@ import {
   TYPE_PST,
   TYPE_CONTINUUM_SPECTRAL,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  TIME_UNITS, TELESCOPE_LOW_NUM
+  TIME_UNITS,
+  TELESCOPE_LOW_NUM
 } from './constants';
 import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';

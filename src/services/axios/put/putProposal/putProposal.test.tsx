@@ -34,7 +34,8 @@ import MappingPutProposal, {
   getDataProductSRC,
   getObservationTypeDetails,
   getReferenceCoordinate,
-  getSuppliedFieldsIntegrationTime, mapCalibrationStrategyToBackend
+  getSuppliedFieldsIntegrationTime,
+  mapCalibrationStrategyToBackend
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
 
@@ -208,7 +209,6 @@ describe('mapCalibrationStrategyToBackend', () => {
     ]);
   });
 });
-
 
 describe('getReferenceCoordinate', () => {
   test('should map galactic coordinates correctly', () => {

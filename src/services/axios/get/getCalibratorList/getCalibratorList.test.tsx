@@ -5,13 +5,15 @@ import { MockCalibratorFrontendList } from './mockCalibratorListFrontend';
 import { MockCalibratorBackendList } from './mockCalibratorListBackend';
 import {
   REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_SSO, SUPPLIED_INTEGRATION_TIME_UNITS_H,
+  REFERENCE_COORDINATE_TYPE_SSO,
+  SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_TYPE_INTEGRATION,
-  SUPPLIED_TYPE_SENSITIVITY, TELESCOPE_LOW_NUM
+  SUPPLIED_TYPE_SENSITIVITY,
+  TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
 import { Target } from '@/utils/types/target';
-import Observation  from '@/utils/types/observation';
+import Observation from '@/utils/types/observation';
 
 describe('GetCalibratorList Service', () => {
   let mockedAuthClient: any;
@@ -20,17 +22,17 @@ describe('GetCalibratorList Service', () => {
     id: 1,
     name: 'M89',
     kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-    raStr: "12:35:39.8073",
-    decStr: "12:33:22.831",
+    raStr: '12:35:39.8073',
+    decStr: '12:33:22.831',
 
     velType: 1,
-    redshift: "0.000914"
+    redshift: '0.000914'
   } as Target;
 
   const mockSSOTarget: Target = {
-    id:1,
-    name: "Venus",
-    kind: REFERENCE_COORDINATE_TYPE_SSO.value,
+    id: 1,
+    name: 'Venus',
+    kind: REFERENCE_COORDINATE_TYPE_SSO.value
   };
 
   const mockObservation: Observation = {
@@ -42,7 +44,6 @@ describe('GetCalibratorList Service', () => {
       units: SUPPLIED_INTEGRATION_TIME_UNITS_H // TIME_HOURS
     }
   } as Observation;
-
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -64,7 +65,6 @@ describe('GetCalibratorList Service', () => {
     expect(result).toBe('error.CALIBRATOR_NOT_SUPPORTED_FOR_SSO');
     expect(mockedAuthClient.post).not.toHaveBeenCalled();
   });
-
 
   test('returns mapped data from a successful API response', async () => {
     mockedAuthClient.post.mockResolvedValue({ data: MockCalibratorBackendList });

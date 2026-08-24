@@ -67,7 +67,7 @@ import {
   CalibrationStrategy,
   CalibrationStrategyBackend,
   Calibrator,
-  FluxCalBackend,
+  FluxCalBackend
 } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
@@ -180,9 +180,7 @@ export const mapCalibrationStrategyToBackend = (
     observatory_defined: strategy?.observatoryDefined,
     calibration_id: strategy?.id,
     observation_set_ref: strategy?.observationIdRef,
-    calibrators: strategy?.calibrators
-      ? strategy.calibrators.map(calibratorToFluxCal)
-      : null,
+    calibrators: strategy?.calibrators ? strategy.calibrators.map(calibratorToFluxCal) : null,
     notes: strategy?.notes
   }));
 };

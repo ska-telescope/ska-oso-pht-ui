@@ -7,17 +7,15 @@ import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import {
   PAGE_CALIBRATION,
   PAGE_CALIBRATION_ADD,
-  PAGE_CALIBRATION_UPDATE, REFERENCE_COORDINATE_TYPE_SSO,
+  PAGE_CALIBRATION_UPDATE,
+  REFERENCE_COORDINATE_TYPE_SSO,
   WRAPPER_HEIGHT
 } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Proposal from '@/utils/types/proposal';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import {
-  CalibrationStrategy,
-  Calibrator,
-} from '@/utils/types/calibrationStrategy';
+import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
@@ -51,8 +49,8 @@ function calibratorArrayToSet(list: Calibrator[]): CalibratorSet {
     return { beforeEachScan: null, afterEachScan: null };
   }
   return {
-    beforeEachScan: list.find(c => c.relativeToScan === 'before_each_scan') ?? null,
-    afterEachScan: list.find(c => c.relativeToScan === 'after_each_scan') ?? null
+    beforeEachScan: list.find((c) => c.relativeToScan === 'before_each_scan') ?? null,
+    afterEachScan: list.find((c) => c.relativeToScan === 'after_each_scan') ?? null
   };
 }
 
@@ -93,64 +91,69 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     setNotes(inRec.notes ? inRec.notes : '');
   };
 
-const calibrationOut = (): CalibrationStrategy => {
-  return {
-    observatoryDefined: observatoryDefined,
-    id: id,
-    observationIdRef: observationIdRef,
-    calibrators: calibratorSetToCalibratorList(calibrators), // Calibrator[], not FluxCalBackend[]
-    notes: notes
+  const calibrationOut = (): CalibrationStrategy => {
+    return {
+      observatoryDefined: observatoryDefined,
+      id: id,
+      observationIdRef: observationIdRef,
+      calibrators: calibratorSetToCalibratorList(calibrators), // Calibrator[], not FluxCalBackend[]
+      notes: notes
+    };
   };
-};
 
-function calibratorSetToCalibratorList(calibrators: CalibratorSet): Calibrator[] {
-  if (!calibrators.beforeEachScan || !calibrators.afterEachScan) {
-    throw new Error('error.CALIBRATION_MISSING_BEFORE_OR_AFTER');
+  function calibratorSetToCalibratorList(calibrators: CalibratorSet): Calibrator[] {
+    if (!calibrators.beforeEachScan || !calibrators.afterEachScan) {
+      throw new Error('error.CALIBRATION_MISSING_BEFORE_OR_AFTER');
+    }
+    return [calibrators.beforeEachScan, calibrators.afterEachScan];
   }
-  return [calibrators.beforeEachScan, calibrators.afterEachScan];
-}
 
   /**************************************************************/
 
   const getTargetObservation = (): TargetObservation | undefined => {
-  const proposal = getProposal();
-  if (!proposal?.targetObservation || proposal.targetObservation.length === 0) {
-    return undefined;
+    const proposal = getProposal();
+    if (!proposal?.targetObservation || proposal.targetObservation.length === 0) {
+      return undefined;
+    }
+    return proposal.targetObservation.find((to) => to.observationId === observationIdRef);
+  };
+
+  const getTargetFromProposal = (targetObservation: TargetObservation): Target | undefined => {
+    const proposal = getProposal();
+    return proposal?.targets?.find((t) => t.id === targetObservation.targetId);
+  };
+
+  const getObservationFromProposal = (
+    targetObservation: TargetObservation
+  ): Observation | undefined => {
+    const proposal = getProposal();
+    return proposal?.observations?.find((o) => o.id === targetObservation.observationId);
+  };
+
+  async function getCalibratorData(
+    target: Target | undefined,
+    observation: Observation | undefined
+  ) {
+    if (!target || !observation) {
+      return false;
+    }
+
+    const response = await GetCalibratorList(authAxiosClient, observation, target);
+
+    if (typeof response === 'string') {
+      setAxiosViewError(response);
+      return false;
+    }
+
+    const before = response.find((c) => c.relativeToScan === 'before_each_scan');
+    const after = response.find((c) => c.relativeToScan === 'after_each_scan');
+
+    setCalibrators({
+      beforeEachScan: before ?? null,
+      afterEachScan: after ?? null
+    });
+    return true;
   }
-  return proposal.targetObservation.find(to => to.observationId === observationIdRef);
-};
-
-const getTargetFromProposal = (targetObservation: TargetObservation): Target | undefined => {
-  const proposal = getProposal();
-  return proposal?.targets?.find(t => t.id === targetObservation.targetId);
-};
-
-const getObservationFromProposal = (targetObservation: TargetObservation): Observation | undefined => {
-  const proposal = getProposal();
-  return proposal?.observations?.find(o => o.id === targetObservation.observationId);
-};
-
-async function getCalibratorData(target: Target | undefined, observation: Observation | undefined) {
-  if (!target || !observation) {
-    return false;
-  }
-
-  const response = await GetCalibratorList(authAxiosClient, observation, target);
-
-  if (typeof response === 'string') {
-    setAxiosViewError(response);
-    return false;
-  }
-
-  const before = response.find(c => c.relativeToScan === "before_each_scan");
-  const after = response.find(c => c.relativeToScan === "after_each_scan");
-
-  setCalibrators({
-    beforeEachScan: before ?? null,
-    afterEachScan: after ?? null,
-  });
-  return true;
-}
 
   React.useEffect(() => {
     setHelp('calibrator.comment.help');
@@ -178,16 +181,16 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
     setTarget(target);
     setObservation(observation);
 
-  if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
-    setCalibrators({ beforeEachScan: null, afterEachScan: null });
-    return;
-  }
+    if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+      setCalibrators({ beforeEachScan: null, afterEachScan: null });
+      return;
+    }
 
-  const calibratorsAlreadyPopulated = calibrators.beforeEachScan || calibrators.afterEachScan;
-  if (!calibratorsAlreadyPopulated) {
-    getCalibratorData(target, observation);
-  }
-}, [observationIdRef]);
+    const calibratorsAlreadyPopulated = calibrators.beforeEachScan || calibrators.afterEachScan;
+    if (!calibratorsAlreadyPopulated) {
+      getCalibratorData(target, observation);
+    }
+  }, [observationIdRef]);
   /**************************************************************/
 
   function updateCalibrationOnProposal() {
@@ -246,14 +249,15 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
     return fieldWrapper(
       <TextEntry
         testId="duration"
-        value={cal ? cal.durationSeconds / 60. : 0} // this is so we display the duration in minutes
+        value={cal ? cal.durationSeconds / 60 : 0} // this is so we display the duration in minutes
         disabled={true}
         label={t(inLabel)}
         suffix={t('calibrator.minutes')}
       />
     );
   };
-  const duration1Field = () => durationField('calibrator.durationStart', calibrators.beforeEachScan);
+  const duration1Field = () =>
+    durationField('calibrator.durationStart', calibrators.beforeEachScan);
   const duration2Field = () => durationField('calibrator.durationEnd', calibrators.afterEachScan);
 
   const intentField = (inLabel: string, cal: Calibrator | null) => {
@@ -340,9 +344,13 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
   };
 
   const ssoNotSupportedBox = () => (
-    <Alert testId="alertCalibratorSSOId" color={AlertColorTypes.Warning} sx={{ textAlign: 'center' , width: '100%' }}>
-    <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
-  </Alert>
+    <Alert
+      testId="alertCalibratorSSOId"
+      color={AlertColorTypes.Warning}
+      sx={{ textAlign: 'center', width: '100%' }}
+    >
+      <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
+    </Alert>
   );
 
   /**************************************************************/
@@ -363,7 +371,8 @@ async function getCalibratorData(target: Target | undefined, observation: Observ
             <Typography>{t('calibrator.desc')}</Typography>
           </Grid>
           <Grid pr={10}>
-            <BorderedSection title={t('calibrator.observatoryDefined')}
+            <BorderedSection
+              title={t('calibrator.observatoryDefined')}
               borderColor={isSSO ? theme.palette.warning.main : undefined}
             >
               {isSSO ? (

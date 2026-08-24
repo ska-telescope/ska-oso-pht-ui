@@ -370,7 +370,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
       };
     }) ?? []
   );
-}
+};
 
 function fluxCalToCalibrator(data: FluxCalBackend, index: number): Calibrator {
   return {
