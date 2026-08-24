@@ -96,12 +96,21 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
       observatoryDefined: observatoryDefined,
       id: id,
       observationIdRef: observationIdRef,
-      calibrators: calibratorSetToCalibratorList(calibrators), // Calibrator[], not FluxCalBackend[]
+      calibrators: calibratorSetToCalibratorList(calibrators, isSSO), // Calibrator[], not FluxCalBackend[]
       notes: notes
     };
   };
 
-  function calibratorSetToCalibratorList(calibrators: CalibratorSet): Calibrator[] {
+  function calibratorSetToCalibratorList(
+    calibrators: CalibratorSet,
+    isSSO: boolean
+  ): Calibrator[] | null {
+    if (!calibrators.beforeEachScan && !calibrators.afterEachScan) {
+      if (isSSO) {
+        return null;
+      }
+      throw new Error('error.CALIBRATION_MISSING_BEFORE_OR_AFTER');
+    }
     if (!calibrators.beforeEachScan || !calibrators.afterEachScan) {
       throw new Error('error.CALIBRATION_MISSING_BEFORE_OR_AFTER');
     }
