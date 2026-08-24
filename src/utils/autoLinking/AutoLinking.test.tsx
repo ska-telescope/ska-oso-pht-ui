@@ -4,10 +4,12 @@ import {
   DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
   DP_TYPE_VISIBLE,
+  IW_BRIGGS,
   REFERENCE_COORDINATE_TYPE_SSO,
   STATUS_ERROR,
   STATUS_OK,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
@@ -108,6 +110,19 @@ describe('autoLinking, newDataProductsForMode', () => {
     const sdps = newDataProductsForMode(obs);
     expect(sdps).toHaveLength(1);
     expect(sdps[0]).to.deep.equal(PST_TIMING_DATA_PRODUCT);
+  });
+
+  // Continuum and spectral weighting is already covered by the deep-equal fixture tests above;
+  // continuum + spectral has no fixture of its own.
+  test('defaults the continuum + spectral imaging data product to Briggs weighting with robust 0', () => {
+    const obs: Observation = {
+      ...getDefaultObservationLowAA2(TYPE_CONTINUUM_SPECTRAL),
+      id: 'obs-123',
+      type: TYPE_CONTINUUM_SPECTRAL
+    };
+    const data = newDataProductsForMode(obs)[0].data as SDPImageContinuumData;
+    expect(data.weighting).toBe(IW_BRIGGS);
+    expect(data.robust).toBe(0);
   });
 });
 

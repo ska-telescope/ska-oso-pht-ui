@@ -224,6 +224,7 @@ export const HELP_FONT = 18;
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
+export const IMAGE_WEIGHTING_DEFAULT = IW_BRIGGS;
 export const ROBUST_DEFAULT = 0;
 export const TAPER_DEFAULT = 0;
 export const CHANNELS_OUT_DEFAULT = 40;
