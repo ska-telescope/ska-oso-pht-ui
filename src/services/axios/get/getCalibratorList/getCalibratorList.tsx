@@ -84,9 +84,10 @@ async function GetCalibratorList(
       target
     );
 
-    if (!result || !result.data || typeof result.data !== 'object') {
+    if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
-    }
+  }
+
     return result.data.map(calibratorMapping);
   } catch (e) {
     if (e instanceof Error) {
