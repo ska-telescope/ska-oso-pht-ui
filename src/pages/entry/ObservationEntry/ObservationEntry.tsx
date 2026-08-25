@@ -1023,18 +1023,20 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       );
     };
     return fieldWrapper(
-      <ContinuumBandwidthField
-        setValue={setContinuumBandwidth}
-        value={continuumBandwidth}
-        suffix={continuumBandwidthUnitsField()}
-        telescope={telescope()}
-        observingBand={observingBand}
-        continuumBandwidthUnits={continuumBandwidthUnits}
-        centralFrequency={centralFrequency}
-        centralFrequencyUnits={centralFrequencyUnits}
-        subarrayConfig={subarrayConfig}
-        minimumChannelWidthHz={minimumChannelWidthHz}
-      />
+      <Box pt={1}>
+        <ContinuumBandwidthField
+          setValue={setContinuumBandwidth}
+          value={continuumBandwidth}
+          suffix={continuumBandwidthUnitsField()}
+          telescope={telescope()}
+          observingBand={observingBand}
+          continuumBandwidthUnits={continuumBandwidthUnits}
+          centralFrequency={centralFrequency}
+          centralFrequencyUnits={centralFrequencyUnits}
+          subarrayConfig={subarrayConfig}
+          minimumChannelWidthHz={minimumChannelWidthHz}
+        />
+      </Box>
     );
   };
 
@@ -1113,9 +1115,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           <Grid size={{ md: 12, lg: 12 }} p={2}>
             {frequencySpectrumField()}
           </Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
           <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
           <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
         </>
       );
     }
@@ -1124,10 +1126,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+
         <Grid size={{ md: 12, lg: 6 }}>
           {isPST()
             ? pstModeField()
@@ -1148,8 +1151,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
       </>
     );
@@ -1164,9 +1167,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           <Grid size={{ md: 12, lg: 12 }} p={2}>
             {frequencySpectrumField()}
           </Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
           <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
           <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
         </>
       );
     }
