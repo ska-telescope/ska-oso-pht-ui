@@ -87,11 +87,11 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   });
 
   test.each([
-    { channelsOut: 1, expectedBandwidthMhz: 150 },
-    { channelsOut: 4000, expectedBandwidthMhz: 150 / 4000 }
+    { channelsOut: 1, expectedSpectralAveragingFactor: 27648 },
+    { channelsOut: 4000, expectedSpectralAveragingFactor: 6 }
   ])(
-    'returns continuum mapped data for combined mode with channelsOut=$channelsOut, using continuumBandwidth / channelsOut as the request bandwidth',
-    async ({ channelsOut, expectedBandwidthMhz }) => {
+    'returns continuum mapped data for combined mode with channelsOut=$channelsOut, sending the full continuumBandwidth and a spectral averaging factor derived from channelsOut',
+    async ({ channelsOut, expectedSpectralAveragingFactor }) => {
       const getSpy = vi
         .spyOn(axiosClient, 'get')
         .mockResolvedValue({ data: sensCalcResultsAPIResponseMockContinuum });
@@ -105,7 +105,10 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       expect(getSpy).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          params: expect.objectContaining({ bandwidth_mhz: expectedBandwidthMhz })
+          params: expect.objectContaining({
+            bandwidth_mhz: 150,
+            spectral_averaging_factor: expectedSpectralAveragingFactor
+          })
         })
       );
       expect(result).to.deep.equal(SENSCALC_CONTINUUM_MOCKED);

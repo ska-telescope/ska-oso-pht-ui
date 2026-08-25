@@ -4,6 +4,7 @@ import { presentUnits } from '@utils/present/present';
 import { StandardData, ZoomData, Telescope } from '@utils/types/typesSensCalc.tsx';
 import {
   SA_CUSTOM,
+  STATUS_ERROR,
   STATUS_OK,
   TIME_HOURS,
   FREQUENCY_MHZ,
@@ -364,7 +365,7 @@ async function GetZoomData(
     : addPropertiesMID(standardData, zoomData, observation);
 
   return Fetch(axiosClient, telescope, URL_PATH, properties).then((response) =>
-    getFinalResults(response, observation)
+    response?.statusGUI === STATUS_ERROR ? response : getFinalResults(response, observation)
   );
 }
 export default GetZoomData;

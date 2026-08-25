@@ -12,6 +12,7 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST_DEFAULT,
   SA_CUSTOM,
+  STATUS_ERROR,
   STATUS_OK,
   TAPER_DEFAULT,
   TIME_HOURS,
@@ -407,7 +408,7 @@ function GetContinuumData(
   const properties = getSensCalcContinuumParams(telescope, observation, target, dataProductSDP);
 
   return Fetch(axiosClient, telescope, URL_PATH, properties).then((response) =>
-    getFinalResults(response, observation)
+    response?.statusGUI === STATUS_ERROR ? response : getFinalResults(response, observation)
   );
 }
 export default GetContinuumData;

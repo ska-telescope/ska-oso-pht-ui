@@ -438,8 +438,8 @@ describe('getDataProductSRC', () => {
 describe('getObservationTypeDetails', () => {
   const mockObsBase = {
     getBandwidth: () => ({ value: 100, unit: 'MHz' }),
-    getCentralFrequency: () => ({ value: 1400, unit: 'MHz' }),
-    getSupplied: () => ({ supplied_type: 'test' })
+    spectralResolution: '14.13 Hz (21.2 m/s)',
+    zoomChannels: 1000
   };
 
   test('should return correct details for TYPE_CONTINUUM', () => {
@@ -458,16 +458,14 @@ describe('getObservationTypeDetails', () => {
     const obs = {
       ...mockObsBase,
       type: TYPE_ZOOM,
-      spectralResolution: 1.2,
-      effectiveResolution: 2.3,
-      spectralAveraging: 4,
+      spectralResolution: '1.2 kHz (2.5 km/s)',
+      effectiveResolution: '2.3 kHz (4.9 km/s)',
       zoomChannels: 2000
     } as any;
     const result = getObservationTypeDetails(obs);
     expect(result.observation_type).toBe(TYPE_ZOOM_LONG);
-    expect(result.spectral_resolution).toBe(1.2);
-    expect(result.effective_resolution).toBe(2.3);
-    expect(result.spectral_averaging).toBe('4');
+    expect(result.spectral_resolution).toBe('1.2 kHz (2.5 km/s)');
+    expect(result.effective_resolution).toBe('2.3 kHz (4.9 km/s)');
     expect(result.number_of_channels).toBe('2000');
   });
 

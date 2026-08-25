@@ -12,7 +12,8 @@ const Fetch = async (
 ): Promise<SensCalcResults> => {
   try {
     const finalURL = `${SKA_SENSITIVITY_CALCULATOR_API_URL}${telescope.code}${baseUrl}`;
-    return authAxiosClient.get(finalURL, { params: properties }).then((result) => result.data);
+    const result = await authAxiosClient.get(finalURL, { params: properties });
+    return result.data;
   } catch (e) {
     const errMsg = e?.message || e?.response?.data?.detail || e?.toString();
 

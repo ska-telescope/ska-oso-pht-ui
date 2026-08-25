@@ -212,7 +212,8 @@ export const trailingZeros = (coordinate: string): string => {
 /**
  * Parses the string stored like 1808.45 Hz (2.7 km/s) into the frequency numeric value in Hz
  **/
-export const getSpectralResolutionHz = (observation: Observation): number => {
+export const getSpectralResolutionHz = (observation: Observation | null | undefined): number => {
+  if (!observation?.spectralResolution) return 0;
   const units = FREQUENCY_UNITS[2].label;
   return observation.spectralResolution.includes(units)
     ? Number(observation.spectralResolution.split(' ')[0]) * 1000
@@ -223,8 +224,15 @@ export const getSpectralResolutionHz = (observation: Observation): number => {
  * The bandwidth in the zoom mode can be derived from the spectral resolution (i.e. the channel
  * width) and the number of channels.
  * */
-export const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
-  const value = channelsToBandwidthHz(incObs?.zoomChannels, getSpectralResolutionHz(incObs));
+export const getBandwidthZoom = (incObs: Observation | null | undefined): ValueUnitPair => {
+  if (!incObs?.zoomChannels) {
+    return { value: 0, unit: FREQUENCY_STR_MHZ };
+  }
+  const spectralResHz = getSpectralResolutionHz(incObs);
+  if (spectralResHz === 0) {
+    return { value: 0, unit: FREQUENCY_STR_MHZ };
+  }
+  const value = channelsToBandwidthHz(incObs.zoomChannels, spectralResHz);
   return {
     value: value * 1e-6,
     unit: FREQUENCY_STR_MHZ

@@ -56,22 +56,25 @@ describe('<ChannelsOut />', () => {
     expect(screen.getByTestId('channelsOut')).toBeInTheDocument();
   });
 
-  test.each([[1], [40]])('accepts valid value %i and calls setValue', (value) => {
-    render(<ChannelsOut value={1} setValue={mockSetValue} />);
+  test.each([[2], [40]])('accepts valid value %i and calls setValue', (value) => {
+    render(<ChannelsOut value={2} setValue={mockSetValue} />);
     enterValue(value);
     expect(mockSetValue).toHaveBeenCalledWith(value);
     expect(screen.queryByTestId('channelsOut-error')).not.toBeInTheDocument();
   });
 
-  test.each([[0], [1.5], [41]])('rejects invalid value %s without calling setValue', (value) => {
-    render(<ChannelsOut value={1} setValue={mockSetValue} />);
-    enterValue(value);
-    expect(mockSetValue).not.toHaveBeenCalled();
-    expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
-  });
+  test.each([[0], [1], [1.5], [41]])(
+    'rejects invalid value %s without calling setValue',
+    (value) => {
+      render(<ChannelsOut value={2} setValue={mockSetValue} />);
+      enterValue(value);
+      expect(mockSetValue).not.toHaveBeenCalled();
+      expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
+    }
+  );
 
   test('the error does not auto-clear while the value is still invalid', () => {
-    render(<ChannelsOut value={1} setValue={mockSetValue} />);
+    render(<ChannelsOut value={2} setValue={mockSetValue} />);
     enterValue(41);
     expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
     vi.advanceTimersByTime(5000);
