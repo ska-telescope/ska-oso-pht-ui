@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress';
 import vitePreprocessor from 'cypress-vite';
+import cypressSplit from 'cypress-split';
 
 // Headless Chrome/Electron tries to persist GTK theme settings via dconf over D-Bus, which
 // doesn't exist in most CI containers. Forcing an in-memory GSettings backend stops it
@@ -30,12 +31,27 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       on('file:preprocessor', vitePreprocessor());
 
-      // Add reporter configuration
-      config.reporter = 'mocha-junit-reporter';
-      config.reporterOptions = {
-        mochaFile: 'cypress/results/e2e-coverage.xml',
-        toConsole: true
-      };
+      // Default reporter for a plain `cypress run`/`cypress open` - only applied if the caller
+      // hasn't already asked for a specific reporter (e.g. scripts/cypressParallel.mjs passes its
+      // own `--reporter junit --reporter-options mochaFile=...` per worker, to give each worker's
+      // specs their own file; config.reporter/reporterOptions are already populated from those CLI
+      // flags by the time setupNodeEvents runs, so unconditionally overwriting them here would
+      // silently send every worker's every spec to this same single hardcoded path instead).
+      if (!config.reporter) {
+        config.reporter = 'mocha-junit-reporter';
+        config.reporterOptions = {
+          mochaFile: 'cypress/results/e2e-coverage.xml',
+          toConsole: true
+        };
+      }
+
+      // Lets scripts/cypressParallel.mjs hand each worker a slice of the spec list via the
+      // SPLIT/SPLIT_INDEX env vars instead of the orchestrator computing `--spec` itself. Only
+      // takes effect when those env vars are set, so `cypress open`/a plain `cypress run` are
+      // unaffected.
+      cypressSplit(on, config);
+
+      return config;
     }
   },
 

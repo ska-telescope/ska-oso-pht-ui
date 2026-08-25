@@ -129,6 +129,7 @@
     "cypress-file-upload": "^5.0.8",
     "cypress-plugin-tab": "^1.0.5",
     "cypress-real-events": "^1.14.0",
+    "cypress-split": "^1.25.0",
     "cypress-vite": "^1.6.0",
     "cypress-xray-junit-reporter": "^1.1.12",
     "cypress-xray-plugin": "^8.5.0",

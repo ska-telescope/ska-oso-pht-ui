@@ -7,16 +7,18 @@ import {
   verifyVisible,
   viewPort
 } from '../../fixtures/utils/cypress';
-import { fetchLiveIndigoToken, fetchLiveOpsToken, refreshLiveToken } from './cypressTestAuth';
+import { fetchLiveOpsToken, loginAsIndigoUser, loginAsOpsUser } from './cypressTestAuth';
 
-export { refreshLiveToken };
-
-const visitWithAuth = (user, token, extras) =>
+// visitWithAuth logs in via a real MSAL session (see cypressTestAuth.js's loginAsIndigoUser/
+// loginAsOpsUser) and then does its own cy.visit() on top of that restored session, purely to set
+// the per-spec cypress:group override and any extras via onBeforeLoad - login itself no longer
+// happens here.
+const visitWithAuth = (user, extras) => {
+  const login = user.liveOps ? loginAsOpsUser : loginAsIndigoUser;
+  login();
   cy.visit('/', {
     onBeforeLoad(win) {
       win.localStorage.setItem('cypress:group', user.group);
-      win.localStorage.setItem('cypress:token', token);
-      win.localStorage.setItem('cypress:account', JSON.stringify(user));
       // Read by src/utils/constants.ts' cypressLiveMode - lets app code that would otherwise
       // unconditionally mock under cypressToken (e.g. GetProposalsReviewable) fall through to a
       // real request, since every run is live now.
@@ -24,13 +26,13 @@ const visitWithAuth = (user, token, extras) =>
       Object.entries(extras).forEach(([k, v]) => win.localStorage.setItem(k, v));
     }
   });
+};
 
 export const initialize = (user, extras = {}) => {
   viewPort();
   // Reviewer/admin roles need a different live account (sciops1) that's actually been granted
-  // those IAM groups - astronomer1 hasn't. See cypressTestAuth.js's fetchLiveOpsToken.
-  const fetchToken = user.liveOps ? fetchLiveOpsToken : fetchLiveIndigoToken;
-  fetchToken().then((token) => visitWithAuth(user, token, extras));
+  // those IAM groups - astronomer1 hasn't. See cypressTestAuth.js's loginAsOpsUser.
+  visitWithAuth(user, extras);
 };
 
 // IMPROVEMENT  move cy. commands out of this file into cypress.js and create a function for it
@@ -299,9 +301,9 @@ export const clickEditIconForRow = (tableTestId, text) => {
 };
 
 // Appends a proposal to a panel's own `proposals` array via a direct PUT, rather than going
-// through /panels/assignments. This is a temporary workaround for the fact that the real backend's 
-// `/panels/assignments` endpoint can only assign a proposal to a panel for a proposal that has been 
-// submitted and until we are able to attach a PDF to the proposal, we cannot submit it. 
+// through /panels/assignments. This is a temporary workaround for the fact that the real backend's
+// `/panels/assignments` endpoint can only assign a proposal to a panel for a proposal that has been
+// submitted and until we are able to attach a PDF to the proposal, we cannot submit it.
 // TODO: Remove this function once it is possible to asstach a PDF to a proposal and submit it.
 export const assignProposalToPanel = (panelId, prslId) => {
   cy.window().then((win) => {
@@ -310,28 +312,28 @@ export const assignProposalToPanel = (panelId, prslId) => {
       const url = `${basePath}/pht/panels/${panelId}`;
       const headers = { Authorization: `Bearer ${token}` };
 
-      // panelId is long-lived fixture data on the real staging environment but a fresh/empty 
-      // local ODA won't have it. If the GET 404s, create a new panel 
+      // panelId is long-lived fixture data on the real staging environment but a fresh/empty
+      // local ODA won't have it. If the GET 404s, create a new panel
       // with the same ID and cycle, then PUT the proposal into it.
       cy.request({ method: 'GET', url, headers, failOnStatusCode: false }).then((getResponse) => {
         const panelExists = getResponse.status === 200;
         const panel = panelExists
           ? getResponse.body
           : {
-            panel_id: panelId,
-            name: 'Science Verification',
-            cycle: 'TEST_SKAO_2027_Low_AA2_SV',
-            proposals: []
-          };
+              panel_id: panelId,
+              name: 'Science Verification',
+              cycle: 'TEST_SKAO_2027_Low_AA2_SV',
+              proposals: []
+            };
 
         (panelExists
           ? cy.wrap(null)
           : cy.request({
-            method: 'POST',
-            url: `${basePath}/pht/panels/create`,
-            headers,
-            body: panel
-          })
+              method: 'POST',
+              url: `${basePath}/pht/panels/create`,
+              headers,
+              body: panel
+            })
         ).then(() => {
           const alreadyAssigned = (panel.proposals || []).some((p) => p.prsl_id === prslId);
           if (alreadyAssigned) {
@@ -383,9 +385,9 @@ export const completeScienceIdeaCreation = (title) => {
   enterScienceVerificationIdeaTitle(title);
   clickCreateSubmission();
   cy.wait('@mockCreateSVIdea');
-  // Mirrors postProposal.tsx's own refreshAuthToken() call, made for the same reason - see
-  // refreshLiveToken's own comment.
-  refreshLiveToken();
+  // postProposal.tsx calls the real refreshAuthToken() itself after creating the proposal, which
+  // now genuinely forces MSAL to fetch a fresh token reflecting the new group membership - no
+  // Cypress-side equivalent needed any more (there used to be one here; see git history).
   verifyScienceIdeaCreatedAlertFooter();
   pageConfirmed('TEAM');
 };

@@ -7,7 +7,7 @@ import { ButtonLogin, ButtonUser, ButtonLogout, getUserInfo } from '@ska-telesco
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { PMT, PATH, isCypress, PAGE_PANEL_MANAGEMENT } from '@/utils/constants';
+import { PMT, PATH, PAGE_PANEL_MANAGEMENT } from '@/utils/constants';
 import {
   isReviewerAdmin,
   isReviewerChair,
@@ -36,7 +36,6 @@ export default function ButtonUserMenu({
   useInitializeAccessStore();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [cypressLogin, setCypressLogin] = React.useState('');
   const openMenu = Boolean(anchorEl);
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
@@ -81,15 +80,7 @@ export default function ButtonUserMenu({
     };
   }, [instance]);
 
-  const username = displayName + cypressLogin;
-
-  React.useEffect(() => {
-    const accountStr = localStorage.getItem('cypress:account');
-    const account = accountStr ? JSON.parse(accountStr) : null;
-    if (account && isCypress) {
-      setCypressLogin(account.name);
-    }
-  }, []);
+  const username = displayName;
 
   // Attach click listener to ButtonLogin
   React.useEffect(() => {

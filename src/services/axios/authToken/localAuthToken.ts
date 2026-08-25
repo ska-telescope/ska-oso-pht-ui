@@ -22,17 +22,10 @@ export const setLocalTokenProvider = (provider: TokenProvider | null): void => {
 };
 
 export const getLocalToken = async (): Promise<string | null> => {
-  // Cypress e2e specs inject a token directly into localStorage - a placeholder for
-  // stub-backed specs, or a real Indigo-issued JWT for specs running against a live backend
-  // (see tests/cypress/e2e/common/liveAuth.js). Either way there's no real MSAL session to
-  // silently acquire a token from, so use it directly rather than falling through to
-  // tokenProvider (which requires one).
-  if (typeof window !== 'undefined' && window.Cypress) {
-    const cypressToken = window.localStorage.getItem('cypress:token');
-    if (cypressToken) {
-      return cypressToken;
-    }
-  }
+  // Cypress e2e specs log in via a real MSAL session now (see
+  // tests/cypress/e2e/common/cypressTestAuth.js's loginWithRealMsal), so tokenProvider below
+  // finds a real account the same way it would for any other localhost session - no Cypress
+  // special-casing needed here any more.
   if (!tokenProvider) {
     return null;
   }

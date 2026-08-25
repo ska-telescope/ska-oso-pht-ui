@@ -1,9 +1,15 @@
 #!/usr/bin/env node
-// Runs the Cypress e2e suite across several concurrent `cypress run` processes instead of one,
-// each covering a subset of spec files. Cypress itself only parallelises across *separate CI
-// machines* via Cypress Cloud's --record --parallel (see cypress.config.mjs's projectId) - this
-// script gets most of the same wall-clock win on a single machine, with no cloud dependency, so
-// it works the same way locally and in CI.
+// Runs the Cypress e2e suite across several concurrent `cypress run` processes instead of one.
+// Cypress itself only parallelises across *separate CI machines* via Cypress Cloud's --record
+// --parallel (see cypress.config.mjs's projectId) - this script gets most of the same wall-clock
+// win on a single machine, with no cloud dependency, so it works the same way locally and in CI.
+//
+// Which specs each worker runs is decided by the cypress-split plugin (wired up in
+// cypress.config.mjs's setupNodeEvents), driven by the SPLIT/SPLIT_INDEX/SPLIT_FILE/
+// SPLIT_OUTPUT_FILE env vars set per worker below - this script itself only owns process
+// orchestration: spawning the workers, giving each Linux worker its own Xvfb display, merging
+// their JUnit reports, and merging their cypress-split timing files back into one for the next
+// run to weight against.
 //
 // Usage:
 //   node scripts/cypressParallel.mjs [--workers=N] [--dry-run] [<extra args passed to each `cypress run`>]
@@ -19,14 +25,17 @@
 // fall through to whatever's already on PATH for a command it doesn't need to install, so `npx
 // node ...` still just runs the real node binary.
 //
-// Do not pass --spec yourself - this script owns spec distribution across workers.
+// Do not pass --spec yourself - cypress-split owns spec distribution across workers.
 
-import { globSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs';
-import { spawn } from 'node:child_process';
+import { globSync, readFileSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-const SPEC_PATTERN = 'tests/cypress/e2e/**/*.test.js';
+// Only used to count specs (to cap worker count - see workerCount below); cypress-split does the
+// actual per-worker selection from Cypress's own resolved spec list, so this must be kept in sync
+// with cypress.config.mjs's e2e.specPattern.
+const SPEC_PATTERN = 'tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}';
 // Matches JS_BUILD_TESTS_DIRECTORY's own default in .make/js.mk, and respects it when CI
 // overrides it - CI's own report-merging step (jsMergeReports, see js-do-e2e-test in
 // .make/js.mk) globs `$(JS_BUILD_TESTS_DIRECTORY)/e2e*.xml` non-recursively, so worker output
@@ -36,143 +45,179 @@ const REPORT_DIR = process.env.JS_BUILD_TESTS_DIRECTORY ?? 'build/tests';
 // CI's own merge step would ingest this alongside the per-spec files it's built from and
 // double-count every result.
 const MERGED_REPORT_NAME = 'parallel-report-merged.xml';
-// Call the local binary directly rather than going through npx/npm - this repo is a Yarn
+// Call the local binaries directly rather than going through npx/npm - this repo is a Yarn
 // project with no npm workflow, and shelling through npx here just adds npm's own config-noise
 // (env warnings etc.) to every one of the N concurrent workers for no benefit.
-const CYPRESS_BIN = join(dirname(fileURLToPath(import.meta.url)), '..', 'node_modules', '.bin', 'cypress');
+const BIN_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'node_modules', '.bin');
+const CYPRESS_BIN = join(BIN_DIR, 'cypress');
+const CYPRESS_SPLIT_MERGE_BIN = join(BIN_DIR, 'cypress-split-merge');
+// Where cypress-split's per-worker duration data lives (see runWorker/mergeSplitTimings below).
+// Lives under REPORT_DIR so it's wiped along with the rest of the build output rather than
+// tracked in git - the first run on a fresh checkout just falls back to an even split until this
+// has been populated by a prior run.
+const SPLIT_DIR = join(REPORT_DIR, 'cypress-split');
+const MERGED_TIMINGS_FILE = join(SPLIT_DIR, 'merged-timings.json');
 
-const rawArgs = process.argv.slice(2);
-let WORKERS = Number(process.env.CYPRESS_PARALLEL_WORKERS ?? 4);
-let dryRun = false;
-const extraArgs = [];
-for (const arg of rawArgs) {
-  if (arg.startsWith('--workers=')) {
-    WORKERS = Number(arg.split('=')[1]);
-  } else if (arg === '--dry-run') {
-    dryRun = true;
-  } else if (arg === '--') {
-    continue; // tolerated for anyone used to the old `-- <args>` convention
-  } else {
-    extraArgs.push(arg);
+// Wrapped in an async IIFE (rather than left as top-level statements) purely so every early-out
+// below can `return` instead of calling process.exit() - process.exit() terminates the process
+// immediately, which can truncate console output that's still buffered and waiting to flush when
+// stdout isn't a TTY (e.g. piped through `yarn`/CI log capture) - a well-known Node.js gotcha.
+// Setting process.exitCode and letting the script run to completion lets Node drain stdout first.
+async function main() {
+  const overallStart = Date.now();
+
+  const rawArgs = process.argv.slice(2);
+  let WORKERS = Number(process.env.CYPRESS_PARALLEL_WORKERS ?? 4);
+  let dryRun = false;
+  const extraArgs = [];
+  for (const arg of rawArgs) {
+    if (arg.startsWith('--workers=')) {
+      WORKERS = Number(arg.split('=')[1]);
+    } else if (arg === '--dry-run') {
+      dryRun = true;
+    } else if (arg === '--') {
+      continue; // tolerated for anyone used to the old `-- <args>` convention
+    } else {
+      extraArgs.push(arg);
+    }
   }
-}
 
-if (extraArgs.some((a) => a === '--spec' || a.startsWith('--spec='))) {
-  console.error(
-    'cypressParallel.mjs distributes specs across workers itself - do not pass --spec.'
-  );
-  process.exit(1);
-}
+  if (extraArgs.some((a) => a === '--spec' || a.startsWith('--spec='))) {
+    console.error(
+      'cypressParallel.mjs distributes specs across workers itself - do not pass --spec.'
+    );
+    process.exitCode = 1;
+    return;
+  }
 
-const specs = globSync(SPEC_PATTERN).sort();
-if (specs.length === 0) {
-  console.error(`No specs found matching ${SPEC_PATTERN}`);
-  process.exit(1);
-}
+  const specs = globSync(SPEC_PATTERN);
+  if (specs.length === 0) {
+    console.error(`No specs found matching ${SPEC_PATTERN}`);
+    process.exitCode = 1;
+    return;
+  }
 
-const workerCount = Math.max(1, Math.min(WORKERS, specs.length));
+  const workerCount = Math.max(1, Math.min(WORKERS, specs.length));
+  mkdirSync(SPLIT_DIR, { recursive: true });
+  // Clear last run's per-worker timing output first - otherwise a leftover worker5/ from a run
+  // with a higher --workers count would keep getting folded into every future merge below.
+  for (const dir of globSync(join(SPLIT_DIR, 'worker*'))) {
+    rmSync(dir, { recursive: true, force: true });
+  }
 
-// Balance workers by each spec file's line count as a proxy for how much it does (more
-// clicks/waits ~ more lines) - a greedy longest-first bin-pack onto whichever worker is
-// currently lightest. This is a self-maintaining substitute for hand-tracked per-spec
-// durations, which would silently go stale as specs are added or edited.
-const weighted = specs
-  .map((spec) => ({ spec, weight: readFileSync(spec, 'utf8').split('\n').length }))
-  .sort((a, b) => b.weight - a.weight);
+  // Concurrent workers must not all write the same junit file - if the caller hasn't already
+  // asked for a specific reporter, default to one hashed filename per worker (mocha-junit-reporter
+  // expands [hash] per spec file too, so this is safe even with multiple specs per worker).
+  const callerSetReporterOptions = extraArgs.some((a) => a.startsWith('--reporter-options'));
+  const reporterArgsFor = (workerIndex) =>
+    callerSetReporterOptions
+      ? []
+      : [
+          '--reporter',
+          'junit',
+          '--reporter-options',
+          `mochaFile=${REPORT_DIR}/e2e-tests-worker${workerIndex + 1}-[hash].xml`
+        ];
 
-const bins = Array.from({ length: workerCount }, () => ({ specs: [], weight: 0 }));
-for (const item of weighted) {
-  const lightest = bins.reduce((min, bin) => (bin.weight < min.weight ? bin : min), bins[0]);
-  lightest.specs.push(item.spec);
-  lightest.weight += item.weight;
-}
+  if (!callerSetReporterOptions) {
+    mkdirSync(REPORT_DIR, { recursive: true });
+    // Clear last run's JUnit output first - otherwise printConsolidatedSummary() below finds
+    // both this run's and every previous run's report for the same spec (each with its own
+    // [hash]-suffixed filename, so nothing overwrites the old one) and double-counts it.
+    for (const file of globSync(`${REPORT_DIR}/*.xml`)) {
+      rmSync(file, { force: true });
+    }
+  }
 
-// Concurrent workers must not all write the same junit file - if the caller hasn't already
-// asked for a specific reporter, default to one hashed filename per worker (mocha-junit-reporter
-// expands [hash] per spec file too, so this is safe even with multiple specs per worker).
-const callerSetReporterOptions = extraArgs.some((a) => a.startsWith('--reporter-options'));
-const reporterArgsFor = (workerIndex) =>
-  callerSetReporterOptions
-    ? []
-    : [
-        '--reporter',
-        'junit',
-        '--reporter-options',
-        `mochaFile=${REPORT_DIR}/e2e-tests-worker${workerIndex + 1}-[hash].xml`
-      ];
-
-if (!callerSetReporterOptions) {
-  mkdirSync(REPORT_DIR, { recursive: true });
-}
-
-console.log(`Running ${specs.length} specs across ${bins.length} worker(s):`);
-bins.forEach((bin, i) => {
-  console.log(`  worker ${i + 1}: ${bin.specs.length} spec(s), ~${bin.weight} lines`);
-  bin.specs.forEach((spec) => console.log(`    ${spec}`));
-});
-
-if (dryRun) {
-  process.exit(0);
-}
-
-// Cypress bundles its own Xvfb for headless Linux runs, but it hardcodes display :99 - fine for
-// one instance, but concurrent workers all racing to claim :99 collide ("Server is already active
-// for display 99"). xvfb-run --auto-servernum gives each worker its own free display instead, so
-// wrap Cypress with it on Linux. Not needed (and not available) on macOS/Windows, where Cypress
-// either has no Xvfb dependency or uses a real display directly.
-const useXvfbRun = process.platform === 'linux';
-
-const runWorker = (bin, index) =>
-  new Promise((resolve) => {
-    const cypressArgs = [
-      'run',
-      '--spec',
-      bin.specs.join(','),
-      ...reporterArgsFor(index),
-      ...extraArgs
-    ];
-    const [cmd, args] = useXvfbRun
-      ? [
-          'xvfb-run',
-          [
-            '--auto-servernum',
-            // xvfb-run's own default screen (unspecified) is often too small/low-colour-depth
-            // for Chromium to render into - match what Cypress's own bundled Xvfb normally sets
-            // up rather than trading the display collision for a blank/broken render.
-            '--server-args=-screen 0 1280x1024x24',
-            CYPRESS_BIN,
-            ...cypressArgs
-          ]
-        ]
-      : [CYPRESS_BIN, cypressArgs];
-    const child = spawn(cmd, args, { stdio: 'inherit' });
-    child.on('exit', (code) => resolve({ worker: index + 1, code: code ?? 1 }));
-    // Without this, a spawn failure (e.g. xvfb-run missing) never fires 'exit', so the
-    // Promise.all below would hang forever instead of failing loudly.
-    child.on('error', (err) => {
-      console.error(`Worker ${index + 1} failed to start (${cmd}): ${err.message}`);
-      resolve({ worker: index + 1, code: 1 });
-    });
-  });
-
-const results = await Promise.all(bins.map(runWorker));
-
-if (callerSetReporterOptions) {
+  console.log(`Running ${specs.length} spec(s) across ${workerCount} worker(s).`);
   console.log(
-    '\nA custom --reporter-options was supplied, so this script does not know where each ' +
-      "worker's output landed - skipping the consolidated summary."
+    'Per-worker spec assignment is logged by cypress-split below as each worker starts.'
   );
-} else {
-  printConsolidatedSummary();
+
+  if (dryRun) {
+    return;
+  }
+
+  // Cypress bundles its own Xvfb for headless Linux runs, but it hardcodes display :99 - fine for
+  // one instance, but concurrent workers all racing to claim :99 collide ("Server is already
+  // active for display 99"). xvfb-run --auto-servernum gives each worker its own free display
+  // instead, so wrap Cypress with it on Linux. Not needed (and not available) on macOS/Windows,
+  // where Cypress either has no Xvfb dependency or uses a real display directly.
+  const useXvfbRun = process.platform === 'linux';
+
+  const runWorker = (index) =>
+    new Promise((resolve) => {
+      const cypressArgs = ['run', ...reporterArgsFor(index), ...extraArgs];
+      const [cmd, args] = useXvfbRun
+        ? [
+            'xvfb-run',
+            [
+              '--auto-servernum',
+              // xvfb-run's own default screen (unspecified) is often too small/low-colour-depth
+              // for Chromium to render into - match what Cypress's own bundled Xvfb normally sets
+              // up rather than trading the display collision for a blank/broken render.
+              '--server-args=-screen 0 1280x1024x24',
+              CYPRESS_BIN,
+              ...cypressArgs
+            ]
+          ]
+        : [CYPRESS_BIN, cypressArgs];
+      // Own subfolder per worker so each one's cypress-split output file can't race with another
+      // worker's write - mergeSplitTimings() below combines them back into one file afterwards.
+      const workerSplitDir = join(SPLIT_DIR, `worker${index + 1}`);
+      mkdirSync(workerSplitDir, { recursive: true });
+      const child = spawn(cmd, args, {
+        stdio: 'inherit',
+        env: {
+          ...process.env,
+          SPLIT: String(workerCount),
+          SPLIT_INDEX: String(index),
+          SPLIT_FILE: MERGED_TIMINGS_FILE,
+          SPLIT_OUTPUT_FILE: join(workerSplitDir, 'timings.json')
+        }
+      });
+      child.on('exit', (code) => resolve({ worker: index + 1, code: code ?? 1 }));
+      // Without this, a spawn failure (e.g. xvfb-run missing) never fires 'exit', so the
+      // Promise.all below would hang forever instead of failing loudly.
+      child.on('error', (err) => {
+        console.error(`Worker ${index + 1} failed to start (${cmd}): ${err.message}`);
+        if (cmd === 'xvfb-run' && err.code === 'ENOENT') {
+          console.error(
+            'xvfb-run is not installed - on Ubuntu/Debian: sudo apt-get update && sudo apt-get install -y xvfb'
+          );
+        }
+        resolve({ worker: index + 1, code: 1 });
+      });
+    });
+
+  const results = await Promise.all(
+    Array.from({ length: workerCount }, (_, index) => runWorker(index))
+  );
+
+  console.log(`\nTotal wall-clock time: ${formatMinSec((Date.now() - overallStart) / 1000)}`);
+
+  mergeSplitTimings();
+
+  if (callerSetReporterOptions) {
+    console.log(
+      '\nA custom --reporter-options was supplied, so this script does not know where each ' +
+        "worker's output landed - skipping the consolidated summary."
+    );
+  } else {
+    printConsolidatedSummary();
+  }
+
+  const failed = results.filter((r) => r.code !== 0);
+  if (failed.length > 0) {
+    console.error(`\nWorker(s) failed: ${failed.map((r) => r.worker).join(', ')}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  console.log('\nAll workers passed.');
 }
 
-const failed = results.filter((r) => r.code !== 0);
-if (failed.length > 0) {
-  console.error(`\nWorker(s) failed: ${failed.map((r) => r.worker).join(', ')}`);
-  process.exit(1);
-}
-
-console.log('\nAll workers passed.');
+await main();
 
 // Column order/labels, box-drawing borders, mm:ss durations and "-" for zero all match Cypress's
 // own per-spec results table (the one each worker already prints for its own subset), so the
@@ -313,4 +358,33 @@ function parseJUnitFile(path, xml) {
 function extractTestsuites(xml) {
   const match = xml.match(/<testsuites[^>]*>([\s\S]*)<\/testsuites>/);
   return match ? match[1] : '';
+}
+
+// Combines every worker's own SPLIT_OUTPUT_FILE (each written independently, so no write races)
+// back into the one MERGED_TIMINGS_FILE that the *next* run reads via SPLIT_FILE to weight its
+// split by real spec durations instead of an even count-based split. Uses cypress-split's own
+// merge CLI rather than reimplementing its (averaging, per-spec) merge logic here.
+function mergeSplitTimings() {
+  // If every worker died before writing its own timings.json (e.g. they all failed to spawn),
+  // don't overwrite MERGED_TIMINGS_FILE with an empty `durations: []` - cypress-split's own
+  // duration-weighting divides by previousDurations.length when reading SPLIT_FILE back in, so an
+  // empty file turns into a 0/0 = NaN average that poisons its bin-packing (a NaN sum can never
+  // compare as "smaller" than another bin), starving most workers on the *next* run instead of
+  // just falling back to an even split like a missing SPLIT_FILE does. Leave any pre-existing
+  // (good) merged file alone rather than clobbering it with this run's empty result.
+  if (globSync(join(SPLIT_DIR, 'worker*', 'timings.json')).length === 0) {
+    console.log('\nNo worker produced timing data this run - leaving cypress-split timings as is.');
+    return;
+  }
+  const result = spawnSync(
+    CYPRESS_SPLIT_MERGE_BIN,
+    ['--parent-folder', SPLIT_DIR, '--split-file', 'timings.json', '--output', MERGED_TIMINGS_FILE],
+    { stdio: 'inherit' }
+  );
+  if (result.status !== 0) {
+    console.error(
+      '\nWarning: failed to merge cypress-split timing data - next run will fall back to an ' +
+        'even split.'
+    );
+  }
 }

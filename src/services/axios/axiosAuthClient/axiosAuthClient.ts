@@ -4,7 +4,7 @@ import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MSENTRA_API_URI } from '@/utils/constants';
 import { getUseIndigo } from '@/utils/authConfig';
 import { env } from '@/env';
-import { getLocalToken, isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
+import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
 
 export enum LogLevel {
   Error,
@@ -30,6 +30,12 @@ type MsalInstance = ReturnType<typeof useMsal>['instance'];
 // cancelling every other in-flight request. Only the first should trigger the redirect.
 let loginRedirectTriggered = false;
 
+// How many times (and how long to wait between each) createRequestInterceptor retries finding an
+// MSAL account before concluding there's genuinely no session - see its own comment for why.
+const NO_ACCOUNT_MAX_RETRIES = 2;
+const NO_ACCOUNT_RETRY_DELAY_MS = 500;
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 // Set by useAxiosAuthClient (the only place with access to the MSAL instance/account) so that
 // non-hook callers - e.g. postProposal.tsx, postPanel.tsx - can still trigger a refresh via the
 // plain refreshAuthToken() export below, the same way setLocalTokenProvider lets them reach
@@ -50,7 +56,10 @@ export const refreshAuthToken = async (): Promise<void> => {
   try {
     await msalForceRefresh();
   } catch (error) {
-    console.warn('[axiosAuthClient] refreshAuthToken failed, continuing with existing token:', error);
+    console.warn(
+      '[axiosAuthClient] refreshAuthToken failed, continuing with existing token:',
+      error
+    );
   }
 };
 
@@ -80,6 +89,8 @@ export const mapAxiosError = (error: AxiosError): Error => {
   return new Error(`An error occurred: ${error.message}`);
 };
 
+type MsalAccount = ReturnType<MsalInstance['getAllAccounts']>[number];
+
 export const createRequestInterceptor =
   (instance: MsalInstance) => async (request: InternalAxiosRequestConfig) => {
     const isHttp = request?.baseURL?.startsWith(HTTP);
@@ -89,13 +100,12 @@ export const createRequestInterceptor =
       request.baseURL = request.baseURL.replace(HTTP, HTTPS);
     }
 
-    const account = instance.getAllAccounts()[0];
-    if (account) {
+    // Shared by both the immediate account below and the retried one further down, so a silent
+    // acquisition failure is handled identically either way: redirect to login (only the first
+    // concurrent request does so - see loginRedirectTriggered above) and reject this request.
+    const attachToken = async (account: MsalAccount) => {
       try {
-        const tokenResponse = await instance.acquireTokenSilent({
-          ...loginRequest,
-          account
-        });
+        const tokenResponse = await instance.acquireTokenSilent({ ...loginRequest, account });
         request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
       } catch (error) {
         if (error instanceof InteractionRequiredAuthError && !loginRedirectTriggered) {
@@ -107,17 +117,44 @@ export const createRequestInterceptor =
           );
           instance.loginRedirect(loginRequest);
         }
-        return Promise.reject(error);
+        throw error;
       }
-    } else if (isLocalhost()) {
-      // No real MSAL session (e.g. a headless Cypress run) - fall back to a locally-supplied
-      // token the same way the shared axiosClient does, instead of silently sending no
-      // Authorization header at all.
-      const token = await getLocalToken();
-      if (token) {
-        request.headers['Authorization'] = `Bearer ${token}`;
-      }
+    };
+
+    const account = instance.getAllAccounts()[0];
+    if (account) {
+      await attachToken(account);
+      return request;
     }
+
+    if (isLocalhost()) {
+      // No MSAL account snapshot yet - either genuinely not logged in, or MSAL just hasn't
+      // finished initializing/processing a redirect if this interceptor fires very early after
+      // page load. Retry a couple of times (with a short wait - re-checking synchronously would
+      // just see the same not-yet-initialized state) before concluding there's really no session
+      // and sending the user to log in, rather than silently carrying on with a separately
+      // sourced token.
+      let retryAccount: MsalAccount | undefined;
+      for (let attempt = 0; !retryAccount && attempt < NO_ACCOUNT_MAX_RETRIES; attempt += 1) {
+        await sleep(NO_ACCOUNT_RETRY_DELAY_MS);
+        retryAccount = instance.getAllAccounts()[0];
+      }
+
+      if (retryAccount) {
+        await attachToken(retryAccount);
+        return request;
+      }
+
+      if (!loginRedirectTriggered) {
+        loginRedirectTriggered = true;
+        console.warn(
+          '[axiosAuthClient] No MSAL account found after retrying - redirecting to login.'
+        );
+        instance.loginRedirect(loginRequest);
+      }
+      throw new Error('No MSAL session found - redirecting to login.');
+    }
+
     return request;
   };
 
@@ -138,9 +175,9 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
     });
   }
 
-  // No-ops when there's no real MSAL account (e.g. a headless Cypress run using the localStorage
-  // token bypass instead) - see tests/cypress/e2e/common/liveAuth.js's refreshLiveToken for the
-  // equivalent used there, since there's no MSAL session for forceRefresh to act on in that case.
+  // See refreshAuthToken's own comment above for why this mechanism exists at all 
+  // the `if (account)` guard below just protects the rare case where this 
+  // gets called before any real MSAL session exists yet.
   msalForceRefresh = async () => {
     const account = instance.getAllAccounts()?.[0];
     if (account) {
