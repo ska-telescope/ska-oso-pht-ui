@@ -25,11 +25,10 @@ export function getUseIndigo(): boolean {
     return sessionStorage.getItem(USE_INDIGO_SESSION_KEY) === 'true';
   }
 
-  // Env var: authoritative for deployed Indigo environments.
-  if (env.USE_INDIGO === 'true') {
-    return true;
-  }
-  return false;
+  // Env var: authoritative for deployed environments. Indigo is the default - only an explicit
+  // 'false' opts back out to Entra, so an unset/misconfigured USE_INDIGO fails toward the
+  // auth mode the live-backend test suite (and most deployments) actually expect.
+  return env.USE_INDIGO !== 'false';
 }
 
 // Returns missing required env key names when USE_INDIGO is active. Empty array = all good.

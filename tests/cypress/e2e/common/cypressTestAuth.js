@@ -90,8 +90,16 @@ const fetchLiveOpsTokenResponse = () =>
 // token. Revisits the app afterwards so AuthProvider mounts fresh and reads the now-populated
 // cache from scratch, rather than depending on whichever MSAL event (if any) loadExternalTokens()
 // itself fires being one msal-react happens to be listening for.
+// ?use_indigo=true (on every cy.visit('/...') below) forces the app into Indigo auth mode via
+// authConfig.ts's getUseIndigo(), regardless of how the target deployment's own USE_INDIGO env
+// var happens to be set - otherwise AuthProvider can construct MSAL against the Entra/Microsoft
+// fallback authority while these helpers hydrate an Indigo-issued token into it, which looks fine
+// until the first acquireTokenSilent() call sends a real hidden-iframe request to Microsoft's
+// login endpoint instead of Indigo and hangs. getUseIndigo() persists the choice to
+// sessionStorage (which cy.session() snapshots), so only the very first visit per session strictly
+// needs the param, but every entry point passes it explicitly rather than relying on that.
 const hydrateIndigoSession = (tokenResponse) => {
-  cy.visit('/');
+  cy.visit('/?use_indigo=true');
   cy.window({ timeout: 15000 })
     .its('__msalLoadExternalTokens')
     .then((loadExternalTokens) => {
@@ -100,7 +108,7 @@ const hydrateIndigoSession = (tokenResponse) => {
       };
       return cy.wrap(loadExternalTokens(request, tokenResponse), { timeout: 15000 });
     });
-  cy.visit('/');
+  cy.visit('/?use_indigo=true');
   cy.get('[data-testid="usernameMenu"]', { timeout: 15000 }).should('exist');
 };
 
@@ -117,7 +125,7 @@ const loginWithHydratedMsal = (username, fetchTokenResponse) => {
     {
       cacheAcrossSpecs: true,
       validate() {
-        cy.visit('/');
+        cy.visit('/?use_indigo=true');
         cy.get('[data-testid="usernameMenu"]', { timeout: 15000 }).should('exist');
       }
     }
@@ -223,7 +231,7 @@ export const loginAsIndigoUserViaRealBrowserFlow = () => {
     () => {
       establishIndigoSession(username, password);
 
-      cy.visit('/');
+      cy.visit('/?use_indigo=true');
       cy.get('[data-testid="loginButton"]').click();
 
       // Redirect lands back on the app's own origin with ?code=...&state=... - MSAL's
@@ -233,7 +241,7 @@ export const loginAsIndigoUserViaRealBrowserFlow = () => {
     },
     {
       validate() {
-        cy.visit('/');
+        cy.visit('/?use_indigo=true');
         cy.get('[data-testid="usernameMenu"]', { timeout: 15000 }).should('exist');
       }
     }
