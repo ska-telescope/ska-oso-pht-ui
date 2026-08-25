@@ -1,17 +1,15 @@
 import { Box, Card, CardContent, CardHeader, Dialog } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import CancelButton from '../../../button/Cancel/Cancel';
-import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 import SensCalcContent from '../content/SensCalcContent';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import TargetObservation from '@utils/types/targetObservation.tsx';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
   onClose: Function;
-  data?: SensCalcResults;
-  isCustom: boolean;
+  targetObservation?: TargetObservation;
   isNatural: boolean;
-  isPst: boolean;
 }
 
 const SIZE = 20;
@@ -19,10 +17,8 @@ const SIZE = 20;
 export default function SensCalcModalSingle({
   open,
   onClose,
-  data,
-  isCustom,
-  isNatural,
-  isPst = false
+  targetObservation,
+  isNatural
 }: SensCalcDisplaySingleProps) {
   const handleClose = () => {
     onClose();
@@ -46,13 +42,13 @@ export default function SensCalcModalSingle({
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusLoading.' + data?.statusGUI),
+                status: t('statusLoading.' + targetObservation?.sensCalc?.statusGUI),
                 error: ''
               })}
               ariaDescription=""
               testId="statusId"
               icon
-              level={data?.statusGUI}
+              level={targetObservation?.sensCalc?.statusGUI}
               size={SIZE}
               text=""
             />
@@ -67,7 +63,7 @@ export default function SensCalcModalSingle({
         />
       </Card>
       <CardContent>
-        <SensCalcContent data={data} isCustom={isCustom} isNatural={isNatural} isPST={isPst} />
+        <SensCalcContent targetObservation={targetObservation} isNatural={isNatural} />
       </CardContent>
     </Dialog>
   );

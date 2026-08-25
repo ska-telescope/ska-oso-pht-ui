@@ -345,7 +345,7 @@ export default function LinkingPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getSensCalcForTargetGrid = (targetId: string) =>
+  const getTargetObservationForTargetGrid = (targetId: string): TargetObservation =>
     getProposal()?.targetObservation?.find(
       (p) => p.observationId === currRec?.id2 && p.targetId === targetId
     )?.sensCalc;
@@ -359,15 +359,13 @@ export default function LinkingPage() {
   };
 
   const getSensCalcSingle = (id: string, field: string) => {
-    const isPST = elementsO.find((e) => e.id2 === currRec?.id2)?.type === TYPE_PST;
     return (
       <SensCalcDisplaySingle
-        sensCalc={getSensCalcForTargetGrid(id)}
+        targetObservation={getTargetObservationForTargetGrid(id)}
         show={isTargetSelected(id)}
         field={field}
         isCustom={isCustom()}
         isNatural={isNatural()}
-        isPST={isPST}
       />
     );
   };

@@ -905,20 +905,10 @@ export default function DataProduct({ data }: DataProductProps) {
     );
   };
 
-  // These two functions only work for the SV call as they assume one target
-  // and access the first element of an array. A better way here might be to find the
-  // targetObservation that is linked to the id of the DataProduct (that is stored in this component state `id`)
-  // and then use this to get the sensCalc and target. At the time of writing, that isn't a
-  // ball of string I want to start pulling..
-  const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
-  const isTargetSSO = (): boolean => {
-    const proposal = getProposal();
-    return proposal.targets?.[0]?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
-  };
-  const linkedScData = (): any =>
-    getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId)?.sensCalc;
+  // TODO These only works for the SV call as it assumes there is only one targetObservation for this observation
+  const targetObservation = (): TargetObservation =>
+    getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId);
 
-  const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
   const isNatural = () =>
     isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
 
@@ -1093,21 +1083,15 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                isPST() || isTargetSSO()
+                targetObservation()?.sensCalc == undefined
                   ? theme.palette.warning.main
-                  : scData()?.statusGUI !== STATUS_INITIAL
+                  : targetObservation()?.sensCalc?.statusGUI !== STATUS_INITIAL
                     ? theme.palette.success.main
                     : theme.palette.error.main
               }
               title={t('sensitivityCalculatorResults.title')}
             >
-              <SensCalcContent
-                data={linkedScData() ?? scData()}
-                isSSO={isTargetSSO()}
-                isCustom={isCustom()}
-                isNatural={isNatural()}
-                isPST={isPST()}
-              />
+              <SensCalcContent targetObservation={targetObservation()} isNatural={isNatural()} />
             </BorderedSection>
           )}
         </Grid>

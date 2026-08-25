@@ -212,8 +212,7 @@ describe('<SensCalcModalSingle />', () => {
           statusGUI: STATUS_ERROR,
           error: 'SOME ERROR',
           section1: undefined,
-          section2: undefined,
-          section3: undefined
+          section2: undefined
         }}
         isCustom={true}
         isNatural={false}

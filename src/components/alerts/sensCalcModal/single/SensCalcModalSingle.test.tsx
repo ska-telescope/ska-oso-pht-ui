@@ -44,7 +44,6 @@ describe('<SensCalcModalSingle />', () => {
         data={{
           statusGUI: 0,
           error: undefined,
-          displayParams: { targetName: 'm1' },
           section1: [
             {
               field: 'testField1',
