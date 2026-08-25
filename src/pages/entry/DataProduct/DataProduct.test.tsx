@@ -42,7 +42,12 @@ vi.mock('@/utils/update/sensCalc/updateSensCalc', () => ({
   applySensCalcPatches: (existing: any[] = []) => existing
 }));
 
-vi.mock('@/utils/helpers', () => ({ generateId: () => 'SDP000001' }));
+vi.mock('@/utils/helpers', () => ({
+  generateId: () => 'SDP000001',
+  convertFrequencyToDisplayUnits: (value: number, unit: string) => ({ value, unit }),
+  getSpectralResolutionHz: () => 1000000,
+  frequencyConversion: (value: number) => value
+}));
 vi.mock('@/utils/present/present', () => ({
   presentUnits: (val: string) => `unit(${val})`,
   presentValue: (val: string) => val
@@ -159,7 +164,11 @@ describe('DataProduct component', () => {
               id: 'OBS1',
               type: observationType,
               centralFrequency: 1,
-              centralFrequencyUnits: 'Hz'
+              centralFrequencyUnits: 'Hz',
+              supplied: { value: 1 },
+              continuumBandwidth: 1,
+              continuumBandwidthUnits: 2,
+              bandwidth: 1
             }
           ],
           dataProductSDP: [existingDataProduct],
@@ -319,7 +328,6 @@ describe('DataProduct component', () => {
 
   it('uses persisted sensitivity results without recalculating when the edit page loads', () => {
     renderExistingDataProduct({
-      title: 'Target 1',
       statusGUI: 0,
       section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }]
     });
@@ -331,7 +339,6 @@ describe('DataProduct component', () => {
 
   it('immediately calculates missing sensitivity results when the edit page loads', () => {
     renderExistingDataProduct({
-      title: 'Target 1',
       statusGUI: 3,
       error: ''
     });
@@ -451,7 +458,11 @@ describe('DataProduct component', () => {
               type: 'continuum',
               observingBand: 'low',
               centralFrequency: 1,
-              centralFrequencyUnits: 'Hz'
+              centralFrequencyUnits: 'Hz',
+              supplied: { value: 1 },
+              continuumBandwidth: 1,
+              continuumBandwidthUnits: 2,
+              bandwidth: 1
             }
           ],
           dataProductSDP: [
@@ -522,7 +533,11 @@ describe('DataProduct component', () => {
               type: 'continuum',
               observingBand: 'low',
               centralFrequency: 1,
-              centralFrequencyUnits: 'Hz'
+              centralFrequencyUnits: 'Hz',
+              supplied: { value: 1 },
+              continuumBandwidth: 1,
+              continuumBandwidthUnits: 2,
+              bandwidth: 1
             }
           ],
           dataProductSDP: [

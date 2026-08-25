@@ -15,7 +15,7 @@ const Fetch = async (
     const result = await authAxiosClient.get(finalURL, { params: properties });
     return result.data;
   } catch (e) {
-    const errMsg = e?.message || e?.response?.data?.detail || e?.toString();
+    const errMsg = e?.response?.data?.detail || e?.message || e?.toString();
 
     return {
       statusGUI: STATUS_ERROR,

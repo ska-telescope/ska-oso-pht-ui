@@ -146,7 +146,8 @@ export const NEW_ZOOM_DATA_LOW: ZoomData = {
   tapering: 0
 };
 
-// TODO why do we need these models
+// TODO these models are mapped to from observation/target/data product and then used to
+// build SC params. We should be able to just get rid of these and map to properly typed params
 export type ContinuumData = {
   dataType: string;
   bandwidth: ValueUnitPair;

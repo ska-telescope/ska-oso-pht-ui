@@ -309,7 +309,7 @@ async function GetZoomData(
 ): Promise<SensCalcResults> {
   const zoomData: ZoomData = {
     dataType: observation.type,
-    // TODO we should be able to use getBandwidthZoom(observation) here, but the sens calc does
+    // TODO BTN-3462 we should be able to use getBandwidthZoom(observation) here, but the sens calc does
     //  not yet support arbirtary bandwidths. As we are only using the spectral part of the response
     //  we can fudge a hardcoded value for now
     bandwidth: { value: 3125.0, unit: 'kHz' },

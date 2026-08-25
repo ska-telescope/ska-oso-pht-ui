@@ -360,7 +360,7 @@ export default function LinkingPage() {
   const getTargetObservationForTargetGrid = (targetId: string): TargetObservation =>
     getProposal()?.targetObservation?.find(
       (p) => p.observationId === currRec?.id2 && p.targetId === targetId
-    )?.sensCalc;
+    );
 
   const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
   const isNatural = () => {

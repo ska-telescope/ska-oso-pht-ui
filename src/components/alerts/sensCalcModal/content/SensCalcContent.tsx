@@ -4,7 +4,7 @@ import { presentUnits, presentValue } from '@utils/present/present';
 import {
   CUSTOM_VALID_FIELDS,
   FREQUENCY_STR_KHZ,
-  FREQUENCY_STR_MHZ,
+  FREQUENCY_UNITS,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
   REFERENCE_COORDINATE_TYPE_SSO,
   SA_CUSTOM,
@@ -16,14 +16,14 @@ import {
 } from '../../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import { useEffect, useState } from 'react';
-import Target from '@utils/types/target.tsx';
-import Observation from '@utils/types/observation.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Proposal from '@utils/types/proposal.tsx';
 import { getSpectralAveragingFactor } from '@services/axios/get/getSensitivityCalculator/getContinuumData/getContinuumData.tsx';
-import { DataProductSDPNew } from '@utils/types/dataProduct.tsx';
-import { convertFrequencyToDisplayUnits, getSpectralResolutionHz } from '@utils/helpers.ts';
+import {
+  convertFrequencyToDisplayUnits,
+  getBandwidthZoom,
+  getSpectralResolutionHz
+} from '@utils/helpers.ts';
 
 interface SensCalcContentProps {
   targetObservation?: TargetObservation;
@@ -43,23 +43,17 @@ export default function SensCalcContent({
 
   const getProposal = () => application.content2 as Proposal;
 
-  const [target, setTarget] = useState<Target | undefined>(undefined);
-  const [observation, setObservation] = useState<Observation | undefined>(undefined);
-  const [dataProduct, setDataProduct] = useState<DataProductSDPNew | undefined>(undefined);
+  const proposal = getProposal();
 
-  useEffect(() => {
-    setTarget(getProposal().targets?.find((target) => target.id == targetObservation?.targetId));
-    setObservation(
-      getProposal().observations?.find(
-        (observation) => observation.id == targetObservation?.observationId
-      )
-    );
-    setDataProduct(
-      getProposal().dataProductSDP?.find(
-        (dataProduct) => dataProduct.id == targetObservation?.dataProductsSDPId
-      )
-    );
-  }, [targetObservation]);
+  const target = proposal.targets?.find((target) => target.id === targetObservation?.targetId);
+
+  const observation = proposal.observations?.find(
+    (observation) => observation.id === targetObservation?.observationId
+  );
+
+  const dataProduct = proposal.dataProductSDP?.find(
+    (dataProduct) => dataProduct.id === targetObservation?.dataProductsSDPId
+  );
 
   const PresentCustomResultValue = (eValue: any, eId: string) => {
     if (eId === 'targetName') {
@@ -152,18 +146,21 @@ export default function SensCalcContent({
       )
     : undefined;
 
+  const bandwidth = [
+    TYPE_CONTINUUM,
+    TYPE_CONTINUUM_SPECTRAL,
+    TYPE_CONTINUUM_SPECTRAL_LONG
+  ].includes(observation?.type)
+    ? {
+        value: observation?.continuumBandwidth,
+        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits].label
+      }
+    : getBandwidthZoom(observation);
+
   return (
     <>
       {displayElement('targetName', target?.name)}
-      {displayElement(
-        'bandwidth',
-        [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
-          observation?.type
-        )
-          ? observation?.continuumBandwidth
-          : observation?.bandwidth,
-        FREQUENCY_STR_MHZ
-      )}
+      {displayElement('bandwidth', bandwidth.value, bandwidth.unit)}
       {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
       {displayElement('integrationTime', observation?.supplied.value, 'h')}
 
