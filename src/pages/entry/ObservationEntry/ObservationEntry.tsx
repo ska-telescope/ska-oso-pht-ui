@@ -91,21 +91,26 @@ import {
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
-import SuppliedValue from '@/components/fields/suppliedValue/suppliedValue';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
-import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
+import fetchSensCalcPatches, { applySensCalcPatches } from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
-import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
+import {
+  isDataProductRobustValid,
+  isSuppliedValueValid,
+  useIsFrequencyOutOfRange
+} from '@/utils/validation/validation';
+import QuantityField from '@/components/fields/quantity/quantity';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
+const SENS_CALC_DEBOUNCE_MS = 500;
 
 interface ObservationEntryProps {
   data?: Observation;
@@ -137,6 +142,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const latestProposalRef = React.useRef(getProposal());
+  const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestSensCalcRequestIdRef = React.useRef(0);
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
@@ -179,6 +187,51 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
+
+  const persistProposal = (proposal: Proposal) => {
+    latestProposalRef.current = proposal;
+    setProposal(proposal);
+  };
+
+  const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
+    isSuppliedValueValid({
+      type: ob?.supplied?.type,
+      value: ob?.supplied?.value,
+      units: ob?.supplied?.units
+    }) && isDataProductRobustValid(dp);
+
+  const scheduleLocalSensCalcUpdate = (
+    ob: Observation,
+    dp: DataProductSDPNew,
+    delay = SENS_CALC_DEBOUNCE_MS
+  ) => {
+    if (sensCalcDebounceTimerRef.current) {
+      clearTimeout(sensCalcDebounceTimerRef.current);
+    }
+    const requestId = ++latestSensCalcRequestIdRef.current;
+
+    const applyUpdate = async () => {
+      sensCalcDebounceTimerRef.current = null;
+      const sensCalcPatches = await fetchSensCalcPatches(latestProposalRef.current, ob, dp);
+
+      if (requestId !== latestSensCalcRequestIdRef.current) {
+        return;
+      }
+
+      const targetObservation = applySensCalcPatches(
+        latestProposalRef.current.targetObservation,
+        sensCalcPatches
+      );
+      const mergedProposal = { ...latestProposalRef.current, targetObservation };
+      persistProposal(mergedProposal);
+    };
+
+    if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
+      sensCalcDebounceTimerRef.current = setTimeout(() => void applyUpdate(), delay);
+    } else {
+      void applyUpdate();
+    }
+  };
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
@@ -267,7 +320,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /*--------------------------------------------------*/
 
-  const updateObservationOnProposal = async () => {
+  const updateObservationOnProposal = () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
 
@@ -282,17 +335,18 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
     const oldTO = proposal?.targetObservation ?? [];
-    const to = dataProductSDP
-      ? await updateSensCalc(proposal, newObservation, dataProductSDP)
-      : updateSensCalcPartial(oldTO, newObservation);
-
     const tmp = {
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
       dataProductSDP: updateDataProductsOnObservationChange(oldDataProducts, newObservation),
-      targetObservation: to
+      targetObservation: dataProductSDP ? oldTO : updateSensCalcPartial(oldTO, newObservation)
     };
-    setProposal(tmp);
+    persistProposal(tmp);
+
+    if (!dataProductSDP) {
+      return;
+    }
+    scheduleLocalSensCalcUpdate(newObservation, dataProductSDP);
   };
 
   const addObservationToProposal = () => {
@@ -406,6 +460,18 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
     return 0;
   };
+
+  React.useEffect(() => {
+    latestProposalRef.current = getProposal();
+  }, [application.content2]);
+
+  React.useEffect(() => {
+    return () => {
+      if (sensCalcDebounceTimerRef.current) {
+        clearTimeout(sensCalcDebounceTimerRef.current);
+      }
+    };
+  }, []);
 
   React.useEffect(() => {
     setHelp('observationId');
@@ -930,46 +996,65 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       return entry.units;
     };
 
-    const suppliedUnitsField = () => (
-      <Box>
-        <DropDown
-          options={getUnitOptions()}
-          testId="suppliedUnits"
-          value={suppliedUnits}
-          disabled={isLow() && !cypressLowUnitsUnlocked}
-          setValue={setSuppliedUnits}
-          label=""
-          onFocus={() => setHelp('suppliedUnits')}
-          InputProps={{ disableUnderline: true }}
-        />
-      </Box>
-    );
+    const FIELD = 'suppliedValue';
+    const minValue = 0;
+    const maxValue =
+      suppliedType === SUPPLIED_TYPE_INTEGRATION
+        ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
+        : undefined;
+    const label = '';
+    const currentUnitLabel = getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? '';
+    const step =
+      suppliedType === SUPPLIED_TYPE_INTEGRATION
+        ? suppliedUnits === TIME_HOURS
+          ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS
+          : SUPPLIED_INTEGRATION_TIME_STEP_MINS
+        : SUPPLIED_SENSITIVITY_STEP;
+
+    let rangeMessage = '';
+    if (maxValue !== undefined) {
+      rangeMessage = t(`${FIELD}.range.error`, {
+        min: minValue,
+        max: maxValue,
+        units: currentUnitLabel
+      });
+    } else {
+      rangeMessage = t(`${FIELD}.range.minError`, {
+        min: minValue,
+        units: currentUnitLabel
+      });
+    }
+    const validateSuppliedValue = (nextValue: number) =>
+      isSuppliedValueValid({
+        type: suppliedType,
+        value: nextValue,
+        units: suppliedUnits
+      })
+        ? ''
+        : rangeMessage;
 
     return (
-      <Box pt={2}>
-        <SuppliedValue
-          value={suppliedValue}
-          setValue={setSuppliedValue}
-          commitOnBlur={suppliedType !== SUPPLIED_TYPE_INTEGRATION}
-          suffix={suppliedUnitsField()}
-          label=""
-          minValue={0}
-          maxValue={
-            suppliedType === SUPPLIED_TYPE_INTEGRATION
-              ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
-              : undefined
-          }
-          step={
-            suppliedType === SUPPLIED_TYPE_INTEGRATION
-              ? suppliedUnits === TIME_HOURS
-                ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS
-                : SUPPLIED_INTEGRATION_TIME_STEP_MINS
-              : SUPPLIED_SENSITIVITY_STEP
-          }
-          currentUnitLabel={getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? ''}
-          required
-        />
-      </Box>
+      <QuantityField
+        value={suppliedValue}
+        setValue={setSuppliedValue}
+        label={label}
+        disabled={isLow() && !cypressLowUnitsUnlocked}
+        minValue={minValue}
+        maxValue={maxValue}
+        minInclusive={false}
+        maxInclusive={true}
+        step={step}
+        requiredMessage={t(`${FIELD}.required`)}
+        rangeMessage={rangeMessage}
+        onFocus={() => setHelp(FIELD)}
+        onUnitsFocus={() => setHelp('suppliedUnits')}
+        units={suppliedUnits}
+        setUnits={setSuppliedUnits}
+        unitOptions={getUnitOptions()}
+        unitsTestId="suppliedUnits"
+        validate={validateSuppliedValue}
+        required
+      />
     );
   };
 

@@ -4,6 +4,8 @@ import {
   DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   IW_BRIGGS,
+  PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
+  PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
   PULSAR_TIMING_VALUE,
   TYPE_CONTINUUM,
   TYPE_ZOOM,
@@ -38,6 +40,18 @@ import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMe
 
 const LABEL_WIDTH = 3;
 const GAP = 2;
+const PST_FLOW_THROUGH_BIT_DEPTH_OPTIONS = PST_FLOW_THROUGH_BIT_DEPTH_VALUES.map((value) => ({
+  label: value,
+  lookup: String(value),
+  value
+}));
+const PST_DEDICATED_FILTERBANK_BIT_DEPTH_OPTIONS = PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES.map(
+  (value) => ({
+    label: value,
+    lookup: String(value),
+    value
+  })
+);
 
 interface DataProductProps {
   t: any; // useScopedTranslation
@@ -76,6 +90,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
       <RobustField
         label={t('robust.label')}
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.robust}
+        setValue={() => undefined}
         disabled
       />
     );
@@ -149,7 +164,13 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     );
 
   const bitDepthField = () =>
-    fieldWrapper(<BitDepthField value={(sdpData as SDPFlowthroughPSTData)?.bitDepth} disabled />);
+    fieldWrapper(
+      <BitDepthField
+        value={(sdpData as SDPFlowthroughPSTData)?.bitDepth}
+        options={PST_FLOW_THROUGH_BIT_DEPTH_OPTIONS}
+        disabled
+      />
+    );
 
   const pulsarTimingValueField = () =>
     fieldWrapper(
@@ -193,7 +214,13 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     );
 
   const bitDepthFieldFilterBank = () =>
-    fieldWrapper(<BitDepthField value={(sdpData as SDPFilterbankPSTData)?.bitDepth} disabled />);
+    fieldWrapper(
+      <BitDepthField
+        value={(sdpData as SDPFilterbankPSTData)?.bitDepth}
+        options={PST_DEDICATED_FILTERBANK_BIT_DEPTH_OPTIONS}
+        disabled
+      />
+    );
 
   const dispersionMeasureField = () =>
     fieldWrapper(

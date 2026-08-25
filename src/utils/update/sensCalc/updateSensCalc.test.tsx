@@ -1,6 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import updateSensCalc from './updateSensCalc';
-import { STATUS_PARTIAL } from '@/utils/constants';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import fetchSensCalcPatches, {
+  applySensCalcPatches,
+  getTargetObservationKey
+} from './updateSensCalc';
+import {
+  DP_TYPE_IMAGES,
+  IW_BRIGGS,
+  STATUS_ERROR,
+  STATUS_INITIAL,
+  STATUS_OK,
+  SUPPLIED_INTEGRATION_TIME_UNITS_H,
+  SUPPLIED_TYPE_INTEGRATION
+} from '@/utils/constants';
 import Observation from '@/utils/types/observation';
 import TargetObservation from '@/utils/types/targetObservation';
 import Proposal from '@/utils/types/proposal';
@@ -14,8 +25,15 @@ vi.mock(
   })
 );
 
-describe('updateSensCalc', () => {
-  const observation: Observation = { id: 'obs1' } as Observation;
+describe('fetchSensCalcPatches', () => {
+  const observation: Observation = {
+    id: 'obs1',
+    supplied: {
+      type: SUPPLIED_TYPE_INTEGRATION,
+      value: 1,
+      units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+    }
+  } as Observation;
 
   const proposalBase: Proposal = {
     targetObservation: [
@@ -49,15 +67,19 @@ describe('updateSensCalc', () => {
     technicalPDF: null
   };
 
-  const dp = { id: 'dp1' } as any; // ✅ pass this into updateSensCalc
+  const dp = { id: 'dp1' } as any;
 
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('returns empty array if proposal.targetObservation is missing', async () => {
     const proposal = { ...proposalBase, targetObservation: undefined } as Proposal;
-    const result = await updateSensCalc(proposal, observation, dp);
+    const result = await fetchSensCalcPatches(proposal, observation, dp);
     expect(result).toEqual([]);
   });
 
@@ -65,34 +87,45 @@ describe('updateSensCalc', () => {
     (getSensCalc as any).mockResolvedValue({
       id: 't1',
       title: 'calc result',
-      statusGUI: 42,
+      statusGUI: STATUS_OK,
       error: ''
     });
 
-    const result = await updateSensCalc(proposalBase, observation, dp);
+    const result = await fetchSensCalcPatches(proposalBase, observation, dp);
 
-    expect(result[0].sensCalc).toMatchObject({
-      id: 't1',
-      title: 'calc result',
-      statusGUI: STATUS_PARTIAL, // forced override
-      error: ''
-    });
+    expect(result).toEqual([
+      {
+        targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
+        sensCalc: expect.objectContaining({
+          id: 't1',
+          title: 'calc result',
+          statusGUI: STATUS_OK,
+          error: ''
+        })
+      }
+    ]);
   });
 
-  it('falls back to default sensCalc when getSensCalc returns null', async () => {
+  it('preserves sensitivity calculator errors', async () => {
     (getSensCalc as any).mockResolvedValue({
+      statusGUI: STATUS_ERROR,
       error: 'SensCalc error message'
     });
 
-    const result = await updateSensCalc(proposalBase, observation, dp);
+    const result = await fetchSensCalcPatches(proposalBase, observation, dp);
 
-    expect(result[0].sensCalc).toMatchObject({
-      statusGUI: STATUS_PARTIAL, // override applied
-      error: 'SensCalc error message'
-    });
+    expect(result).toEqual([
+      {
+        targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
+        sensCalc: expect.objectContaining({
+          statusGUI: STATUS_ERROR,
+          error: 'SensCalc error message'
+        })
+      }
+    ]);
   });
 
-  it('does not update records with different observationId', async () => {
+  it('returns no patch when target record has no matching target', async () => {
     const proposal = {
       ...proposalBase,
       targetObservation: [
@@ -103,7 +136,102 @@ describe('updateSensCalc', () => {
         } as unknown as TargetObservation
       ]
     };
-    const result = await updateSensCalc(proposal, observation, dp);
-    expect(result[0].sensCalc).toBeUndefined();
+    const result = await fetchSensCalcPatches(proposal, observation, dp);
+    expect(result).toEqual([]);
+  });
+
+  it('does not call sensitivity calculator when supplied input is invalid', async () => {
+    const observationWithInvalidSupplied = {
+      ...observation,
+      supplied: {
+        type: SUPPLIED_TYPE_INTEGRATION,
+        value: Number.NaN,
+        units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+      }
+    } as Observation;
+
+    const result = await fetchSensCalcPatches(proposalBase, observationWithInvalidSupplied, dp);
+
+    expect(getSensCalc).not.toHaveBeenCalled();
+    expect(result).toEqual([
+      {
+        targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
+        sensCalc: expect.objectContaining({
+          title: '',
+          statusGUI: STATUS_INITIAL,
+          error: ''
+        })
+      }
+    ]);
+  });
+
+  it('does not call sensitivity calculator when Briggs robust input is invalid', async () => {
+    const dataProductWithInvalidRobust = {
+      id: 'dp1',
+      data: {
+        dataProductType: DP_TYPE_IMAGES,
+        weighting: IW_BRIGGS,
+        robust: Number.NaN
+      }
+    } as any;
+
+    const result = await fetchSensCalcPatches(
+      proposalBase,
+      observation,
+      dataProductWithInvalidRobust
+    );
+
+    expect(getSensCalc).not.toHaveBeenCalled();
+    expect(result).toEqual([
+      {
+        targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
+        sensCalc: expect.objectContaining({
+          title: '',
+          statusGUI: STATUS_INITIAL,
+          error: ''
+        })
+      }
+    ]);
+  });
+});
+
+describe('applySensCalcPatches', () => {
+  it('updates only matching target observation rows', () => {
+    const existing = [
+      {
+        targetId: 't1',
+        observationId: 'obs1',
+        dataProductsSDPId: 'dp1',
+        sensCalc: { title: 'old' }
+      },
+      {
+        targetId: 't2',
+        observationId: 'obs2',
+        dataProductsSDPId: 'dp2',
+        sensCalc: { title: 'other' }
+      }
+    ] as unknown as TargetObservation[];
+    const result = applySensCalcPatches(existing, [
+      {
+        targetObservationKey: getTargetObservationKey(existing[0]),
+        sensCalc: { title: 'new', statusGUI: STATUS_OK, error: '' } as any
+      }
+    ]);
+
+    expect(result?.[0].sensCalc).toMatchObject({ title: 'new' });
+    expect(result?.[1].sensCalc).toMatchObject({ title: 'other' });
+  });
+
+  it('returns existing rows unchanged when there are no patches', () => {
+    const existing = [
+      {
+        targetId: 't1',
+        observationId: 'obs1',
+        dataProductsSDPId: 'dp1',
+        sensCalc: { title: 'old' }
+      }
+    ] as unknown as TargetObservation[];
+
+    expect(applySensCalcPatches(existing, [])).toBe(existing);
   });
 });

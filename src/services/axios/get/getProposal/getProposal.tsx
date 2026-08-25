@@ -47,6 +47,8 @@ import {
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
   IMAGE_WEIGHTING,
+  IMAGE_WEIGHTING_DEFAULT,
+  ROBUST_DEFAULT,
   FREQUENCY_STR_MHZ,
   BAND_LOW_STR,
   FREQUENCY_STR_GHZ,
@@ -336,13 +338,12 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
           pixelSizeUnits:
             'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : 0,
           weighting:
-            'weight' in script && script.weight?.weighting
-              ? (getWeighting(script.weight.weighting as string) ?? 0)
-              : 0,
+            getWeighting('weight' in script ? script.weight?.weighting : undefined) ??
+            IMAGE_WEIGHTING_DEFAULT,
           robust:
             'weight' in script && script.weight?.weighting === 'briggs'
-              ? Number(script.weight?.robust ?? 0)
-              : 0,
+              ? Number(script.weight.robust ?? ROBUST_DEFAULT)
+              : ROBUST_DEFAULT,
           polarisations: 'polarisations' in script ? script.polarisations : undefined,
           channelsOut: 'channels_out' in script ? (Number(script.channels_out) ?? 0) : 0,
           taperValue: 'gaussian_taper' in script ? (Number(script.gaussian_taper) ?? 0) : 0,
@@ -387,12 +388,11 @@ const getCalibrationStrategy = (
 };
 
 /*********************************************************** observation parameters mapping *********************************************************/
-const getWeighting = (inImageWeighting: string): number => {
-  const weighting = IMAGE_WEIGHTING?.find(
-    (item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase()
-  )?.value;
-  return weighting ? weighting : 1; // fallback
-};
+// Returns undefined for a missing label, or one the backend sends that we don't know, leaving the
+// caller to apply the default.
+const getWeighting = (inImageWeighting?: string): number | undefined =>
+  IMAGE_WEIGHTING?.find((item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase())
+    ?.value;
 
 const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   const suppliedType = OSD_CONSTANTS.Supplied?.find(

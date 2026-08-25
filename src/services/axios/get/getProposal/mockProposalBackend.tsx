@@ -167,7 +167,7 @@ export const MockProposalBackend: ProposalBackend = {
             unit: 'arcsec'
           },
           weight: {
-            weighting: '1',
+            weighting: 'uniform',
             robust: 0
           },
           polarisations: ['X'],

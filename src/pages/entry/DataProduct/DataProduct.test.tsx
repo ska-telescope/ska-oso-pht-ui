@@ -2,7 +2,19 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import { SensCalcResults } from '@/utils/types/sensCalcResults';
+import {
+  IW_BRIGGS,
+  TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_ZOOM
+} from '@/utils/constants.ts';
 import DataProduct from './DataProduct';
+
+const { mockFetchSensCalcPatches } = vi.hoisted(() => ({
+  mockFetchSensCalcPatches: vi.fn(async () => [])
+}));
 
 const wrapper = (component: React.ReactElement) => {
   return render(component);
@@ -25,9 +37,16 @@ let mockStoreReturn: any = {
 vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   storageObject: { useStore: () => mockStoreReturn }
 }));
+vi.mock('@/utils/update/sensCalc/updateSensCalc', () => ({
+  default: mockFetchSensCalcPatches,
+  applySensCalcPatches: (existing: any[] = []) => existing
+}));
 
 vi.mock('@/utils/helpers', () => ({ generateId: () => 'SDP000001' }));
-vi.mock('@/utils/present/present', () => ({ presentUnits: (val: string) => `unit(${val})` }));
+vi.mock('@/utils/present/present', () => ({
+  presentUnits: (val: string) => `unit(${val})`,
+  presentValue: (val: string) => val
+}));
 
 // Safe constants mock
 vi.mock('@/utils/constants.ts', async (importOriginal) => {
@@ -35,13 +54,6 @@ vi.mock('@/utils/constants.ts', async (importOriginal) => {
   return {
     ...actual,
     PAGE_DATA_PRODUCTS: 'PAGE_DATA_PRODUCTS',
-    TYPE_CONTINUUM: 'continuum',
-    TYPE_PST: 'pst',
-    TYPE_ZOOM: 'spectral',
-    IW_BRIGGS: 99,
-    FLOW_THROUGH_VALUE: 0,
-    DETECTED_FILTER_BANK_VALUE: 1,
-    PULSAR_TIMING_VALUE: 2,
     NAV: { PAGE_DATA_PRODUCTS: '/mock-nav' },
     FOOTER_HEIGHT_PHT: 0,
     WRAPPER_HEIGHT: 100,
@@ -63,7 +75,13 @@ vi.mock('@/components/fields/rotationMeasure/rotationMeasure', () => ({
   default: () => <div data-testid="RotationMeasureField" />
 }));
 vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
-  default: () => <div data-testid="BitDepthField" />
+  default: ({ value, options }: { value: number; options?: Array<{ value: number }> }) => (
+    <div
+      data-testid="BitDepthField"
+      data-value={String(value)}
+      data-options={JSON.stringify((options ?? []).map((option) => option.value))}
+    />
+  )
 }));
 vi.mock('@/components/fields/polarisations/polarisations', () => ({
   default: () => <div data-testid="PolarisationsField" />
@@ -122,8 +140,52 @@ vi.mock('@/components/button/Add/Add', () => ({
 
 describe('DataProduct component', () => {
   const theme = createTheme();
+  const existingDataProduct = {
+    id: 'DP1',
+    observationId: 'OBS1',
+    data: { dataProductType: 1 }
+  } as DataProductSDPNew;
+
+  const renderExistingDataProduct = (
+    sensCalc?: SensCalcResults,
+    observationType: string = TYPE_CONTINUUM
+  ) => {
+    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: observationType,
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            }
+          ],
+          dataProductSDP: [existingDataProduct],
+          targetObservation: sensCalc
+            ? [
+                {
+                  observationId: 'OBS1',
+                  dataProductsSDPId: 'DP1',
+                  targetId: 'T1',
+                  sensCalc
+                }
+              ]
+            : []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={existingDataProduct} />
+      </ThemeProvider>
+    );
+  };
 
   beforeEach(() => {
+    mockFetchSensCalcPatches.mockClear();
     mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
     mockStoreReturn = {
       application: { content2: { observations: [], dataProductSDP: [] } },
@@ -190,6 +252,50 @@ describe('DataProduct component', () => {
     expect(addButton).toHaveAttribute('disabled');
   });
 
+  it('uses the correct bit-depth options and default for PST flow-through mode', () => {
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 0, observingBand: 'low' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    const bitDepthField = screen.getByTestId('BitDepthField');
+    expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8,16]');
+    expect(bitDepthField).toHaveAttribute('data-value', '8');
+  });
+
+  it('uses the correct bit-depth options and default for PST detected-filterbank mode', () => {
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1, observingBand: 'low' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    const bitDepthField = screen.getByTestId('BitDepthField');
+    expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8]');
+    expect(bitDepthField).toHaveAttribute('data-value', '8');
+  });
+
   it('does not persist a data product when no real observation has been selected', () => {
     mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
     mockStoreReturn = {
@@ -209,6 +315,36 @@ describe('DataProduct component', () => {
     );
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
+  });
+
+  it('uses persisted sensitivity results without recalculating when the edit page loads', () => {
+    renderExistingDataProduct({
+      title: 'Target 1',
+      statusGUI: 0,
+      section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }]
+    });
+
+    expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
+    expect(mockFetchSensCalcPatches).not.toHaveBeenCalled();
+    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
+  });
+
+  it('immediately calculates missing sensitivity results when the edit page loads', () => {
+    renderExistingDataProduct({
+      title: 'Target 1',
+      statusGUI: 3,
+      error: ''
+    });
+
+    expect(mockFetchSensCalcPatches).toHaveBeenCalledWith(
+      expect.objectContaining({
+        observations: expect.any(Array),
+        dataProductSDP: expect.any(Array),
+        targetObservation: expect.any(Array)
+      }),
+      expect.objectContaining({ id: 'OBS1' }),
+      expect.objectContaining({ id: 'DP1' })
+    );
   });
 
   it('persists a data product when a valid observation is explicitly selected', async () => {
@@ -254,6 +390,15 @@ describe('DataProduct component', () => {
     });
   });
 
+  it.each([TYPE_CONTINUUM, TYPE_ZOOM, TYPE_CONTINUUM_SPECTRAL])(
+    'shows the robust field by default for a %s data product with no saved weighting',
+    (observationType) => {
+      renderExistingDataProduct(undefined, observationType);
+
+      expect(screen.getByTestId('RobustField')).toBeInTheDocument();
+    }
+  );
+
   it('uses the PST proposal mode for the description when no observation is selected', () => {
     mockStoreReturn = {
       application: {
@@ -293,5 +438,198 @@ describe('DataProduct component', () => {
     );
 
     expect(screen.getByText('page.7.descContent.pst.1')).toBeInTheDocument();
+  });
+
+  it('treats Briggs robust=2 as non-Gaussian sensitivity output', async () => {
+    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: 'continuum',
+              observingBand: 'low',
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            }
+          ],
+          dataProductSDP: [
+            {
+              id: 'DP1',
+              observationId: 'OBS1',
+              data: {
+                dataProductType: 1,
+                weighting: IW_BRIGGS,
+                robust: 2,
+                polarisations: ['I']
+              }
+            }
+          ],
+          targetObservation: [
+            {
+              observationId: 'OBS1',
+              dataProductsSDPId: 'DP1',
+              targetId: 'T1',
+              sensCalc: {
+                title: 'Target 1',
+                statusGUI: 0,
+                error: '',
+                section1: [
+                  {
+                    field: 'continuumSynthBeamSize',
+                    value: '0',
+                    units: 'arcsec2'
+                  },
+                  {
+                    field: 'continuumSensitivityWeighted',
+                    value: '7.18',
+                    units: 'Jy/beam'
+                  }
+                ],
+                section2: [],
+                section3: []
+              }
+            }
+          ]
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={mockStoreReturn.application.content2.dataProductSDP[0] as any} />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent(
+        'sensitivityCalculatorResults.nonGaussian'
+      );
+      expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('7.18');
+    });
+  });
+
+  it('keeps uniform weighting out of the non-Gaussian sensitivity path', async () => {
+    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: 'continuum',
+              observingBand: 'low',
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            }
+          ],
+          dataProductSDP: [
+            {
+              id: 'DP1',
+              observationId: 'OBS1',
+              data: {
+                dataProductType: 1,
+                weighting: 1,
+                robust: 2,
+                polarisations: ['I']
+              }
+            }
+          ],
+          targetObservation: [
+            {
+              observationId: 'OBS1',
+              dataProductsSDPId: 'DP1',
+              targetId: 'T1',
+              sensCalc: {
+                title: 'Target 1',
+                statusGUI: 0,
+                error: '',
+                section1: [
+                  {
+                    field: 'continuumSynthBeamSize',
+                    value: '0',
+                    units: 'arcsec2'
+                  },
+                  {
+                    field: 'continuumSensitivityWeighted',
+                    value: '7.18',
+                    units: 'Jy/beam'
+                  }
+                ],
+                section2: [],
+                section3: []
+              }
+            }
+          ]
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={mockStoreReturn.application.content2.dataProductSDP[0] as any} />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('field-continuumSynthBeamSize')).not.toHaveTextContent(
+        'sensitivityCalculatorResults.nonGaussian'
+      );
+      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent('0');
+    });
+  });
+
+  it('loads and saves legacy string bit depths in edit mode', async () => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
+    const updateAppContent2 = vi.fn((proposal: any) => {
+      mockStoreReturn.application.content2 = proposal;
+    });
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1, observingBand: 'low' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2
+    };
+
+    const legacyBitDepth = '8';
+    const legacyData = {
+      id: 'DP-LEGACY-8',
+      observationId: 'OBS1',
+      data: {
+        dataProductType: 1,
+        bitDepth: legacyBitDepth,
+        polarisations: ['I'],
+        outputFrequencyResolution: 1,
+        outputSamplingInterval: 1,
+        dispersionMeasure: 1,
+        rotationMeasure: 1
+      }
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={legacyData as any} />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('BitDepthField')).toHaveAttribute(
+        'data-value',
+        String(Number(legacyBitDepth))
+      );
+    });
+
+    await waitFor(() => {
+      expect(updateAppContent2).toHaveBeenCalled();
+      const savedProposal = updateAppContent2.mock.calls.at(-1)[0];
+      const savedDataProduct = savedProposal.dataProductSDP.at(-1);
+      expect(savedDataProduct.data.bitDepth).toBe(Number(legacyBitDepth));
+    });
   });
 });
