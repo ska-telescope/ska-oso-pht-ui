@@ -231,10 +231,12 @@ export default function DataProduct({ data }: DataProductProps) {
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
   const isSpectral = () =>
-    getObservation()?.type === TYPE_ZOOM ||
-    getProposal()?.scienceCategory === TYPE_ZOOM ||
+    getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
+
+  const isContinuumSpectral = () =>
     getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
     getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
+
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
@@ -752,11 +754,12 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
+        disabled={isSpectral()}
         maxValue={channelsOutMax()}
         onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: channelsOutMax() })}
         required
         setValue={setChannelsOut}
-        value={channelsOut}
+        value={isSpectral() ? getObservation()?.zoomChannels : channelsOut}
       />
     );
 
@@ -910,7 +913,9 @@ export default function DataProduct({ data }: DataProductProps) {
     getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId);
 
   const isNatural = () =>
-    isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
+    isSpectral() || isContinuumSpectral() || (isContinuum() && isDataTypeOne())
+      ? weighting === IW_NATURAL
+      : false;
 
   return (
     <Box
@@ -990,7 +995,7 @@ export default function DataProduct({ data }: DataProductProps) {
               </BorderedSection>
             )}
 
-            {isSpectral() && (
+            {(isSpectral() || isContinuumSpectral()) && (
               <BorderedSection title={t('page.7.group.' + TYPE_ZOOM)}>
                 <Grid pb={1} container spacing={GAP}>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
@@ -1044,6 +1049,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
             {((isContinuum() && isDataTypeOne()) ||
               isSpectral() ||
+              isContinuumSpectral() ||
               (isPST() && !isPulsarTiming())) && (
               <Box pb={GAP}>
                 <BorderedSection
@@ -1058,7 +1064,9 @@ export default function DataProduct({ data }: DataProductProps) {
                 >
                   {fieldWrapper(
                     polarisationsField(),
-                    (isContinuum() && isDataTypeOne()) || isSpectral() ? '150px' : undefined
+                    (isContinuum() && isDataTypeOne()) || isSpectral() || isContinuumSpectral()
+                      ? '150px'
+                      : undefined
                   )}
                 </BorderedSection>
               </Box>
