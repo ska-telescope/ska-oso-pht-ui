@@ -61,14 +61,23 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const { observatoryConstants, osdCyclePolicy } = useOSDAccessors();
   const authAxiosClient = useAxiosAuthClient();
 
-  const isEdit = () => locationProperties.state !== null || data !== undefined;
-  const PAGE = isEdit() ? PAGE_CALIBRATION_UPDATE : PAGE_CALIBRATION_ADD;
   const { application, updateAppContent2 } = storageObject.useStore();
   const { setHelp } = useHelp();
   const theme = useTheme();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  const isEdit = () => {
+    const proposal = getProposal();
+    return (
+      locationProperties.state !== null ||
+      data !== undefined ||
+      (proposal?.calibrationStrategy && proposal.calibrationStrategy.length > 0)
+    );
+  };
+
+  const PAGE = isEdit() ? PAGE_CALIBRATION_UPDATE : PAGE_CALIBRATION_ADD;
 
   const [, setAxiosViewError] = React.useState('');
   const [target, setTarget] = React.useState<Target>();
@@ -167,7 +176,9 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   React.useEffect(() => {
     setHelp('calibrator.comment.help');
     if (isEdit()) {
-      calibrationIn(data ? data : locationProperties.state);
+      const existing = data ?? locationProperties.state ?? getProposal()?.calibrationStrategy?.[0];
+      calibrationIn(existing);
+    } else {
     }
   }, []);
 
@@ -189,16 +200,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
     setTarget(target);
     setObservation(observation);
-
-    if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
-      setCalibrators({ beforeEachScan: null, afterEachScan: null });
-      return;
-    }
-
-    const calibratorsAlreadyPopulated = calibrators.beforeEachScan || calibrators.afterEachScan;
-    if (!calibratorsAlreadyPopulated) {
-      getCalibratorData(target, observation);
-    }
   }, [observationIdRef]);
   /**************************************************************/
 

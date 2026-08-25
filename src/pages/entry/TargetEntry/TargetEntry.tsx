@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
@@ -56,6 +57,7 @@ export default function TargetEntry({
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { autoLink, isSV, osdLOW, osdMID } = useOSDAccessors();
+  const authAxiosClient = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent2 } = storageObject.useStore();
@@ -367,6 +369,7 @@ export default function TargetEntry({
           newTarget,
           getProposal,
           setProposal,
+          authAxiosClient,
           undefined,
           undefined,
           sArray?.numberZoomChannels

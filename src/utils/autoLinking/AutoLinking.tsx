@@ -10,6 +10,7 @@ import {
   PIXEL_SIZE_UNIT_DEFAULT,
   POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
+  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   STATUS_ERROR,
@@ -25,7 +26,7 @@ import {
   generateObsSetId,
   getDefaultObservationLowAA2
 } from '../helpers';
-import { CalibrationStrategy } from '../types/calibrationStrategy';
+import { CalibrationStrategy, Calibrator } from '../types/calibrationStrategy';
 import {
   DataProductSDPNew,
   SDPFilterbankPSTData,
@@ -40,6 +41,8 @@ import Target from '../types/target';
 import Proposal from '@utils/types/proposal.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
+import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 
 interface DefaultsResults {
   success: boolean;
@@ -73,13 +76,28 @@ export const newObservationForMode = (
   };
 };
 
-export const newCalibrationStrategy = (observationId: string): CalibrationStrategy => {
+export const newCalibrationStrategy = async (
+  observationId: string,
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  observation: Observation,
+  target: Target,
+  notes: string | null = null
+): Promise<CalibrationStrategy> => {
+  let calibrators: Calibrator[] | null = null;
+
+  if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value) {
+    const response = await GetCalibratorList(authAxiosClient, observation, target);
+    if (typeof response !== 'string') {
+      calibrators = response;
+    }
+  }
+
   return {
     observatoryDefined: true,
     id: generateCalibrationId(),
     observationIdRef: observationId,
-    calibrators: null,
-    notes: null
+    calibrators,
+    notes
   };
 };
 
@@ -196,6 +214,7 @@ export default async function autoLinking(
   target: Target,
   getProposal: Function,
   setProposal: Function,
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   observationMode?: string, // science category is used for observation mode on SV
   abstract?: string | undefined,
   maxZoomChannels?: number
@@ -234,7 +253,16 @@ export default async function autoLinking(
     sensCalc: sensCalcResult
   };
 
-  const calibrationStrategy = newCalibrationStrategy(newObservation?.id);
+  const existingCalibrationStrategy = getProposal()?.calibrationStrategy;
+  const existingNotes = getProposal()?.calibrationStrategy?.[0]?.notes ?? null;
+
+  const calibrationStrategy = await newCalibrationStrategy(
+    newObservation?.id,
+    authAxiosClient,
+    newObservation,
+    target,
+    existingNotes
+  );
 
   const updatedProposal: Proposal = {
     ...getProposal(),
