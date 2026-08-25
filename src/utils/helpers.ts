@@ -11,11 +11,15 @@ import {
   TYPE_PST,
   TYPE_CONTINUUM_SPECTRAL,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  TIME_UNITS
+  TIME_UNITS,
+  FREQUENCY_STR_KHZ,
+  FREQUENCY_STR_MHZ,
+  FREQUENCY_STR_HZ
 } from './constants';
 import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';
 import { OSD_CONSTANTS } from './OSDConstants';
+import { channelsToBandwidthHz } from '@utils/zoomWindow.ts';
 
 export const arraysAreEqual = (a: any[], b: any[]) => {
   if (a === b) return true;
@@ -205,14 +209,25 @@ export const trailingZeros = (coordinate: string): string => {
 
 /*********************************************************** map values *********************************************************/
 
-export const getBandwidthZoom = (incObs: Observation | null): ValueUnitPair => {
-  const obsTelescopeArray = OSD_CONSTANTS.array.find((o) => o.value === incObs?.telescope);
-  const bandwidth = obsTelescopeArray?.bandWidth?.find((b) => b.value === incObs?.bandwidth);
-  const valueUnit = bandwidth?.label?.split(' ');
-  const value = valueUnit && valueUnit.length > 0 ? Number(valueUnit[0]) : 0;
+/**
+ * Parses the string stored like 1808.45 Hz (2.7 km/s) into the frequency numeric value in Hz
+ **/
+export const getSpectralResolutionHz = (observation: Observation): number => {
+  const units = FREQUENCY_UNITS[2].label;
+  return observation.spectralResolution.includes(units)
+    ? Number(observation.spectralResolution.split(' ')[0]) * 1000
+    : Number(observation.spectralResolution.split(' ')[0]);
+};
+
+/**
+ * The bandwidth in the zoom mode can be derived from the spectral resolution (i.e. the channel
+ * width) and the number of channels.
+ * */
+export const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
+  const value = channelsToBandwidthHz(incObs?.zoomChannels, getSpectralResolutionHz(incObs));
   return {
-    value: value,
-    unit: bandwidth?.mapping ? bandwidth.mapping : ''
+    value: value * 1e-6,
+    unit: FREQUENCY_STR_MHZ
   };
 };
 
@@ -259,4 +274,26 @@ export const timeConversion = (inValue: number, from: number, to: number) => {
   const toUnit = TIME_UNITS.find((u) => u.id === to);
   if (!fromUnit || !toUnit) return inValue;
   return (inValue * toUnit.toDay) / fromUnit.toDay;
+};
+
+/**
+ * TODO - this is a limited first implementation. It should be made to support all orders of magnitude.
+ **/
+export const convertFrequencyToDisplayUnits = (
+  value: number,
+  unit: string
+): { value: number; unit: string } => {
+  if (unit !== FREQUENCY_STR_KHZ) {
+    throw Error('Function not currently supported for input unit');
+  }
+
+  if (value >= 1e3) {
+    return { value: value / 1e3, unit: FREQUENCY_STR_MHZ };
+  }
+
+  if (value < 1) {
+    return { value: value * 1e3, unit: FREQUENCY_STR_HZ };
+  }
+
+  return { value, unit };
 };

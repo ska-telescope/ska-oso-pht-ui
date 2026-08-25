@@ -410,7 +410,6 @@ export const getObservationTypeDetails = (obs: Observation) => {
         observation_type: TYPE_ZOOM_LONG,
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
-        spectral_averaging: obs.spectralAveraging?.toString(),
         number_of_channels: obs.zoomChannels?.toString()
       };
     case TYPE_PST:

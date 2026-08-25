@@ -513,10 +513,6 @@ const getObservations = (inValue: ObservationSetBackend[] | null): Observation[]
         (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
           ?.effective_resolution
       ),
-      spectralAveraging: Number(
-        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-          ?.spectral_averaging
-      ),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
           ? (inValue[i].observation_type_details?.bandwidth?.value ?? null)

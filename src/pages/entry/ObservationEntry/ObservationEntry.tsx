@@ -150,7 +150,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
-  const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(SUPPLIED_TYPE_INTEGRATION);
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
@@ -199,7 +198,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
     setSpectralResolution(ob?.spectralResolution ?? '');
-    setSpectralAveraging(ob?.spectralAveraging ?? 1);
     setSuppliedType(ob?.supplied?.type);
 
     // If the supplied units are not one of the integration time units,
@@ -250,7 +248,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
       continuumBandwidthUnits: continuumBandwidthUnits,
-      spectralAveraging: (Number.isNaN(spectralAveraging) ? 1 : spectralAveraging) ?? 1,
       supplied: {
         type: suppliedType,
         value: suppliedValue,
@@ -516,7 +513,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     numOf13mAntennas,
     numOfStations,
     pstMode,
-    spectralAveraging,
     spectralResolution,
     zoomChannels,
     observationType

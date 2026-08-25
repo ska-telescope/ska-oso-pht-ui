@@ -82,7 +82,7 @@ export const BIT_DEPTH = [
   { value: '32' }
 ];
 
-export const CHANNELS_OUT_MIN = 1;
+export const CHANNELS_OUT_MIN = 2;
 export const CHANNELS_OUT_MAX = 40;
 export const CHANNELS_OUT_MAX_COMBINED = 4000;
 
@@ -648,6 +648,7 @@ export const SPEED_OF_LIGHT = 299792458; // m/s
 // TODO get from OSD
 export const AA2_LOW_LONGEST_BASELINE_M = 79e3;
 export const AA2_LOW_STATION_DIAMETER_M = 39;
+export const LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ = (1e3 * 400) / 512 / 144;
 
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
@@ -785,7 +786,6 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
     value: SUPPLIED_VALUE_DEFAULT_LOW,
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
-  spectralAveraging: 1,
   spectralResolution: '',
   effectiveResolution: ''
 };
@@ -809,7 +809,6 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
     value: SUPPLIED_VALUE_DEFAULT_LOW,
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
-  spectralAveraging: 1,
   spectralResolution: '1808.45 Hz (2.7 km/s)',
   effectiveResolution: '1808.45 Hz (2.7 km/s)',
   zoomChannels: 1000
@@ -836,7 +835,6 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
     value: SUPPLIED_VALUE_DEFAULT_LOW,
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
-  spectralAveraging: 1,
   spectralResolution: '',
   effectiveResolution: '',
   pstMode: PULSAR_TIMING_VALUE

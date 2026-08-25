@@ -41,17 +41,9 @@ async function getSensCalc(
       return GetZoomData(telescope, observation, target, dataProductSDP);
     case TYPE_CONTINUUM_SPECTRAL_LONG:
     case TYPE_CONTINUUM_SPECTRAL: {
-      // Combined mode: same request as a plain continuum observation, except the bandwidth is the
-      // continuum bandwidth divided by the channel count set on the Data Products page, rather than
-      // the full continuum bandwidth.
-      //
-      // Note: the name continuumBandwidth is misleading here as it actually represents the bandwidth
-      // of a single channel in this case (allows reuse of the GetContinuumData function).
-      const channelsOut = (dataProductSDP?.data as SDPSpectralData)?.channelsOut || 1;
       const combinedObservation: Observation = {
         ...observation,
-        type: TYPE_CONTINUUM,
-        continuumBandwidth: (observation.continuumBandwidth ?? 0) / channelsOut
+        type: TYPE_CONTINUUM
       };
       return GetContinuumData(telescope, combinedObservation, target, dataProductSDP);
     }

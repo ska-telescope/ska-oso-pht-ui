@@ -125,7 +125,6 @@ export type ZoomData = {
   supplied_0: ValueUnitPair;
   supplied_1: ValueUnitPair;
   centralFrequency: ValueUnitPair;
-  spectralAveraging: number;
   spectralResolution: string;
   imageWeighting: number;
   robust: number;
@@ -139,13 +138,13 @@ export const NEW_ZOOM_DATA_LOW: ZoomData = {
   supplied_0: DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME,
   supplied_1: DEFAULT_LOW_SUPPLIED_SENSITIVITY,
   centralFrequency: { value: 200, unit: '2' },
-  spectralAveraging: 1,
   spectralResolution: '',
   imageWeighting: 1,
   robust: 3,
   tapering: 0
 };
 
+// TODO why do we need these models
 export type ContinuumData = {
   dataType: string;
   bandwidth: ValueUnitPair;
@@ -155,7 +154,7 @@ export type ContinuumData = {
   supplied_1: ValueUnitPair;
   centralFrequency: ValueUnitPair;
   numberOfSubBands: number;
-  spectralAveraging: number;
+  spectralAveragingFactor: number;
   imageWeighting: number;
   robust: number;
   tapering: number;
@@ -170,7 +169,7 @@ export const NEW_CONTINUUM_DATA_LOW: ContinuumData = {
   supplied_1: DEFAULT_LOW_SUPPLIED_SENSITIVITY,
   centralFrequency: { value: 200, unit: '2' },
   numberOfSubBands: 1,
-  spectralAveraging: 1,
+  spectralAveragingFactor: 1,
   imageWeighting: 1,
   robust: 3,
   tapering: 0

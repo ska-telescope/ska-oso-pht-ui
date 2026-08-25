@@ -102,7 +102,6 @@ describe('<SensCalcModalMultiple />', () => {
           bandwidth: 0,
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
-          spectralAveraging: undefined,
           supplied: {
             type: 0,
             value: 0,
@@ -141,7 +140,6 @@ describe('<SensCalcModalMultiple />', () => {
           bandwidth: 0,
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
-          spectralAveraging: undefined,
           supplied: {
             type: 0,
             value: 0,
@@ -225,7 +223,6 @@ describe('<SensCalcModalMultiple />', () => {
           bandwidth: 0,
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
-          spectralAveraging: undefined,
           supplied: {
             type: 0,
             value: 0,
@@ -309,7 +306,6 @@ describe('<SensCalcModalMultiple />', () => {
           bandwidth: 0,
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
-          spectralAveraging: undefined,
           supplied: {
             type: 0,
             value: 0,
@@ -406,7 +402,6 @@ describe('<SensCalcModalMultiple />', () => {
           bandwidth: 0,
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
-          spectralAveraging: undefined,
           supplied: {
             type: 0,
             value: 0,

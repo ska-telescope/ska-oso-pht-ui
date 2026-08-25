@@ -24,7 +24,7 @@ import {
   getSensitivitiesUnitsMapping,
   timeConversion
 } from '@utils/helpersSensCalc.ts';
-import { FREQUENCY_HZ, FREQUENCY_UNITS, SUPPLIED_TYPE_SENSITIVITY } from '@utils/constants.ts';
+import { FREQUENCY_HZ, SUPPLIED_TYPE_SENSITIVITY } from '@utils/constants.ts';
 import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import sensCalHelpers, {
@@ -35,7 +35,7 @@ import sensCalHelpers, {
 import Fetch from '../fetch/Fetch';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDPNew, SDPSpectralData } from '@/utils/types/dataProduct';
-import { frequencyConversion } from '@/utils/helpers';
+import { frequencyConversion, getSpectralResolutionHz } from '@/utils/helpers';
 
 interface FinalIndividualResults {
   results1: ResultsSection;
@@ -206,35 +206,11 @@ export function getFinalIndividualResultsForZoom(
   return updated_results as FinalIndividualResults;
 }
 
-const getSpectralResolution = (observation: Observation) => {
-  const units = FREQUENCY_UNITS[2].label;
-  const spectralResValue = observation.spectralResolution.includes(units)
-    ? Number(observation.spectralResolution.split(' ')[0]) * 1000
-    : Number(observation.spectralResolution.split(' ')[0]);
-  return spectralResValue?.toString();
-};
-
-const defaultToOne = (value: unknown): number => {
-  const n = Number(value);
-  return Number.isInteger(n) && n > 0 ? n : 1;
-};
-
 const addPropertiesLOW = (
   standardData: StandardData,
   zoomData: ZoomData,
   observation: Observation
 ) => {
-  const getBandwidthValues = () =>
-    OSD_CONSTANTS.array?.find((item) => item.value === observation.telescope)?.bandWidth;
-
-  function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(
-      (item) => item.value === observation?.bandwidth
-    )?.label;
-    return bandWidthValue?.split(' ');
-  }
-
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit() ?? [];
   const properties: SensCalcQueryParams = {
     pointing_centre: getPointingCentre(standardData),
     elevation_limit: Number(standardData.elevation.value),
@@ -243,11 +219,10 @@ const addPropertiesLOW = (
       Number(zoomData.centralFrequency?.unit),
       FREQUENCY_MHZ
     ),
-    spectral_averaging_factor: defaultToOne(zoomData.spectralAveraging),
-    spectral_resolutions_hz: getSpectralResolution(observation),
+    spectral_resolutions_hz: getSpectralResolutionHz(observation),
     total_bandwidths_khz: sensCalHelpers.format.convertBandwidthToKHz(
-      Number(bandwidthValueUnit[0]),
-      bandwidthValueUnit[1]
+      zoomData.bandwidth.value,
+      zoomData.bandwidth.unit
     ),
     weighting_mode: getImageWeightingMapping(zoomData.imageWeighting) ?? ''
   };
@@ -280,28 +255,15 @@ const addPropertiesMID = (
   zoomData: ZoomData,
   observation: Observation
 ) => {
-  const getBandwidthValues = () =>
-    OSD_CONSTANTS.array.find((item) => item.value === observation.telescope)?.bandWidth;
-
-  function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(
-      (item) => item.value === observation?.bandwidth
-    )?.label;
-    return bandWidthValue?.split(' ');
-  }
-
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit() ?? [];
-
   const properties: SensCalcQueryParams = {
     rx_band: getRxBandValue(standardData.observingBand),
-    spectral_averaging_factor: defaultToOne(zoomData.spectralAveraging),
-    spectral_resolutions_hz: getSpectralResolution(observation),
+    spectral_resolutions_hz: getSpectralResolutionHz(observation),
     pointing_centre: getPointingCentre(standardData),
     pmv: Number(standardData.weather.value),
     el: Number(standardData.elevation.value),
     total_bandwidths_hz: sensCalHelpers.format.convertBandwidthToHz(
-      Number(bandwidthValueUnit[0]),
-      bandwidthValueUnit[1]
+      zoomData.bandwidth.value,
+      zoomData.bandwidth.unit
     ),
     weighting_mode: getImageWeightingMapping(zoomData.imageWeighting) ?? '',
     taper: zoomData.tapering
@@ -346,10 +308,10 @@ async function GetZoomData(
 ): Promise<SensCalcResults> {
   const zoomData: ZoomData = {
     dataType: observation.type,
-    bandwidth: {
-      value: 0, //observation?.continuumBandwidth,
-      unit: '' // observation?.continuumBandwidthUnits.toString()
-    },
+    // TODO we should be able to use getBandwidthZoom(observation) here, but the sens calc does
+    //  not yet support arbirtary bandwidths. As we are only using the spectral part of the response
+    //  we can fudge a hardcoded value for now
+    bandwidth: { value: 3125.0, unit: 'kHz' },
     suppliedType: observation?.supplied?.type,
     supplied_0: {
       value: observation?.supplied?.value,
@@ -363,7 +325,6 @@ async function GetZoomData(
       value: observation?.centralFrequency,
       unit: observation?.centralFrequencyUnits?.toString()
     },
-    spectralAveraging: observation?.spectralAveraging ?? 0,
     spectralResolution: '',
     imageWeighting: (dataProductSDP?.data as SDPSpectralData)?.weighting ?? IW_UNIFORM,
     robust: (dataProductSDP?.data as SDPSpectralData)?.robust ?? ROBUST_DEFAULT,
@@ -402,6 +363,8 @@ async function GetZoomData(
     ? addPropertiesLOW(standardData, zoomData, observation)
     : addPropertiesMID(standardData, zoomData, observation);
 
-  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, observation);
+  return Fetch(axiosClient, telescope, URL_PATH, properties).then((response) =>
+    getFinalResults(response, observation)
+  );
 }
 export default GetZoomData;
