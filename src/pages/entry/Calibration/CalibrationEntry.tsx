@@ -59,7 +59,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const locationProperties = useLocation();
   const loggedIn = isLoggedIn();
   const { observatoryConstants, osdCyclePolicy } = useOSDAccessors();
-  const authAxiosClient = useAxiosAuthClient();
 
   const { application, updateAppContent2 } = storageObject.useStore();
   const { setHelp } = useHelp();
@@ -147,31 +146,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     const proposal = getProposal();
     return proposal?.observations?.find((o) => o.id === targetObservation.observationId);
   };
-
-  async function getCalibratorData(
-    target: Target | undefined,
-    observation: Observation | undefined
-  ) {
-    if (!target || !observation) {
-      return false;
-    }
-
-    const response = await GetCalibratorList(authAxiosClient, observation, target);
-
-    if (typeof response === 'string') {
-      setAxiosViewError(response);
-      return false;
-    }
-
-    const before = response.find((c) => c.relativeToScan === 'before_each_scan');
-    const after = response.find((c) => c.relativeToScan === 'after_each_scan');
-
-    setCalibrators({
-      beforeEachScan: before ?? null,
-      afterEachScan: after ?? null
-    });
-    return true;
-  }
 
   React.useEffect(() => {
     setHelp('calibrator.comment.help');
