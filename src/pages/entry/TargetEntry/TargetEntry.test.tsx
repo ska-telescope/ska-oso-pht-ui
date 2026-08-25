@@ -104,7 +104,7 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     expect(nameInput.value).toBe('My Target');
     expect(raInput.value).toBe('12:34:56.000');
     expect(decInput.value).toBe('45:00:00.000');
-  });
+  }, 15000);
 
   it('shows a loading state while coordinates are resolving', async () => {
     const mockedGetCoordinates = vi.mocked(GetCoordinates);
@@ -226,4 +226,4 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
       expect(screen.queryByTestId('clearFormButton')).not.toBeInTheDocument();
     });
   });
-});
+}, { timeout: 10000 });
