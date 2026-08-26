@@ -4,7 +4,7 @@ import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
-  IW_UNIFORM,
+  IMAGE_WEIGHTING_DEFAULT,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST_DEFAULT,
@@ -39,9 +39,6 @@ import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
 import Fetch from '../fetch/Fetch';
 
-const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
-  getFinalResults(target, data, observation);
-
 interface FinalIndividualResults {
   results1: ResultsSection;
   results2: ResultsSection;
@@ -57,17 +54,16 @@ interface FinalIndividualResults {
 }
 
 export function getFinalResults(
+  sensCalcApiResponse: any,
   target: Target,
-  results: any,
-  theObservation: Observation
+  observation: Observation
 ): SensCalcResults {
-  const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
-  const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
+  const isSuppliedSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
+  const isContinuum = () => observation.type === TYPE_CONTINUUM;
 
-  const individualResults = getFinalIndividualResultsForContinuum(results, theObservation);
+  const individualResults = getFinalIndividualResultsForContinuum(sensCalcApiResponse, observation);
 
   const theResults: SensCalcResults = {
-    id: target.id,
     title: target.name,
     statusGUI: STATUS_OK,
     section1: [],
@@ -329,7 +325,8 @@ function GetContinuumData(
     },
     numberOfSubBands: observation?.numSubBands ?? 0,
     spectralAveraging: observation?.spectralAveraging ?? 1,
-    imageWeighting: (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IW_UNIFORM,
+    imageWeighting:
+      (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IMAGE_WEIGHTING_DEFAULT,
     robust: (dataProductSDP?.data as SDPImageContinuumData)?.robust ?? ROBUST_DEFAULT,
     tapering: (dataProductSDP?.data as SDPImageContinuumData)?.taperValue ?? TAPER_DEFAULT
   };
@@ -363,6 +360,6 @@ function GetContinuumData(
   const properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData);
-  return Fetch(axiosClient, telescope, URL_PATH, properties, mapping, target, observation);
+  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, target, observation);
 }
 export default GetContinuumData;

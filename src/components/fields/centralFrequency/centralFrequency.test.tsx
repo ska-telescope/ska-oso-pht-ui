@@ -64,6 +64,11 @@ const pressArrowUp = async (input: HTMLElement) => {
   await userEvent.keyboard('{ArrowUp}');
 };
 
+const pressArrowDown = async (input: HTMLElement) => {
+  await userEvent.click(input);
+  await userEvent.keyboard('{ArrowDown}');
+};
+
 // On blur, SteppedNumberField resyncs its displayed text from the component's own `value` prop
 // regardless of typing - a mocked setValue that doesn't feed into a re-render would make that
 // resync revert to the stale initial value instead of what was actually typed. This wires value/
@@ -125,6 +130,16 @@ describe('CentralFrequency component', () => {
     wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={setValue} />);
     await pressArrowUp(screen.getByTestId('centralFrequency'));
     expect(setValue).toHaveBeenCalledWith(151.171875);
+  });
+
+  it('Continuum/MID mode steps onto the adjacent grid point, not one past it, when the nearest valid value is in the pressed direction', async () => {
+    const setValue = vi.fn();
+    // 200 MHz is off-grid and closer to 199.609375 MHz (below) than to 201.171875 MHz (above).
+    // Stepping down must land on 199.609375 - snapping to the nearest point and then also adding
+    // a step (the bug this guards against) would overshoot to 198.046875 instead.
+    wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={200} setValue={setValue} />);
+    await pressArrowDown(screen.getByTestId('centralFrequency'));
+    expect(setValue).toHaveBeenCalledWith(199.609375);
   });
 
   it('Low zoom mode renders a stepped number field and calls setValue on ArrowUp', async () => {

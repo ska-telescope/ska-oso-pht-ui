@@ -25,7 +25,6 @@ describe('<SensCalcModalSingle />', () => {
         open={false}
         onClose={vi.fn()}
         data={{
-          id: 0,
           title: '',
           statusGUI: STATUS_INITIAL,
           error: undefined,
@@ -44,7 +43,6 @@ describe('<SensCalcModalSingle />', () => {
         open={true}
         onClose={vi.fn()}
         data={{
-          id: 0,
           title: 'm1',
           statusGUI: 0,
           error: undefined,
@@ -106,7 +104,6 @@ describe('<SensCalcModalSingle />', () => {
         open={true}
         onClose={vi.fn()}
         data={{
-          id: 0,
           title: 'm2',
           statusGUI: 0,
           error: undefined,
@@ -160,7 +157,6 @@ describe('<SensCalcModalSingle />', () => {
         open={true}
         onClose={vi.fn()}
         data={{
-          id: 0,
           title: 'm2',
           statusGUI: 0,
           error: undefined,
@@ -223,7 +219,6 @@ describe('<SensCalcModalSingle />', () => {
         open={false}
         onClose={vi.fn()}
         data={{
-          id: 0,
           title: '',
           statusGUI: STATUS_ERROR,
           error: 'SOME ERROR',

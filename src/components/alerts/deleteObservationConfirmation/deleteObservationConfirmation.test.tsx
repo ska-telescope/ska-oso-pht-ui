@@ -42,7 +42,6 @@ describe('<DeleteObservationConfirmation />', () => {
           id: '',
           telescope: 0,
           subarray: '',
-          linked: '',
           type: 0,
           observingBand: BAND_LOW_STR,
           weather: undefined,

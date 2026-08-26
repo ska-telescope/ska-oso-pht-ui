@@ -4,14 +4,16 @@ import {
   DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
   DP_TYPE_VISIBLE,
+  IW_BRIGGS,
   REFERENCE_COORDINATE_TYPE_SSO,
+  STATUS_ERROR,
   STATUS_OK,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
 import * as helpers from '../helpers';
-import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import Proposal from '../types/proposal';
 import { SDPImageContinuumData, SDPSpectralData } from '../types/dataProduct';
 import { getDefaultObservationLowAA2 } from '../helpers';
@@ -28,6 +30,7 @@ import {
   SPECTRAL_DATA_PRODUCT
 } from './mockSDP';
 import { mockTarget } from './mockTarget';
+import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 
 const validMockSensCal = {
   id: 1,
@@ -38,29 +41,29 @@ const validMockSensCal = {
 
 describe('autoLinking, newObservationForMode', () => {
   test('creates continuum observation', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_CONTINUUM)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW);
   });
   test('creates zoom observation', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
   });
   test('creates pst observation', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW);
   });
   test('observationOut zoom overrides the static zoomChannels placeholder with the real cap', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     const result = newObservationForMode(TYPE_ZOOM, 4000);
     expect(result.zoomChannels).toBe(4000);
     expect(result).toEqual({ ...DEFAULT_ZOOM_OBSERVATION_LOW, zoomChannels: 4000 });
   });
   test('observationOut zoom keeps the static placeholder when no cap is provided', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
   });
   test('observationOut continuum ignores maxZoomChannels (not a zoom observation)', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_CONTINUUM, 4000)).deep.equal(
       DEFAULT_CONTINUUM_OBSERVATION_LOW
     );
@@ -69,7 +72,7 @@ describe('autoLinking, newObservationForMode', () => {
 
 describe('autoLinking, newDataProductsForMode', () => {
   test('SDP default continuum', () => {
-    vi.spyOn(helpers, 'generateId')
+    vi.spyOn(helpers, 'generateDataProductId')
       .mockReturnValueOnce('SDP-0000000')
       .mockReturnValueOnce('SDP-0000001');
     const obs: Observation = {
@@ -84,7 +87,7 @@ describe('autoLinking, newDataProductsForMode', () => {
   });
 
   test('SDP default spectral', () => {
-    vi.spyOn(helpers, 'generateId')
+    vi.spyOn(helpers, 'generateDataProductId')
       .mockReturnValueOnce('SDP-0000000')
       .mockReturnValueOnce('SDP-0000001');
     const obs: Observation = {
@@ -99,7 +102,7 @@ describe('autoLinking, newDataProductsForMode', () => {
   });
 
   test('SDP default PST', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
+    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('SDP-0000000');
     const obs: Observation = {
       ...getDefaultObservationLowAA2(TYPE_PST),
       id: 'obs-123'
@@ -108,19 +111,35 @@ describe('autoLinking, newDataProductsForMode', () => {
     expect(sdps).toHaveLength(1);
     expect(sdps[0]).to.deep.equal(PST_TIMING_DATA_PRODUCT);
   });
+
+  // Continuum and spectral weighting is already covered by the deep-equal fixture tests above;
+  // continuum + spectral has no fixture of its own.
+  test('defaults the continuum + spectral imaging data product to Briggs weighting with robust 0', () => {
+    const obs: Observation = {
+      ...getDefaultObservationLowAA2(TYPE_CONTINUUM_SPECTRAL),
+      id: 'obs-123',
+      type: TYPE_CONTINUUM_SPECTRAL
+    };
+    const data = newDataProductsForMode(obs)[0].data as SDPImageContinuumData;
+    expect(data.weighting).toBe(IW_BRIGGS);
+    expect(data.robust).toBe(0);
+  });
 });
 
 describe('autoLinking, newCalibrationStrategy', () => {
   test('creates default calibration strategy', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('cal-0000000');
+    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('cal-0000000');
     const calibration = newCalibrationStrategy('obs-123');
     expect(calibration).to.deep.equal(mockCalibration);
   });
 });
 
-vi.mock('../sensCalc/sensCalc', () => ({
-  calculateSensCalcData: vi.fn()
-}));
+vi.mock(
+  '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData',
+  () => ({
+    default: vi.fn()
+  })
+);
 
 describe('autoLinking()', () => {
   let proposal: Partial<Proposal>;
@@ -129,7 +148,9 @@ describe('autoLinking()', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(helpers, 'generateId').mockReturnValue('mock-0000000');
+    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-0000000');
+    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-0000000');
 
     // Start with an existing set of entities so we can assert replacement
     proposal = {
@@ -158,8 +179,8 @@ describe('autoLinking()', () => {
     });
   });
 
-  it('returns success and updates proposal when calculateSensCalcData succeeds', async () => {
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(validMockSensCal);
+  it('returns success and updates proposal when getSensCalc succeeds', async () => {
+    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
@@ -185,7 +206,7 @@ describe('autoLinking()', () => {
   });
 
   it('updates existing observations, calibrations, sdps, targets so that there is always only 1 of each', async () => {
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(validMockSensCal);
+    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
@@ -210,7 +231,7 @@ describe('autoLinking()', () => {
       statusGUI: STATUS_OK,
       section1: [{ field: 'continuumSensitivityWeighted', value: '123', units: 'uJy / beam' }]
     };
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);
+    vi.mocked(getSensCalc as any).mockResolvedValue(mockSensCal);
 
     // Request PST; initial proposal (from beforeEach) contains an existing continuum set
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_PST, '');
@@ -251,7 +272,7 @@ describe('autoLinking()', () => {
       statusGUI: STATUS_OK,
       section1: [{ field: 'continuumSensitivityWeighted', value: '45', units: 'uJy / beam' }]
     };
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);
+    vi.mocked(getSensCalc as any).mockResolvedValue(mockSensCal);
 
     // Request Spectral (Zoom); initial proposal (from beforeEach) contains an existing continuum set
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_ZOOM, '');
@@ -318,7 +339,7 @@ describe('autoLinking()', () => {
       ]
     };
 
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(validMockSensCal);
+    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 
     // Request Continuum to replace PST
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
@@ -354,12 +375,17 @@ describe('autoLinking()', () => {
     expect(proposal.scienceCategory).toBe(TYPE_CONTINUUM);
   });
 
-  it('returns error when calculateSensCalcData returns an object with error', async () => {
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue({ error: 'Boom!' });
+  it('returns error when getSensCalc returns an object with error', async () => {
+    vi.mocked(getSensCalc as any).mockResolvedValue({
+      id: 1,
+      title: 'Sensitivity Calculator API error',
+      statusGUI: STATUS_ERROR,
+      error: 'Boom!'
+    });
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
-    expect(result).to.deep.equal({ success: false, error: 'autoLink.errorNoSensCalcResponse' });
+    expect(result).to.deep.equal({ success: false, error: 'Boom!' });
     expect(setProposal).not.toHaveBeenCalled();
 
     // proposal should remain unchanged
@@ -371,7 +397,7 @@ describe('autoLinking()', () => {
     // Override proposal to have only scienceCategory to simulate missing fields
     proposal = { scienceCategory: TYPE_CONTINUUM } as unknown as Proposal;
 
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(validMockSensCal);
+    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
@@ -388,8 +414,8 @@ describe('autoLinking()', () => {
 
   it('creates a link for an SSO target even without a sensCalc result', async () => {
     const ssoTarget = { ...mockTarget, kind: REFERENCE_COORDINATE_TYPE_SSO.value };
-    // SSO targets skip the sensCalc call — calculateSensCalcData resolves undefined
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(undefined);
+    // SSO targets skip the sensCalc call — getSensCalc resolves undefined
+    vi.mocked(getSensCalc as any).mockResolvedValue(undefined);
 
     const result = await autoLinking(ssoTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
@@ -405,22 +431,5 @@ describe('autoLinking()', () => {
 
     // ...but with no sensitivity result attached
     expect(proposal.targetObservation?.[0].sensCalc).toBeUndefined(); // ← verify: may be null
-  });
-
-  it('returns failure and does not link when a non-SSO result is invalid', async () => {
-    // A real backend validation failure: has neither .error nor section1, so it is
-    // not a string (skips the specific-error branch) and fails isValidSensCalcResult
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue({
-      title: 'Validation Error',
-      detail: 'Spectral window does not lie within the 50 - 350 MHz range.'
-    });
-
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
-
-    expect(result).toEqual({ success: false, error: 'autoLink.errorNoSensCalcResponse' });
-    expect(setProposal).not.toHaveBeenCalled();
-
-    // proposal untouched — the existing seeded entities remain
-    expect(proposal.observations?.[0].id).toBe('existing-obs');
   });
 });

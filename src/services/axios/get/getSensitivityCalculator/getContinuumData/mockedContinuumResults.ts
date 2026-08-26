@@ -2,7 +2,6 @@ import { STATUS_OK } from '@/utils/constants';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 
 export const CONTINUUM_DATA_MOCKED: SensCalcResults = {
-  id: 1,
   statusGUI: STATUS_OK,
   error: '',
   results: [

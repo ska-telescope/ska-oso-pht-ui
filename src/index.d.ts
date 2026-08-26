@@ -8,7 +8,6 @@ declare module '@/env' {
     production: boolean;
     apiUrl: string;
     REACT_APP_USE_LOCAL_DATA: string;
-    REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC: string;
     REACT_APP_USE_LOCAL_DATA_PROPOSAL_REVIEW: string;
     REACT_APP_USE_LOCAL_DATA_REVIEWER_LIST: string;
     REACT_APP_USE_LOCAL_DATA_PROPOSAL_LIST: string;

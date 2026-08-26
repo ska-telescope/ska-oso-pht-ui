@@ -19,6 +19,7 @@ import PolarisationsField from '@/components/fields/polarisations/polarisations'
 import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
 import {
   BAND_LOW_STR,
+  BIT_DEPTH,
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
@@ -29,13 +30,13 @@ import {
   DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
-  FOOTER_SPACER,
   FREQUENCY_AVERAGING_DEFAULT,
   IMAGE_SIZE_DEFAULT,
   IMAGE_SIZE_UNIT_DEFAULT,
+  IMAGE_WEIGHTING_DEFAULT,
   IW_BRIGGS,
-  IW_NATURAL,
   IW_UNIFORM,
+  IW_NATURAL,
   NAV,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DATA_PRODUCTS,
@@ -50,6 +51,8 @@ import {
   STATUS_INITIAL,
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
+  PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
+  PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -71,29 +74,27 @@ import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging'
 import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
 import BitDepthField from '@/components/fields/bitDepth/bitDepth';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { generateId } from '@/utils/helpers';
+import { generateDataProductId } from '@/utils/helpers';
 import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
-import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
-import {
-  DataProductSDPNew,
-  SDPImageContinuumData,
-  SDPVisibilitiesContinuumData
-} from '@/utils/types/dataProduct';
+import fetchSensCalcPatches, { applySensCalcPatches } from '@/utils/update/sensCalc/updateSensCalc';
+import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
 import TargetObservation from '@/utils/types/targetObservation';
 import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
+import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
+import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
-const PAGE_PREFIX = 'SDP';
 const COL = 6;
 const COL_MID = 8;
+const SENS_CALC_DEBOUNCE_MS = 500;
 
 interface DataProductProps {
   data?: DataProductSDPNew;
@@ -113,12 +114,33 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const latestProposalRef = React.useRef(getProposal());
+  const hasInitializedDataProduct = React.useRef(false);
+  const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latestSensCalcRequestIdRef = React.useRef(0);
 
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [id, setId] = React.useState('');
   const [observationId, setObservationId] = React.useState('');
   const [dataProductType, setDataProductType] = React.useState(DP_TYPE_IMAGES);
   const [bitDepth, setBitDepth] = React.useState(BIT_DEPTH_DEFAULT);
+  const pstFlowThroughBitDepthOptions = PST_FLOW_THROUGH_BIT_DEPTH_VALUES.map((value) => ({
+    label: value,
+    lookup: String(value),
+    value
+  }));
+  const pstDedicatedFilterbankBitDepthOptions = PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES.map(
+    (value) => ({
+      label: value,
+      lookup: String(value),
+      value
+    })
+  );
+  const defaultBitDepthOptions = BIT_DEPTH.map((el) => ({
+    label: el.value,
+    lookup: String(el.value),
+    value: el.value
+  }));
   const [imageSizeValue, setImageSizeValue] = React.useState(IMAGE_SIZE_DEFAULT);
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(PIXEL_SIZE_DEFAULT);
@@ -128,7 +150,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [timeAveraging, setTimeAveraging] = React.useState(TIME_AVERAGING_DEFAULT);
   const [frequencyAveraging, setFrequencyAveraging] = React.useState(FREQUENCY_AVERAGING_DEFAULT);
 
-  const [weighting, setWeighting] = React.useState(IW_UNIFORM);
+  const [weighting, setWeighting] = React.useState(IMAGE_WEIGHTING_DEFAULT);
   const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
 
   // channelsOutMax needs to be usable both as the initial value below and later as the field's
@@ -173,6 +195,52 @@ export default function DataProduct({ data }: DataProductProps) {
   const [rotationMeasure, setRotationMeasure] = React.useState(1);
 
   const [polarisationsError, setPolarisationsError] = React.useState('');
+  const loadedDataProduct = React.useRef<DataProductSDPNew | null>(null);
+
+  const persistProposal = (proposal: Proposal) => {
+    latestProposalRef.current = proposal;
+    setProposal(proposal);
+  };
+
+  const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
+    isSuppliedValueValid({
+      type: ob?.supplied?.type,
+      value: ob?.supplied?.value,
+      units: ob?.supplied?.units
+    }) && isDataProductRobustValid(dp);
+
+  const scheduleLocalSensCalcUpdate = (
+    ob: Observation,
+    dp: DataProductSDPNew,
+    delay = SENS_CALC_DEBOUNCE_MS
+  ) => {
+    if (sensCalcDebounceTimerRef.current) {
+      clearTimeout(sensCalcDebounceTimerRef.current);
+    }
+    const requestId = ++latestSensCalcRequestIdRef.current;
+
+    const applyUpdate = async () => {
+      sensCalcDebounceTimerRef.current = null;
+      const sensCalcPatches = await fetchSensCalcPatches(latestProposalRef.current, ob, dp);
+
+      if (requestId !== latestSensCalcRequestIdRef.current) {
+        return;
+      }
+
+      const targetObservation = applySensCalcPatches(
+        latestProposalRef.current.targetObservation,
+        sensCalcPatches
+      );
+      const mergedProposal = { ...latestProposalRef.current, targetObservation };
+      persistProposal(mergedProposal);
+    };
+
+    if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
+      sensCalcDebounceTimerRef.current = setTimeout(() => void applyUpdate(), delay);
+    } else {
+      void applyUpdate();
+    }
+  };
 
   const maxObservationsReached = () =>
     baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
@@ -196,6 +264,15 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getObservationTargetObservations = (obsId: string) =>
     (getProposal()?.targetObservation ?? []).filter((rec) => rec.observationId === obsId);
+
+  const hasSensCalcResults = (proposal: Proposal, obsId: string) => {
+    const sensCalc = proposal.targetObservation?.find(
+      (rec) => rec.observationId === obsId
+    )?.sensCalc;
+    return Boolean(
+      sensCalc?.section1?.length || sensCalc?.section2?.length || sensCalc?.section3?.length
+    );
+  };
 
   const getLinkedDataProductId = (obsId: string, fallbackId = '') =>
     getObservationTargetObservations(obsId)[0]?.dataProductsSDPId ?? fallbackId;
@@ -233,6 +310,9 @@ export default function DataProduct({ data }: DataProductProps) {
   const isFlowThrough = () => getResolvedPstMode() === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getResolvedPstMode() === DETECTED_FILTER_BANK_VALUE;
   const isPulsarTiming = () => getResolvedPstMode() === PULSAR_TIMING_VALUE;
+  const getPstBitDepthDefault = () => 8;
+  const getDefaultBitDepth = () =>
+    getObservation()?.type === TYPE_PST ? getPstBitDepthDefault() : BIT_DEPTH_DEFAULT;
 
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
@@ -270,7 +350,7 @@ export default function DataProduct({ data }: DataProductProps) {
         ...dp,
         data: {
           ...dp.data,
-          weighting: IW_BRIGGS,
+          weighting: IMAGE_WEIGHTING_DEFAULT,
           robust: ROBUST_DEFAULT,
           polarisations: POLARISATIONS_DEFAULT,
           channelsOut: CHANNELS_OUT_DEFAULT
@@ -312,14 +392,22 @@ export default function DataProduct({ data }: DataProductProps) {
     isLow()
       ? setTaperLowValue(data?.taperValue ?? TAPER_DEFAULT)
       : setTaperMidValue(data?.taperValue ?? TAPER_DEFAULT);
-    setWeighting(data?.weighting ?? IW_UNIFORM);
+    setWeighting(data?.weighting ?? IMAGE_WEIGHTING_DEFAULT);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
     setChannelsOut(data?.channelsOut ?? channelsOutMax());
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
-    setBitDepth(data?.bitDepth ?? BIT_DEPTH_DEFAULT);
+    const parsedBitDepth =
+      typeof data?.bitDepth === 'string' && data.bitDepth.trim() !== ''
+        ? Number(data.bitDepth)
+        : data?.bitDepth;
+    setBitDepth(
+      typeof parsedBitDepth === 'number' && Number.isFinite(parsedBitDepth)
+        ? parsedBitDepth
+        : getDefaultBitDepth()
+    );
     setOutputFrequencyResolution(data?.outputFrequencyResolution ?? 1);
     setOutputSamplingInterval(data?.outputSamplingInterval ?? 1);
     setDispersionMeasure(data?.dispersionMeasure ?? 1);
@@ -384,7 +472,7 @@ export default function DataProduct({ data }: DataProductProps) {
     return [
       ...dataProducts,
       {
-        id: generateId('SDP-', 6),
+        id: generateDataProductId(),
         observationId: observation.id,
         data: hiddenData
       }
@@ -419,7 +507,7 @@ export default function DataProduct({ data }: DataProductProps) {
   /**
    * Update the proposal's Observation Data Products (ODPs) for both imaging and visabilities.
    */
-  const updateToProposal = async () => {
+  const updateToProposal = () => {
     if (!hasRealObservationSelection()) {
       return;
     }
@@ -429,20 +517,38 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!newDataProduct) {
       return;
     }
+    const loaded = loadedDataProduct.current;
+    const existingDataProduct = (proposal.dataProductSDP ?? []).find(
+      (dp) => dp.id === newDataProduct.id && dp.observationId === newDataProduct.observationId
+    );
+    loadedDataProduct.current = null;
+    if (
+      loaded?.id === newDataProduct.id &&
+      loaded.observationId === newDataProduct.observationId &&
+      existingDataProduct
+    ) {
+      if (!hasSensCalcResults(proposal, newDataProduct.observationId)) {
+        scheduleLocalSensCalcUpdate(observation!, newDataProduct, 0);
+      }
+      return;
+    }
     const oldDataProducts = proposal.dataProductSDP ?? [];
-    const to = await updateSensCalc(proposal, observation!, newDataProduct);
     const dataProductSDP = ensureHiddenDataProduct(
       updateDataProducts(oldDataProducts, newDataProduct),
       observation
     );
-    setProposal({
+    const proposalForSensCalc = {
       ...proposal,
-      dataProductSDP,
-      targetObservation: to
-    });
+      dataProductSDP
+    };
+    persistProposal(proposalForSensCalc);
+    scheduleLocalSensCalcUpdate(observation!, newDataProduct);
   };
 
   const updateStorageProposal = () => {
+    if (!hasInitializedDataProduct.current) {
+      return;
+    }
     if (osdCyclePolicy?.maxDataProducts === 1) {
       isEdit() ? updateToProposal() : addToProposal();
     }
@@ -451,7 +557,7 @@ export default function DataProduct({ data }: DataProductProps) {
   // set correct default polarisations depending on data product type & pst mode from obs type
   const getDefaultPolarisations = (obsType: string, dataProductType: number): string[] => {
     if (obsType === TYPE_PST) {
-      if (dataProductType === FLOW_THROUGH_VALUE) return ['X'];
+      if (dataProductType === FLOW_THROUGH_VALUE) return ['X', 'Y'];
       if (dataProductType === DETECTED_FILTER_BANK_VALUE) return ['I'];
       return [];
     }
@@ -469,7 +575,7 @@ export default function DataProduct({ data }: DataProductProps) {
     return DP_TYPE_IMAGES; // default for non-pst
   };
 
-  const handleDataProductTypeChange = async (nextType: string | number) => {
+  const handleDataProductTypeChange = (nextType: string | number) => {
     const newDataProductType = Number(nextType);
 
     if (!isEdit() || newDataProductType === dataProductType) {
@@ -517,20 +623,24 @@ export default function DataProduct({ data }: DataProductProps) {
       dataProductSDP: dataProductsAfterReset,
       targetObservation: linkedTargetObservations
     };
-    const updatedTargetObservations = await updateSensCalc(
-      proposalForSensCalc,
-      observation,
-      nextLinkedDataProduct
-    );
-
-    setProposal({
-      ...proposalForSensCalc,
-      targetObservation: updatedTargetObservations
-    });
+    persistProposal(proposalForSensCalc);
     dataProductIn(nextLinkedDataProduct);
+    scheduleLocalSensCalcUpdate(observation, nextLinkedDataProduct);
   };
 
   /* ------------------------------------------- */
+
+  React.useEffect(() => {
+    latestProposalRef.current = getProposal();
+  }, [application.content2]);
+
+  React.useEffect(() => {
+    return () => {
+      if (sensCalcDebounceTimerRef.current) {
+        clearTimeout(sensCalcDebounceTimerRef.current);
+      }
+    };
+  }, []);
 
   React.useEffect(() => {
     setHelp('observations.dp');
@@ -545,15 +655,18 @@ export default function DataProduct({ data }: DataProductProps) {
         selectedDataProduct.id
       );
 
-      dataProductIn(linkedDataProduct ?? selectedDataProduct);
+      const dataProductToLoad = linkedDataProduct ?? selectedDataProduct;
+      loadedDataProduct.current = dataProductToLoad;
+      dataProductIn(dataProductToLoad);
     } else {
       const fallbackObservation =
         observations.find((obs) => obs.type === TYPE_PST) ?? observations[0];
       if (fallbackObservation?.id && !observationId) {
         setObservationId(fallbackObservation.id);
       }
-      setId(generateId(PAGE_PREFIX, 6));
+      setId(generateDataProductId());
     }
+    hasInitializedDataProduct.current = true;
   }, []);
 
   React.useEffect(() => {
@@ -568,6 +681,7 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!isEdit()) {
       const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
+      setBitDepth(getDefaultBitDepth());
       // channelsOut's initial state is set before an observation is selected (so isCombined()
       // can't see it yet) - re-derive it once the observation for this new data product is known.
       setChannelsOut(channelsOutMax());
@@ -732,6 +846,13 @@ export default function DataProduct({ data }: DataProductProps) {
         required
         setValue={setBitDepth}
         value={bitDepth}
+        options={
+          isPST()
+            ? isFlowThrough()
+              ? pstFlowThroughBitDepthOptions
+              : pstDedicatedFilterbankBitDepthOptions
+            : defaultBitDepthOptions
+        }
       />
     );
 
@@ -925,8 +1046,12 @@ export default function DataProduct({ data }: DataProductProps) {
     getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId)?.sensCalc;
 
   const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
-  const isNatural = () =>
-    isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
+  const isNatural = () => {
+    if (!(isSpectral() || (isContinuum() && isDataTypeOne()))) {
+      return false;
+    }
+    return isNonGaussianBeamWeighting(weighting, robust);
+  };
 
   return (
     <Box

@@ -11,11 +11,8 @@ export const cypressLowUnitsUnlocked =
   window.localStorage.getItem('cypress:lowUnitsUnlocked') === 'true' ||
   env.REACT_APP_LOW_UNITS_UNLOCKED === 'true';
 
-export const USE_LOCAL_DATA_SENSITIVITY_CALC =
-  env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
 export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
-export const API_VERSION = '/senscalc/api/v12';
 
 export const OSO_SERVICES_PHT = '/pht/';
 export const OSO_SERVICES_PANEL_PATH = `${OSO_SERVICES_PHT}panels`;
@@ -76,14 +73,9 @@ export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 
-export const BIT_DEPTH = [
-  { value: '1' },
-  { value: '2' },
-  { value: '4' },
-  { value: '8' },
-  { value: '16' },
-  { value: '32' }
-];
+export const BIT_DEPTH = [{ value: 1 }, { value: 2 }, { value: 4 }, { value: 8 }];
+export const PST_FLOW_THROUGH_BIT_DEPTH_VALUES = [1, 2, 4, 8, 16];
+export const PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES = [1, 2, 4, 8];
 
 export const CHANNELS_OUT_MIN = 1;
 export const CHANNELS_OUT_MAX = 40;
@@ -146,6 +138,7 @@ export const FREQUENCY_UNITS = [
   { label: FREQUENCY_STR_HZ, value: FREQUENCY_HZ, mapping: FREQUENCY_STR_HZ, toHz: 1000000000 }
 ];
 
+// TODO get rid of the duplication/longs
 export const TYPE_ZOOM = 'spectral';
 export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
@@ -227,6 +220,7 @@ export const HELP_FONT = 18;
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
+export const IMAGE_WEIGHTING_DEFAULT = IW_BRIGGS;
 export const ROBUST_DEFAULT = 0;
 export const TAPER_DEFAULT = 0;
 export const CHANNELS_OUT_DEFAULT = 40;
@@ -235,7 +229,7 @@ export const IMAGE_SIZE_UNIT_DEFAULT = 0;
 export const PIXEL_SIZE_DEFAULT = 1.3;
 export const PIXEL_SIZE_UNIT_DEFAULT = 2;
 export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
-export const BIT_DEPTH_DEFAULT = 1;
+export const BIT_DEPTH_DEFAULT = 8;
 export const TIME_AVERAGING_DEFAULT = 1;
 export const FREQUENCY_AVERAGING_DEFAULT = 1;
 export const POLARISATIONS_DEFAULT = ['I'];
@@ -656,12 +650,8 @@ export const STATUS_ERROR = 1;
 export const STATUS_ERROR_SYMBOL = '!';
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
-export const STATUS = {
-  OK: STATUS_OK,
-  ERROR: STATUS_ERROR,
-  PARTIAL: STATUS_PARTIAL,
-  INITIAL: STATUS_INITIAL
-};
+export type STATUS =
+  typeof STATUS_OK | typeof STATUS_ERROR | typeof STATUS_PARTIAL | typeof STATUS_INITIAL;
 export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
@@ -773,7 +763,6 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
-  linked: '0',
   type: TYPE_CONTINUUM,
   observingBand: BAND_LOW_STR,
   // Not 200 exactly - a valid centre frequency needs the SPW's first coarse channel to be even
@@ -801,7 +790,6 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
-  linked: '0',
   type: TYPE_ZOOM,
   observingBand: BAND_LOW_STR,
   centralFrequency: 200,
@@ -827,7 +815,6 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
-  linked: '0',
   type: TYPE_PST,
   observingBand: BAND_LOW_STR,
   // See DEFAULT_CONTINUUM_OBSERVATION_LOW's centralFrequency comment - same 150 MHz bandwidth, so

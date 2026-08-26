@@ -14,7 +14,7 @@ import {
   TIME_SECS,
   TAPER_DEFAULT,
   ROBUST_DEFAULT,
-  IW_UNIFORM
+  IMAGE_WEIGHTING_DEFAULT
 } from '@utils/constants';
 import {
   isLow,
@@ -39,8 +39,6 @@ import Fetch from '../fetch/Fetch';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDPNew, SDPSpectralData } from '@/utils/types/dataProduct';
 
-const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
-  getFinalResults(target, data, observation);
 interface FinalIndividualResults {
   results1: ResultsSection;
   results2: ResultsSection;
@@ -56,16 +54,15 @@ interface FinalIndividualResults {
 }
 
 export function getFinalResults(
+  sensCalcApiResponse: any,
   target: Target,
-  results: any,
-  theObservation: Observation
+  observation: Observation
 ): SensCalcResults {
-  const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
+  const isSuppliedSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  const individualResults = getFinalIndividualResultsForZoom(results, theObservation);
+  const individualResults = getFinalIndividualResultsForZoom(sensCalcApiResponse, observation);
 
   const theResults: SensCalcResults = {
-    id: target.id,
     title: target.name,
     statusGUI: STATUS_OK,
     section1: [],
@@ -330,7 +327,7 @@ async function GetZoomData(
   observation: Observation,
   target: Target,
   dataProductSDP: DataProductSDPNew
-) {
+): Promise<SensCalcResults> {
   const zoomData: ZoomData = {
     dataType: observation.type,
     bandwidth: {
@@ -352,7 +349,7 @@ async function GetZoomData(
     },
     spectralAveraging: observation?.spectralAveraging ?? 0,
     spectralResolution: '',
-    imageWeighting: (dataProductSDP?.data as SDPSpectralData)?.weighting ?? IW_UNIFORM,
+    imageWeighting: (dataProductSDP?.data as SDPSpectralData)?.weighting ?? IMAGE_WEIGHTING_DEFAULT,
     robust: (dataProductSDP?.data as SDPSpectralData)?.robust ?? ROBUST_DEFAULT,
     tapering: (dataProductSDP?.data as SDPSpectralData)?.taperValue ?? TAPER_DEFAULT
   };
@@ -390,6 +387,6 @@ async function GetZoomData(
     : addPropertiesMID(standardData, zoomData, observation);
 
   // const mapping: Function = undefined;
-  return Fetch(axiosClient, telescope, URL_PATH, properties, mapping, target, observation);
+  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, target, observation);
 }
 export default GetZoomData;

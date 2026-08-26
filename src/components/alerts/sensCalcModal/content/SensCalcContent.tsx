@@ -6,7 +6,7 @@ import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SensCalcContentProps {
-  data: SensCalcResults;
+  data?: SensCalcResults;
   isCustom?: boolean;
   isNatural?: boolean;
   isSSO?: undefined | boolean;
@@ -67,9 +67,10 @@ export default function SensCalcContent({
         <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
           <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
         </Alert>
-      ) : data?.statusGUI !== STATUS_INITIAL &&
-        data?.title !== '*SHOW PST MESSAGE*' &&
-        (data?.error === '' || data?.error === undefined) ? (
+      ) : data &&
+        data.statusGUI !== STATUS_INITIAL &&
+        data.title !== '*SHOW PST MESSAGE*' &&
+        (data.error === '' || data.error === undefined) ? (
         <>
           {displayElement(
             t('sensitivityCalculatorResults.targetName'),
