@@ -18,11 +18,9 @@ import { useHelp } from '@/utils/help/useHelp';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
-import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import Target from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
-import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { useTheme } from '@mui/material/styles';
 

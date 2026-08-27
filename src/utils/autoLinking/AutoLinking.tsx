@@ -253,7 +253,6 @@ export default async function autoLinking(
     sensCalc: sensCalcResult
   };
 
-  const existingCalibrationStrategy = getProposal()?.calibrationStrategy;
   const existingNotes = getProposal()?.calibrationStrategy?.[0]?.notes ?? null;
 
   const calibrationStrategy = await newCalibrationStrategy(
