@@ -63,6 +63,9 @@ export default function OutputFrequencyResolutionField({
         }}
         onStep={(currentValue: number, direction: 1 | -1) => Math.max(1, currentValue + direction)}
         onCommit={handleSetValue}
+        onBlurCommit={(committedMultiplier: number) =>
+          setErrorText(validateMultiplier(committedMultiplier))
+        }
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}

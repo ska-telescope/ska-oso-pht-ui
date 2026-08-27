@@ -46,9 +46,10 @@ describe('<OutputFrequencyResolutionField />', () => {
     );
     const input = screen.getByTestId('outputFrequencyResolution') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 7.0 } });
+    expect(screen.getByText('multiple-3.62')).toBeInTheDocument();
     fireEvent.blur(input);
     expect(handleSetValue).not.toHaveBeenCalled();
-    expect(screen.getByText('multiple-3.62')).toBeInTheDocument();
+    expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
   });
 
   test('renders fixed disabled units dropdown', async () => {
