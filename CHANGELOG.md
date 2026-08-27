@@ -79,6 +79,7 @@ UNRELEASED
 * Changed: Robust and integration time field validation errors propagated to breadcrumbs and gate SensCalc API calls
 * Changed: Debounce SensCalc API calls
 * Changed: Default image weighting is now Briggs with robust=0 for continuum, spectral and continuum-spectral data products (was uniform)
+* Changed: PST detected filterbank data product fields use SteppedNumberField component
 
 10.1.0
 ----------
