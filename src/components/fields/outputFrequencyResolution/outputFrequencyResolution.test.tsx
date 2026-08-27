@@ -37,7 +37,7 @@ describe('<OutputFrequencyResolutionField />', () => {
     expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
   });
 
-  test('does not update when value changed to non-multiple', async () => {
+  test('snaps to nearest valid multiple on blur when value is non-multiple', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
@@ -48,7 +48,7 @@ describe('<OutputFrequencyResolutionField />', () => {
     fireEvent.change(input, { target: { value: 7.0 } });
     expect(screen.getByText('multiple-3.62')).toBeInTheDocument();
     fireEvent.blur(input);
-    expect(handleSetValue).not.toHaveBeenCalled();
+    expect(handleSetValue).toHaveBeenCalledWith(2);
     expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
   });
 

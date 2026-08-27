@@ -27,6 +27,7 @@ export default function OutputSamplingIntervalField({
   const OUTPUT_SAMPLING_INTERVAL_UNIT_VALUE = 0;
   const FUNDAMENTAL_INTERVAL_MS = 0.20736;
   const EPSILON = 1e-6;
+  const pendingSnapMultiplierRef = React.useRef<number | null>(null);
 
   const validateMultiplier = (multiplier: number) =>
     Number.isInteger(multiplier) && multiplier >= 1
@@ -36,11 +37,14 @@ export default function OutputSamplingIntervalField({
         });
 
   const handleSetValue = (rawMultiplier: number) => {
-    const roundedMultiplier = Math.round(rawMultiplier);
+    const roundedMultiplier = Math.max(1, Math.round(rawMultiplier));
     const isIntegerMultiple = Math.abs(rawMultiplier - roundedMultiplier) < EPSILON;
     const error = validateMultiplier(isIntegerMultiple ? roundedMultiplier : rawMultiplier);
     setErrorText(error);
-    if (!error) {
+    if (error) {
+      pendingSnapMultiplierRef.current = roundedMultiplier;
+    } else {
+      pendingSnapMultiplierRef.current = null;
       setValue?.(roundedMultiplier);
     }
   };
@@ -63,9 +67,16 @@ export default function OutputSamplingIntervalField({
         }}
         onStep={(currentValue: number, direction: 1 | -1) => Math.max(1, currentValue + direction)}
         onCommit={handleSetValue}
-        onBlurCommit={(committedMultiplier: number) =>
-          setErrorText(validateMultiplier(committedMultiplier))
-        }
+        onBlurCommit={(committedMultiplier: number) => {
+          const pendingSnapMultiplier = pendingSnapMultiplierRef.current;
+          if (pendingSnapMultiplier !== null) {
+            pendingSnapMultiplierRef.current = null;
+            setErrorText('');
+            setValue?.(pendingSnapMultiplier);
+            return;
+          }
+          setErrorText(validateMultiplier(committedMultiplier));
+        }}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
