@@ -144,7 +144,13 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     }
   }, []);
 
+  const isFirstRender = React.useRef(true);
+
   React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     updateStorageProposal();
   }, [notes, calibrators]);
 
