@@ -652,6 +652,10 @@
   "outputSamplingInterval": {
     "help": "This field displays the output sampling interval.",
     "label": "Output sampling interval",
+    "units": "ms",
+    "error": {
+      "multiple": "Value must be in multiples of {{value}} ms"
+    },
     "range": {
       "error": "A value between {{min}} and {{max}} is required"
     }

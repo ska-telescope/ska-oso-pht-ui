@@ -4,45 +4,63 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import OutputSamplingIntervalField from './outputSamplingInterval';
 
-vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
-  useOSDAccessors: () => ({
-    observatoryConstants: { OutputSamplingInterval: { min: 1, max: 1000 } }
-  })
-}));
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({ t: (k: string) => k })
+  useScopedTranslation: () => ({
+    t: (k: string, args?: Record<string, string>) =>
+      k === 'outputSamplingInterval.error.multiple' ? `multiple-${args?.value ?? ''}` : k
+  })
 }));
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({ setHelp: () => {} })
 }));
 
 describe('<OutputSamplingIntervalField />', () => {
-  test('updates correctly when value changed', async () => {
-    const handleSetValue = vi.fn();
+  test('renders value to three decimal places in ms', async () => {
     render(
       <StoreProvider>
-        <OutputSamplingIntervalField value={1} setValue={handleSetValue} />
+        <OutputSamplingIntervalField value={1} setValue={vi.fn()} />
       </StoreProvider>
     );
-    const wrapper = screen.getByTestId('outputSamplingInterval');
-    const input = within(wrapper).getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.change(input, { target: { value: 250 } });
-    fireEvent.blur(input);
-    expect(handleSetValue).toHaveBeenCalledWith(Number(250));
+    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    expect(input.value).toBe('0.207');
   });
 
-  test('does not update when value changed to out of range', async () => {
+  test('steps to next multiple without validation error', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
         <OutputSamplingIntervalField value={1} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const wrapper = screen.getByTestId('outputSamplingInterval');
-    const input = within(wrapper).getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.change(input, { target: { value: 10000000 } });
+    fireEvent.click(screen.getByTestId('outputSamplingIntervalIncrement'));
+    expect(handleSetValue).toHaveBeenCalledWith(2);
+    expect(screen.queryByText('multiple-0.207')).not.toBeInTheDocument();
+  });
+
+  test('does not update when value changed to non-multiple', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <OutputSamplingIntervalField value={1} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 0.5 } });
+    expect(screen.getByText('multiple-0.207')).toBeInTheDocument();
     fireEvent.blur(input);
     expect(handleSetValue).not.toHaveBeenCalled();
-    expect(screen.getByText('outputSamplingInterval.range.error')).toBeInTheDocument();
+    expect(screen.queryByText('multiple-0.207')).not.toBeInTheDocument();
+  });
+
+  test('renders fixed disabled units dropdown', async () => {
+    render(
+      <StoreProvider>
+        <OutputSamplingIntervalField value={1} setValue={vi.fn()} />
+      </StoreProvider>
+    );
+    const units = screen.getByTestId('outputSamplingIntervalUnits');
+    expect(units).toHaveTextContent('outputSamplingInterval.units');
+    const fieldRoot = within(units.parentElement as HTMLElement).getByRole('combobox');
+    expect(fieldRoot).toHaveAttribute('aria-disabled', 'true');
   });
 });

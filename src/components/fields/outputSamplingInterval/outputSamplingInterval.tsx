@@ -1,11 +1,9 @@
 import React from 'react';
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { ERROR_SECS } from '@utils/constants.ts';
-import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
+import SelectField from '@/components/wrappers/selectField/SelectField';
+import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface OutputSamplingIntervalFieldProps {
   disabled?: boolean;
@@ -25,51 +23,67 @@ export default function OutputSamplingIntervalField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'outputSamplingInterval';
-  const [errorText, setErrorText] = useAutoClearingState('', ERROR_SECS);
-  const { observatoryConstants } = useOSDAccessors();
+  const [errorText, setErrorText] = React.useState('');
+  const OUTPUT_SAMPLING_INTERVAL_UNIT_VALUE = 0;
+  const FUNDAMENTAL_INTERVAL_MS = 0.20736;
+  const EPSILON = 1e-6;
 
-  const validateValue = (num: number) => {
-    if (
-      num < observatoryConstants.OutputSamplingInterval.min ||
-      num > observatoryConstants.OutputSamplingInterval.max
-    ) {
-      return t('outputSamplingInterval.range.error', {
-        min: observatoryConstants.OutputSamplingInterval.min,
-        max: observatoryConstants.OutputSamplingInterval.max
-      });
-    }
-    return '';
-  };
+  const validateMultiplier = (multiplier: number) =>
+    Number.isInteger(multiplier) && multiplier >= 1
+      ? ''
+      : t('outputSamplingInterval.error.multiple', {
+          value: FUNDAMENTAL_INTERVAL_MS.toFixed(3)
+        });
 
-  const handleSetValue = (num: number) => {
-    const error = validateValue(num);
-    if (error) {
-      setErrorText(error);
-    } else {
-      setErrorText('');
-      if (setValue) {
-        setValue(num);
-      }
+  const handleSetValue = (rawMultiplier: number) => {
+    const roundedMultiplier = Math.round(rawMultiplier);
+    const isIntegerMultiple = Math.abs(rawMultiplier - roundedMultiplier) < EPSILON;
+    const error = validateMultiplier(isIntegerMultiple ? roundedMultiplier : rawMultiplier);
+    setErrorText(error);
+    if (!error) {
+      setValue?.(roundedMultiplier);
     }
   };
 
   React.useEffect(() => {
-    const error = validateValue(value);
-    setErrorText(error);
+    setErrorText(validateMultiplier(value));
   }, [value]);
 
   return (
     <Box pt={1}>
-      <NumberEntry
+      <SteppedNumberField
         testId={FIELD}
         value={value}
-        disabled={disabled}
-        disabledUnderline={disabled}
-        setValue={(v: number) => handleSetValue(Number(v))}
+        format={(multiplier: number) => (multiplier * FUNDAMENTAL_INTERVAL_MS).toFixed(3)}
+        parse={(raw: string) => {
+          if (raw === '' || Number.isNaN(Number(raw))) {
+            return null;
+          }
+          return Number(raw) / FUNDAMENTAL_INTERVAL_MS;
+        }}
+        onStep={(currentValue: number, direction: 1 | -1) => Math.max(1, currentValue + direction)}
+        onCommit={handleSetValue}
+        onBlurCommit={(committedMultiplier: number) =>
+          setErrorText(validateMultiplier(committedMultiplier))
+        }
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
+        disabled={disabled}
+        min={FUNDAMENTAL_INTERVAL_MS}
+        step={FUNDAMENTAL_INTERVAL_MS}
         errorText={errorText}
+        suffix={
+          <Box sx={{ minWidth: 90 }}>
+            <SelectField
+              testId={FIELD + 'Units'}
+              disabled
+              options={[{ label: t(FIELD + '.units'), value: OUTPUT_SAMPLING_INTERVAL_UNIT_VALUE }]}
+              value={OUTPUT_SAMPLING_INTERVAL_UNIT_VALUE}
+              setValue={() => {}}
+            />
+          </Box>
+        }
       />
     </Box>
   );
