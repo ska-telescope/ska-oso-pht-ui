@@ -641,6 +641,10 @@
   "outputFrequencyResolution": {
     "help": "This field displays the output frequency resolution.",
     "label": "Output frequency resolution",
+    "units": "kHz",
+    "error": {
+      "multiple": "Value must be in multiples of {{value}} kHz"
+    },
     "range": {
       "error": "A value between {{min}} and {{max}} is required"
     }

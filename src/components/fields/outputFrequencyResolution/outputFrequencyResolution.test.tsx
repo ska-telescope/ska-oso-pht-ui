@@ -4,45 +4,62 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import OutputFrequencyResolutionField from './outputFrequencyResolution';
 
-vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
-  useOSDAccessors: () => ({
-    observatoryConstants: { OutputFrequencyResolution: { min: 1, max: 1000 } }
-  })
-}));
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({ t: (k: string) => k })
+  useScopedTranslation: () => ({
+    t: (k: string, args?: Record<string, string>) =>
+      k === 'outputFrequencyResolution.error.multiple' ? `multiple-${args?.value ?? ''}` : k
+  })
 }));
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({ setHelp: () => {} })
 }));
 
 describe('<OutputFrequencyResolutionField />', () => {
-  test('updates correctly when value changed', async () => {
-    const handleSetValue = vi.fn();
+  test('renders value to two decimal places in kHz', async () => {
     render(
       <StoreProvider>
-        <OutputFrequencyResolutionField value={1} setValue={handleSetValue} />
+        <OutputFrequencyResolutionField value={1} setValue={vi.fn()} />
       </StoreProvider>
     );
-    const wrapper = screen.getByTestId('outputFrequencyResolution');
-    const input = within(wrapper).getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.change(input, { target: { value: 250 } });
-    fireEvent.blur(input);
-    expect(handleSetValue).toHaveBeenCalledWith(Number(250));
+    const input = screen.getByTestId('outputFrequencyResolution') as HTMLInputElement;
+    expect(input.value).toBe('3.62');
   });
 
-  test('does not update when value changed to out of range', async () => {
+  test('steps to next multiple without validation error', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
         <OutputFrequencyResolutionField value={1} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const wrapper = screen.getByTestId('outputFrequencyResolution');
-    const input = within(wrapper).getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.change(input, { target: { value: 10000000 } });
+    fireEvent.click(screen.getByTestId('outputFrequencyResolutionIncrement'));
+    expect(handleSetValue).toHaveBeenCalledWith(2);
+    expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
+  });
+
+  test('does not update when value changed to non-multiple', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <OutputFrequencyResolutionField value={1} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByTestId('outputFrequencyResolution') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 7.0 } });
     fireEvent.blur(input);
     expect(handleSetValue).not.toHaveBeenCalled();
-    expect(screen.getByText('outputFrequencyResolution.range.error')).toBeInTheDocument();
+    expect(screen.getByText('multiple-3.62')).toBeInTheDocument();
+  });
+
+  test('renders fixed disabled units dropdown', async () => {
+    render(
+      <StoreProvider>
+        <OutputFrequencyResolutionField value={1} setValue={vi.fn()} />
+      </StoreProvider>
+    );
+    const units = screen.getByTestId('outputFrequencyResolutionUnits');
+    expect(units).toHaveTextContent('outputFrequencyResolution.units');
+    const fieldRoot = within(units.parentElement as HTMLElement).getByRole('combobox');
+    expect(fieldRoot).toHaveAttribute('aria-disabled', 'true');
   });
 });
