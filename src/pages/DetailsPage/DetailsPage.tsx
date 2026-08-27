@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   SA_AA2,
@@ -52,6 +53,7 @@ export default function DetailsPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV } = useOSDAccessors();
+  const authAxiosClient = useAxiosAuthClient();
   const [scienceCategoryId, setScienceCategoryId] = React.useState(
     getProposal().scienceCategory ?? ''
   );
@@ -139,6 +141,7 @@ export default function DetailsPage() {
       target,
       getProposal,
       setProposal,
+      authAxiosClient,
       scienceCategoryId,
       abstract,
       sArray?.numberZoomChannels

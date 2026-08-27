@@ -6,7 +6,7 @@ import {
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
 import MappingPutProposal from './putProposalMapping.tsx';
 import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 

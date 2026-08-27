@@ -116,7 +116,7 @@ export type ReferenceCoordinateSSO = {
   kind: string;
 };
 
-type Target = {
+export type Target = {
   id: string;
   name: string;
   redshift?: string;
