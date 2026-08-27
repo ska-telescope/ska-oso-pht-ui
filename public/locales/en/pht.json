@@ -325,6 +325,10 @@
   "dispersionMeasure": {
     "help": "This field displays the dispersion Measure.",
     "label": "Dispersion Measure",
+    "units": "pc/cm³",
+    "error": {
+      "integer": "Only integer values are allowed"
+    },
     "range": {
       "error": "A value between {{min}} and {{max}} is required"
     }

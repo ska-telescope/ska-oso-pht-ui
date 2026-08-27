@@ -191,7 +191,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [polarisations, setPolarisations] = React.useState<string[]>([]);
   const [outputFrequencyResolution, setOutputFrequencyResolution] = React.useState(1);
   const [outputSamplingInterval, setOutputSamplingInterval] = React.useState(1);
-  const [dispersionMeasure, setDispersionMeasure] = React.useState(1);
+  const [dispersionMeasure, setDispersionMeasure] = React.useState(0);
   const [rotationMeasure, setRotationMeasure] = React.useState(1);
 
   const [polarisationsError, setPolarisationsError] = React.useState('');
@@ -410,7 +410,7 @@ export default function DataProduct({ data }: DataProductProps) {
     );
     setOutputFrequencyResolution(data?.outputFrequencyResolution ?? 1);
     setOutputSamplingInterval(data?.outputSamplingInterval ?? 1);
-    setDispersionMeasure(data?.dispersionMeasure ?? 1);
+    setDispersionMeasure(data?.dispersionMeasure ?? 0);
     setRotationMeasure(data?.rotationMeasure ?? 1);
   };
 
