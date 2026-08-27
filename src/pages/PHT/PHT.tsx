@@ -339,6 +339,9 @@ export default function PHT({
         iconDocsLabel={t('docs.label')}
         iconDocsToolTip={t('docs.toolTip')}
         iconDocsURL={t('docs.URL', { version: packageJson.version })}
+        iconSensCalcURL={t('sensCalc.url')}
+        iconSensCalcToolTip={t('sensCalc.tooltip')}
+        iconSensCalcLabel={t('sensCalc.headerLabel')}
         iconFeedbackLabel={''}
         iconFeedbackToolTip={''}
         iconFeedbackURL={''}

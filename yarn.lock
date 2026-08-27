@@ -1939,10 +1939,10 @@
     domhandler "^5.0.3"
     selderee "^0.11.0"
 
-"@ska-telescope/ska-gui-components@^2.8.40":
-  version "2.8.40"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.8.40.tgz#a32cf5fbe5a68fc2d1731667c2e1400a62e5a0d9"
-  integrity sha512-egFw7Sho2iovfBhYYFpO8DFAVSSyeMxFHZx8wWomGLd/276V7NulHrVxQCPb6b/yG48Pjh8dTyME5MI4Rb7mAQ==
+"@ska-telescope/ska-gui-components@^2.8.41":
+  version "2.8.41"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.8.41.tgz#5618a2d743f91ff1c8dc31b5dd5d90230395ae33"
+  integrity sha512-Ts+3wp2BomRMRq8NqIi6XKVesEG/MUkYDd4FwbcySS5KmQfUg/jGKT3ydlmlVYHlzMinfDyS1UWwy1AQIpkQFw==
   dependencies:
     "@base-ui/react" "^1.0.0-alpha.6"
     "@fontsource/material-icons" "^5.2.5"
