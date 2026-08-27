@@ -175,8 +175,8 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
     });
   }
 
-  // See refreshAuthToken's own comment above for why this mechanism exists at all 
-  // the `if (account)` guard below just protects the rare case where this 
+  // See refreshAuthToken's own comment above for why this mechanism exists at all
+  // the `if (account)` guard below just protects the rare case where this
   // gets called before any real MSAL session exists yet.
   msalForceRefresh = async () => {
     const account = instance.getAllAccounts()?.[0];

@@ -118,7 +118,9 @@ describe('<ReviewListPage />', () => {
     wrapper(<ReviewListPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('pageTitle')).toHaveTextContent('REVIEW SCIENCE VERIFICATION IDEAS');
+      expect(screen.getByTestId('pageTitle')).toHaveTextContent(
+        'REVIEW SCIENCE VERIFICATION IDEAS'
+      );
     });
   });
 
