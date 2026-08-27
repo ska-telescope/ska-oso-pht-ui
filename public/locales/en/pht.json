@@ -1123,6 +1123,10 @@
   "rotationMeasure": {
     "help": "This field displays the rotationMeasure.",
     "label": "Rotation Measure",
+    "units": "rad/m²",
+    "error": {
+      "integer": "Only integer values are allowed"
+    },
     "range": {
       "error": "A value between {{min}} and {{max}} is required"
     }

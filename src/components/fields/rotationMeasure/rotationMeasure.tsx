@@ -1,11 +1,9 @@
 import React from 'react';
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { ERROR_SECS } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
+import SelectField from '@/components/wrappers/selectField/SelectField';
+import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface RotationMeasureFieldProps {
   disabled?: boolean;
@@ -25,49 +23,48 @@ export default function RotationMeasureField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'rotationMeasure';
-  const [errorText, setErrorText] = useAutoClearingState('', ERROR_SECS);
-  const { observatoryConstants } = useOSDAccessors();
+  const [errorText, setErrorText] = React.useState('');
+  const ROTATION_MEASURE_UNIT_VALUE = 0;
 
-  const validateValue = (num: number) => {
-    if (
-      num < observatoryConstants.RotationMeasure.min ||
-      num > observatoryConstants.RotationMeasure.max
-    ) {
-      return t('rotationMeasure.range.error', {
-        min: observatoryConstants.RotationMeasure.min,
-        max: observatoryConstants.RotationMeasure.max
-      });
-    }
-    return '';
-  };
+  const validateValue = (num: number) =>
+    Number.isInteger(num) ? '' : t('rotationMeasure.error.integer');
 
   const handleSetValue = (num: number) => {
     const error = validateValue(num);
-    if (error) {
-      setErrorText(error);
-    } else {
-      setErrorText('');
+    setErrorText(error);
+    if (!error) {
       setValue?.(num);
     }
   };
 
   React.useEffect(() => {
-    const error = validateValue(value);
-    setErrorText(error);
+    setErrorText(validateValue(value));
   }, [value]);
 
   return (
     <Box pt={1}>
-      <NumberEntry
+      <SteppedNumberField
         testId={FIELD}
-        disabled={disabled}
-        disabledUnderline={disabled}
         value={value}
-        setValue={(v: number) => handleSetValue(Number(v))}
+        onStep={(currentValue: number, direction: 1 | -1) => currentValue + direction}
+        onCommit={handleSetValue}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
+        disabled={disabled}
+        step={1}
         errorText={errorText}
+        suffix={
+          <Box sx={{ minWidth: 100 }}>
+            <SelectField
+              testId={FIELD + 'Units'}
+              disabled
+              options={[{ label: t(FIELD + '.units'), value: ROTATION_MEASURE_UNIT_VALUE }]}
+              value={ROTATION_MEASURE_UNIT_VALUE}
+              setValue={() => {}}
+            />
+          </Box>
+        }
       />
     </Box>
   );
