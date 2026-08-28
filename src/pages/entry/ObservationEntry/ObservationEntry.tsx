@@ -126,7 +126,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const locationProperties = useLocation();
-  const authAxiosClient = useAxiosAuthClient();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const loggedIn = isLoggedIn();
   const {
     isSV,

@@ -115,7 +115,6 @@ export default function PHT({
   const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens, isSV } =
     useOSDAccessors();
   const navigate = useNavigate();
-  const authAxiosClient = useAxiosAuthClient();
   const location = useLocation();
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { setHelp } = useHelp();
@@ -167,7 +166,7 @@ export default function PHT({
       target,
       getProposal,
       setProposal,
-      authAxiosClient,
+      authClient,
       proposal.scienceCategory,
       proposal.abstract
     ).then((result) => {

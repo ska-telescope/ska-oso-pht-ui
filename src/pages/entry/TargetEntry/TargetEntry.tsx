@@ -57,7 +57,7 @@ export default function TargetEntry({
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { autoLink, isSV, osdLOW, osdMID } = useOSDAccessors();
-  const authAxiosClient = useAxiosAuthClient();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent2 } = storageObject.useStore();
