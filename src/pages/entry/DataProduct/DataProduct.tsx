@@ -1040,7 +1040,7 @@ export default function DataProduct({ data }: DataProductProps) {
     getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId);
 
   const isNatural = () => {
-    if (!(isSpectral() || (isContinuum() && isDataTypeOne()))) {
+    if (!(isSpectral() || isContinuumSpectral() || (isContinuum() && isDataTypeOne()))) {
       return false;
     }
     return isNonGaussianBeamWeighting(weighting, robust);
