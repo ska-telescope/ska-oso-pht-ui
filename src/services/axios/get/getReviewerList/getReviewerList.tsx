@@ -53,9 +53,7 @@ export function GetMockReviewersList(): Reviewer[] {
   return MockReviewersList;
 }
 
-async function GetReviewerList(
-  authAxiosClient: AxiosAuthClient
-): Promise<Reviewer[] | string> {
+async function GetReviewerList(authAxiosClient: AxiosAuthClient): Promise<Reviewer[] | string> {
   if (USE_LOCAL_DATA || cypressToken) {
     return GetMockReviewersList();
   }

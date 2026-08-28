@@ -2,10 +2,7 @@ import { OSO_SERVICES_PROPOSAL_PATH, SKA_OSO_SERVICES_URL } from '@utils/constan
 import { EmailInviteBackend } from '@utils/types/emailInvite.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
-async function PostSendEmailInvite(
-  authAxiosClient: AxiosAuthClient,
-  email: EmailInviteBackend
-) {
+async function PostSendEmailInvite(authAxiosClient: AxiosAuthClient, email: EmailInviteBackend) {
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/send-email/`;
 

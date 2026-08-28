@@ -113,9 +113,7 @@ export function GetMockProposalList(): Proposal[] {
   return mappingList(MockProposalBackendList);
 }
 
-async function GetProposalList(
-  authAxiosClient: AxiosAuthClient
-): Promise<Proposal[] | string> {
+async function GetProposalList(authAxiosClient: AxiosAuthClient): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }

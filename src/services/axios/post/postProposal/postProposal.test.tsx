@@ -60,7 +60,12 @@ describe('PostProposal Service', () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
 
-    await PostProposal(mockedAuthClient, mockRefreshAuthToken, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    await PostProposal(
+      mockedAuthClient,
+      mockRefreshAuthToken,
+      MockProposalFrontend,
+      PROPOSAL_STATUS.DRAFT
+    );
 
     expect(mockRefreshAuthToken).toHaveBeenCalledTimes(1);
   });
@@ -105,7 +110,12 @@ describe('PostProposal Service', () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
 
-    await PostProposal(mockedAuthClient, mockRefreshAuthToken, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    await PostProposal(
+      mockedAuthClient,
+      mockRefreshAuthToken,
+      MockProposalFrontend,
+      PROPOSAL_STATUS.DRAFT
+    );
 
     const [, sentBody] = mockedAuthClient.post.mock.calls[0];
     // The client mints its own SKUID rather than relying on the backend to generate one - see

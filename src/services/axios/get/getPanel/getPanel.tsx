@@ -53,10 +53,7 @@ export function GetMockPanel(mock = MockPanelBackend): Panel {
   return mapping(mock);
 }
 
-async function GetPanel(
-  authAxiosClient: AxiosAuthClient,
-  id: string
-): Promise<Panel | string> {
+async function GetPanel(authAxiosClient: AxiosAuthClient, id: string): Promise<Panel | string> {
   if (USE_LOCAL_DATA) {
     return GetMockPanel();
   }

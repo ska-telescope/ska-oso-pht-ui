@@ -278,9 +278,7 @@ export const osdMapping = (
   return result;
 };
 
-async function GetOSDCycles(
-  authAxiosClient: AxiosAuthClient
-): Promise<string | ObservatoryData> {
+async function GetOSDCycles(authAxiosClient: AxiosAuthClient): Promise<string | ObservatoryData> {
   if (USE_LOCAL_DATA) {
     return GetMockData();
   }

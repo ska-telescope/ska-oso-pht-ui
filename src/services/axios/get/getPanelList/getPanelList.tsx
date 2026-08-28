@@ -65,9 +65,7 @@ export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
   return mappingList(uniqueResults);
 }
 
-async function GetPanelList(
-  authAxiosClient: AxiosAuthClient
-): Promise<Panel[] | string> {
+async function GetPanelList(authAxiosClient: AxiosAuthClient): Promise<Panel[] | string> {
   // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
   if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
     return GetMockPanelList();

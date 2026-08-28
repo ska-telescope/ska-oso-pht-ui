@@ -5,10 +5,7 @@ import {
 } from '@utils/constants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
-async function GetPresignedDownloadUrl(
-  authAxiosClient: AxiosAuthClient,
-  selectedFile: string
-) {
+async function GetPresignedDownloadUrl(authAxiosClient: AxiosAuthClient, selectedFile: string) {
   if (USE_LOCAL_DATA) {
     return 'https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf';
   }
