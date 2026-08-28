@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN, ERROR_SECS } from '@utils/constants.ts';
+import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -28,35 +28,25 @@ export default function ChannelsOutField({
 }: ChannelsOutFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'channelsOut';
-  const [fieldValid, setFieldValid] = React.useState(true);
 
-  const checkValue = (e: number) => {
+  const validate = (num: number): string =>
+    Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= maxValue
+      ? ''
+      : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: maxValue });
+
+  const [errorMessage, setErrorMessage] = React.useState(() => validate(value));
+
+  const commit = (e: number) => {
     const num = Number(e);
-    if (Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= maxValue) {
-      setFieldValid(true);
-      if (setValue) {
-        setValue(num);
-      }
-    } else {
-      setFieldValid(false);
+    if (setValue) {
+      setValue(num);
     }
+    setErrorMessage(validate(num));
   };
 
-  const errorMessage = fieldValid
-    ? ''
-    : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: maxValue });
-
   React.useEffect(() => {
-    let timerId: ReturnType<typeof setTimeout> | null = null;
-    if (!fieldValid) {
-      timerId = setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    }
-    return () => {
-      if (timerId !== null) clearTimeout(timerId);
-    };
-  }, [fieldValid]);
+    setErrorMessage(validate(value));
+  }, [value, maxValue]);
 
   return (
     <Box pt={1}>
@@ -64,7 +54,7 @@ export default function ChannelsOutField({
         label={t('channelsOut.label')}
         testId={FIELD}
         value={value}
-        setValue={checkValue}
+        setValue={commit}
         onFocus={onFocus}
         disabled={disabled}
         disabledUnderline={disabled}

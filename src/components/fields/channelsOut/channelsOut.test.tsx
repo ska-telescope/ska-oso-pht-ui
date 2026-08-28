@@ -64,20 +64,30 @@ describe('<ChannelsOut />', () => {
   });
 
   test.each([[0], [1], [1.5], [41]])(
-    'rejects invalid value %s without calling setValue',
+    'accepts invalid value %s, keeps it via setValue, and shows an error',
     (value) => {
       render(<ChannelsOut value={2} setValue={mockSetValue} />);
       enterValue(value);
-      expect(mockSetValue).not.toHaveBeenCalled();
+      expect(mockSetValue).toHaveBeenCalledWith(value);
       expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
     }
   );
 
-  test('the error does not auto-clear while the value is still invalid', () => {
+  test('the error and invalid value do not auto-clear on their own', () => {
     render(<ChannelsOut value={2} setValue={mockSetValue} />);
     enterValue(41);
     expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
     vi.advanceTimersByTime(5000);
     expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
+    expect(mockSetValue).toHaveBeenCalledTimes(1);
+  });
+
+  test('the error clears once the user enters a valid value', () => {
+    render(<ChannelsOut value={2} setValue={mockSetValue} />);
+    enterValue(41);
+    expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
+    enterValue(5);
+    expect(mockSetValue).toHaveBeenCalledWith(5);
+    expect(screen.queryByTestId('channelsOut-error')).not.toBeInTheDocument();
   });
 });
