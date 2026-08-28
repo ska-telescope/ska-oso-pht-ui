@@ -73,7 +73,7 @@ import {
 } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { calibratorMapping } from '../getCalibratorList/getCalibratorList.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 import {
@@ -831,7 +831,7 @@ export function GetMockProposal(): Proposal {
 }
 
 async function GetProposal(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   id: string
 ): Promise<Proposal | string> {
   if (USE_LOCAL_DATA) {

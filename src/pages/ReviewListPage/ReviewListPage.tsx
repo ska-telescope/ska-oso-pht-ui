@@ -72,7 +72,7 @@ export default function ReviewListPage() {
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
 
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleId, getCycle } = useOSDAccessors();
   const userId = getUserId();
 

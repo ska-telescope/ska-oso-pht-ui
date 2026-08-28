@@ -9,7 +9,7 @@ import { Panel, PanelBackend } from '@utils/types/panel.tsx';
 import { PanelProposal, PanelProposalBackend } from '@utils/types/panelProposal.tsx';
 import { PanelReviewer, PanelReviewerBackend } from '@utils/types/panelReviewer.tsx';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockPanelBackendList } from './mockPanelBackendList.tsx';
 
 /*****************************************************************************************************************************/
@@ -66,7 +66,7 @@ export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
 }
 
 async function GetPanelList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<Panel[] | string> {
   // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
   if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {

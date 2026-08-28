@@ -112,7 +112,7 @@ export default function GridProposals({
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const validateProposal = useValidateProposal();
 
   const deleteClicked = () => (

@@ -6,7 +6,7 @@ import GetOSDCycles from '../../get/getObservatoryData/getOSDCycles';
 
 export const useOSDAPI = (setAxiosError: (error: string) => void, enabled: boolean) => {
   const { application, updateAppContent3 } = storageObject.useStore();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
 
   const [osdData, setOsdData] = useState<ObservatoryData | null>(null);
   const [loading, setLoading] = useState(true);

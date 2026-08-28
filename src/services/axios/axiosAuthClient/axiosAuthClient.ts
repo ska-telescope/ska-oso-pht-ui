@@ -1,4 +1,4 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MSENTRA_API_URI } from '@/utils/constants';
@@ -25,6 +25,20 @@ export const loginRequest = {
 
 type MsalInstance = ReturnType<typeof useMsal>['instance'];
 
+// The axios client returned by useAxiosAuthClient - exported so callers that only need it for
+// typing (e.g. postProposal.tsx, which takes it as a parameter) don't have to reach for
+// ReturnType<typeof useAxiosAuthClient>, whose shape now includes refreshAuthToken too.
+export type AxiosAuthClient = AxiosInstance;
+
+// Call after any action known to grant new group membership server-side (e.g. creating a
+// proposal or panel, which calls ska-oso-services' create_membership) - acquireTokenSilent
+// normally serves a cached token until it's near expiry, so without this the next request would
+// carry the *pre-creation* token and its stale `groups` claim, and the new SecurityService
+// permission checks (which read groups straight off the token, not a live lookup) would reject
+// actions on the thing the user just created. Best-effort: on failure the caller proceeds with
+// whatever token it already had, same as before this existed.
+export type RefreshAuthToken = () => Promise<void>;
+
 // Concurrent requests all failing silent token acquisition at once (e.g. on initial page load)
 // would otherwise each independently call loginRedirect, navigating away repeatedly and
 // cancelling every other in-flight request. Only the first should trigger the redirect.
@@ -35,33 +49,6 @@ let loginRedirectTriggered = false;
 const NO_ACCOUNT_MAX_RETRIES = 2;
 const NO_ACCOUNT_RETRY_DELAY_MS = 500;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Set by useAxiosAuthClient (the only place with access to the MSAL instance/account) so that
-// non-hook callers - e.g. postProposal.tsx, postPanel.tsx - can still trigger a refresh via the
-// plain refreshAuthToken() export below, the same way setLocalTokenProvider lets them reach
-// getLocalToken without a hook.
-let msalForceRefresh: (() => Promise<void>) | null = null;
-
-// Call after any action known to grant new group membership server-side (e.g. creating a
-// proposal or panel, which calls ska-oso-services' create_membership) - acquireTokenSilent
-// normally serves a cached token until it's near expiry, so without this the next request would
-// carry the *pre-creation* token and its stale `groups` claim, and the new SecurityService
-// permission checks (which read groups straight off the token, not a live lookup) would reject
-// actions on the thing the user just created. Best-effort: on failure the caller proceeds with
-// whatever token it already had, same as before this existed.
-export const refreshAuthToken = async (): Promise<void> => {
-  if (!msalForceRefresh) {
-    return;
-  }
-  try {
-    await msalForceRefresh();
-  } catch (error) {
-    console.warn(
-      '[axiosAuthClient] refreshAuthToken failed, continuing with existing token:',
-      error
-    );
-  }
-};
 
 export const mapAxiosError = (error: AxiosError): Error => {
   if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
@@ -175,13 +162,21 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
     });
   }
 
-  // See refreshAuthToken's own comment above for why this mechanism exists at all
-  // the `if (account)` guard below just protects the rare case where this
-  // gets called before any real MSAL session exists yet.
-  msalForceRefresh = async () => {
+  // See RefreshAuthToken's own comment above for why this exists at all. The `if (account)`
+  // guard just protects the rare case where this gets called before any real MSAL session
+  // exists yet.
+  const refreshAuthToken: RefreshAuthToken = async () => {
     const account = instance.getAllAccounts()?.[0];
-    if (account) {
+    if (!account) {
+      return;
+    }
+    try {
       await instance.acquireTokenSilent({ ...loginRequest, account, forceRefresh: true });
+    } catch (error) {
+      console.warn(
+        '[axiosAuthClient] refreshAuthToken failed, continuing with existing token:',
+        error
+      );
     }
   };
 
@@ -203,7 +198,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
     (error: AxiosError) => Promise.reject(mapAxiosError(error))
   );
 
-  return axiosClient;
+  return { axiosClient, refreshAuthToken };
 };
 
 export default useAxiosAuthClient;

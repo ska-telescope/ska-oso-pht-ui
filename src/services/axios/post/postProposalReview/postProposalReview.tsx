@@ -1,4 +1,4 @@
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import {
   OSO_SERVICES_REVIEWS_PATH,
   REVIEW_TYPE,
@@ -76,7 +76,7 @@ export function postMockProposalReview(): string {
 }
 
 async function PostProposalReview(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   review: ProposalReview,
   cycleId: string
 ): Promise<string | { error: string }> {

@@ -1,4 +1,4 @@
-import useAxiosAuthClient from '../../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient } from '../../../axiosAuthClient/axiosAuthClient';
 import MockProposalAccessBackend from '../mockProposalAccessBackend';
 import { mappingList } from '../mappingList';
 import ProposalAccess from '@/utils/types/proposalAccess';
@@ -11,7 +11,7 @@ export function GetMockProposalAccessForProposal(): ProposalAccess[] {
 }
 
 async function GetProposalAccessForProposal(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   proposalId: string
 ): Promise<ProposalAccess[] | string> {
   if (USE_LOCAL_DATA || isCypress) {

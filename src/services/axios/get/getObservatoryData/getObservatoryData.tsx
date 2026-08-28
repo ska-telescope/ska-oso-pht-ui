@@ -4,7 +4,7 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
-import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
 import { MockODTConfigurationBackend } from './mockODTConfigurationBackend';
 import { ObservatoryData, ObservatoryDataBackend } from '@/utils/types/observatoryData';
@@ -21,7 +21,7 @@ export function GetMockData(
 }
 
 async function GetObservatoryData(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   cycleNumber: number
 ): Promise<string | ObservatoryData> {
   if (USE_LOCAL_DATA) {

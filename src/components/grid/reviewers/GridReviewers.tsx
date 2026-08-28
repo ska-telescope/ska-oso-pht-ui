@@ -68,7 +68,7 @@ export default function GridReviewers({
   const [axiosError, setAxiosError] = React.useState('');
   const [fetchList] = React.useState(false);
   const [reviewersCollection, setReviewersCollection] = React.useState<IdObject[]>([]);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
     'indeterminate'
   );

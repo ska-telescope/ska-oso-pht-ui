@@ -38,7 +38,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
   const { notifyClear, notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdCycleId, osdCyclePolicy } = useOSDAccessors();
@@ -70,6 +70,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     // proposalType now rather than passing isSV further down the chain.
     const response = await PostProposal(
       authClient,
+      refreshAuthToken,
       {
         ...proposal,
         cycle: osdCycleId ?? null,
@@ -102,6 +103,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     osdCycleId,
     isSV,
     authClient,
+    refreshAuthToken,
     notifyWarning,
     notifySuccess,
     notifyError,

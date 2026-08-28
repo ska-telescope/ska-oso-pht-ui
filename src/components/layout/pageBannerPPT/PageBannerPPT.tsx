@@ -70,7 +70,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     [isSV]
   );
 
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
   const loggedIn = isLoggedIn();

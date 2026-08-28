@@ -7,7 +7,7 @@ import { mappingPanelDecisionFrontendToBackend } from '@services/axios/post/post
 import { MockPanelDecisionBackend } from '@services/axios/post/postPanelDecision/mockPanelDecisionBackend.tsx';
 import { PanelDecision, PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
 import { helpers } from '@utils/helpers.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 // mapping backend to frontend format
 export function mappingPanelDecisionBackendToFrontend(
@@ -36,7 +36,7 @@ export function putMockPanelDecision(cycleId: string): PanelDecision {
 }
 
 async function PutPanelDecision(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   PanelDecision: PanelDecision
 ): Promise<PanelDecision | { error: string }> {
   if (USE_LOCAL_DATA) {

@@ -1,5 +1,5 @@
 import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import {
@@ -114,7 +114,7 @@ export function GetMockProposalList(): Proposal[] {
 }
 
 async function GetProposalList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();

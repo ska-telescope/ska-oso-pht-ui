@@ -7,7 +7,7 @@ import {
   cypressLiveMode
 } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import MockProposalBackendList from '../getProposalList/mockProposalBackendList.tsx';
 import { mappingList } from '../getProposalList/getProposalList.tsx';
 
@@ -16,7 +16,7 @@ export function GetMockProposalList(): Proposal[] {
 }
 
 async function GetProposalsReviewable(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<Proposal[] | string> {
   // cypressToken alone would also catch live-mode Cypress runs (which still set a - real - token
   // locally, see liveAuth.js), so exclude those explicitly rather than always mocking under

@@ -123,7 +123,7 @@ export default function PanelManagement() {
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
   const [makeAssignment, setMakeAssignment] = React.useState(false);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleDescription, osdCycleId } = useOSDAccessors();
 
   /*------------------------------------------------------------------*/

@@ -8,7 +8,7 @@ import {
   BAND_5B_STR,
   BAND_1_STR
 } from '@utils/constants.ts';
-import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
 import { MockODTConfigurationBackend } from './mockODTConfigurationBackend.tsx';
 import {
@@ -279,7 +279,7 @@ export const osdMapping = (
 };
 
 async function GetOSDCycles(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<string | ObservatoryData> {
   if (USE_LOCAL_DATA) {
     return GetMockData();

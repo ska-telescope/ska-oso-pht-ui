@@ -3,10 +3,10 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 async function GetPresignedDeleteUrl(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   selectedFile: string
 ) {
   if (USE_LOCAL_DATA) {

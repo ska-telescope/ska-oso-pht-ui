@@ -170,10 +170,30 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('creates an axios instance and registers both interceptors', () => {
-    const client = useAxiosAuthClient('http://localhost:3000');
+    const { axiosClient, refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
 
-    expect(client).toBe(mockAxiosInstance);
+    expect(axiosClient).toBe(mockAxiosInstance);
+    expect(refreshAuthToken).toEqual(expect.any(Function));
     expect(mockRequestUse).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
     expect(mockResponseUse).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
+  });
+
+  it('refreshAuthToken force-refreshes the token for the current account', async () => {
+    mockAcquireTokenSilent.mockResolvedValue({ accessToken: 'mock-token' });
+    const { refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
+
+    await refreshAuthToken();
+
+    expect(mockAcquireTokenSilent).toHaveBeenCalledWith(
+      expect.objectContaining({ account: { username: 'testuser' }, forceRefresh: true })
+    );
+  });
+
+  it('refreshAuthToken is a no-op when no account is signed in', async () => {
+    mockGetAllAccounts.mockReturnValueOnce([]);
+    const { refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
+
+    await expect(refreshAuthToken()).resolves.toBeUndefined();
+    expect(mockAcquireTokenSilent).not.toHaveBeenCalled();
   });
 });

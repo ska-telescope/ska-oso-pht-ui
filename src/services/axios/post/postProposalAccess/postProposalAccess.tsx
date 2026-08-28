@@ -1,4 +1,4 @@
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
 import { USE_LOCAL_DATA, OSO_SERVICES_PROPOSAL_ACCESS_PATH } from '@/utils/constants';
 
@@ -22,7 +22,7 @@ export function PostMockProposalAccess(): string {
 }
 
 async function PostProposalAccess(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   proposalAccess: ProposalAccess
 ): Promise<string | { error: string }> {
   if (USE_LOCAL_DATA) {

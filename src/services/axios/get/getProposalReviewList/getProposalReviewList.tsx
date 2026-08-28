@@ -8,7 +8,7 @@ import {
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
 import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend.tsx';
 
 /*****************************************************************************************************************************/
@@ -28,7 +28,7 @@ export function GetMockProposalReviewList(mock = MockProposalReviewListBackend):
 }
 
 async function GetProposalReviewList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<ProposalReview[] | string> {
   // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
   if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {

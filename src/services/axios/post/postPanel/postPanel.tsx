@@ -1,4 +1,4 @@
-import useAxiosAuthClient, { refreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient, RefreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
 import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@/utils/constants';
@@ -34,7 +34,8 @@ export function postMockPanel(): string {
 }
 
 async function PostPanel(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
+  refreshAuthToken: RefreshAuthToken,
   panel: Panel,
   cycleId: string
 ): Promise<string | { error: string }> {

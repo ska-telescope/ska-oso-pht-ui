@@ -45,7 +45,7 @@ export default function SciencePage() {
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
 
   const loggedIn = isLoggedIn();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
 
   const isDisableEndpoints = () => !loggedIn && !cypressToken;
 

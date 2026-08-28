@@ -5,7 +5,7 @@ import {
 } from '@utils/constants.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
 import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend.tsx';
 
 export function GetMockReview(
@@ -15,7 +15,7 @@ export function GetMockReview(
 }
 
 async function GetProposalReview(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   id: string
 ): Promise<ProposalReview | string> {
   if (USE_LOCAL_DATA) {

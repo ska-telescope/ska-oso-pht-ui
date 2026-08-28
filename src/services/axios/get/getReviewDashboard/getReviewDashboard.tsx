@@ -4,7 +4,7 @@ import {
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import { ReviewDashboard, ReviewDashboardBackend } from '@utils/types/reviewDashboard.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { mockReviewDashboardBackend } from './mockReviewDashboard.tsx';
 
 export function getMockReviewDashboard(): ReviewDashboard[] {
@@ -51,7 +51,7 @@ export function mappingReviewDashboardBackendToFrontend(
 }
 
 async function getReviewDashboard(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<ReviewDashboard[] | { error: string }> {
   if (USE_LOCAL_DATA) {
     return getMockReviewDashboard();

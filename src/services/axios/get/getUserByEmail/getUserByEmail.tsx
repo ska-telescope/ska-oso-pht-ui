@@ -5,7 +5,7 @@ import {
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import Investigator, { InvestigatorMSGraph } from '@utils/types/investigator.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import { MockUserMSGraphList } from './mockUserMSGraph.tsx';
 
 /*****************************************************************************************************************************/
@@ -40,7 +40,7 @@ export function GetMockUserByEmail(email: string): Investigator | string {
 }
 
 async function GetUserByEmail(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   email: string
 ): Promise<Investigator | string> {
   if (USE_LOCAL_DATA) {

@@ -6,14 +6,14 @@ import {
 import { MockPanelDecisionBackend } from '@services/axios/post/postPanelDecision/mockPanelDecisionBackend.tsx';
 import { mappingPanelDecisionBackendToFrontend } from '@services/axios/put/putPanelDecision/putPanelDecision.tsx';
 import { PanelDecision } from '@utils/types/panelDecision.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 export function getMockPanelDecision(cycleId: string): PanelDecision {
   return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend, cycleId);
 }
 
 async function getPanelDecision(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   id: string,
   cycleId: string
 ): Promise<PanelDecision | { error: string }> {

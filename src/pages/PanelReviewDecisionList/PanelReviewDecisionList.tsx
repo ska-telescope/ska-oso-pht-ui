@@ -29,7 +29,7 @@ export default function ReviewDecisionListPage() {
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleId } = useOSDAccessors();
   const userId = getUserId();
 

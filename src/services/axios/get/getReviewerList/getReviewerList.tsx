@@ -5,7 +5,7 @@ import {
   cypressToken
 } from '@utils/constants.ts';
 import { Reviewer, ReviewerBackend } from '@utils/types/reviewer.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockReviewersList } from './mockReviewerList.tsx';
 
 /*********************************************************** filter *********************************************************/
@@ -54,7 +54,7 @@ export function GetMockReviewersList(): Reviewer[] {
 }
 
 async function GetReviewerList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<Reviewer[] | string> {
   if (USE_LOCAL_DATA || cypressToken) {
     return GetMockReviewersList();

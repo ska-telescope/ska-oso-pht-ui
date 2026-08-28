@@ -116,7 +116,7 @@ export default function PHT({
     useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { setHelp } = useHelp();
   const { notifyWarning, notifyError } = useNotify();
   const theme = useTheme();

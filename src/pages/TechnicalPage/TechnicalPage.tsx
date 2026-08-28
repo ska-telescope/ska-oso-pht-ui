@@ -46,7 +46,7 @@ export default function TechnicalPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {

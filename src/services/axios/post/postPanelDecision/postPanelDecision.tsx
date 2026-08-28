@@ -5,7 +5,7 @@ import {
 } from '@utils/constants.ts';
 import { helpers } from '@utils/helpers.ts';
 import { PanelDecision, PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 // mapping frontend to backend format
 export function mappingPanelDecisionFrontendToBackend(
@@ -33,7 +33,7 @@ export function postMockPanelDecision(): string {
 }
 
 async function PostPanelDecision(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   PanelDecision: PanelDecision,
   cycleId: string
 ): Promise<string | { error: string }> {

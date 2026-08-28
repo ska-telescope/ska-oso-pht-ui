@@ -117,7 +117,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
 }));
 
 vi.mock('../../axiosAuthClient/axiosAuthClient', () => ({
-  default: () => 'mock-auth-client'
+  default: () => ({ axiosClient: 'mock-auth-client', refreshAuthToken: vi.fn() })
 }));
 
 vi.mock('../../get/getObservatoryData/getOSDCycles', () => ({

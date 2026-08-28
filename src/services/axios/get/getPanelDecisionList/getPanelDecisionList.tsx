@@ -6,7 +6,7 @@ import {
 import { mappingPanelDecisionBackendToFrontend } from '@services/axios/put/putPanelDecision/putPanelDecision.tsx';
 import { PanelDecision, PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockPanelDecisionBackendList } from './mockPanelDecisionBackendList.tsx';
 
 export function mappingList(
@@ -23,7 +23,7 @@ export function getMockPanelDecision(cycleId: string): PanelDecision[] {
 }
 
 async function getPanelDecisionList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   cycleId: string
 ): Promise<PanelDecision[] | string> {
   if (USE_LOCAL_DATA) {

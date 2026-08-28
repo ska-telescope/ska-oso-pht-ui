@@ -17,6 +17,7 @@ describe('Helper Functions', () => {
 
 describe('PostProposal Service', () => {
   let mockedAuthClient: any;
+  let mockRefreshAuthToken: any;
   beforeEach(() => {
     vi.resetAllMocks();
     mockedAuthClient = {
@@ -29,12 +30,14 @@ describe('PostProposal Service', () => {
         response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
       }
     };
+    mockRefreshAuthToken = vi.fn().mockResolvedValue(undefined);
   });
 
   test('returns mock proposal when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const result = await PostProposal(
       mockedAuthClient,
+      mockRefreshAuthToken,
       MockProposalFrontend,
       PROPOSAL_STATUS.DRAFT
     );
@@ -46,10 +49,20 @@ describe('PostProposal Service', () => {
     mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
     const result = (await PostProposal(
       mockedAuthClient,
+      mockRefreshAuthToken,
       MockProposalFrontend,
       PROPOSAL_STATUS.DRAFT
     )) as Proposal;
     expect(result).to.deep.equal(mapping(MockProposalBackend));
+  });
+
+  test('calls refreshAuthToken after a successful create', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
+
+    await PostProposal(mockedAuthClient, mockRefreshAuthToken, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+
+    expect(mockRefreshAuthToken).toHaveBeenCalledTimes(1);
   });
 
   test('returns error message on API failure', async () => {
@@ -57,6 +70,7 @@ describe('PostProposal Service', () => {
     mockedAuthClient.post.mockRejectedValue(new Error('Network Error'));
     const result = await PostProposal(
       mockedAuthClient,
+      mockRefreshAuthToken,
       MockProposalFrontend,
       PROPOSAL_STATUS.DRAFT
     );
@@ -68,6 +82,7 @@ describe('PostProposal Service', () => {
     mockedAuthClient.post.mockRejectedValue({ unexpected: 'object' });
     const result = await PostProposal(
       mockedAuthClient,
+      mockRefreshAuthToken,
       MockProposalFrontend,
       PROPOSAL_STATUS.DRAFT
     );
@@ -79,6 +94,7 @@ describe('PostProposal Service', () => {
     mockedAuthClient.post.mockResolvedValue(undefined);
     const result = await PostProposal(
       mockedAuthClient,
+      mockRefreshAuthToken,
       MockProposalFrontend,
       PROPOSAL_STATUS.DRAFT
     );
@@ -89,7 +105,7 @@ describe('PostProposal Service', () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
 
-    await PostProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    await PostProposal(mockedAuthClient, mockRefreshAuthToken, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
 
     const [, sentBody] = mockedAuthClient.post.mock.calls[0];
     // The client mints its own SKUID rather than relying on the backend to generate one - see
@@ -105,6 +121,7 @@ describe('PostProposal Service', () => {
     mockedAuthClient.post.mockResolvedValue(null);
     const result = await PostProposal(
       mockedAuthClient,
+      mockRefreshAuthToken,
       MockProposalFrontend,
       PROPOSAL_STATUS.DRAFT
     );

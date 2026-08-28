@@ -8,7 +8,7 @@ import {
 } from '@utils/constants';
 import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend';
 import { mappingReviewFrontendToBackend } from '../../post/postProposalReview/postProposalReview';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,
@@ -71,7 +71,7 @@ export function putMockProposalReview(): ProposalReview {
 }
 
 async function PutProposalReview(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   review: ProposalReview
 ): Promise<ProposalReview | { error: string }> {
   // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.

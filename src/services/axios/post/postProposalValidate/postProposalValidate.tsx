@@ -6,7 +6,7 @@ import {
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 export interface ValidateResponseData {
   result: boolean;
@@ -23,7 +23,7 @@ export function postMockProposalValidate(): { valid: string } {
 }
 
 async function PostProposalValidate(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   proposal: Proposal
 ): Promise<ValidateServiceResponse> {
   if (USE_LOCAL_DATA) {

@@ -115,7 +115,7 @@ export default function LandingPage() {
   } as unknown as Proposal;
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -231,6 +231,7 @@ export default function LandingPage() {
     // authoritative source for who that investigator is.
     const response = await PostProposal(
       authClient,
+      refreshAuthToken,
       {
         ...originalProposal,
         id: '',

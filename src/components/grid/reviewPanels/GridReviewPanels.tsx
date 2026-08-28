@@ -21,7 +21,7 @@ export default function GridReviewPanels({
   onRowClick
 }: GridReviewPanelsProps) {
   const { t } = useScopedTranslation();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const [data, setData] = React.useState<Panel[]>([]);
   const [createList, setCreateList] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);

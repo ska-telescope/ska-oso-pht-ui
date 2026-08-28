@@ -2,7 +2,7 @@ import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA, OSO_SERVICES_PANEL_PATH } from '@
 import { Panel, PanelBackend } from '@utils/types/panel.tsx';
 import { PanelProposal, PanelProposalBackend } from '@utils/types/panelProposal.tsx';
 import { PanelReviewer, PanelReviewerBackend } from '@utils/types/panelReviewer.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockPanelBackend } from './mockPanelBackend.tsx';
 
 /*****************************************************************************************************************************/
@@ -54,7 +54,7 @@ export function GetMockPanel(mock = MockPanelBackend): Panel {
 }
 
 async function GetPanel(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   id: string
 ): Promise<Panel | string> {
   if (USE_LOCAL_DATA) {

@@ -7,7 +7,7 @@ import {
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import useAxiosAuthClient, { refreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient, RefreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
 import { mapping } from '../../get/getProposal/getProposal.tsx';
 import MappingPutProposal from '../../put/putProposal/putProposalMapping.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
@@ -17,7 +17,8 @@ export function mockPostProposal() {
 }
 
 async function PostProposal(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
+  refreshAuthToken: RefreshAuthToken,
   proposal: Proposal,
   status?: string
 ): Promise<Proposal | { error: string }> {

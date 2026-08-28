@@ -6,7 +6,7 @@ import GridReviewPanels from './GridReviewPanels';
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => {
-    return {};
+    return { axiosClient: {}, refreshAuthToken: vi.fn() };
   }
 }));
 
