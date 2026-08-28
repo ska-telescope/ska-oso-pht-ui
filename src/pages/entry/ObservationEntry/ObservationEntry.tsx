@@ -54,10 +54,12 @@ import {
   SUPPLIED_INTEGRATION_TIME_STEP_MINS,
   SUPPLIED_SENSITIVITY_STEP,
   INTEGRATION_TIME_UNITS,
-  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
+  REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
+  generateCalibrationId,
   generateObsSetId,
   getBandwidthZoom,
   obTypeTransform,
@@ -107,6 +109,9 @@ import {
   useIsFrequencyOutOfRange
 } from '@/utils/validation/validation';
 import QuantityField from '@/components/fields/quantity/quantity';
+import { CalibrationStrategy, Calibrator } from '@utils/types/calibrationStrategy.tsx';
+import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
+import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
@@ -121,6 +126,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const locationProperties = useLocation();
+  const authAxiosClient = useAxiosAuthClient();
   const loggedIn = isLoggedIn();
   const {
     isSV,
@@ -222,7 +228,43 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         latestProposalRef.current.targetObservation,
         sensCalcPatches
       );
-      const mergedProposal = { ...latestProposalRef.current, targetObservation };
+
+      const linkedTarget = latestProposalRef.current.targets?.find((t) =>
+        targetObservation.some((to) => to.observationId === ob.id && to.targetId === t.id)
+      );
+
+      let calibrationStrategy = latestProposalRef.current.calibrationStrategy ?? [];
+      if (linkedTarget) {
+        let calibrators: Calibrator[] | null = null;
+        if (linkedTarget.kind !== REFERENCE_COORDINATE_TYPE_SSO.value) {
+          const response = await GetCalibratorList(authAxiosClient, ob, linkedTarget);
+          if (typeof response !== 'string') {
+            calibrators = response;
+          }
+        }
+
+        const existingNotes =
+          calibrationStrategy.find((cal) => cal.observationIdRef === ob.id)?.notes ?? null;
+
+        const updatedStrategy: CalibrationStrategy = {
+          observatoryDefined: true,
+          id: generateCalibrationId(),
+          observationIdRef: ob.id,
+          calibrators,
+          notes: existingNotes
+        };
+
+        calibrationStrategy = [
+          ...calibrationStrategy.filter((cal) => cal.observationIdRef !== ob.id),
+          updatedStrategy
+        ];
+      }
+
+      const mergedProposal = {
+        ...latestProposalRef.current,
+        targetObservation,
+        calibrationStrategy
+      };
       persistProposal(mergedProposal);
     };
 

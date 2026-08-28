@@ -23,7 +23,7 @@ import {
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   PAGE_CALIBRATION_ENTRY,
   PAGE_OBSERVATION_ENTRY
-} from '../../utils/constants';
+} from '@utils/constants.ts';
 import packageJson from '../../../package.json';
 
 // Pages...
@@ -115,6 +115,7 @@ export default function PHT({
   const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens, isSV } =
     useOSDAccessors();
   const navigate = useNavigate();
+  const authAxiosClient = useAxiosAuthClient();
   const location = useLocation();
   const authClient = useAxiosAuthClient();
   const { setHelp } = useHelp();
@@ -162,13 +163,18 @@ export default function PHT({
       return;
     }
     autoRepairAttemptedForId.current = proposal.id;
-    autoLinking(target, getProposal, setProposal, proposal.scienceCategory, proposal.abstract).then(
-      (result) => {
-        if (!result?.success) {
-          notifyWarning(result?.error ?? t('autoLink.error'));
-        }
+    autoLinking(
+      target,
+      getProposal,
+      setProposal,
+      authAxiosClient,
+      proposal.scienceCategory,
+      proposal.abstract
+    ).then((result) => {
+      if (!result?.success) {
+        notifyWarning(result?.error ?? t('autoLink.error'));
       }
-    );
+    });
   }, [getProposal(), autoLink]);
 
   React.useEffect(() => {
@@ -339,6 +345,9 @@ export default function PHT({
         iconDocsLabel={t('docs.label')}
         iconDocsToolTip={t('docs.toolTip')}
         iconDocsURL={t('docs.URL', { version: packageJson.version })}
+        iconSensCalcURL={t('sensCalc.url')}
+        iconSensCalcToolTip={t('sensCalc.tooltip')}
+        iconSensCalcLabel={t('sensCalc.headerLabel')}
         iconFeedbackLabel={''}
         iconFeedbackToolTip={''}
         iconFeedbackURL={''}

@@ -63,7 +63,12 @@ import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
-import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
+import {
+  CalibrationStrategy,
+  CalibrationStrategyBackend,
+  Calibrator,
+  FluxCalBackend
+} from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
 const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
@@ -123,7 +128,7 @@ export const getReferenceCoordinate = (
   }
 };
 
-const getTargets = (targets: Target[]): TargetBackend[] => {
+export const getTargets = (targets: Target[]): TargetBackend[] => {
   const mappedTargets = targets.map((tar) => ({
     name: tar.name,
     target_id: tar.id,
@@ -161,25 +166,23 @@ const getDocuments = (
   return documents;
 };
 
-export const getCalibrationStrategy = (
+function calibratorToFluxCal(calibrator: Calibrator): FluxCalBackend {
+  return {
+    kind: 'flux',
+    name: calibrator.name
+  };
+}
+
+export const mapCalibrationStrategyToBackend = (
   calibrationStrategies: CalibrationStrategy[]
 ): CalibrationStrategyBackend[] => {
-  const calibrationOut = calibrationStrategies?.map((strategy) => ({
+  return calibrationStrategies?.map((strategy) => ({
     observatory_defined: strategy?.observatoryDefined,
     calibration_id: strategy?.id,
     observation_set_ref: strategy?.observationIdRef,
-    calibrators: strategy?.calibrators
-      ? strategy?.calibrators?.map((calibrator) => ({
-          calibration_intent: calibrator?.calibrationIntent,
-          name: calibrator?.name,
-          duration_min: calibrator?.durationMin,
-          choice: calibrator?.choice,
-          notes: calibrator?.notes
-        }))
-      : null,
+    calibrators: strategy?.calibrators ? strategy.calibrators.map(calibratorToFluxCal) : null,
     notes: strategy?.notes
   }));
-  return calibrationOut;
 };
 
 /**
@@ -708,7 +711,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
       calibration_strategy:
         proposal.calibrationStrategy && proposal.calibrationStrategy.length > 0
-          ? getCalibrationStrategy(proposal.calibrationStrategy)
+          ? mapCalibrationStrategyToBackend(proposal.calibrationStrategy)
           : [],
       data_product_sdps:
         proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0

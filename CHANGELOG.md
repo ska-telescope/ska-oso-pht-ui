@@ -73,11 +73,14 @@ UNRELEASED
 * Fixed: Long titles hidden with ellipsis and wrap across multiple lines for small viewers
 * Fixed: Title LaTeX is now rendered before truncation in proposal validation/confirmation display, preventing raw LaTeX syntax from being shown
 * Changed: Title LaTeX is now rendered in the proposal submissions table
+* Added: Sensitivity Calculator button to the header of the tool.
 * Fixed: Fixed breadcrumb auto validation
 * Changed: More permissive TextField schema for robust and integration time fields allows users to backspace to clear the field and type out-of-range values
 * Changed: Robust and integration time field validation errors propagated to breadcrumbs and gate SensCalc API calls
 * Changed: Debounce SensCalc API calls
 * Changed: Default image weighting is now Briggs with robust=0 for continuum, spectral and continuum-spectral data products (was uniform)
+* Added: Use of `Get /calibrators` to fetch likely calibration strategy for a given telescope, target and integration time
+* Changed: upgrade to oso-services v16.3.0
 
 10.1.0
 ----------
