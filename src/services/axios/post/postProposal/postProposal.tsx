@@ -65,8 +65,9 @@ async function PostProposal(
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
     // The backend just granted this user admin group membership on the new proposal
-    // (create_membership) - refresh so the next request's token actually reflects it.
-    await refreshAuthToken();
+    // (create_membership) - refresh so the next request's token actually reflects it. 
+    // Fire and forget at this point, since the next request will refresh the token if it has expired.
+    refreshAuthToken();
     return mapping(result.data);
   } catch (e) {
     if (e instanceof Error) {

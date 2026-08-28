@@ -40,7 +40,9 @@ const SPEC_PATTERN = 'tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}';
 // overrides it - CI's own report-merging step (jsMergeReports, see js-do-e2e-test in
 // .make/js.mk) globs `$(JS_BUILD_TESTS_DIRECTORY)/e2e*.xml` non-recursively, so worker output
 // has to land directly in this directory, not a subfolder, for GitLab's own Tests tab to see it.
-const REPORT_DIR = process.env.JS_BUILD_TESTS_DIRECTORY ?? 'build/tests';
+// Mutable: main() below may redirect this to a directory parsed out of the caller's own
+// --reporter-options (see reportDirFromReporterOptions) when one was supplied.
+let REPORT_DIR = process.env.JS_BUILD_TESTS_DIRECTORY ?? 'build/tests';
 // Deliberately does NOT match CI's own `e2e*.xml` merge glob (see REPORT_DIR above) - otherwise
 // CI's own merge step would ingest this alongside the per-spec files it's built from and
 // double-count every result.
@@ -57,6 +59,33 @@ const CYPRESS_SPLIT_MERGE_BIN = join(BIN_DIR, 'cypress-split-merge');
 // has been populated by a prior run.
 const SPLIT_DIR = join(REPORT_DIR, 'cypress-split');
 const MERGED_TIMINGS_FILE = join(SPLIT_DIR, 'merged-timings.json');
+
+// If the caller supplied its own --reporter-options (as CI's shared JS_E2E_TEST_DEFAULT_SWITCHES
+// always does - see this script's own top-of-file comment), every worker still receives that
+// exact same string verbatim (reporterArgsFor below is skipped, not replaced, in that case), so
+// mocha-junit-reporter's per-spec [hash] expansion keeps each worker's output collision-free the
+// same way it does for this script's own generated reporter-options. That means the mochaFile=
+// directory the caller asked for is still knowable from the args - only give up on consolidation
+// if it genuinely can't be parsed out (e.g. a --reporter-options with no mochaFile at all).
+function reportDirFromReporterOptions(args) {
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+    let value;
+    if (arg.startsWith('--reporter-options=')) {
+      value = arg.slice('--reporter-options='.length);
+    } else if (arg === '--reporter-options') {
+      value = args[i + 1];
+    }
+    if (value === undefined) {
+      continue;
+    }
+    const match = value.match(/(?:^|,)mochaFile=([^,]+)/);
+    if (match) {
+      return dirname(match[1]);
+    }
+  }
+  return null;
+}
 
 // Wrapped in an async IIFE (rather than left as top-level statements) purely so every early-out
 // below can `return` instead of calling process.exit() - process.exit() terminates the process
@@ -119,7 +148,19 @@ async function main() {
           `mochaFile=${REPORT_DIR}/e2e-tests-worker${workerIndex + 1}-[hash].xml`
         ];
 
-  if (!callerSetReporterOptions) {
+  // Redirect REPORT_DIR to wherever the caller's own --reporter-options is actually writing to,
+  // so consolidation still works instead of unconditionally bailing out just because this script
+  // didn't generate the reporter-options itself (see reportDirFromReporterOptions above).
+  let knowReportDir = !callerSetReporterOptions;
+  if (callerSetReporterOptions) {
+    const derivedReportDir = reportDirFromReporterOptions(extraArgs);
+    if (derivedReportDir) {
+      REPORT_DIR = derivedReportDir;
+      knowReportDir = true;
+    }
+  }
+
+  if (knowReportDir) {
     mkdirSync(REPORT_DIR, { recursive: true });
     // Clear last run's JUnit output first - otherwise printConsolidatedSummary() below finds
     // both this run's and every previous run's report for the same spec (each with its own
@@ -198,13 +239,14 @@ async function main() {
 
   mergeSplitTimings();
 
-  if (callerSetReporterOptions) {
-    console.log(
-      '\nA custom --reporter-options was supplied, so this script does not know where each ' +
-        "worker's output landed - skipping the consolidated summary."
-    );
-  } else {
+  if (knowReportDir) {
     printConsolidatedSummary();
+  } else {
+    console.log(
+      '\nA custom --reporter-options was supplied without a recognisable mochaFile=, so this ' +
+        "script does not know where each worker's output landed - skipping the consolidated " +
+        'summary.'
+    );
   }
 
   const failed = results.filter((r) => r.code !== 0);
