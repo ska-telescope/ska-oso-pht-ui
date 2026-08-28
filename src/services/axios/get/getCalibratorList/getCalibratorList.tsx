@@ -9,7 +9,6 @@ import {
   TIME_MS
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
-import { MockCalibratorBackendList } from './mockCalibratorListBackend.tsx';
 import {
   CalibrationIntent,
   Calibrator,
