@@ -87,7 +87,6 @@ export default function OutputSamplingIntervalField({
         onFocus={() => setHelp(FIELD)}
         required={required}
         disabled={disabled}
-        min={FUNDAMENTAL_INTERVAL_MS}
         step={FUNDAMENTAL_INTERVAL_MS}
         errorText={errorText}
         suffix={

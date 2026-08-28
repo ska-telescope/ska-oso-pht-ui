@@ -37,6 +37,17 @@ describe('<OutputFrequencyResolutionField />', () => {
     expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
   });
 
+  test('decrement at minimum keeps displayed value stable', async () => {
+    render(
+      <StoreProvider>
+        <OutputFrequencyResolutionField value={1} setValue={vi.fn()} />
+      </StoreProvider>
+    );
+    const input = screen.getByTestId('outputFrequencyResolution') as HTMLInputElement;
+    fireEvent.click(screen.getByTestId('outputFrequencyResolutionDecrement'));
+    expect(input.value).toBe('3.62');
+  });
+
   test('accepts its own rounded displayed value when typed', async () => {
     const handleSetValue = vi.fn();
     render(

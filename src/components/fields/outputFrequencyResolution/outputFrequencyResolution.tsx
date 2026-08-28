@@ -87,7 +87,6 @@ export default function OutputFrequencyResolutionField({
         onFocus={() => setHelp(FIELD)}
         required={required}
         disabled={disabled}
-        min={FUNDAMENTAL_RESOLUTION_KHZ}
         step={FUNDAMENTAL_RESOLUTION_KHZ}
         errorText={errorText}
         suffix={

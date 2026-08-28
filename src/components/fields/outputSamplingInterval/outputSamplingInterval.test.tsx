@@ -37,6 +37,17 @@ describe('<OutputSamplingIntervalField />', () => {
     expect(screen.queryByText('multiple-0.207')).not.toBeInTheDocument();
   });
 
+  test('decrement at minimum keeps displayed value stable', async () => {
+    render(
+      <StoreProvider>
+        <OutputSamplingIntervalField value={1} setValue={vi.fn()} />
+      </StoreProvider>
+    );
+    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    fireEvent.click(screen.getByTestId('outputSamplingIntervalDecrement'));
+    expect(input.value).toBe('0.207');
+  });
+
   test('accepts its own rounded displayed value when typed', async () => {
     const handleSetValue = vi.fn();
     render(
