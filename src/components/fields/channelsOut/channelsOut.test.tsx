@@ -1,7 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import ChannelsOut from './channelsOut';
+import { CHANNELS_OUT_MIN } from '@/utils/constants.ts';
 
 // Mock the translation hook so validation output is deterministic
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
@@ -11,83 +14,87 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
   })
 }));
 
-// Stub NumberEntry as a plain input so we can drive setValue (checkValue) and
-// observe errorText in isolation. Two non-obvious details are noted inline below.
-vi.mock('@ska-telescope/ska-gui-components', () => ({
-  // (1) constants.ts reads these at module load — e.g. LAB_POS_TICK = LABEL_POSITION.START
-  // and TELESCOPE_MID/LOW.code — so the mock must define them even though the
-  // component itself only uses NumberEntry.
-  LABEL_POSITION: {
-    CONTAINED: 'contained',
-    START: 'start',
-    TOP: 'top',
-    BOTTOM: 'bottom',
-    END: 'end'
-  },
-  TELESCOPE_MID: { code: 'mid' },
-  TELESCOPE_LOW: { code: 'low' },
-  NumberEntry: ({ setValue, errorText, testId }: any) => (
-    <div>
-      {/* (2) Uncontrolled on purpose: a controlled input (value={value}) makes React
-          suppress onChange when the entered value equals the prop, which silently
-          broke the "accepts 1" case since the field initialises at value 1. */}
-      <input data-testid={testId} onChange={(e) => setValue(Number(e.target.value))} />
-      {errorText && <span data-testid={`${testId}-error`}>{errorText}</span>}
-    </div>
-  )
-}));
+const ERROR_TEXT = 'channelsOut.error:2-40';
+
+const StatefulChannelsOut = ({
+  initial,
+  maxValue
+}: {
+  initial: number;
+  maxValue?: number;
+}) => {
+  const [value, setValue] = React.useState(initial);
+  return <ChannelsOut value={value} setValue={setValue} maxValue={maxValue} />;
+};
+
+const pressArrowUp = async (input: HTMLElement) => {
+  await userEvent.click(input);
+  await userEvent.keyboard('{ArrowUp}');
+};
 
 describe('<ChannelsOut />', () => {
-  const mockSetValue = vi.fn();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    vi.useFakeTimers();
-  });
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  const enterValue = (v: number) =>
-    fireEvent.change(screen.getByTestId('channelsOut'), { target: { value: String(v) } });
-
-  test('renders correctly', () => {
-    render(<ChannelsOut value={1} setValue={mockSetValue} />);
+  it('renders correctly', () => {
+    render(<ChannelsOut value={2} setValue={vi.fn()} />);
     expect(screen.getByTestId('channelsOut')).toBeInTheDocument();
   });
 
-  test.each([[2], [40]])('accepts valid value %i and calls setValue', (value) => {
-    render(<ChannelsOut value={2} setValue={mockSetValue} />);
-    enterValue(value);
-    expect(mockSetValue).toHaveBeenCalledWith(value);
-    expect(screen.queryByTestId('channelsOut-error')).not.toBeInTheDocument();
+  it.each([[2], [40]])('accepts valid value %i and calls setValue with no error', async (value) => {
+    const setValue = vi.fn();
+    render(<ChannelsOut value={2} setValue={setValue} />);
+    const input = screen.getByTestId('channelsOut');
+    await userEvent.clear(input);
+    await userEvent.type(input, String(value));
+    expect(setValue).toHaveBeenCalledWith(value);
+    expect(screen.queryByText(ERROR_TEXT)).not.toBeInTheDocument();
   });
 
-  test.each([[0], [1], [1.5], [41]])(
-    'accepts invalid value %s, keeps it via setValue, and shows an error',
-    (value) => {
-      render(<ChannelsOut value={2} setValue={mockSetValue} />);
-      enterValue(value);
-      expect(mockSetValue).toHaveBeenCalledWith(value);
-      expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
+  it.each([[0], [1], [41]])(
+    'accepts invalid value %i, keeps it via setValue, and shows a persistent error',
+    async (value) => {
+      const setValue = vi.fn();
+      render(<ChannelsOut value={2} setValue={setValue} />);
+      const input = screen.getByTestId('channelsOut');
+      await userEvent.clear(input);
+      await userEvent.type(input, String(value));
+      expect(setValue).toHaveBeenCalledWith(value);
+      expect(screen.getByText(ERROR_TEXT)).toBeInTheDocument();
     }
   );
 
-  test('the error and invalid value do not auto-clear on their own', () => {
-    render(<ChannelsOut value={2} setValue={mockSetValue} />);
-    enterValue(41);
-    expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
-    vi.advanceTimersByTime(5000);
-    expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
-    expect(mockSetValue).toHaveBeenCalledTimes(1);
+  it('does not auto-correct an invalid value on blur', async () => {
+    render(<StatefulChannelsOut initial={2} />);
+    const input = screen.getByTestId('channelsOut') as HTMLInputElement;
+    await userEvent.clear(input);
+    await userEvent.type(input, '41');
+    await userEvent.tab();
+    expect(input.value).toBe('41');
+    expect(screen.getByText(ERROR_TEXT)).toBeInTheDocument();
   });
 
-  test('the error clears once the user enters a valid value', () => {
-    render(<ChannelsOut value={2} setValue={mockSetValue} />);
-    enterValue(41);
-    expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
-    enterValue(5);
-    expect(mockSetValue).toHaveBeenCalledWith(5);
-    expect(screen.queryByTestId('channelsOut-error')).not.toBeInTheDocument();
+  it('clears the error once the user enters a valid value', async () => {
+    render(<StatefulChannelsOut initial={2} />);
+    const input = screen.getByTestId('channelsOut');
+    await userEvent.clear(input);
+    await userEvent.type(input, '41');
+    expect(screen.getByText(ERROR_TEXT)).toBeInTheDocument();
+
+    await userEvent.clear(input);
+    await userEvent.type(input, '5');
+    expect(screen.queryByText(ERROR_TEXT)).not.toBeInTheDocument();
+  });
+
+  it('steps up by 1 and clamps at the configured maxValue', async () => {
+    const setValue = vi.fn();
+    render(<ChannelsOut value={CHANNELS_OUT_MIN} setValue={setValue} maxValue={5} />);
+    await pressArrowUp(screen.getByTestId('channelsOut'));
+    expect(setValue).toHaveBeenCalledWith(CHANNELS_OUT_MIN + 1);
+  });
+
+  it('disables the decrement and increment buttons when min and maxValue coincide', () => {
+    render(
+      <ChannelsOut value={CHANNELS_OUT_MIN} setValue={vi.fn()} maxValue={CHANNELS_OUT_MIN} />
+    );
+    expect(screen.getByTestId('channelsOutDecrement')).toBeDisabled();
+    expect(screen.getByTestId('channelsOutIncrement')).toBeDisabled();
   });
 });

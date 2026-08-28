@@ -1,16 +1,16 @@
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface ChannelsOutFieldProps {
   disabled?: boolean;
   required?: boolean;
   maxValue?: number;
-  onFocus?: Function;
+  onFocus?: () => void;
   setValue?: Function;
-  suffix?: any;
+  suffix?: JSX.Element;
   value: number;
 }
 
@@ -36,13 +36,13 @@ export default function ChannelsOutField({
 
   const [errorMessage, setErrorMessage] = React.useState(() => validate(value));
 
-  const commit = (e: number) => {
-    const num = Number(e);
-    if (setValue) {
-      setValue(num);
-    }
+  const commit = (num: number) => {
+    setValue?.(num);
     setErrorMessage(validate(num));
   };
+
+  const step = (current: number, direction: 1 | -1) =>
+    Math.min(Math.max(current + direction, CHANNELS_OUT_MIN), maxValue);
 
   React.useEffect(() => {
     setErrorMessage(validate(value));
@@ -50,17 +50,21 @@ export default function ChannelsOutField({
 
   return (
     <Box pt={1}>
-      <NumberEntry
-        label={t('channelsOut.label')}
+      <SteppedNumberField
         testId={FIELD}
+        label={t('channelsOut.label')}
         value={value}
-        setValue={commit}
+        digitsOnly
+        onCommit={commit}
+        onStep={step}
         onFocus={onFocus}
         disabled={disabled}
-        disabledUnderline={disabled}
         required={required}
-        suffix={suffix}
         errorText={errorMessage}
+        suffix={suffix}
+        min={CHANNELS_OUT_MIN}
+        max={maxValue}
+        step={1}
       />
     </Box>
   );
