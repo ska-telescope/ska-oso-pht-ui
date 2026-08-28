@@ -63,7 +63,13 @@ export default function OutputSamplingIntervalField({
           if (raw === '' || Number.isNaN(Number(raw))) {
             return null;
           }
-          return Number(raw) / FUNDAMENTAL_INTERVAL_MS;
+          const typedDisplayValue = Number(raw);
+          const rawMultiplier = typedDisplayValue / FUNDAMENTAL_INTERVAL_MS;
+          const nearestMultiplier = Math.max(1, Math.round(rawMultiplier));
+          const nearestDisplayValue = Number(
+            (nearestMultiplier * FUNDAMENTAL_INTERVAL_MS).toFixed(3)
+          );
+          return typedDisplayValue === nearestDisplayValue ? nearestMultiplier : rawMultiplier;
         }}
         onStep={(currentValue: number, direction: 1 | -1) => Math.max(1, currentValue + direction)}
         onCommit={handleSetValue}

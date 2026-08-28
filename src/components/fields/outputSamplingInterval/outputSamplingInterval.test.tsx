@@ -37,6 +37,20 @@ describe('<OutputSamplingIntervalField />', () => {
     expect(screen.queryByText('multiple-0.207')).not.toBeInTheDocument();
   });
 
+  test('accepts its own rounded displayed value when typed', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <OutputSamplingIntervalField value={2} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 0.207 } });
+    fireEvent.blur(input);
+    expect(handleSetValue).toHaveBeenCalledWith(1);
+    expect(screen.queryByText('multiple-0.207')).not.toBeInTheDocument();
+  });
+
   test('snaps to nearest valid multiple on blur when value is non-multiple', async () => {
     const handleSetValue = vi.fn();
     render(

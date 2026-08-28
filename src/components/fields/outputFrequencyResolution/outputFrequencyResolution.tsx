@@ -63,7 +63,13 @@ export default function OutputFrequencyResolutionField({
           if (raw === '' || Number.isNaN(Number(raw))) {
             return null;
           }
-          return Number(raw) / FUNDAMENTAL_RESOLUTION_KHZ;
+          const typedDisplayValue = Number(raw);
+          const rawMultiplier = typedDisplayValue / FUNDAMENTAL_RESOLUTION_KHZ;
+          const nearestMultiplier = Math.max(1, Math.round(rawMultiplier));
+          const nearestDisplayValue = Number(
+            (nearestMultiplier * FUNDAMENTAL_RESOLUTION_KHZ).toFixed(2)
+          );
+          return typedDisplayValue === nearestDisplayValue ? nearestMultiplier : rawMultiplier;
         }}
         onStep={(currentValue: number, direction: 1 | -1) => Math.max(1, currentValue + direction)}
         onCommit={handleSetValue}
