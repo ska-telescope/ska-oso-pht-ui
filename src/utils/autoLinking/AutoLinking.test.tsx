@@ -23,14 +23,16 @@ import autoLinking, {
   newDataProductsForMode,
   newObservationForMode
 } from './AutoLinking';
-import { mockCalibration } from './mockCalibration';
 import {
   CONTINUUM_IMAGE_DATA_PRODUCT,
   PST_TIMING_DATA_PRODUCT,
   SPECTRAL_DATA_PRODUCT
 } from './mockSDP';
 import { mockTarget } from './mockTarget';
+import { mockObservation } from './mockObservation';
+import { mockCalibration } from './mockCalibration';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import { MockCalibratorBackendList } from '@services/axios/get/getCalibratorList/mockCalibratorListBackend.tsx';
 
 const validMockSensCal = {
   id: 1,
@@ -38,6 +40,17 @@ const validMockSensCal = {
   statusGUI: STATUS_OK,
   section1: [{ field: 'continuumSensitivityWeighted', value: '130.33', units: 'uJy / beam' }]
 };
+
+const mockAuthAxiosClient = {
+  put: vi.fn(),
+  get: vi.fn(),
+  post: vi.fn(),
+  delete: vi.fn(),
+  interceptors: {
+    request: { clear: vi.fn(), eject: vi.fn(), use: vi.fn() },
+    response: { clear: vi.fn(), eject: vi.fn(), use: vi.fn() }
+  }
+} as any;
 
 describe('autoLinking, newObservationForMode', () => {
   test('creates continuum observation', () => {
@@ -127,9 +140,16 @@ describe('autoLinking, newDataProductsForMode', () => {
 });
 
 describe('autoLinking, newCalibrationStrategy', () => {
-  test('creates default calibration strategy', () => {
+  test('creates default calibration strategy', async () => {
     vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('cal-0000000');
-    const calibration = newCalibrationStrategy('obs-123');
+    mockAuthAxiosClient.post.mockResolvedValue({ data: MockCalibratorBackendList });
+
+    const calibration = await newCalibrationStrategy(
+      'obs-123',
+      mockAuthAxiosClient,
+      mockObservation,
+      mockTarget
+    );
     expect(calibration).to.deep.equal(mockCalibration);
   });
 });
@@ -182,7 +202,14 @@ describe('autoLinking()', () => {
   it('returns success and updates proposal when getSensCalc succeeds', async () => {
     vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
+    const result = await autoLinking(
+      mockTarget,
+      getProposal,
+      setProposal,
+      mockAuthAxiosClient,
+      TYPE_CONTINUUM,
+      ''
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
@@ -208,7 +235,14 @@ describe('autoLinking()', () => {
   it('updates existing observations, calibrations, sdps, targets so that there is always only 1 of each', async () => {
     vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
+    const result = await autoLinking(
+      mockTarget,
+      getProposal,
+      setProposal,
+      mockAuthAxiosClient,
+      TYPE_CONTINUUM,
+      ''
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
@@ -234,7 +268,14 @@ describe('autoLinking()', () => {
     vi.mocked(getSensCalc as any).mockResolvedValue(mockSensCal);
 
     // Request PST; initial proposal (from beforeEach) contains an existing continuum set
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_PST, '');
+    const result = await autoLinking(
+      mockTarget,
+      getProposal,
+      setProposal,
+      mockAuthAxiosClient,
+      TYPE_PST,
+      ''
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
@@ -275,7 +316,14 @@ describe('autoLinking()', () => {
     vi.mocked(getSensCalc as any).mockResolvedValue(mockSensCal);
 
     // Request Spectral (Zoom); initial proposal (from beforeEach) contains an existing continuum set
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_ZOOM, '');
+    const result = await autoLinking(
+      mockTarget,
+      getProposal,
+      setProposal,
+      mockAuthAxiosClient,
+      TYPE_ZOOM,
+      ''
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
@@ -342,7 +390,14 @@ describe('autoLinking()', () => {
     vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 
     // Request Continuum to replace PST
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
+    const result = await autoLinking(
+      mockTarget,
+      getProposal,
+      setProposal,
+      mockAuthAxiosClient,
+      TYPE_CONTINUUM,
+      ''
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
@@ -383,7 +438,14 @@ describe('autoLinking()', () => {
       error: 'Boom!'
     });
 
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
+    const result = await autoLinking(
+      mockTarget,
+      getProposal,
+      setProposal,
+      mockAuthAxiosClient,
+      TYPE_CONTINUUM,
+      ''
+    );
 
     expect(result).to.deep.equal({ success: false, error: 'Boom!' });
     expect(setProposal).not.toHaveBeenCalled();
@@ -399,7 +461,14 @@ describe('autoLinking()', () => {
 
     vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
+    const result = await autoLinking(
+      mockTarget,
+      getProposal,
+      setProposal,
+      mockAuthAxiosClient,
+      TYPE_CONTINUUM,
+      ''
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
@@ -417,7 +486,14 @@ describe('autoLinking()', () => {
     // SSO targets skip the sensCalc call — getSensCalc resolves undefined
     vi.mocked(getSensCalc as any).mockResolvedValue(undefined);
 
-    const result = await autoLinking(ssoTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
+    const result = await autoLinking(
+      ssoTarget,
+      getProposal,
+      setProposal,
+      mockAuthAxiosClient,
+      TYPE_CONTINUUM,
+      ''
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);

@@ -1,26 +1,36 @@
-// not used yet as we only use observatory defined at the moment
+import { TargetBackend } from '@utils/types/target.tsx';
+
+export type CalibrationIntent = 'flux'; // this will eventually be extended with '| "amplitude" | "phase"' too
+export type RelativeToScan = 'before_each_scan' | 'after_each_scan';
+export type SelectionStrategy = 'highest_elevation' | 'closest';
+
+// this is what is returned by the API call to the calibrator endpoint
 export type CalibratorBackend = {
-  calibration_intent: string; // 'flux' | 'amplitude' | 'phase'
+  calibrator: TargetBackend;
+  when: RelativeToScan;
+};
+
+// this is what the proposal data model expects
+export type FluxCalBackend = {
+  kind: string;
   name: string;
-  duration_min: number;
-  choice: string;
-  notes: string | null;
 };
 
 export type CalibrationStrategyBackend = {
   observatory_defined: boolean;
   calibration_id: string;
   observation_set_ref: string;
-  calibrators: CalibratorBackend[] | null; // null for observatory defined
+  calibrators: FluxCalBackend[] | null;
   notes: string | null;
 };
 
-// not used yet as we only use observatory defined at the moment
 export type Calibrator = {
-  calibrationIntent: string; // 'flux' | 'amplitude' | 'phase'
-  name: string; // We believe this the unique identifier for a calibrator
-  durationMin: number;
-  choice: string;
+  targetId: string;
+  name: string;
+  calibrationIntent: CalibrationIntent;
+  durationSeconds: number;
+  selectionStrategy: SelectionStrategy;
+  relativeToScan: RelativeToScan;
   notes: string | null;
 };
 
@@ -28,6 +38,6 @@ export type CalibrationStrategy = {
   observatoryDefined: boolean;
   id: string;
   observationIdRef: string;
-  calibrators: Calibrator[] | null; // null for observatory defined
+  calibrators: Calibrator[] | null;
   notes: string | null;
 };

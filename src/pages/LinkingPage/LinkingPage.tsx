@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import {
   AlertColorTypes,
   BorderedSection,
@@ -24,7 +25,8 @@ import {
   STATUS_PARTIAL,
   SUPPLIED_TYPE_INTEGRATION,
   TYPE_PST,
-  NOTIFICATION_DELAY_IN_SECONDS
+  NOTIFICATION_DELAY_IN_SECONDS,
+  REFERENCE_COORDINATE_TYPE_SSO
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
@@ -39,12 +41,13 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
-import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
+import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { generateCalibrationId } from '@/utils/helpers';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 
 export const isNonGaussianSensitivityCase = ({
   subarray,
@@ -66,6 +69,7 @@ export default function LinkingPage() {
 
   const { t } = useScopedTranslation();
 
+  const authAxiosClient = useAxiosAuthClient();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currRec, setCurrRec] = React.useState<any | null>(null);
@@ -136,12 +140,11 @@ export default function LinkingPage() {
     calibration: CalibrationStrategy[]
   ) => {
     const proposal = getProposal();
-    const hasCalibration = proposal.calibrationStrategy.length > 0;
 
     const update = {
       ...proposal,
       targetObservation: targetObservations,
-      ...(hasCalibration ? {} : { calibrationStrategy: [...calibration] })
+      calibrationStrategy: [...calibration]
     };
 
     setProposal(update);
@@ -157,7 +160,7 @@ export default function LinkingPage() {
     );
   };
 
-  const updateTargetObservationStorage = (
+  const updateTargetObservationStorage = async (
     target: Target,
     observationId: string,
     dataProductsSDPId: string,
@@ -173,13 +176,30 @@ export default function LinkingPage() {
       (e) => !(e.targetId === target.id && e.observationId === observationId)
     );
     base?.push(temp);
-    const existingCalibration = getProposal().calibrationStrategy?.find(
-      (cal) => cal.observationIdRef === observationId
-    );
-    setTargetObservationAndCalibrationStorage(
-      base ?? [],
-      existingCalibration ? [existingCalibration] : []
-    );
+
+    const observation = getProposal().observations?.find((o) => o.id === observationId);
+
+    let calibrators: Calibrator[] | null = null;
+    if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value && observation) {
+      const response = await GetCalibratorList(authAxiosClient, observation, target);
+      if (typeof response !== 'string') {
+        calibrators = response;
+      }
+    }
+
+    const existingNotes =
+      getProposal().calibrationStrategy?.find((cal) => cal.observationIdRef === observationId)
+        ?.notes ?? null;
+
+    const calibration: CalibrationStrategy = {
+      observatoryDefined: true,
+      id: generateCalibrationId(),
+      observationIdRef: observationId,
+      calibrators,
+      notes: existingNotes
+    };
+
+    setTargetObservationAndCalibrationStorage(base ?? [], [calibration]);
   };
 
   const deleteObservationTargetAndCalibration = (row: any) => {
@@ -242,7 +262,7 @@ export default function LinkingPage() {
       notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
     }
 
-    updateTargetObservationStorage(target, observation.id, dataProductSDP.id, response);
+    await updateTargetObservationStorage(target, observation.id, dataProductSDP.id, response);
   };
 
   const closeDeleteDialog = () => {
@@ -266,7 +286,7 @@ export default function LinkingPage() {
     closeDeleteDialog();
   };
 
-  const addObservationTargetAndCalibration = (target: Target) => {
+  const addObservationTargetAndCalibration = async (target: Target) => {
     if (!currRec) return;
     const targetObs: TargetObservation = {
       observationId: currRec.id2,
@@ -278,11 +298,22 @@ export default function LinkingPage() {
         error: ''
       }
     };
+
+    const observation = getProposal().observations?.find((o) => o.id === currRec.id2);
+
+    let calibrators: Calibrator[] | null = null;
+    if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value && observation) {
+      const response = await GetCalibratorList(authAxiosClient, observation, target);
+      if (typeof response !== 'string') {
+        calibrators = response;
+      }
+    }
+
     const calibration: CalibrationStrategy = {
       observatoryDefined: true,
       id: generateCalibrationId(),
       observationIdRef: currRec.id2,
-      calibrators: null,
+      calibrators,
       notes: null
     };
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
@@ -293,11 +324,11 @@ export default function LinkingPage() {
       (entry) => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
     ).length > 0;
 
-  const targetSelectedToggle = (el: ElementT) => {
+  const targetSelectedToggle = async (el: ElementT) => {
     if (isTargetSelected(el.id)) {
       deleteObservationTargetAndCalibration(el.target);
     } else {
-      addObservationTargetAndCalibration(el.target);
+      await addObservationTargetAndCalibration(el.target);
     }
   };
 
