@@ -23,7 +23,6 @@ import {
   STATUS_OK,
   STATUS_PARTIAL,
   SUPPLIED_TYPE_INTEGRATION,
-  TYPE_PST,
   NOTIFICATION_DELAY_IN_SECONDS
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
@@ -357,7 +356,7 @@ export default function LinkingPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getTargetObservationForTargetGrid = (targetId: string): TargetObservation =>
+  const getTargetObservationForTargetGrid = (targetId: string): TargetObservation | undefined =>
     getProposal()?.targetObservation?.find(
       (p) => p.observationId === currRec?.id2 && p.targetId === targetId
     );
