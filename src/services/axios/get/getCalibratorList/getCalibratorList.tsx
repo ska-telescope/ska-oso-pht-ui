@@ -9,7 +9,6 @@ import {
   TIME_MS
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
-import { MockCalibratorBackendList } from './mockCalibratorListBackend.tsx';
 import {
   CalibrationIntent,
   Calibrator,
@@ -19,6 +18,7 @@ import {
 import Target from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
 import { timeConversion } from '@utils/helpers.ts';
+import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -41,12 +41,6 @@ function calibratorMapping(data: CalibratorBackend): Calibrator {
 }
 
 /*****************************************************************************************************************************/
-
-// This mocks fetching a list of observatory defined calibrators
-export function GetMockCalibratorList(): Calibrator[] {
-  const calibratorList: Calibrator[] = MockCalibratorBackendList.map(calibratorMapping);
-  return calibratorList;
-}
 
 async function GetCalibratorList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
@@ -72,6 +66,11 @@ async function GetCalibratorList(
     TIME_MS
   );
 
+  // this isn't great, but works ahead of the SV call - we should/could extend the
+  // add an oso-services endpoint that takes a list of targets, and then returns
+  // calibrators for every target in the proposal. For now, this works for SV calls.
+  const pdm_target = getTargets([target])[0];
+
   try {
     const params = new URLSearchParams({
       telescope: telescopeBackendString,
@@ -80,7 +79,7 @@ async function GetCalibratorList(
     });
     const URL_PATH = `${OSO_SERVICES_CALIBRATORS_PATH}?${params.toString()}`;
 
-    const result = await authAxiosClient.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, target);
+    const result = await authAxiosClient.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, pdm_target);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
