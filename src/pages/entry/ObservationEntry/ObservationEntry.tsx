@@ -1191,9 +1191,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
   const frequencySetUp = () => {
-    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
-    // centre frequency, all in one line. LOW zoom only - MID zoom/continuum/PST keep their
-    // existing layout below.
     if (isLow() && isZoom()) {
       return (
         <>
@@ -1244,8 +1241,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const frequencySetUpSpectralSV = () => {
-    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
-    // centre frequency, all in one line. LOW only - MID zoom SV keeps its existing layout below.
     if (isLow()) {
       return (
         <>
