@@ -9,8 +9,12 @@ import {
 import { z } from 'zod';
 import Observation from '../types/observation';
 import {
+  CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
+  CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
@@ -335,6 +339,34 @@ export const isDataProductRobustValid = (dataProduct: DataProductSDPNew): boolea
   return isRobustInRange(data?.robust);
 };
 
+export const isDataProductChannelsOutValid = (
+  dataProduct: DataProductSDPNew,
+  proposal: Proposal
+): boolean => {
+  const dataProductType = Number(
+    (dataProduct?.data as SDPImageContinuumData | undefined)?.dataProductType ?? DP_TYPE_IMAGES
+  );
+
+  const observation = proposal?.observations?.find((obs) => obs.id === dataProduct.observationId);
+  const matchesMode = (type: string) =>
+    observation?.type === type || proposal?.scienceCategory === type;
+  const isCombined = matchesMode(TYPE_CONTINUUM_SPECTRAL);
+  const isRelevantMode = matchesMode(TYPE_ZOOM) || isCombined || matchesMode(TYPE_CONTINUUM);
+
+  // channelsOut is only ever shown/edited for a continuum/spectral image-type data product
+  if (!isRelevantMode || dataProductType === DP_TYPE_VISIBLE) return true;
+
+  const channelsOut = (dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined)?.channelsOut;
+  const max = isCombined ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
+
+  return (
+    typeof channelsOut === 'number' &&
+    Number.isInteger(channelsOut) &&
+    channelsOut >= CHANNELS_OUT_MIN &&
+    channelsOut <= max
+  );
+};
+
 export const validateSDPPage = (proposal: Proposal) => {
   const dataProducts = proposal?.dataProductSDP;
   if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
@@ -343,7 +375,10 @@ export const validateSDPPage = (proposal: Proposal) => {
   const hasInvalidRobust = dataProducts.some(
     (dataProduct) => !isDataProductRobustValid(dataProduct)
   );
-  return hasInvalidRobust ? STATUS_ERROR : STATUS_OK;
+  const hasInvalidChannelsOut = dataProducts.some(
+    (dataProduct) => !isDataProductChannelsOutValid(dataProduct, proposal)
+  );
+  return hasInvalidRobust || hasInvalidChannelsOut ? STATUS_ERROR : STATUS_OK;
 };
 
 export const validateSRCPage = () => STATUS_OK;

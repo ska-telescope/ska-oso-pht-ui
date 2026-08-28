@@ -9,6 +9,9 @@ import {
 } from '../types/dataProduct';
 import {
   CHANNELS_OUT_DEFAULT,
+  CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
+  CHANNELS_OUT_MIN,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
@@ -30,6 +33,7 @@ import {
   TAPER_DEFAULT,
   TIME_HOURS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
@@ -436,6 +440,101 @@ describe('validateSDPPage robust rules', () => {
       robust: 2.1
     });
     expect(validateSDPPage(invalidProposal)).toBe(STATUS_ERROR);
+  });
+});
+
+describe('validateSDPPage channelsOut rules', () => {
+  const makeProposalWithDataProducts = (
+    dataProducts: { data: any; observationId?: string }[],
+    observations?: any[]
+  ) =>
+    ({
+      observations,
+      dataProductSDP: dataProducts.map((dp, idx) => ({
+        id: `SDP-${idx + 1}`,
+        observationId: dp.observationId ?? 'obs-1',
+        data: dp.data
+      })) as DataProductSDPNew[]
+    }) as any;
+
+  const continuumObservations = [{ id: 'obs-1', type: TYPE_CONTINUUM }];
+
+  it('returns STATUS_OK for a valid channelsOut value', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MIN } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR when channelsOut is below the minimum', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MIN - 1 } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR when channelsOut exceeds the standard maximum', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MAX + 1 } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR when channelsOut is not an integer', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 5.5 } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('allows the combined-mode maximum when the linked observation is continuum+spectral', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { channelsOut: CHANNELS_OUT_MAX + 1 } }],
+      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+
+    const invalidProposal = makeProposalWithDataProducts(
+      [{ data: { channelsOut: CHANNELS_OUT_MAX_COMBINED + 1 } }],
+      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
+    );
+    expect(validateSDPPage(invalidProposal)).toBe(STATUS_ERROR);
+  });
+
+  it('ignores a Visibilities-type data product even though it carries channelsOut', () => {
+    // getProposal.tsx's backend mapping always writes a channelsOut key (defaulted to 0) onto
+    // every data product, including Visibilities ones that have no real "channels out" concept.
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_VISIBLE, channelsOut: 0 } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('ignores the hidden Visibilities companion of a combined-mode observation', () => {
+    // Regression test: the auto-added hidden companion for TYPE_CONTINUUM_SPECTRAL previously
+    // got flagged as invalid because it inherits a channelsOut: 0 from the backend mapping,
+    // even though only the primary (Images) data product's channelsOut is ever user-editable.
+    const proposal = makeProposalWithDataProducts(
+      [
+        { data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 4 } },
+        { data: { dataProductType: DP_TYPE_VISIBLE, channelsOut: 0 } }
+      ],
+      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('ignores channelsOut for observation types that never use it (e.g. PST)', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 0 } }],
+      [{ id: 'obs-1', type: TYPE_PST }]
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
 });
 
