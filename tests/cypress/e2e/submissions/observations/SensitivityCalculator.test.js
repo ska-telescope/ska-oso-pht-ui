@@ -17,24 +17,6 @@ import {
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 import { standardUser } from '../../users/users.js';
 
-beforeEach(function () {
-  // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
-  // one is seeded) - stub-only until one is, this isn't a test-code fix. Remove this skip (and
-  // verify it) at that point rather than rewriting this spec from scratch.
-  this.skip();
-  cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
-  createStandardProposalSession(standardUser);
-  clickStatusIconNav('statusId4'); //Click to target page
-  pageConfirmed('TARGET');
-  addTargetUsingCoordinates();
-  clickToAddTarget();
-  clickToObservationPage();
-});
-
-afterEach(() => {
-  clearLocalStorage();
-});
-
 const addTargetUsingCoordinates = () => {
   cy.get('[data-testid="name"]').should('exist');
   cy.get('[data-testid="name"]').type('test');
@@ -104,7 +86,30 @@ const verifySensitivityCalculatorResults = (rec) => {
   verifyIntegrationTime(rec);
 };
 
-describe('Proposal Flow: Sensitivity Calculator', () => {
+// No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification one
+// is seeded) - stub-only until one is, this isn't a test-code fix. Remove this skip (and verify
+// it) at that point rather than rewriting this spec from scratch.
+//
+// Skipped via describe.skip() (not this.skip() inside a function(){} beforeEach) - see
+// reviewScience.test.js's comment: a function(){...this.skip()} test/hook sharing a spec with
+// cy.intercept().as() elsewhere (here, createStandardProposalSession's own mockOSDAPI/
+// mockCreateProposalAPI) reliably corrupts Cypress's command tracking. describe.skip() never
+// invokes any of its hooks or tests at all, so it sidesteps that entirely.
+describe.skip('Proposal Flow: Sensitivity Calculator', () => {
+  beforeEach(() => {
+    cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
+    createStandardProposalSession(standardUser);
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    addTargetUsingCoordinates();
+    clickToAddTarget();
+    clickToObservationPage();
+  });
+
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
   for (const rec of sensitivityCalculatorResults) {
     // TODO: getOSDCycles.tsx's mapCycle() currently hardcodes MID cycles to only ever expose
     // Band_5b as an observing-band option - so skip the MID tests for now until we can fix that.

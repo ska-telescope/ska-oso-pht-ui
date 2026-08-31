@@ -60,11 +60,16 @@ describe('Creating Proposal', () => {
   // its Makefile), which injects a dummy AWS key/secret instead, so any live upload fails. Skip
   // until that's addressed - this isn't a test-code fix - and remove this skip (and verify it) at
   // that point rather than rewriting it from scratch.
-  it(
+  //
+  // Skipped via it.skip() (not this.skip()) - see reviewScience.test.js's comment: a
+  // function(){...this.skip()} test sharing a spec with cy.intercept().as() elsewhere (here, the
+  // SV Flow test above and mockResolveTargetAPI in this describe's beforeEach) reliably corrupts
+  // Cypress's command tracking. it.skip() never invokes the callback at all, so it sidesteps that
+  // entirely.
+  it.skip(
     'SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96352' },
-    function () {
-      this.skip();
+    () => {
       createScienceIdeaSession(standardUser);
       mockValidateSVIdeaAPI();
       addM2TargetAndAutoLink('Continuum', 'This is a summary of the science idea.');
@@ -98,12 +103,12 @@ describe('Creating Proposal', () => {
     }
   );
 
-  // Same PDF/S3/Vault blocker as the Continuum scenario above - see that test's comment.
-  it(
+  // Same PDF/S3/Vault blocker as the Continuum scenario above - see that test's comment. Skipped
+  // via it.skip() for the same command-tracking-corruption reason.
+  it.skip(
     'SV Flow: Create science verification idea, Observing mode Spectral, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96345' },
-    function () {
-      this.skip();
+    () => {
       createScienceIdeaSession(standardUser);
       mockValidateSVIdeaAPI();
       addM2TargetAndAutoLink('Spectral', 'This is a summary of the science idea.');
@@ -131,12 +136,12 @@ describe('Creating Proposal', () => {
     }
   );
 
-  // Same PDF/S3/Vault blocker as the Continuum scenario above - see that test's comment.
-  it(
+  // Same PDF/S3/Vault blocker as the Continuum scenario above - see that test's comment. Skipped
+  // via it.skip() for the same command-tracking-corruption reason.
+  it.skip(
     'SV Flow: Create science verification idea, Observing mode PST, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96353' },
-    function () {
-      this.skip();
+    () => {
       createScienceIdeaSession(standardUser);
       mockValidateSVIdeaAPI();
       addM2TargetAndAutoLink('PST', 'This is a summary of the science idea.');
@@ -162,9 +167,9 @@ describe('Creating Proposal', () => {
   );
 
   // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification one
-  // is seeded) - stub-only until one is, this isn't a test-code fix.
-  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, function () {
-    this.skip();
+  // is seeded) - stub-only until one is, this isn't a test-code fix. Skipped via it.skip() for the
+  // same command-tracking-corruption reason as the tests above.
+  it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     createStandardProposalSession(standardUser);
     clickHome();
     verifyOnLandingPage();

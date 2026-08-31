@@ -146,11 +146,16 @@ describe('Science Verification: Target entry validation', () => {
   });
 });
 
-describe('Proposal Flow: Target entry validation', () => {
-  beforeEach(function () {
-    // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
-    // one is seeded) - stub-only until one is, this isn't a test-code fix.
-    this.skip();
+// No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification one
+// is seeded) - stub-only until one is, this isn't a test-code fix.
+//
+// Skipped via describe.skip() (not this.skip() inside a function(){} beforeEach) - see
+// reviewScience.test.js's comment: a function(){...this.skip()} test/hook sharing a spec with
+// cy.intercept().as() elsewhere (here, mockResolveTargetAPI/createScienceIdeaSession in the SV
+// describe above) reliably corrupts Cypress's command tracking. describe.skip() never invokes any
+// of its hooks or tests at all, so it sidesteps that entirely.
+describe.skip('Proposal Flow: Target entry validation', () => {
+  beforeEach(() => {
     createStandardProposalSession(standardUser);
     clickStatusIconNav('statusId4'); //Click to target page
     pageConfirmed('TARGET');

@@ -35,11 +35,16 @@ describe('Delegate Editing Rights', () => {
   // injects dummy placeholder secrets instead, so both calls fail server-side regardless of which
   // real member email is searched for. Skip until that's addressed - this isn't a test-code fix -
   // and remove this skip (and verify it) at that point rather than rewriting it from scratch.
-  it(
+  //
+  // Skipped via it.skip() (not this.skip()) - see reviewScience.test.js's comment: a
+  // function(){...this.skip()} test sharing a spec with cy.intercept().as() elsewhere (here, the
+  // mockGetUserByEmailAPI/mockEmailAPI/mockCreateProposalAccessAPI in this describe's beforeEach)
+  // reliably corrupts Cypress's command tracking. it.skip() never invokes the callback at all, so
+  // it sidesteps that entirely.
+  it.skip(
     'SV Flow: Delegate editing rights to a Co-Investigator',
     { jiraKey: 'XTP-89609' },
-    function () {
-      this.skip();
+    () => {
       createScienceIdeaSession(reviewerAdmin);
       const email = liveMemberEmail();
       const firstName = liveMemberFirstName();

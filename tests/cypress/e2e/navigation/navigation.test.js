@@ -40,8 +40,12 @@ describe('Verify navigation', () => {
 
   // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
   // one is seeded) - stub-only until one is, this isn't a test-code fix.
-  it('Proposal: Verify page banner has correct items', function () {
-    this.skip();
+  //
+  // Skipped via it.skip() (not this.skip()) - see reviewScience.test.js's comment: a
+  // function(){...this.skip()} test sharing a spec with cy.intercept().as() elsewhere (here,
+  // createScienceIdeaSession in the test above) reliably corrupts Cypress's command tracking.
+  // it.skip() never invokes the callback at all, so it sidesteps that entirely.
+  it.skip('Proposal: Verify page banner has correct items', () => {
     createStandardProposalSession(standardUser);
     //Verify navigation in page banner is correct after proposal creation
     verifyStatusIndicatorLabel('statusId0', 'Title');
