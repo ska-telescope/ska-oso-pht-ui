@@ -2,7 +2,7 @@ import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import { mapping } from '../../post/postProposalAccess/postProposalAccess';
 import MockProposalBackendAccess from './mockProposalAccessBackend';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
-import { USE_LOCAL_DATA, OSO_SERVICES_PROPOSAL_ACCESS_PATH, isCypress } from '@/utils/constants';
+import { OSO_SERVICES_PROPOSAL_ACCESS_PATH, isCypress } from '@/utils/constants';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -27,7 +27,7 @@ async function PutProposalAccess(
   authAxiosClient: AxiosAuthClient,
   proposalAccess: ProposalAccess
 ): Promise<ProposalAccess | { error: string }> {
-  if (USE_LOCAL_DATA || isCypress) {
+  if (isCypress) {
     return PutMockProposalAccess();
   }
 

@@ -23,7 +23,6 @@ import Supplied, { SuppliedBackend } from '@utils/types/supplied.tsx';
 import {
   PROJECTS,
   SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
   DETAILS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -847,10 +846,6 @@ async function GetProposal(
   authAxiosClient: AxiosAuthClient,
   id: string
 ): Promise<Proposal | string> {
-  if (USE_LOCAL_DATA) {
-    return GetMockProposal();
-  }
-
   if (isCypress) {
     if (cypressSV) {
       return mapping(MockProposal[1]);

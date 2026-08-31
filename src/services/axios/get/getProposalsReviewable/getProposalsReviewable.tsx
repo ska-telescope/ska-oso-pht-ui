@@ -1,7 +1,6 @@
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
   OSO_SERVICES_PROPOSAL_PATH,
   cypressToken,
   cypressLiveMode
@@ -21,7 +20,7 @@ async function GetProposalsReviewable(
   // cypressToken alone would also catch live-mode Cypress runs (which still set a - real - token
   // locally, see liveAuth.js), so exclude those explicitly rather than always mocking under
   // Cypress regardless of mode.
-  if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
+  if (cypressToken && !cypressLiveMode) {
     return GetMockProposalList();
   }
 

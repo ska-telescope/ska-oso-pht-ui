@@ -1,8 +1,7 @@
 import {
   OSO_SERVICES_MEMBER_PATH,
   SKA_OSO_SERVICES_URL,
-  TEAM_STATUS_TYPE_OPTIONS,
-  USE_LOCAL_DATA
+  TEAM_STATUS_TYPE_OPTIONS
 } from '@utils/constants.ts';
 import Investigator, { InvestigatorMSGraph } from '@utils/types/investigator.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
@@ -43,10 +42,6 @@ async function GetUserByEmail(
   authAxiosClient: AxiosAuthClient,
   email: string
 ): Promise<Investigator | string> {
-  if (USE_LOCAL_DATA) {
-    return GetMockUserByEmail(email);
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_MEMBER_PATH}/${email}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);

@@ -1,6 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import * as CONSTANTS from '@utils/constants.ts';
 import { Reviewer } from '@utils/types/reviewer.tsx';
 import GetReviewerList, {
   GetMockReviewersList,
@@ -39,14 +38,7 @@ describe('GetReviewerList Service', () => {
     };
   });
 
-  test('returns mock data when USE_LOCAL_DATA is true', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetReviewerList(mockedAuthClient);
-    expect(result).toEqual(MockReviewersList);
-  });
-
-  test('returns sorted data from API when USE_LOCAL_DATA is false and multiple reviewers are returned', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+  test('returns sorted data from API when multiple reviewers are returned', async () => {
     mockedAuthClient.get.mockResolvedValue({ data: MockReviewersBackendList });
     const result = (await GetReviewerList(mockedAuthClient)) as Reviewer[];
     expect(result).toEqual(MockReviewersList);
@@ -55,14 +47,12 @@ describe('GetReviewerList Service', () => {
   });
 
   test('returns error message on API failure with Error instance', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
     const result = await GetReviewerList(mockedAuthClient);
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockRejectedValue({ data: 'error.API_UNKNOWN_ERROR' });
     const result = await GetReviewerList(mockedAuthClient);
     expect(result).toBe('error.API_UNKNOWN_ERROR');

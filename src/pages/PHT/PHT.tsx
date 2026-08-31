@@ -18,7 +18,6 @@ import {
   PMT,
   PROPOSAL_STATUS,
   REVIEW_TYPE,
-  USE_LOCAL_DATA,
   SKA_OSO_SERVICES_URL,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   PAGE_CALIBRATION_ENTRY,
@@ -124,7 +123,6 @@ export default function PHT({
 
   const LG = () => useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
-  const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
   const loggedIn = isLoggedIn();
 
   React.useEffect(() => {
@@ -336,7 +334,6 @@ export default function PHT({
                 ? `Submission ID: ${getProposal()?.id}`
                 : ''
               : ''}
-            {LOCAL_DATA}
           </Typography>
         }
         footerChildrenMiddle={footerMainChildren()}

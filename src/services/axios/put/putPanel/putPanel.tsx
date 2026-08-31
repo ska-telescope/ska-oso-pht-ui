@@ -1,7 +1,7 @@
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
-import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@/utils/constants';
+import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL } from '@/utils/constants';
 
 export function mappingPutPanel(panel: Panel, cycleId: string): PanelBackend {
   const transformedPanel: PanelBackend = {
@@ -39,10 +39,6 @@ async function PutPanel(
   panel: Panel,
   cycleId: string
 ): Promise<string | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return putMockPanel();
-  }
-
   try {
     const result = await authAxiosClient.put(
       `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PANEL_PATH}/${panel.id}`,

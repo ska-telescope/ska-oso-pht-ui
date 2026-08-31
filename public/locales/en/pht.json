@@ -2,7 +2,6 @@
   "language": "English",
   "dummy": "I am in ENGLISH translation file only",
   "intlNumber": "{{val, number}}",
-  "localData": "LOCAL DATA",
   "yes": "Yes",
   "yesWithRevision": "Yes with Revision",
   "maybe": "Maybe",

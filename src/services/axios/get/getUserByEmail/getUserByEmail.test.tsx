@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import * as CONSTANTS from '@utils/constants.ts';
 import GetUserByEmail, { GetMockUserByEmail, mapping } from './getUserByEmail.tsx';
 import { MockUserFrontendList } from './mockUserFrontend.tsx';
 import { MockUserMSGraphList } from './mockUserMSGraph.tsx';
@@ -46,42 +45,31 @@ describe('GetProposal Service', () => {
     };
   });
 
-  test('should return mock data when USE_LOCAL_DATA is true', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetUserByEmail(mockedAuthClient, 'sarah.sattar@community.skao.int');
-    expect(result).toEqual(MockUserFrontendList[0]);
-  });
-
-  test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+  test('returns mapped data from API', async () => {
     mockedAuthClient.get.mockResolvedValue({ data: MockUserMSGraphList[1] });
     const result = await GetUserByEmail(mockedAuthClient, 'trevor.swain@community.skao.int');
     expect(result).to.deep.equal(MockUserFrontendList[1]);
   });
 
   test('returns error message on API failure', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
     const result = await GetUserByEmail(mockedAuthClient, 'Jack.Tam@community.skao.int');
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
     const result = await GetUserByEmail(mockedAuthClient, 'Chloe.Gallacher@community.skao.int');
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns non-object data', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue({ data: 'not an object' });
     const result = await GetUserByEmail(mockedAuthClient, 'Tonye.Irabor@community.skao.int');
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns no data', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue(undefined);
     const result = await GetUserByEmail(mockedAuthClient, 'Meenu.Mohan@assoc.skao.int');
     expect(result).toBe('error.API_UNKNOWN_ERROR');

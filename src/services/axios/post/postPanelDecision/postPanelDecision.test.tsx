@@ -1,7 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
-import * as CONSTANTS from '@utils/constants.ts';
 import { PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
 import PostPanelDecision, {
   mappingPanelDecisionFrontendToBackend,
@@ -59,14 +58,7 @@ describe('PostPanelDecision Service', () => {
     };
   });
 
-  test('returns mock data id when USE_LOCAL_DATA is true', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PostPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
-    expect(result).toEqual('PANEL-DECISION-ID-001');
-  });
-
-  test('returns data id from API when USE_LOCAL_DATA is false', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+  test('returns data id from API', async () => {
     mockedAuthClient.post.mockResolvedValue({ data: MockPanelDecisionFrontend.id });
     const result = (await PostPanelDecision(
       mockedAuthClient,
@@ -77,28 +69,24 @@ describe('PostPanelDecision Service', () => {
   });
 
   test('returns error message on API failure', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue(new Error('Network Error'));
     const result = await PostPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue({ unexpected: 'object' });
     const result = await PostPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue(undefined);
     const result = await PostPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue(null);
     const result = await PostPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });

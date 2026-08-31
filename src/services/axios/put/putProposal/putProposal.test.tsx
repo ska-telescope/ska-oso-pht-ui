@@ -14,7 +14,6 @@ import {
   PST_MODES,
   TYPE_ZOOM_LONG
 } from '@utils/constants.ts';
-import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   DataProductSDPNew,
@@ -90,42 +89,31 @@ describe('PutProposal Service', () => {
     };
   });
 
-  test('returns mock data when USE_LOCAL_DATA is true', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
-    expect(result).to.deep.equal(MockProposalBackend);
-  });
-
-  test('returns data from API when USE_LOCAL_DATA is false', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+  test('returns data from API', async () => {
     mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
     const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).to.deep.equal(MockProposalBackend);
   });
 
   test('returns error message on API failure', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockRejectedValue(new Error('Network Error'));
     const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockRejectedValue({ unexpected: 'object' });
     const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue(undefined);
     const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue(null);
     const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });

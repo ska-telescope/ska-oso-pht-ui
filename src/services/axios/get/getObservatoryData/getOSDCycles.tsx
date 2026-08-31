@@ -3,13 +3,11 @@ import {
   SA_AA_STAR,
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
   BAND_LOW_STR,
   BAND_5B_STR,
   BAND_1_STR
 } from '@utils/constants.ts';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
-import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
 import { MockODTConfigurationBackend } from './mockODTConfigurationBackend.tsx';
 import {
   ObservatoryDataBackend,
@@ -28,13 +26,6 @@ import { ODTConfigurationBackend } from '@utils/types/odtConfiguration.tsx';
 import { generateId } from '@/utils/helpers';
 
 /*****************************************************************************************************************************/
-
-export function GetMockData(
-  mock = [MockObservatoryDataBackend],
-  odtConfig = MockODTConfigurationBackend
-): ObservatoryData {
-  return osdMapping(mock, odtConfig);
-}
 
 export const toLowerCaseArray = (value: unknown): string[] => {
   const values = Array.isArray(value) ? value : [value];
@@ -279,10 +270,6 @@ export const osdMapping = (
 };
 
 async function GetOSDCycles(authAxiosClient: AxiosAuthClient): Promise<string | ObservatoryData> {
-  if (USE_LOCAL_DATA) {
-    return GetMockData();
-  }
-
   try {
     // TODO: The OSD related endpoints will be consolidated in oso-services in the future after
     //   which we should not need to retrieve data from two different endpoints anymore

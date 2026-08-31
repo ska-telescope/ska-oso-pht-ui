@@ -4,7 +4,6 @@ import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
   PROJECTS,
   DETAILS,
   OSO_SERVICES_PROPOSAL_PATH,
@@ -114,9 +113,6 @@ export function GetMockProposalList(): Proposal[] {
 }
 
 async function GetProposalList(authAxiosClient: AxiosAuthClient): Promise<Proposal[] | string> {
-  if (USE_LOCAL_DATA) {
-    return GetMockProposalList();
-  }
   if (isCypress) {
     return mappingList(MockProposal);
   }

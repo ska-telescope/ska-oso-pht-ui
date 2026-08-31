@@ -1,6 +1,5 @@
 import {
   SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
   OSO_SERVICES_REVIEWERS_PATH,
   cypressToken
 } from '@utils/constants.ts';
@@ -54,7 +53,7 @@ export function GetMockReviewersList(): Reviewer[] {
 }
 
 async function GetReviewerList(authAxiosClient: AxiosAuthClient): Promise<Reviewer[] | string> {
-  if (USE_LOCAL_DATA || cypressToken) {
+  if (cypressToken) {
     return GetMockReviewersList();
   }
 

@@ -1,6 +1,6 @@
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
-import { USE_LOCAL_DATA, OSO_SERVICES_PROPOSAL_ACCESS_PATH } from '@/utils/constants';
+import { OSO_SERVICES_PROPOSAL_ACCESS_PATH } from '@/utils/constants';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -17,18 +17,10 @@ export function mapping(inRec: ProposalAccess): ProposalAccessBackend {
 
 /*****************************************************************************************************************************/
 
-export function PostMockProposalAccess(): string {
-  return 'PROPOSAL-ACCESS-ID-001';
-}
-
 async function PostProposalAccess(
   authAxiosClient: AxiosAuthClient,
   proposalAccess: ProposalAccess
 ): Promise<string | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return PostMockProposalAccess();
-  }
-
   try {
     const convertedProposalAccess = mapping(proposalAccess);
     const result = await authAxiosClient.post(

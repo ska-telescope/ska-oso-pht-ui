@@ -3,8 +3,7 @@ import {
   cypressLiveMode,
   OSO_SERVICES_REVIEWS_PATH,
   REVIEW_TYPE,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
+  SKA_OSO_SERVICES_URL
 } from '@utils/constants';
 import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend';
 import { mappingReviewFrontendToBackend } from '../../post/postProposalReview/postProposalReview';
@@ -75,7 +74,7 @@ async function PutProposalReview(
   review: ProposalReview
 ): Promise<ProposalReview | { error: string }> {
   // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
-  if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
+  if (cypressToken && !cypressLiveMode) {
     return putMockProposalReview();
   }
 

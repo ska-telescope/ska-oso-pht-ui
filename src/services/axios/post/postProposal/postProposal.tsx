@@ -3,8 +3,7 @@ import { helpers } from '@utils/helpers.ts';
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
-  TEAM_STATUS_TYPE_OPTIONS,
-  USE_LOCAL_DATA
+  TEAM_STATUS_TYPE_OPTIONS
 } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 import { AxiosAuthClient, RefreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
@@ -22,10 +21,6 @@ async function PostProposal(
   proposal: Proposal,
   status?: string
 ): Promise<Proposal | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return mockPostProposal();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/create`;
     // Use the full mapping so cloned proposals carry all content (targets, observations, etc.).

@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Remove references to USE_LOCAL_DATA
 * Tidyup of end to end cypresss tests - temporarily skip tests requiring user portal flow  until portal is developed
 * Bugfix: sensitivity calculator results now treat Briggs weighting with robust = 2 like the non-Gaussian beam case, while uniform weighting remains unaffected
 * Bugfix: align PST bit-depth defaults with BTN-3489 by setting flow-through and detected-filterbank defaults to 8

@@ -1,8 +1,7 @@
 import {
   cypressToken,
   OSO_SERVICES_PROPOSAL_PATH,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
+  SKA_OSO_SERVICES_URL
 } from '@utils/constants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
@@ -10,7 +9,7 @@ async function GetPresignedUploadUrl(
   authAxiosClient: AxiosAuthClient,
   filename: string
 ): Promise<string> {
-  if (USE_LOCAL_DATA || cypressToken) {
+  if (cypressToken) {
     return 'https://httpbin.org/put';
   }
 

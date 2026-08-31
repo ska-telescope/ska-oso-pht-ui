@@ -7,10 +7,6 @@ declare module '@/env' {
   export const env: {
     production: boolean;
     apiUrl: string;
-    REACT_APP_USE_LOCAL_DATA: string;
-    REACT_APP_USE_LOCAL_DATA_PROPOSAL_REVIEW: string;
-    REACT_APP_USE_LOCAL_DATA_REVIEWER_LIST: string;
-    REACT_APP_USE_LOCAL_DATA_PROPOSAL_LIST: string;
     REACT_APP_SKA_OSO_SERVICES_URL: string;
     REACT_APP_SKA_OSO_AUTH_URL: string;
     REACT_APP_SKA_OSO_CLIENT_ID: string;

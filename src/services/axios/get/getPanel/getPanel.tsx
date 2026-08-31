@@ -1,4 +1,4 @@
-import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA, OSO_SERVICES_PANEL_PATH } from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, OSO_SERVICES_PANEL_PATH } from '@utils/constants.ts';
 import { Panel, PanelBackend } from '@utils/types/panel.tsx';
 import { PanelProposal, PanelProposalBackend } from '@utils/types/panelProposal.tsx';
 import { PanelReviewer, PanelReviewerBackend } from '@utils/types/panelReviewer.tsx';
@@ -54,10 +54,6 @@ export function GetMockPanel(mock = MockPanelBackend): Panel {
 }
 
 async function GetPanel(authAxiosClient: AxiosAuthClient, id: string): Promise<Panel | string> {
-  if (USE_LOCAL_DATA) {
-    return GetMockPanel();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/${id}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);

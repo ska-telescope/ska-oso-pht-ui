@@ -15,9 +15,6 @@ import { reviewerChairman } from '../users.js';
 describe('Review Chairman', () => {
   beforeEach(() => {
     initialize(reviewerChairman);
-    cy.window().then((win) => {
-      win.localStorage.setItem('USE_LOCAL_DATA', 'true');
-    });
   });
 
   afterEach(() => {

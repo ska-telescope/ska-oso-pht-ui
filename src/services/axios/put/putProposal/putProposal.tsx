@@ -3,8 +3,7 @@ import {
   cypressLiveMode,
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
+  SKA_OSO_SERVICES_URL
 } from '@utils/constants.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
@@ -21,7 +20,7 @@ async function PutProposal(
   status?: string
 ): Promise<ProposalBackend | { error: string }> {
   // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
-  if (USE_LOCAL_DATA || (cypressToken && !cypressLiveMode)) {
+  if (cypressToken && !cypressLiveMode) {
     return mockPutProposal();
   }
 

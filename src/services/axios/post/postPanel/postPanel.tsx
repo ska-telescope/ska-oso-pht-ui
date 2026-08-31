@@ -1,7 +1,7 @@
 import { AxiosAuthClient, RefreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
-import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@/utils/constants';
+import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL } from '@/utils/constants';
 
 export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
   const transformedPanel: PanelBackend = {
@@ -39,10 +39,6 @@ async function PostPanel(
   panel: Panel,
   cycleId: string
 ): Promise<string | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return postMockPanel();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/`;
     const convertedPanel = mappingPostPanel(panel, cycleId);
