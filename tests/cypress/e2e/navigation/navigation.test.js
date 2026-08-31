@@ -1,5 +1,6 @@
 import {
   createScienceIdeaSession,
+  createStandardProposalSession,
   checkStatusIndicatorDisabled,
   verifyStatusIndicatorLabel,
   clearLocalStorage
@@ -37,9 +38,21 @@ describe('Verify navigation', () => {
     verifyStatusIndicatorLabel('statusId9', 'Calibration');
   });
 
+  // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
+  // one is seeded) - stub-only until one is, this isn't a test-code fix.
   it('Proposal: Verify page banner has correct items', function () {
-    // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
-    // one is seeded) - stub-only until one is, this isn't a test-code fix.
     this.skip();
+    createStandardProposalSession(standardUser);
+    //Verify navigation in page banner is correct after proposal creation
+    verifyStatusIndicatorLabel('statusId0', 'Title');
+    verifyStatusIndicatorLabel('statusId1', 'Team');
+    verifyStatusIndicatorLabel('statusId2', 'General');
+    verifyStatusIndicatorLabel('statusId3', 'Science');
+    verifyStatusIndicatorLabel('statusId6', 'Technical');
+    verifyStatusIndicatorLabel('statusId4', 'Target');
+    verifyStatusIndicatorLabel('statusId5', 'Observation');
+    verifyStatusIndicatorLabel('statusId7', 'Data Product');
+    verifyStatusIndicatorLabel('statusId8', 'Linking');
+    verifyStatusIndicatorLabel('statusId9', 'Calibration');
   });
 });

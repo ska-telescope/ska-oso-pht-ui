@@ -40,7 +40,20 @@ const DEFAULT_SCOPE = 'openid profile pht:read pht:readwrite';
 const DEFAULT_OPS_USERNAME = 'sciops1';
 const DEFAULT_OPS_PASSWORD = 'test';
 
+// A real, directory-registered member to look up/delegate to (e.g. delegateEditingRights), in
+// place of the fake fixture user (Trevor Swain) that only existed in the old stub/mock mode. This
+// has to be a real community.skao.int identity that the backend's member-lookup endpoint can
+// actually find via Microsoft Graph - the Indigo IAM staging login accounts (astronomer1/
+// astronomer2, @example.edu) aren't registered in that directory and never resolve here,
+// regardless of which one is used or whether it's the same account doing the creating. Confirmed
+// working directly against the integration environment's real backend.
+const DEFAULT_MEMBER_EMAIL = 'mark.nicol@community.skao.int';
+const DEFAULT_MEMBER_FIRST_NAME = 'Mark';
+
 const envOr = (key, fallback) => Cypress.env(key) || fallback;
+
+export const liveMemberEmail = () => envOr('LIVE_MEMBER_EMAIL', DEFAULT_MEMBER_EMAIL);
+export const liveMemberFirstName = () => envOr('LIVE_MEMBER_FIRST_NAME', DEFAULT_MEMBER_FIRST_NAME);
 
 // Full raw ROPC token response (id_token/access_token/expires_in/scope/...) - this exact shape is
 // what MSAL's loadExternalTokens() expects as its "response" argument (see

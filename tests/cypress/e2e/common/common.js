@@ -7,7 +7,15 @@ import {
   verifyVisible,
   viewPort
 } from '../../fixtures/utils/cypress';
-import { fetchLiveOpsToken, loginAsIndigoUser, loginAsOpsUser } from './cypressTestAuth';
+import {
+  fetchLiveOpsToken,
+  liveMemberEmail,
+  liveMemberFirstName,
+  loginAsIndigoUser,
+  loginAsOpsUser
+} from './cypressTestAuth';
+
+export { liveMemberEmail, liveMemberFirstName };
 
 // visitWithAuth logs in via a real MSAL session (see cypressTestAuth.js's loginAsIndigoUser/
 // loginAsOpsUser) and then does its own cy.visit() on top of that restored session, purely to set
@@ -75,6 +83,29 @@ export const mockOSDAPI = () => {
   cy.intercept('GET', '**/odt/configuration').as('mockODTConfiguration');
 };
 
+// Stub-only - no standard/PI-proposal cycle is seeded in the real backend yet (only a Science
+// Verification one), so nothing currently exercises this path live. Kept ready for when a
+// matching cycle exists (see createStandardProposalSession's callers, all currently skipped).
+export const mockCreateProposalAPI = () => {
+  cy.intercept('POST', '**/pht/prsls/create').as('mockCreateProposal');
+};
+
+export const mockValidateAPI = () => {
+  cy.intercept('POST', '**/pht/prsls/validate').as('mockValidate');
+};
+
+export const mockValidateSVIdeaAPI = () => {
+  cy.intercept('POST', '**/pht/prsls/validate').as('mockValidateSVIdea');
+};
+
+export const mockGetUserByEmailAPI = () => {
+  cy.intercept('GET', `**/pht/prsls/member/${liveMemberEmail()}`).as('mockGetUserByEmailAPI');
+};
+
+export const mockCreateProposalAccessAPI = () => {
+  cy.intercept('POST', '**/pht/proposal-access/create').as('mockCreateProposalAccessAPI');
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = (testId) => {
@@ -95,6 +126,103 @@ export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickResolveButton = () => clickButton('resolveButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickAddDataProduct = () => clickButton('addDataProductButton');
+export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
+export const clickUserSearch = () => clickButton('userSearchButton');
+export const clickSubmitRights = () => clickButton('submitCheckbox');
+export const clickObservationSetup = () => clickButton('addObservationButton');
+export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
+export const clickSendInviteButton = () => clickButton('sendInviteButton');
+export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
+export const clickToNextPage = () => clickButton('nextButtonTestId');
+export const clickFileUpload = () => clickButton('fileUploadUploadButton');
+export const clickEditUserRightsIconForRow = (tableTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`)
+    .find('[role="row"]')
+    .filter(`:contains("${text}")`)
+    .click()
+    .first()
+    .within(() => {
+      cy.get('[data-testid="lockIcon"]').should('be.visible').click();
+    });
+};
+const clickToValidateProposal = () => {
+  cy.get('[data-testid="validateBtn"]').should('exist');
+  cy.get('[data-testid="validateBtn"]').click();
+};
+export const validateProposal = () => {
+  clickToValidateProposal();
+};
+export const clickToValidateSV = () => {
+  cy.get('[data-testid="submitBtnTestId"]').should('exist');
+  cy.get('[data-testid="submitBtnTestId"]').click();
+};
+export const clickToSubmitProposal = () => {
+  cy.get('[data-testid="submitBtnTestId"]').should('exist');
+  cy.get('[data-testid="submitBtnTestId"]').click();
+};
+export const clickObservationFromTable = () => {
+  cy.get('[data-rowindex="0"]').click({ multiple: true });
+};
+export const clickToLinkTargetAndObservation = () => {
+  cy.get('[data-testid="linkedTickBox"]').click({ multiple: true });
+};
+export const clickToObservationPage = () => {
+  clickToNextPage();
+  pageConfirmed('OBSERVATION');
+};
+export const verifySensitivityCalculatorStatusSuccess = () => {
+  cy.get('[data-testid="statusId"]').should('exist');
+  cy.get('[aria-label="Status : OK "]').should('exist');
+};
+export const addContinuumImagesObservatoryDataProduct = () => {
+  clickAddDataProductEntry();
+};
+export const selectOptionFromDropdown = (testId, value) => {
+  // Open the dropdown using mousedown instead of click
+  cy.get('[data-testid="' + testId + '"] [role="combobox"]').trigger('mousedown', {
+    button: 0,
+    force: true
+  });
+
+  // Select the option
+  cy.get('li[role="option"]')
+    .filter((_, el) => el.innerText.trim() === value)
+    .click({ force: true });
+};
+// Stub-only - no standard/PI-proposal cycle is seeded in the real backend yet (only a Science
+// Verification one), so this only ever needs to match the mock fixture's cycle. Kept ready for
+// when a matching cycle exists on the real backend.
+export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
+export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
+export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
+export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
+export const verifySubmissionCreatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Submission added with unique identifier');
+export const verifyMockedProposalOnLandingPageIsVisible = () => {
+  cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
+};
+export const verifyData = (testId, text) => {
+  cy.get(`[data-testid="${testId}"]`).should('contain', text);
+};
+export const verifyDataInTable = (tableTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`).find('[role="row"]').filter(`:contains("${text}")`);
+};
+export const uploadTestFile = (fileName) => {
+  cy.get('[data-testid="fileUpload"] input[type="file"]').attachFile(fileName);
+};
+export const verifyTestFileUploaded = (fileName) => {
+  cy.contains(fileName).should('be.visible');
+};
+export const verifyAlertFooter = (text) => {
+  verifyContent('timeAlertFooter', text);
+};
+export const verifyUserFoundAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'User was successfully found.');
+export const verifyUserInvitedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Email invite has been sent.');
+export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', "Team member's access has been updated.", 30000);
 // Selects by the cycle's rendered description text rather than its exact ID - CycleSelection.tsx
 // doesn't render the OSD `type` field, so description text (which every real SV cycle includes
 // "Science Verification" in) is the next best generic discriminator - matching how the
@@ -396,6 +524,39 @@ export const createScienceIdeaSession = (user, extras = {}) => {
   beginScienceIdeaSession(user, extras);
   selectScienceVerificationCycle();
   completeScienceIdeaCreation();
+};
+
+// Same three-layer composition as the Science Idea session above, for the standard/PI-proposal
+// flow. Stub-only for now - see clickCycleSelectionMockProposal's comment - kept ready for when a
+// matching cycle exists on the real backend (see createStandardProposalSession's callers, all
+// currently skipped for that reason).
+export const beginStandardProposalSession = (user, extras = {}) => {
+  mockOSDAPI();
+  initialize(user, extras);
+  mockCreateProposalAPI();
+  clickAddSubmission();
+  cy.wait('@mockOSDData');
+};
+
+export const selectStandardProposalCycle = () => {
+  clickCycleSelectionMockProposal();
+  clickCycleConfirm();
+};
+
+export const completeStandardProposalCreation = () => {
+  enterProposalTitle();
+  clickProposalTypePrincipleInvestigator();
+  clickSubProposalTypeTargetOfOpportunity();
+  clickCreateSubmission();
+  cy.wait('@mockCreateProposal');
+  verifySubmissionCreatedAlertFooter();
+  pageConfirmed('TEAM');
+};
+
+export const createStandardProposalSession = (user, extras = {}) => {
+  beginStandardProposalSession(user, extras);
+  selectStandardProposalCycle();
+  completeStandardProposalCreation();
 };
 
 // The "select observing mode, add the M2 target via resolve, confirm auto-link" sub-flow that
