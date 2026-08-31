@@ -80,8 +80,6 @@ export default function ButtonUserMenu({
     };
   }, [instance]);
 
-  const username = displayName;
-
   // Attach click listener to ButtonLogin
   React.useEffect(() => {
     const loginButton = loginButtonRef.current?.querySelector('button');
@@ -113,7 +111,7 @@ export default function ButtonUserMenu({
   return (
     <>
       <Box ref={buttonWrapperRef}>
-        {!username && (
+        {!displayName && (
           <Box ref={loginButtonRef}>
             <ButtonLogin
               colorBG={theme.palette.secondary.main}
@@ -122,7 +120,7 @@ export default function ButtonUserMenu({
             />
           </Box>
         )}
-        {username && (
+        {displayName && (
           <ButtonUser
             aria-controls={openMenu ? 'user-menu' : undefined}
             aria-description={ariaDescription}
@@ -131,7 +129,7 @@ export default function ButtonUserMenu({
             aria-label={label}
             colorBG={theme.palette.primary.main}
             colorFG={theme.palette.primary.contrastText}
-            label={username}
+            label={displayName}
             onClick={handleMenuOpen}
             showPhoto={!getUseIndigo()}
             showUsername
