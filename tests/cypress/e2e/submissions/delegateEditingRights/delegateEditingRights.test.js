@@ -41,24 +41,20 @@ describe('Delegate Editing Rights', () => {
   // mockGetUserByEmailAPI/mockEmailAPI/mockCreateProposalAccessAPI in this describe's beforeEach)
   // reliably corrupts Cypress's command tracking. it.skip() never invokes the callback at all, so
   // it sidesteps that entirely.
-  it.skip(
-    'SV Flow: Delegate editing rights to a Co-Investigator',
-    { jiraKey: 'XTP-89609' },
-    () => {
-      createScienceIdeaSession(reviewerAdmin);
-      const email = liveMemberEmail();
-      const firstName = liveMemberFirstName();
-      entry('email', email);
-      clickUserSearch();
-      verifyUserFoundAlertFooter();
-      clickSendInviteButton();
-      verifyUserInvitedAlertFooter();
-      cy.wait('@mockInviteUserByEmail');
-      cy.wait('@mockCreateProposalAccessAPI');
-      clickEditUserRightsIconForRow('investigatorsTableId', firstName);
-      clickSubmitRights();
-      clickDialogConfirm();
-      verifyTeamMemberAccessUpdatedAlertFooter();
-    }
-  );
+  it.skip('SV Flow: Delegate editing rights to a Co-Investigator', { jiraKey: 'XTP-89609' }, () => {
+    createScienceIdeaSession(reviewerAdmin);
+    const email = liveMemberEmail();
+    const firstName = liveMemberFirstName();
+    entry('email', email);
+    clickUserSearch();
+    verifyUserFoundAlertFooter();
+    clickSendInviteButton();
+    verifyUserInvitedAlertFooter();
+    cy.wait('@mockInviteUserByEmail');
+    cy.wait('@mockCreateProposalAccessAPI');
+    clickEditUserRightsIconForRow('investigatorsTableId', firstName);
+    clickSubmitRights();
+    clickDialogConfirm();
+    verifyTeamMemberAccessUpdatedAlertFooter();
+  });
 });
