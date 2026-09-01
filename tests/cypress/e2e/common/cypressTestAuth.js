@@ -1,18 +1,13 @@
 // Real MSAL sessions for Cypress specs, so tests exercise the app's actual auth code paths
 // instead of a fake bypass.
 //
-// Two ways in: loginAsIndigoUser/loginAsOpsUser (used by almost every spec, via common.js's
-// initialize()) seed MSAL's cache instantly from a real token - fast, and indistinguishable from
-// a real login to the rest of the app. loginAsIndigoUserViaRealBrowserFlow drives the actual
-// loginRedirect() -> Indigo -> redirect-back handshake for real, used by exactly one spec so that
-// code path still gets exercised somewhere too.
-//
-// See hydrateIndigoSession's and establishIndigoSession's own comments below for how/why each
-// actually works (both bypass Indigo's login/consent HTML forms via direct API calls rather than
-// cy.origin() - cy.origin() turned out to be unreliable for this, see their comments for why).
+// loginAsIndigoUser/loginAsOpsUser (used by almost every spec, via common.js's initialize()) seed
+// MSAL's cache instantly from a real token - fast, and indistinguishable from a real login to the
+// rest of the app. See hydrateIndigoSession's own comment below for how/why that works (it
+// bypasses Indigo's login/consent HTML forms via direct API calls rather than cy.origin() -
+// cy.origin() turned out to be unreliable for this, see its comment for why).
 // fetchLiveIndigoToken/fetchLiveOpsToken are separate - kept only for assignProposalToPanel's own
-// API fixture setup. Also see tests/cypress/e2e/auth/realMsalLogin.test.js and
-// axiosAuthClient.ts's __msalLoadExternalTokens hook.
+// API fixture setup. Also see axiosAuthClient.ts's __msalLoadExternalTokens hook.
 //
 // The suite always runs against a live backend now - there is no stubbed/mocked mode any more.
 
@@ -158,105 +153,3 @@ export const loginAsOpsUser = () =>
     envOr('INDIGO_OPS_USERNAME', DEFAULT_OPS_USERNAME),
     fetchLiveOpsTokenResponse
   );
-
-// --- Real browser-driven flow - used by exactly one spec (see file header comment) ---
-
-// The app's own public SPA client (matches authConfig.ts/Makefile's INDIGO_CLIENT_ID).
-const INDIGO_SPA_CLIENT_ID = envOr('INDIGO_CLIENT_ID', 'd546e462-637c-44ff-b2b9-3345a960ad42');
-// Any well-formed PKCE challenge works here - establishIndigoSession below never redeems the
-// resulting authorization code itself (see its own comment), so there's no matching code_verifier
-// to track.
-const THROWAWAY_CODE_CHALLENGE = 'dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
-
-const buildIndigoAuthorizeUrl = () => {
-  const params = new URLSearchParams({
-    response_type: 'code',
-    client_id: INDIGO_SPA_CLIENT_ID,
-    redirect_uri: Cypress.config('baseUrl'),
-    scope: envOr('INDIGO_TEST_SCOPE', DEFAULT_SCOPE),
-    state: 'cypress-preauth',
-    code_challenge: THROWAWAY_CODE_CHALLENGE,
-    code_challenge_method: 'S256',
-    audience: envOr('INDIGO_TEST_AUDIENCE', DEFAULT_AUDIENCE)
-  });
-  return `${INDIGO_IAM_ORIGIN}/authorize?${params.toString()}`;
-};
-
-// Establishes a real Indigo IAM login session, and pre-approves this client's consent if Indigo
-// hasn't already remembered a decision for this account+client+scope, via direct HTTP calls
-// (cy.request, which shares Cypress's browser-wide cookie jar - the same "log in via API, not the
-// UI" pattern Cypress itself recommends for programmatic login) instead of driving Indigo's
-// actual login/consent HTML forms through cy.origin(). That turned out to be fundamentally
-// unreliable here - see the file header comment for why.
-//
-// The authorize/PKCE parameters used to reach these pages here are throwaways - the resulting
-// authorization code is never redeemed. Once these requests leave Indigo with "already logged in,
-// already consented" for this account+client+scope, loginAsIndigoUserViaRealBrowserFlow's real
-// instance.loginRedirect() click (with MSAL's own, separately and correctly PKCE-bound challenge)
-// finds the same account+client+scope already approved and 302s straight through both steps
-// without rendering either page - so MSAL's real handleRedirectPromise()/token-exchange code (the
-// part that actually matters for what this is testing) still runs for real; only Indigo's own
-// login/consent HTML forms are bypassed, and those are Indigo's infrastructure, not this app's
-// code.
-const establishIndigoSession = (username, password) => {
-  const authorizeUrl = buildIndigoAuthorizeUrl();
-
-  // Follows the redirect chain down to Indigo's login page, picking up its session cookie.
-  cy.request({ method: 'GET', url: authorizeUrl });
-
-  // Submits credentials without following the resulting redirect, so the next request can decide
-  // what to do based on where it actually points rather than blindly chasing it.
-  cy.request({
-    method: 'POST',
-    url: `${INDIGO_IAM_ORIGIN}/login`,
-    form: true,
-    body: { username, password, submit: 'Sign in' },
-    followRedirect: false
-  }).then((loginResponse) => {
-    cy.request({ method: 'GET', url: loginResponse.headers.location }).then((authorizeResponse) => {
-      const $page = Cypress.$(authorizeResponse.body);
-      const approveButton = $page.find('input[name="authorize"]');
-      if (approveButton.length === 0) {
-        // Already consented previously - Indigo redirected straight through, nothing left to do.
-        return;
-      }
-      // Replicate the consent form's own hidden scope.* fields rather than hardcoding them, so
-      // this keeps working if the requested scopes ever change. "until revoked" so a later run
-      // doesn't need to repeat this consent step at all, real login included.
-      const body = {
-        user_oauth_approval: 'true',
-        authorize: 'Authorize',
-        remember: 'until-revoked'
-      };
-      $page.find('input[type="hidden"][name^="scope."]').each((_, el) => {
-        body[el.getAttribute('name')] = el.getAttribute('value');
-      });
-      cy.request({ method: 'POST', url: `${INDIGO_IAM_ORIGIN}/authorize`, form: true, body });
-    });
-  });
-};
-
-export const loginAsIndigoUserViaRealBrowserFlow = () => {
-  const username = envOr('INDIGO_TEST_USERNAME', DEFAULT_USERNAME);
-  const password = envOr('INDIGO_TEST_PASSWORD', DEFAULT_PASSWORD);
-  cy.session(
-    ['real-browser-msal-session', username],
-    () => {
-      establishIndigoSession(username, password);
-
-      cy.visit('/?use_indigo=true');
-      cy.get('[data-testid="loginButton"]').click();
-
-      // Redirect lands back on the app's own origin with ?code=...&state=... - MSAL's
-      // handleRedirectPromise() (run on AuthProvider mount) exchanges it for tokens and populates
-      // accounts, at which point UserMenu swaps the login button for the username menu.
-      cy.get('[data-testid="usernameMenu"]', { timeout: 20000 }).should('exist');
-    },
-    {
-      validate() {
-        cy.visit('/?use_indigo=true');
-        cy.get('[data-testid="usernameMenu"]', { timeout: 15000 }).should('exist');
-      }
-    }
-  );
-};
