@@ -80,6 +80,8 @@ UNRELEASED
 * Changed: Debounce SensCalc API calls
 * Changed: Default image weighting is now Briggs with robust=0 for continuum, spectral and continuum-spectral data products (was uniform)
 * Changed: PST detected filterbank data product fields use SteppedNumberField component
+* Added: Use of `Get /calibrators` to fetch likely calibration strategy for a given telescope, target and integration time
+* Changed: upgrade to oso-services v16.3.0
 
 10.1.0
 ----------

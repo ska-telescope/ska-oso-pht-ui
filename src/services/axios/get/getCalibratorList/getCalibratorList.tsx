@@ -1,53 +1,97 @@
-// import {
-//     OSO_SERVICES_CALIBRATORS_PATH,
-//   SKA_OSO_SERVICES_URL,
-//   USE_LOCAL_DATA
-// } from '@utils/constants.ts';
-// import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
-import { MockCalibratorBackendList } from './mockCalibratorListBackend.tsx';
-import { Calibrator, CalibratorBackend } from '@/utils/types/calibrationStrategy.tsx';
+import {
+  OSO_SERVICES_CALIBRATORS_PATH,
+  REFERENCE_COORDINATE_TYPE_SSO,
+  SKA_OSO_SERVICES_URL,
+  SUPPLIED_TYPE_INTEGRATION,
+  TELESCOPE_LOW_BACKEND_MAPPING,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_BACKEND_MAPPING,
+  TIME_MS
+} from '@utils/constants.ts';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
+import {
+  CalibrationIntent,
+  Calibrator,
+  CalibratorBackend,
+  SelectionStrategy
+} from '@/utils/types/calibrationStrategy.tsx';
+import Target from '@utils/types/target.tsx';
+import Observation from '@utils/types/observation.tsx';
+import { timeConversion } from '@utils/helpers.ts';
+import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
-export function calibratorMapping(data: CalibratorBackend): Calibrator {
+// at least duration should eventually come from the backend in future
+const DEFAULT_CALIBRATION_INTENT: CalibrationIntent = 'flux';
+const DEFAULT_SELECTION_STRATEGY: SelectionStrategy = 'highest_elevation';
+const DEFAULT_DURATION_SECS = 600;
+
+function calibratorMapping(data: CalibratorBackend): Calibrator {
   return {
-    calibrationIntent: data.calibration_intent,
-    name: data.name,
-    durationMin: data.duration_min,
-    choice: data.choice,
-    notes: data.notes
+    targetId: data.calibrator.target_id,
+    name: data.calibrator.name,
+    calibrationIntent: DEFAULT_CALIBRATION_INTENT,
+    durationSeconds: DEFAULT_DURATION_SECS,
+    selectionStrategy: DEFAULT_SELECTION_STRATEGY,
+    notes: null,
+    relativeToScan: data.when
   };
 }
 
 /*****************************************************************************************************************************/
 
-// This mocks fetching a list of observatory defined calibrators
-export function GetMockCalibratorList(): Calibrator[] {
-  const calibratorList: Calibrator[] = MockCalibratorBackendList.map(calibratorMapping);
-  return calibratorList;
-}
+async function GetCalibratorList(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  observation: Observation,
+  target: Target
+): Promise<Calibrator[] | string> {
+  if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+    return 'error.CALIBRATOR_NOT_SUPPORTED_FOR_SSO';
+  }
 
-async function GetCalibratorList(): Promise<Calibrator[] | string> {
-  // authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  // if (USE_LOCAL_DATA) {
-  return GetMockCalibratorList(); // mocking observatory defined calibrators until new endpoint is ready
-  // }
+  if (observation.supplied.type !== SUPPLIED_TYPE_INTEGRATION) {
+    return 'error.CALIBRATOR_REQUIRES_INTEGRATION_TIME';
+  }
 
-  /* try {
-    const URL_PATH = `${OSO_SERVICES_CALIBRATORS_PATH}/`;
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+  const telescopeBackendString =
+    observation.telescope === TELESCOPE_LOW_NUM
+      ? TELESCOPE_LOW_BACKEND_MAPPING
+      : TELESCOPE_MID_BACKEND_MAPPING;
 
-    if (!result || !result.data || typeof result.data !== 'object') {
+  const scanDurationMs = timeConversion(
+    observation.supplied.value,
+    observation.supplied.units,
+    TIME_MS
+  );
+
+  // this isn't great, but works ahead of the SV call - we should/could extend the
+  // add an oso-services endpoint that takes a list of targets, and then returns
+  // calibrators for every target in the proposal. For now, this works for SV calls.
+  const pdm_target = getTargets([target])[0];
+
+  try {
+    const params = new URLSearchParams({
+      telescope: telescopeBackendString,
+      scan_duration_ms: String(scanDurationMs),
+      strategy: DEFAULT_SELECTION_STRATEGY
+    });
+    const URL_PATH = `${OSO_SERVICES_CALIBRATORS_PATH}?${params.toString()}`;
+
+    const result = await authAxiosClient.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, pdm_target);
+
+    if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
     }
+
     return result.data.map(calibratorMapping);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
     }
     return 'error.API_UNKNOWN_ERROR';
-  } */
+  }
 }
 
 export default GetCalibratorList;
