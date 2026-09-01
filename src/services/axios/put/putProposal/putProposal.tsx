@@ -1,6 +1,4 @@
 import {
-  cypressToken,
-  cypressLiveMode,
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
   SKA_OSO_SERVICES_URL
@@ -19,11 +17,6 @@ async function PutProposal(
   proposal: Proposal,
   status?: string
 ): Promise<ProposalBackend | { error: string }> {
-  // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
-  if (cypressToken && !cypressLiveMode) {
-    return mockPutProposal();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     const convertedProposal = MappingPutProposal(proposal, status as string);

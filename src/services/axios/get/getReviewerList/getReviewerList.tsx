@@ -1,8 +1,4 @@
-import {
-  SKA_OSO_SERVICES_URL,
-  OSO_SERVICES_REVIEWERS_PATH,
-  cypressToken
-} from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, OSO_SERVICES_REVIEWERS_PATH } from '@utils/constants.ts';
 import { Reviewer, ReviewerBackend } from '@utils/types/reviewer.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockReviewersList } from './mockReviewerList.tsx';
@@ -53,10 +49,6 @@ export function GetMockReviewersList(): Reviewer[] {
 }
 
 async function GetReviewerList(authAxiosClient: AxiosAuthClient): Promise<Reviewer[] | string> {
-  if (cypressToken) {
-    return GetMockReviewersList();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWERS_PATH}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);

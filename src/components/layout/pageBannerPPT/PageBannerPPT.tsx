@@ -28,6 +28,7 @@ import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
+cypressToken;
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';

@@ -27,10 +27,6 @@ const visitWithAuth = (user, extras) => {
   cy.visit('/', {
     onBeforeLoad(win) {
       win.localStorage.setItem('cypress:group', user.group);
-      // Read by src/utils/constants.ts' cypressLiveMode - lets app code that would otherwise
-      // unconditionally mock under cypressToken (e.g. GetProposalsReviewable) fall through to a
-      // real request, since every run is live now.
-      win.localStorage.setItem('cypress:liveMode', 'true');
       Object.entries(extras).forEach(([k, v]) => win.localStorage.setItem(k, v));
     }
   });

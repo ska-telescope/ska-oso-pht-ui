@@ -1,9 +1,4 @@
-import {
-  SKA_OSO_SERVICES_URL,
-  OSO_SERVICES_REVIEWS_PATH,
-  cypressToken,
-  cypressLiveMode
-} from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, OSO_SERVICES_REVIEWS_PATH } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
 import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
@@ -29,11 +24,6 @@ export function GetMockProposalReviewList(mock = MockProposalReviewListBackend):
 async function GetProposalReviewList(
   authAxiosClient: AxiosAuthClient
 ): Promise<ProposalReview[] | string> {
-  // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
-  if (cypressToken && !cypressLiveMode) {
-    return GetMockProposalReviewList();
-  }
-
   try {
     const URL_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_REVIEWS_PATH}/users/reviews`;
     const result = await authAxiosClient.get(`${URL_PATH}`);

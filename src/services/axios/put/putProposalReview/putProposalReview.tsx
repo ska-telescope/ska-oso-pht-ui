@@ -1,10 +1,4 @@
-import {
-  cypressToken,
-  cypressLiveMode,
-  OSO_SERVICES_REVIEWS_PATH,
-  REVIEW_TYPE,
-  SKA_OSO_SERVICES_URL
-} from '@utils/constants';
+import { OSO_SERVICES_REVIEWS_PATH, REVIEW_TYPE, SKA_OSO_SERVICES_URL } from '@utils/constants';
 import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend';
 import { mappingReviewFrontendToBackend } from '../../post/postProposalReview/postProposalReview';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
@@ -73,11 +67,6 @@ async function PutProposalReview(
   authAxiosClient: AxiosAuthClient,
   review: ProposalReview
 ): Promise<ProposalReview | { error: string }> {
-  // See getProposalsReviewable.tsx - cypressToken alone would also catch live-mode Cypress runs.
-  if (cypressToken && !cypressLiveMode) {
-    return putMockProposalReview();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/${review.id}`;
     const convertedReview = mappingReviewFrontendToBackend(review, review.cycle, true);

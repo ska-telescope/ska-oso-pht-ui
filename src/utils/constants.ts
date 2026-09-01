@@ -4,10 +4,6 @@ import Investigator from './types/investigator';
 import Observation from './types/observation';
 import { env } from '@/env';
 export const cypressToken = window.localStorage.getItem('cypress:token');
-// Set by Cypress' initialize() (see tests/cypress/e2e/common/liveAuth.js) when a spec is running
-// against a real backend rather than stubbed responses - lets service calls that would otherwise
-// unconditionally mock under cypressToken fall through to a real request instead.
-export const cypressLiveMode = window.localStorage.getItem('cypress:liveMode') === 'true';
 export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
 export const cypressSV = window.localStorage.getItem('cypress:scienceVerificationIdea') === 'true';
 export const cypressLowUnitsUnlocked =
