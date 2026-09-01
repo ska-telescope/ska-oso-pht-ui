@@ -22,10 +22,6 @@ export const setLocalTokenProvider = (provider: TokenProvider | null): void => {
 };
 
 export const getLocalToken = async (): Promise<string | null> => {
-  // Cypress e2e specs log in via a real MSAL session now (see
-  // tests/cypress/e2e/common/cypressTestAuth.js's loginWithRealMsal), so tokenProvider below
-  // finds a real account the same way it would for any other localhost session - no Cypress
-  // special-casing needed here any more.
   if (!tokenProvider) {
     return null;
   }
