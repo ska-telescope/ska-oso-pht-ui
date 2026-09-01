@@ -16,7 +16,6 @@ import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateSciencePage } from '@utils/validation/validation.tsx';
 import {
-  cypressToken,
   PAGE_DESCRIPTION,
   SCIENCE_PDF_MAX_PAGES,
   SCIENCE_PDF_MAX_SIZE_MB,
@@ -47,7 +46,7 @@ export default function SciencePage() {
   const loggedIn = isLoggedIn();
   const { axiosClient: authClient } = useAxiosAuthClient();
 
-  const isDisableEndpoints = () => !loggedIn && !cypressToken;
+  const isDisableEndpoints = () => !loggedIn;
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 

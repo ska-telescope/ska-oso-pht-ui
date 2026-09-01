@@ -25,7 +25,6 @@ import TargetObservation from '@/utils/types/targetObservation';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
-  cypressToken,
   DUMMY_PROPOSAL_ID,
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
@@ -80,8 +79,7 @@ export default function LandingPage() {
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const { setHelp } = useHelp();
-  // Same bypass as the rest of this page's gates; keeps the cypressToken local-dev flow working.
-  useOSDAPI(setAxiosError, Boolean(loggedIn || cypressToken));
+  useOSDAPI(setAxiosError, Boolean(loggedIn));
 
   const mock = {
     abstract: '',
@@ -152,7 +150,7 @@ export default function LandingPage() {
   }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
-    if (loggedIn || cypressToken) {
+    if (loggedIn) {
       updateAppContent2({});
       setFetchList(!fetchList);
     }
@@ -311,19 +309,19 @@ export default function LandingPage() {
   const addSubmissionButton = () => (
     <AddButton
       action={() => {
-        if (!loggedIn && !cypressToken) {
+        if (!loggedIn) {
           updateAppContent2(mock);
         }
         setOpenCycleDialog(true);
       }}
       testId={'addSubmissionButton'}
-      title={loggedIn || cypressToken ? 'addProposal.label' : 'addMockProposal.label'}
-      toolTip={loggedIn || cypressToken ? 'addProposal.toolTip' : 'addMockProposal.toolTip'}
+      title={loggedIn ? 'addProposal.label' : 'addMockProposal.label'}
+      toolTip={loggedIn ? 'addProposal.toolTip' : 'addMockProposal.toolTip'}
     />
   );
 
   const cycleConfirmed = async () => {
-    if (loggedIn || cypressToken) {
+    if (loggedIn) {
       navigate(PATH[1]);
     } else {
       setProposal(getProposal());
@@ -342,7 +340,7 @@ export default function LandingPage() {
   /*--------------------------------------------------------------------*/
 
   const displayField = () => {
-    return !!(loggedIn || cypressToken);
+    return !!loggedIn;
   };
 
   const pageDescription = () => (
@@ -405,7 +403,7 @@ export default function LandingPage() {
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
         <Grid size={{ xs: 12 }}>{loggedIn && pageDescription()}</Grid>
         <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
-          {loggedIn || cypressToken ? addSubmissionButton() : null}
+          {loggedIn ? addSubmissionButton() : null}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
           {displayField() && searchDropdown()}
@@ -422,15 +420,9 @@ export default function LandingPage() {
               testId="underTestPanelId"
             />
           )}
-          {!axiosViewError &&
-            (loggedIn || cypressToken) &&
-            (!filteredData || filteredData.length === 0) && (
-              <Alert
-                color={AlertColorTypes.Info}
-                text={t('proposals.empty')}
-                testId="helpPanelId"
-              />
-            )}
+          {!axiosViewError && loggedIn && (!filteredData || filteredData.length === 0) && (
+            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+          )}
           {!axiosViewError && filteredData.length > 0 && (
             <Box pt={5}>
               <TableSubmissions
@@ -442,7 +434,7 @@ export default function LandingPage() {
             </Box>
           )}
         </Grid>
-        {!loggedIn && !cypressToken && (
+        {!loggedIn && (
           <Grid size={{ xs: 12, md: 6 }} pt={5}>
             <Stack spacing={4}>
               <BorderedSection

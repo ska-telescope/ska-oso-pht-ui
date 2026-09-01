@@ -7,7 +7,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import {
   AUTO_SAVE_INTERVAL,
-  cypressToken,
   NAV,
   PAGE_LINKING,
   PAGE_SRC_NET,
@@ -28,7 +27,6 @@ import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
-cypressToken;
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -85,7 +83,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const maxTitleWords = Number(phtTranslations.title.maxWord);
     const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
     if (
-      (loggedIn || cypressToken) &&
+      loggedIn &&
       (getProposal().id == null ||
         getProposal()?.title?.trim()?.length === 0 ||
         countWords(getProposal().title ?? '') > maxTitleWords ||
@@ -93,7 +91,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     ) {
       return true;
     } else if (!loggedIn) {
-      return !cypressToken;
+      return true;
     }
   };
 
@@ -162,7 +160,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const submitClicked = async () => {
     const isValid = await validateTheProposal();
-    if (isValid && (loggedIn || cypressToken)) setOpenProposalDisplay(true);
+    if (isValid && loggedIn) setOpenProposalDisplay(true);
   };
 
   const submitConfirmed = async () => {
@@ -232,7 +230,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         {!backPage && <HomeButton />}
       </Grid>
       <Grid>
-        {(loggedIn || cypressToken) && getProposal().id !== null && pages.includes(pageNo) && (
+        {loggedIn && getProposal().id !== null && pages.includes(pageNo) && (
           <SaveButton
             testId={'saveBtn'}
             disabled={isDisableEndpoints()}
@@ -331,11 +329,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   return (
     <Box p={2}>
-      {loggedIn || cypressToken ? row1() : row1buttonsLeft()}
+      {loggedIn ? row1() : row1buttonsLeft()}
       {/* I'm assuming intention is to display row2() when loggedIn is true?
       if someone understands better than I do please feel free to
       remove in favour of whatever is supposed to happen here. */}
-      {((loggedIn && getProposal().id !== '') || !!cypressToken) && row2()}
+      {loggedIn && getProposal().id !== '' && row2()}
       {row3()}
 
       {openProposalDisplay && (

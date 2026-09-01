@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { cypressToken, NAV, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
+import { NAV, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Proposal from '@utils/types/proposal.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -43,7 +43,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   };
 
   const disableIcons = () => {
-    if (!loggedIn && !cypressToken) {
+    if (!loggedIn) {
       switch (pageName()) {
         case 'Target':
         case 'Observation':
@@ -51,7 +51,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
         default:
           return true;
       }
-    } else if (getProposal().id == null && !cypressToken) {
+    } else if (getProposal().id == null) {
       switch (pageName()) {
         case 'Title':
           return false;

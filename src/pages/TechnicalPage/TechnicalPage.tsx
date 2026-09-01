@@ -16,7 +16,6 @@ import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 import {
-  cypressToken,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_TECHNICAL,
   UPLOAD_MAX_WIDTH_PDF
@@ -40,7 +39,7 @@ export default function TechnicalPage() {
   const loggedIn = isLoggedIn();
   const { setHelp } = useHelp();
 
-  const isDisableEndpoints = () => !loggedIn && !cypressToken;
+  const isDisableEndpoints = () => !loggedIn;
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 

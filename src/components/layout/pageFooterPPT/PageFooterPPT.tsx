@@ -5,7 +5,6 @@ import { Grid, Paper } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  cypressToken,
   NAV,
   PROPOSAL_STATUS,
   PAGE_TITLE_ADD,
@@ -51,7 +50,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     [isSV]
   );
 
-  const currPageNo = proposal?.id == null && !cypressToken ? -1 : pageNo;
+  const currPageNo = proposal?.id == null ? -1 : pageNo;
 
   const { prevPageNo, nextPageNo } = React.useMemo(() => {
     const idx = pages.findIndex((p) => p === currPageNo);
@@ -121,16 +120,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   );
 
   const showPrevNav = () => {
-    if ((loggedIn && currPageNo > 0) || (cypressToken && currPageNo > 0)) {
+    if (loggedIn && currPageNo > 0) {
       return true;
     }
-    return !loggedIn && !cypressToken && currPageNo !== PAGE_TARGET;
+    return !loggedIn && currPageNo !== PAGE_TARGET;
   };
 
   const showNextNav = () => {
     return (
       (!loggedIn && currPageNo === PAGE_TARGET) ||
-      ((loggedIn || cypressToken) && (currPageNo === -1 || nextPageNo !== -2))
+      (loggedIn && (currPageNo === -1 || nextPageNo !== -2))
     );
   };
 

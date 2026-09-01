@@ -12,7 +12,6 @@ import { Typography, CssBaseline, Tooltip, Paper } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import {
-  cypressToken,
   NAV,
   PATH,
   PMT,
@@ -186,10 +185,7 @@ export default function PHT({
       NAV.includes(previousPath) && (NAV.includes(currentPath) || currentPath === PATH[0]);
     const proposal = getProposal();
     const canAutoSave =
-      isProposalPageTransition &&
-      (loggedIn || cypressToken) &&
-      proposal?.id != null &&
-      proposal.id !== '';
+      isProposalPageTransition && loggedIn && proposal?.id != null && proposal.id !== '';
 
     if (canAutoSave) {
       void (async () => {
@@ -251,8 +247,7 @@ export default function PHT({
   };
 
   const headerCountdown = () => {
-    const opt1 =
-      (!showNotification() && (loggedIn || cypressToken) && getProposal()?.id?.length) ?? false;
+    const opt1 = (!showNotification() && loggedIn && getProposal()?.id?.length) ?? false;
 
     if (!opt1) return null;
     return (
@@ -329,11 +324,7 @@ export default function PHT({
         application={t(LG() ? 'pht.short' : 'pht.title')}
         footerChildren={
           <Typography pt={1} variant="body1">
-            {loggedIn || cypressToken
-              ? getProposal()?.id
-                ? `Submission ID: ${getProposal()?.id}`
-                : ''
-              : ''}
+            {loggedIn ? (getProposal()?.id ? `Submission ID: ${getProposal()?.id}` : '') : ''}
           </Typography>
         }
         footerChildrenMiddle={footerMainChildren()}

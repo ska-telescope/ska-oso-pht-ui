@@ -3,7 +3,6 @@ import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
 import { env } from '@/env';
-export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
 export const cypressSV = window.localStorage.getItem('cypress:scienceVerificationIdea') === 'true';
 export const cypressLowUnitsUnlocked =
