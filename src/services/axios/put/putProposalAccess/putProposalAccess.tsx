@@ -1,8 +1,7 @@
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import { mapping } from '../../post/postProposalAccess/postProposalAccess';
-import MockProposalBackendAccess from './mockProposalAccessBackend';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
-import { OSO_SERVICES_PROPOSAL_ACCESS_PATH, isCypress } from '@/utils/constants';
+import { OSO_SERVICES_PROPOSAL_ACCESS_PATH } from '@/utils/constants';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -19,18 +18,10 @@ export function mappingBackendToFrontend(inRec: ProposalAccessBackend): Proposal
 
 /*****************************************************************************************************************************/
 
-export function PutMockProposalAccess(): ProposalAccess {
-  return mappingBackendToFrontend(MockProposalBackendAccess);
-}
-
 async function PutProposalAccess(
   authAxiosClient: AxiosAuthClient,
   proposalAccess: ProposalAccess
 ): Promise<ProposalAccess | { error: string }> {
-  if (isCypress) {
-    return PutMockProposalAccess();
-  }
-
   try {
     const convertedProposalAccess = mapping(proposalAccess);
     const result = await authAxiosClient.put(

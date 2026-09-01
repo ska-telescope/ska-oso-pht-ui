@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { isCypress, PATH } from '@utils/constants.ts';
+import { PATH } from '@utils/constants.ts';
 import BaseButton from '../Base/Button';
 import AlertDialog from '../../alerts/alertDialog/AlertDialog';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -35,7 +35,7 @@ export default function HomeButton({
     }
     /* c8 ignore end */
 
-    return !isCypress && !loggedIn;
+    return !loggedIn;
   };
 
   const ClickFunction = () => {

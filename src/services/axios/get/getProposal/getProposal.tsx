@@ -1,5 +1,4 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails.tsx';
 import {
   ResultsSection,
@@ -38,7 +37,6 @@ import {
   PDF_NAME_PREFIXES,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
-  isCypress,
   SCIENCE_VERIFICATION,
   SCIENCE_VERIFICATION_TYPE_ID,
   TYPE_PST,
@@ -55,7 +53,6 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   FLOW_THROUGH_VALUE,
   TYPE_ZOOM_LONG,
-  cypressSV,
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
@@ -846,14 +843,6 @@ async function GetProposal(
   authAxiosClient: AxiosAuthClient,
   id: string
 ): Promise<Proposal | string> {
-  if (isCypress) {
-    if (cypressSV) {
-      return mapping(MockProposal[1]);
-    } else {
-      return mapping(MockProposal[0]);
-    }
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);

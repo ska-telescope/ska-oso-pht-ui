@@ -60,9 +60,7 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
 vi.mock('../constants', () => ({
   get APP_OVERRIDE_GROUPS() {
     return overrideGroups;
-  },
-  cypressEditProposal: 'mockedValue',
-  isCypress: false
+  }
 }));
 
 describe('getUserName', () => {

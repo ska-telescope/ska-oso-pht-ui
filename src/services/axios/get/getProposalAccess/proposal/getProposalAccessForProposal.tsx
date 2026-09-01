@@ -2,7 +2,7 @@ import { AxiosAuthClient } from '../../../axiosAuthClient/axiosAuthClient';
 import MockProposalAccessBackend from '../mockProposalAccessBackend';
 import { mappingList } from '../mappingList';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import { OSO_SERVICES_PROPOSAL_ACCESS_PATH, isCypress } from '@/utils/constants';
+import { OSO_SERVICES_PROPOSAL_ACCESS_PATH } from '@/utils/constants';
 
 /*****************************************************************************************************************************/
 
@@ -14,10 +14,6 @@ async function GetProposalAccessForProposal(
   authAxiosClient: AxiosAuthClient,
   proposalId: string
 ): Promise<ProposalAccess[] | string> {
-  if (isCypress) {
-    return GetMockProposalAccessForProposal();
-  }
-
   try {
     const result = await authAxiosClient.get(`${OSO_SERVICES_PROPOSAL_ACCESS_PATH}/${proposalId}`);
     if (!result || !Array.isArray(result.data)) {

@@ -17,8 +17,7 @@ import {
   REVIEW_TYPE,
   FEASIBLE_NO,
   FEASIBLE_YES,
-  CONFLICT_REASONS,
-  isCypress
+  CONFLICT_REASONS
 } from '@utils/constants.ts';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -294,27 +293,19 @@ export default function ReviewListPage() {
     tecReview: { reviewType: { isFeasible: string } };
     sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
-    if (isCypress) {
-      return isReviewerScience();
-    } else {
-      return (
-        isReviewerScience() &&
-        row?.sciReview &&
-        isFeasible(row) &&
-        row?.sciReview?.reviewType.conflict.hasConflict !== true &&
-        row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
-      );
-    }
+    return (
+      isReviewerScience() &&
+      row?.sciReview &&
+      isFeasible(row) &&
+      row?.sciReview?.reviewType.conflict.hasConflict !== true &&
+      row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
+    );
   };
 
   const canEditTechnical = (tecReview: { status: string }) => {
-    if (isCypress) {
-      return isReviewerTechnical();
-    } else {
-      return (
-        isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED
-      );
-    }
+    return (
+      isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED
+    );
   };
 
   const hasTechnicalComments = (review: any) =>

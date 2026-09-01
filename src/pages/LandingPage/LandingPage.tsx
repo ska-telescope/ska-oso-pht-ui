@@ -28,7 +28,6 @@ import {
   DUMMY_PROPOSAL_ID,
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
-  isCypress,
   TYPE_CONTINUUM,
   NAV,
   PAGE_LANDING,
@@ -125,7 +124,7 @@ export default function LandingPage() {
         return;
       }
       /* c8 ignore end */
-      if (!isCypress && !loggedIn) return;
+      if (!loggedIn) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
@@ -189,7 +188,7 @@ export default function LandingPage() {
   };
 
   const editIconClicked = async (id: string) => {
-    if (!isCypress && !loggedIn) return;
+    if (!loggedIn) return;
 
     const response = await getTheProposal(id);
     if (typeof response === 'string') {

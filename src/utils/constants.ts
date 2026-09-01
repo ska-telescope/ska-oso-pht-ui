@@ -3,8 +3,6 @@ import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
 import { env } from '@/env';
-export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
-export const cypressSV = window.localStorage.getItem('cypress:scienceVerificationIdea') === 'true';
 export const cypressLowUnitsUnlocked =
   window.localStorage.getItem('cypress:lowUnitsUnlocked') === 'true' ||
   env.REACT_APP_LOW_UNITS_UNLOCKED === 'true';
@@ -32,8 +30,6 @@ export const MSENTRA_API_URI = 'api://e4d6bb9b-cdd0-46c4-b30a-d045091b501b';
 export const APP_OVERRIDE_GROUPS = window.Cypress
   ? localStorage.getItem('cypress:group')
   : env.REACT_APP_OVERRIDE_GROUPS;
-
-export const isCypress = typeof window !== 'undefined' && window.Cypress;
 
 /*****************************************/
 

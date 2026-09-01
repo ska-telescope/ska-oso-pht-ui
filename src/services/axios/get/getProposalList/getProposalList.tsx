@@ -1,4 +1,3 @@
-import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
@@ -7,7 +6,6 @@ import {
   PROJECTS,
   DETAILS,
   OSO_SERVICES_PROPOSAL_PATH,
-  isCypress,
   SCIENCE_VERIFICATION
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
@@ -113,10 +111,6 @@ export function GetMockProposalList(): Proposal[] {
 }
 
 async function GetProposalList(authAxiosClient: AxiosAuthClient): Promise<Proposal[] | string> {
-  if (isCypress) {
-    return mappingList(MockProposal);
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/mine`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);

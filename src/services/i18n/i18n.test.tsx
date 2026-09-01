@@ -12,14 +12,6 @@ vi.mock('react-i18next', () => ({
   }))
 }));
 
-vi.mock('@/utils/constants.ts', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/utils/constants.ts')>();
-  return {
-    ...actual,
-    isCypress: false
-  };
-});
-
 vi.mock('@/utils/appFlow/AppFlowContext', () => ({
   useAppFlow: () => ({ isSV: () => false })
 }));

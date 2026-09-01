@@ -1,6 +1,6 @@
 import { useUserGroups } from '@ska-telescope/ska-login-page';
 import { useMsal } from '@azure/msal-react';
-import { APP_OVERRIDE_GROUPS, cypressEditProposal, isCypress, TMP_REVIEWER_ID } from '../constants';
+import { APP_OVERRIDE_GROUPS, TMP_REVIEWER_ID } from '../constants';
 import ProposalAccess from '../types/proposalAccess';
 
 // Internal access store
@@ -89,11 +89,7 @@ export const hasProposalAccess = (
   accessList: ProposalAccess[],
   prslId: string
 ): ProposalAccess | null => {
-  if (isCypress && cypressEditProposal) {
-    return accessList?.find((access) => access.role === 'Principal Investigator') ?? null;
-  } else {
-    return accessList?.find((access) => access.prslId === prslId) ?? null;
-  }
+  return accessList?.find((access) => access.prslId === prslId) ?? null;
 };
 
 export const hasProposalAccessPermission = (
