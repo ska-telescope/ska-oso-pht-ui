@@ -36,6 +36,7 @@ export default function RotationMeasureField({
       setUnits={() => {}}
       unitsTestId={FIELD + 'Units'}
       unitsDisabled
+      unitsMinWidth={90}
       topPadding={1}
       label={t(FIELD + '.label')}
       onFocus={() => setHelp(FIELD)}

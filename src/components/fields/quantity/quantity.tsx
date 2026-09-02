@@ -26,6 +26,7 @@ interface QuantityFieldProps {
   unitOptions?: DropDownProps['options'];
   unitsTestId?: string;
   unitsDisabled?: boolean;
+  unitsMinWidth?: number;
   topPadding?: number;
 }
 
@@ -50,6 +51,7 @@ export default function QuantityField({
   unitOptions,
   unitsTestId,
   unitsDisabled,
+  unitsMinWidth,
   topPadding = 2
 }: QuantityFieldProps) {
   const { text, error, handleChange } = useNumericInput(value, setValue, {
@@ -83,7 +85,7 @@ export default function QuantityField({
           }}
           required={required}
         />
-        <Box>
+        <Box sx={{ minWidth: unitsMinWidth }}>
           <DropDown
             options={unitOptions}
             testId={unitsTestId}
