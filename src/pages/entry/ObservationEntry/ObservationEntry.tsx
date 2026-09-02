@@ -46,7 +46,7 @@ import {
   SA_CUSTOM,
   PULSAR_TIMING_VALUE,
   SUPPLIED_TYPE_INTEGRATION,
-  cypressLowUnitsUnlocked,
+  lowUnitsUnlocked,
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
@@ -1083,7 +1083,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={suppliedValue}
         setValue={setSuppliedValue}
         label={label}
-        disabled={isLow() && !cypressLowUnitsUnlocked}
+        disabled={isLow() && !lowUnitsUnlocked}
         minValue={minValue}
         maxValue={maxValue}
         minInclusive={false}

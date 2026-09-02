@@ -3,9 +3,7 @@ import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
 import { env } from '@/env';
-export const cypressLowUnitsUnlocked =
-  window.localStorage.getItem('cypress:lowUnitsUnlocked') === 'true' ||
-  env.REACT_APP_LOW_UNITS_UNLOCKED === 'true';
+export const lowUnitsUnlocked = env.REACT_APP_LOW_UNITS_UNLOCKED === 'true';
 
 export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
