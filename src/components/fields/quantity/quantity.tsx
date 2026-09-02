@@ -26,6 +26,7 @@ interface QuantityFieldProps {
   unitOptions?: DropDownProps['options'];
   unitsTestId?: string;
   unitsDisabled?: boolean;
+  topPadding?: number;
 }
 
 export default function QuantityField({
@@ -48,7 +49,8 @@ export default function QuantityField({
   setUnits,
   unitOptions,
   unitsTestId,
-  unitsDisabled
+  unitsDisabled,
+  topPadding = 2
 }: QuantityFieldProps) {
   const { text, error, handleChange } = useNumericInput(value, setValue, {
     requiredMessage: requiredMessage,
@@ -61,7 +63,7 @@ export default function QuantityField({
   });
 
   return (
-    <Box pt={2}>
+    <Box pt={topPadding}>
       <Box display="flex" alignItems="flex-end" gap={1}>
         <TextField
           variant="standard"
