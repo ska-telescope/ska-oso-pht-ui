@@ -308,14 +308,11 @@ export default function LandingPage() {
   const addSubmissionButton = () => (
     <AddButton
       action={() => {
-        if (!loggedIn) {
-          updateAppContent2(mock);
-        }
         setOpenCycleDialog(true);
       }}
       testId={'addSubmissionButton'}
-      title={loggedIn ? 'addProposal.label' : 'addMockProposal.label'}
-      toolTip={loggedIn ? 'addProposal.toolTip' : 'addMockProposal.toolTip'}
+      title="addProposal.label"
+      toolTip="addProposal.toolTip"
     />
   );
 

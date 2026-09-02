@@ -15,7 +15,6 @@ declare module '@/env' {
     MSENTRA_CLIENT_ID: string;
     MSENTRA_TENANT_ID: string;
     MSENTRA_REDIRECT_URI: string;
-    REACT_APP_LOW_UNITS_UNLOCKED: string;
     USE_INDIGO: string;
     INDIGO_AUTHORITY: string;
     INDIGO_CLIENT_ID: string;
