@@ -1,7 +1,6 @@
 import { SKA_OSO_SERVICES_URL, OSO_SERVICES_REVIEWERS_PATH } from '@utils/constants.ts';
 import { Reviewer, ReviewerBackend } from '@utils/types/reviewer.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockReviewersList } from './mockReviewerList.tsx';
 
 /*********************************************************** filter *********************************************************/
 
@@ -42,10 +41,6 @@ export function combineReviewers(
   }
 
   return Array.from(combinedMap.values());
-}
-
-export function GetMockReviewersList(): Reviewer[] {
-  return MockReviewersList;
 }
 
 async function GetReviewerList(authAxiosClient: AxiosAuthClient): Promise<Reviewer[] | string> {

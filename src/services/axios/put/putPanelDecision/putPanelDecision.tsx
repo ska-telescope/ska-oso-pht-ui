@@ -1,6 +1,5 @@
 import { OSO_SERVICES_PANEL_DECISIONS_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import { mappingPanelDecisionFrontendToBackend } from '@services/axios/post/postPanelDecision/postPanelDecision.tsx';
-import { MockPanelDecisionBackend } from '@services/axios/post/postPanelDecision/mockPanelDecisionBackend.tsx';
 import { PanelDecision, PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
 import { helpers } from '@utils/helpers.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
@@ -25,10 +24,6 @@ export function mappingPanelDecisionBackendToFrontend(
   // trim undefined properties
   helpers.transform.trimObject(transformedPanel);
   return transformedPanel;
-}
-
-export function putMockPanelDecision(cycleId: string): PanelDecision {
-  return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend, cycleId);
 }
 
 async function PutPanelDecision(

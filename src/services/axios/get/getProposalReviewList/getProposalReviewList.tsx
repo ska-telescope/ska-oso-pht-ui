@@ -3,7 +3,6 @@ import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
 import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockProposalReviewListBackend } from './mockProposalReviewListBackend.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -14,12 +13,6 @@ export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
 }
 
 /*****************************************************************************************************************************/
-
-export function GetMockProposalReviewList(mock = MockProposalReviewListBackend): ProposalReview[] {
-  // this removes duplicates versions from the backend list and sorts by last modified date
-  const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'review_id') : mock;
-  return mappingList(uniqueResults);
-}
 
 async function GetProposalReviewList(
   authAxiosClient: AxiosAuthClient

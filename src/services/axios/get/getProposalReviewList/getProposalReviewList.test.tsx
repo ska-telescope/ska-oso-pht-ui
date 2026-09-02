@@ -1,18 +1,19 @@
 import { describe } from 'vitest';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
-import GetProposalReviewList, { GetMockProposalReviewList } from './getProposalReviewList.tsx';
+import GetProposalReviewList, { mappingList } from './getProposalReviewList.tsx';
 import { MockProposalReviewListFrontend } from './mockProposalReviewListFrontend.tsx';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend.tsx';
 
 describe('Helper Functions', () => {
-  test('GetMockProposalReviewList returns mock data', () => {
-    const result = GetMockProposalReviewList();
+  test('mappingList returns mapped data after removing duplicates', () => {
+    const uniqueResults = getUniqueMostRecentItems(MockProposalReviewListBackend, 'review_id');
+    const result = mappingList(uniqueResults);
     expect(result).to.deep.equal(MockProposalReviewListFrontend);
   });
 
-  test('GetMockProposalReviewList returns mock data correctly with 1 mock item', () => {
-    const result = GetMockProposalReviewList([MockProposalReviewListBackend[0]]);
+  test('mappingList returns mapped data correctly with 1 mock item', () => {
+    const result = mappingList([MockProposalReviewListBackend[0]]);
     expect(result).to.deep.equal([MockProposalReviewListFrontend[0]]);
   });
 

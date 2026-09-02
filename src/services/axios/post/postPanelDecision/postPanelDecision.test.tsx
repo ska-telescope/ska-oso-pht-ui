@@ -2,10 +2,7 @@ import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import { PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
-import PostPanelDecision, {
-  mappingPanelDecisionFrontendToBackend,
-  postMockPanelDecision
-} from './postPanelDecision.tsx';
+import PostPanelDecision, { mappingPanelDecisionFrontendToBackend } from './postPanelDecision.tsx';
 import { MockPanelDecisionFrontend } from './mockPanelDecisionFrontend.tsx';
 import { MockPanelDecisionBackend } from './mockPanelDecisionBackend.tsx';
 
@@ -15,11 +12,6 @@ describe('Helper Functions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-  test('postMockPanelDecision returns mock id', () => {
-    const result = postMockPanelDecision();
-    expect(result).to.equal('PANEL-DECISION-ID-001');
-  });
-
   test('mappingPanelDecisionFrontendToBackend returns mapped panelDecision from frontend to backend format', () => {
     const panelDecisionBackEnd: PanelDecisionBackend = mappingPanelDecisionFrontendToBackend(
       MockPanelDecisionFrontend,

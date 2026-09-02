@@ -1,13 +1,6 @@
 import { describe } from 'vitest';
-import getReviewDashboard, { getMockReviewDashboard } from './getReviewDashboard.tsx';
+import getReviewDashboard from './getReviewDashboard.tsx';
 import { mockReviewDashboardBackend, mockReviewDashboardFrontend } from './mockReviewDashboard.tsx';
-
-describe('Helper Functions', () => {
-  test('getMockReviewDashboard returns mock data', () => {
-    const result = getMockReviewDashboard();
-    expect(result).to.deep.equal(mockReviewDashboardFrontend);
-  });
-});
 
 describe('GetReviewDashboard Service', () => {
   let mockedAuthClient: any;

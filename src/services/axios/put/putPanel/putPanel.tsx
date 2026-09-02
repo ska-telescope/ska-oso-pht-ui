@@ -30,10 +30,6 @@ export function mappingPutPanel(panel: Panel, cycleId: string): PanelBackend {
   return transformedPanel;
 }
 
-export function putMockPanel(): string {
-  return 'PANEL-ID-001';
-}
-
 async function PutPanel(
   authAxiosClient: AxiosAuthClient,
   panel: Panel,

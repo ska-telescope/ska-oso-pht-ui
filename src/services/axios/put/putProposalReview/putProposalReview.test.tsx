@@ -1,16 +1,6 @@
 import { MockProposalScienceReviewFrontend } from '@services/axios/post/postProposalReview/mockProposalReviewFrontend.tsx';
 import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend';
-import PutProposalReview, { putMockProposalReview } from './putProposalReview';
-
-describe('Helper Functions', () => {
-  beforeEach(() => {
-    vi.resetAllMocks();
-  });
-  test('putMockProposalReview returns mock review', () => {
-    const result = putMockProposalReview();
-    expect(result).to.deep.equal(MockProposalScienceReviewFrontend);
-  });
-});
+import PutProposalReview from './putProposalReview';
 
 describe('PutProposalReview Service', () => {
   let mockedAuthClient: any;

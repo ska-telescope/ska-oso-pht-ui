@@ -17,10 +17,6 @@ export interface ValidateServiceResponse {
   valid?: string;
 }
 
-export function postMockProposalValidate(): { valid: string } {
-  return { valid: 'success' };
-}
-
 async function PostProposalValidate(
   authAxiosClient: AxiosAuthClient,
   proposal: Proposal

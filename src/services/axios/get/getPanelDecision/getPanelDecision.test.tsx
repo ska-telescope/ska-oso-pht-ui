@@ -5,7 +5,7 @@ import { mappingPanelDecisionBackendToFrontend } from '@services/axios/put/putPa
 import { MockPanelDecisionBackend } from '@services/axios/post/postPanelDecision/mockPanelDecisionBackend.tsx';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import { PanelDecision } from '@utils/types/panelDecision.tsx';
-import getPanelDecision, { getMockPanelDecision } from './getPanelDecision.tsx';
+import getPanelDecision from './getPanelDecision.tsx';
 
 const cycleId = MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId;
 
@@ -13,11 +13,6 @@ describe('Helper Functions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-  test('getMockPanelDecision returns mock panel', () => {
-    const result = getMockPanelDecision(cycleId);
-    expect(result).to.deep.equal(MockPanelDecisionFrontend);
-  });
-
   test('mapping returns mapped decision from backend to frontend format', () => {
     const panelDecisionFrontEnd: PanelDecision = mappingPanelDecisionBackendToFrontend(
       MockPanelDecisionBackend,

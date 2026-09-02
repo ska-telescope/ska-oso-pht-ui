@@ -1,11 +1,6 @@
 import { OSO_SERVICES_REPORT_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import { ReviewDashboard, ReviewDashboardBackend } from '@utils/types/reviewDashboard.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { mockReviewDashboardBackend } from './mockReviewDashboard.tsx';
-
-export function getMockReviewDashboard(): ReviewDashboard[] {
-  return mappingReviewDashboardBackendToFrontend(mockReviewDashboardBackend);
-}
 
 export function mappingReviewDashboardBackendToFrontend(
   reviewDashboardBackend: ReviewDashboardBackend[]

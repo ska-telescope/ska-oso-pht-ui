@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import PutPanel, { mappingPutPanel, putMockPanel } from './putPanel';
+import PutPanel, { mappingPutPanel } from './putPanel';
 import {
   MockPanelFrontend,
   MockPanelFrontendWithProposals,
@@ -20,11 +20,6 @@ describe('Helper Functions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-  test('putMockPanel returns mock id', () => {
-    const result = putMockPanel();
-    expect(result).to.equal('PANEL-ID-001');
-  });
-
   test('mappingPutPanel returns mapped panel from frontend to backend format', () => {
     const panelBackEnd: PanelBackend = mappingPutPanel(MockPanelFrontend, cycleId);
     expect(panelBackEnd).to.deep.equal(MockPanelBackend);

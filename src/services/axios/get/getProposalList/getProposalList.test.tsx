@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import GetProposalList, { GetMockProposalList, mappingList } from './getProposalList';
+import GetProposalList, { mappingList } from './getProposalList';
 import MockProposalBackendList from './mockProposalBackendList';
 import MockProposalFrontendList from './mockProposalFrontendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
@@ -12,12 +12,6 @@ describe('Helper Functions', () => {
     expect(result).to.have.lengthOf(MockProposalBackendList.length);
     expect(result[0].metadata?.last_modified_on).to.equal('2022-09-23T15:43:53.971548Z');
     expect(result[1].metadata?.last_modified_on).to.equal('2022-09-23T15:43:53.971548Z');
-  });
-
-  test('GetMockProposalList returns mock proposal list', () => {
-    const result = GetMockProposalList();
-    expect(result).to.have.lengthOf(MockProposalFrontendList.length);
-    expect(result).to.deep.equal(MockProposalFrontendList);
   });
 
   test('mappingList returns mapped proposal list from backend to frontend format', () => {

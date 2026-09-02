@@ -7,7 +7,6 @@ import {
   BAND_LOW_STR
 } from '@utils/constants.ts';
 import GetProposal, {
-  GetMockProposal,
   mapping,
   getInvestigators,
   getScienceCategory,
@@ -24,11 +23,6 @@ import {
 } from './mockProposalFrontend.tsx';
 
 describe('Helper Functions', () => {
-  test('GetMockProposal returns mock proposal', () => {
-    const result = GetMockProposal();
-    expect(result).to.deep.equal(MockProposalFrontend);
-  });
-
   test('mapping returns mapped continuum proposal from backend to frontend format', () => {
     const proposalFrontEnd: Proposal = mapping(MockProposalBackend);
     expect(proposalFrontEnd).to.deep.equal(MockProposalFrontend);

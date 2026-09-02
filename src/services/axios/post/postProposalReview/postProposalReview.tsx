@@ -66,10 +66,6 @@ export function mappingReviewFrontendToBackend(
   return transformedPanel;
 }
 
-export function postMockProposalReview(): string {
-  return 'PROPOSAL-REVIEW-ID-001';
-}
-
 async function PostProposalReview(
   authAxiosClient: AxiosAuthClient,
   review: ProposalReview,

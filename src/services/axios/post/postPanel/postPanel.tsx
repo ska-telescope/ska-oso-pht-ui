@@ -29,10 +29,6 @@ export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
   return transformedPanel;
 }
 
-export function postMockPanel(): string {
-  return 'PANEL-ID-001';
-}
-
 async function PostPanel(
   authAxiosClient: AxiosAuthClient,
   refreshAuthToken: RefreshAuthToken,

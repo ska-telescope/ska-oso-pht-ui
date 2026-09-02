@@ -3,7 +3,6 @@ import { Panel, PanelBackend } from '@utils/types/panel.tsx';
 import { PanelProposal, PanelProposalBackend } from '@utils/types/panelProposal.tsx';
 import { PanelReviewer, PanelReviewerBackend } from '@utils/types/panelReviewer.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockPanelBackend } from './mockPanelBackend.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -48,10 +47,6 @@ export function mapping(inRec: PanelBackend): Panel {
 }
 
 /*****************************************************************************************************************************/
-
-export function GetMockPanel(mock = MockPanelBackend): Panel {
-  return mapping(mock);
-}
 
 async function GetPanel(authAxiosClient: AxiosAuthClient, id: string): Promise<Panel | string> {
   try {

@@ -10,14 +10,9 @@ import {
   MockProposalScienceReviewFrontend,
   MockProposalTechnicalReviewFrontend
 } from '../../post/postProposalReview/mockProposalReviewFrontend.tsx';
-import GetProposalReview, { GetMockReview } from './getProposalReview.tsx';
+import GetProposalReview from './getProposalReview.tsx';
 
 describe('Helper Functions', () => {
-  test('GetMockReview returns mock review', () => {
-    const result = GetMockReview();
-    expect(result).to.deep.equal(MockProposalScienceReviewFrontend);
-  });
-
   test('mapping returns mapped review from backend to frontend format', () => {
     const proposalReviewFrontEnd: ProposalReview = mappingReviewBackendToFrontend(
       MockProposalScienceReviewBackend

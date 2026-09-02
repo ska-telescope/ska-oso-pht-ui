@@ -1,14 +1,7 @@
 import { SKA_OSO_SERVICES_URL, OSO_SERVICES_REVIEWS_PATH } from '@utils/constants.ts';
-import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
+import { ProposalReview } from '@utils/types/proposalReview.tsx';
 import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend.tsx';
-
-export function GetMockReview(
-  mock: ProposalReviewBackend = MockProposalScienceReviewBackend
-): ProposalReview {
-  return mappingReviewBackendToFrontend(mock);
-}
 
 async function GetProposalReview(
   authAxiosClient: AxiosAuthClient,

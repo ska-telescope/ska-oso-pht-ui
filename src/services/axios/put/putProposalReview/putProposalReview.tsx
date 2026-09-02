@@ -1,5 +1,4 @@
 import { OSO_SERVICES_REVIEWS_PATH, REVIEW_TYPE, SKA_OSO_SERVICES_URL } from '@utils/constants';
-import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend';
 import { mappingReviewFrontendToBackend } from '../../post/postProposalReview/postProposalReview';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import { helpers } from '@/utils/helpers';
@@ -57,10 +56,6 @@ export function mappingReviewBackendToFrontend(review: ProposalReviewBackend): P
   // trim undefined properties
   helpers.transform.trimObject(transformedPanel);
   return transformedPanel;
-}
-
-export function putMockProposalReview(): ProposalReview {
-  return mappingReviewBackendToFrontend(MockProposalScienceReviewBackend);
 }
 
 async function PutProposalReview(

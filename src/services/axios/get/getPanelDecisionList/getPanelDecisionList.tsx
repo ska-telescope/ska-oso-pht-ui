@@ -3,7 +3,6 @@ import { mappingPanelDecisionBackendToFrontend } from '@services/axios/put/putPa
 import { PanelDecision, PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockPanelDecisionBackendList } from './mockPanelDecisionBackendList.tsx';
 
 export function mappingList(
   panelDecisionList: PanelDecisionBackend[],
@@ -12,10 +11,6 @@ export function mappingList(
   return panelDecisionList.map((decision) =>
     mappingPanelDecisionBackendToFrontend(decision, cycleId)
   );
-}
-
-export function getMockPanelDecision(cycleId: string): PanelDecision[] {
-  return mappingList(MockPanelDecisionBackendList, cycleId);
 }
 
 async function getPanelDecisionList(

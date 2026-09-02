@@ -24,10 +24,6 @@ export function mappingPanelDecisionFrontendToBackend(
   return transformedPanel;
 }
 
-export function postMockPanelDecision(): string {
-  return 'PANEL-DECISION-ID-001';
-}
-
 async function PostPanelDecision(
   authAxiosClient: AxiosAuthClient,
   PanelDecision: PanelDecision,

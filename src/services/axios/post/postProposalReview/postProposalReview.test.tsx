@@ -1,9 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import PostProposalReview, {
-  mappingReviewFrontendToBackend,
-  postMockProposalReview
-} from './postProposalReview';
+import PostProposalReview, { mappingReviewFrontendToBackend } from './postProposalReview';
 import {
   MockProposalScienceReviewExcludedFrontend,
   MockProposalScienceReviewFrontend,
@@ -23,11 +20,6 @@ describe('Helper Functions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-  test('postMockProposalReview returns mock id', () => {
-    const result = postMockProposalReview();
-    expect(result).to.equal('PROPOSAL-REVIEW-ID-001');
-  });
-
   test('mappingReviewFrontendToBackend returns mapped review from frontend to backend format', () => {
     const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
       MockProposalScienceReviewFrontend,

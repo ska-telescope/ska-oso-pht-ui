@@ -2,10 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import { PanelDecision } from '@utils/types/panelDecision.tsx';
-import getPanelDecisionList, {
-  getMockPanelDecision,
-  mappingList
-} from './getPanelDecisionList.tsx';
+import getPanelDecisionList, { mappingList } from './getPanelDecisionList.tsx';
 import { MockPanelDecisionFrontendList } from './mockPanelDecisionFrontendList.tsx';
 import { MockPanelDecisionBackendList } from './mockPanelDecisionBackendList.tsx';
 
@@ -15,12 +12,6 @@ describe('Helper Functions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-  test('getPanelDecisionList returns mock panel list', () => {
-    const result = getMockPanelDecision(cycleId);
-    expect(result).to.have.lengthOf(MockPanelDecisionFrontendList.length);
-    expect(result).to.deep.equal(MockPanelDecisionFrontendList);
-  });
-
   test('mappingList returns mapped panel decision list from backend to frontend format', () => {
     const panelDecisionListFrontEnd: PanelDecision[] = mappingList(
       MockPanelDecisionBackendList,

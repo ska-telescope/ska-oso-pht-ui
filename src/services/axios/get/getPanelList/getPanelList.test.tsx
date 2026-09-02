@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { Panel, PanelBackend } from '@utils/types/panel.tsx';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
-import GetPanelList, { GetMockPanelList, mappingList } from './getPanelList.tsx';
+import GetPanelList, { mappingList } from './getPanelList.tsx';
 import { MockPanelBackendList } from './mockPanelBackendList.tsx';
 import { MockPanelFrontendList } from './mockPanelFrontendList.tsx';
 
@@ -12,18 +12,6 @@ describe('Helper Functions', () => {
     expect(result).to.have.lengthOf(MockPanelBackendList.length - 2);
     expect(result[0].metadata?.last_modified_on).to.equal('2025-07-04T16:20:37.088Z');
     expect(result[1].metadata?.last_modified_on).to.equal('2025-07-03T16:20:37.088Z');
-  });
-
-  test('GetMockPanelList returns mock panel list', () => {
-    const result = GetMockPanelList();
-    expect(result).to.have.lengthOf(MockPanelFrontendList.length);
-    expect(result).to.deep.equal(MockPanelFrontendList);
-  });
-
-  test('GetMockPanelList with 1 panel returns mock panel list without sorting', () => {
-    const result = GetMockPanelList([MockPanelBackendList[2]]);
-    expect(result).to.have.lengthOf(1);
-    expect(result).to.deep.equal([MockPanelFrontendList[2]]);
   });
 
   test('mappingList returns mapped proposal list from panel from backend to frontend format', () => {

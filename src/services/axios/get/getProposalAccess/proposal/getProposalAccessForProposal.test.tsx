@@ -2,9 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import MockProposalAccessBackend from '../mockProposalAccessBackend';
 import MockProposalAccessFrontend from '../mockProposalAccessFrontend';
-import GetProposalAccessForProposal, {
-  GetMockProposalAccessForProposal
-} from './getProposalAccessForProposal';
+import GetProposalAccessForProposal from './getProposalAccessForProposal';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 
@@ -15,12 +13,6 @@ describe('Helper Functions', () => {
       'prsl_id'
     );
     expect(result).to.have.lengthOf(MockProposalAccessBackend.length);
-  });
-
-  test('GetMockProposalAccessForProposal returns mock proposal access', () => {
-    const result = GetMockProposalAccessForProposal();
-    expect(result).to.have.lengthOf(MockProposalAccessFrontend.length);
-    expect(result).to.deep.equal(MockProposalAccessFrontend);
   });
 });
 

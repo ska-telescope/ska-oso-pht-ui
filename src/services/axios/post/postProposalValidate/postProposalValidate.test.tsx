@@ -1,17 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import { MockProposalFrontend } from '@services/axios/get/getProposal/mockProposalFrontend.tsx';
-import PostProposalValidate, { postMockProposalValidate } from './postProposalValidate.tsx';
-
-describe('Helper Functions', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-  test('postMockProposalValidate returns success message', () => {
-    const result = postMockProposalValidate();
-    expect(result).to.deep.equal({ valid: 'success' });
-  });
-});
+import PostProposalValidate from './postProposalValidate.tsx';
 
 describe('PostProposalValidate Service', () => {
   let mockedAuthClient: any;

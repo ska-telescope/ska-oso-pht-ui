@@ -1,17 +1,12 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { Panel, PanelBackend } from '@utils/types/panel.tsx';
-import { GetMockPanel, mapping } from './getPanel.tsx';
+import { mapping } from './getPanel.tsx';
 import { MockPanelBackend } from './mockPanelBackend.tsx';
 import { MockPanelFrontend } from './mockPanelFrontEnd.tsx';
 import GetPanel from './getPanel.tsx';
 
 describe('Helper Functions', () => {
-  test('GetMockPanel returns mock panel', () => {
-    const result = GetMockPanel();
-    expect(result).to.deep.equal(MockPanelFrontend);
-  });
-
   test('mapping returns mapped panel from backend to frontend format with proposals and reviewers', () => {
     const panelFrontEnd: Panel = mapping(MockPanelBackend);
     expect(panelFrontEnd).to.deep.equal(MockPanelFrontend);

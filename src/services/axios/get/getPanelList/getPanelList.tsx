@@ -4,7 +4,6 @@ import { PanelProposal, PanelProposalBackend } from '@utils/types/panelProposal.
 import { PanelReviewer, PanelReviewerBackend } from '@utils/types/panelReviewer.tsx';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockPanelBackendList } from './mockPanelBackendList.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -53,11 +52,6 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
 }
 
 /*****************************************************************************************************************************/
-
-export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
-  const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'panel_id') : mock;
-  return mappingList(uniqueResults);
-}
 
 async function GetPanelList(authAxiosClient: AxiosAuthClient): Promise<Panel[] | string> {
   try {

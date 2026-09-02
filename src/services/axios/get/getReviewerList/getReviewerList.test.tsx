@@ -1,10 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { Reviewer } from '@utils/types/reviewer.tsx';
-import GetReviewerList, {
-  GetMockReviewersList,
-  getReviewersAlphabetical
-} from './getReviewerList.tsx';
+import GetReviewerList, { getReviewersAlphabetical } from './getReviewerList.tsx';
 import { MockReviewersList, MockReviewersBackendList } from './mockReviewerList.tsx';
 
 describe('Helper Functions', () => {
@@ -14,11 +11,6 @@ describe('Helper Functions', () => {
     expect(result[0].displayName).toBe('Aisha Rahman');
     expect(result[1].displayName).toBe('Amara Okafor');
     expect(result[2].displayName).toBe('Chloe Dubois');
-  });
-
-  test('GetMockReviewerList returns mock reviewers list', () => {
-    const result = GetMockReviewersList();
-    expect(result).toEqual(MockReviewersList);
   });
 });
 

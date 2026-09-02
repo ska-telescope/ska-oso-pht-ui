@@ -70,7 +70,6 @@ import {
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
-import { MockProposalBackend } from './mockProposalBackend.tsx';
 import {
   CalibrationStrategy,
   CalibrationStrategyBackend,
@@ -833,10 +832,6 @@ export function mapping(inRec: ProposalBackend): Proposal {
     pipeline: '' // TODO remove this property from type as not needed
   };
   return convertedProposal as Proposal;
-}
-
-export function GetMockProposal(): Proposal {
-  return mapping(MockProposalBackend);
 }
 
 async function GetProposal(

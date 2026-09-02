@@ -1,5 +1,4 @@
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
-import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
@@ -105,10 +104,6 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
 }
 
 /*****************************************************************************************************************************/
-
-export function GetMockProposalList(): Proposal[] {
-  return mappingList(MockProposalBackendList);
-}
 
 async function GetProposalList(authAxiosClient: AxiosAuthClient): Promise<Proposal[] | string> {
   try {
