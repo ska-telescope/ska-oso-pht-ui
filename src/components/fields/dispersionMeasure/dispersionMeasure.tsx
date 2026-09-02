@@ -1,9 +1,6 @@
-import React from 'react';
-import { Box } from '@mui/system';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import SelectField from '@/components/wrappers/selectField/SelectField';
-import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
+import QuantityField from '@/components/fields/quantity/quantity';
 
 interface DispersionMeasureFieldProps {
   disabled?: boolean;
@@ -23,50 +20,28 @@ export default function DispersionMeasureField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'dispersionMeasure';
-  const [errorText, setErrorText] = React.useState('');
   const DISPERSION_MEASURE_UNIT_VALUE = 0;
-
-  const validateValue = (num: number) =>
-    Number.isInteger(num) && num >= 0 ? '' : t('dispersionMeasure.error.integer');
-
-  const handleSetValue = (num: number) => {
-    const error = validateValue(num);
-    setErrorText(error);
-    if (!error) {
-      setValue?.(num);
-    }
-  };
-
-  React.useEffect(() => {
-    setErrorText(validateValue(value));
-  }, [value]);
+  const MAX_DISPERSION_MEASURE = 100000;
 
   return (
-    <Box pt={1}>
-      <SteppedNumberField
-        testId={FIELD}
-        value={value}
-        onStep={(currentValue: number, direction: 1 | -1) => Math.max(0, currentValue + direction)}
-        onCommit={handleSetValue}
-        label={t(FIELD + '.label')}
-        onFocus={() => setHelp(FIELD)}
-        required={required}
-        disabled={disabled}
-        min={0}
-        step={1}
-        errorText={errorText}
-        suffix={
-          <Box sx={{ minWidth: 100 }}>
-            <SelectField
-              testId={FIELD + 'Units'}
-              disabled
-              options={[{ label: t(FIELD + '.units'), value: DISPERSION_MEASURE_UNIT_VALUE }]}
-              value={DISPERSION_MEASURE_UNIT_VALUE}
-              setValue={() => {}}
-            />
-          </Box>
-        }
-      />
-    </Box>
+    <QuantityField
+      value={value}
+      setValue={(nextValue) => setValue?.(nextValue)}
+      required={required}
+      disabled={disabled}
+      minValue={0}
+      maxValue={MAX_DISPERSION_MEASURE}
+      step={1}
+      requiredMessage={t(FIELD + '.error.integer')}
+      rangeMessage={t(FIELD + '.range.error', { min: 0, max: MAX_DISPERSION_MEASURE })}
+      unitOptions={[{ label: t(FIELD + '.units'), value: DISPERSION_MEASURE_UNIT_VALUE }]}
+      units={DISPERSION_MEASURE_UNIT_VALUE}
+      setUnits={() => {}}
+      unitsTestId={FIELD + 'Units'}
+      unitsDisabled
+      label={t(FIELD + '.label')}
+      onFocus={() => setHelp(FIELD)}
+      onUnitsFocus={() => setHelp(FIELD)}
+    />
   );
 }

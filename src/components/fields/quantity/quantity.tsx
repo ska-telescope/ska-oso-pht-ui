@@ -25,6 +25,7 @@ interface QuantityFieldProps {
   setUnits?: (unit: number) => void;
   unitOptions?: DropDownProps['options'];
   unitsTestId?: string;
+  unitsDisabled?: boolean;
 }
 
 export default function QuantityField({
@@ -46,7 +47,8 @@ export default function QuantityField({
   units,
   setUnits,
   unitOptions,
-  unitsTestId
+  unitsTestId,
+  unitsDisabled
 }: QuantityFieldProps) {
   const { text, error, handleChange } = useNumericInput(value, setValue, {
     requiredMessage: requiredMessage,
@@ -84,9 +86,9 @@ export default function QuantityField({
             options={unitOptions}
             testId={unitsTestId}
             value={units}
-            disabled={disabled}
+            disabled={unitsDisabled ?? disabled}
             setValue={setUnits}
-            label={label}
+            label=""
             onFocus={onUnitsFocus}
             InputProps={{ disableUnderline: true }}
           />

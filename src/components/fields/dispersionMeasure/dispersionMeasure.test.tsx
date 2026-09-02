@@ -19,37 +19,50 @@ describe('<DispersionMeasureField />', () => {
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('dispersionMeasure') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 250 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(250));
   });
 
-  test('does not update when value changed to decimal', async () => {
+  test('allows decimal free-text entry', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('dispersionMeasure') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 1.5 } });
-    fireEvent.blur(input);
-    expect(handleSetValue).not.toHaveBeenCalledWith(Number(1.5));
-    expect(screen.getByText('dispersionMeasure.error.integer')).toBeInTheDocument();
+    expect(handleSetValue).toHaveBeenCalledWith(Number(1.5));
+    expect(screen.queryByText('dispersionMeasure.range.error')).not.toBeInTheDocument();
   });
 
-  test('does not update when value changed to negative', async () => {
+  test('shows range error when value changed to negative', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('dispersionMeasure') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: -1 } });
     fireEvent.blur(input);
-    expect(handleSetValue).not.toHaveBeenCalled();
-    expect(screen.getByText('dispersionMeasure.error.integer')).toBeInTheDocument();
+    expect(handleSetValue).toHaveBeenCalledWith(Number(-1));
+    expect(screen.getByText('dispersionMeasure.range.error')).toBeInTheDocument();
+  });
+
+  test('shows range error when value exceeds maximum', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <DispersionMeasureField value={0} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 100001 } });
+    fireEvent.blur(input);
+    expect(handleSetValue).toHaveBeenCalledWith(Number(100001));
+    expect(screen.getByText('dispersionMeasure.range.error')).toBeInTheDocument();
   });
 
   test('renders fixed disabled units dropdown', async () => {
