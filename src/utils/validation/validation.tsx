@@ -45,6 +45,8 @@ import {
 } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
+import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
+import { rotationMeasureSchema } from '../../components/fields/rotationMeasure/rotationMeasure';
 import {
   channelsToBandwidthHz,
   getZoomResolutionHz,
@@ -335,15 +337,35 @@ export const isDataProductRobustValid = (dataProduct: DataProductSDPNew): boolea
   return isRobustInRange(data?.robust);
 };
 
+export const isDataProductPstDetectedFilterbankValid = (
+  proposal: Proposal,
+  dataProduct: DataProductSDPNew
+): boolean => {
+  const observation = proposal.observations?.find(
+    (candidate) => candidate.id === dataProduct.observationId
+  );
+  const usesDetectedFilterbankMeasures =
+    observation?.type === TYPE_PST && Number(observation.pstMode) === DETECTED_FILTER_BANK_VALUE;
+  if (!usesDetectedFilterbankMeasures) return true;
+
+  const data = dataProduct.data as SDPFilterbankPSTData;
+  return (
+    dispersionMeasureSchema.safeParse(data?.dispersionMeasure).success &&
+    rotationMeasureSchema.safeParse(data?.rotationMeasure).success
+  );
+};
+
 export const validateSDPPage = (proposal: Proposal) => {
   const dataProducts = proposal?.dataProductSDP;
   if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
     return STATUS_ERROR;
   }
-  const hasInvalidRobust = dataProducts.some(
-    (dataProduct) => !isDataProductRobustValid(dataProduct)
+  const hasInvalidDataProduct = dataProducts.some(
+    (dataProduct) =>
+      !isDataProductRobustValid(dataProduct) ||
+      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct)
   );
-  return hasInvalidRobust ? STATUS_ERROR : STATUS_OK;
+  return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;
 };
 
 export const validateSRCPage = () => STATUS_OK;
