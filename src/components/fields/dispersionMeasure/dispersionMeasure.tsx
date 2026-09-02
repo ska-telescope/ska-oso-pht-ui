@@ -22,6 +22,7 @@ export default function DispersionMeasureField({
   const FIELD = 'dispersionMeasure';
   const DISPERSION_MEASURE_UNIT_VALUE = 0;
   const MAX_DISPERSION_MEASURE = 100000;
+  const rangeErrorMessage = t(FIELD + '.range.error', { min: 0, max: MAX_DISPERSION_MEASURE });
 
   return (
     <QuantityField
@@ -32,8 +33,8 @@ export default function DispersionMeasureField({
       minValue={0}
       maxValue={MAX_DISPERSION_MEASURE}
       step={1}
-      requiredMessage={t(FIELD + '.error.integer')}
-      rangeMessage={t(FIELD + '.range.error', { min: 0, max: MAX_DISPERSION_MEASURE })}
+      requiredMessage={rangeErrorMessage}
+      rangeMessage={rangeErrorMessage}
       unitOptions={[{ label: t(FIELD + '.units'), value: DISPERSION_MEASURE_UNIT_VALUE }]}
       units={DISPERSION_MEASURE_UNIT_VALUE}
       setUnits={() => {}}

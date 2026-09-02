@@ -36,7 +36,7 @@ describe('<RotationMeasureField />', () => {
     expect(handleSetValue).toHaveBeenCalledWith(Number(-250));
   });
 
-  test('shows integer error when value changed to decimal', async () => {
+  test('accepts decimal values', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
@@ -47,7 +47,8 @@ describe('<RotationMeasureField />', () => {
     fireEvent.change(input, { target: { value: 1.5 } });
     fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(Number(1.5));
-    expect(screen.getByText('rotationMeasure.error.integer')).toBeInTheDocument();
+    expect(input).toHaveAttribute('step', '1');
+    expect(screen.queryByText('rotationMeasure.range.error')).not.toBeInTheDocument();
   });
 
   test('renders fixed disabled units dropdown', async () => {

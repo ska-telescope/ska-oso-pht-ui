@@ -21,6 +21,7 @@ export default function RotationMeasureField({
   const { setHelp } = useHelp();
   const FIELD = 'rotationMeasure';
   const ROTATION_MEASURE_UNIT_VALUE = 0;
+  const rangeErrorMessage = t(FIELD + '.range.error');
 
   return (
     <QuantityField
@@ -29,8 +30,8 @@ export default function RotationMeasureField({
       required={required}
       disabled={disabled}
       step={1}
-      requiredMessage={t(FIELD + '.error.integer')}
-      rangeMessage={t(FIELD + '.error.integer')}
+      requiredMessage={rangeErrorMessage}
+      rangeMessage={rangeErrorMessage}
       unitOptions={[{ label: t(FIELD + '.units'), value: ROTATION_MEASURE_UNIT_VALUE }]}
       units={ROTATION_MEASURE_UNIT_VALUE}
       setUnits={() => {}}
