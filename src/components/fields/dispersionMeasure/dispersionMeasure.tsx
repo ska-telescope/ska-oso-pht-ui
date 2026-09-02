@@ -1,3 +1,5 @@
+import React from 'react';
+import { z } from 'zod';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import QuantityField from '@/components/fields/quantity/quantity';
@@ -11,6 +13,12 @@ interface DispersionMeasureFieldProps {
   widthButton?: number;
 }
 
+export const DISPERSION_MEASURE_RANGE = { min: 0, max: 100000 };
+export const dispersionMeasureSchema = z
+  .number()
+  .min(DISPERSION_MEASURE_RANGE.min)
+  .max(DISPERSION_MEASURE_RANGE.max);
+
 export default function DispersionMeasureField({
   disabled = false,
   required = false,
@@ -21,8 +29,11 @@ export default function DispersionMeasureField({
   const { setHelp } = useHelp();
   const FIELD = 'dispersionMeasure';
   const DISPERSION_MEASURE_UNIT_VALUE = 0;
-  const MAX_DISPERSION_MEASURE = 100000;
-  const rangeErrorMessage = t(FIELD + '.range.error', { min: 0, max: MAX_DISPERSION_MEASURE });
+  const rangeErrorMessage = t(FIELD + '.range.error', DISPERSION_MEASURE_RANGE);
+  const validateDispersionMeasure = React.useCallback(
+    (num: number) => (dispersionMeasureSchema.safeParse(num).success ? '' : rangeErrorMessage),
+    [rangeErrorMessage]
+  );
 
   return (
     <QuantityField
@@ -30,11 +41,12 @@ export default function DispersionMeasureField({
       setValue={(nextValue) => setValue?.(nextValue)}
       required={required}
       disabled={disabled}
-      minValue={0}
-      maxValue={MAX_DISPERSION_MEASURE}
+      minValue={DISPERSION_MEASURE_RANGE.min}
+      maxValue={DISPERSION_MEASURE_RANGE.max}
       step={1}
       requiredMessage={rangeErrorMessage}
       rangeMessage={rangeErrorMessage}
+      validate={validateDispersionMeasure}
       unitOptions={[{ label: t(FIELD + '.units'), value: DISPERSION_MEASURE_UNIT_VALUE }]}
       units={DISPERSION_MEASURE_UNIT_VALUE}
       setUnits={() => {}}
