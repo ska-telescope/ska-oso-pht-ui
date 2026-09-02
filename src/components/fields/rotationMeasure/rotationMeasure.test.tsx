@@ -48,7 +48,22 @@ describe('<RotationMeasureField />', () => {
     fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(Number(1.5));
     expect(input).toHaveAttribute('step', '1');
-    expect(screen.queryByText('rotationMeasure.range.error')).not.toBeInTheDocument();
+    expect(screen.queryByText('rotationMeasure.required')).not.toBeInTheDocument();
+  });
+
+  test('shows required error when the value is not numeric', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <RotationMeasureField value={0} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: '' } });
+    fireEvent.blur(input);
+    expect(input).not.toHaveAttribute('min');
+    expect(input).not.toHaveAttribute('max');
+    expect(screen.getByText('rotationMeasure.required')).toBeInTheDocument();
   });
 
   test('renders fixed disabled units dropdown', async () => {

@@ -17,7 +17,7 @@ interface QuantityFieldProps {
   maxInclusive?: boolean;
   step?: number;
   requiredMessage: string;
-  rangeMessage: string;
+  rangeMessage?: string;
   validate?: (value: number) => string;
   onFocus?: () => void;
   onUnitsFocus?: () => void;

@@ -1129,9 +1129,7 @@
     "help": "This field displays the rotationMeasure.",
     "label": "Rotation Measure",
     "units": "rad/m²",
-    "range": {
-      "error": "A value between {{min}} and {{max}} is required"
-    }
+    "required": "A numeric value is required"
   },
   "channelsOut": {
     "help": "The number of output channels for this data product. Enter a whole number between {{min}} and {{max}}.",

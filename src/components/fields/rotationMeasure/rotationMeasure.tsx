@@ -25,10 +25,10 @@ export default function RotationMeasureField({
   const { setHelp } = useHelp();
   const FIELD = 'rotationMeasure';
   const ROTATION_MEASURE_UNIT_VALUE = 0;
-  const rangeErrorMessage = t(FIELD + '.range.error');
+  const requiredMessage = t(FIELD + '.required');
   const validateRotationMeasure = React.useCallback(
-    (num: number) => (rotationMeasureSchema.safeParse(num).success ? '' : rangeErrorMessage),
-    [rangeErrorMessage]
+    (num: number) => (rotationMeasureSchema.safeParse(num).success ? '' : requiredMessage),
+    [requiredMessage]
   );
 
   return (
@@ -38,8 +38,7 @@ export default function RotationMeasureField({
       required={required}
       disabled={disabled}
       step={1}
-      requiredMessage={rangeErrorMessage}
-      rangeMessage={rangeErrorMessage}
+      requiredMessage={requiredMessage}
       validate={validateRotationMeasure}
       unitOptions={[{ label: t(FIELD + '.units'), value: ROTATION_MEASURE_UNIT_VALUE }]}
       units={ROTATION_MEASURE_UNIT_VALUE}
