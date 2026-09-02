@@ -76,7 +76,6 @@ const isPST = (type: string) => type === TYPE_PST;
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
-const userId = getUserId();
 
 const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const project = PROJECTS.find(({ id }) => id === proposalType);
@@ -664,6 +663,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
   // proposalType is always resolved before this is called (set explicitly at creation in
   // PageFooterPPT.tsx), so it alone is authoritative for SV-ness.
   const proposalIsSV = proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;
+  const userId = getUserId();
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,

@@ -1,6 +1,5 @@
 import { useUserGroups } from '@ska-telescope/ska-login-page';
 import { useMsal } from '@azure/msal-react';
-import { TMP_REVIEWER_ID } from '../constants';
 import ProposalAccess from '../types/proposalAccess';
 
 // Internal access store
@@ -55,13 +54,10 @@ export const isReviewerChair = () =>
 
 // Account access
 export const getUserId = () => {
-  return TMP_REVIEWER_ID;
-  /* Ready for implementation when appropriate
   const account = getAccount();
   return account && typeof account === 'object' && 'localAccountId' in account
-    ? (account as { localAccountId?: string }).localAccountId ?? ''
+    ? ((account as { localAccountId?: string }).localAccountId ?? '')
     : '';
-  */
 };
 
 export const getUserName = () => {

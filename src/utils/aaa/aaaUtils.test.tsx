@@ -2,6 +2,7 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ProposalAccess from '../types/proposalAccess';
 import {
   getUserEmail,
+  getUserId,
   getUserName,
   hasAccess,
   isSoftwareEngineer,
@@ -56,6 +57,27 @@ vi.mock('@azure/msal-react', () => ({
 vi.mock('@ska-telescope/ska-login-page', () => ({
   useUserGroups: vi.fn()
 }));
+
+describe('getUserId', () => {
+  beforeEach(() => {
+    overrideGroups = '';
+    __setAccount({ localAccountId: 'account-001' });
+  });
+
+  it('returns localAccountId when account has one', () => {
+    expect(getUserId()).toBe('account-001');
+  });
+
+  it('returns empty string when account has no localAccountId', () => {
+    __setAccount({});
+    expect(getUserId()).toBe('');
+  });
+
+  it('returns empty string when account is null', () => {
+    __setAccount(null);
+    expect(getUserId()).toBe('');
+  });
+});
 
 describe('getUserName', () => {
   beforeEach(() => {
