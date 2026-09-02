@@ -1,6 +1,6 @@
 import { useUserGroups } from '@ska-telescope/ska-login-page';
 import { useMsal } from '@azure/msal-react';
-import { APP_OVERRIDE_GROUPS, TMP_REVIEWER_ID } from '../constants';
+import { TMP_REVIEWER_ID } from '../constants';
 import ProposalAccess from '../types/proposalAccess';
 
 // Internal access store
@@ -39,13 +39,7 @@ export const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-scireviewer-1635769025';
 export const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-tecreviewer-1-1994146425';
 export const SW_ENGINEER = 'obs-integrationenvs-oauth2role-sweng-11162868063';
 
-// Access logic
-const hasOverride = () => APP_OVERRIDE_GROUPS && APP_OVERRIDE_GROUPS.length > 0;
-// Unrelated pre-existing type error, spotted during development.
-const testOverride = (group: string) => (APP_OVERRIDE_GROUPS ?? '').split(',').includes(group);
-
-export const hasAccess = (group: string) =>
-  hasOverride() ? testOverride(group) : getUserGroups().hasGroup(group);
+export const hasAccess = (group: string) => getUserGroups().hasGroup(group);
 
 export const isSoftwareEngineer = () => hasAccess(SW_ENGINEER);
 

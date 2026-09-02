@@ -1,11 +1,11 @@
 // Real MSAL sessions for Cypress specs, so tests exercise the app's actual auth code paths
 // instead of a fake bypass.
 //
-// loginAsIndigoUser/loginAsOpsUser (used by almost every spec, via common.js's initialize()) seed
-// MSAL's cache instantly from a real token - fast, and indistinguishable from a real login to the
-// rest of the app. See hydrateIndigoSession's own comment below for how/why that works (it
-// bypasses Indigo's login/consent HTML forms via direct API calls rather than cy.origin() -
-// cy.origin() turned out to be unreliable for this, see its comment for why).
+// loginAsUser (used by almost every spec, via common.js's initialize()) seeds MSAL's cache
+// instantly from a real token - fast, and indistinguishable from a real login to the rest of the
+// app. See hydrateIndigoSession's own comment below for how/why that works (it bypasses Indigo's
+// login/consent HTML forms via direct API calls rather than cy.origin() - cy.origin() turned out
+// to be unreliable for this, see its comment for why).
 // fetchLiveIndigoToken/fetchLiveOpsToken are separate - kept only for assignProposalToPanel's own
 // API fixture setup. Also see axiosAuthClient.ts's __msalLoadExternalTokens hook.
 //
@@ -31,7 +31,7 @@ const DEFAULT_SCOPE = 'openid profile pht:read pht:readwrite';
 
 // A second live IAM account (Ralph Copeland), granted app:pht:ops_proposal_admin,
 // app:pht:ops_reviewer_science and app:pht:ops_reviewer_technical - astronomer1 has none of
-// these. See users.js's liveOps flag for which fixtures log in as this account instead.
+// these. See users.js's `username` field for which fixtures log in as this account instead.
 const DEFAULT_OPS_USERNAME = 'sciops1';
 const DEFAULT_OPS_PASSWORD = 'test';
 
@@ -86,12 +86,6 @@ export const fetchLiveOpsToken = () =>
     password: envOr('INDIGO_OPS_PASSWORD', DEFAULT_OPS_PASSWORD)
   });
 
-const fetchLiveOpsTokenResponse = () =>
-  fetchLiveIndigoTokenResponse({
-    username: envOr('INDIGO_OPS_USERNAME', DEFAULT_OPS_USERNAME),
-    password: envOr('INDIGO_OPS_PASSWORD', DEFAULT_OPS_PASSWORD)
-  });
-
 // Seeds MSAL's cache from a real token response via the app's __msalLoadExternalTokens hook (see
 // axiosAuthClient.ts) - scopes must match what axiosAuthClient.ts's loginRequest asks for, or the
 // later acquireTokenSilent() call in the request interceptor won't find a matching cached access
@@ -140,16 +134,33 @@ const loginWithHydratedMsal = (username, fetchTokenResponse) => {
   );
 };
 
-export const loginAsIndigoUser = () =>
-  loginWithHydratedMsal(envOr('INDIGO_TEST_USERNAME', DEFAULT_USERNAME), () =>
-    fetchLiveIndigoTokenResponse({
-      username: envOr('INDIGO_TEST_USERNAME', DEFAULT_USERNAME),
-      password: envOr('INDIGO_TEST_PASSWORD', DEFAULT_PASSWORD)
-    })
-  );
+// Known live IAM test accounts, keyed by the username a user fixture in users.js names via its
+// own `username` field - add an entry here (and point a fixture at it) when a scenario needs its
+// own distinctly-provisioned account, rather than toggling a boolean between exactly two
+// hardcoded accounts.
+const ACCOUNTS = {
+  [DEFAULT_USERNAME]: {
+    usernameEnvKey: 'INDIGO_TEST_USERNAME',
+    passwordEnvKey: 'INDIGO_TEST_PASSWORD',
+    defaultPassword: DEFAULT_PASSWORD
+  },
+  [DEFAULT_OPS_USERNAME]: {
+    usernameEnvKey: 'INDIGO_OPS_USERNAME',
+    passwordEnvKey: 'INDIGO_OPS_PASSWORD',
+    defaultPassword: DEFAULT_OPS_PASSWORD
+  }
+};
 
-export const loginAsOpsUser = () =>
-  loginWithHydratedMsal(
-    envOr('INDIGO_OPS_USERNAME', DEFAULT_OPS_USERNAME),
-    fetchLiveOpsTokenResponse
+export const loginAsUser = (username) => {
+  const account = ACCOUNTS[username];
+  if (!account) {
+    throw new Error(
+      `No live IAM credentials configured for Cypress test user "${username}" - add one to ACCOUNTS in cypressTestAuth.js.`
+    );
+  }
+  const resolvedUsername = envOr(account.usernameEnvKey, username);
+  const password = envOr(account.passwordEnvKey, account.defaultPassword);
+  return loginWithHydratedMsal(resolvedUsername, () =>
+    fetchLiveIndigoTokenResponse({ username: resolvedUsername, password })
   );
+};

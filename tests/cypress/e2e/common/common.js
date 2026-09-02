@@ -11,22 +11,18 @@ import {
   fetchLiveOpsToken,
   liveMemberEmail,
   liveMemberFirstName,
-  loginAsIndigoUser,
-  loginAsOpsUser
+  loginAsUser
 } from './cypressTestAuth';
 
 export { liveMemberEmail, liveMemberFirstName };
 
-// visitWithAuth logs in via a real MSAL session (see cypressTestAuth.js's loginAsIndigoUser/
-// loginAsOpsUser) and then does its own cy.visit() on top of that restored session, purely to set
-// the per-spec cypress:group override and any extras via onBeforeLoad - login itself no longer
-// happens here.
+// visitWithAuth logs in via a real MSAL session (see cypressTestAuth.js's loginAsUser) and then
+// does its own cy.visit() on top of that restored session, purely to set any extras via
+// onBeforeLoad - login itself no longer happens here.
 const visitWithAuth = (user, extras) => {
-  const login = user.liveOps ? loginAsOpsUser : loginAsIndigoUser;
-  login();
+  loginAsUser(user.username);
   cy.visit('/', {
     onBeforeLoad(win) {
-      win.localStorage.setItem('cypress:group', user.group);
       Object.entries(extras).forEach(([k, v]) => win.localStorage.setItem(k, v));
     }
   });
@@ -34,8 +30,6 @@ const visitWithAuth = (user, extras) => {
 
 export const initialize = (user, extras = {}) => {
   viewPort();
-  // Reviewer/admin roles need a different live account (sciops1) that's actually been granted
-  // those IAM groups - astronomer1 hasn't. See cypressTestAuth.js's loginAsOpsUser.
   visitWithAuth(user, extras);
 };
 

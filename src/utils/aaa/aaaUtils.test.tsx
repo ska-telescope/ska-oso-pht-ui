@@ -57,12 +57,6 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
   useUserGroups: vi.fn()
 }));
 
-vi.mock('../constants', () => ({
-  get APP_OVERRIDE_GROUPS() {
-    return overrideGroups;
-  }
-}));
-
 describe('getUserName', () => {
   beforeEach(() => {
     overrideGroups = '';

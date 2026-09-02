@@ -1,42 +1,47 @@
-// There are also in the aaaUtils.tsx file, but I didn't want to import them at this time
+// The purpose of this file is to provide a set of abstract user fixtures for use in Cypress tests.
+// These map to real IAM accounts provisioned for testing purposes, representing different user roles within the application.
+// This file documents and centralizes the user fixtures, making it easier to manage and update them as needed.
 
-const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309';
-const OPS_REVIEW_CHAIR = 'obs-oauth2role-opsreviewerchair-11741547065';
-const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-scireviewer-1635769025';
-const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-tecreviewer-1-1994146425';
+import {
+  OPS_PROPOSAL_ADMIN,
+  OPS_REVIEW_CHAIR,
+  OPS_REVIEWER_SCIENCE,
+  EXT_REVIEWER_TECHNICAL
+} from '../../../../src/utils/aaa/aaaUtils';
+
+// `username` names which live IAM account (see cypressTestAuth.js's ACCOUNTS) initialize() logs
+// in as for this fixture - astronomer1 isn't granted any of the reviewer/admin roles below.
 
 export const standardUser = {
   name: 'Cypress Default User',
+  username: 'astronomer1',
   group: ''
 };
 
-// liveOps: true routes initialize() to log in as sciops1 (via cypressTestAuth.js's
-// loginAsOpsUser) instead of the default astronomer1 - see common.js's initialize() and
-// cypressTestAuth.js's comment on DEFAULT_OPS_USERNAME. sciops1 is only granted
-// app:pht:ops_proposal_admin, app:pht:ops_reviewer_science and app:pht:ops_reviewer_technical, so
-// reviewerChairman is deliberately left on astronomer1 below - there's no live account yet with
-// the chair role, so setting liveOps here would just swap which unauthorized identity backend
-// requests fail under.
+// For the moment all four reviewer scenarios point at sciops1.
+// Once the review roles and scopes more clearly defined for SKA and provisioned as test users in the IAM system,
+// these fixtures can be updated to point at the appropriate accounts.
 
 export const reviewerScience = {
   name: 'Cypress Science Reviewer',
-  group: OPS_REVIEWER_SCIENCE,
-  liveOps: true
+  username: 'sciops1',
+  group: OPS_REVIEWER_SCIENCE
 };
 
 export const reviewerTechnical = {
   name: 'Cypress Technical Reviewer',
-  group: EXT_REVIEWER_TECHNICAL,
-  liveOps: true
+  username: 'sciops1',
+  group: EXT_REVIEWER_TECHNICAL
 };
 
 export const reviewerChairman = {
   name: 'Cypress Review Chairman',
+  username: 'sciops1',
   group: OPS_REVIEW_CHAIR
 };
 
 export const reviewerAdmin = {
   name: 'Cypress Review Administrator',
-  group: OPS_PROPOSAL_ADMIN,
-  liveOps: true
+  username: 'sciops1',
+  group: OPS_PROPOSAL_ADMIN
 };
