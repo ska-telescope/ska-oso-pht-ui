@@ -19,7 +19,7 @@ describe('<RotationMeasureField />', () => {
         <RotationMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('rotationMeasure') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 250 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(250));
   });
@@ -31,22 +31,22 @@ describe('<RotationMeasureField />', () => {
         <RotationMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('rotationMeasure') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: -250 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(-250));
   });
 
-  test('does not update when value changed to decimal', async () => {
+  test('shows integer error when value changed to decimal', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
         <RotationMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('rotationMeasure') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 1.5 } });
     fireEvent.blur(input);
-    expect(handleSetValue).not.toHaveBeenCalled();
+    expect(handleSetValue).toHaveBeenCalledWith(Number(1.5));
     expect(screen.getByText('rotationMeasure.error.integer')).toBeInTheDocument();
   });
 
