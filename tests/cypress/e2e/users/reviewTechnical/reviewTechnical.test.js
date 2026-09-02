@@ -26,7 +26,8 @@ describe('Reviewer ( Technical )', () => {
     clearLocalStorage();
   });
 
-  it('Validate menu options', () => {
+  // TODO Provision a 'Technical Reviewer' test user and then reenable (see users.js).
+  it.skip('Validate menu options', () => {
     clickUserMenu();
     verifyUserMenuOverview(false);
     verifyUserMenuProposals(true);
@@ -35,7 +36,7 @@ describe('Reviewer ( Technical )', () => {
     verifyUserMenuDecisions(false);
   });
 
-  it('Navigate using the dropdown menu', () => {
+  it.skip('Navigate using the dropdown menu', () => {
     clickUserMenuProposals();
     clickUserMenuReviews();
   });

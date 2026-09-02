@@ -605,7 +605,7 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 };
 
 export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="table-submissions"]').should('contain', 'sv-test');
+  cy.get('[data-testid="table-submissions"]').should('contain', 'Science Verification Idea Title');
 };
 
 export const verifyFieldError = (testId, error, exists) => {
