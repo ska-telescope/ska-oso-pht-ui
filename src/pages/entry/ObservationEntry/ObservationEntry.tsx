@@ -46,7 +46,6 @@ import {
   SA_CUSTOM,
   PULSAR_TIMING_VALUE,
   SUPPLIED_TYPE_INTEGRATION,
-  lowUnitsUnlocked,
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
@@ -1083,7 +1082,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={suppliedValue}
         setValue={setSuppliedValue}
         label={label}
-        disabled={isLow() && !lowUnitsUnlocked}
+        disabled={isLow()}
         minValue={minValue}
         maxValue={maxValue}
         minInclusive={false}

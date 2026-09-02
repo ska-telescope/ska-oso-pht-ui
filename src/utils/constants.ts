@@ -1,9 +1,7 @@
-import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
+import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import Target from './types/target';
-import Investigator from './types/investigator';
 import Observation from './types/observation';
 import { env } from '@/env';
-export const lowUnitsUnlocked = env.REACT_APP_LOW_UNITS_UNLOCKED === 'true';
 
 export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
@@ -39,7 +37,6 @@ export const BAND_4_STR = 'Band_4';
 export const BAND_5A_STR = 'Band_5a';
 export const BAND_5B_STR = 'Band_5b';
 
-export const ANTENNA_LOW = 'low';
 export const ANTENNA_13M = '13m';
 export const ANTENNA_15M = '15m';
 export const ANTENNA_MIXED = 'mixed';
@@ -50,16 +47,13 @@ export const TMP_REVIEWER_ID = 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a3';
 export const FEASIBLE_MAYBE = 'Maybe'; // TODO 'Yes with revision';
 export const FEASIBLE_NO = 'No';
 export const FEASIBLE_YES = 'Yes';
-export const FEASIBILITY = [FEASIBLE_YES, FEASIBLE_NO, FEASIBLE_MAYBE];
 
 export const SPACER_HEADER = 11;
-export const SPACER_FOOTER = 0; // Just here to show it has been considered
 
 export const BANNER_PMT_SPACER = SPACER_HEADER;
 export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 
 export const FOOTER_PMT = 65;
-export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 
 export const BIT_DEPTH = [{ value: 1 }, { value: 2 }, { value: 4 }, { value: 8 }];
 export const PST_FLOW_THROUGH_BIT_DEPTH_VALUES = [1, 2, 4, 8, 16];
@@ -76,33 +70,13 @@ export const CONFLICT_REASONS = [
   'conflict-other'
 ];
 
-export const DATA_PRODUCT = {
-  observatoryDataProduct: [
-    { label: 'Continuum Image', value: 1 },
-    { label: 'Spectral Line Image', value: 2 }
-  ],
-  pipeline: [
-    { label: 'Visibility receive', value: 1 },
-    { label: '‘Real-time’ pointing calibration', value: 2 },
-    { label: 'Visibility pre-processing', value: 3 },
-    { label: 'Mid self-cal / ICal', value: 4 },
-    { label: 'Low self-cal / ICal', value: 5 },
-    { label: '‘Real-time’ gain calibration', value: 6 },
-    { label: 'Distributed Gridding/Imaging', value: 7 }
-  ]
-};
-
 export const DP_TYPE_IMAGES = 1;
 export const DP_TYPE_VISIBLE = 2;
-
-export const DEFAULT_HELP = ['', ' ', ''];
 
 export const ERROR_SECS = 2000;
 
 export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // See SRCNet INACTIVE
-export const ENTRY_HEIGHT = 40;
 
-export const FOOTER_HEIGHT = 20;
 export const FOOTER_HEIGHT_PHT = 60;
 export const FOOTER_SPACER = 130;
 
@@ -202,8 +176,6 @@ export const GRID_MEMBERS_ACTIONS = {
 
 export const HEADER_HEIGHT = 78;
 
-export const HELP_FONT = 18;
-
 // SDP default values
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
@@ -249,7 +221,6 @@ export const NAV = [
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
-export const BEAM_SIZE_UNITS = 'arcsec2';
 export const CUSTOM_VALID_FIELDS = [
   'continuumSensitivityWeighted',
   'spectralSensitivityWeighted',
@@ -258,9 +229,6 @@ export const CUSTOM_VALID_FIELDS = [
   'continuumIntegrationTime',
   'spectralIntegrationTime'
 ];
-export const WEIGHTING_FACTOR_DEFAULT = 1;
-
-export const SBS_CONV_FACTOR_DEFAULT = 1;
 
 export const TIME_DAYS = 1;
 export const TIME_HOURS = 2;
@@ -283,8 +251,6 @@ export const INTEGRATION_TIME_UNITS = [
   { id: TIME_HOURS, value: 'h', toDay: 24 },
   { id: TIME_MINS, value: 'min', toDay: 1440 }
 ];
-
-export const INFINITY = 'Infinity';
 
 export const DECIMAL_PLACES = 2;
 
@@ -483,11 +449,6 @@ export const REVIEW_TYPE = {
   TECHNICAL: 'Technical Review'
 };
 
-export const REVIEW_TYPE_PREFIX = {
-  SCIENCE: 'rvw-sci-',
-  TECHNICAL: 'rvw-tec-'
-};
-
 export const TECHNICAL_FEASIBILITY = {
   YES: 'Yes',
   NO: 'No',
@@ -496,12 +457,6 @@ export const TECHNICAL_FEASIBILITY = {
 
 export const PULSAR_MODE_FOLDED = 'folded_pulse';
 
-export const OSCILLATION_UNITS = [
-  { label: FREQUENCY_STR_HZ, toHz: 1 },
-  { label: FREQUENCY_STR_KHZ, toHz: 1000 },
-  { label: FREQUENCY_STR_MHZ, toHz: 10000000 },
-  { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
-];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
 export const SA_AA2 = 'aa2_sv';
 export const SA_AA4 = 'aa4';
@@ -513,27 +468,13 @@ export const SA_CUSTOM = 'custom';
 export const FIRST_COARSE_ZOOM = 5;
 
 // Names of array assemblies
-export const LOW_AA05 = 'AA0.5';
-export const LOW_AA1 = 'AA1';
-export const LOW_AA2 = 'AA2';
-export const LOW_ITF = 'Low_ITF';
 export const LOW_AA2_SV = 'AA2_SV';
-export const MID_AA05 = 'AA0.5';
-export const MID_AA1 = 'AA1';
 export const MID_AA2 = 'AA2';
-export const MID_ITF = 'Mid_ITF';
 
 export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';
 export const NANOSECOND_LABEL = 'us';
 export const MICROSECOND_LABEL = 'ns';
-
-export const SECONDS_UNITS = [
-  { label: SECOND_LABEL, toSeconds: 1 },
-  { label: MILLISECOND_LABEL, toSeconds: 0.001 },
-  { label: MICROSECOND_LABEL, toSeconds: 0.000001 },
-  { label: NANOSECOND_LABEL, toSeconds: 0.000000001 }
-];
 
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
@@ -582,13 +523,6 @@ export const FIELD_PATTERN_POINTING_CENTRES = 'Pointing centres';
 
 export const DEFAULT_GALACTIC = '00:00:00.0';
 export const DEFAULT_EQUATORIAL = 0;
-export const ROBUST = [
-  { label: '-2', value: -2 },
-  { label: '-1', value: -1 },
-  { label: '0', value: 0 },
-  { label: '1', value: 1 },
-  { label: '2', value: 2 }
-];
 
 export const UPLOAD_MAX_WIDTH_CSV = 25;
 export const UPLOAD_MAX_WIDTH_PDF = 25;
@@ -618,11 +552,6 @@ export const SEARCH_PROPOSAL_TYPE_OPTIONS = [
   { label: "Director-General's Discretionary Time", value: PROJECTS[2].mapping }
 ];
 
-export const TECHNICAL_FEASIBILITY_OPTIONS = [
-  { label: 'Yes', value: FEASIBILITY[0] },
-  { label: 'No', value: FEASIBILITY[1] },
-  { label: 'Maybe', value: FEASIBILITY[2] }
-];
 export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;
@@ -651,10 +580,6 @@ export const TARGET_OPTION = {
   TARGET_MOSAIC: 2,
   NO_SPECIFIC_TARGET: 3
 };
-export const TARGETS = {
-  'No Target': null,
-  'Create Mosaic': null
-};
 export const TEAM_STATUS_TYPE_OPTIONS = {
   pending: 'Pending',
   accepted: 'Accepted',
@@ -665,10 +590,6 @@ export const LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP = 8;
 
 export const TELESCOPE_MID_NUM = 1;
 export const TELESCOPE_LOW_NUM = 2;
-export const TELESCOPES = [
-  { label: TELESCOPE_MID.code?.toUpperCase(), value: 1 },
-  { label: TELESCOPE_LOW.code?.toUpperCase(), value: 2 }
-];
 
 export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
 export const TELESCOPE_MID_BACKEND_MAPPING = 'ska_mid';
@@ -710,28 +631,12 @@ export const VELOCITY_UNITS = [
 
 export const WRAPPER_HEIGHT = '75px';
 
-export const LOW_BEAM_SIZE_PRECISION = 1;
-export const MID_BEAM_SIZE_PRECISION = 3;
-
 export const PDF_NAME_PREFIXES = {
   SCIENCE: 'science-doc-',
   TECHNICAL: 'technical-doc-'
 };
 
 /***************************************************************/
-
-export const DEFAULT_INVESTIGATOR: Investigator = {
-  id: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  affiliation: '',
-  phdThesis: false,
-  status: TEAM_STATUS_TYPE_OPTIONS.pending,
-  pi: false,
-  officeLocation: null,
-  jobTitle: null
-};
 
 export const DEFAULT_TARGETS: Target = {
   kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
@@ -826,12 +731,6 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   pstMode: PULSAR_TIMING_VALUE
 };
 
-export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
-  DEFAULT_ZOOM_OBSERVATION_LOW,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  DEFAULT_PST_OBSERVATION_LOW
-];
-
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 
 export const STATUS_ARRAY_PAGES_SV = [
@@ -859,4 +758,3 @@ export const STATUS_ARRAY_PAGES_PROPOSAL = [
 ];
 
 export const SV_LOW_AA2_CYCLE_NUMBER = 10000;
-export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1;
