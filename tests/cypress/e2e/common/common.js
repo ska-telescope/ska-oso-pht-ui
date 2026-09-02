@@ -17,20 +17,15 @@ import {
 export { liveMemberEmail, liveMemberFirstName };
 
 // visitWithAuth logs in via a real MSAL session (see cypressTestAuth.js's loginAsUser) and then
-// does its own cy.visit() on top of that restored session, purely to set any extras via
-// onBeforeLoad - login itself no longer happens here.
-const visitWithAuth = (user, extras) => {
+// does its own cy.visit() on top of that restored session - login itself no longer happens here.
+const visitWithAuth = (user) => {
   loginAsUser(user.username);
-  cy.visit('/', {
-    onBeforeLoad(win) {
-      Object.entries(extras).forEach(([k, v]) => win.localStorage.setItem(k, v));
-    }
-  });
+  cy.visit('/');
 };
 
-export const initialize = (user, extras = {}) => {
+export const initialize = (user) => {
   viewPort();
-  visitWithAuth(user, extras);
+  visitWithAuth(user);
 };
 
 // IMPROVEMENT  move cy. commands out of this file into cypress.js and create a function for it
@@ -486,9 +481,9 @@ export const assignProposalToPanel = (panelId, prslId) => {
 // createScienceIdeaSession chains all three for the common case: a spec that just needs a freshly
 // created submission to start testing from.
 
-export const beginScienceIdeaSession = (user, extras = {}) => {
+export const beginScienceIdeaSession = (user) => {
   mockOSDAPI();
-  initialize(user, extras);
+  initialize(user);
   mockCreateSVIdeaAPI();
   clickAddSubmission();
   cy.wait('@mockOSDData');
@@ -510,8 +505,8 @@ export const completeScienceIdeaCreation = (title) => {
   pageConfirmed('TEAM');
 };
 
-export const createScienceIdeaSession = (user, extras = {}) => {
-  beginScienceIdeaSession(user, extras);
+export const createScienceIdeaSession = (user) => {
+  beginScienceIdeaSession(user);
   selectScienceVerificationCycle();
   completeScienceIdeaCreation();
 };
@@ -520,9 +515,9 @@ export const createScienceIdeaSession = (user, extras = {}) => {
 // flow. Stub-only for now - see clickCycleSelectionMockProposal's comment - kept ready for when a
 // matching cycle exists on the real backend (see createStandardProposalSession's callers, all
 // currently skipped for that reason).
-export const beginStandardProposalSession = (user, extras = {}) => {
+export const beginStandardProposalSession = (user) => {
   mockOSDAPI();
-  initialize(user, extras);
+  initialize(user);
   mockCreateProposalAPI();
   clickAddSubmission();
   cy.wait('@mockOSDData');
@@ -543,8 +538,8 @@ export const completeStandardProposalCreation = () => {
   pageConfirmed('TEAM');
 };
 
-export const createStandardProposalSession = (user, extras = {}) => {
-  beginStandardProposalSession(user, extras);
+export const createStandardProposalSession = (user) => {
+  beginStandardProposalSession(user);
   selectStandardProposalCycle();
   completeStandardProposalCreation();
 };

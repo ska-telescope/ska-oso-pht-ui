@@ -61,10 +61,7 @@ describe('Edit Proposal', () => {
     });
 
     it('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', () => {
-      createScienceIdeaSession(standardUser, {
-        'cypress:proposalEdit': 'true',
-        'cypress:scienceVerificationIdea': 'true'
-      });
+      createScienceIdeaSession(standardUser);
       mockValidateAPI();
 
       //edit existing science verification idea
@@ -121,7 +118,7 @@ describe('Edit Proposal', () => {
       'Proposal Flow: Edit a basic proposal, ensure proposal is valid and then submit',
       { jiraKey: 'XTP-71405' },
       () => {
-        createStandardProposalSession(standardUser, { 'cypress:proposalEdit': 'true' });
+        createStandardProposalSession(standardUser);
         mockValidateAPI();
 
         //edit existing proposal
