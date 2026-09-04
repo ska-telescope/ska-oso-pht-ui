@@ -78,6 +78,27 @@ export const mapAxiosError = (error: AxiosError): Error => {
 
 type MsalAccount = ReturnType<MsalInstance['getAllAccounts']>[number];
 
+// Shared by attachToken below and by useAxiosAuthClient's local-token-provider (registered only
+// on localhost, for the separate non-hook axiosClient) - both just need a silently-acquired
+// access token for the current account.
+const acquireAccessToken = (instance: MsalInstance, account: MsalAccount): Promise<string> =>
+  instance.acquireTokenSilent({ ...loginRequest, account }).then((r) => r.accessToken);
+
+// localhost only: no MSAL account snapshot yet - either genuinely not logged in, or MSAL just
+// hasn't finished initializing/processing a redirect if the interceptor fires very early after
+// page load. Retry a couple of times (with a short wait - re-checking synchronously would just
+// see the same not-yet-initialized state) before concluding there's really no session.
+const resolveLocalhostAccount = async (
+  instance: MsalInstance
+): Promise<MsalAccount | undefined> => {
+  let account = instance.getAllAccounts()[0];
+  for (let attempt = 0; !account && attempt < NO_ACCOUNT_MAX_RETRIES; attempt += 1) {
+    await sleep(NO_ACCOUNT_RETRY_DELAY_MS);
+    account = instance.getAllAccounts()[0];
+  }
+  return account;
+};
+
 export const createRequestInterceptor =
   (instance: MsalInstance) => async (request: InternalAxiosRequestConfig) => {
     const isHttp = request?.baseURL?.startsWith(HTTP);
@@ -87,13 +108,15 @@ export const createRequestInterceptor =
       request.baseURL = request.baseURL.replace(HTTP, HTTPS);
     }
 
-    // Shared by both the immediate account below and the retried one further down, so a silent
-    // acquisition failure is handled identically either way: redirect to login (only the first
-    // concurrent request does so - see loginRedirectTriggered above) and reject this request.
-    const attachToken = async (account: MsalAccount) => {
+    let account: MsalAccount | undefined = instance.getAllAccounts()[0];
+    if (!account && isLocalhost()) {
+      account = await resolveLocalhostAccount(instance);
+    }
+
+    if (account) {
       try {
-        const tokenResponse = await instance.acquireTokenSilent({ ...loginRequest, account });
-        request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
+        request.headers['Authorization'] = `Bearer ${await acquireAccessToken(instance, account)}`;
+        return request;
       } catch (error) {
         if (error instanceof InteractionRequiredAuthError && !loginRedirectTriggered) {
           loginRedirectTriggered = true;
@@ -106,43 +129,22 @@ export const createRequestInterceptor =
         }
         throw error;
       }
-    };
+    }
 
-    const account = instance.getAllAccounts()[0];
-    if (account) {
-      await attachToken(account);
+    if (!isLocalhost()) {
       return request;
     }
 
-    if (isLocalhost()) {
-      // No MSAL account snapshot yet - either genuinely not logged in, or MSAL just hasn't
-      // finished initializing/processing a redirect if this interceptor fires very early after
-      // page load. Retry a couple of times (with a short wait - re-checking synchronously would
-      // just see the same not-yet-initialized state) before concluding there's really no session
-      // and sending the user to log in, rather than silently carrying on with a separately
-      // sourced token.
-      let retryAccount: MsalAccount | undefined;
-      for (let attempt = 0; !retryAccount && attempt < NO_ACCOUNT_MAX_RETRIES; attempt += 1) {
-        await sleep(NO_ACCOUNT_RETRY_DELAY_MS);
-        retryAccount = instance.getAllAccounts()[0];
-      }
-
-      if (retryAccount) {
-        await attachToken(retryAccount);
-        return request;
-      }
-
-      if (!loginRedirectTriggered) {
-        loginRedirectTriggered = true;
-        console.warn(
-          '[axiosAuthClient] No MSAL account found after retrying - redirecting to login.'
-        );
-        instance.loginRedirect(loginRequest);
-      }
-      throw new Error('No MSAL session found - redirecting to login.');
+    // Retrying (in resolveLocalhostAccount) still found no account, so there's really no
+    // session - send the user to log in rather than silently carrying on unauthenticated.
+    if (!loginRedirectTriggered) {
+      loginRedirectTriggered = true;
+      console.warn(
+        '[axiosAuthClient] No MSAL account found after retrying - redirecting to login.'
+      );
+      instance.loginRedirect(loginRequest);
     }
-
-    return request;
+    throw new Error('No MSAL session found - redirecting to login.');
   };
 
 const useAxiosAuthClient = (baseURL: string = '/') => {
@@ -154,29 +156,18 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
   if (isLocalhost()) {
     setLocalTokenProvider(async () => {
       const account = instance.getAllAccounts()?.[0];
-      if (!account) {
-        return null;
-      }
-      const tokenResponse = await instance.acquireTokenSilent({ ...loginRequest, account });
-      return tokenResponse.accessToken;
+      return account ? acquireAccessToken(instance, account) : null;
     });
   }
 
-  // See RefreshAuthToken's own comment above for why this exists at all. The `if (account)`
-  // guard just protects the rare case where this gets called before any real MSAL session
-  // exists yet.
+  // See RefreshAuthToken's own comment above for why this exists at all. Best-effort: a failed
+  // refresh just leaves the caller with whatever token it already had.
   const refreshAuthToken: RefreshAuthToken = async () => {
     const account = instance.getAllAccounts()?.[0];
-    if (!account) {
-      return;
-    }
-    try {
-      await instance.acquireTokenSilent({ ...loginRequest, account, forceRefresh: true });
-    } catch (error) {
-      console.warn(
-        '[axiosAuthClient] refreshAuthToken failed, continuing with existing token:',
-        error
-      );
+    if (account) {
+      await instance
+        .acquireTokenSilent({ ...loginRequest, account, forceRefresh: true })
+        .catch(() => {});
     }
   };
 
