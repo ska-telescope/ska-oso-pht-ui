@@ -29,8 +29,6 @@ export default function OutputSamplingIntervalField({
   const [errorText, setErrorText] = React.useState('');
   const OUTPUT_SAMPLING_INTERVAL_UNIT_VALUE = 0;
   const FUNDAMENTAL_INTERVAL_MS = 0.20736;
-  const EPSILON = 1e-6;
-  const pendingSnapMultiplierRef = React.useRef<number | null>(null);
 
   const validateMultiplier = (multiplier: number) =>
     outputSamplingIntervalSchema.safeParse(multiplier).success
@@ -39,18 +37,20 @@ export default function OutputSamplingIntervalField({
           value: FUNDAMENTAL_INTERVAL_MS.toFixed(3)
         });
 
-  const handleSetValue = (rawMultiplier: number) => {
-    const roundedMultiplier = Math.max(1, Math.round(rawMultiplier));
-    const isIntegerMultiple = Math.abs(rawMultiplier - roundedMultiplier) < EPSILON;
-    const error = validateMultiplier(isIntegerMultiple ? roundedMultiplier : rawMultiplier);
-    setErrorText(error);
-    if (error) {
-      pendingSnapMultiplierRef.current = roundedMultiplier;
-    } else {
-      pendingSnapMultiplierRef.current = null;
-      setValue?.(roundedMultiplier);
-    }
+  const commit = (multiplier: number) => {
+    setValue?.(multiplier);
+    setErrorText(validateMultiplier(multiplier));
   };
+
+  const stepMultiplier = (multiplier: number, direction: 1 | -1) =>
+    Math.max(
+      1,
+      Number.isInteger(multiplier)
+        ? multiplier + direction
+        : direction === 1
+          ? Math.ceil(multiplier)
+          : Math.floor(multiplier)
+    );
 
   React.useEffect(() => {
     setErrorText(validateMultiplier(value));
@@ -63,10 +63,7 @@ export default function OutputSamplingIntervalField({
         value={value}
         format={(multiplier: number) => (multiplier * FUNDAMENTAL_INTERVAL_MS).toFixed(3)}
         parse={(raw: string) => {
-          if (raw === '' || Number.isNaN(Number(raw))) {
-            pendingSnapMultiplierRef.current = null;
-            return null;
-          }
+          if (raw === '' || Number.isNaN(Number(raw))) return null;
           const typedDisplayValue = Number(raw);
           const rawMultiplier = typedDisplayValue / FUNDAMENTAL_INTERVAL_MS;
           const nearestMultiplier = Math.max(1, Math.round(rawMultiplier));
@@ -75,22 +72,8 @@ export default function OutputSamplingIntervalField({
           );
           return typedDisplayValue === nearestDisplayValue ? nearestMultiplier : rawMultiplier;
         }}
-        onStep={(currentValue: number, direction: 1 | -1) => Math.max(1, currentValue + direction)}
-        onBlockedStep={() => {
-          pendingSnapMultiplierRef.current = null;
-          setErrorText('');
-        }}
-        onCommit={handleSetValue}
-        onBlurCommit={(committedMultiplier: number) => {
-          const pendingSnapMultiplier = pendingSnapMultiplierRef.current;
-          if (pendingSnapMultiplier !== null) {
-            pendingSnapMultiplierRef.current = null;
-            setErrorText('');
-            setValue?.(pendingSnapMultiplier);
-            return;
-          }
-          setErrorText(validateMultiplier(committedMultiplier));
-        }}
+        onStep={stepMultiplier}
+        onCommit={commit}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}

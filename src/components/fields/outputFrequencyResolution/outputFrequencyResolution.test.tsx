@@ -62,7 +62,7 @@ describe('<OutputFrequencyResolutionField />', () => {
     expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
   });
 
-  test('snaps to nearest valid multiple on blur when value is non-multiple', async () => {
+  test('commits fractional multiplier and keeps validation error for non-multiple input', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
@@ -73,11 +73,12 @@ describe('<OutputFrequencyResolutionField />', () => {
     fireEvent.change(input, { target: { value: 7.0 } });
     expect(screen.getByText('multiple-3.62')).toBeInTheDocument();
     fireEvent.blur(input);
-    expect(handleSetValue).toHaveBeenCalledWith(2);
-    expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
+    expect(handleSetValue).toHaveBeenCalledTimes(1);
+    expect(handleSetValue.mock.calls[0][0]).toBeCloseTo(1.93536, 5);
+    expect(screen.getByText('multiple-3.62')).toBeInTheDocument();
   });
 
-  test('does not apply a stale snap after clearing a non-multiple', async () => {
+  test('does not commit an additional value after clearing a non-multiple', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
@@ -88,11 +89,12 @@ describe('<OutputFrequencyResolutionField />', () => {
     fireEvent.change(input, { target: { value: 7.0 } });
     fireEvent.change(input, { target: { value: '' } });
     fireEvent.blur(input);
-    expect(handleSetValue).not.toHaveBeenCalled();
+    expect(handleSetValue).toHaveBeenCalledTimes(1);
+    expect(handleSetValue.mock.calls[0][0]).toBeCloseTo(1.93536, 5);
     expect(input.value).toBe('3.62');
   });
 
-  test('does not apply a stale snap after a blocked step', async () => {
+  test('resets displayed value after blocked step while preserving current error', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
@@ -103,9 +105,10 @@ describe('<OutputFrequencyResolutionField />', () => {
     fireEvent.change(input, { target: { value: 7.0 } });
     fireEvent.keyDown(input, { key: 'ArrowDown' });
     expect(input.value).toBe('3.62');
-    expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
+    expect(screen.getByText('multiple-3.62')).toBeInTheDocument();
     fireEvent.blur(input);
-    expect(handleSetValue).not.toHaveBeenCalled();
+    expect(handleSetValue).toHaveBeenCalledTimes(1);
+    expect(handleSetValue.mock.calls[0][0]).toBeCloseTo(1.93536, 5);
   });
 
   test('renders fixed disabled units dropdown', async () => {

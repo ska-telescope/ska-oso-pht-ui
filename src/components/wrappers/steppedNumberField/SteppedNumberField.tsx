@@ -26,7 +26,6 @@ interface SteppedNumberFieldProps {
   max?: number;
   min?: number;
   onBlurCommit?: (value: number) => void;
-  onBlockedStep?: () => void;
   onCommit: (value: number) => void;
   onFocus?: () => void;
   onStep: (value: number, direction: 1 | -1) => number;
@@ -51,7 +50,6 @@ export default function SteppedNumberField({
   max,
   min,
   onBlurCommit,
-  onBlockedStep,
   onCommit,
   onFocus,
   onStep,
@@ -121,7 +119,6 @@ export default function SteppedNumberField({
         clamped = min;
       }
       setInputValue(format(clamped));
-      onBlockedStep?.();
       return;
     }
     const stepped = onStep(value, direction);
