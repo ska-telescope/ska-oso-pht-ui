@@ -76,6 +76,10 @@ export default function OutputSamplingIntervalField({
           return typedDisplayValue === nearestDisplayValue ? nearestMultiplier : rawMultiplier;
         }}
         onStep={(currentValue: number, direction: 1 | -1) => Math.max(1, currentValue + direction)}
+        onBlockedStep={() => {
+          pendingSnapMultiplierRef.current = null;
+          setErrorText('');
+        }}
         onCommit={handleSetValue}
         onBlurCommit={(committedMultiplier: number) => {
           const pendingSnapMultiplier = pendingSnapMultiplierRef.current;

@@ -92,6 +92,22 @@ describe('<OutputFrequencyResolutionField />', () => {
     expect(input.value).toBe('3.62');
   });
 
+  test('does not apply a stale snap after a blocked step', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <OutputFrequencyResolutionField value={1} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByTestId('outputFrequencyResolution') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 7.0 } });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    expect(input.value).toBe('3.62');
+    expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
+    fireEvent.blur(input);
+    expect(handleSetValue).not.toHaveBeenCalled();
+  });
+
   test('renders fixed disabled units dropdown', async () => {
     render(
       <StoreProvider>
