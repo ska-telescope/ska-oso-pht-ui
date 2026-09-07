@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/system';
+import { z } from 'zod';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import SelectField from '@/components/wrappers/selectField/SelectField';
@@ -13,6 +14,8 @@ interface OutputFrequencyResolutionFieldProps {
   value: number;
   widthButton?: number;
 }
+
+export const outputFrequencyResolutionSchema = z.number().finite().int().min(1);
 
 export default function OutputFrequencyResolutionField({
   disabled = false,
@@ -30,7 +33,7 @@ export default function OutputFrequencyResolutionField({
   const pendingSnapMultiplierRef = React.useRef<number | null>(null);
 
   const validateMultiplier = (multiplier: number) =>
-    Number.isInteger(multiplier) && multiplier >= 1
+    outputFrequencyResolutionSchema.safeParse(multiplier).success
       ? ''
       : t('outputFrequencyResolution.error.multiple', {
           value: FUNDAMENTAL_RESOLUTION_KHZ.toFixed(2)
