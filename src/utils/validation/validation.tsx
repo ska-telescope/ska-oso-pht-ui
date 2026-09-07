@@ -47,6 +47,8 @@ import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
 import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
 import { rotationMeasureSchema } from '../../components/fields/rotationMeasure/rotationMeasure';
+import { outputFrequencyResolutionSchema } from '../../components/fields/outputFrequencyResolution/outputFrequencyResolution';
+import { outputSamplingIntervalSchema } from '../../components/fields/outputSamplingInterval/outputSamplingInterval';
 import {
   channelsToBandwidthHz,
   getZoomResolutionHz,
@@ -350,6 +352,8 @@ export const isDataProductPstDetectedFilterbankValid = (
 
   const data = dataProduct.data as SDPFilterbankPSTData;
   return (
+    outputFrequencyResolutionSchema.safeParse(data?.outputFrequencyResolution).success &&
+    outputSamplingIntervalSchema.safeParse(data?.outputSamplingInterval).success &&
     dispersionMeasureSchema.safeParse(data?.dispersionMeasure).success &&
     rotationMeasureSchema.safeParse(data?.rotationMeasure).success
   );

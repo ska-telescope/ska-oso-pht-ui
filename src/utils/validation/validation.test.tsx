@@ -441,7 +441,7 @@ describe('validateSDPPage robust rules', () => {
   });
 });
 
-describe('validateSDPPage detected filterbank measure rules', () => {
+describe('validateSDPPage detected filterbank field rules', () => {
   const makeProposal = (
     data: Partial<SDPFilterbankPSTData>,
     pstMode = DETECTED_FILTER_BANK_VALUE
@@ -454,6 +454,8 @@ describe('validateSDPPage detected filterbank measure rules', () => {
           observationId: 'obs-1',
           data: {
             dataProductType: DETECTED_FILTER_BANK_VALUE,
+            outputFrequencyResolution: 1,
+            outputSamplingInterval: 1,
             dispersionMeasure: 1.5,
             rotationMeasure: -2.5,
             ...data
@@ -474,11 +476,24 @@ describe('validateSDPPage detected filterbank measure rules', () => {
     expect(validateSDPPage(makeProposal({ rotationMeasure: 'invalid' as any }))).toBe(STATUS_ERROR);
   });
 
-  it('ignores measure values when detected filterbank fields are not shown', () => {
+  it('returns STATUS_ERROR when output frequency resolution is invalid', () => {
+    expect(validateSDPPage(makeProposal({ outputFrequencyResolution: 1.5 }))).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR when output sampling interval is invalid', () => {
+    expect(validateSDPPage(makeProposal({ outputSamplingInterval: 0 }))).toBe(STATUS_ERROR);
+  });
+
+  it('ignores detected filterbank values when their fields are not shown', () => {
     expect(
       validateSDPPage(
         makeProposal(
-          { dispersionMeasure: 100001, rotationMeasure: 'invalid' as any },
+          {
+            outputFrequencyResolution: 1.5,
+            outputSamplingInterval: 0,
+            dispersionMeasure: 100001,
+            rotationMeasure: 'invalid' as any
+          },
           FLOW_THROUGH_VALUE
         )
       )
