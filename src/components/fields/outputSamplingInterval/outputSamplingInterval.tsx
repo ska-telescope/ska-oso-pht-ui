@@ -64,6 +64,7 @@ export default function OutputSamplingIntervalField({
         format={(multiplier: number) => (multiplier * FUNDAMENTAL_INTERVAL_MS).toFixed(3)}
         parse={(raw: string) => {
           if (raw === '' || Number.isNaN(Number(raw))) {
+            pendingSnapMultiplierRef.current = null;
             return null;
           }
           const typedDisplayValue = Number(raw);

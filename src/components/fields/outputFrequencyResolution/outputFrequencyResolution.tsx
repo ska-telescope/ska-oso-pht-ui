@@ -64,6 +64,7 @@ export default function OutputFrequencyResolutionField({
         format={(multiplier: number) => (multiplier * FUNDAMENTAL_RESOLUTION_KHZ).toFixed(2)}
         parse={(raw: string) => {
           if (raw === '' || Number.isNaN(Number(raw))) {
+            pendingSnapMultiplierRef.current = null;
             return null;
           }
           const typedDisplayValue = Number(raw);

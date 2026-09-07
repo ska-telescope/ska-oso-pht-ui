@@ -77,6 +77,21 @@ describe('<OutputFrequencyResolutionField />', () => {
     expect(screen.queryByText('multiple-3.62')).not.toBeInTheDocument();
   });
 
+  test('does not apply a stale snap after clearing a non-multiple', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <OutputFrequencyResolutionField value={1} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByTestId('outputFrequencyResolution') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 7.0 } });
+    fireEvent.change(input, { target: { value: '' } });
+    fireEvent.blur(input);
+    expect(handleSetValue).not.toHaveBeenCalled();
+    expect(input.value).toBe('3.62');
+  });
+
   test('renders fixed disabled units dropdown', async () => {
     render(
       <StoreProvider>

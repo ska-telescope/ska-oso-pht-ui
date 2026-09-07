@@ -77,6 +77,21 @@ describe('<OutputSamplingIntervalField />', () => {
     expect(screen.queryByText('multiple-0.207')).not.toBeInTheDocument();
   });
 
+  test('does not apply a stale snap after clearing a non-multiple', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <OutputSamplingIntervalField value={1} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 0.5 } });
+    fireEvent.change(input, { target: { value: '' } });
+    fireEvent.blur(input);
+    expect(handleSetValue).not.toHaveBeenCalled();
+    expect(input.value).toBe('0.207');
+  });
+
   test('renders fixed disabled units dropdown', async () => {
     render(
       <StoreProvider>
