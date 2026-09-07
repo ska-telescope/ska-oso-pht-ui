@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/system';
+import { z } from 'zod';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import SelectField from '@/components/wrappers/selectField/SelectField';
@@ -13,6 +14,8 @@ interface OutputSamplingIntervalFieldProps {
   value: number;
   widthButton?: number;
 }
+
+export const outputSamplingIntervalSchema = z.number().finite().int().min(1);
 
 export default function OutputSamplingIntervalField({
   disabled = false,
@@ -30,7 +33,7 @@ export default function OutputSamplingIntervalField({
   const pendingSnapMultiplierRef = React.useRef<number | null>(null);
 
   const validateMultiplier = (multiplier: number) =>
-    Number.isInteger(multiplier) && multiplier >= 1
+    outputSamplingIntervalSchema.safeParse(multiplier).success
       ? ''
       : t('outputSamplingInterval.error.multiple', {
           value: FUNDAMENTAL_INTERVAL_MS.toFixed(3)
