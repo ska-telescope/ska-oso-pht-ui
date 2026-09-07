@@ -15,13 +15,17 @@ vi.stubGlobal('window', {
 const mockAcquireTokenSilent = vi.fn();
 const mockLoginRedirect = vi.fn();
 const mockGetAllAccounts = vi.fn(() => [{ username: 'testuser' }]);
+const mockInitialize = vi.fn(() => Promise.resolve());
+const mockHandleRedirectPromise = vi.fn(() => Promise.resolve(null));
 
 vi.mock('@azure/msal-react', () => ({
   useMsal: () => ({
     instance: {
       acquireTokenSilent: mockAcquireTokenSilent,
       loginRedirect: mockLoginRedirect,
-      getAllAccounts: mockGetAllAccounts
+      getAllAccounts: mockGetAllAccounts,
+      initialize: mockInitialize,
+      handleRedirectPromise: mockHandleRedirectPromise
     }
   })
 }));
@@ -80,7 +84,9 @@ describe('createRequestInterceptor', () => {
   const mockInstance = {
     acquireTokenSilent: mockAcquireTokenSilent,
     loginRedirect: mockLoginRedirect,
-    getAllAccounts: mockGetAllAccounts
+    getAllAccounts: mockGetAllAccounts,
+    initialize: mockInitialize,
+    handleRedirectPromise: mockHandleRedirectPromise
   } as any;
 
   // loginRedirectTriggered is module-level state (shared across every request, deliberately, so
@@ -93,6 +99,8 @@ describe('createRequestInterceptor', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     mockGetAllAccounts.mockReturnValue([{ username: 'testuser' }]);
+    mockInitialize.mockResolvedValue(undefined);
+    mockHandleRedirectPromise.mockResolvedValue(null);
     (window as any).location.hostname = 'localhost';
     vi.resetModules();
     ({ createRequestInterceptor, loginRequest } = await import('./axiosAuthClient'));
@@ -129,27 +137,19 @@ describe('createRequestInterceptor', () => {
     expect(result.headers.Authorization).toBe('Bearer mock-token');
   });
 
-  it('retries then redirects to login when no account is signed in', async () => {
-    vi.useFakeTimers();
-    try {
-      mockGetAllAccounts.mockReturnValue([]);
-      const interceptor = createRequestInterceptor(mockInstance);
-      const request = asRequestConfig({ baseURL: 'http://localhost:3000', headers: {} as any });
+  it('waits for MSAL startup then redirects to login when no account is signed in', async () => {
+    mockGetAllAccounts.mockReturnValue([]);
+    const interceptor = createRequestInterceptor(mockInstance);
+    const request = asRequestConfig({ baseURL: 'http://localhost:3000', headers: {} as any });
 
-      const resultPromise = interceptor(request);
+    await expect(interceptor(request)).rejects.toThrow(
+      'No MSAL session found - redirecting to login.'
+    );
 
-      // Assert on the rejection in the same microtask turn as advancing the timers, rather than
-      // awaiting the timers first - otherwise the promise rejects while nothing is attached to it
-      // yet, which vitest reports as an unhandled rejection even though it's handled a line later.
-      await Promise.all([
-        vi.runAllTimersAsync(),
-        expect(resultPromise).rejects.toThrow('No MSAL session found - redirecting to login.')
-      ]);
-      expect(mockAcquireTokenSilent).not.toHaveBeenCalled();
-      expect(mockLoginRedirect).toHaveBeenCalledWith(loginRequest);
-    } finally {
-      vi.useRealTimers();
-    }
+    expect(mockInitialize).toHaveBeenCalled();
+    expect(mockHandleRedirectPromise).toHaveBeenCalled();
+    expect(mockAcquireTokenSilent).not.toHaveBeenCalled();
+    expect(mockLoginRedirect).toHaveBeenCalledWith(loginRequest);
   });
 
   it('redirects to login on InteractionRequiredAuthError', async () => {

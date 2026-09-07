@@ -44,12 +44,6 @@ export type RefreshAuthToken = () => Promise<void>;
 // cancelling every other in-flight request. Only the first should trigger the redirect.
 let loginRedirectTriggered = false;
 
-// How many times (and how long to wait between each) createRequestInterceptor retries finding an
-// MSAL account before concluding there's genuinely no session - see its own comment for why.
-const NO_ACCOUNT_MAX_RETRIES = 2;
-const NO_ACCOUNT_RETRY_DELAY_MS = 500;
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export const mapAxiosError = (error: AxiosError): Error => {
   if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
     return new Error('Request timed out. Please try again.');
@@ -86,17 +80,15 @@ const acquireAccessToken = (instance: MsalInstance, account: MsalAccount): Promi
 
 // localhost only: no MSAL account snapshot yet - either genuinely not logged in, or MSAL just
 // hasn't finished initializing/processing a redirect if the interceptor fires very early after
-// page load. Retry a couple of times (with a short wait - re-checking synchronously would just
-// see the same not-yet-initialized state) before concluding there's really no session.
+// page load (MsalProvider kicks both off in a useEffect, which can run after a child's first
+// request). Both instance.initialize() and instance.handleRedirectPromise() memoize their result
+// internally, and waits for MSAL's actual startup to finish before concluding there's really no session.
 const resolveLocalhostAccount = async (
   instance: MsalInstance
 ): Promise<MsalAccount | undefined> => {
-  let account = instance.getAllAccounts()[0];
-  for (let attempt = 0; !account && attempt < NO_ACCOUNT_MAX_RETRIES; attempt += 1) {
-    await sleep(NO_ACCOUNT_RETRY_DELAY_MS);
-    account = instance.getAllAccounts()[0];
-  }
-  return account;
+  await instance.initialize();
+  await instance.handleRedirectPromise().catch(() => {});
+  return instance.getAllAccounts()[0];
 };
 
 export const createRequestInterceptor =
@@ -135,12 +127,12 @@ export const createRequestInterceptor =
       return request;
     }
 
-    // Retrying (in resolveLocalhostAccount) still found no account, so there's really no
-    // session - send the user to log in rather than silently carrying on unauthenticated.
+    // resolveLocalhostAccount waited for MSAL startup to finish and still found no account, so
+    // send the user to log in rather than silently carrying on.
     if (!loginRedirectTriggered) {
       loginRedirectTriggered = true;
       console.warn(
-        '[axiosAuthClient] No MSAL account found after retrying - redirecting to login.'
+        '[axiosAuthClient] No MSAL account found after startup completed - redirecting to login.'
       );
       instance.loginRedirect(loginRequest);
     }
