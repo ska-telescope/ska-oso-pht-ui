@@ -11,6 +11,15 @@ export function useBlurNumberInputOnWheel() {
       if (active instanceof HTMLInputElement && active.type === 'number') {
         active.blur();
       }
+    const blurFocusedNumberInput = (event: WheelEvent) => {
+      const active = document.activeElement;
+      if (
+        active instanceof HTMLInputElement &&
+        active.type === 'number' &&
+        event.target === active
+      ) {
+        active.blur();
+      }
     };
     document.addEventListener('wheel', blurFocusedNumberInput, { capture: true, passive: true });
     return () => document.removeEventListener('wheel', blurFocusedNumberInput, { capture: true });
