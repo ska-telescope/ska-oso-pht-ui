@@ -2,7 +2,8 @@ import { renderHook } from '@testing-library/react';
 import { describe, test, expect } from 'vitest';
 import { useBlurNumberInputOnWheel } from './useBlurNumberInputOnWheel';
 
-const dispatchWheel = () => document.dispatchEvent(new Event('wheel', { bubbles: true }));
+const dispatchWheel = (target: EventTarget) =>
+  target.dispatchEvent(new Event('wheel', { bubbles: true }));
 
 describe('useBlurNumberInputOnWheel', () => {
   test('blurs a focused number input on wheel', () => {
@@ -13,7 +14,7 @@ describe('useBlurNumberInputOnWheel', () => {
     expect(document.activeElement).toBe(input);
 
     renderHook(() => useBlurNumberInputOnWheel());
-    dispatchWheel();
+    dispatchWheel(input);
 
     expect(document.activeElement).not.toBe(input);
     document.body.removeChild(input);
@@ -26,7 +27,20 @@ describe('useBlurNumberInputOnWheel', () => {
     input.focus();
 
     renderHook(() => useBlurNumberInputOnWheel());
-    dispatchWheel();
+    dispatchWheel(input);
+
+    expect(document.activeElement).toBe(input);
+    document.body.removeChild(input);
+  });
+
+  test('leaves a focused number input alone when the wheel targets something else', () => {
+    const input = document.createElement('input');
+    input.type = 'number';
+    document.body.appendChild(input);
+    input.focus();
+
+    renderHook(() => useBlurNumberInputOnWheel());
+    dispatchWheel(document.body);
 
     expect(document.activeElement).toBe(input);
     document.body.removeChild(input);
@@ -34,7 +48,7 @@ describe('useBlurNumberInputOnWheel', () => {
 
   test('does nothing when nothing is focused', () => {
     renderHook(() => useBlurNumberInputOnWheel());
-    expect(() => dispatchWheel()).not.toThrow();
+    expect(() => dispatchWheel(document.body)).not.toThrow();
   });
 
   test('removes the listener on unmount', () => {
@@ -45,7 +59,7 @@ describe('useBlurNumberInputOnWheel', () => {
     const { unmount } = renderHook(() => useBlurNumberInputOnWheel());
     unmount();
     input.focus();
-    dispatchWheel();
+    dispatchWheel(input);
 
     expect(document.activeElement).toBe(input);
     document.body.removeChild(input);

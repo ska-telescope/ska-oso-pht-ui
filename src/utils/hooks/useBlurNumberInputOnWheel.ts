@@ -6,11 +6,6 @@ import React from 'react';
 // value change without calling preventDefault, so the page still scrolls normally.
 export function useBlurNumberInputOnWheel() {
   React.useEffect(() => {
-    const blurFocusedNumberInput = () => {
-      const active = document.activeElement;
-      if (active instanceof HTMLInputElement && active.type === 'number') {
-        active.blur();
-      }
     const blurFocusedNumberInput = (event: WheelEvent) => {
       const active = document.activeElement;
       if (
