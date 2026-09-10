@@ -58,7 +58,6 @@ import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import AddButton from '@/components/button/Add/Add';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { presentUnits } from '@/utils/present/present';
 import Observation from '@/utils/types/observation';
 import GridObservation from '@/components/grid/observation/GridObservation';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
@@ -788,12 +787,6 @@ export default function DataProduct({ data }: DataProductProps) {
       />
     );
 
-  const pixelSizeUnitsField = () => {
-    return pixelSizeUnits === 0 || pixelSizeUnits === null
-      ? ''
-      : presentUnits(t('pixelSize.' + pixelSizeUnits));
-  };
-
   const pixelSizeField = () =>
     fieldWrapper(
       <PixelSizeField
@@ -801,7 +794,8 @@ export default function DataProduct({ data }: DataProductProps) {
         setValue={setPixelSizeValue}
         required
         value={pixelSizeValue}
-        suffix={pixelSizeUnitsField()}
+        units={pixelSizeUnits}
+        setUnits={setPixelSizeUnits}
       />
     );
 
