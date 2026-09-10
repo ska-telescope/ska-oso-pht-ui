@@ -18,7 +18,8 @@ import {
   IW_BRIGGS,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
   CHANNELS_OUT_DEFAULT,
-  DP_TYPE_IMAGES
+  DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
@@ -396,10 +397,11 @@ export function getSpectralAveragingFactor(
       observation.continuumBandwidthUnits,
       FREQUENCY_KHZ
     ) / LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ;
+
   const channelsOut =
-    dataProduct.data.dataProductType == DP_TYPE_IMAGES
-      ? dataProduct.data.channelsOut
-      : CHANNELS_OUT_DEFAULT;
+    observation.type == TYPE_CONTINUUM && dataProduct.data.dataProductType == DP_TYPE_VISIBLE
+      ? CHANNELS_OUT_DEFAULT
+      : dataProduct.data.channelsOut;
   return Math.floor(totalChannels / channelsOut);
 }
 
