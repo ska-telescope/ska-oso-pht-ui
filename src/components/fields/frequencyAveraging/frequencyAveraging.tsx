@@ -13,7 +13,14 @@ interface FrequencyAveragingFieldProps {
 }
 
 export const UNAVERAGED_VALUE_KHZ = 781.25 / 144;
-export const frequencyAveragingSchema = z.number().finite().int().min(1).max(12);
+const MIN_MULTIPLIER = 1;
+const MAX_MULTIPLIER = 12;
+export const frequencyAveragingSchema = z
+  .number()
+  .finite()
+  .int()
+  .min(MIN_MULTIPLIER)
+  .max(MAX_MULTIPLIER);
 
 export default function FrequencyAveragingField({
   disabled = false,
@@ -25,10 +32,22 @@ export default function FrequencyAveragingField({
   const { t } = useScopedTranslation();
   const FIELD = 'frequencyAveraging';
   const [errorText, setErrorText] = React.useState('');
-  const errorMessage = t(FIELD + '.error');
+  const rangeErrorMessage = t(FIELD + '.error.range', {
+    min: (MIN_MULTIPLIER * UNAVERAGED_VALUE_KHZ).toFixed(2),
+    max: (MAX_MULTIPLIER * UNAVERAGED_VALUE_KHZ).toFixed(2)
+  });
+  const stepErrorMessage = t(FIELD + '.error.step');
 
-  const validateMultiplier = (multiplier: number) =>
-    frequencyAveragingSchema.safeParse(multiplier).success ? '' : errorMessage;
+  const validateMultiplier = (multiplier: number) => {
+    if (
+      !Number.isFinite(multiplier) ||
+      multiplier < MIN_MULTIPLIER ||
+      multiplier > MAX_MULTIPLIER
+    ) {
+      return rangeErrorMessage;
+    }
+    return frequencyAveragingSchema.safeParse(multiplier).success ? '' : stepErrorMessage;
+  };
 
   const commit = (multiplier: number) => {
     setValue?.(multiplier);
@@ -37,9 +56,9 @@ export default function FrequencyAveragingField({
 
   const stepMultiplier = (multiplier: number, direction: 1 | -1) =>
     Math.min(
-      12,
+      MAX_MULTIPLIER,
       Math.max(
-        1,
+        MIN_MULTIPLIER,
         Number.isInteger(multiplier)
           ? multiplier + direction
           : direction === 1
@@ -62,7 +81,10 @@ export default function FrequencyAveragingField({
           if (raw === '' || Number.isNaN(Number(raw))) return null;
           const typedDisplayValue = Number(raw);
           const rawMultiplier = typedDisplayValue / UNAVERAGED_VALUE_KHZ;
-          const nearestMultiplier = Math.min(12, Math.max(1, Math.round(rawMultiplier)));
+          const nearestMultiplier = Math.min(
+            MAX_MULTIPLIER,
+            Math.max(MIN_MULTIPLIER, Math.round(rawMultiplier))
+          );
           const nearestDisplayValue = Number((nearestMultiplier * UNAVERAGED_VALUE_KHZ).toFixed(2));
           return typedDisplayValue === nearestDisplayValue ? nearestMultiplier : rawMultiplier;
         }}

@@ -406,7 +406,10 @@
   "frequencyAveraging": {
     "label": "Frequency Averaging",
     "help": "Frequency Averaging Help",
-    "error": "A value greater than zero is required",
+    "error": {
+      "range": "Enter an averaging value between {{min}} and {{max}} kHz.",
+      "step": "Enter a valid averaging value. Use the arrows to choose an allowed value."
+    },
     "0": "kHz"
   },
   "frequencyRange": {
@@ -1451,7 +1454,10 @@
   "timeAveraging": {
     "label": "Time Averaging",
     "help": "Time Averaging Help",
-    "error": "A value greater than zero is required",
+    "error": {
+      "range": "Enter an averaging value between {{min}} and {{max}} seconds.",
+      "step": "Enter a valid averaging value. Use the arrows to choose an allowed value."
+    },
     "0": "seconds"
   },
   "title": {

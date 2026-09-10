@@ -37,7 +37,7 @@ describe('<TimeAveraging />', () => {
     expect(setValue).toHaveBeenCalledWith(1);
   });
 
-  test('shows an error for multipliers outside the range', () => {
+  test('shows a range error for multipliers outside the range', () => {
     const setValue = vi.fn();
     render(
       <StoreProvider>
@@ -46,7 +46,17 @@ describe('<TimeAveraging />', () => {
     );
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '11' } });
     expect(setValue).toHaveBeenCalled();
-    expect(screen.getByText('timeAveraging.error')).toBeInTheDocument();
+    expect(screen.getByText('timeAveraging.error.range')).toBeInTheDocument();
+  });
+
+  test('shows a step error for values between allowed steps', () => {
+    render(
+      <StoreProvider>
+        <TimeAveraging value={1} setValue={vi.fn()} />
+      </StoreProvider>
+    );
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1' } });
+    expect(screen.getByText('timeAveraging.error.step')).toBeInTheDocument();
   });
 
   test('steps by one multiplier within the allowed range', () => {
