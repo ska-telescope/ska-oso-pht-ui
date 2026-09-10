@@ -324,6 +324,7 @@
   "dispersionMeasure": {
     "help": "This field displays the dispersion Measure.",
     "label": "Dispersion Measure",
+    "units": "pc/cm³",
     "range": {
       "error": "A value between {{min}} and {{max}} is required"
     }
@@ -636,6 +637,10 @@
   "outputFrequencyResolution": {
     "help": "This field displays the output frequency resolution.",
     "label": "Output frequency resolution",
+    "units": "kHz",
+    "error": {
+      "multiple": "Value must be in multiples of {{value}} kHz"
+    },
     "range": {
       "error": "A value between {{min}} and {{max}} is required"
     }
@@ -643,6 +648,10 @@
   "outputSamplingInterval": {
     "help": "This field displays the output sampling interval.",
     "label": "Output sampling interval",
+    "units": "ms",
+    "error": {
+      "multiple": "Value must be in multiples of {{value}} ms"
+    },
     "range": {
       "error": "A value between {{min}} and {{max}} is required"
     }
@@ -1118,9 +1127,8 @@
   "rotationMeasure": {
     "help": "This field displays the rotationMeasure.",
     "label": "Rotation Measure",
-    "range": {
-      "error": "A value between {{min}} and {{max}} is required"
-    }
+    "units": "rad/m²",
+    "required": "A numeric value is required"
   },
   "channelsOut": {
     "help": "The number of output channels for this data product. Enter a whole number between {{min}} and {{max}}.",

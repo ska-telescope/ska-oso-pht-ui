@@ -1,11 +1,8 @@
 import React from 'react';
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
-import { Box } from '@mui/system';
-import { ERROR_SECS } from '@utils/constants.ts';
+import { z } from 'zod';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
+import QuantityField from '@/components/fields/quantity/quantity';
 
 interface DispersionMeasureFieldProps {
   disabled?: boolean;
@@ -16,6 +13,12 @@ interface DispersionMeasureFieldProps {
   widthButton?: number;
 }
 
+export const DISPERSION_MEASURE_RANGE = { min: 0, max: 100000 };
+export const dispersionMeasureSchema = z
+  .number()
+  .min(DISPERSION_MEASURE_RANGE.min)
+  .max(DISPERSION_MEASURE_RANGE.max);
+
 export default function DispersionMeasureField({
   disabled = false,
   required = false,
@@ -25,52 +28,35 @@ export default function DispersionMeasureField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'dispersionMeasure';
-  const [errorText, setErrorText] = useAutoClearingState('', ERROR_SECS);
-  const { observatoryConstants } = useOSDAccessors();
-
-  const validateValue = (num: number) => {
-    if (
-      num < observatoryConstants.DispersionMeasure.min ||
-      num > observatoryConstants.DispersionMeasure.max
-    ) {
-      return t('dispersionMeasure.range.error', {
-        min: observatoryConstants.DispersionMeasure.min,
-        max: observatoryConstants.DispersionMeasure.max
-      });
-    }
-    return '';
-  };
-
-  const handleSetValue = (num: number) => {
-    const error = validateValue(num);
-    if (error) {
-      setErrorText(error);
-    } else {
-      setErrorText('');
-      if (setValue) {
-        setValue(num);
-      }
-    }
-  };
-
-  React.useEffect(() => {
-    const error = validateValue(value);
-    setErrorText(error);
-  }, [value]);
+  const DISPERSION_MEASURE_UNIT_VALUE = 0;
+  const rangeErrorMessage = t(FIELD + '.range.error', DISPERSION_MEASURE_RANGE);
+  const validateDispersionMeasure = React.useCallback(
+    (num: number) => (dispersionMeasureSchema.safeParse(num).success ? '' : rangeErrorMessage),
+    [rangeErrorMessage]
+  );
 
   return (
-    <Box pt={1}>
-      <NumberEntry
-        testId={FIELD}
-        value={value}
-        setValue={(v: number) => handleSetValue(Number(v))}
-        label={t(FIELD + '.label')}
-        onFocus={() => setHelp(FIELD)}
-        required={required}
-        disabled={disabled}
-        disabledUnderline={disabled}
-        errorText={errorText}
-      />
-    </Box>
+    <QuantityField
+      value={value}
+      setValue={(nextValue) => setValue?.(nextValue)}
+      required={required}
+      disabled={disabled}
+      minValue={DISPERSION_MEASURE_RANGE.min}
+      maxValue={DISPERSION_MEASURE_RANGE.max}
+      step={1}
+      requiredMessage={rangeErrorMessage}
+      rangeMessage={rangeErrorMessage}
+      validate={validateDispersionMeasure}
+      unitOptions={[{ label: t(FIELD + '.units'), value: DISPERSION_MEASURE_UNIT_VALUE }]}
+      units={DISPERSION_MEASURE_UNIT_VALUE}
+      setUnits={() => {}}
+      unitsTestId={FIELD + 'Units'}
+      unitsDisabled
+      unitsMinWidth={90}
+      topPadding={1}
+      label={t(FIELD + '.label')}
+      onFocus={() => setHelp(FIELD)}
+      onUnitsFocus={() => setHelp(FIELD)}
+    />
   );
 }
