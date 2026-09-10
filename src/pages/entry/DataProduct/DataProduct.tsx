@@ -2,12 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  BorderedSection,
-  DropDown,
-  Spacer,
-  SPACER_VERTICAL
-} from '@ska-telescope/ska-gui-components';
+import { BorderedSection, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
@@ -760,26 +755,6 @@ export default function DataProduct({ data }: DataProductProps) {
     return output;
   };
 
-  const imageSizeUnitsField = () => {
-    const getOptions = () => {
-      return [0, 1, 2].map((e) => ({
-        label: presentUnits(t('imageSize.' + e)),
-        value: e
-      }));
-    };
-
-    return (
-      <DropDown
-        options={getOptions()}
-        testId="frequencyUnits"
-        value={imageSizeUnits}
-        setValue={setImageSizeUnits}
-        label=""
-        onFocus={() => setHelp('frequencyUnits')}
-      />
-    );
-  };
-
   const imageSizeField = () =>
     fieldWrapper(
       <ImageSizeField
@@ -787,7 +762,8 @@ export default function DataProduct({ data }: DataProductProps) {
         required
         setValue={setImageSizeValue}
         value={Number(imageSizeValue)}
-        suffix={imageSizeUnitsField()}
+        units={imageSizeUnits}
+        setUnits={setImageSizeUnits}
       />
     );
 

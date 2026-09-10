@@ -76,6 +76,7 @@ export default function QuantityField({
           error={!!error}
           onChange={(e) => handleChange(e.target.value)}
           onFocus={onFocus}
+          disabled={disabled}
           slotProps={{
             htmlInput: {
               min: minValue,

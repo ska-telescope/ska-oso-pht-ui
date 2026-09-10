@@ -82,6 +82,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <ImageSizeField
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.imageSizeValue}
+        units={(sdpData as SDPImageContinuumData | SDPSpectralData)?.imageSizeUnits}
         disabled
       />
     );
