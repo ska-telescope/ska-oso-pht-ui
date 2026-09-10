@@ -45,6 +45,9 @@ import {
 } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
+import { imageSizeSchema } from '../../components/fields/imageSize/imageSize';
+import { pixelSizeSchema } from '../../components/fields/pixelSize/pixelSize';
+import { channelsOutSchema } from '../../components/fields/channelsOut/channelsOut';
 import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
 import { rotationMeasureSchema } from '../../components/fields/rotationMeasure/rotationMeasure';
 import { outputFrequencyResolutionSchema } from '../../components/fields/outputFrequencyResolution/outputFrequencyResolution';
@@ -359,6 +362,28 @@ export const isDataProductPstDetectedFilterbankValid = (
   );
 };
 
+export const isDataProductImageParametersValid = (
+  proposal: Proposal,
+  dataProduct: DataProductSDPNew
+): boolean => {
+  const observation = proposal.observations?.find(
+    (candidate) => candidate.id === dataProduct.observationId
+  );
+  const data = dataProduct.data as SDPImageContinuumData | SDPSpectralData;
+  const usesImageParameters =
+    observation?.type === TYPE_ZOOM ||
+    ((observation?.type === TYPE_CONTINUUM || observation?.type === TYPE_CONTINUUM_SPECTRAL) &&
+      Number(data?.dataProductType) === DP_TYPE_IMAGES);
+
+  if (!usesImageParameters) return true;
+
+  return (
+    imageSizeSchema.safeParse(data?.imageSizeValue).success &&
+    pixelSizeSchema.safeParse(data?.pixelSizeValue).success &&
+    channelsOutSchema.safeParse(data?.channelsOut).success
+  );
+};
+
 export const validateSDPPage = (proposal: Proposal) => {
   const dataProducts = proposal?.dataProductSDP;
   if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
@@ -367,7 +392,8 @@ export const validateSDPPage = (proposal: Proposal) => {
   const hasInvalidDataProduct = dataProducts.some(
     (dataProduct) =>
       !isDataProductRobustValid(dataProduct) ||
-      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct)
+      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct) ||
+      !isDataProductImageParametersValid(proposal, dataProduct)
   );
   return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;
 };

@@ -441,6 +441,39 @@ describe('validateSDPPage robust rules', () => {
   });
 });
 
+describe('validateSDPPage image parameter rules', () => {
+  const makeProposal = (data: Partial<SDPSpectralData>) =>
+    ({
+      observations: [{ id: 'obs-1', type: TYPE_ZOOM }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: {
+            imageSizeValue: 100,
+            pixelSizeValue: 1,
+            channelsOut: 40,
+            ...data
+          }
+        }
+      ]
+    }) as any;
+
+  it('returns STATUS_OK when all image parameters are valid', () => {
+    expect(validateSDPPage(makeProposal({}))).toBe(STATUS_OK);
+  });
+
+  it.each([
+    ['image size', { imageSizeValue: 0 }],
+    ['pixel size', { pixelSizeValue: 0 }],
+    ['channels out below range', { channelsOut: 0 }],
+    ['channels out above range', { channelsOut: 41 }],
+    ['non-integer channels out', { channelsOut: 1.5 }]
+  ])('returns STATUS_ERROR when %s is invalid', (_field, data) => {
+    expect(validateSDPPage(makeProposal(data))).toBe(STATUS_ERROR);
+  });
+});
+
 describe('validateSDPPage detected filterbank field rules', () => {
   const makeProposal = (
     data: Partial<SDPFilterbankPSTData>,
