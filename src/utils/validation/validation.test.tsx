@@ -384,11 +384,17 @@ describe('checkDP for pst data product', () => {
 describe('validateSDPPage robust rules', () => {
   const makeProposalWithDataProduct = (data: any) =>
     ({
+      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
       dataProductSDP: [
         {
           id: 'SDP-1',
           observationId: 'obs-1',
-          data
+          data: {
+            imageSizeValue: 100,
+            pixelSizeValue: 1,
+            channelsOut: 40,
+            ...data
+          }
         } as DataProductSDPNew
       ]
     }) as any;

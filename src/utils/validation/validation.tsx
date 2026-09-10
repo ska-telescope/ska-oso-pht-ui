@@ -362,7 +362,7 @@ export const isDataProductPstDetectedFilterbankValid = (
   );
 };
 
-export const isDataProductImageParametersValid = (
+export const isContinuumImageConfigurationValid = (
   proposal: Proposal,
   dataProduct: DataProductSDPNew
 ): boolean => {
@@ -378,6 +378,7 @@ export const isDataProductImageParametersValid = (
   if (!usesImageParameters) return true;
 
   return (
+    isDataProductRobustValid(dataProduct) &&
     imageSizeSchema.safeParse(data?.imageSizeValue).success &&
     pixelSizeSchema.safeParse(data?.pixelSizeValue).success &&
     channelsOutSchema.safeParse(data?.channelsOut).success
@@ -391,9 +392,8 @@ export const validateSDPPage = (proposal: Proposal) => {
   }
   const hasInvalidDataProduct = dataProducts.some(
     (dataProduct) =>
-      !isDataProductRobustValid(dataProduct) ||
       !isDataProductPstDetectedFilterbankValid(proposal, dataProduct) ||
-      !isDataProductImageParametersValid(proposal, dataProduct)
+      !isContinuumImageConfigurationValid(proposal, dataProduct)
   );
   return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;
 };
