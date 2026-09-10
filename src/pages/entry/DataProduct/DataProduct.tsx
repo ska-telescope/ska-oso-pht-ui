@@ -18,7 +18,6 @@ import {
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
-  CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
@@ -147,10 +146,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const [weighting, setWeighting] = React.useState(IMAGE_WEIGHTING_DEFAULT);
   const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
 
-  // channelsOutMax needs to be usable both as the initial value below and later as the field's
-  // live max/validity bound, so getObservation/isCombined/channelsOutMax are defined here (ahead
-  // of most other helpers in this component) rather than down with the rest of the isXxx() mode
-  // checks.
   const getObservation = (obsId = observationId) => {
     const proposal = getProposal();
     const proposalObservations = proposal?.observations ?? [];
@@ -173,12 +168,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
     return proposalObservations[0];
   };
-  const isCombined = () =>
-    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
-    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
-  const channelsOutMax = () => (isCombined() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX);
-
-  const [channelsOut, setChannelsOut] = React.useState(channelsOutMax);
+  const [channelsOut, setChannelsOut] = React.useState(CHANNELS_OUT_MAX);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(
     SET_CONTINUUM_SUBSTRACTION_DEFAULT
   );
@@ -389,7 +379,7 @@ export default function DataProduct({ data }: DataProductProps) {
     setWeighting(data?.weighting ?? IMAGE_WEIGHTING_DEFAULT);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
-    setChannelsOut(data?.channelsOut ?? channelsOutMax());
+    setChannelsOut(data?.channelsOut ?? CHANNELS_OUT_MAX);
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
@@ -676,9 +666,7 @@ export default function DataProduct({ data }: DataProductProps) {
       const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
       setBitDepth(getDefaultBitDepth());
-      // channelsOut's initial state is set before an observation is selected (so isCombined()
-      // can't see it yet) - re-derive it once the observation for this new data product is known.
-      setChannelsOut(channelsOutMax());
+      setChannelsOut(CHANNELS_OUT_MAX);
     }
   }, [observationId]);
 
@@ -849,8 +837,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        maxValue={channelsOutMax()}
-        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: channelsOutMax() })}
+        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX })}
         required
         setValue={setChannelsOut}
         value={channelsOut}
@@ -915,7 +902,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutValid = () =>
     Number.isInteger(channelsOut) &&
     channelsOut >= CHANNELS_OUT_MIN &&
-    channelsOut <= channelsOutMax();
+    channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
 
   const pageFooter = () => {
