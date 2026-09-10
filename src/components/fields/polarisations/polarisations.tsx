@@ -62,12 +62,8 @@ export default function PolarisationsField({
 
   const handleChange = (optionValue: string, checked: boolean) => {
     const newValue = checked ? [...value, optionValue] : value.filter((v) => v !== optionValue);
-    if (newValue.length > 0) {
-      setValue?.(newValue);
-      setError?.('');
-    } else {
-      setError?.(t(`${FIELD}.error`));
-    }
+    setValue?.(newValue);
+    setError?.(newValue.length > 0 ? '' : t(`${FIELD}.error`));
   };
 
   const displayString = options
