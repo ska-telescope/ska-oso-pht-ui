@@ -11,6 +11,7 @@ import Observation from '../types/observation';
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
@@ -48,6 +49,8 @@ import { robustSchema } from '../../components/fields/robust/Robust';
 import { imageSizeSchema } from '../../components/fields/imageSize/imageSize';
 import { pixelSizeSchema } from '../../components/fields/pixelSize/pixelSize';
 import { channelsOutSchema } from '../../components/fields/channelsOut/channelsOut';
+import { timeAveragingSchema } from '../../components/fields/timeAveraging/timeAveraging';
+import { frequencyAveragingSchema } from '../../components/fields/frequencyAveraging/frequencyAveraging';
 import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
 import { rotationMeasureSchema } from '../../components/fields/rotationMeasure/rotationMeasure';
 import { outputFrequencyResolutionSchema } from '../../components/fields/outputFrequencyResolution/outputFrequencyResolution';
@@ -385,6 +388,25 @@ export const isContinuumImageConfigurationValid = (
   );
 };
 
+export const isContinuumVisibilitiesConfigurationValid = (
+  proposal: Proposal,
+  dataProduct: DataProductSDPNew
+): boolean => {
+  const observation = proposal.observations?.find(
+    (candidate) => candidate.id === dataProduct.observationId
+  );
+  const data = dataProduct.data as SDPVisibilitiesContinuumData;
+  const usesContinuumVisibilities =
+    observation?.type === TYPE_CONTINUUM && Number(data?.dataProductType) === DP_TYPE_VISIBLE;
+
+  if (!usesContinuumVisibilities) return true;
+
+  return (
+    timeAveragingSchema.safeParse(data?.timeAveraging).success &&
+    frequencyAveragingSchema.safeParse(data?.frequencyAveraging).success
+  );
+};
+
 export const validateSDPPage = (proposal: Proposal) => {
   const dataProducts = proposal?.dataProductSDP;
   if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
@@ -393,7 +415,8 @@ export const validateSDPPage = (proposal: Proposal) => {
   const hasInvalidDataProduct = dataProducts.some(
     (dataProduct) =>
       !isDataProductPstDetectedFilterbankValid(proposal, dataProduct) ||
-      !isContinuumImageConfigurationValid(proposal, dataProduct)
+      !isContinuumImageConfigurationValid(proposal, dataProduct) ||
+      !isContinuumVisibilitiesConfigurationValid(proposal, dataProduct)
   );
   return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;
 };

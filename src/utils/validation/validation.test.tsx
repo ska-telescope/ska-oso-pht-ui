@@ -425,7 +425,9 @@ describe('validateSDPPage robust rules', () => {
     const proposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_VISIBLE,
       weighting: IW_BRIGGS,
-      robust: 999
+      robust: 999,
+      timeAveraging: 1,
+      frequencyAveraging: 1
     });
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
@@ -475,6 +477,38 @@ describe('validateSDPPage image parameter rules', () => {
     ['channels out below range', { channelsOut: 0 }],
     ['channels out above range', { channelsOut: 41 }],
     ['non-integer channels out', { channelsOut: 1.5 }]
+  ])('returns STATUS_ERROR when %s is invalid', (_field, data) => {
+    expect(validateSDPPage(makeProposal(data))).toBe(STATUS_ERROR);
+  });
+});
+
+describe('validateSDPPage continuum visibilities rules', () => {
+  const makeProposal = (data: Partial<SDPVisibilitiesContinuumData>) =>
+    ({
+      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: {
+            dataProductType: DP_TYPE_VISIBLE,
+            timeAveraging: 1,
+            frequencyAveraging: 1,
+            ...data
+          }
+        }
+      ]
+    }) as any;
+
+  it('returns STATUS_OK when both averaging values are valid', () => {
+    expect(validateSDPPage(makeProposal({}))).toBe(STATUS_OK);
+  });
+
+  it.each([
+    ['time averaging below range', { timeAveraging: 0 }],
+    ['time averaging off-step', { timeAveraging: 1.5 }],
+    ['frequency averaging above range', { frequencyAveraging: 13 }],
+    ['frequency averaging off-step', { frequencyAveraging: 1.5 }]
   ])('returns STATUS_ERROR when %s is invalid', (_field, data) => {
     expect(validateSDPPage(makeProposal(data))).toBe(STATUS_ERROR);
   });
