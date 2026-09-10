@@ -50,6 +50,10 @@ import {
 } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
+import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
+import { rotationMeasureSchema } from '../../components/fields/rotationMeasure/rotationMeasure';
+import { outputFrequencyResolutionSchema } from '../../components/fields/outputFrequencyResolution/outputFrequencyResolution';
+import { outputSamplingIntervalSchema } from '../../components/fields/outputSamplingInterval/outputSamplingInterval';
 import {
   channelsToBandwidthHz,
   getZoomResolutionHz,
@@ -340,6 +344,26 @@ export const isDataProductRobustValid = (dataProduct: DataProductSDPNew): boolea
   return isRobustInRange(data?.robust);
 };
 
+export const isDataProductPstDetectedFilterbankValid = (
+  proposal: Proposal,
+  dataProduct: DataProductSDPNew
+): boolean => {
+  const observation = proposal.observations?.find(
+    (candidate) => candidate.id === dataProduct.observationId
+  );
+  const usesDetectedFilterbankMeasures =
+    observation?.type === TYPE_PST && Number(observation.pstMode) === DETECTED_FILTER_BANK_VALUE;
+  if (!usesDetectedFilterbankMeasures) return true;
+
+  const data = dataProduct.data as SDPFilterbankPSTData;
+  return (
+    outputFrequencyResolutionSchema.safeParse(data?.outputFrequencyResolution).success &&
+    outputSamplingIntervalSchema.safeParse(data?.outputSamplingInterval).success &&
+    dispersionMeasureSchema.safeParse(data?.dispersionMeasure).success &&
+    rotationMeasureSchema.safeParse(data?.rotationMeasure).success
+  );
+};
+
 export const isDataProductChannelsOutValid = (
   dataProduct: DataProductSDPNew,
   proposal: Proposal
@@ -379,13 +403,13 @@ export const validateSDPPage = (proposal: Proposal) => {
   if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
     return STATUS_ERROR;
   }
-  const hasInvalidRobust = dataProducts.some(
-    (dataProduct) => !isDataProductRobustValid(dataProduct)
+  const hasInvalidDataProduct = dataProducts.some(
+    (dataProduct) =>
+      !isDataProductRobustValid(dataProduct) ||
+      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct) ||
+      !isDataProductChannelsOutValid(dataProduct, proposal)
   );
-  const hasInvalidChannelsOut = dataProducts.some(
-    (dataProduct) => !isDataProductChannelsOutValid(dataProduct, proposal)
-  );
-  return hasInvalidRobust || hasInvalidChannelsOut ? STATUS_ERROR : STATUS_OK;
+  return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;
 };
 
 export const validateSRCPage = () => STATUS_OK;

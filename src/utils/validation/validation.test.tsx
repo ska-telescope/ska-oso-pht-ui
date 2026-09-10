@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   DataProductSDPNew,
+  SDPFilterbankPSTData,
   SDPFlowthroughPSTData,
   SDPImageContinuumData,
   SDPSpectralData,
@@ -9,6 +10,7 @@ import {
 } from '../types/dataProduct';
 import {
   CHANNELS_OUT_DEFAULT,
+  DETECTED_FILTER_BANK_VALUE,
   CHANNELS_OUT_MAX,
   CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN_CONTINUUM,
@@ -535,6 +537,66 @@ describe('validateSDPPage channelsOut rules', () => {
       [{ id: 'obs-1', type: TYPE_PST }]
     );
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+});
+
+describe('validateSDPPage detected filterbank field rules', () => {
+  const makeProposal = (
+    data: Partial<SDPFilterbankPSTData>,
+    pstMode = DETECTED_FILTER_BANK_VALUE
+  ) =>
+    ({
+      observations: [{ id: 'obs-1', type: TYPE_PST, pstMode }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: {
+            dataProductType: DETECTED_FILTER_BANK_VALUE,
+            outputFrequencyResolution: 1,
+            outputSamplingInterval: 1,
+            dispersionMeasure: 1.5,
+            rotationMeasure: -2.5,
+            ...data
+          }
+        }
+      ]
+    }) as any;
+
+  it('returns STATUS_OK when detected filterbank measures are valid decimals', () => {
+    expect(validateSDPPage(makeProposal({}))).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR when dispersion measure is out of range', () => {
+    expect(validateSDPPage(makeProposal({ dispersionMeasure: 100001 }))).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR when rotation measure is not numeric', () => {
+    expect(validateSDPPage(makeProposal({ rotationMeasure: 'invalid' as any }))).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR when output frequency resolution is invalid', () => {
+    expect(validateSDPPage(makeProposal({ outputFrequencyResolution: 1.5 }))).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR when output sampling interval is invalid', () => {
+    expect(validateSDPPage(makeProposal({ outputSamplingInterval: 0 }))).toBe(STATUS_ERROR);
+  });
+
+  it('ignores detected filterbank values when their fields are not shown', () => {
+    expect(
+      validateSDPPage(
+        makeProposal(
+          {
+            outputFrequencyResolution: 1.5,
+            outputSamplingInterval: 0,
+            dispersionMeasure: 100001,
+            rotationMeasure: 'invalid' as any
+          },
+          FLOW_THROUGH_VALUE
+        )
+      )
+    ).toBe(STATUS_OK);
   });
 });
 

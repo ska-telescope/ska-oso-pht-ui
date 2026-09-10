@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import GetCalibratorList, { GetMockCalibratorList } from './getCalibratorList';
+import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.tsx';
 import { MockCalibratorFrontendList } from './mockCalibratorListFrontend';
 import { MockCalibratorBackendList } from './mockCalibratorListBackend';
 import {
@@ -8,12 +8,12 @@ import {
   REFERENCE_COORDINATE_TYPE_SSO,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_TYPE_INTEGRATION,
-  SUPPLIED_TYPE_SENSITIVITY,
   TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
 import { Target } from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
+import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 
 describe('GetCalibratorList Service', () => {
   let mockedAuthClient: any;
@@ -87,7 +87,7 @@ describe('GetCalibratorList Service', () => {
     expect(calledUrl).toContain('telescope=ska_low');
     expect(calledUrl).toContain('scan_duration_ms=3600000');
     expect(calledUrl).toContain('strategy=highest_elevation');
-    expect(calledBody).toEqual(mockTarget);
+    expect(calledBody).toEqual(getTargets([mockTarget])[0]);
   });
 
   test('returns error message on API failure', async () => {
