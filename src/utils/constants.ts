@@ -77,7 +77,8 @@ export const BIT_DEPTH = [{ value: 1 }, { value: 2 }, { value: 4 }, { value: 8 }
 export const PST_FLOW_THROUGH_BIT_DEPTH_VALUES = [1, 2, 4, 8, 16];
 export const PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES = [1, 2, 4, 8];
 
-export const CHANNELS_OUT_MIN = 2;
+export const CHANNELS_OUT_MIN_CONTINUUM = 1;
+export const CHANNELS_OUT_MIN_SPECTRAL = 2;
 export const CHANNELS_OUT_MAX = 40;
 export const CHANNELS_OUT_MAX_COMBINED = 4000;
 
@@ -223,7 +224,7 @@ export const IW_UNIFORM = 1;
 export const IMAGE_WEIGHTING_DEFAULT = IW_BRIGGS;
 export const ROBUST_DEFAULT = 0;
 export const TAPER_DEFAULT = 0;
-export const CHANNELS_OUT_DEFAULT = 40;
+export const CHANNELS_OUT_DEFAULT = 10;
 export const IMAGE_SIZE_DEFAULT = 2.2;
 export const IMAGE_SIZE_UNIT_DEFAULT = 0;
 export const PIXEL_SIZE_DEFAULT = 1.3;

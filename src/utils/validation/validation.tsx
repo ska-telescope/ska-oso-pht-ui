@@ -11,7 +11,8 @@ import Observation from '../types/observation';
 import {
   CHANNELS_OUT_MAX,
   CHANNELS_OUT_MAX_COMBINED,
-  CHANNELS_OUT_MIN,
+  CHANNELS_OUT_MIN_CONTINUUM,
+  CHANNELS_OUT_MIN_SPECTRAL,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
@@ -350,19 +351,25 @@ export const isDataProductChannelsOutValid = (
   const observation = proposal?.observations?.find((obs) => obs.id === dataProduct.observationId);
   const matchesMode = (type: string) =>
     observation?.type === type || proposal?.scienceCategory === type;
-  const isCombined = matchesMode(TYPE_CONTINUUM_SPECTRAL);
-  const isRelevantMode = matchesMode(TYPE_ZOOM) || isCombined || matchesMode(TYPE_CONTINUUM);
+  const isContinuumSpectral = matchesMode(TYPE_CONTINUUM_SPECTRAL);
+  const isSpectral = matchesMode(TYPE_ZOOM);
+  const isRelevantMode = isSpectral || isContinuumSpectral || matchesMode(TYPE_CONTINUUM);
 
   // channelsOut is only ever shown/edited for a continuum/spectral image-type data product
   if (!isRelevantMode || dataProductType === DP_TYPE_VISIBLE) return true;
 
-  const channelsOut = (dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined)?.channelsOut;
-  const max = isCombined ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
+  const channelsOut = (dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined)
+    ?.channelsOut;
+
+  // TODO deduplicate this from the component, and tidy up all the isX checks
+  const max = isContinuumSpectral ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
+  const min =
+    isContinuumSpectral || isSpectral ? CHANNELS_OUT_MIN_SPECTRAL : CHANNELS_OUT_MIN_CONTINUUM;
 
   return (
     typeof channelsOut === 'number' &&
     Number.isInteger(channelsOut) &&
-    channelsOut >= CHANNELS_OUT_MIN &&
+    channelsOut >= min &&
     channelsOut <= max
   );
 };

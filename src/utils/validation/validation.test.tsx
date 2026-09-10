@@ -11,7 +11,7 @@ import {
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
   CHANNELS_OUT_MAX_COMBINED,
-  CHANNELS_OUT_MIN,
+  CHANNELS_OUT_MIN_CONTINUUM,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
@@ -461,7 +461,7 @@ describe('validateSDPPage channelsOut rules', () => {
 
   it('returns STATUS_OK for a valid channelsOut value', () => {
     const proposal = makeProposalWithDataProducts(
-      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MIN } }],
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MIN_CONTINUUM } }],
       continuumObservations
     );
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
@@ -469,7 +469,7 @@ describe('validateSDPPage channelsOut rules', () => {
 
   it('returns STATUS_ERROR when channelsOut is below the minimum', () => {
     const proposal = makeProposalWithDataProducts(
-      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MIN - 1 } }],
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MIN_CONTINUUM - 1 } }],
       continuumObservations
     );
     expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);

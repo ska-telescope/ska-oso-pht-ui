@@ -15,9 +15,10 @@ import {
   TIME_HOURS,
   TIME_SECS,
   FREQUENCY_KHZ,
-  IMAGE_WEIGHTING_DEFAULT,
   IW_BRIGGS,
-  LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
+  LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
+  CHANNELS_OUT_DEFAULT,
+  DP_TYPE_IMAGES
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
@@ -395,7 +396,11 @@ export function getSpectralAveragingFactor(
       observation.continuumBandwidthUnits,
       FREQUENCY_KHZ
     ) / LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ;
-  return Math.floor(totalChannels / dataProduct.data.channelsOut);
+  const channelsOut =
+    dataProduct.data.dataProductType == DP_TYPE_IMAGES
+      ? dataProduct.data.channelsOut
+      : CHANNELS_OUT_DEFAULT;
+  return Math.floor(totalChannels / channelsOut);
 }
 
 function GetContinuumData(

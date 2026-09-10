@@ -24,7 +24,6 @@ import {
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
   CHANNELS_OUT_MAX_COMBINED,
-  CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
@@ -35,8 +34,6 @@ import {
   IMAGE_SIZE_UNIT_DEFAULT,
   IMAGE_WEIGHTING_DEFAULT,
   IW_BRIGGS,
-  IW_UNIFORM,
-  IW_NATURAL,
   NAV,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DATA_PRODUCTS,
@@ -44,9 +41,7 @@ import {
   PIXEL_SIZE_UNIT_DEFAULT,
   POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
-  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
-  SA_CUSTOM,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   STATUS_INITIAL,
   TAPER_DEFAULT,
@@ -57,7 +52,9 @@ import {
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
-  WRAPPER_HEIGHT
+  WRAPPER_HEIGHT,
+  CHANNELS_OUT_MIN_CONTINUUM,
+  CHANNELS_OUT_MIN_SPECTRAL
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
@@ -153,10 +150,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const [weighting, setWeighting] = React.useState(IMAGE_WEIGHTING_DEFAULT);
   const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
 
-  // channelsOutMax needs to be usable both as the initial value below and later as the field's
-  // live max/validity bound, so getObservation/isCombined/channelsOutMax are defined here (ahead
-  // of most other helpers in this component) rather than down with the rest of the isXxx() mode
-  // checks.
   const getObservation = (obsId = observationId) => {
     const proposal = getProposal();
     const proposalObservations = proposal?.observations ?? [];
@@ -179,10 +172,24 @@ export default function DataProduct({ data }: DataProductProps) {
 
     return proposalObservations[0];
   };
-  const isCombined = () =>
+
+  const isContinuum = () =>
+    getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
+
+  const isSpectral = () =>
+    getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
+
+  const isContinuumSpectral = () =>
     getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
     getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
-  const channelsOutMax = () => (isCombined() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX);
+
+  const isPST = () =>
+    getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
+
+  const channelsOutMax = () =>
+    isContinuumSpectral() || isSpectral() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
+  const channelsOutMin = () =>
+    isContinuumSpectral() || isSpectral() ? CHANNELS_OUT_MIN_SPECTRAL : CHANNELS_OUT_MIN_CONTINUUM;
 
   const [channelsOut, setChannelsOut] = React.useState(channelsOutMax);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(
@@ -313,18 +320,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const getPstBitDepthDefault = () => 8;
   const getDefaultBitDepth = () =>
     getObservation()?.type === TYPE_PST ? getPstBitDepthDefault() : BIT_DEPTH_DEFAULT;
-
-  const isContinuum = () =>
-    getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
-  const isSpectral = () =>
-    getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
-
-  const isContinuumSpectral = () =>
-    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
-    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
-
-  const isPST = () =>
-    getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
   const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
@@ -883,7 +878,8 @@ export default function DataProduct({ data }: DataProductProps) {
       <ChannelsOutField
         disabled={isSpectral()}
         maxValue={channelsOutMax()}
-        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: channelsOutMax() })}
+        minValue={channelsOutMin()}
+        onFocus={() => setHelp('channelsOut', { min: channelsOutMin(), max: channelsOutMax() })}
         required
         setValue={setChannelsOut}
         value={isSpectral() ? getObservation()?.zoomChannels : channelsOut}
@@ -947,7 +943,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const taperMidSizeValid = () => taperMidValue >= 0;
   const channelsOutValid = () =>
     Number.isInteger(channelsOut) &&
-    channelsOut >= CHANNELS_OUT_MIN &&
+    channelsOut >= channelsOutMin() &&
     channelsOut <= channelsOutMax();
   const polarisationsValid = () => polarisations.length > 0;
 
@@ -1226,7 +1222,11 @@ export default function DataProduct({ data }: DataProductProps) {
                     ? theme.palette.success.main
                     : theme.palette.error.main
               }
-              title={t('sensitivityCalculatorResults.title')}
+              title={
+                isContinuum()
+                  ? `${t('sensitivityCalculatorResults.title')} (Imaging ODP)`
+                  : t('sensitivityCalculatorResults.title')
+              }
             >
               <SensCalcContent targetObservation={targetObservation()} isNatural={isNatural()} />
             </BorderedSection>

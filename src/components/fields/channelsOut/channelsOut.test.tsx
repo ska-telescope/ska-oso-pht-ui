@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import ChannelsOut from './channelsOut';
-import { CHANNELS_OUT_MIN } from '@/utils/constants.ts';
+import { CHANNELS_OUT_MIN_SPECTRAL } from '@/utils/constants.ts';
 
 // Mock the translation hook so validation output is deterministic
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
@@ -16,13 +16,7 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
 
 const ERROR_TEXT = 'channelsOut.error:2-40';
 
-const StatefulChannelsOut = ({
-  initial,
-  maxValue
-}: {
-  initial: number;
-  maxValue?: number;
-}) => {
+const StatefulChannelsOut = ({ initial, maxValue }: { initial: number; maxValue?: number }) => {
   const [value, setValue] = React.useState(initial);
   return <ChannelsOut value={value} setValue={setValue} maxValue={maxValue} />;
 };
@@ -85,14 +79,18 @@ describe('<ChannelsOut />', () => {
 
   it('steps up by 1 and clamps at the configured maxValue', async () => {
     const setValue = vi.fn();
-    render(<ChannelsOut value={CHANNELS_OUT_MIN} setValue={setValue} maxValue={5} />);
+    render(<ChannelsOut value={CHANNELS_OUT_MIN_SPECTRAL} setValue={setValue} maxValue={5} />);
     await pressArrowUp(screen.getByTestId('channelsOut'));
-    expect(setValue).toHaveBeenCalledWith(CHANNELS_OUT_MIN + 1);
+    expect(setValue).toHaveBeenCalledWith(CHANNELS_OUT_MIN_SPECTRAL + 1);
   });
 
   it('disables the decrement and increment buttons when min and maxValue coincide', () => {
     render(
-      <ChannelsOut value={CHANNELS_OUT_MIN} setValue={vi.fn()} maxValue={CHANNELS_OUT_MIN} />
+      <ChannelsOut
+        value={CHANNELS_OUT_MIN_SPECTRAL}
+        setValue={vi.fn()}
+        maxValue={CHANNELS_OUT_MIN_SPECTRAL}
+      />
     );
     expect(screen.getByTestId('channelsOutDecrement')).toBeDisabled();
     expect(screen.getByTestId('channelsOutIncrement')).toBeDisabled();

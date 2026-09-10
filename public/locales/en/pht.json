@@ -1276,7 +1276,7 @@
     "spectralSynthBeamSize": "Spectral synthesized beam-size",
     "spectralSurfaceBrightnessSensitivity": "Spectral surface-brightness sensitivity",
     "spectralIntegrationTime": "Spectral integration time",
-    "title": "Sensitivity Calculator Results",
+    "title": "Sensitivity Results",
     "targetName": "Target name",
     "bandwidth": "Bandwidth",
     "spectralResolution": "Spectral resolution",

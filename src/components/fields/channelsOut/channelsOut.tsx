@@ -1,5 +1,5 @@
 import { Box } from '@mui/system';
-import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN } from '@utils/constants.ts';
+import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN_SPECTRAL } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
@@ -8,6 +8,7 @@ interface ChannelsOutFieldProps {
   disabled?: boolean;
   required?: boolean;
   maxValue?: number;
+  minValue?: number;
   onFocus?: () => void;
   setValue?: Function;
   suffix?: JSX.Element;
@@ -21,6 +22,7 @@ export default function ChannelsOutField({
   disabled = false,
   required = false,
   maxValue = CHANNELS_OUT_MAX,
+  minValue = CHANNELS_OUT_MIN_SPECTRAL,
   onFocus,
   setValue,
   suffix,
@@ -30,9 +32,9 @@ export default function ChannelsOutField({
   const FIELD = 'channelsOut';
 
   const validate = (num: number): string =>
-    Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= maxValue
+    Number.isInteger(num) && num >= minValue && num <= maxValue
       ? ''
-      : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: maxValue });
+      : t(FIELD + '.error', { min: minValue, max: maxValue });
 
   const [errorMessage, setErrorMessage] = React.useState(() => validate(value));
 
@@ -42,7 +44,7 @@ export default function ChannelsOutField({
   };
 
   const step = (current: number, direction: 1 | -1) =>
-    Math.min(Math.max(current + direction, CHANNELS_OUT_MIN), maxValue);
+    Math.min(Math.max(current + direction, minValue), maxValue);
 
   React.useEffect(() => {
     setErrorMessage(validate(value));
@@ -62,7 +64,7 @@ export default function ChannelsOutField({
         required={required}
         errorText={errorMessage}
         suffix={suffix}
-        min={CHANNELS_OUT_MIN}
+        min={minValue}
         max={maxValue}
         step={1}
       />
