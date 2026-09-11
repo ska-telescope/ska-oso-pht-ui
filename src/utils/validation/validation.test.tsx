@@ -32,6 +32,7 @@ import {
   TAPER_DEFAULT,
   TIME_HOURS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
@@ -450,9 +451,9 @@ describe('validateSDPPage robust rules', () => {
 });
 
 describe('validateSDPPage image parameter rules', () => {
-  const makeProposal = (data: Partial<SDPSpectralData>) =>
+  const makeProposal = (data: Partial<SDPSpectralData>, observationType = TYPE_ZOOM) =>
     ({
-      observations: [{ id: 'obs-1', type: TYPE_ZOOM }],
+      observations: [{ id: 'obs-1', type: observationType }],
       dataProductSDP: [
         {
           id: 'SDP-1',
@@ -470,6 +471,40 @@ describe('validateSDPPage image parameter rules', () => {
   it('returns STATUS_OK when all image parameters are valid', () => {
     expect(validateSDPPage(makeProposal({}))).toBe(STATUS_OK);
   });
+
+  it.each([
+    ['continuum images', TYPE_CONTINUUM, { dataProductType: DP_TYPE_IMAGES, imageSizeValue: 0 }],
+    ['spectral', TYPE_ZOOM, { pixelSizeValue: 0 }],
+    ['continuum-spectral', TYPE_CONTINUUM_SPECTRAL, { channelsOut: 4001 }]
+  ])(
+    'returns STATUS_ERROR for invalid image parameters in %s mode',
+    (_mode, observationType, data) => {
+      expect(validateSDPPage(makeProposal(data, observationType))).toBe(STATUS_ERROR);
+    }
+  );
+
+  it('allows 4000 channels out for continuum-spectral mode', () => {
+    expect(validateSDPPage(makeProposal({ channelsOut: 4000 }, TYPE_CONTINUUM_SPECTRAL))).toBe(
+      STATUS_OK
+    );
+  });
+
+  it.each([TYPE_ZOOM, TYPE_CONTINUUM_SPECTRAL])(
+    'ignores the hidden visibilities product for %s mode',
+    (observationType) => {
+      const proposal = makeProposal({}, observationType);
+      proposal.dataProductSDP.push({
+        id: 'SDP-hidden',
+        observationId: 'obs-1',
+        data: {
+          dataProductType: DP_TYPE_VISIBLE,
+          timeAveraging: 1,
+          frequencyAveraging: 1
+        }
+      });
+      expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+    }
+  );
 
   it.each([
     ['image size', { imageSizeValue: 0 }],

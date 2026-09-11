@@ -12,6 +12,8 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
+  CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
   FLOW_THROUGH_VALUE,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
@@ -48,7 +50,7 @@ import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
 import { imageSizeSchema } from '../../components/fields/imageSize/imageSize';
 import { pixelSizeSchema } from '../../components/fields/pixelSize/pixelSize';
-import { channelsOutSchema } from '../../components/fields/channelsOut/channelsOut';
+import { channelsOutSchemaForMax } from '../../components/fields/channelsOut/channelsOut';
 import { timeAveragingSchema } from '../../components/fields/timeAveraging/timeAveraging';
 import { frequencyAveragingSchema } from '../../components/fields/frequencyAveraging/frequencyAveraging';
 import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
@@ -374,17 +376,20 @@ export const isContinuumImageConfigurationValid = (
   );
   const data = dataProduct.data as SDPImageContinuumData | SDPSpectralData;
   const usesImageParameters =
-    observation?.type === TYPE_ZOOM ||
-    ((observation?.type === TYPE_CONTINUUM || observation?.type === TYPE_CONTINUUM_SPECTRAL) &&
-      Number(data?.dataProductType) === DP_TYPE_IMAGES);
+    ((observation?.type === TYPE_ZOOM || observation?.type === TYPE_CONTINUUM_SPECTRAL) &&
+      Number(data?.dataProductType) !== DP_TYPE_VISIBLE) ||
+    (observation?.type === TYPE_CONTINUUM && Number(data?.dataProductType) === DP_TYPE_IMAGES);
 
   if (!usesImageParameters) return true;
+
+  const channelsOutMax =
+    observation?.type === TYPE_CONTINUUM_SPECTRAL ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
 
   return (
     isDataProductRobustValid(dataProduct) &&
     imageSizeSchema.safeParse(data?.imageSizeValue).success &&
     pixelSizeSchema.safeParse(data?.pixelSizeValue).success &&
-    channelsOutSchema.safeParse(data?.channelsOut).success
+    channelsOutSchemaForMax(channelsOutMax).safeParse(data?.channelsOut).success
   );
 };
 
