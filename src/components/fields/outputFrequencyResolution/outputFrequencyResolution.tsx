@@ -1,11 +1,10 @@
 import React from 'react';
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { ERROR_SECS } from '@utils/constants.ts';
-import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
+import { z } from 'zod';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
+import SelectField from '@/components/wrappers/selectField/SelectField';
+import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface OutputFrequencyResolutionFieldProps {
   disabled?: boolean;
@@ -16,6 +15,8 @@ interface OutputFrequencyResolutionFieldProps {
   widthButton?: number;
 }
 
+export const outputFrequencyResolutionSchema = z.number().finite().int().min(1);
+
 export default function OutputFrequencyResolutionField({
   disabled = false,
   required = false,
@@ -25,51 +26,73 @@ export default function OutputFrequencyResolutionField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'outputFrequencyResolution';
-  const [errorText, setErrorText] = useAutoClearingState('', ERROR_SECS);
-  const { observatoryConstants } = useOSDAccessors();
+  const [errorText, setErrorText] = React.useState('');
+  const OUTPUT_FREQUENCY_RESOLUTION_UNIT_VALUE = 0;
+  const FUNDAMENTAL_RESOLUTION_KHZ = 781.25 / 216;
 
-  const validateValue = (num: number) => {
-    if (
-      num < observatoryConstants.OutputFrequencyResolution.min ||
-      num > observatoryConstants.OutputFrequencyResolution.max
-    ) {
-      return t('outputFrequencyResolution.range.error', {
-        min: observatoryConstants.OutputFrequencyResolution.min,
-        max: observatoryConstants.OutputFrequencyResolution.max
-      });
-    }
-    return '';
+  const validateMultiplier = (multiplier: number) =>
+    outputFrequencyResolutionSchema.safeParse(multiplier).success
+      ? ''
+      : t('outputFrequencyResolution.error.multiple', {
+          value: FUNDAMENTAL_RESOLUTION_KHZ.toFixed(2)
+        });
+
+  const commit = (multiplier: number) => {
+    setValue?.(multiplier);
+    setErrorText(validateMultiplier(multiplier));
   };
 
-  const handleSetValue = (num: number) => {
-    const error = validateValue(num);
-    if (error) {
-      setErrorText(error);
-    } else {
-      setErrorText('');
-      if (setValue) {
-        setValue(num);
-      }
-    }
-  };
+  const stepMultiplier = (multiplier: number, direction: 1 | -1) =>
+    Math.max(
+      1,
+      Number.isInteger(multiplier)
+        ? multiplier + direction
+        : direction === 1
+          ? Math.ceil(multiplier)
+          : Math.floor(multiplier)
+    );
 
   React.useEffect(() => {
-    const error = validateValue(value);
-    setErrorText(error);
+    setErrorText(validateMultiplier(value));
   }, [value]);
 
   return (
     <Box pt={1}>
-      <NumberEntry
-        disabled={disabled}
-        disabledUnderline={disabled}
+      <SteppedNumberField
         testId={FIELD}
         value={value}
-        setValue={(v: number) => handleSetValue(Number(v))}
+        format={(multiplier: number) => (multiplier * FUNDAMENTAL_RESOLUTION_KHZ).toFixed(2)}
+        parse={(raw: string) => {
+          if (raw === '' || Number.isNaN(Number(raw))) return null;
+          const typedDisplayValue = Number(raw);
+          const rawMultiplier = typedDisplayValue / FUNDAMENTAL_RESOLUTION_KHZ;
+          const nearestMultiplier = Math.max(1, Math.round(rawMultiplier));
+          const nearestDisplayValue = Number(
+            (nearestMultiplier * FUNDAMENTAL_RESOLUTION_KHZ).toFixed(2)
+          );
+          return typedDisplayValue === nearestDisplayValue ? nearestMultiplier : rawMultiplier;
+        }}
+        onStep={stepMultiplier}
+        onCommit={commit}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
+        disabled={disabled}
+        step={FUNDAMENTAL_RESOLUTION_KHZ}
         errorText={errorText}
+        suffix={
+          <Box sx={{ minWidth: 90 }}>
+            <SelectField
+              testId={FIELD + 'Units'}
+              disabled
+              options={[
+                { label: t(FIELD + '.units'), value: OUTPUT_FREQUENCY_RESOLUTION_UNIT_VALUE }
+              ]}
+              value={OUTPUT_FREQUENCY_RESOLUTION_UNIT_VALUE}
+              setValue={() => {}}
+            />
+          </Box>
+        }
       />
     </Box>
   );
