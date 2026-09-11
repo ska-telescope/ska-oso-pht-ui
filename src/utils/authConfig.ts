@@ -50,7 +50,10 @@ export function buildAuthConfig() {
   if (getUseIndigo()) {
     // Kept the MSENTRA_ env var name for backwards-compatibility.
     // TODO: Remove when we're done with Entra.
-    const redirectUri = env.MSENTRA_REDIRECT_URI;
+    // Resolve to an absolute URL: deployed envs may set this to a relative path (see
+    // ska-oso-pht-ui.urls-redirectUri helper), and MSAL mishandles a relative/trailing-slash
+    // redirect_uri during its redirect-state matching (BTN-3402).
+    const redirectUri = new URL(env.MSENTRA_REDIRECT_URI, window.location.origin).href;
     return {
       authority: env.INDIGO_AUTHORITY,
       clientId: env.INDIGO_CLIENT_ID,
