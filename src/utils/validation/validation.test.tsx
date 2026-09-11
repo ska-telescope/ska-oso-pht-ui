@@ -489,22 +489,19 @@ describe('validateSDPPage image parameter rules', () => {
     );
   });
 
-  it.each([TYPE_ZOOM, TYPE_CONTINUUM_SPECTRAL])(
-    'ignores the hidden visibilities product for %s mode',
-    (observationType) => {
-      const proposal = makeProposal({}, observationType);
-      proposal.dataProductSDP.push({
-        id: 'SDP-hidden',
-        observationId: 'obs-1',
-        data: {
-          dataProductType: DP_TYPE_VISIBLE,
-          timeAveraging: 1,
-          frequencyAveraging: 1
-        }
-      });
-      expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-    }
-  );
+  it('ignores the hidden visibilities product for zoom mode', () => {
+    const proposal = makeProposal({}, TYPE_ZOOM);
+    proposal.dataProductSDP.push({
+      id: 'SDP-hidden',
+      observationId: 'obs-1',
+      data: {
+        dataProductType: DP_TYPE_VISIBLE,
+        timeAveraging: 1,
+        frequencyAveraging: 1
+      }
+    });
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
 
   it.each([
     ['image size', { imageSizeValue: 0 }],
@@ -518,9 +515,12 @@ describe('validateSDPPage image parameter rules', () => {
 });
 
 describe('validateSDPPage continuum visibilities rules', () => {
-  const makeProposal = (data: Partial<SDPVisibilitiesContinuumData>) =>
+  const makeProposal = (
+    data: Partial<SDPVisibilitiesContinuumData>,
+    observationType = TYPE_CONTINUUM
+  ) =>
     ({
-      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
+      observations: [{ id: 'obs-1', type: observationType }],
       dataProductSDP: [
         {
           id: 'SDP-1',
@@ -546,6 +546,15 @@ describe('validateSDPPage continuum visibilities rules', () => {
     ['frequency averaging off-step', { frequencyAveraging: 1.5 }]
   ])('returns STATUS_ERROR when %s is invalid', (_field, data) => {
     expect(validateSDPPage(makeProposal(data))).toBe(STATUS_ERROR);
+  });
+
+  it.each([
+    ['time averaging below range', { timeAveraging: 0 }],
+    ['time averaging off-step', { timeAveraging: 1.5 }],
+    ['frequency averaging above range', { frequencyAveraging: 13 }],
+    ['frequency averaging off-step', { frequencyAveraging: 1.5 }]
+  ])('returns STATUS_ERROR when combined continuum-spectral %s is invalid', (_field, data) => {
+    expect(validateSDPPage(makeProposal(data, TYPE_CONTINUUM_SPECTRAL))).toBe(STATUS_ERROR);
   });
 });
 

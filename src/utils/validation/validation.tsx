@@ -402,7 +402,8 @@ export const isContinuumVisibilitiesConfigurationValid = (
   );
   const data = dataProduct.data as SDPVisibilitiesContinuumData;
   const usesContinuumVisibilities =
-    observation?.type === TYPE_CONTINUUM && Number(data?.dataProductType) === DP_TYPE_VISIBLE;
+    (observation?.type === TYPE_CONTINUUM || observation?.type === TYPE_CONTINUUM_SPECTRAL) &&
+    Number(data?.dataProductType) === DP_TYPE_VISIBLE;
 
   if (!usesContinuumVisibilities) return true;
 
