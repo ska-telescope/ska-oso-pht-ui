@@ -51,4 +51,10 @@ describe('<ChannelsOut />', () => {
     expect(mockSetValue).toHaveBeenNthCalledWith(1, 3);
     expect(mockSetValue).toHaveBeenNthCalledWith(2, 1);
   });
+
+  test('supports the continuum-spectral maximum', () => {
+    render(<ChannelsOut value={3999} maxValue={4000} setValue={mockSetValue} />);
+    fireEvent.click(screen.getByTestId('channelsOutIncrement'));
+    expect(mockSetValue).toHaveBeenCalledWith(4000);
+  });
 });

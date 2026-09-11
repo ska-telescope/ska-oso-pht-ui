@@ -18,6 +18,7 @@ import {
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
@@ -168,7 +169,12 @@ export default function DataProduct({ data }: DataProductProps) {
 
     return proposalObservations[0];
   };
-  const [channelsOut, setChannelsOut] = React.useState(CHANNELS_OUT_MAX);
+  const channelsOutMax =
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL
+      ? CHANNELS_OUT_MAX_COMBINED
+      : CHANNELS_OUT_MAX;
+
+  const [channelsOut, setChannelsOut] = React.useState(channelsOutMax);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(
     SET_CONTINUUM_SUBSTRACTION_DEFAULT
   );
@@ -379,7 +385,7 @@ export default function DataProduct({ data }: DataProductProps) {
     setWeighting(data?.weighting ?? IMAGE_WEIGHTING_DEFAULT);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
-    setChannelsOut(data?.channelsOut ?? CHANNELS_OUT_MAX);
+    setChannelsOut(data?.channelsOut ?? channelsOutMax);
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
@@ -666,7 +672,7 @@ export default function DataProduct({ data }: DataProductProps) {
       const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
       setBitDepth(getDefaultBitDepth());
-      setChannelsOut(CHANNELS_OUT_MAX);
+      setChannelsOut(channelsOutMax);
     }
   }, [observationId]);
 
@@ -837,7 +843,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX })}
+        maxValue={channelsOutMax}
+        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: channelsOutMax })}
         required
         setValue={setChannelsOut}
         value={channelsOut}
@@ -902,7 +909,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutValid = () =>
     Number.isInteger(channelsOut) &&
     channelsOut >= CHANNELS_OUT_MIN &&
-    channelsOut <= CHANNELS_OUT_MAX;
+    channelsOut <= channelsOutMax;
   const polarisationsValid = () => polarisations.length > 0;
 
   const pageFooter = () => {

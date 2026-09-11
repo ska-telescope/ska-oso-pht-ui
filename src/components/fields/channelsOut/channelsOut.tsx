@@ -8,17 +8,16 @@ import SteppedNumberField from '@/components/wrappers/steppedNumberField/Stepped
 interface ChannelsOutFieldProps {
   disabled?: boolean;
   required?: boolean;
+  maxValue?: number;
   onFocus?: () => void;
   setValue?: (value: number) => void;
   value: number;
 }
 
-export const channelsOutSchema = z
-  .number()
-  .finite()
-  .int()
-  .min(CHANNELS_OUT_MIN)
-  .max(CHANNELS_OUT_MAX);
+export const channelsOutSchemaForMax = (maxValue: number) =>
+  z.number().finite().int().min(CHANNELS_OUT_MIN).max(maxValue);
+
+export const channelsOutSchema = channelsOutSchemaForMax(CHANNELS_OUT_MAX);
 
 /**
  * Number of output channels selected, default is the max available.
@@ -26,6 +25,7 @@ export const channelsOutSchema = z
 export default function ChannelsOutField({
   disabled = false,
   required = false,
+  maxValue = CHANNELS_OUT_MAX,
   onFocus,
   setValue,
   value
@@ -35,11 +35,11 @@ export default function ChannelsOutField({
   const [errorText, setErrorText] = React.useState('');
   const rangeErrorMessage = t(FIELD + '.error', {
     min: CHANNELS_OUT_MIN,
-    max: CHANNELS_OUT_MAX
+    max: maxValue
   });
 
   const validateChannelsOut = (channels: number) =>
-    channelsOutSchema.safeParse(channels).success ? '' : rangeErrorMessage;
+    channelsOutSchemaForMax(maxValue).safeParse(channels).success ? '' : rangeErrorMessage;
 
   const commit = (channels: number) => {
     setValue?.(channels);
@@ -48,7 +48,7 @@ export default function ChannelsOutField({
 
   const stepChannels = (channels: number, direction: 1 | -1) =>
     Math.min(
-      CHANNELS_OUT_MAX,
+      maxValue,
       Math.max(
         CHANNELS_OUT_MIN,
         Number.isInteger(channels)
@@ -75,7 +75,7 @@ export default function ChannelsOutField({
         disabled={disabled}
         required={required}
         min={CHANNELS_OUT_MIN}
-        max={CHANNELS_OUT_MAX}
+        max={maxValue}
         errorText={errorText}
       />
     </Box>
