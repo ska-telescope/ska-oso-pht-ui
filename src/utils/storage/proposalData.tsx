@@ -14,8 +14,3 @@ import Proposal from '@utils/types/proposal';
 export const storeProposalCopy = (response: Proposal) => {
   sessionStorage.setItem('skao_proposal_copy', JSON.stringify(response));
 };
-
-export const fetchProposalCopy = () => {
-  const data = sessionStorage.getItem('skao_proposal_copy');
-  return data ? JSON.parse(data) : null;
-};

@@ -1,26 +1,12 @@
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
-import {
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
-  OSO_SERVICES_PROPOSAL_PATH,
-  cypressToken
-} from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, OSO_SERVICES_PROPOSAL_PATH } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
-import MockProposalBackendList from '../getProposalList/mockProposalBackendList.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import { mappingList } from '../getProposalList/getProposalList.tsx';
 
-export function GetMockProposalList(): Proposal[] {
-  return mappingList(MockProposalBackendList);
-}
-
 async function GetProposalsReviewable(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<Proposal[] | string> {
-  if (USE_LOCAL_DATA || cypressToken) {
-    return GetMockProposalList();
-  }
-
   try {
     const URL_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/reviewable`;
     const result = await authAxiosClient.get(URL_PATH);

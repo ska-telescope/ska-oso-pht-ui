@@ -5,7 +5,6 @@ import { Grid, Paper } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  cypressToken,
   NAV,
   PROPOSAL_STATUS,
   PAGE_TITLE_ADD,
@@ -38,7 +37,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
   const { notifyClear, notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdCycleId, osdCyclePolicy } = useOSDAccessors();
@@ -51,7 +50,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     [isSV]
   );
 
-  const currPageNo = proposal?.id == null && !cypressToken ? -1 : pageNo;
+  const currPageNo = proposal?.id == null ? -1 : pageNo;
 
   const { prevPageNo, nextPageNo } = React.useMemo(() => {
     const idx = pages.findIndex((p) => p === currPageNo);
@@ -70,6 +69,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     // proposalType now rather than passing isSV further down the chain.
     const response = await PostProposal(
       authClient,
+      refreshAuthToken,
       {
         ...proposal,
         cycle: osdCycleId ?? null,
@@ -102,6 +102,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     osdCycleId,
     isSV,
     authClient,
+    refreshAuthToken,
     notifyWarning,
     notifySuccess,
     notifyError,
@@ -119,16 +120,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   );
 
   const showPrevNav = () => {
-    if ((loggedIn && currPageNo > 0) || (cypressToken && currPageNo > 0)) {
+    if (loggedIn && currPageNo > 0) {
       return true;
     }
-    return !loggedIn && !cypressToken && currPageNo !== PAGE_TARGET;
+    return !loggedIn && currPageNo !== PAGE_TARGET;
   };
 
   const showNextNav = () => {
     return (
       (!loggedIn && currPageNo === PAGE_TARGET) ||
-      ((loggedIn || cypressToken) && (currPageNo === -1 || nextPageNo !== -2))
+      (loggedIn && (currPageNo === -1 || nextPageNo !== -2))
     );
   };
 

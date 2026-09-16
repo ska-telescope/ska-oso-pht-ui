@@ -3,11 +3,10 @@ import { helpers } from '@utils/helpers.ts';
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
-  TEAM_STATUS_TYPE_OPTIONS,
-  USE_LOCAL_DATA
+  TEAM_STATUS_TYPE_OPTIONS
 } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient, RefreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
 import { mapping } from '../../get/getProposal/getProposal.tsx';
 import MappingPutProposal from '../../put/putProposal/putProposalMapping.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
@@ -17,14 +16,11 @@ export function mockPostProposal() {
 }
 
 async function PostProposal(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
+  refreshAuthToken: RefreshAuthToken,
   proposal: Proposal,
   status?: string
 ): Promise<Proposal | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return mockPostProposal();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/create`;
     // Use the full mapping so cloned proposals carry all content (targets, observations, etc.).
@@ -60,7 +56,16 @@ async function PostProposal(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
     );
-    return !result || !result?.data ? { error: 'error.API_UNKNOWN_ERROR' } : mapping(result.data);
+    if (!result || !result?.data) {
+      return { error: 'error.API_UNKNOWN_ERROR' };
+    }
+    // The backend just granted this user admin group membership on the new proposal
+    // (create_membership) - refresh so the next request's token actually reflects it.
+    // Awaited: a caller-triggered request immediately after this returns (e.g. navigating to a
+    // page that fetches on mount) would otherwise race this forced refresh for the same MSAL
+    // account and can fail with login_required.
+    await refreshAuthToken();
+    return mapping(result.data);
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

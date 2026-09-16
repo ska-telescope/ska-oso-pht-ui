@@ -52,7 +52,7 @@ export default function ReviewDashboard() {
   const [panelScienceCategoryTableData, setPanelScienceCategoryTableData] = React.useState<any[]>(
     []
   );
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const [activeView, setActiveView] = useState<DashboardView>(VIEW_PROPOSAL);
 
   const paletteIndex = Number(localStorage.getItem('skao_accessibility_mode'));

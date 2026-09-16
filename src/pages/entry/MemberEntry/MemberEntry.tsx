@@ -39,7 +39,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
   const { isSV } = useOSDAccessors();
 

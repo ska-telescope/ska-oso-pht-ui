@@ -2,11 +2,10 @@ import MappingPutProposal from '@services/axios/put/putProposal/putProposalMappi
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
+  SKA_OSO_SERVICES_URL
 } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 export interface ValidateResponseData {
   result: boolean;
@@ -18,18 +17,10 @@ export interface ValidateServiceResponse {
   valid?: string;
 }
 
-export function postMockProposalValidate(): { valid: string } {
-  return { valid: 'success' };
-}
-
 async function PostProposalValidate(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   proposal: Proposal
 ): Promise<ValidateServiceResponse> {
-  if (USE_LOCAL_DATA) {
-    return postMockProposalValidate();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/validate`;
     const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
