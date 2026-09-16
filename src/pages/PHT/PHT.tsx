@@ -223,13 +223,18 @@ export default function PHT({
 
   const signIn = () => <ButtonUserMenu />;
 
-  const showNotification = () => {
+  const hasNotification = () => {
     const note = application.content5 as Notification;
     return note?.message?.length > 0;
   };
 
+  const showNotification = () => {
+    const note = application.content5 as Notification;
+    return note?.message?.length > 0 && note?.level !== AlertColorTypes.Error;
+  };
+
   const footerNotification = () => {
-    if (!showNotification()) return null;
+    if (!hasNotification()) return null;
     const notification = application.content5 as Notification;
     return (
       <Paper

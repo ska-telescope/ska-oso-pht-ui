@@ -22,12 +22,12 @@ import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl
 import SaveButton from '../../../components/button/Save/Save';
 import SubmitButton from '@/components/button/Submit/Submit';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
+import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import BackButton from '@/components/button/Back/Back';
 import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
-import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import { getUserId } from '@/utils/aaa/aaaUtils';
