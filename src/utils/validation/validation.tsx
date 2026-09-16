@@ -325,6 +325,49 @@ export const checkDP = (proposal: Proposal): number => {
   return 0;
 };
 
+/**
+ * Checks whether a single data product has valid polarisations for its own observation's type -
+ * mirrors DataProduct.tsx's pageFooter().enabled() switch (keyed on the observation actually
+ * driving that data product, not the proposal-wide scienceCategory, since a proposal can have
+ * data products against different observation types). Only image-continuum (dataProductType
+ * DP_TYPE_IMAGES, the same default DataProduct.tsx falls back to when no observation is found),
+ * zoom/combined-continuum-spectral, and PST flow-through/detected-filterbank data products
+ * require at least one polarisation selected.
+ */
+export const isDataProductPolarisationsValid = (
+  proposal: Proposal,
+  dataProduct: DataProductSDPNew
+): boolean => {
+  const validatePolarisations = (
+    data: SDPSpectralData | SDPImageContinuumData | SDPFilterbankPSTData | SDPFlowthroughPSTData
+  ): boolean => (data?.polarisations?.length ?? 0) > 0;
+
+  const observation = proposal.observations?.find(
+    (candidate) => candidate.id === dataProduct.observationId
+  );
+
+  switch (observation?.type) {
+    case TYPE_ZOOM:
+    case TYPE_CONTINUUM_SPECTRAL:
+      return validatePolarisations(dataProduct.data as SDPSpectralData);
+    case TYPE_PST:
+      return observation?.pstMode === FLOW_THROUGH_VALUE ||
+        observation?.pstMode === DETECTED_FILTER_BANK_VALUE
+        ? validatePolarisations(dataProduct.data as SDPFlowthroughPSTData | SDPFilterbankPSTData)
+        : true;
+    case TYPE_CONTINUUM:
+    default: {
+      const dataProductType = Number(
+        (dataProduct?.data as SDPImageContinuumData | undefined)?.dataProductType ??
+          DP_TYPE_IMAGES
+      );
+      return dataProductType === DP_TYPE_IMAGES
+        ? validatePolarisations(dataProduct.data as SDPImageContinuumData)
+        : true;
+    }
+  }
+};
+
 const isRobustInRange = (value: unknown): boolean =>
   typeof value === 'number' && Number.isFinite(value) && robustSchema.safeParse(value).success;
 
@@ -367,7 +410,8 @@ export const validateSDPPage = (proposal: Proposal) => {
   const hasInvalidDataProduct = dataProducts.some(
     (dataProduct) =>
       !isDataProductRobustValid(dataProduct) ||
-      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct)
+      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct) ||
+      !isDataProductPolarisationsValid(proposal, dataProduct)
   );
   return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;
 };

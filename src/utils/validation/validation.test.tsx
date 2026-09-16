@@ -401,7 +401,8 @@ describe('validateSDPPage robust rules', () => {
     const proposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_IMAGES,
       weighting: IW_UNIFORM,
-      robust: 99
+      robust: 99,
+      polarisations: ['I']
     });
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
@@ -410,7 +411,8 @@ describe('validateSDPPage robust rules', () => {
     const proposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_IMAGES,
       weighting: IW_BRIGGS,
-      robust: 1.5
+      robust: 1.5,
+      polarisations: ['I']
     });
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
@@ -428,16 +430,76 @@ describe('validateSDPPage robust rules', () => {
     const validProposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_IMAGES,
       weighting: IW_BRIGGS,
-      robust: 0
+      robust: 0,
+      polarisations: ['I']
     });
     expect(validateSDPPage(validProposal)).toBe(STATUS_OK);
 
     const invalidProposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_IMAGES,
       weighting: IW_BRIGGS,
-      robust: 2.1
+      robust: 2.1,
+      polarisations: ['I']
     });
     expect(validateSDPPage(invalidProposal)).toBe(STATUS_ERROR);
+  });
+});
+
+describe('validateSDPPage polarisation rules', () => {
+  it('returns STATUS_ERROR when an image data product has no polarisations selected', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { dataProductType: DP_TYPE_IMAGES, polarisations: [] }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_OK for a visibilities data product with no polarisations selected', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { dataProductType: DP_TYPE_VISIBLE, polarisations: [] }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR when a PST flow-through data product has no polarisations selected', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_PST, pstMode: FLOW_THROUGH_VALUE }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { dataProductType: FLOW_THROUGH_VALUE, polarisations: [] }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_OK for a PST pulsar timing data product with no polarisations field', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_PST, pstMode: PULSAR_TIMING_VALUE }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { dataProductType: PULSAR_TIMING_VALUE }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
 });
 
@@ -458,6 +520,7 @@ describe('validateSDPPage detected filterbank field rules', () => {
             outputSamplingInterval: 1,
             dispersionMeasure: 1.5,
             rotationMeasure: -2.5,
+            polarisations: ['I'],
             ...data
           }
         }
