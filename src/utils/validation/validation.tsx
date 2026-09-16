@@ -358,8 +358,7 @@ export const isDataProductPolarisationsValid = (
     case TYPE_CONTINUUM:
     default: {
       const dataProductType = Number(
-        (dataProduct?.data as SDPImageContinuumData | undefined)?.dataProductType ??
-          DP_TYPE_IMAGES
+        (dataProduct?.data as SDPImageContinuumData | undefined)?.dataProductType ?? DP_TYPE_IMAGES
       );
       return dataProductType === DP_TYPE_IMAGES
         ? validatePolarisations(dataProduct.data as SDPImageContinuumData)

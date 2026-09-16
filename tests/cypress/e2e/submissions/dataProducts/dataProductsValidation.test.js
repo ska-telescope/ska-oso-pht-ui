@@ -44,8 +44,6 @@ describe('Data product validation', () => {
     cy.get('[data-testid="polarisationsI"]').click();
     cy.get('[data-testid="polarisationsXX"]').click();
 
-    cy.get('[data-testid="statusId7"]')
-      .should('have.attr', 'aria-label')
-      .and('include', 'Error');
+    cy.get('[data-testid="statusId7"]').should('have.attr', 'aria-label').and('include', 'Error');
   });
 });

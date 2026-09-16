@@ -96,6 +96,12 @@ js-e2e-deploy:
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 
 js-e2e-test:
+  environment:
+    name: test/$CI_COMMIT_REF_SLUG
+    on_stop: stop-js-e2e-test
+    auto_stop_in: 2 hours 
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
   allow_failure: true # Needed because of the current instability of the ingress env issues
   variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
