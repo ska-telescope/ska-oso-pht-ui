@@ -11,6 +11,7 @@ import Observation from '../types/observation';
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
@@ -329,10 +330,9 @@ export const checkDP = (proposal: Proposal): number => {
  * Checks whether a single data product has valid polarisations for its own observation's type -
  * mirrors DataProduct.tsx's pageFooter().enabled() switch (keyed on the observation actually
  * driving that data product, not the proposal-wide scienceCategory, since a proposal can have
- * data products against different observation types). Only image-continuum (dataProductType
- * DP_TYPE_IMAGES, the same default DataProduct.tsx falls back to when no observation is found),
- * zoom/combined-continuum-spectral, and PST flow-through/detected-filterbank data products
- * require at least one polarisation selected.
+ * data products against different observation types). Only image-continuum, zoom/combined-
+ * continuum-spectral, and PST flow-through/detected-filterbank data products require at least
+ * one polarisation selected.
  */
 export const isDataProductPolarisationsValid = (
   proposal: Proposal,
@@ -347,22 +347,28 @@ export const isDataProductPolarisationsValid = (
   );
 
   switch (observation?.type) {
-    case TYPE_ZOOM:
-    case TYPE_CONTINUUM_SPECTRAL:
-      return validatePolarisations(dataProduct.data as SDPSpectralData);
     case TYPE_PST:
       return observation?.pstMode === FLOW_THROUGH_VALUE ||
         observation?.pstMode === DETECTED_FILTER_BANK_VALUE
         ? validatePolarisations(dataProduct.data as SDPFlowthroughPSTData | SDPFilterbankPSTData)
         : true;
+    case TYPE_ZOOM:
+    case TYPE_CONTINUUM_SPECTRAL:
     case TYPE_CONTINUUM:
     default: {
+      // Visibilities data - whether the user-selected option under plain Continuum, or the
+      // hidden companion HiddenSDPData silently creates alongside a Zoom/combined spectral
+      // product for auto-linking/sens-calc (see DataProduct.tsx's ensureHiddenDataProduct) -
+      // never carries polarisations and must not be validated as the displayed data product.
+      // SDPSpectralData has no dataProductType field at all, so it falls back to DP_TYPE_IMAGES
+      // here (same fallback isDataProductRobustValid uses) and is always checked.
       const dataProductType = Number(
-        (dataProduct?.data as SDPImageContinuumData | undefined)?.dataProductType ?? DP_TYPE_IMAGES
+        (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData | undefined)
+          ?.dataProductType ?? DP_TYPE_IMAGES
       );
-      return dataProductType === DP_TYPE_IMAGES
-        ? validatePolarisations(dataProduct.data as SDPImageContinuumData)
-        : true;
+      return dataProductType === DP_TYPE_VISIBLE
+        ? true
+        : validatePolarisations(dataProduct.data as SDPSpectralData | SDPImageContinuumData);
     }
   }
 };

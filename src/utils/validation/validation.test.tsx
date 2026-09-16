@@ -32,6 +32,7 @@ import {
   TAPER_DEFAULT,
   TIME_HOURS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
@@ -496,6 +497,40 @@ describe('validateSDPPage polarisation rules', () => {
           id: 'SDP-1',
           observationId: 'obs-1',
           data: { dataProductType: PULSAR_TIMING_VALUE }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR when a zoom/combined spectral data product has no polarisations selected', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_ZOOM }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { polarisations: [] } // SDPSpectralData has no dataProductType field
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('ignores the hidden visibilities companion data product HiddenSDPData creates alongside a combined spectral product', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { polarisations: ['I', 'XX'] } // the displayed spectral product - valid
+        },
+        {
+          id: 'SDP-1-hidden',
+          observationId: 'obs-1',
+          // the auto-created hidden visibilities companion - never carries polarisations
+          data: { dataProductType: DP_TYPE_VISIBLE, timeAveraging: 4, frequencyAveraging: 1 }
         }
       ]
     } as any;
