@@ -46,8 +46,10 @@ async function PostPanel(
     }
     // The backend just granted this user chair/admin group membership on the new panel
     // (create_membership) - refresh so the next request's token actually reflects it.
-    // Fire and forget at this point, since the next request will refresh the token if it has expired.
-    refreshAuthToken();
+    // Awaited: a caller-triggered request immediately after this returns (e.g. navigating to a
+    // page that fetches on mount) would otherwise race this forced refresh for the same MSAL
+    // account and can fail with login_required.
+    await refreshAuthToken();
     return result.data as string;
   } catch (e) {
     if (e instanceof Error) {

@@ -110,14 +110,29 @@ export const createRequestInterceptor =
         request.headers['Authorization'] = `Bearer ${await acquireAccessToken(instance, account)}`;
         return request;
       } catch (error) {
-        if (error instanceof InteractionRequiredAuthError && !loginRedirectTriggered) {
-          loginRedirectTriggered = true;
-          console.warn(
-            '[axiosAuthClient] acquireTokenSilent failed, redirecting to login:',
-            (error as InteractionRequiredAuthError).errorCode,
-            (error as InteractionRequiredAuthError).message
-          );
-          instance.loginRedirect(loginRequest);
+        // A concurrent forced refresh (e.g. RefreshAuthToken, fired after creating a proposal or
+        // panel) can transiently fail an overlapping silent acquisition for the same account, even
+        // though the user is still genuinely signed in - retry once after a short delay before
+        // treating this as a real logged-out session and tearing down the app with a full-page
+        // redirect.
+        if (error instanceof InteractionRequiredAuthError) {
+          try {
+            await new Promise((resolve) => setTimeout(resolve, 250));
+            request.headers['Authorization'] =
+              `Bearer ${await acquireAccessToken(instance, account)}`;
+            return request;
+          } catch (retryError) {
+            if (retryError instanceof InteractionRequiredAuthError && !loginRedirectTriggered) {
+              loginRedirectTriggered = true;
+              console.warn(
+                '[axiosAuthClient] acquireTokenSilent failed after retry, redirecting to login:',
+                (retryError as InteractionRequiredAuthError).errorCode,
+                (retryError as InteractionRequiredAuthError).message
+              );
+              instance.loginRedirect(loginRequest);
+            }
+            throw retryError;
+          }
         }
         throw error;
       }
