@@ -244,10 +244,6 @@ export const OSD_CONSTANTS = {
     { label: 'kHz', value: 3 },
     { label: 'Hz', value: 4 }
   ],
-  RotationMeasure: {
-    min: -2e9,
-    max: 2e9
-  },
   DispersionMeasure: {
     min: 0,
     max: 100000

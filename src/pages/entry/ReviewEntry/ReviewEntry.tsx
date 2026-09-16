@@ -59,7 +59,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const ROW_HEIGHT_PX = 28.5; /* approximate height of one row in pixels */
 
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const userId = getUserId();
 
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;

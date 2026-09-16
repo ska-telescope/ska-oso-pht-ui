@@ -1,14 +1,8 @@
-import {
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
-  OSO_SERVICES_REVIEWS_PATH,
-  cypressToken
-} from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, OSO_SERVICES_REVIEWS_PATH } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
 import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockProposalReviewListBackend } from './mockProposalReviewListBackend.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -20,19 +14,9 @@ export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
 
 /*****************************************************************************************************************************/
 
-export function GetMockProposalReviewList(mock = MockProposalReviewListBackend): ProposalReview[] {
-  // this removes duplicates versions from the backend list and sorts by last modified date
-  const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'review_id') : mock;
-  return mappingList(uniqueResults);
-}
-
 async function GetProposalReviewList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<ProposalReview[] | string> {
-  if (USE_LOCAL_DATA || cypressToken) {
-    return GetMockProposalReviewList();
-  }
-
   try {
     const URL_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_REVIEWS_PATH}/users/reviews`;
     const result = await authAxiosClient.get(`${URL_PATH}`);

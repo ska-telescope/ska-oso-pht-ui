@@ -1,14 +1,10 @@
-import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
-import MockProposalBackendList from './mockProposalBackendList';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
   PROJECTS,
   DETAILS,
   OSO_SERVICES_PROPOSAL_PATH,
-  isCypress,
   SCIENCE_VERIFICATION
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
@@ -109,20 +105,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
 
 /*****************************************************************************************************************************/
 
-export function GetMockProposalList(): Proposal[] {
-  return mappingList(MockProposalBackendList);
-}
-
-async function GetProposalList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
-): Promise<Proposal[] | string> {
-  if (USE_LOCAL_DATA) {
-    return GetMockProposalList();
-  }
-  if (isCypress) {
-    return mappingList(MockProposal);
-  }
-
+async function GetProposalList(authAxiosClient: AxiosAuthClient): Promise<Proposal[] | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/mine`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);

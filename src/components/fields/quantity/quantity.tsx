@@ -17,7 +17,7 @@ interface QuantityFieldProps {
   maxInclusive?: boolean;
   step?: number;
   requiredMessage: string;
-  rangeMessage: string;
+  rangeMessage?: string;
   validate?: (value: number) => string;
   onFocus?: () => void;
   onUnitsFocus?: () => void;
@@ -25,6 +25,9 @@ interface QuantityFieldProps {
   setUnits?: (unit: number) => void;
   unitOptions?: DropDownProps['options'];
   unitsTestId?: string;
+  unitsDisabled?: boolean;
+  unitsMinWidth?: number;
+  topPadding?: number;
 }
 
 export default function QuantityField({
@@ -46,7 +49,10 @@ export default function QuantityField({
   units,
   setUnits,
   unitOptions,
-  unitsTestId
+  unitsTestId,
+  unitsDisabled,
+  unitsMinWidth,
+  topPadding = 2
 }: QuantityFieldProps) {
   const { text, error, handleChange } = useNumericInput(value, setValue, {
     requiredMessage: requiredMessage,
@@ -59,7 +65,7 @@ export default function QuantityField({
   });
 
   return (
-    <Box pt={2}>
+    <Box pt={topPadding}>
       <Box display="flex" alignItems="flex-end" gap={1}>
         <TextField
           variant="standard"
@@ -79,14 +85,14 @@ export default function QuantityField({
           }}
           required={required}
         />
-        <Box>
+        <Box sx={{ minWidth: unitsMinWidth }}>
           <DropDown
             options={unitOptions}
             testId={unitsTestId}
             value={units}
-            disabled={disabled}
+            disabled={unitsDisabled ?? disabled}
             setValue={setUnits}
-            label={label}
+            label=""
             onFocus={onUnitsFocus}
             InputProps={{ disableUnderline: true }}
           />

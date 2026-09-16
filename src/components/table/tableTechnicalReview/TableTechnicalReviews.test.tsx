@@ -14,7 +14,7 @@ vi.mock('react-router-dom', () => {
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => {
   return {
-    default: () => ({})
+    default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
   };
 });
 

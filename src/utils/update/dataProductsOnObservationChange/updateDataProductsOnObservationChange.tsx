@@ -31,8 +31,8 @@ export const PSTData = (
         outputFrequencyResolution: 1,
         outputSamplingInterval: 1,
         bitDepth: 8,
-        dispersionMeasure: 1,
-        rotationMeasure: 1
+        dispersionMeasure: 0,
+        rotationMeasure: 0
       } as SDPFilterbankPSTData;
     default:
       return {

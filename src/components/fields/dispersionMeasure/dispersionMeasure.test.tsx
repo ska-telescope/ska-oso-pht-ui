@@ -4,11 +4,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import DispersionMeasureField from './dispersionMeasure';
 
-vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
-  useOSDAccessors: () => ({
-    observatoryConstants: { DispersionMeasure: { min: 1, max: 1000 } }
-  })
-}));
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
   useScopedTranslation: () => ({ t: (k: string) => k })
 }));
@@ -21,29 +16,64 @@ describe('<DispersionMeasureField />', () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
-        <DispersionMeasureField value={1} setValue={handleSetValue} />
+        <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const wrapper = screen.getByTestId('dispersionMeasure');
-    const input = within(wrapper).getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 250 } });
-    fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(Number(250));
   });
 
-  test('does not update when value changed to out of range', async () => {
+  test('allows decimal free-text entry', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
-        <DispersionMeasureField value={1} setValue={handleSetValue} />
+        <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const wrapper = screen.getByTestId('dispersionMeasure');
-    const input = within(wrapper).getByRole('spinbutton') as HTMLInputElement;
-    fireEvent.change(input, { target: { value: 10000000 } });
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 1.5 } });
+    expect(handleSetValue).toHaveBeenCalledWith(Number(1.5));
+    expect(screen.queryByText('dispersionMeasure.range.error')).not.toBeInTheDocument();
+  });
+
+  test('shows range error when value changed to negative', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <DispersionMeasureField value={0} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: -1 } });
     fireEvent.blur(input);
-    expect(handleSetValue).not.toHaveBeenCalled();
+    expect(handleSetValue).toHaveBeenCalledWith(Number(-1));
     expect(screen.getByText('dispersionMeasure.range.error')).toBeInTheDocument();
-    screen.debug();
+  });
+
+  test('shows range error when value exceeds maximum', async () => {
+    const handleSetValue = vi.fn();
+    render(
+      <StoreProvider>
+        <DispersionMeasureField value={0} setValue={handleSetValue} />
+      </StoreProvider>
+    );
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: 100001 } });
+    fireEvent.blur(input);
+    expect(handleSetValue).toHaveBeenCalledWith(Number(100001));
+    expect(screen.getByText('dispersionMeasure.range.error')).toBeInTheDocument();
+  });
+
+  test('renders fixed disabled units dropdown', async () => {
+    render(
+      <StoreProvider>
+        <DispersionMeasureField value={0} setValue={vi.fn()} />
+      </StoreProvider>
+    );
+    const units = screen.getByTestId('dispersionMeasureUnits');
+    expect(units).toHaveTextContent('dispersionMeasure.units');
+    const fieldRoot = within(units.parentElement as HTMLElement).getByRole('combobox');
+    expect(fieldRoot).toHaveAttribute('aria-disabled', 'true');
   });
 });

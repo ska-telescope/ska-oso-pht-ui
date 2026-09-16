@@ -69,7 +69,7 @@ export default function LinkingPage() {
 
   const { t } = useScopedTranslation();
 
-  const authAxiosClient = useAxiosAuthClient();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currRec, setCurrRec] = React.useState<any | null>(null);

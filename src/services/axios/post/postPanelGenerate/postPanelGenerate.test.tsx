@@ -1,7 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import PostPanelGenerate from './postPanelGenerate';
-import * as CONSTANTS from '@/utils/constants';
 
 describe('PostPanelGenerate Service', () => {
   let mockedAuthClient: any;
@@ -19,42 +18,31 @@ describe('PostPanelGenerate Service', () => {
     };
   });
 
-  test('returns empty string when USE_LOCAL_DATA is true', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PostPanelGenerate(mockedAuthClient);
-    expect(result).toEqual('');
-  });
-
-  test('returns data id from API when USE_LOCAL_DATA is false', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+  test('returns data id from API', async () => {
     mockedAuthClient.post.mockResolvedValue({ data: '' });
     const result = await PostPanelGenerate(mockedAuthClient);
     expect(result).to.deep.equal('');
   });
 
   test('returns error message on API failure', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue(new Error('Network Error'));
     const result = await PostPanelGenerate(mockedAuthClient);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue({ unexpected: 'object' });
     const result = await PostPanelGenerate(mockedAuthClient);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue(undefined);
     const result = await PostPanelGenerate(mockedAuthClient);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue(null);
     const result = await PostPanelGenerate(mockedAuthClient);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
