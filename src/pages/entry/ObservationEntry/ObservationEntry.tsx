@@ -46,8 +46,6 @@ import {
   SA_CUSTOM,
   PULSAR_TIMING_VALUE,
   SUPPLIED_TYPE_INTEGRATION,
-  cypressToken,
-  cypressLowUnitsUnlocked,
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
@@ -126,7 +124,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const locationProperties = useLocation();
-  const authAxiosClient = useAxiosAuthClient();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const loggedIn = isLoggedIn();
   const {
     isSV,
@@ -403,7 +401,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const updateStorageProposal = () => {
-    if ((loggedIn || cypressToken) && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
+    if (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
     }
   };
@@ -993,7 +991,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     fieldWrapper(
       <ObservationTypeField
         disabled={
-          (!isLoggedIn() && !cypressToken) ||
+          !isLoggedIn() ||
           (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1)
         }
         options={obsTypeOptions}
@@ -1084,7 +1082,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={suppliedValue}
         setValue={setSuppliedValue}
         label={label}
-        disabled={isLow() && !cypressLowUnitsUnlocked}
+        disabled={isLow()}
         minValue={minValue}
         maxValue={maxValue}
         minInclusive={false}
@@ -1335,7 +1333,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const pageFooter = () => {
     const buttonClicked = () => {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
-      if ((!loggedIn && !cypressToken) || (osdCyclePolicy?.maxObservations ?? 1) !== 1) {
+      if (!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
     };
@@ -1346,10 +1344,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           bgcolor: 'transparent',
           position: 'fixed',
           bottom:
-            FOOTER_HEIGHT_PHT +
-            ((loggedIn || cypressToken) && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 60 : 0),
+            FOOTER_HEIGHT_PHT + (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 60 : 0),
           left: 0,
-          right: (loggedIn || cypressToken) && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 30 : 0
+          right: loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 30 : 0
         }}
         elevation={0}
       >
@@ -1363,7 +1360,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           <Grid />
           <Grid />
           <Grid>
-            {((!loggedIn && !cypressToken) || (osdCyclePolicy?.maxObservations ?? 1) !== 1) && (
+            {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) && (
               <AddButton
                 action={buttonClicked}
                 disabled={addButtonDisabled()}
@@ -1381,7 +1378,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   return (
     <HelpShell page={PAGE}>
       <Box pt={2}>
-        {((!loggedIn && !cypressToken) || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
+        {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
           <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         )}
         <Grid

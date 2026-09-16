@@ -1,33 +1,16 @@
 // import axios from 'axios';
-import {
-  OSO_SERVICES_PROPOSAL_PATH,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
-} from '@utils/constants.ts';
-import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
-import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
-import { MockODTConfigurationBackend } from './mockODTConfigurationBackend';
+import { OSO_SERVICES_PROPOSAL_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
+import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { ObservatoryData, ObservatoryDataBackend } from '@/utils/types/observatoryData';
 import { ODTConfigurationBackend } from '@utils/types/odtConfiguration.tsx';
 import { osdMapping } from './getOSDCycles';
 
 /*****************************************************************************************************************************/
 
-export function GetMockData(
-  mock = MockObservatoryDataBackend,
-  odtConfig = MockODTConfigurationBackend
-): ObservatoryData {
-  return osdMapping([mock], odtConfig);
-}
-
 async function GetObservatoryData(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   cycleNumber: number
 ): Promise<string | ObservatoryData> {
-  if (USE_LOCAL_DATA) {
-    return GetMockData();
-  }
-
   try {
     const [cycleResult, odtResult] = await Promise.all([
       authAxiosClient.get(

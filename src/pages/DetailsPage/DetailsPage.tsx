@@ -53,7 +53,7 @@ export default function DetailsPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV } = useOSDAccessors();
-  const authAxiosClient = useAxiosAuthClient();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const [scienceCategoryId, setScienceCategoryId] = React.useState(
     getProposal().scienceCategory ?? ''
   );

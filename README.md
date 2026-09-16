@@ -157,14 +157,13 @@ For k8s deployments:
 
 ### Environment Variable Reference
 
-| Variable                             | Purpose                                   |
-| ------------------------------------ | ----------------------------------------- |
-| `REACT_APP_SKA_OSO_SERVICES_URL`     | Base URL for proposal backend APIs        |
-| `REACT_APP_SKA_SENSITIVITY_CALC_URL` | Sensitivity calculator backend            |
-| `REACT_APP_USE_LOCAL_DATA`           | Use mock proposal data instead of backend |
-| `MSENTRA_CLIENT_ID`                  | MS Entra client ID for auth               |
-| `MSENTRA_TENANT_ID`                  | MS Entra tenant ID                        |
-| `MSENTRA_REDIRECT_URI`               | OAuth redirect URI                        |
+| Variable                             | Purpose                            |
+| ------------------------------------ | ---------------------------------- |
+| `REACT_APP_SKA_OSO_SERVICES_URL`     | Base URL for proposal backend APIs |
+| `REACT_APP_SKA_SENSITIVITY_CALC_URL` | Sensitivity calculator backend     |
+| `MSENTRA_CLIENT_ID`                  | MS Entra client ID for auth        |
+| `MSENTRA_TENANT_ID`                  | MS Entra tenant ID                 |
+| `MSENTRA_REDIRECT_URI`               | OAuth redirect URI                 |
 
 # Backend Requirements
 
@@ -194,7 +193,7 @@ Project repository-provided git hooks.
 The following global state is stored in Redux:
 
 | Store Path             | Purpose                                    |
-| ---------------------- |--------------------------------------------|
+| ---------------------- | ------------------------------------------ |
 | `Application.Content1` | Proposal status per page                   |
 | `Application.Content2` | Currently edited proposal                  |
 | `Application.Content3` | Cycle policy data from OSD                 |

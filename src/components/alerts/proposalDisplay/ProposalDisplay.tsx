@@ -52,7 +52,7 @@ export default function ProposalDisplay({
   const { t } = useScopedTranslation();
   const { isSV } = useOSDAccessors();
   const theme = useTheme();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
 
   const getFont = (bold: boolean) => (bold ? 600 : 300);
 

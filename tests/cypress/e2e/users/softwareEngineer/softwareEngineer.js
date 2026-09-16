@@ -18,9 +18,6 @@ import { reviewerAdmin } from '../users.js';
 describe('Software Engineer', () => {
   beforeEach(() => {
     initialize(reviewerAdmin);
-    cy.window().then((win) => {
-      win.localStorage.setItem('USE_LOCAL_DATA', 'true');
-    });
   });
 
   afterEach(() => {

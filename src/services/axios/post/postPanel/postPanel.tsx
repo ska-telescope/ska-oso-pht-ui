@@ -1,7 +1,7 @@
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient, RefreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
-import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@/utils/constants';
+import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL } from '@/utils/constants';
 
 export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
   const transformedPanel: PanelBackend = {
@@ -29,19 +29,12 @@ export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
   return transformedPanel;
 }
 
-export function postMockPanel(): string {
-  return 'PANEL-ID-001';
-}
-
 async function PostPanel(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
+  refreshAuthToken: RefreshAuthToken,
   panel: Panel,
   cycleId: string
 ): Promise<string | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return postMockPanel();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/`;
     const convertedPanel = mappingPostPanel(panel, cycleId);
@@ -51,6 +44,12 @@ async function PostPanel(
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
+    // The backend just granted this user chair/admin group membership on the new panel
+    // (create_membership) - refresh so the next request's token actually reflects it.
+    // Awaited: a caller-triggered request immediately after this returns (e.g. navigating to a
+    // page that fetches on mount) would otherwise race this forced refresh for the same MSAL
+    // account and can fail with login_required.
+    await refreshAuthToken();
     return result.data as string;
   } catch (e) {
     if (e instanceof Error) {

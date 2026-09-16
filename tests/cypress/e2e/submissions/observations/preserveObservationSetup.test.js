@@ -1,51 +1,20 @@
 import {
-  initialize,
   clearLocalStorage,
-  clickCycleConfirm,
-  clickAddSubmission,
-  clickCreateSubmission,
-  enterScienceVerificationIdeaTitle,
-  clickCycleSelectionSV,
   pageConfirmed,
-  verifyScienceIdeaCreatedAlertFooter,
-  selectObservingMode,
   clickStatusIconNav,
-  addM2TargetUsingResolve,
-  clickToAddTarget,
   mockResolveTargetAPI,
-  verifyAutoLinkAlertFooter,
   updateFieldValue,
   addSubmissionSummary,
-  mockCreateSVIdeaAPI,
-  mockOSDAPI
+  addM2TargetAndAutoLink,
+  createScienceIdeaSession
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('SV Flow: Observation setup is preserved when details page fields change', () => {
   beforeEach(() => {
-    initialize(standardUser);
-    mockCreateSVIdeaAPI();
-    mockOSDAPI();
     mockResolveTargetAPI();
-
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
-    clickCycleSelectionSV();
-    clickCycleConfirm();
-    enterScienceVerificationIdeaTitle();
-    clickCreateSubmission();
-    cy.wait('@mockCreateSVIdea');
-    verifyScienceIdeaCreatedAlertFooter();
-    pageConfirmed('TEAM');
-    clickStatusIconNav('statusId2');
-    pageConfirmed('DETAILS');
-    selectObservingMode('Continuum');
-    clickStatusIconNav('statusId4');
-    pageConfirmed('TARGET');
-    addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
-    clickToAddTarget();
-    verifyAutoLinkAlertFooter();
+    createScienceIdeaSession(standardUser);
+    addM2TargetAndAutoLink('Continuum');
   });
 
   afterEach(() => {

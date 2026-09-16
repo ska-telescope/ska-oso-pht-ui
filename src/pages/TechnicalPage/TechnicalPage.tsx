@@ -16,7 +16,6 @@ import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 import {
-  cypressToken,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_TECHNICAL,
   UPLOAD_MAX_WIDTH_PDF
@@ -40,13 +39,13 @@ export default function TechnicalPage() {
   const loggedIn = isLoggedIn();
   const { setHelp } = useHelp();
 
-  const isDisableEndpoints = () => !loggedIn && !cypressToken;
+  const isDisableEndpoints = () => !loggedIn;
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {

@@ -1,12 +1,6 @@
-import {
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
-  OSO_SERVICES_REVIEWERS_PATH,
-  cypressToken
-} from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, OSO_SERVICES_REVIEWERS_PATH } from '@utils/constants.ts';
 import { Reviewer, ReviewerBackend } from '@utils/types/reviewer.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockReviewersList } from './mockReviewerList.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 /*********************************************************** filter *********************************************************/
 
@@ -49,17 +43,7 @@ export function combineReviewers(
   return Array.from(combinedMap.values());
 }
 
-export function GetMockReviewersList(): Reviewer[] {
-  return MockReviewersList;
-}
-
-async function GetReviewerList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
-): Promise<Reviewer[] | string> {
-  if (USE_LOCAL_DATA || cypressToken) {
-    return GetMockReviewersList();
-  }
-
+async function GetReviewerList(authAxiosClient: AxiosAuthClient): Promise<Reviewer[] | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWERS_PATH}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);

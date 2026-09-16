@@ -1,4 +1,4 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MSENTRA_API_URI } from '@/utils/constants';
@@ -24,6 +24,20 @@ export const loginRequest = {
 };
 
 type MsalInstance = ReturnType<typeof useMsal>['instance'];
+
+// The axios client returned by useAxiosAuthClient - exported so callers that only need it for
+// typing (e.g. postProposal.tsx, which takes it as a parameter) don't have to reach for
+// ReturnType<typeof useAxiosAuthClient>, whose shape now includes refreshAuthToken too.
+export type AxiosAuthClient = AxiosInstance;
+
+// Call after any action known to grant new group membership server-side (e.g. creating a
+// proposal or panel, which calls ska-oso-services' create_membership) - acquireTokenSilent
+// normally serves a cached token until it's near expiry, so without this the next request would
+// carry the *pre-creation* token and its stale `groups` claim, and the new SecurityService
+// permission checks (which read groups straight off the token, not a live lookup) would reject
+// actions on the thing the user just created. Best-effort: on failure the caller proceeds with
+// whatever token it already had, same as before this existed.
+export type RefreshAuthToken = () => Promise<void>;
 
 // Concurrent requests all failing silent token acquisition at once (e.g. on initial page load)
 // would otherwise each independently call loginRedirect, navigating away repeatedly and
@@ -56,6 +70,27 @@ export const mapAxiosError = (error: AxiosError): Error => {
   return new Error(`An error occurred: ${error.message}`);
 };
 
+type MsalAccount = ReturnType<MsalInstance['getAllAccounts']>[number];
+
+// Shared by attachToken below and by useAxiosAuthClient's local-token-provider (registered only
+// on localhost, for the separate non-hook axiosClient) - both just need a silently-acquired
+// access token for the current account.
+const acquireAccessToken = (instance: MsalInstance, account: MsalAccount): Promise<string> =>
+  instance.acquireTokenSilent({ ...loginRequest, account }).then((r) => r.accessToken);
+
+// localhost only: no MSAL account snapshot yet - either genuinely not logged in, or MSAL just
+// hasn't finished initializing/processing a redirect if the interceptor fires very early after
+// page load (MsalProvider kicks both off in a useEffect, which can run after a child's first
+// request). Both instance.initialize() and instance.handleRedirectPromise() memoize their result
+// internally, and waits for MSAL's actual startup to finish before concluding there's really no session.
+const resolveLocalhostAccount = async (
+  instance: MsalInstance
+): Promise<MsalAccount | undefined> => {
+  await instance.initialize();
+  await instance.handleRedirectPromise().catch(() => {});
+  return instance.getAllAccounts()[0];
+};
+
 export const createRequestInterceptor =
   (instance: MsalInstance) => async (request: InternalAxiosRequestConfig) => {
     const isHttp = request?.baseURL?.startsWith(HTTP);
@@ -65,28 +100,58 @@ export const createRequestInterceptor =
       request.baseURL = request.baseURL.replace(HTTP, HTTPS);
     }
 
-    const account = instance.getAllAccounts()[0];
+    let account: MsalAccount | undefined = instance.getAllAccounts()[0];
+    if (!account && isLocalhost()) {
+      account = await resolveLocalhostAccount(instance);
+    }
+
     if (account) {
       try {
-        const tokenResponse = await instance.acquireTokenSilent({
-          ...loginRequest,
-          account
-        });
-        request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
+        request.headers['Authorization'] = `Bearer ${await acquireAccessToken(instance, account)}`;
+        return request;
       } catch (error) {
-        if (error instanceof InteractionRequiredAuthError && !loginRedirectTriggered) {
-          loginRedirectTriggered = true;
-          console.warn(
-            '[axiosAuthClient] acquireTokenSilent failed, redirecting to login:',
-            (error as InteractionRequiredAuthError).errorCode,
-            (error as InteractionRequiredAuthError).message
-          );
-          instance.loginRedirect(loginRequest);
+        // A concurrent forced refresh (e.g. RefreshAuthToken, fired after creating a proposal or
+        // panel) can transiently fail an overlapping silent acquisition for the same account, even
+        // though the user is still genuinely signed in - retry once after a short delay before
+        // treating this as a real logged-out session and tearing down the app with a full-page
+        // redirect.
+        if (error instanceof InteractionRequiredAuthError) {
+          try {
+            await new Promise((resolve) => setTimeout(resolve, 250));
+            request.headers['Authorization'] =
+              `Bearer ${await acquireAccessToken(instance, account)}`;
+            return request;
+          } catch (retryError) {
+            if (retryError instanceof InteractionRequiredAuthError && !loginRedirectTriggered) {
+              loginRedirectTriggered = true;
+              console.warn(
+                '[axiosAuthClient] acquireTokenSilent failed after retry, redirecting to login:',
+                (retryError as InteractionRequiredAuthError).errorCode,
+                (retryError as InteractionRequiredAuthError).message
+              );
+              instance.loginRedirect(loginRequest);
+            }
+            throw retryError;
+          }
         }
-        return Promise.reject(error);
+        throw error;
       }
     }
-    return request;
+
+    if (!isLocalhost()) {
+      return request;
+    }
+
+    // resolveLocalhostAccount waited for MSAL startup to finish and still found no account, so
+    // send the user to log in rather than silently carrying on.
+    if (!loginRedirectTriggered) {
+      loginRedirectTriggered = true;
+      console.warn(
+        '[axiosAuthClient] No MSAL account found after startup completed - redirecting to login.'
+      );
+      instance.loginRedirect(loginRequest);
+    }
+    throw new Error('No MSAL session found - redirecting to login.');
   };
 
 const useAxiosAuthClient = (baseURL: string = '/') => {
@@ -98,13 +163,20 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
   if (isLocalhost()) {
     setLocalTokenProvider(async () => {
       const account = instance.getAllAccounts()?.[0];
-      if (!account) {
-        return null;
-      }
-      const tokenResponse = await instance.acquireTokenSilent({ ...loginRequest, account });
-      return tokenResponse.accessToken;
+      return account ? acquireAccessToken(instance, account) : null;
     });
   }
+
+  // See RefreshAuthToken's own comment above for why this exists at all. Best-effort: a failed
+  // refresh just leaves the caller with whatever token it already had.
+  const refreshAuthToken: RefreshAuthToken = async () => {
+    const account = instance.getAllAccounts()?.[0];
+    if (account) {
+      await instance
+        .acquireTokenSilent({ ...loginRequest, account, forceRefresh: true })
+        .catch(() => {});
+    }
+  };
 
   const axiosClient = axios.create({
     baseURL,
@@ -124,7 +196,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
     (error: AxiosError) => Promise.reject(mapAxiosError(error))
   );
 
-  return axiosClient;
+  return { axiosClient, refreshAuthToken };
 };
 
 export default useAxiosAuthClient;

@@ -1,13 +1,6 @@
-import {
-  cypressToken,
-  OSO_SERVICES_REVIEWS_PATH,
-  REVIEW_TYPE,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
-} from '@utils/constants';
-import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend';
+import { OSO_SERVICES_REVIEWS_PATH, REVIEW_TYPE, SKA_OSO_SERVICES_URL } from '@utils/constants';
 import { mappingReviewFrontendToBackend } from '../../post/postProposalReview/postProposalReview';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,
@@ -65,18 +58,10 @@ export function mappingReviewBackendToFrontend(review: ProposalReviewBackend): P
   return transformedPanel;
 }
 
-export function putMockProposalReview(): ProposalReview {
-  return mappingReviewBackendToFrontend(MockProposalScienceReviewBackend);
-}
-
 async function PutProposalReview(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   review: ProposalReview
 ): Promise<ProposalReview | { error: string }> {
-  if (USE_LOCAL_DATA || cypressToken) {
-    return putMockProposalReview();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/${review.id}`;
     const convertedReview = mappingReviewFrontendToBackend(review, review.cycle, true);
