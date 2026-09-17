@@ -290,49 +290,12 @@ export const validateTechnicalPage = (proposal: Proposal) => {
 };
 
 /**
- * Checks whether the proposal's data product has valid polarisations for its science category.
- */
-export const checkDP = (proposal: Proposal): number => {
-  const validatePolarisations = (
-    data: SDPSpectralData | SDPImageContinuumData | SDPFilterbankPSTData | SDPFlowthroughPSTData
-  ): number => (data?.polarisations?.length > 0 ? 1 : 0);
-
-  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
-
-  if (
-    hasTargetObservations() &&
-    proposal.observations?.[0] &&
-    proposal.dataProductSDP &&
-    proposal.dataProductSDP?.length > 0
-  ) {
-    const dataProduct = proposal.dataProductSDP?.[0] as DataProductSDPNew;
-    switch (proposal.scienceCategory) {
-      case TYPE_ZOOM:
-      case TYPE_CONTINUUM_SPECTRAL:
-        return validatePolarisations(dataProduct.data as SDPSpectralData);
-      case TYPE_CONTINUUM:
-        return (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData)
-          ?.dataProductType === DP_TYPE_IMAGES
-          ? validatePolarisations(dataProduct.data as SDPImageContinuumData)
-          : 1;
-      case TYPE_PST:
-        const observation = proposal.observations?.[0] as Observation;
-        return observation.pstMode === FLOW_THROUGH_VALUE ||
-          observation.pstMode === DETECTED_FILTER_BANK_VALUE
-          ? validatePolarisations(dataProduct.data as SDPFlowthroughPSTData | SDPFilterbankPSTData)
-          : 1;
-    }
-  }
-  return 0;
-};
-
-/**
- * Checks whether a single data product has valid polarisations for its own observation's type -
- * mirrors DataProduct.tsx's pageFooter().enabled() switch (keyed on the observation actually
- * driving that data product, not the proposal-wide scienceCategory, since a proposal can have
- * data products against different observation types). Only image-continuum, zoom/combined-
- * continuum-spectral, and PST flow-through/detected-filterbank data products require at least
- * one polarisation selected.
+ * Checks whether a single data product has valid polarisations for its own observation's type
+ * (keyed on the observation actually driving that data product, not the proposal-wide
+ * scienceCategory, since a proposal can have data products against different observation types).
+ * Only image-continuum, zoom/combined-continuum-spectral, and PST flow-through/detected-filterbank
+ * data products require at least one polarisation selected. Shared by validateSDPPage and
+ * DataProduct.tsx's pageFooter().enabled() so both stay in sync.
  */
 export const isDataProductPolarisationsValid = (
   proposal: Proposal,
