@@ -9,8 +9,13 @@ import {
 import { z } from 'zod';
 import Observation from '../types/observation';
 import {
+  CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
+  CHANNELS_OUT_MIN_CONTINUUM,
+  CHANNELS_OUT_MIN_SPECTRAL,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
@@ -359,6 +364,40 @@ export const isDataProductPstDetectedFilterbankValid = (
   );
 };
 
+export const isDataProductChannelsOutValid = (
+  dataProduct: DataProductSDPNew,
+  proposal: Proposal
+): boolean => {
+  const dataProductType = Number(
+    (dataProduct?.data as SDPImageContinuumData | undefined)?.dataProductType ?? DP_TYPE_IMAGES
+  );
+
+  const observation = proposal?.observations?.find((obs) => obs.id === dataProduct.observationId);
+  const matchesMode = (type: string) =>
+    observation?.type === type || proposal?.scienceCategory === type;
+  const isContinuumSpectral = matchesMode(TYPE_CONTINUUM_SPECTRAL);
+  const isSpectral = matchesMode(TYPE_ZOOM);
+  const isRelevantMode = isSpectral || isContinuumSpectral || matchesMode(TYPE_CONTINUUM);
+
+  // channelsOut is only ever shown/edited for a continuum/spectral image-type data product
+  if (!isRelevantMode || dataProductType === DP_TYPE_VISIBLE) return true;
+
+  const channelsOut = (dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined)
+    ?.channelsOut;
+
+  // TODO deduplicate this from the component, and tidy up all the isX checks
+  const max = isContinuumSpectral ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
+  const min =
+    isContinuumSpectral || isSpectral ? CHANNELS_OUT_MIN_SPECTRAL : CHANNELS_OUT_MIN_CONTINUUM;
+
+  return (
+    typeof channelsOut === 'number' &&
+    Number.isInteger(channelsOut) &&
+    channelsOut >= min &&
+    channelsOut <= max
+  );
+};
+
 export const validateSDPPage = (proposal: Proposal) => {
   const dataProducts = proposal?.dataProductSDP;
   if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
@@ -367,7 +406,8 @@ export const validateSDPPage = (proposal: Proposal) => {
   const hasInvalidDataProduct = dataProducts.some(
     (dataProduct) =>
       !isDataProductRobustValid(dataProduct) ||
-      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct)
+      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct) ||
+      !isDataProductChannelsOutValid(dataProduct, proposal)
   );
   return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;
 };

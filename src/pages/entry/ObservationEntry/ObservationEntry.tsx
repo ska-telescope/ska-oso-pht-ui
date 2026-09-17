@@ -162,7 +162,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
-  const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(SUPPLIED_TYPE_INTEGRATION);
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
@@ -292,7 +291,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
     setSpectralResolution(ob?.spectralResolution ?? '');
-    setSpectralAveraging(ob?.spectralAveraging ?? 1);
     setSuppliedType(ob?.supplied?.type);
 
     // If the supplied units are not one of the integration time units,
@@ -343,7 +341,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
       continuumBandwidthUnits: continuumBandwidthUnits,
-      spectralAveraging: (Number.isNaN(spectralAveraging) ? 1 : spectralAveraging) ?? 1,
       supplied: {
         type: suppliedType,
         value: suppliedValue,
@@ -622,7 +619,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     numOf13mAntennas,
     numOfStations,
     pstMode,
-    spectralAveraging,
     spectralResolution,
     zoomChannels,
     observationType
@@ -1152,18 +1148,20 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       );
     };
     return fieldWrapper(
-      <ContinuumBandwidthField
-        setValue={setContinuumBandwidth}
-        value={continuumBandwidth}
-        suffix={continuumBandwidthUnitsField()}
-        telescope={telescope()}
-        observingBand={observingBand}
-        continuumBandwidthUnits={continuumBandwidthUnits}
-        centralFrequency={centralFrequency}
-        centralFrequencyUnits={centralFrequencyUnits}
-        subarrayConfig={subarrayConfig}
-        minimumChannelWidthHz={minimumChannelWidthHz}
-      />
+      <Box pt={1}>
+        <ContinuumBandwidthField
+          setValue={setContinuumBandwidth}
+          value={continuumBandwidth}
+          suffix={continuumBandwidthUnitsField()}
+          telescope={telescope()}
+          observingBand={observingBand}
+          continuumBandwidthUnits={continuumBandwidthUnits}
+          centralFrequency={centralFrequency}
+          centralFrequencyUnits={centralFrequencyUnits}
+          subarrayConfig={subarrayConfig}
+          minimumChannelWidthHz={minimumChannelWidthHz}
+        />
+      </Box>
     );
   };
 
@@ -1233,18 +1231,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
   const frequencySetUp = () => {
-    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
-    // centre frequency, all in one line. LOW zoom only - MID zoom/continuum/PST keep their
-    // existing layout below.
     if (isLow() && isZoom()) {
       return (
         <>
           <Grid size={{ md: 12, lg: 12 }} p={2}>
             {frequencySpectrumField()}
           </Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
           <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
           <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
         </>
       );
     }
@@ -1253,10 +1248,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+
         <Grid size={{ md: 12, lg: 6 }}>
           {isPST()
             ? pstModeField()
@@ -1277,25 +1273,23 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
       </>
     );
   };
 
   const frequencySetUpSpectralSV = () => {
-    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
-    // centre frequency, all in one line. LOW only - MID zoom SV keeps its existing layout below.
     if (isLow()) {
       return (
         <>
           <Grid size={{ md: 12, lg: 12 }} p={2}>
             {frequencySpectrumField()}
           </Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
           <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
           <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
         </>
       );
     }

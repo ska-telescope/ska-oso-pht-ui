@@ -4,11 +4,12 @@ import { presentUnits } from '@utils/present/present';
 import { StandardData, ZoomData, Telescope } from '@utils/types/typesSensCalc.tsx';
 import {
   SA_CUSTOM,
-  SEPARATOR0,
+  STATUS_ERROR,
   STATUS_OK,
   TIME_HOURS,
   FREQUENCY_MHZ,
   DECIMAL_PLACES,
+  IW_BRIGGS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   TIME_SECS,
@@ -21,23 +22,21 @@ import {
   getImageWeightingMapping,
   shiftSensitivity,
   isSuppliedTime,
-  getSensitivitiesUnitsMapping
+  getSensitivitiesUnitsMapping,
+  timeConversion
 } from '@utils/helpersSensCalc.ts';
-import { FREQUENCY_HZ, FREQUENCY_UNITS, SUPPLIED_TYPE_SENSITIVITY } from '@utils/constants.ts';
+import { FREQUENCY_HZ, SUPPLIED_TYPE_SENSITIVITY } from '@utils/constants.ts';
 import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import {
-  pointingCentre,
-  addValue,
-  addTime,
-  addFrequency,
-  addRobustProperty,
-  rxBand
-} from '../submissionEntries/submissionEntries';
-import sensCalHelpers from '../sensitivityCalculator/sensCalHelpers';
+import sensCalHelpers, {
+  getPointingCentre,
+  getRxBandValue,
+  SensCalcQueryParams
+} from '../sensitivityCalculator/sensCalHelpers';
 import Fetch from '../fetch/Fetch';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDPNew, SDPSpectralData } from '@/utils/types/dataProduct';
+import { frequencyConversion, getSpectralResolutionHz } from '@/utils/helpers';
 
 interface FinalIndividualResults {
   results1: ResultsSection;
@@ -55,7 +54,6 @@ interface FinalIndividualResults {
 
 export function getFinalResults(
   sensCalcApiResponse: any,
-  target: Target,
   observation: Observation
 ): SensCalcResults {
   const isSuppliedSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
@@ -63,7 +61,6 @@ export function getFinalResults(
   const individualResults = getFinalIndividualResultsForZoom(sensCalcApiResponse, observation);
 
   const theResults: SensCalcResults = {
-    title: target.name,
     statusGUI: STATUS_OK,
     section1: [],
     section3: [individualResults.results11]
@@ -210,62 +207,46 @@ export function getFinalIndividualResultsForZoom(
   return updated_results as FinalIndividualResults;
 }
 
-const getSpectralResolution = (observation: Observation) => {
-  const units = FREQUENCY_UNITS[2].label;
-  const spectralResValue = observation.spectralResolution.includes(units)
-    ? Number(observation.spectralResolution.split(' ')[0]) * 1000
-    : Number(observation.spectralResolution.split(' ')[0]);
-  return spectralResValue?.toString();
-};
-
-const defaultToOne = (value: unknown): number => {
-  const n = Number(value);
-  return Number.isInteger(n) && n > 0 ? n : 1;
-};
-
 const addPropertiesLOW = (
   standardData: StandardData,
   zoomData: ZoomData,
   observation: Observation
 ) => {
-  const getBandwidthValues = () =>
-    OSD_CONSTANTS.array?.find((item) => item.value === observation.telescope)?.bandWidth;
+  const properties: SensCalcQueryParams = {
+    pointing_centre: getPointingCentre(standardData),
+    elevation_limit: Number(standardData.elevation.value),
+    freq_centres_mhz: frequencyConversion(
+      zoomData.centralFrequency?.value,
+      Number(zoomData.centralFrequency?.unit),
+      FREQUENCY_MHZ
+    ),
+    spectral_resolutions_hz: getSpectralResolutionHz(observation),
+    total_bandwidths_khz: sensCalHelpers.format.convertBandwidthToKHz(
+      zoomData.bandwidth.value,
+      zoomData.bandwidth.unit
+    ),
+    weighting_mode: getImageWeightingMapping(zoomData.imageWeighting) ?? ''
+  };
 
-  function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(
-      (item) => item.value === observation?.bandwidth
-    )?.label;
-    return bandWidthValue?.split(' ');
-  }
-
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit() ?? [];
-  let properties = '';
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray, SEPARATOR0);
+    properties.subarray_configuration = standardData.subarray;
   } else {
-    properties += addValue('num_stations', standardData.numStations, SEPARATOR0);
+    properties.num_stations = standardData.numStations;
   }
+
   if (isSuppliedTime(zoomData.suppliedType)) {
-    properties += addTime('integration_time_h', zoomData.supplied_0, TIME_HOURS);
+    properties.integration_time_h = timeConversion(
+      zoomData.supplied_0?.value,
+      Number(zoomData.supplied_0?.unit),
+      TIME_HOURS
+    );
   } else {
-    properties += addValue('sensitivity_jy', zoomData.supplied_1.value);
+    properties.sensitivity_jy = zoomData.supplied_1.value;
   }
-  properties += pointingCentre(standardData);
-  properties += addValue('elevation_limit', standardData.elevation.value);
-  properties += addFrequency('freq_centres_mhz', zoomData.centralFrequency, FREQUENCY_MHZ);
-  properties += addValue('spectral_averaging_factor', defaultToOne(zoomData.spectralAveraging));
 
-  properties += addValue('spectral_resolutions_hz', getSpectralResolution(observation));
-
-  properties += addValue(
-    'total_bandwidths_khz',
-    sensCalHelpers.format.convertBandwidthToKHz(
-      Number(bandwidthValueUnit[0]),
-      bandwidthValueUnit[1]
-    )
-  );
-  properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
-  properties = addRobustProperty(zoomData, properties);
+  if (zoomData.imageWeighting === IW_BRIGGS) {
+    properties.robustness = zoomData.robust;
+  }
 
   return properties;
 };
@@ -275,50 +256,48 @@ const addPropertiesMID = (
   zoomData: ZoomData,
   observation: Observation
 ) => {
-  const getBandwidthValues = () =>
-    OSD_CONSTANTS.array.find((item) => item.value === observation.telescope)?.bandWidth;
+  const properties: SensCalcQueryParams = {
+    rx_band: getRxBandValue(standardData.observingBand),
+    spectral_resolutions_hz: getSpectralResolutionHz(observation),
+    pointing_centre: getPointingCentre(standardData),
+    pmv: Number(standardData.weather.value),
+    el: Number(standardData.elevation.value),
+    total_bandwidths_hz: sensCalHelpers.format.convertBandwidthToHz(
+      zoomData.bandwidth.value,
+      zoomData.bandwidth.unit
+    ),
+    weighting_mode: getImageWeightingMapping(zoomData.imageWeighting) ?? '',
+    taper: zoomData.tapering
+  };
 
-  function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(
-      (item) => item.value === observation?.bandwidth
-    )?.label;
-    return bandWidthValue?.split(' ');
-  }
-
-  const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit() ?? [];
-
-  let properties = '';
   if (isSuppliedTime(zoomData.suppliedType)) {
-    properties += addTime('integration_time_s', zoomData.supplied_0, TIME_SECS, SEPARATOR0);
-  } else {
-    properties += addValue('supplied_sensitivity', zoomData.supplied_1.value, SEPARATOR0);
-    properties += addValue(
-      'sensitivity_unit',
-      getSensitivitiesUnitsMapping(Number(zoomData.supplied_1.unit))
+    properties.integration_time_s = timeConversion(
+      zoomData.supplied_0?.value,
+      Number(zoomData.supplied_0?.unit),
+      TIME_SECS
     );
+  } else {
+    properties.supplied_sensitivity = zoomData.supplied_1.value;
+    properties.sensitivity_unit = getSensitivitiesUnitsMapping(Number(zoomData.supplied_1.unit));
   }
-  properties += rxBand(standardData.observingBand);
 
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray.toUpperCase());
+    properties.subarray_configuration = standardData.subarray.toUpperCase();
   } else {
-    properties += addValue('n_ska', standardData.num15mAntennas);
-    properties += addValue('n_meer', standardData.num13mAntennas);
+    properties.n_ska = standardData.num15mAntennas;
+    properties.n_meer = standardData.num13mAntennas;
   }
-  properties += addFrequency('freq_centres_hz', zoomData.centralFrequency, FREQUENCY_HZ);
-  // properties += addFrequency('bandwidth_hz', zoomData.bandwidth, FREQUENCY_HZ);
-  properties += addValue('spectral_averaging_factor', defaultToOne(zoomData.spectralAveraging));
-  properties += addValue('spectral_resolutions_hz', getSpectralResolution(observation));
-  properties += pointingCentre(standardData);
-  properties += addValue('pmv', Number(standardData.weather.value));
-  properties += addValue('el', Number(standardData.elevation.value));
-  properties += addValue(
-    'total_bandwidths_hz',
-    sensCalHelpers.format.convertBandwidthToHz(Number(bandwidthValueUnit[0]), bandwidthValueUnit[1])
+
+  properties.freq_centres_hz = frequencyConversion(
+    zoomData.centralFrequency?.value,
+    Number(zoomData.centralFrequency?.unit),
+    FREQUENCY_HZ
   );
-  properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
-  properties += addValue('taper', zoomData.tapering);
-  properties = addRobustProperty(zoomData, properties);
+
+  if (zoomData.imageWeighting === IW_BRIGGS) {
+    properties.robustness = zoomData.robust;
+  }
+
   return properties;
 };
 
@@ -330,10 +309,10 @@ async function GetZoomData(
 ): Promise<SensCalcResults> {
   const zoomData: ZoomData = {
     dataType: observation.type,
-    bandwidth: {
-      value: 0, //observation?.continuumBandwidth,
-      unit: '' // observation?.continuumBandwidthUnits.toString()
-    },
+    // TODO BTN-3462 we should be able to use getBandwidthZoom(observation) here, but the sens calc does
+    //  not yet support arbirtary bandwidths. As we are only using the spectral part of the response
+    //  we can fudge a hardcoded value for now
+    bandwidth: { value: 3125.0, unit: 'kHz' },
     suppliedType: observation?.supplied?.type,
     supplied_0: {
       value: observation?.supplied?.value,
@@ -347,7 +326,6 @@ async function GetZoomData(
       value: observation?.centralFrequency,
       unit: observation?.centralFrequencyUnits?.toString()
     },
-    spectralAveraging: observation?.spectralAveraging ?? 0,
     spectralResolution: '',
     imageWeighting: (dataProductSDP?.data as SDPSpectralData)?.weighting ?? IMAGE_WEIGHTING_DEFAULT,
     robust: (dataProductSDP?.data as SDPSpectralData)?.robust ?? ROBUST_DEFAULT,
@@ -386,7 +364,8 @@ async function GetZoomData(
     ? addPropertiesLOW(standardData, zoomData, observation)
     : addPropertiesMID(standardData, zoomData, observation);
 
-  // const mapping: Function = undefined;
-  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, target, observation);
+  return Fetch(axiosClient, telescope, URL_PATH, properties).then((response) =>
+    response?.statusGUI === STATUS_ERROR ? response : getFinalResults(response, observation)
+  );
 }
 export default GetZoomData;

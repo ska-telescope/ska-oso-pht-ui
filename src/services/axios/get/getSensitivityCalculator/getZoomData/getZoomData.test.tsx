@@ -82,7 +82,6 @@ describe('getFinalIndividualResultsForZoom', () => {
 });
 
 describe('getFinalResults', () => {
-  const mockTarget = { id: 'target1', name: 'Target 1' };
   const mockObservation = {
     supplied: { type: 'SENSITIVITY', value: 42, units: 'Jy' }
   };
@@ -112,8 +111,7 @@ describe('getFinalResults', () => {
   };
 
   test('should return correct structure for supplied sensitivity', () => {
-    const result = getFinalResults(mockResults, mockTarget, mockObservation);
-    expect(result).toHaveProperty('title', 'Target 1');
+    const result = getFinalResults(mockResults, mockObservation);
     expect(result.section1).toBeInstanceOf(Array);
     expect(result.section3).toBeInstanceOf(Array);
     // For supplied sensitivity, section1 should have 3 items
@@ -125,7 +123,7 @@ describe('getFinalResults', () => {
     const obs = {
       supplied: { type: 'NOT_SENSITIVITY', value: 42, units: 'Jy' }
     };
-    const result = getFinalResults(mockResults, mockTarget, obs);
+    const result = getFinalResults(mockResults, obs);
     // For non-supplied sensitivity, section1 should have 5 items
     expect(result.section1.length).toBe(5);
     expect(result.section3.length).toBe(1);
@@ -133,7 +131,7 @@ describe('getFinalResults', () => {
 
   test('should handle missing optional fields gracefully', () => {
     const incompleteResults = { transformed_result: [{}] };
-    const result = getFinalResults(incompleteResults, mockTarget, mockObservation);
+    const result = getFinalResults(incompleteResults, mockObservation);
     expect(result.section1.length).toBe(5);
     expect(result.section3.length).toBe(1);
   });
