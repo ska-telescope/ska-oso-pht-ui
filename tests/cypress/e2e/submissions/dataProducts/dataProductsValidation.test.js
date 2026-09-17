@@ -2,8 +2,7 @@ import {
   clearLocalStorage,
   clickStatusIconNav,
   pageConfirmed,
-  updateDataProductField,
-  verifyFieldError,
+  updateFieldValue,
   addM2TargetAndAutoLink,
   mockResolveTargetAPI,
   mockEmailAPI,
@@ -27,8 +26,11 @@ describe('Data product validation', () => {
     clickStatusIconNav('statusId7'); //Click to data product page
     pageConfirmed('DATA PRODUCT');
 
-    updateDataProductField('channelsOut', '41'); //enter invalid channels out
-    verifyFieldError('channelsOut', 'Valid range is 1 - 40', true); //verify field error
+    // ChannelsOutField is a SteppedNumberField, which puts data-testid directly on the <input>
+    // (not on an outer wrapper) - updateFieldValue types straight into it, matching how other
+    // SteppedNumberField-based fields (e.g. centralFrequency) are driven elsewhere.
+    updateFieldValue('channelsOut', '41'); //enter invalid channels out
+    cy.get('[data-testid="channelsOutError"]').should('contain.text', 'Valid range is 1 - 40'); //verify field error
   });
 
   it('SV Flow: Deselecting all polarisations shows Error in the Data Product breadcrumb', () => {
