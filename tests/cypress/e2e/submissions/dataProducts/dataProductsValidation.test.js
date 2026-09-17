@@ -39,10 +39,10 @@ describe('Data product validation', () => {
     pageConfirmed('DATA PRODUCT');
     cy.get('[data-testid="statusId7"]').should('have.attr', 'aria-label').and('include', 'OK');
 
-    // Default Continuum image data product ships with 'I' and 'XX' polarisations selected -
-    // deselect both to reach the zero-polarisations state BTN-3269 made reachable.
+    // AutoLinking sets a freshly auto-linked Continuum data product's polarisations to
+    // POLARISATIONS_DEFAULT (['I']) - deselect it to reach the zero-polarisations state
+    // BTN-3269 made reachable.
     cy.get('[data-testid="polarisationsI"]').click();
-    cy.get('[data-testid="polarisationsXX"]').click();
 
     cy.get('[data-testid="statusId7"]').should('have.attr', 'aria-label').and('include', 'Error');
   });
