@@ -492,7 +492,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           </Box>
         </Grid>
       </Grid>
-
     </Box>
   );
 }
