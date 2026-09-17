@@ -29,7 +29,6 @@ import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
-import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -603,7 +602,6 @@ export default function ReviewListPage() {
           )}
         </Grid>
       </Grid>
-      <PageFooterPMT />
       {conflictConfirm && conflictConfirmation()}
     </>
   );

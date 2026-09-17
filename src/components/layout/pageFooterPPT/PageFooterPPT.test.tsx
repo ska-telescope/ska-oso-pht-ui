@@ -105,11 +105,6 @@ describe('PageFooterPPT', () => {
     expect(screen.queryByTestId('prevButtonTestId')).not.toBeInTheDocument();
   });
 
-  it('renders notification when present', () => {
-    wrapper(<PageFooterPPT pageNo={1} />);
-    expect(screen.getByTestId('timeAlertFooter')).toBeInTheDocument();
-  });
-
   it('disables next button when buttonDisabled is true', () => {
     wrapper(<PageFooterPPT pageNo={1} buttonDisabled />);
     expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();

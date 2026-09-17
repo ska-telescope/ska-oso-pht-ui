@@ -2,7 +2,6 @@ import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   NAV,
@@ -18,8 +17,6 @@ import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import Proposal from '../../../utils/types/proposal';
-import Notification from '../../../utils/types/notification';
-import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import ProposalAccess from '@/utils/types/proposalAccess';
@@ -43,7 +40,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { isSV, osdCycleId, osdCyclePolicy } = useOSDAccessors();
 
   const proposal = application.content2 as Proposal;
-  const notification = application.content5 as Notification;
 
   const pages = React.useMemo(
     () => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL),
@@ -186,9 +182,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     else nextPageNav();
   };
 
-  const showNotification =
-    notification?.message?.length > 0 && notification?.level === AlertColorTypes.Error;
-
   return (
     <Paper
       sx={{
@@ -217,17 +210,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
               action={prevPageNav}
               testId="prevButtonTestId"
               title={prevLabel()}
-            />
-          )}
-        </Grid>
-
-        <Grid sx={{ pointerEvents: 'auto' }}>
-          {showNotification && (
-            <TimedAlert
-              color={notification.level}
-              delay={notification.delay}
-              testId="timeAlertFooter"
-              text={notification.message}
             />
           )}
         </Grid>
