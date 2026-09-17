@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Bugfix: Enusure that if no polarisations are selected this is reflected in breadcrumbs
+* Bugfix: Ensure that if no polarisations are selected this is reflected in breadcrumbs
 * Remove references to USE_LOCAL_DATA
 * Tidyup of end to end cypresss tests - temporarily skip tests requiring user portal flow  until portal is developed
 * Bugfix: Allow user to deselect all polarisations on Data Product page
