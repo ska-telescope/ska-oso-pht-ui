@@ -10,7 +10,6 @@ describe('updateSensCalcPartial', () => {
     observationId: 'obs1',
     targetId: 'target-1',
     sensCalc: {
-      title: 'original',
       statusGUI: 0,
       error: 'none'
     },
@@ -21,7 +20,6 @@ describe('updateSensCalcPartial', () => {
     observationId: 'obs2',
     targetId: 'target-2',
     sensCalc: {
-      title: 'original',
       statusGUI: 0,
       error: 'none'
     },
@@ -46,7 +44,6 @@ describe('updateSensCalcPartial', () => {
     expect(result[0].observationId).toBe('obs1');
     expect(result[0].targetId).toBe('target-1');
     expect(result[0].sensCalc.statusGUI).toBe(STATUS_PARTIAL);
-    expect(result[0].sensCalc.title).toBe('');
     expect(result[0].sensCalc.error).toBe('');
     expect(result[0].dataProductsSDPId).toBe('');
   });

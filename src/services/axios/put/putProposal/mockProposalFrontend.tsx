@@ -135,7 +135,6 @@ export const MockProposalFrontend: Proposal = {
       },
       spectralResolution: '5.43 kHz (8.1 km/s)',
       effectiveResolution: '5.43 kHz (8.1 km/s)',
-      spectralAveraging: 1,
       bandwidth: null,
       weather: undefined,
       continuumBandwidth: 150,
@@ -152,7 +151,6 @@ export const MockProposalFrontend: Proposal = {
       observationId: 'obs-obR1Ej',
       dataProductsSDPId: 'SDP-2',
       sensCalc: {
-        title: 'target',
         statusGUI: 0,
         error: '',
         section1: [
@@ -330,7 +328,6 @@ export const MockProposalFrontendZoom: Proposal = {
       weather: undefined,
       spectralResolution: '14.13 Hz (21.2 m/s)',
       effectiveResolution: '14.13 Hz (21.2 m/s)',
-      spectralAveraging: 1,
       numStations: 68,
       num13mAntennas: undefined,
       num15mAntennas: undefined,
@@ -344,7 +341,6 @@ export const MockProposalFrontendZoom: Proposal = {
       observationId: 'obs-arMIoY',
       dataProductsSDPId: 'SDP-1',
       sensCalc: {
-        title: 'target1',
         statusGUI: 0,
         error: '',
         section1: [

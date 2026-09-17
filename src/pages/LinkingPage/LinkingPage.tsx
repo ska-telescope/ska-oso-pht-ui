@@ -24,7 +24,6 @@ import {
   STATUS_OK,
   STATUS_PARTIAL,
   SUPPLIED_TYPE_INTEGRATION,
-  TYPE_PST,
   NOTIFICATION_DELAY_IN_SECONDS,
   REFERENCE_COORDINATE_TYPE_SSO
 } from '../../utils/constants';
@@ -293,7 +292,6 @@ export default function LinkingPage() {
       targetId: target.id,
       dataProductsSDPId: currRec.id ?? '',
       sensCalc: {
-        title: target.name,
         statusGUI: STATUS_PARTIAL,
         error: ''
       }
@@ -389,10 +387,10 @@ export default function LinkingPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getSensCalcForTargetGrid = (targetId: string) =>
+  const getTargetObservationForTargetGrid = (targetId: string): TargetObservation | undefined =>
     getProposal()?.targetObservation?.find(
       (p) => p.observationId === currRec?.id2 && p.targetId === targetId
-    )?.sensCalc;
+    );
 
   const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
   const isNatural = () => {
@@ -405,12 +403,9 @@ export default function LinkingPage() {
   };
 
   const getSensCalcSingle = (id: string, field: string) => {
-    const isPST = elementsO.find((e) => e.id2 === currRec?.id2)?.type === TYPE_PST;
     return (
       <SensCalcDisplaySingle
-        sensCalc={
-          isPST ? { statusGUI: 0, title: '*SHOW PST MESSAGE*' } : getSensCalcForTargetGrid(id)
-        }
+        targetObservation={getTargetObservationForTargetGrid(id)}
         show={isTargetSelected(id)}
         field={field}
         isCustom={isCustom()}

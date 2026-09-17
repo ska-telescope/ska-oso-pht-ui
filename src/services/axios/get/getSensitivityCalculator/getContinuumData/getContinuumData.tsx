@@ -4,40 +4,45 @@ import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
-  IMAGE_WEIGHTING_DEFAULT,
+  IW_UNIFORM,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST_DEFAULT,
   SA_CUSTOM,
-  SEPARATOR0,
   STATUS_OK,
+  STATUS_ERROR,
   TAPER_DEFAULT,
   TIME_HOURS,
-  TIME_SECS
+  TIME_SECS,
+  FREQUENCY_KHZ,
+  IW_BRIGGS,
+  LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
+  CHANNELS_OUT_DEFAULT,
+  DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
   getSensitivitiesUnitsMapping,
   isLow,
   isSuppliedTime,
-  shiftSensitivity
+  shiftSensitivity,
+  timeConversion
 } from '@utils/helpersSensCalc.ts';
 import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import {
-  addFrequency,
-  addRobustProperty,
-  addTime,
-  addValue,
-  pointingCentre,
-  rxBand
-} from '../submissionEntries/submissionEntries';
 import Target from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
 import Fetch from '../fetch/Fetch';
+import { frequencyConversion } from '@/utils/helpers';
+import {
+  getPointingCentre,
+  getRxBandValue,
+  SensCalcQueryParams
+} from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/sensCalHelpers.ts';
 
 interface FinalIndividualResults {
   results1: ResultsSection;
@@ -55,7 +60,6 @@ interface FinalIndividualResults {
 
 export function getFinalResults(
   sensCalcApiResponse: any,
-  target: Target,
   observation: Observation
 ): SensCalcResults {
   const isSuppliedSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
@@ -64,7 +68,6 @@ export function getFinalResults(
   const individualResults = getFinalIndividualResultsForContinuum(sensCalcApiResponse, observation);
 
   const theResults: SensCalcResults = {
-    title: target.name,
     statusGUI: STATUS_OK,
     section1: [],
     ...(isContinuum() && {
@@ -95,6 +98,70 @@ export function getFinalResults(
     theResults.section2?.push(individualResults.results10);
   }
   return theResults;
+}
+
+export function getSensCalcContinuumParams(
+  telescope: Telescope,
+  observation: Observation,
+  target: Target,
+  dataProductSDP: DataProductSDPNew
+): SensCalcQueryParams {
+  const continuumData: ContinuumData = {
+    dataType: observation.type,
+    bandwidth: {
+      value: observation?.continuumBandwidth ?? 0,
+      unit: observation?.continuumBandwidthUnits?.toString() ?? ''
+    },
+    effectiveResolution: observation?.effectiveResolution,
+    suppliedType: observation?.supplied?.type,
+    supplied_0: {
+      value: observation?.supplied?.value,
+      unit: observation?.supplied?.units?.toString()
+    },
+    supplied_1: {
+      value: observation?.supplied?.value,
+      unit: observation?.supplied?.units?.toString()
+    },
+    centralFrequency: {
+      value: observation?.centralFrequency,
+      unit: observation?.centralFrequencyUnits?.toString()
+    },
+    spectralAveragingFactor: getSpectralAveragingFactor(observation, dataProductSDP),
+    numberOfSubBands: observation?.numSubBands ?? 0,
+    imageWeighting: (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IW_UNIFORM,
+    robust: (dataProductSDP?.data as SDPImageContinuumData)?.robust ?? ROBUST_DEFAULT,
+    tapering: (dataProductSDP?.data as SDPImageContinuumData)?.taperValue ?? TAPER_DEFAULT
+  };
+
+  const observingBand = (observation: Observation) => observation.observingBand;
+
+  const subArray = (observation: Observation) => {
+    const result = OSD_CONSTANTS.array
+      .find((t) => t.value === observation.telescope)
+      ?.subarray?.find((s) => s.value === observation.subarray);
+    return result ? result.map : '';
+  };
+
+  const standardData: StandardData = {
+    observingBand: observingBand(observation),
+    weather: { value: observation.weather ?? 0, unit: 'mm' },
+    subarray: subArray(observation),
+    num15mAntennas: observation.num15mAntennas ?? 0,
+    num13mAntennas: observation.num13mAntennas ?? 0,
+    numStations: observation.numStations ?? 0,
+    skyDirectionType: REFERENCE_COORDINATE_TYPE_GALACTIC,
+    raGalactic: { value: String(target.raStr), unit: REFERENCE_COORDINATE_TYPE_GALACTIC.label },
+    decGalactic: { value: String(target.decStr), unit: REFERENCE_COORDINATE_TYPE_GALACTIC.label },
+    raEquatorial: { value: 0, unit: REFERENCE_COORDINATE_TYPE_ICRS.label },
+    decEquatorial: { value: 0, unit: REFERENCE_COORDINATE_TYPE_ICRS.label },
+    elevation: { value: observation.elevation, unit: 'deg' },
+    advancedData: null,
+    modules: []
+  };
+
+  return isLow(telescope)
+    ? addPropertiesLOW(standardData, continuumData)
+    : addPropertiesMID(standardData, continuumData);
 }
 
 const toFixed = (value: number) => {
@@ -229,137 +296,127 @@ export function getFinalIndividualResultsForContinuum(
   return updated_results as FinalIndividualResults;
 }
 
-const defaultToOne = (value: unknown): number => {
-  const n = Number(value);
-  return Number.isInteger(n) && n > 0 ? n : 1;
-};
-
 const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {
-  let properties = '';
+  const properties: SensCalcQueryParams = {
+    elevation_limit: Number(standardData.elevation.value),
+    pointing_centre: getPointingCentre(standardData),
+    freq_centre_mhz: frequencyConversion(
+      continuumData.centralFrequency?.value,
+      Number(continuumData.centralFrequency?.unit),
+      FREQUENCY_MHZ
+    ),
+    bandwidth_mhz: frequencyConversion(
+      continuumData.bandwidth?.value,
+      Number(continuumData.bandwidth?.unit),
+      FREQUENCY_MHZ
+    ),
+    spectral_averaging_factor: continuumData.spectralAveragingFactor,
+    n_subbands: continuumData.numberOfSubBands,
+    weighting_mode: getImageWeightingMapping(continuumData.imageWeighting) ?? ''
+  };
+
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray, SEPARATOR0);
+    properties.subarray_configuration = standardData.subarray;
   } else {
-    properties += addValue('num_stations', standardData.numStations, SEPARATOR0);
+    properties.num_stations = standardData.numStations;
   }
+
   if (isSuppliedTime(continuumData.suppliedType)) {
-    properties += addTime('integration_time_h', continuumData.supplied_0, TIME_HOURS);
+    properties.integration_time_h = timeConversion(
+      continuumData.supplied_0?.value,
+      Number(continuumData.supplied_0?.unit),
+      TIME_HOURS
+    );
   } else {
-    properties += addValue('sensitivity_jy', continuumData.supplied_1.value);
+    properties.sensitivity_jy = continuumData.supplied_1.value;
   }
-  properties += pointingCentre(standardData);
-  properties += addValue('elevation_limit', Number(standardData.elevation.value));
-  properties += addFrequency('freq_centre_mhz', continuumData.centralFrequency, FREQUENCY_MHZ);
-  properties += addValue(
-    'spectral_averaging_factor',
-    defaultToOne(continuumData.spectralAveraging)
-  );
-  properties += addFrequency('bandwidth_mhz', continuumData.bandwidth, FREQUENCY_MHZ);
-  properties += addValue('n_subbands', continuumData.numberOfSubBands);
-  properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
-  properties = addRobustProperty(continuumData, properties);
+
+  if (continuumData.imageWeighting === IW_BRIGGS) {
+    properties.robustness = continuumData.robust;
+  }
+
   return properties;
 };
 
 const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumData) => {
-  let properties = '';
+  const properties: SensCalcQueryParams = {
+    rx_band: getRxBandValue(standardData.observingBand),
+    freq_centre_hz: frequencyConversion(
+      continuumData.centralFrequency?.value,
+      Number(continuumData.centralFrequency?.unit),
+      FREQUENCY_HZ
+    ),
+    bandwidth_hz: frequencyConversion(
+      continuumData.bandwidth?.value,
+      Number(continuumData.bandwidth?.unit),
+      FREQUENCY_HZ
+    ),
+    spectral_averaging_factor: continuumData.spectralAveragingFactor,
+    pointing_centre: getPointingCentre(standardData),
+    pmv: Number(standardData.weather.value),
+    el: Number(standardData.elevation.value),
+    n_subbands: continuumData.numberOfSubBands,
+    weighting_mode: getImageWeightingMapping(continuumData.imageWeighting) ?? '',
+    taper: continuumData.tapering
+  };
+
   if (isSuppliedTime(continuumData.suppliedType)) {
-    properties += addTime('integration_time_s', continuumData.supplied_0, TIME_SECS, SEPARATOR0);
+    properties.integration_time_s = timeConversion(
+      continuumData.supplied_0?.value,
+      Number(continuumData.supplied_0?.unit),
+      TIME_SECS
+    );
   } else {
-    properties += addValue('supplied_sensitivity', continuumData.supplied_1.value, SEPARATOR0);
-    properties += addValue(
-      'sensitivity_unit',
-      getSensitivitiesUnitsMapping(Number(continuumData.supplied_1.unit))
+    properties.supplied_sensitivity = continuumData.supplied_1.value;
+    properties.sensitivity_unit = getSensitivitiesUnitsMapping(
+      Number(continuumData.supplied_1.unit)
     );
   }
-  properties += rxBand(standardData.observingBand);
 
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray.toUpperCase());
+    properties.subarray_configuration = standardData.subarray.toUpperCase();
   } else {
-    properties += addValue('n_ska', standardData.num15mAntennas);
-    properties += addValue('n_meer', standardData.num13mAntennas);
+    properties.n_ska = standardData.num15mAntennas;
+    properties.n_meer = standardData.num13mAntennas;
   }
-  properties += addFrequency('freq_centre_hz', continuumData.centralFrequency, FREQUENCY_HZ);
-  properties += addFrequency('bandwidth_hz', continuumData.bandwidth, FREQUENCY_HZ);
-  properties += addValue(
-    'spectral_averaging_factor',
-    defaultToOne(continuumData.spectralAveraging)
-  );
-  properties += pointingCentre(standardData);
-  properties += addValue('pmv', Number(standardData.weather.value));
-  properties += addValue('el', Number(standardData.elevation.value));
-  properties += addValue('n_subbands', continuumData.numberOfSubBands);
-  properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
-  properties += addValue('taper', continuumData.tapering);
-  properties = addRobustProperty(continuumData, properties);
+
+  if (continuumData.imageWeighting === IW_BRIGGS) {
+    properties.robustness = continuumData.robust;
+  }
+
   return properties;
 };
+
+export function getSpectralAveragingFactor(
+  observation: Observation,
+  dataProduct: DataProductSDPNew
+) {
+  const totalChannels =
+    frequencyConversion(
+      observation.continuumBandwidth,
+      observation.continuumBandwidthUnits,
+      FREQUENCY_KHZ
+    ) / LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ;
+
+  const channelsOut =
+    observation.type == TYPE_CONTINUUM && dataProduct.data.dataProductType == DP_TYPE_VISIBLE
+      ? CHANNELS_OUT_DEFAULT
+      : dataProduct.data.channelsOut;
+  return Math.floor(totalChannels / channelsOut);
+}
 
 function GetContinuumData(
   telescope: Telescope,
   observation: Observation,
   target: Target,
   dataProductSDP: DataProductSDPNew
-) {
+): Promise<SensCalcResults> {
   const URL_PATH = `/continuum/calculate`;
 
-  const continuumData: ContinuumData = {
-    dataType: observation.type,
-    bandwidth: {
-      value: observation?.continuumBandwidth ?? 0,
-      unit: observation?.continuumBandwidthUnits?.toString() ?? ''
-    },
-    effectiveResolution: observation?.effectiveResolution,
-    suppliedType: observation?.supplied?.type,
-    supplied_0: {
-      value: observation?.supplied?.value,
-      unit: observation?.supplied?.units?.toString()
-    },
-    supplied_1: {
-      value: observation?.supplied?.value,
-      unit: observation?.supplied?.units?.toString()
-    },
-    centralFrequency: {
-      value: observation?.centralFrequency,
-      unit: observation?.centralFrequencyUnits?.toString()
-    },
-    numberOfSubBands: observation?.numSubBands ?? 0,
-    spectralAveraging: observation?.spectralAveraging ?? 1,
-    imageWeighting:
-      (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IMAGE_WEIGHTING_DEFAULT,
-    robust: (dataProductSDP?.data as SDPImageContinuumData)?.robust ?? ROBUST_DEFAULT,
-    tapering: (dataProductSDP?.data as SDPImageContinuumData)?.taperValue ?? TAPER_DEFAULT
-  };
+  const properties = getSensCalcContinuumParams(telescope, observation, target, dataProductSDP);
 
-  const observingBand = (observation: Observation) => observation.observingBand;
-
-  const subArray = (observation: Observation) => {
-    const result = OSD_CONSTANTS.array
-      .find((t) => t.value === observation.telescope)
-      ?.subarray?.find((s) => s.value === observation.subarray);
-    return result ? result.map : '';
-  };
-
-  const standardData: StandardData = {
-    observingBand: observingBand(observation),
-    weather: { value: observation.weather ?? 0, unit: 'mm' },
-    subarray: subArray(observation),
-    num15mAntennas: observation.num15mAntennas ?? 0,
-    num13mAntennas: observation.num13mAntennas ?? 0,
-    numStations: observation.numStations ?? 0,
-    skyDirectionType: REFERENCE_COORDINATE_TYPE_GALACTIC,
-    raGalactic: { value: String(target.raStr), unit: REFERENCE_COORDINATE_TYPE_GALACTIC.label },
-    decGalactic: { value: String(target.decStr), unit: REFERENCE_COORDINATE_TYPE_GALACTIC.label },
-    raEquatorial: { value: 0, unit: REFERENCE_COORDINATE_TYPE_ICRS.label },
-    decEquatorial: { value: 0, unit: REFERENCE_COORDINATE_TYPE_ICRS.label },
-    elevation: { value: observation.elevation, unit: 'deg' },
-    advancedData: null,
-    modules: []
-  };
-
-  const properties = isLow(telescope)
-    ? addPropertiesLOW(standardData, continuumData)
-    : addPropertiesMID(standardData, continuumData);
-  return Fetch(axiosClient, telescope, URL_PATH, properties, getFinalResults, target, observation);
+  return Fetch(axiosClient, telescope, URL_PATH, properties).then((response) =>
+    response?.statusGUI === STATUS_ERROR ? response : getFinalResults(response, observation)
+  );
 }
 export default GetContinuumData;

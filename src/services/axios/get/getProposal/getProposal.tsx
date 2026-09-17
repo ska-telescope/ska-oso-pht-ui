@@ -521,10 +521,6 @@ const getObservations = (inValue: ObservationSetBackend[] | null): Observation[]
         (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
           ?.effective_resolution
       ),
-      spectralAveraging: Number(
-        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-          ?.spectral_averaging
-      ),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
           ? (inValue[i].observation_type_details?.bandwidth?.value ?? null)
@@ -730,7 +726,6 @@ const getTargetObservation = (
 
     if (result.result != undefined) {
       targetObs.sensCalc = {
-        title: result.target_ref as string,
         statusGUI: 0, // only for UI
         error: '', // only for UI
         section1: getResultsSection1(
