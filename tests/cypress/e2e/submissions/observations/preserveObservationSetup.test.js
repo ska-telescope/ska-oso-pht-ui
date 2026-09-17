@@ -28,8 +28,10 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
 
     // Keep focus on the abstract field for longer than ERROR_SECS (2000ms) so the debounce
     // fires before onBlur. When we navigate below, onBlur fires too, but the save has
-    // already happened via the timer.
-    cy.wait(2500);
+    // already happened via the timer. The margin above 2000ms is generous (rather than the
+    // previous 500ms) since this is a fixed wall-clock wait racing a client-side timer, and a
+    // loaded CI runner can delay JS timer firing.
+    cy.wait(4000);
 
     clickStatusIconNav('statusId5');
     pageConfirmed('OBSERVATION');

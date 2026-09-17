@@ -11,7 +11,8 @@ import {
   fetchLiveOpsToken,
   liveMemberEmail,
   liveMemberFirstName,
-  loginAsUser
+  loginAsUser,
+  stubMsalForceRefresh
 } from './cypressTestAuth';
 
 export { liveMemberEmail, liveMemberFirstName };
@@ -21,6 +22,8 @@ export { liveMemberEmail, liveMemberFirstName };
 const visitWithAuth = (user) => {
   loginAsUser(user.username);
   cy.visit('/');
+  // stub until User Portal is fully integrated with the new auth flow. Otherwise this can cause the tests to timeout.
+  stubMsalForceRefresh();
 };
 
 export const initialize = (user) => {
@@ -387,11 +390,16 @@ export const verifyOsdDataMaxTargets = (data) => {
   });
 };
 
+// 30000ms (not the verifyContent default of 10000ms) since this now waits on the real backend
+// creating the idea (see common.js's "spies on the real backend" note above) rather than an
+// instant stub reply - CI has been seen still showing the "please wait" placeholder at 10s.
 export const verifyScienceIdeaCreatedAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Science Verification Idea added with unique identifier');
+  verifyContent('timeAlertFooter', 'Science Verification Idea added with unique identifier', 30000);
 
+// Same real-backend latency reasoning as verifyScienceIdeaCreatedAlertFooter above - this waits
+// on the real auto-link generation call, not a stub.
 export const verifyAutoLinkAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Target added and auto-linked successfully');
+  verifyContent('timeAlertFooter', 'Target added and auto-linked successfully', 30000);
 
 export const verifyInformationBannerText = (text) => {
   cy.get('[id="standardAlertId"]').contains(text);
@@ -498,9 +506,9 @@ export const completeScienceIdeaCreation = (title) => {
   enterScienceVerificationIdeaTitle(title);
   clickCreateSubmission();
   cy.wait('@mockCreateSVIdea');
-  // postProposal.tsx calls the real refreshAuthToken() itself after creating the proposal, which
-  // now genuinely forces MSAL to fetch a fresh token reflecting the new group membership - no
-  // Cypress-side equivalent needed any more (there used to be one here; see git history).
+  // postProposal.tsx calls the real refreshAuthToken() itself after creating the proposal, to
+  // fetch a fresh token reflecting the new group membership - stubMsalForceRefresh (wired up in
+  // initialize()) short-circuits just that call, so it doesn't stall the success message below.
   verifyScienceIdeaCreatedAlertFooter();
   pageConfirmed('TEAM');
 };
