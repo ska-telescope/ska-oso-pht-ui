@@ -294,40 +294,53 @@ export const validateTechnicalPage = (proposal: Proposal) => {
 };
 
 /**
- * Checks whether the proposal's data product has valid polarisations for its science category.
+ * Checks whether a single data product has valid polarisations for its own observation's type
+ * (keyed on the observation actually driving that data product, not the proposal-wide
+ * scienceCategory, since a proposal can have data products against different observation types).
+ * Only image-continuum, zoom/combined-continuum-spectral, and PST flow-through/detected-filterbank
+ * data products require at least one polarisation selected. Shared by validateSDPPage and
+ * DataProduct.tsx's pageFooter().enabled() so both stay in sync.
  */
-export const checkDP = (proposal: Proposal): number => {
+export const isDataProductPolarisationsValid = (
+  proposal: Proposal,
+  dataProduct: DataProductSDPNew
+): boolean => {
   const validatePolarisations = (
     data: SDPSpectralData | SDPImageContinuumData | SDPFilterbankPSTData | SDPFlowthroughPSTData
-  ): number => (data?.polarisations?.length > 0 ? 1 : 0);
+  ): boolean => (data?.polarisations?.length ?? 0) > 0;
 
-  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
+  const observation = proposal.observations?.find(
+    (candidate) => candidate.id === dataProduct.observationId
+  );
 
-  if (
-    hasTargetObservations() &&
-    proposal.observations?.[0] &&
-    proposal.dataProductSDP &&
-    proposal.dataProductSDP?.length > 0
-  ) {
-    const dataProduct = proposal.dataProductSDP?.[0] as DataProductSDPNew;
-    switch (proposal.scienceCategory) {
-      case TYPE_ZOOM:
-      case TYPE_CONTINUUM_SPECTRAL:
-        return validatePolarisations(dataProduct.data as SDPSpectralData);
-      case TYPE_CONTINUUM:
-        return (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData)
-          ?.dataProductType === DP_TYPE_IMAGES
-          ? validatePolarisations(dataProduct.data as SDPImageContinuumData)
-          : 1;
-      case TYPE_PST:
-        const observation = proposal.observations?.[0] as Observation;
-        return observation.pstMode === FLOW_THROUGH_VALUE ||
-          observation.pstMode === DETECTED_FILTER_BANK_VALUE
-          ? validatePolarisations(dataProduct.data as SDPFlowthroughPSTData | SDPFilterbankPSTData)
-          : 1;
+  // Similar validation rules return true for orphaned data product (i.e. observation was deleted but the product itself wasn't).
+  if (!observation) return true;
+
+  switch (observation.type) {
+    case TYPE_PST:
+      return observation?.pstMode === FLOW_THROUGH_VALUE ||
+        observation?.pstMode === DETECTED_FILTER_BANK_VALUE
+        ? validatePolarisations(dataProduct.data as SDPFlowthroughPSTData | SDPFilterbankPSTData)
+        : true;
+    case TYPE_ZOOM:
+    case TYPE_CONTINUUM_SPECTRAL:
+    case TYPE_CONTINUUM:
+    default: {
+      // Visibilities data - whether the user-selected option under plain Continuum, or the
+      // hidden companion HiddenSDPData silently creates alongside a Zoom/combined spectral
+      // product for auto-linking/sens-calc (see DataProduct.tsx's ensureHiddenDataProduct) -
+      // never carries polarisations and must not be validated as the displayed data product.
+      // SDPSpectralData has no dataProductType field at all, so it falls back to DP_TYPE_IMAGES
+      // here (same fallback isDataProductRobustValid uses) and is always checked.
+      const dataProductType = Number(
+        (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData | undefined)
+          ?.dataProductType ?? DP_TYPE_IMAGES
+      );
+      return dataProductType === DP_TYPE_VISIBLE
+        ? true
+        : validatePolarisations(dataProduct.data as SDPSpectralData | SDPImageContinuumData);
     }
   }
-  return 0;
 };
 
 const isRobustInRange = (value: unknown): boolean =>
@@ -407,6 +420,7 @@ export const validateSDPPage = (proposal: Proposal) => {
     (dataProduct) =>
       !isDataProductRobustValid(dataProduct) ||
       !isDataProductPstDetectedFilterbankValid(proposal, dataProduct) ||
+      !isDataProductPolarisationsValid(proposal, dataProduct) ||
       !isDataProductChannelsOutValid(dataProduct, proposal)
   );
   return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;

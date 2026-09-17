@@ -85,7 +85,11 @@ import OutputSamplingIntervalField from '@/components/fields/outputSamplingInter
 import TargetObservation from '@/utils/types/targetObservation';
 import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
-import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
+import {
+  isDataProductPolarisationsValid,
+  isDataProductRobustValid,
+  isSuppliedValueValid
+} from '@/utils/validation/validation';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -956,6 +960,11 @@ export default function DataProduct({ data }: DataProductProps) {
         return false;
       }
 
+      const dataProduct = dataProductOut();
+      const polarisationsOk = dataProduct
+        ? isDataProductPolarisationsValid(getProposal(), dataProduct)
+        : polarisationsValid();
+
       switch (getObservation()?.type) {
         case TYPE_ZOOM:
         case TYPE_CONTINUUM_SPECTRAL:
@@ -965,15 +974,10 @@ export default function DataProduct({ data }: DataProductProps) {
             taperMidSizeValid() &&
             taperSizeValid() &&
             channelsOutValid() &&
-            polarisationsValid()
+            polarisationsOk
           );
         case TYPE_PST:
-          if (isFlowThrough()) {
-            return polarisationsValid();
-          } else if (isDetectedFilterbank()) {
-            return polarisationsValid();
-          }
-          return true;
+          return polarisationsOk;
         case TYPE_CONTINUUM:
         default:
           if (isDataTypeOne()) {
@@ -982,7 +986,7 @@ export default function DataProduct({ data }: DataProductProps) {
               imageSizeValid() &&
               taperSizeValid() &&
               channelsOutValid() &&
-              polarisationsValid()
+              polarisationsOk
             );
           } else {
             return true;
