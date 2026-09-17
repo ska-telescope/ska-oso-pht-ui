@@ -313,7 +313,10 @@ export const isDataProductPolarisationsValid = (
     (candidate) => candidate.id === dataProduct.observationId
   );
 
-  switch (observation?.type) {
+  // Similar validation rules return true for orphaned data product (i.e. observation was deleted but the product itself wasn't).
+  if (!observation) return true;
+
+  switch (observation.type) {
     case TYPE_PST:
       return observation?.pstMode === FLOW_THROUGH_VALUE ||
         observation?.pstMode === DETECTED_FILTER_BANK_VALUE
