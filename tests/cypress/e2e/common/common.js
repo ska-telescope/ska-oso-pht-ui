@@ -11,7 +11,8 @@ import {
   fetchLiveOpsToken,
   liveMemberEmail,
   liveMemberFirstName,
-  loginAsUser
+  loginAsUser,
+  stubMsalForceRefresh
 } from './cypressTestAuth';
 
 export { liveMemberEmail, liveMemberFirstName };
@@ -21,6 +22,8 @@ export { liveMemberEmail, liveMemberFirstName };
 const visitWithAuth = (user) => {
   loginAsUser(user.username);
   cy.visit('/');
+  // stub until User Portal is fully integrated with the new auth flow. Otherwise this can cause the tests to timeout.
+  stubMsalForceRefresh();
 };
 
 export const initialize = (user) => {
@@ -498,9 +501,9 @@ export const completeScienceIdeaCreation = (title) => {
   enterScienceVerificationIdeaTitle(title);
   clickCreateSubmission();
   cy.wait('@mockCreateSVIdea');
-  // postProposal.tsx calls the real refreshAuthToken() itself after creating the proposal, which
-  // now genuinely forces MSAL to fetch a fresh token reflecting the new group membership - no
-  // Cypress-side equivalent needed any more (there used to be one here; see git history).
+  // postProposal.tsx calls the real refreshAuthToken() itself after creating the proposal, to
+  // fetch a fresh token reflecting the new group membership - stubMsalForceRefresh (wired up in
+  // initialize()) short-circuits just that call, so it doesn't stall the success message below.
   verifyScienceIdeaCreatedAlertFooter();
   pageConfirmed('TEAM');
 };

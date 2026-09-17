@@ -164,3 +164,19 @@ export const loginAsUser = (username) => {
     fetchLiveIndigoTokenResponse({ username: resolvedUsername, password })
   );
 };
+
+export const stubMsalForceRefresh = () => {
+  cy.window({ log: false }).then((win) => {
+    const instance = win.__msalInstance;
+    if (!instance || instance.acquireTokenSilent.__isStubbedForceRefresh) {
+      return;
+    }
+    const realAcquireTokenSilent = instance.acquireTokenSilent.bind(instance);
+    const stubbed = (request) =>
+      request?.forceRefresh
+        ? Promise.resolve({ accessToken: 'stubbed-force-refresh-token' })
+        : realAcquireTokenSilent(request);
+    stubbed.__isStubbedForceRefresh = true;
+    instance.acquireTokenSilent = stubbed;
+  });
+};

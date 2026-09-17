@@ -13,6 +13,13 @@ import { useMsal } from '@azure/msal-react';
  * dedicated spec still drives the real loginRedirect() flow, so that code path isn't only ever
  * exercised via this bridge.
  *
+ * Also exposes the live MSAL `instance` itself on window, as __msalInstance - see
+ * cypressTestAuth.js's stubMsalForceRefresh, which uses it to stub out just the
+ * `acquireTokenSilent({ forceRefresh: true })` call that axiosAuthClient.ts's refreshAuthToken
+ * makes after creating a proposal/panel. That call forces a genuine network round trip to Indigo,
+ * which is unmocked and can be slow/flaky in CI, so specs stub it directly rather than fake a
+ * bypass of anything else.
+ *
  * Rendered unconditionally from main.tsx; a no-op outside Cypress (window.Cypress is only ever
  * set by the Cypress test runner itself).
  */
@@ -27,6 +34,7 @@ export default function CypressMsalHydrationBridge(): null {
       request: Parameters<ReturnType<typeof instance.getTokenCache>['loadExternalTokens']>[0],
       response: Parameters<ReturnType<typeof instance.getTokenCache>['loadExternalTokens']>[1]
     ) => instance.getTokenCache().loadExternalTokens(request, response, {});
+    (window as unknown as { __msalInstance?: unknown }).__msalInstance = instance;
   }, [instance]);
 
   return null;
