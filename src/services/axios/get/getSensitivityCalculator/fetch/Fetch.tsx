@@ -1,11 +1,11 @@
 import { Telescope } from '@ska-telescope/ska-gui-local-storage';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient } from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { SKA_SENSITIVITY_CALCULATOR_API_URL, STATUS_ERROR } from '@/utils/constants';
 import { SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { SensCalcQueryParams } from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/sensCalHelpers.ts';
 
 const Fetch = async (
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   telescope: Telescope,
   baseUrl: string,
   properties: SensCalcQueryParams

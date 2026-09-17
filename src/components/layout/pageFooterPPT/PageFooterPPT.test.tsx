@@ -47,7 +47,7 @@ vi.mock('@services/axios/post/postProposal/postProposal.tsx', () => ({
 }));
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({})
+  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
 }));
 
 // --- Setup ---

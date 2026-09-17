@@ -1,19 +1,10 @@
-import {
-  cypressToken,
-  OSO_SERVICES_PROPOSAL_PATH,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
-} from '@utils/constants.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { OSO_SERVICES_PROPOSAL_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 async function GetPresignedUploadUrl(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   filename: string
 ): Promise<string> {
-  if (USE_LOCAL_DATA || cypressToken) {
-    return 'https://httpbin.org/put';
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/signed-url/upload/${filename}`;
     const result = await authAxiosClient.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);

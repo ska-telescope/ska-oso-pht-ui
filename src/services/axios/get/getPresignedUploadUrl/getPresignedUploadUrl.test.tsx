@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import * as constants from '@utils/constants';
 import GetPresignedUploadUrl from './getPresignedUploadUrl';
 
 let mockedAuthClient: any;
@@ -21,14 +20,7 @@ beforeEach(() => {
 describe('GetPresignedUploadUrl', () => {
   const filename = 'upload.pdf';
 
-  it('returns dummy upload URL when USE_LOCAL_DATA is true', async () => {
-    vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
-    expect(result).toBe('https://httpbin.org/put');
-  });
-
   it('returns result.data when post succeeds', async () => {
-    vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue({ data: 'upload-url-success' });
 
     const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
@@ -36,7 +28,6 @@ describe('GetPresignedUploadUrl', () => {
   });
 
   it('returns API_UNKNOWN_ERROR when post returns undefined', async () => {
-    vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue(undefined);
 
     const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
@@ -44,7 +35,6 @@ describe('GetPresignedUploadUrl', () => {
   });
 
   it('returns error message when post throws an Error', async () => {
-    vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue(new Error('Upload failed'));
 
     const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
@@ -52,7 +42,6 @@ describe('GetPresignedUploadUrl', () => {
   });
 
   it('returns generic error when post throws non-Error', async () => {
-    vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue('unexpected string');
 
     const result = await GetPresignedUploadUrl(mockedAuthClient, filename);

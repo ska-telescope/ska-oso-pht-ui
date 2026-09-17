@@ -39,28 +39,6 @@ export const getMaxContBandwidthHz = (
   }
 };
 
-// get maximum bandwidth defined for the subarray ( Spectral )
-export const getMaxSpecBandwidthHz = (
-  telescope: number,
-  subarrayConfig: string,
-  osdMID: any,
-  osdLOW: any,
-  observatoryConstants: any
-): any => {
-  // STAR-1923: AA2 will be extended as OSD Data is extended
-  if (isAA2(subarrayConfig)) {
-    const sArray = (isLow(telescope) ? osdLOW : osdMID)?.subArrays.find(
-      (sub: any) => sub.subArray === SA_AA2
-    );
-    return sArray?.channelWidthHz;
-  } else {
-    // STAR-1923 : Refactor as custom does not have this field
-    return observatoryConstants.array
-      .find((item: any) => item.value === telescope)
-      ?.subarray?.find((ar: any) => ar.value === subarrayConfig)?.maxContBandwidthHz;
-  }
-};
-
 // The bandwidth should be smaller than the maximum bandwidth defined for the subarray
 // For the subarrays that don't have one set, the full bandwidth is allowed
 export const checkMaxBandwidthHz = (

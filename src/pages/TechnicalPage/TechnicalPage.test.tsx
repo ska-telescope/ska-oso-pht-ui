@@ -21,7 +21,7 @@ vi.mock('@/utils/notify/useNotify', () => ({
 
 // Mock axios client
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({})
+  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
 }));
 
 // Mock storage

@@ -7,7 +7,6 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { useValidateProposal } from '@utils/validation/validation.tsx';
 import {
-  cypressToken,
   PAGE_CALIBRATION,
   PAGE_LINKING,
   PAGE_OBSERVATION,
@@ -151,9 +150,7 @@ export default function ObservationPage() {
           <Alert
             color={AlertColorTypes.Warning}
             text={
-              (loggedIn || cypressToken) &&
-              osdCyclePolicy?.maxObservations === 1 &&
-              hasTargetObservations()
+              loggedIn && osdCyclePolicy?.maxObservations === 1 && hasTargetObservations()
                 ? t('page.5.noTarget')
                 : t('error.noObservationsLoggedOut')
             }
@@ -198,12 +195,12 @@ export default function ObservationPage() {
   return (
     <Shell page={PAGE} helpDisabled>
       <>
-        {(osdCyclePolicy?.maxObservations !== 1 || (!loggedIn && !cypressToken)) && AddTheButton()}
+        {(osdCyclePolicy?.maxObservations !== 1 || !loggedIn) && AddTheButton()}
         {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
-        {((!loggedIn && !cypressToken) || osdCyclePolicy?.maxObservations !== 1) &&
+        {(!loggedIn || osdCyclePolicy?.maxObservations !== 1) &&
           (autoLink ? hasTargetObservations() : hasObservations()) &&
           observationList()}
-        {(loggedIn || cypressToken) &&
+        {loggedIn &&
           osdCyclePolicy?.maxObservations === 1 &&
           (autoLink ? hasTargetObservations() : hasObservations()) && (
             <ObservationEntry data={getProposal()?.observations?.[0]} />

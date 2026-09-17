@@ -50,7 +50,7 @@ vi.mock('@/services/axios/put/putProposal/putProposal', () => ({
 }));
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({})
+  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
 }));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({

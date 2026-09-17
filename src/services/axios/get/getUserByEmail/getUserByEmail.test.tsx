@@ -1,25 +1,33 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import * as CONSTANTS from '@utils/constants.ts';
-import GetUserByEmail, { GetMockUserByEmail, mapping } from './getUserByEmail.tsx';
+import Investigator from '@utils/types/investigator.tsx';
+import GetUserByEmail, { mapping } from './getUserByEmail.tsx';
 import { MockUserFrontendList } from './mockUserFrontend.tsx';
 import { MockUserMSGraphList } from './mockUserMSGraph.tsx';
 
+// finds a mapped user by email (case-insensitive), mirroring how the real API is expected to resolve
+// a single user by email - used only to exercise that lookup behaviour against the mock team list
+function findMockUserByEmail(email: string): Investigator | string {
+  const teamList: Investigator[] = MockUserMSGraphList.map(mapping);
+  const user = teamList.find((user) => user?.email?.toLowerCase() === email?.toLowerCase());
+  return user ?? 'error.API_UNKNOWN_ERROR';
+}
+
 describe('Helper Functions', () => {
-  test('GetMockUserByEmail returns mock user', () => {
-    const result = GetMockUserByEmail(MockUserMSGraphList[0].email);
+  test('findMockUserByEmail returns mock user', () => {
+    const result = findMockUserByEmail(MockUserMSGraphList[0].email);
     expect(result).to.deep.equal(MockUserFrontendList[0]);
-    const result2 = GetMockUserByEmail(MockUserMSGraphList[1].email);
+    const result2 = findMockUserByEmail(MockUserMSGraphList[1].email);
     expect(result2).to.deep.equal(MockUserFrontendList[1]);
   });
 
-  test('GetMockUserByEmail returns correct mock user when case not matching', () => {
-    const result = GetMockUserByEmail('sarah.SATTAR@community.skao.int');
+  test('findMockUserByEmail returns correct mock user when case not matching', () => {
+    const result = findMockUserByEmail('sarah.SATTAR@community.skao.int');
     expect(result).to.deep.equal(MockUserFrontendList[0]);
   });
 
-  test('GetMockUserByEmail returns error when user not in stargazer mocked list', () => {
-    const result = GetMockUserByEmail('someone.else@community.skao.int');
+  test('findMockUserByEmail returns error when user not in stargazer mocked list', () => {
+    const result = findMockUserByEmail('someone.else@community.skao.int');
     expect(result).to.equal('error.API_UNKNOWN_ERROR');
   });
 
@@ -46,42 +54,31 @@ describe('GetProposal Service', () => {
     };
   });
 
-  test('should return mock data when USE_LOCAL_DATA is true', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetUserByEmail(mockedAuthClient, 'sarah.sattar@community.skao.int');
-    expect(result).toEqual(MockUserFrontendList[0]);
-  });
-
-  test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+  test('returns mapped data from API', async () => {
     mockedAuthClient.get.mockResolvedValue({ data: MockUserMSGraphList[1] });
     const result = await GetUserByEmail(mockedAuthClient, 'trevor.swain@community.skao.int');
     expect(result).to.deep.equal(MockUserFrontendList[1]);
   });
 
   test('returns error message on API failure', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
     const result = await GetUserByEmail(mockedAuthClient, 'Jack.Tam@community.skao.int');
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
     const result = await GetUserByEmail(mockedAuthClient, 'Chloe.Gallacher@community.skao.int');
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns non-object data', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue({ data: 'not an object' });
     const result = await GetUserByEmail(mockedAuthClient, 'Tonye.Irabor@community.skao.int');
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns no data', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue(undefined);
     const result = await GetUserByEmail(mockedAuthClient, 'Meenu.Mohan@assoc.skao.int');
     expect(result).toBe('error.API_UNKNOWN_ERROR');

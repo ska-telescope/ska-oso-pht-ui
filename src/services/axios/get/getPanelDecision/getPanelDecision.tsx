@@ -1,26 +1,13 @@
-import {
-  OSO_SERVICES_PANEL_DECISIONS_PATH,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
-} from '@utils/constants.ts';
-import { MockPanelDecisionBackend } from '@services/axios/post/postPanelDecision/mockPanelDecisionBackend.tsx';
+import { OSO_SERVICES_PANEL_DECISIONS_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import { mappingPanelDecisionBackendToFrontend } from '@services/axios/put/putPanelDecision/putPanelDecision.tsx';
 import { PanelDecision } from '@utils/types/panelDecision.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
-
-export function getMockPanelDecision(cycleId: string): PanelDecision {
-  return mappingPanelDecisionBackendToFrontend(MockPanelDecisionBackend, cycleId);
-}
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 async function getPanelDecision(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   id: string,
   cycleId: string
 ): Promise<PanelDecision | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return getMockPanelDecision(cycleId);
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${id}`;
 
