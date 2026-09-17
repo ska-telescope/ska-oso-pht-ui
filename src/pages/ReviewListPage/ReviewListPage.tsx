@@ -24,7 +24,6 @@ import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import getProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
@@ -603,7 +602,6 @@ export default function ReviewListPage() {
           )}
         </Grid>
       </Grid>
-      <PageFooterPMT />
       {conflictConfirm && conflictConfirmation()}
     </>
   );

@@ -14,7 +14,6 @@ import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
 import { Panel } from '@/utils/types/panel';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import { PanelProposal } from '@/utils/types/panelProposal';
@@ -351,7 +350,6 @@ export default function PanelManagement() {
           </Grid>
         </Grid>
       </Box>
-      <PageFooterPMT />
     </Box>
   );
 }

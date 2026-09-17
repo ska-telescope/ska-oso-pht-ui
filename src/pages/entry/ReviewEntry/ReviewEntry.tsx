@@ -22,7 +22,6 @@ import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl
 import SaveButton from '../../../components/button/Save/Save';
 import SubmitButton from '@/components/button/Submit/Submit';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import BackButton from '@/components/button/Back/Back';
 import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
@@ -494,10 +493,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         </Grid>
       </Grid>
 
-      {/* Sticky Footer */}
-      <Box sx={{ position: 'sticky', bottom: 0, zIndex: 1100 }}>
-        <PageFooterPMT />
-      </Box>
     </Box>
   );
 }
