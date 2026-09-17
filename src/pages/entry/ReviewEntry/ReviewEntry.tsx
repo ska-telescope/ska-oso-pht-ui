@@ -27,7 +27,6 @@ import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
-import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import { getUserId } from '@/utils/aaa/aaaUtils';
@@ -493,11 +492,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           </Box>
         </Grid>
       </Grid>
-
-      {/* Sticky Footer */}
-      <Box sx={{ position: 'sticky', bottom: 0, zIndex: 1100 }}>
-        <PageFooterPMT />
-      </Box>
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { render, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { beforeEach, describe, expect, test, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
@@ -14,6 +14,7 @@ const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
 const mockPathname = { current: PATH[0] };
 const mockApplicationContent2 = { current: { id: 'prsl-123' } as any };
+const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } as any };
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
@@ -33,7 +34,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
     useStore: () => ({
       application: {
         content2: mockApplicationContent2.current,
-        content5: { message: '', level: '', delay: 0 }
+        content5: mockApplicationContent5.current
       },
       help: ['', '', ''],
       helpToggle: false,
@@ -171,10 +172,23 @@ describe('<PHT />', () => {
     vi.clearAllMocks();
     mockPathname.current = PATH[0];
     mockApplicationContent2.current = { id: 'prsl-123' };
+    mockApplicationContent5.current = { message: '', level: '', delay: 0 };
   });
 
   test('renders correctly', () => {
     renderPHT();
+  });
+
+  test('renders the footer notification when a notification message is present', () => {
+    mockApplicationContent5.current = {
+      message: 'Test notification message',
+      level: 'success',
+      delay: 0
+    };
+
+    renderPHT();
+
+    expect(screen.getByText('Test notification message')).toBeInTheDocument();
   });
 
   test('auto-saves when navigating between proposal pages', async () => {

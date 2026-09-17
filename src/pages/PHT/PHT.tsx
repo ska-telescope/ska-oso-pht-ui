@@ -8,10 +8,11 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Typography, CssBaseline, Tooltip, Paper } from '@mui/material';
+import { Typography, CssBaseline, Tooltip, Paper, Grid } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import {
+  FOOTER_HEIGHT_PHT,
   NAV,
   PATH,
   PMT,
@@ -222,28 +223,44 @@ export default function PHT({
 
   const signIn = () => <ButtonUserMenu />;
 
+  const hasNotification = () => {
+    const note = application.content5 as Notification;
+    return note?.message?.length > 0;
+  };
+
   const showNotification = () => {
     const note = application.content5 as Notification;
     return note?.message?.length > 0 && note?.level !== AlertColorTypes.Error;
   };
 
-  const footerMainChildren = () => {
-    const opt2 = showNotification();
-
-    if (opt2)
-      return (
-        <div>
-          {opt2 && (
+  const footerNotification = () => {
+    if (!hasNotification()) return null;
+    const notification = application.content5 as Notification;
+    return (
+      <Paper
+        sx={{
+          bgcolor: 'transparent',
+          position: 'fixed',
+          bottom: FOOTER_HEIGHT_PHT,
+          left: 0,
+          right: 0,
+          zIndex: (theme) => theme.zIndex.snackbar,
+          pointerEvents: 'none'
+        }}
+        elevation={0}
+      >
+        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+          <Grid sx={{ pointerEvents: 'auto' }}>
             <TimedAlert
-              color={(application.content5 as Notification)?.level}
-              gap={0}
-              delay={(application.content5 as Notification)?.delay}
+              color={notification?.level}
+              delay={notification?.delay}
               testId="timeAlertFooter"
-              text={(application.content5 as Notification)?.message}
+              text={notification?.message}
             />
-          )}
-        </div>
-      );
+          </Grid>
+        </Grid>
+      </Paper>
+    );
   };
 
   const headerCountdown = () => {
@@ -327,7 +344,6 @@ export default function PHT({
             {loggedIn ? (getProposal()?.id ? `Submission ID: ${getProposal()?.id}` : '') : ''}
           </Typography>
         }
-        footerChildrenMiddle={footerMainChildren()}
         headerChildren={headerCountdown()}
         iconDocsLabel={t('docs.label')}
         iconDocsToolTip={t('docs.toolTip')}
@@ -375,6 +391,7 @@ export default function PHT({
         version={packageJson.version}
         versionTooltip={versionToolTip()}
       />
+      {footerNotification()}
     </CssVarsProvider>
   );
 }
