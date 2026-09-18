@@ -38,14 +38,6 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
   useUserGroups: vi.fn()
 }));
 
-vi.mock('@/utils/constants', async () => {
-  const actual = await vi.importActual<typeof import('@/utils/constants')>('@/utils/constants');
-  return {
-    ...actual,
-    isCypress: false
-  };
-});
-
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
 };

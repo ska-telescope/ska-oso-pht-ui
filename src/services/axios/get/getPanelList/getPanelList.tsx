@@ -1,15 +1,9 @@
-import {
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
-  OSO_SERVICES_PANEL_PATH,
-  cypressToken
-} from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, OSO_SERVICES_PANEL_PATH } from '@utils/constants.ts';
 import { Panel, PanelBackend } from '@utils/types/panel.tsx';
 import { PanelProposal, PanelProposalBackend } from '@utils/types/panelProposal.tsx';
 import { PanelReviewer, PanelReviewerBackend } from '@utils/types/panelReviewer.tsx';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { MockPanelBackendList } from './mockPanelBackendList.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -59,18 +53,7 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
 
 /*****************************************************************************************************************************/
 
-export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
-  const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'panel_id') : mock;
-  return mappingList(uniqueResults);
-}
-
-async function GetPanelList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
-): Promise<Panel[] | string> {
-  if (USE_LOCAL_DATA || cypressToken) {
-    return GetMockPanelList();
-  }
-
+async function GetPanelList(authAxiosClient: AxiosAuthClient): Promise<Panel[] | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}/`);

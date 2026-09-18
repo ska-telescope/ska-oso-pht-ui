@@ -1,16 +1,17 @@
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN, ERROR_SECS } from '@utils/constants.ts';
+import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN_SPECTRAL } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface ChannelsOutFieldProps {
   disabled?: boolean;
   required?: boolean;
   maxValue?: number;
-  onFocus?: Function;
+  minValue?: number;
+  onFocus?: () => void;
   setValue?: Function;
-  suffix?: any;
+  suffix?: JSX.Element;
   value: number;
 }
 
@@ -21,6 +22,7 @@ export default function ChannelsOutField({
   disabled = false,
   required = false,
   maxValue = CHANNELS_OUT_MAX,
+  minValue = CHANNELS_OUT_MIN_SPECTRAL,
   onFocus,
   setValue,
   suffix,
@@ -28,49 +30,43 @@ export default function ChannelsOutField({
 }: ChannelsOutFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'channelsOut';
-  const [fieldValid, setFieldValid] = React.useState(true);
 
-  const checkValue = (e: number) => {
-    const num = Number(e);
-    if (Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= maxValue) {
-      setFieldValid(true);
-      if (setValue) {
-        setValue(num);
-      }
-    } else {
-      setFieldValid(false);
-    }
+  const validate = (num: number): string =>
+    Number.isInteger(num) && num >= minValue && num <= maxValue
+      ? ''
+      : t(FIELD + '.error', { min: minValue, max: maxValue });
+
+  const [errorMessage, setErrorMessage] = React.useState(() => validate(value));
+
+  const commit = (num: number) => {
+    setValue?.(num);
+    setErrorMessage(validate(num));
   };
 
-  const errorMessage = fieldValid
-    ? ''
-    : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: maxValue });
+  const step = (current: number, direction: 1 | -1) =>
+    Math.min(Math.max(current + direction, minValue), maxValue);
 
   React.useEffect(() => {
-    let timerId: ReturnType<typeof setTimeout> | null = null;
-    if (!fieldValid) {
-      timerId = setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    }
-    return () => {
-      if (timerId !== null) clearTimeout(timerId);
-    };
-  }, [fieldValid]);
+    setErrorMessage(validate(value));
+  }, [value, maxValue]);
 
   return (
     <Box pt={1}>
-      <NumberEntry
-        label={t('channelsOut.label')}
+      <SteppedNumberField
         testId={FIELD}
+        label={t('channelsOut.label')}
         value={value}
-        setValue={checkValue}
+        digitsOnly
+        onCommit={commit}
+        onStep={step}
         onFocus={onFocus}
         disabled={disabled}
-        disabledUnderline={disabled}
         required={required}
-        suffix={suffix}
         errorText={errorMessage}
+        suffix={suffix}
+        min={minValue}
+        max={maxValue}
+        step={1}
       />
     </Box>
   );

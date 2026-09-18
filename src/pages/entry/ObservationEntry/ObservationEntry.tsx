@@ -46,8 +46,6 @@ import {
   SA_CUSTOM,
   PULSAR_TIMING_VALUE,
   SUPPLIED_TYPE_INTEGRATION,
-  cypressToken,
-  cypressLowUnitsUnlocked,
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
@@ -126,7 +124,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const navigate = useNavigate();
   const theme = useTheme();
   const locationProperties = useLocation();
-  const authAxiosClient = useAxiosAuthClient();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const loggedIn = isLoggedIn();
   const {
     isSV,
@@ -164,7 +162,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
-  const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(SUPPLIED_TYPE_INTEGRATION);
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
@@ -294,7 +291,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
     setSpectralResolution(ob?.spectralResolution ?? '');
-    setSpectralAveraging(ob?.spectralAveraging ?? 1);
     setSuppliedType(ob?.supplied?.type);
 
     // If the supplied units are not one of the integration time units,
@@ -345,7 +341,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
       continuumBandwidthUnits: continuumBandwidthUnits,
-      spectralAveraging: (Number.isNaN(spectralAveraging) ? 1 : spectralAveraging) ?? 1,
       supplied: {
         type: suppliedType,
         value: suppliedValue,
@@ -403,7 +398,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const updateStorageProposal = () => {
-    if ((loggedIn || cypressToken) && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
+    if (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
     }
   };
@@ -624,7 +619,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     numOf13mAntennas,
     numOfStations,
     pstMode,
-    spectralAveraging,
     spectralResolution,
     zoomChannels,
     observationType
@@ -993,7 +987,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     fieldWrapper(
       <ObservationTypeField
         disabled={
-          (!isLoggedIn() && !cypressToken) ||
+          !isLoggedIn() ||
           (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1)
         }
         options={obsTypeOptions}
@@ -1084,7 +1078,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={suppliedValue}
         setValue={setSuppliedValue}
         label={label}
-        disabled={isLow() && !cypressLowUnitsUnlocked}
+        disabled={isLow()}
         minValue={minValue}
         maxValue={maxValue}
         minInclusive={false}
@@ -1154,18 +1148,20 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       );
     };
     return fieldWrapper(
-      <ContinuumBandwidthField
-        setValue={setContinuumBandwidth}
-        value={continuumBandwidth}
-        suffix={continuumBandwidthUnitsField()}
-        telescope={telescope()}
-        observingBand={observingBand}
-        continuumBandwidthUnits={continuumBandwidthUnits}
-        centralFrequency={centralFrequency}
-        centralFrequencyUnits={centralFrequencyUnits}
-        subarrayConfig={subarrayConfig}
-        minimumChannelWidthHz={minimumChannelWidthHz}
-      />
+      <Box pt={1}>
+        <ContinuumBandwidthField
+          setValue={setContinuumBandwidth}
+          value={continuumBandwidth}
+          suffix={continuumBandwidthUnitsField()}
+          telescope={telescope()}
+          observingBand={observingBand}
+          continuumBandwidthUnits={continuumBandwidthUnits}
+          centralFrequency={centralFrequency}
+          centralFrequencyUnits={centralFrequencyUnits}
+          subarrayConfig={subarrayConfig}
+          minimumChannelWidthHz={minimumChannelWidthHz}
+        />
+      </Box>
     );
   };
 
@@ -1235,18 +1231,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
   const frequencySetUp = () => {
-    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
-    // centre frequency, all in one line. LOW zoom only - MID zoom/continuum/PST keep their
-    // existing layout below.
     if (isLow() && isZoom()) {
       return (
         <>
           <Grid size={{ md: 12, lg: 12 }} p={2}>
             {frequencySpectrumField()}
           </Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
           <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
           <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
         </>
       );
     }
@@ -1255,10 +1248,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+
         <Grid size={{ md: 12, lg: 6 }}>
           {isPST()
             ? pstModeField()
@@ -1279,25 +1273,23 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
       </>
     );
   };
 
   const frequencySetUpSpectralSV = () => {
-    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
-    // centre frequency, all in one line. LOW only - MID zoom SV keeps its existing layout below.
     if (isLow()) {
       return (
         <>
           <Grid size={{ md: 12, lg: 12 }} p={2}>
             {frequencySpectrumField()}
           </Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
           <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
           <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
         </>
       );
     }
@@ -1335,7 +1327,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const pageFooter = () => {
     const buttonClicked = () => {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
-      if ((!loggedIn && !cypressToken) || (osdCyclePolicy?.maxObservations ?? 1) !== 1) {
+      if (!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
     };
@@ -1346,10 +1338,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           bgcolor: 'transparent',
           position: 'fixed',
           bottom:
-            FOOTER_HEIGHT_PHT +
-            ((loggedIn || cypressToken) && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 60 : 0),
+            FOOTER_HEIGHT_PHT + (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 60 : 0),
           left: 0,
-          right: (loggedIn || cypressToken) && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 30 : 0
+          right: loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 30 : 0
         }}
         elevation={0}
       >
@@ -1363,7 +1354,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           <Grid />
           <Grid />
           <Grid>
-            {((!loggedIn && !cypressToken) || (osdCyclePolicy?.maxObservations ?? 1) !== 1) && (
+            {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) && (
               <AddButton
                 action={buttonClicked}
                 disabled={addButtonDisabled()}
@@ -1381,7 +1372,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   return (
     <HelpShell page={PAGE}>
       <Box pt={2}>
-        {((!loggedIn && !cypressToken) || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
+        {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
           <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         )}
         <Grid

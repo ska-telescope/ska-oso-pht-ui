@@ -2,10 +2,8 @@ import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  cypressToken,
   NAV,
   PROPOSAL_STATUS,
   PAGE_TITLE_ADD,
@@ -19,8 +17,6 @@ import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import Proposal from '../../../utils/types/proposal';
-import Notification from '../../../utils/types/notification';
-import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import ProposalAccess from '@/utils/types/proposalAccess';
@@ -38,20 +34,19 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
   const { notifyClear, notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdCycleId, osdCyclePolicy } = useOSDAccessors();
 
   const proposal = application.content2 as Proposal;
-  const notification = application.content5 as Notification;
 
   const pages = React.useMemo(
     () => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL),
     [isSV]
   );
 
-  const currPageNo = proposal?.id == null && !cypressToken ? -1 : pageNo;
+  const currPageNo = proposal?.id == null ? -1 : pageNo;
 
   const { prevPageNo, nextPageNo } = React.useMemo(() => {
     const idx = pages.findIndex((p) => p === currPageNo);
@@ -70,6 +65,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     // proposalType now rather than passing isSV further down the chain.
     const response = await PostProposal(
       authClient,
+      refreshAuthToken,
       {
         ...proposal,
         cycle: osdCycleId ?? null,
@@ -102,6 +98,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     osdCycleId,
     isSV,
     authClient,
+    refreshAuthToken,
     notifyWarning,
     notifySuccess,
     notifyError,
@@ -119,16 +116,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   );
 
   const showPrevNav = () => {
-    if ((loggedIn && currPageNo > 0) || (cypressToken && currPageNo > 0)) {
+    if (loggedIn && currPageNo > 0) {
       return true;
     }
-    return !loggedIn && !cypressToken && currPageNo !== PAGE_TARGET;
+    return !loggedIn && currPageNo !== PAGE_TARGET;
   };
 
   const showNextNav = () => {
     return (
       (!loggedIn && currPageNo === PAGE_TARGET) ||
-      ((loggedIn || cypressToken) && (currPageNo === -1 || nextPageNo !== -2))
+      (loggedIn && (currPageNo === -1 || nextPageNo !== -2))
     );
   };
 
@@ -185,9 +182,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     else nextPageNav();
   };
 
-  const showNotification =
-    notification?.message?.length > 0 && notification?.level === AlertColorTypes.Error;
-
   return (
     <Paper
       sx={{
@@ -216,17 +210,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
               action={prevPageNav}
               testId="prevButtonTestId"
               title={prevLabel()}
-            />
-          )}
-        </Grid>
-
-        <Grid sx={{ pointerEvents: 'auto' }}>
-          {showNotification && (
-            <TimedAlert
-              color={notification.level}
-              delay={notification.delay}
-              testId="timeAlertFooter"
-              text={notification.message}
             />
           )}
         </Grid>

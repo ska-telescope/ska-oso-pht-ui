@@ -1,26 +1,31 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import useAxiosAuthClient, {
-  createRequestInterceptor,
-  loginRequest,
-  mapAxiosError
-} from './axiosAuthClient';
+import useAxiosAuthClient, { mapAxiosError } from './axiosAuthClient';
 
 vi.stubGlobal('window', {
-  location: { hostname: 'localhost', origin: 'http://localhost:3000' }
+  location: { hostname: 'localhost', origin: 'http://localhost:3000' },
+  // createRequestInterceptor's tests re-import axiosAuthClient.ts fresh via vi.resetModules() (to
+  // reset its module-level loginRedirectTriggered flag between tests), which re-runs
+  // constants.ts's top-level window.localStorage.getItem calls - so this stub needs a
+  // localStorage, unlike when the module was only ever evaluated once.
+  localStorage: { getItem: () => null }
 });
 
 const mockAcquireTokenSilent = vi.fn();
 const mockLoginRedirect = vi.fn();
 const mockGetAllAccounts = vi.fn(() => [{ username: 'testuser' }]);
+const mockInitialize = vi.fn(() => Promise.resolve());
+const mockHandleRedirectPromise = vi.fn(() => Promise.resolve(null));
 
 vi.mock('@azure/msal-react', () => ({
   useMsal: () => ({
     instance: {
       acquireTokenSilent: mockAcquireTokenSilent,
       loginRedirect: mockLoginRedirect,
-      getAllAccounts: mockGetAllAccounts
+      getAllAccounts: mockGetAllAccounts,
+      initialize: mockInitialize,
+      handleRedirectPromise: mockHandleRedirectPromise
     }
   })
 }));
@@ -79,13 +84,26 @@ describe('createRequestInterceptor', () => {
   const mockInstance = {
     acquireTokenSilent: mockAcquireTokenSilent,
     loginRedirect: mockLoginRedirect,
-    getAllAccounts: mockGetAllAccounts
+    getAllAccounts: mockGetAllAccounts,
+    initialize: mockInitialize,
+    handleRedirectPromise: mockHandleRedirectPromise
   } as any;
 
-  beforeEach(() => {
+  // loginRedirectTriggered is module-level state (shared across every request, deliberately, so
+  // concurrent requests only redirect once - see its own comment in axiosAuthClient.ts). Each of
+  // these tests needs it to start false, so re-import the module fresh rather than let one test's
+  // redirect leave it set for the next.
+  let createRequestInterceptor: typeof import('./axiosAuthClient').createRequestInterceptor;
+  let loginRequest: typeof import('./axiosAuthClient').loginRequest;
+
+  beforeEach(async () => {
     vi.clearAllMocks();
     mockGetAllAccounts.mockReturnValue([{ username: 'testuser' }]);
+    mockInitialize.mockResolvedValue(undefined);
+    mockHandleRedirectPromise.mockResolvedValue(null);
     (window as any).location.hostname = 'localhost';
+    vi.resetModules();
+    ({ createRequestInterceptor, loginRequest } = await import('./axiosAuthClient'));
   });
 
   it('rejects HTTP requests on non-localhost', async () => {
@@ -119,15 +137,19 @@ describe('createRequestInterceptor', () => {
     expect(result.headers.Authorization).toBe('Bearer mock-token');
   });
 
-  it('passes the request through unchanged when no account is signed in', async () => {
+  it('waits for MSAL startup then redirects to login when no account is signed in', async () => {
     mockGetAllAccounts.mockReturnValue([]);
     const interceptor = createRequestInterceptor(mockInstance);
     const request = asRequestConfig({ baseURL: 'http://localhost:3000', headers: {} as any });
 
-    const result = await interceptor(request);
+    await expect(interceptor(request)).rejects.toThrow(
+      'No MSAL session found - redirecting to login.'
+    );
 
-    expect(result).toBe(request);
+    expect(mockInitialize).toHaveBeenCalled();
+    expect(mockHandleRedirectPromise).toHaveBeenCalled();
     expect(mockAcquireTokenSilent).not.toHaveBeenCalled();
+    expect(mockLoginRedirect).toHaveBeenCalledWith(loginRequest);
   });
 
   it('redirects to login on InteractionRequiredAuthError', async () => {
@@ -148,10 +170,30 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('creates an axios instance and registers both interceptors', () => {
-    const client = useAxiosAuthClient('http://localhost:3000');
+    const { axiosClient, refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
 
-    expect(client).toBe(mockAxiosInstance);
+    expect(axiosClient).toBe(mockAxiosInstance);
+    expect(refreshAuthToken).toEqual(expect.any(Function));
     expect(mockRequestUse).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
     expect(mockResponseUse).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
+  });
+
+  it('refreshAuthToken force-refreshes the token for the current account', async () => {
+    mockAcquireTokenSilent.mockResolvedValue({ accessToken: 'mock-token' });
+    const { refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
+
+    await refreshAuthToken();
+
+    expect(mockAcquireTokenSilent).toHaveBeenCalledWith(
+      expect.objectContaining({ account: { username: 'testuser' }, forceRefresh: true })
+    );
+  });
+
+  it('refreshAuthToken is a no-op when no account is signed in', async () => {
+    mockGetAllAccounts.mockReturnValueOnce([]);
+    const { refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
+
+    await expect(refreshAuthToken()).resolves.toBeUndefined();
+    expect(mockAcquireTokenSilent).not.toHaveBeenCalled();
   });
 });

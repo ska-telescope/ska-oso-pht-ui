@@ -8,7 +8,7 @@ import {
   TELESCOPE_MID_BACKEND_MAPPING,
   TIME_MS
 } from '@utils/constants.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import {
   CalibrationIntent,
   Calibrator,
@@ -43,7 +43,7 @@ function calibratorMapping(data: CalibratorBackend): Calibrator {
 /*****************************************************************************************************************************/
 
 async function GetCalibratorList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   observation: Observation,
   target: Target
 ): Promise<Calibrator[] | string> {

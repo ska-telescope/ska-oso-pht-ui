@@ -1,15 +1,6 @@
-import {
-  OSO_SERVICES_REPORT_PATH,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
-} from '@utils/constants.ts';
+import { OSO_SERVICES_REPORT_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import { ReviewDashboard, ReviewDashboardBackend } from '@utils/types/reviewDashboard.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { mockReviewDashboardBackend } from './mockReviewDashboard.tsx';
-
-export function getMockReviewDashboard(): ReviewDashboard[] {
-  return mappingReviewDashboardBackendToFrontend(mockReviewDashboardBackend);
-}
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 export function mappingReviewDashboardBackendToFrontend(
   reviewDashboardBackend: ReviewDashboardBackend[]
@@ -51,12 +42,8 @@ export function mappingReviewDashboardBackendToFrontend(
 }
 
 async function getReviewDashboard(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+  authAxiosClient: AxiosAuthClient
 ): Promise<ReviewDashboard[] | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return getMockReviewDashboard();
-  }
-
   try {
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${OSO_SERVICES_REPORT_PATH}`);
 

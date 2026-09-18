@@ -83,7 +83,7 @@ vi.mock('@/services/axios/use/useOSDAPI/useOSDAPI', () => ({
 }));
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({})
+  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
 }));
 
 vi.mock('@/utils/notify/useNotify', () => ({
@@ -296,6 +296,7 @@ describe('clone proposal', () => {
 
     await waitFor(() => {
       expect(PostProposal).toHaveBeenCalledWith(
+        expect.anything(),
         expect.anything(),
         expect.objectContaining({ investigators: [] }),
         PROPOSAL_STATUS.DRAFT

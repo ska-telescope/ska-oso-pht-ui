@@ -4,12 +4,13 @@ import { presentSensCalcError, presentUnits, presentValue } from '@utils/present
 import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
 import { STATUS_OK, TYPE_ZOOM, TYPE_CONTINUUM, STATUS_ERROR } from '../../../../utils/constants';
+import TargetObservation from '@utils/types/targetObservation.tsx';
 
 const VALUE = 'value';
 const UNITS = 'units';
 
 interface SensCalcDisplaySingleProps {
-  sensCalc: any;
+  targetObservation?: TargetObservation;
   show?: boolean;
   field: string;
   isCustom?: boolean;
@@ -17,7 +18,7 @@ interface SensCalcDisplaySingleProps {
 }
 
 export default function SensCalcDisplaySingle({
-  sensCalc,
+  targetObservation,
   show = false,
   field,
   isCustom = false,
@@ -29,7 +30,7 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
-  const ariaStatusMessage = (sensCalc: { statusGUI: string; error: string }) => {
+  const ariaStatusMessage = (sensCalc?: { statusGUI: string; error: string }) => {
     const status = t('statusLoading.' + sensCalc?.statusGUI);
     const error = sensCalc?.error?.length ? t(presentSensCalcError(sensCalc?.error)) : '';
     return t('sensitivityCalculatorResults.status', { status: status, error: error });
@@ -37,9 +38,9 @@ export default function SensCalcDisplaySingle({
 
   const FieldFetch: any = (type: string, field: string) => {
     const observationTypeLabel: string =
-      sensCalc?.section2?.length > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
-    if (sensCalc?.section1) {
-      const result = sensCalc?.section1.find(
+      targetObservation?.sensCalc?.section2?.length > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
+    if (targetObservation?.sensCalc?.section1) {
+      const result = targetObservation?.sensCalc?.section1.find(
         (item: { field: string }) => item.field === `${observationTypeLabel}${field}`
       );
       return result ? result[type] : '';
@@ -47,7 +48,7 @@ export default function SensCalcDisplaySingle({
     return '';
   };
 
-  const isDisabled = () => sensCalc?.statusGUI !== STATUS_OK;
+  const isDisabled = () => targetObservation?.sensCalc?.statusGUI !== STATUS_OK;
 
   const PresentCustomResultValue = () => {
     if (isNatural) {
@@ -60,14 +61,14 @@ export default function SensCalcDisplaySingle({
     <>
       {show && field === 'icon' && (
         <StatusIconDisplay
-          ariaDescription={ariaStatusMessage(sensCalc)}
-          ariaTitle={ariaStatusMessage(sensCalc)}
+          ariaDescription={ariaStatusMessage(targetObservation?.sensCalc)}
+          ariaTitle={ariaStatusMessage(targetObservation?.sensCalc)}
           disabled={isDisabled()}
           text={''}
           onClick={isDisabled() ? undefined : IconClicked}
           testId="statusId"
-          toolTip={ariaStatusMessage(sensCalc)}
-          level={sensCalc?.statusGUI ?? STATUS_ERROR}
+          toolTip={ariaStatusMessage(targetObservation?.sensCalc)}
+          level={targetObservation?.sensCalc?.statusGUI ?? STATUS_ERROR}
         />
       )}
       {show && field !== 'icon' && (
@@ -81,8 +82,7 @@ export default function SensCalcDisplaySingle({
         <SensCalcModalSingle
           open={openDialog}
           onClose={() => setOpenDialog(false)}
-          data={sensCalc}
-          isCustom={isCustom}
+          targetObservation={targetObservation}
           isNatural={isNatural}
         />
       )}

@@ -7,10 +7,6 @@ declare module '@/env' {
   export const env: {
     production: boolean;
     apiUrl: string;
-    REACT_APP_USE_LOCAL_DATA: string;
-    REACT_APP_USE_LOCAL_DATA_PROPOSAL_REVIEW: string;
-    REACT_APP_USE_LOCAL_DATA_REVIEWER_LIST: string;
-    REACT_APP_USE_LOCAL_DATA_PROPOSAL_LIST: string;
     REACT_APP_SKA_OSO_SERVICES_URL: string;
     REACT_APP_SKA_OSO_AUTH_URL: string;
     REACT_APP_SKA_OSO_CLIENT_ID: string;
@@ -19,8 +15,6 @@ declare module '@/env' {
     MSENTRA_CLIENT_ID: string;
     MSENTRA_TENANT_ID: string;
     MSENTRA_REDIRECT_URI: string;
-    REACT_APP_OVERRIDE_GROUPS: string;
-    REACT_APP_LOW_UNITS_UNLOCKED: string;
     USE_INDIGO: string;
     INDIGO_AUTHORITY: string;
     INDIGO_CLIENT_ID: string;

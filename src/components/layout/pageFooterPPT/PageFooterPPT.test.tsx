@@ -47,7 +47,7 @@ vi.mock('@services/axios/post/postProposal/postProposal.tsx', () => ({
 }));
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({})
+  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
 }));
 
 // --- Setup ---
@@ -103,11 +103,6 @@ describe('PageFooterPPT', () => {
   it('hides previous button on first page', () => {
     wrapper(<PageFooterPPT pageNo={0} />);
     expect(screen.queryByTestId('prevButtonTestId')).not.toBeInTheDocument();
-  });
-
-  it('renders notification when present', () => {
-    wrapper(<PageFooterPPT pageNo={1} />);
-    expect(screen.getByTestId('timeAlertFooter')).toBeInTheDocument();
   });
 
   it('disables next button when buttonDisabled is true', () => {

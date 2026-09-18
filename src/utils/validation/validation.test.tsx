@@ -1,27 +1,17 @@
 import { describe, it, expect } from 'vitest';
+import { DataProductSDPNew, SDPFilterbankPSTData } from '../types/dataProduct';
 import {
-  DataProductSDPNew,
-  SDPFilterbankPSTData,
-  SDPFlowthroughPSTData,
-  SDPImageContinuumData,
-  SDPSpectralData,
-  SDPTimingPSTData,
-  SDPVisibilitiesContinuumData
-} from '../types/dataProduct';
-import {
-  CHANNELS_OUT_DEFAULT,
   DETECTED_FILTER_BANK_VALUE,
+  CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
+  CHANNELS_OUT_MIN_CONTINUUM,
+  CHANNELS_OUT_MIN_SPECTRAL,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
-  IMAGE_SIZE_DEFAULT,
-  IMAGE_SIZE_UNIT_DEFAULT,
   IW_BRIGGS,
   IW_UNIFORM,
-  PIXEL_SIZE_DEFAULT,
-  PIXEL_SIZE_UNIT_DEFAULT,
   PULSAR_TIMING_VALUE,
-  ROBUST_DEFAULT,
   STATUS_ERROR,
   STATUS_OK,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
@@ -29,357 +19,14 @@ import {
   SUPPLIED_INTEGRATION_TIME_UNITS_M,
   SUPPLIED_TYPE_INTEGRATION,
   SUPPLIED_TYPE_SENSITIVITY,
-  TAPER_DEFAULT,
   TIME_HOURS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
 import { timeConversion } from '../helpers';
-import { checkDP, validateObservationPage, validateSDPPage } from './validation';
-
-describe('checkDP for spectral data product', () => {
-  it('returns 1 for valid spectral data product', () => {
-    const proposal = {
-      scienceCategory: TYPE_ZOOM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            imageSizeValue: IMAGE_SIZE_DEFAULT,
-            imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
-            pixelSizeValue: PIXEL_SIZE_DEFAULT,
-            pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
-            weighting: IW_UNIFORM,
-            polarisations: ['I', 'XX'],
-            channelsOut: CHANNELS_OUT_DEFAULT,
-            robust: ROBUST_DEFAULT,
-            taperValue: TAPER_DEFAULT,
-            continuumSubtraction: true
-          } as SDPSpectralData
-        }
-      ] as DataProductSDPNew[]
-    };
-    expect(checkDP(proposal as any)).toEqual(1);
-  });
-
-  it('returns 0 if polarisations field is missing', () => {
-    const proposal = {
-      scienceCategory: TYPE_ZOOM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            imageSizeValue: IMAGE_SIZE_DEFAULT,
-            imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
-            pixelSizeValue: PIXEL_SIZE_DEFAULT,
-            pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
-            channelsOut: CHANNELS_OUT_DEFAULT,
-            robust: ROBUST_DEFAULT,
-            taperValue: TAPER_DEFAULT,
-            continuumSubtraction: true
-          } as SDPSpectralData
-        }
-      ] as DataProductSDPNew[]
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-
-  it('returns 0 if polarisations is empty', () => {
-    const proposal = {
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            imageSizeValue: IMAGE_SIZE_DEFAULT,
-            imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
-            pixelSizeValue: PIXEL_SIZE_DEFAULT,
-            pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
-            weighting: IW_UNIFORM,
-            polarisations: [],
-            channelsOut: CHANNELS_OUT_DEFAULT,
-            robust: ROBUST_DEFAULT,
-            taperValue: TAPER_DEFAULT,
-            continuumSubtraction: true
-          } as SDPSpectralData
-        }
-      ] as DataProductSDPNew[]
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-
-  it('returns 0 if no targetObservation', () => {
-    const proposal = {
-      scienceCategory: TYPE_ZOOM,
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: []
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-
-  it('returns 0 if no observation', () => {
-    const proposal = {
-      scienceCategory: TYPE_ZOOM,
-      observations: [],
-      dataProductSDP: []
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-
-  it('returns 0 if dataProductSDP is undefined', () => {
-    const proposal = {
-      scienceCategory: TYPE_ZOOM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ]
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-
-  it('returns 0 if dataProductSDP[0] is undefined', () => {
-    const proposal = {
-      scienceCategory: TYPE_ZOOM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: []
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-});
-
-describe('checkDP for continuum data product', () => {
-  it('returns 1 for valid image data product', () => {
-    const proposal = {
-      scienceCategory: TYPE_CONTINUUM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            dataProductType: DP_TYPE_IMAGES,
-            imageSizeValue: 100,
-            imageSizeUnits: 1,
-            pixelSizeValue: 0.5,
-            pixelSizeUnits: 1,
-            weighting: IW_UNIFORM,
-            taperValue: 1,
-            channelsOut: 32,
-            polarisations: ['XX', 'YY'],
-            robust: 1
-          } as SDPImageContinuumData
-        } as DataProductSDPNew
-      ]
-    };
-    expect(checkDP(proposal as any)).toEqual(1);
-  });
-
-  it('returns 0 if polarisations is empty for image', () => {
-    const proposal = {
-      scienceCategory: TYPE_CONTINUUM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            dataProductType: DP_TYPE_IMAGES,
-            imageSizeValue: 100,
-            imageSizeUnits: 1,
-            pixelSizeValue: 0.5,
-            pixelSizeUnits: 1,
-            weighting: IW_UNIFORM,
-            taperValue: 1,
-            channelsOut: 32,
-            polarisations: [],
-            robust: 1
-          } as SDPImageContinuumData
-        } as DataProductSDPNew
-      ]
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-
-  it('returns 1 for valid visibilities data product', () => {
-    const proposal = {
-      scienceCategory: TYPE_CONTINUUM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            dataProductType: DP_TYPE_VISIBLE,
-            timeAveraging: 10,
-            frequencyAveraging: 20
-          } as SDPVisibilitiesContinuumData
-        }
-      ] as DataProductSDPNew[]
-    };
-    expect(checkDP(proposal as any)).toEqual(1);
-  });
-
-  it('returns 0 if dataProductSDP is undefined', () => {
-    const proposal = {
-      scienceCategory: TYPE_ZOOM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: undefined
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-
-  it('returns 0 if dataProductSDP[0] is empty', () => {
-    const proposal = {
-      scienceCategory: TYPE_ZOOM,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: null
-        }
-      ],
-      dataProductSDP: []
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-});
-
-describe('checkDP for pst data product', () => {
-  it('returns 1 for valid pst flow through data product', () => {
-    const proposal = {
-      scienceCategory: TYPE_PST,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: FLOW_THROUGH_VALUE
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            dataProductType: FLOW_THROUGH_VALUE,
-            polarisations: ['XX', 'YY'],
-            bitDepth: 20
-          } as SDPFlowthroughPSTData
-        }
-      ] as DataProductSDPNew[]
-    };
-    expect(checkDP(proposal as any)).toEqual(1);
-  });
-
-  it('returns 0 for missing polarisations on pst flow through data product', () => {
-    const proposal = {
-      scienceCategory: TYPE_PST,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: FLOW_THROUGH_VALUE
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            dataProductType: FLOW_THROUGH_VALUE,
-            polarisations: [],
-            bitDepth: 20
-          } as SDPFlowthroughPSTData
-        }
-      ] as DataProductSDPNew[]
-    };
-    expect(checkDP(proposal as any)).toEqual(0);
-  });
-
-  it('returns 1 for pst pulsar timing data product', () => {
-    const proposal = {
-      scienceCategory: TYPE_PST,
-      targetObservation: [{ targetId: '1' }],
-      observations: [
-        {
-          id: 'obs-123',
-          pstMode: PULSAR_TIMING_VALUE
-        }
-      ],
-      dataProductSDP: [
-        {
-          id: 'SDP-0000000',
-          observationId: 'obs-123',
-          data: {
-            dataProductType: PULSAR_TIMING_VALUE
-          } as SDPTimingPSTData
-        }
-      ] as DataProductSDPNew[]
-    };
-    expect(checkDP(proposal as any)).toEqual(1);
-  });
-});
+import { validateObservationPage, validateSDPPage } from './validation';
 
 describe('validateSDPPage robust rules', () => {
   const makeProposalWithDataProduct = (data: any) =>
@@ -401,7 +48,8 @@ describe('validateSDPPage robust rules', () => {
     const proposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_IMAGES,
       weighting: IW_UNIFORM,
-      robust: 99
+      robust: 99,
+      polarisations: ['I']
     });
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
@@ -410,7 +58,8 @@ describe('validateSDPPage robust rules', () => {
     const proposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_IMAGES,
       weighting: IW_BRIGGS,
-      robust: 1.5
+      robust: 1.5,
+      polarisations: ['I']
     });
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
@@ -428,16 +77,213 @@ describe('validateSDPPage robust rules', () => {
     const validProposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_IMAGES,
       weighting: IW_BRIGGS,
-      robust: 0
+      robust: 0,
+      polarisations: ['I']
     });
     expect(validateSDPPage(validProposal)).toBe(STATUS_OK);
 
     const invalidProposal = makeProposalWithDataProduct({
       dataProductType: DP_TYPE_IMAGES,
       weighting: IW_BRIGGS,
-      robust: 2.1
+      robust: 2.1,
+      polarisations: ['I']
     });
     expect(validateSDPPage(invalidProposal)).toBe(STATUS_ERROR);
+  });
+});
+
+describe('validateSDPPage polarisation rules', () => {
+  it('returns STATUS_ERROR when an image data product has no polarisations selected', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { dataProductType: DP_TYPE_IMAGES, polarisations: [] }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_OK for a visibilities data product with no polarisations selected', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { dataProductType: DP_TYPE_VISIBLE, polarisations: [] }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR when a PST flow-through data product has no polarisations selected', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_PST, pstMode: FLOW_THROUGH_VALUE }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { dataProductType: FLOW_THROUGH_VALUE, polarisations: [] }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_OK for a PST pulsar timing data product with no polarisations field', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_PST, pstMode: PULSAR_TIMING_VALUE }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { dataProductType: PULSAR_TIMING_VALUE }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR when a zoom/combined spectral data product has no polarisations selected', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_ZOOM }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { polarisations: [] } // SDPSpectralData has no dataProductType field
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('ignores the hidden visibilities companion data product HiddenSDPData creates alongside a combined spectral product', () => {
+    const proposal = {
+      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: { polarisations: ['I', 'XX'], channelsOut: CHANNELS_OUT_MIN_SPECTRAL } // the displayed spectral product - valid
+        },
+        {
+          id: 'SDP-1-hidden',
+          observationId: 'obs-1',
+          // the auto-created hidden visibilities companion - never carries polarisations
+          data: { dataProductType: DP_TYPE_VISIBLE, timeAveraging: 4, frequencyAveraging: 1 }
+        }
+      ]
+    } as any;
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+});
+
+describe('validateSDPPage channelsOut rules', () => {
+  const makeProposalWithDataProducts = (
+    dataProducts: { data: any; observationId?: string }[],
+    observations?: any[]
+  ) =>
+    ({
+      observations,
+      dataProductSDP: dataProducts.map((dp, idx) => ({
+        id: `SDP-${idx + 1}`,
+        observationId: dp.observationId ?? 'obs-1',
+        data: dp.data
+      })) as DataProductSDPNew[]
+    }) as any;
+
+  const continuumObservations = [{ id: 'obs-1', type: TYPE_CONTINUUM }];
+
+  it('returns STATUS_OK for a valid channelsOut value', () => {
+    const proposal = makeProposalWithDataProducts(
+      [
+        {
+          data: {
+            dataProductType: DP_TYPE_IMAGES,
+            channelsOut: CHANNELS_OUT_MIN_CONTINUUM,
+            polarisations: ['I']
+          }
+        }
+      ],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR when channelsOut is below the minimum', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MIN_CONTINUUM - 1 } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR when channelsOut exceeds the standard maximum', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MAX + 1 } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR when channelsOut is not an integer', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 5.5 } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('allows the combined-mode maximum when the linked observation is continuum+spectral', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { channelsOut: CHANNELS_OUT_MAX + 1, polarisations: ['I'] } }],
+      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+
+    const invalidProposal = makeProposalWithDataProducts(
+      [{ data: { channelsOut: CHANNELS_OUT_MAX_COMBINED + 1, polarisations: ['I'] } }],
+      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
+    );
+    expect(validateSDPPage(invalidProposal)).toBe(STATUS_ERROR);
+  });
+
+  it('ignores a Visibilities-type data product even though it carries channelsOut', () => {
+    // getProposal.tsx's backend mapping always writes a channelsOut key (defaulted to 0) onto
+    // every data product, including Visibilities ones that have no real "channels out" concept.
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_VISIBLE, channelsOut: 0 } }],
+      continuumObservations
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('ignores the hidden Visibilities companion of a combined-mode observation', () => {
+    // Regression test: the auto-added hidden companion for TYPE_CONTINUUM_SPECTRAL previously
+    // got flagged as invalid because it inherits a channelsOut: 0 from the backend mapping,
+    // even though only the primary (Images) data product's channelsOut is ever user-editable.
+    const proposal = makeProposalWithDataProducts(
+      [
+        { data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 4, polarisations: ['I'] } },
+        { data: { dataProductType: DP_TYPE_VISIBLE, channelsOut: 0 } }
+      ],
+      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('ignores channelsOut for observation types that never use it (e.g. PST)', () => {
+    const proposal = makeProposalWithDataProducts(
+      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 0 } }],
+      [{ id: 'obs-1', type: TYPE_PST }]
+    );
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
 });
 
@@ -458,6 +304,7 @@ describe('validateSDPPage detected filterbank field rules', () => {
             outputSamplingInterval: 1,
             dispersionMeasure: 1.5,
             rotationMeasure: -2.5,
+            polarisations: ['I'],
             ...data
           }
         }

@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Ensure that if no polarisations are selected this is reflected in breadcrumbs
+* Remove references to USE_LOCAL_DATA
+* Tidyup of end to end cypresss tests - temporarily skip tests requiring user portal flow  until portal is developed
 * Bugfix: Allow user to deselect all polarisations on Data Product page
 * Bugfix: disable ability of scroll wheel to update number values 
 * Bugfix: sensitivity calculator results now treat Briggs weighting with robust = 2 like the non-Gaussian beam case, while uniform weighting remains unaffected
