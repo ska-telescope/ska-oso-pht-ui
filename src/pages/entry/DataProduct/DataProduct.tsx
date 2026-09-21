@@ -328,6 +328,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
   const showSC = osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1;
+  const showSensitivityResults =
+    showSC && !(isContinuum() && channelsOut === CHANNELS_OUT_MIN_CONTINUUM);
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -1216,8 +1218,8 @@ export default function DataProduct({ data }: DataProductProps) {
                 ))}
             </Typography>
           </BorderedSection>
-          {showSC && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}
-          {showSC && (
+          {showSensitivityResults && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}
+          {showSensitivityResults && (
             <BorderedSection
               borderColor={
                 targetObservation()?.sensCalc == undefined
