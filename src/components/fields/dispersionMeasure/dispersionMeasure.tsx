@@ -43,7 +43,6 @@ export default function DispersionMeasureField({
       disabled={disabled}
       minValue={DISPERSION_MEASURE_RANGE.min}
       maxValue={DISPERSION_MEASURE_RANGE.max}
-      step={1}
       requiredMessage={rangeErrorMessage}
       rangeMessage={rangeErrorMessage}
       validate={validateDispersionMeasure}

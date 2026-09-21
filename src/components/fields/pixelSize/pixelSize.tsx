@@ -40,7 +40,6 @@ export default function PixelSizeField({
       disabled={disabled}
       minValue={0}
       minInclusive={false}
-      step={1}
       requiredMessage={errorMessage}
       rangeMessage={errorMessage}
       validate={validatePixelSize}

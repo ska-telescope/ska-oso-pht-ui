@@ -37,7 +37,6 @@ export default function RotationMeasureField({
       setValue={(nextValue) => setValue?.(nextValue)}
       required={required}
       disabled={disabled}
-      step={1}
       requiredMessage={requiredMessage}
       validate={validateRotationMeasure}
       unitOptions={[{ label: t(FIELD + '.units'), value: ROTATION_MEASURE_UNIT_VALUE }]}

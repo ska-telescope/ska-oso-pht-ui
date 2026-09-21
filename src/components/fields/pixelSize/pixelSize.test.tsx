@@ -15,13 +15,13 @@ describe('PixelSizeField', () => {
   it('updates correctly when value changed', () => {
     const handleSetValue = vi.fn();
     wrapper(<PixelSizeField value={10} setValue={handleSetValue} />);
-    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: 250 } });
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 250 } });
     expect(handleSetValue).toHaveBeenCalledWith(250);
   });
 
   it('shows an error when value is not greater than zero', () => {
     wrapper(<PixelSizeField value={10} setValue={vi.fn()} />);
-    const input = screen.getByRole('spinbutton');
+    const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: 0 } });
     fireEvent.blur(input);
     expect(screen.getByText('pixelSize.error')).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe('PixelSizeField', () => {
 
   it('disables both controls in read-only mode', () => {
     wrapper(<PixelSizeField value={10} units={1} disabled />);
-    expect(screen.getByRole('spinbutton')).toBeDisabled();
+    expect(screen.getByRole('textbox')).toBeDisabled();
     const units = screen.getByTestId('pixelSizeUnits');
     expect(within(units.parentElement as HTMLElement).getByRole('combobox')).toHaveAttribute(
       'aria-disabled',

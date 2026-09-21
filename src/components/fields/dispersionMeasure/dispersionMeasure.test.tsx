@@ -19,7 +19,7 @@ describe('<DispersionMeasureField />', () => {
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 250 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(250));
   });
@@ -31,7 +31,7 @@ describe('<DispersionMeasureField />', () => {
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 1.5 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(1.5));
     expect(screen.queryByText('dispersionMeasure.range.error')).not.toBeInTheDocument();
@@ -44,7 +44,7 @@ describe('<DispersionMeasureField />', () => {
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: -1 } });
     fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(Number(-1));
@@ -58,7 +58,7 @@ describe('<DispersionMeasureField />', () => {
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 100001 } });
     fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(Number(100001));

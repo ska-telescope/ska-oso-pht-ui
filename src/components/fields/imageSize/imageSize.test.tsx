@@ -16,7 +16,7 @@ describe('<ImageSize />', () => {
         <ImageSize value={1} setValue={handleSetValue} />
       </StoreProvider>
     );
-    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: 250 } });
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 250 } });
     expect(handleSetValue).toHaveBeenCalledWith(250);
   });
 
@@ -26,7 +26,7 @@ describe('<ImageSize />', () => {
         <ImageSize value={1} setValue={vi.fn()} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton');
+    const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: 0 } });
     fireEvent.blur(input);
     expect(screen.getByText('imageSize.error')).toBeInTheDocument();
@@ -52,7 +52,7 @@ describe('<ImageSize />', () => {
         <ImageSize value={1} units={1} disabled />
       </StoreProvider>
     );
-    expect(screen.getByRole('spinbutton')).toBeDisabled();
+    expect(screen.getByRole('textbox')).toBeDisabled();
     const units = screen.getByTestId('imageSizeUnits');
     expect(within(units.parentElement as HTMLElement).getByRole('combobox')).toHaveAttribute(
       'aria-disabled',
