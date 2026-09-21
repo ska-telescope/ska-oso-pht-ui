@@ -215,6 +215,7 @@ describe('DataProduct component', () => {
   });
 
   it('hides continuum sensitivity results when only one output channel is selected', () => {
+    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
     const singleChannelDataProduct = {
       ...existingDataProduct,
       data: { ...existingDataProduct.data, channelsOut: 1 }
