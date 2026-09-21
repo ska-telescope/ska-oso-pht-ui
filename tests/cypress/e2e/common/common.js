@@ -59,14 +59,14 @@ export const mockEmailAPI = () => {
   cy.intercept('POST', '**/pht/prsls/send-email/').as('mockInviteUserByEmail');
 };
 
-export const mockResolveTargetAPI = () => {
-  cy.intercept('GET', '**/coordinates/M2/equatorial').as('mockResolveTarget');
+export const spyOnResolveTargetAPI = () => {
+  cy.intercept('GET', '**/coordinates/M2/equatorial').as('resolveTarget');
 };
 
 // Target lookups hit an external resolver, so wait for double the configured defaults
 // (requestTimeout 10000 / responseTimeout 60000 in cypress.config.mjs).
 export const waitForResolveTarget = () =>
-  cy.wait('@mockResolveTarget', { requestTimeout: 20000, responseTimeout: 120000 });
+  cy.wait('@resolveTarget', { requestTimeout: 20000, responseTimeout: 120000 });
 
 export const mockOSDAPI = () => {
   cy.intercept('GET', '**/osd/cycles').as('mockOSDData');

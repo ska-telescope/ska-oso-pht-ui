@@ -12,7 +12,7 @@ import {
   clickObservationSetup,
   selectObservingMode,
   verifyAutoLinkAlertFooter,
-  mockResolveTargetAPI,
+  spyOnResolveTargetAPI,
   waitForResolveTarget,
   addSubmissionSummary,
   clickEditIconForRow,
@@ -49,12 +49,12 @@ describe('Edit Proposal', () => {
   // Skipped via describe.skip() (not this.skip() inside a function(){} test) - see
   // reviewScience.test.js's comment: a function(){...this.skip()} test sharing a spec with
   // cy.intercept().as() elsewhere (here, the Proposal Flow describe below and this describe's own
-  // mockEmailAPI/mockResolveTargetAPI) reliably corrupts Cypress's command tracking.
+  // mockEmailAPI/spyOnResolveTargetAPI) reliably corrupts Cypress's command tracking.
   // describe.skip() never invokes any of its hooks or tests at all, so it sidesteps that entirely.
   describe.skip('SV Flow', () => {
     beforeEach(() => {
       mockEmailAPI();
-      mockResolveTargetAPI();
+      spyOnResolveTargetAPI();
     });
 
     afterEach(() => {
@@ -108,7 +108,7 @@ describe('Edit Proposal', () => {
   describe.skip('Proposal Flow', () => {
     beforeEach(() => {
       mockEmailAPI();
-      mockResolveTargetAPI();
+      spyOnResolveTargetAPI();
     });
 
     afterEach(() => {
