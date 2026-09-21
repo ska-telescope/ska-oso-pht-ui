@@ -328,8 +328,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
   const showSC = osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1;
-  const showSensitivityResults =
-    showSC && !(isContinuum() && channelsOut === CHANNELS_OUT_MIN_CONTINUUM);
+  const hideSpectralSensitivityResults =
+    isContinuum() && channelsOut === CHANNELS_OUT_MIN_CONTINUUM;
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -1218,8 +1218,8 @@ export default function DataProduct({ data }: DataProductProps) {
                 ))}
             </Typography>
           </BorderedSection>
-          {showSensitivityResults && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}
-          {showSensitivityResults && (
+          {showSC && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}
+          {showSC && (
             <BorderedSection
               borderColor={
                 targetObservation()?.sensCalc == undefined
@@ -1234,7 +1234,11 @@ export default function DataProduct({ data }: DataProductProps) {
                   : t('sensitivityCalculatorResults.title')
               }
             >
-              <SensCalcContent targetObservation={targetObservation()} isNatural={isNatural()} />
+              <SensCalcContent
+                targetObservation={targetObservation()}
+                isNatural={isNatural()}
+                hideSpectralResults={hideSpectralSensitivityResults}
+              />
             </BorderedSection>
           )}
         </Grid>

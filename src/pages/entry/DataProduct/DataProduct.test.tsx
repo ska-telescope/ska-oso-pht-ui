@@ -222,6 +222,7 @@ describe('DataProduct component', () => {
     } as DataProductSDPNew;
     const sensCalc = {
       section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }],
+      section2: [{ field: 'spectralSensitivityWeighted', value: '2', units: 'Jy' }],
       statusGUI: 0
     } as SensCalcResults;
 
@@ -260,9 +261,10 @@ describe('DataProduct component', () => {
     );
 
     expect(
-      screen.queryByText('sensitivityCalculatorResults.title (Imaging ODP)')
-    ).not.toBeInTheDocument();
-    expect(screen.queryByTestId('field-continuumSensitivityWeighted')).not.toBeInTheDocument();
+      screen.getByText('sensitivityCalculatorResults.title (Imaging ODP)')
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toBeInTheDocument();
+    expect(screen.queryByTestId('field-spectralSensitivityWeighted')).not.toBeInTheDocument();
   });
 
   it('updates taper value when user types', () => {

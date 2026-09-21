@@ -19,7 +19,8 @@ import {
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
   CHANNELS_OUT_DEFAULT,
   DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE
+  DP_TYPE_VISIBLE,
+  MAX_SENSITIVITY_SPECTRAL_AVERAGING_FACTOR
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
@@ -402,7 +403,10 @@ export function getSpectralAveragingFactor(
     observation.type == TYPE_CONTINUUM && dataProduct.data.dataProductType == DP_TYPE_VISIBLE
       ? CHANNELS_OUT_DEFAULT
       : dataProduct.data.channelsOut;
-  return Math.floor(totalChannels / channelsOut);
+  return Math.min(
+    Math.floor(totalChannels / channelsOut),
+    MAX_SENSITIVITY_SPECTRAL_AVERAGING_FACTOR
+  );
 }
 
 function GetContinuumData(

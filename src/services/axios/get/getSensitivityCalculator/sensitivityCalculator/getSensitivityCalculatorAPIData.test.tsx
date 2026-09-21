@@ -87,7 +87,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   });
 
   test.each([
-    { channelsOut: 1, expectedSpectralAveragingFactor: 27648 },
+    { channelsOut: 1, expectedSpectralAveragingFactor: 13824 },
     { channelsOut: 4000, expectedSpectralAveragingFactor: 6 }
   ])(
     'returns continuum mapped data for combined mode with channelsOut=$channelsOut, sending the full continuumBandwidth and a spectral averaging factor derived from channelsOut',
