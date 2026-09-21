@@ -9,6 +9,7 @@ import {
   clickToAddTarget,
   enterTargetField,
   mockResolveTargetAPI,
+  waitForResolveTarget,
   pageConfirmed,
   updateTargetField,
   verifyFieldError,
@@ -58,7 +59,7 @@ describe('Science Verification: Target entry validation', () => {
 
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //verify target in target table
@@ -79,7 +80,7 @@ describe('Science Verification: Target entry validation', () => {
 
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //verify target in target table
@@ -100,7 +101,7 @@ describe('Science Verification: Target entry validation', () => {
 
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //verify target in target table
@@ -120,7 +121,7 @@ describe('Science Verification: Target entry validation', () => {
     mockResolveTargetAPI();
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //verify target in target table
@@ -167,7 +168,7 @@ describe.skip('Proposal Flow: Target entry validation', () => {
 
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //attempt to add target with the same name

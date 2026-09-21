@@ -13,6 +13,7 @@ import {
   selectObservingMode,
   verifyAutoLinkAlertFooter,
   mockResolveTargetAPI,
+  waitForResolveTarget,
   addSubmissionSummary,
   clickEditIconForRow,
   verifyMockedScienceIdeaOnLandingPageIsVisible,
@@ -81,7 +82,7 @@ describe('Edit Proposal', () => {
       clickStatusIconNav('statusId4'); //Click to target page
       pageConfirmed('TARGET');
       addM2TargetUsingResolve(); //add target
-      cy.wait('@mockResolveTarget');
+      waitForResolveTarget();
       clickToAddTarget();
       verifyAutoLinkAlertFooter(); //Verify AutoLink to OSD data
       clickStatusIconNav('statusId3'); //Click to description page
@@ -138,7 +139,7 @@ describe('Edit Proposal', () => {
         pageConfirmed('TARGET');
         //add target
         addM2TargetUsingResolve();
-        cy.wait('@mockResolveTarget');
+        waitForResolveTarget();
         clickToAddTarget();
         clickStatusIconNav('statusId5'); //Click to observation page
         pageConfirmed('OBSERVATION');

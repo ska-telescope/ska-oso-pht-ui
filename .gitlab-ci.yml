@@ -99,16 +99,12 @@ js-e2e-deploy:
   # both the deploy and test jobs 
   environment:
     name: test/$CI_COMMIT_REF_SLUG
-    on_stop: stop-js-e2e-test
-    auto_stop_in: 2 hours
     kubernetes:
       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
 
 js-e2e-test:
   environment:
     name: test/$CI_COMMIT_REF_SLUG
-    on_stop: stop-js-e2e-test
-    auto_stop_in: 2 hours 
     kubernetes:
       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA
   allow_failure: true # Needed because of the current instability of the ingress env issues
