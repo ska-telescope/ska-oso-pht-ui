@@ -6,8 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* CI Test Only: Remove local overrides for js-e2e-deploy as should now be part of standard CI build
-* CI Test Only: Increase default timeout waiting for target lookup
+* CI Test Only: Increase timeouts in cypress tests for long running calls 
 * Bugfix: Ensure that if no polarisations are selected this is reflected in breadcrumbs
 * Remove references to USE_LOCAL_DATA
 * Tidyup of end to end cypresss tests - temporarily skip tests requiring user portal flow  until portal is developed
