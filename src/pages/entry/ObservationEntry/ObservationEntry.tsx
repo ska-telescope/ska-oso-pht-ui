@@ -1144,18 +1144,20 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       );
     };
     return fieldWrapper(
-      <ContinuumBandwidthField
-        setValue={setContinuumBandwidth}
-        value={continuumBandwidth}
-        suffix={continuumBandwidthUnitsField()}
-        telescope={telescope()}
-        observingBand={observingBand}
-        continuumBandwidthUnits={continuumBandwidthUnits}
-        centralFrequency={centralFrequency}
-        centralFrequencyUnits={centralFrequencyUnits}
-        subarrayConfig={subarrayConfig}
-        minimumChannelWidthHz={minimumChannelWidthHz}
-      />
+      <Box pt={1}>
+        <ContinuumBandwidthField
+          setValue={setContinuumBandwidth}
+          value={continuumBandwidth}
+          suffix={continuumBandwidthUnitsField()}
+          telescope={telescope()}
+          observingBand={observingBand}
+          continuumBandwidthUnits={continuumBandwidthUnits}
+          centralFrequency={centralFrequency}
+          centralFrequencyUnits={centralFrequencyUnits}
+          subarrayConfig={subarrayConfig}
+          minimumChannelWidthHz={minimumChannelWidthHz}
+        />
+      </Box>
     );
   };
 
