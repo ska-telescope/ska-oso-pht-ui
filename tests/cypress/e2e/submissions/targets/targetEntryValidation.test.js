@@ -8,7 +8,8 @@ import {
   clickStatusIconNav,
   clickToAddTarget,
   enterTargetField,
-  mockResolveTargetAPI,
+  spyOnResolveTargetAPI,
+  waitForResolveTarget,
   pageConfirmed,
   updateTargetField,
   verifyFieldError,
@@ -54,11 +55,11 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify submitting an edited target is disabled when name is invalid', () => {
-    mockResolveTargetAPI();
+    spyOnResolveTargetAPI();
 
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //verify target in target table
@@ -75,11 +76,11 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify submitting an edited target is disabled when ra is invalid', () => {
-    mockResolveTargetAPI();
+    spyOnResolveTargetAPI();
 
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //verify target in target table
@@ -96,11 +97,11 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
-    mockResolveTargetAPI();
+    spyOnResolveTargetAPI();
 
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //verify target in target table
@@ -117,10 +118,10 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify target table reflects updated target', () => {
-    mockResolveTargetAPI();
+    spyOnResolveTargetAPI();
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //verify target in target table
@@ -151,7 +152,7 @@ describe('Science Verification: Target entry validation', () => {
 //
 // Skipped via describe.skip() (not this.skip() inside a function(){} beforeEach) - see
 // reviewScience.test.js's comment: a function(){...this.skip()} test/hook sharing a spec with
-// cy.intercept().as() elsewhere (here, mockResolveTargetAPI/createScienceIdeaSession in the SV
+// cy.intercept().as() elsewhere (here, spyOnResolveTargetAPI/createScienceIdeaSession in the SV
 // describe above) reliably corrupts Cypress's command tracking. describe.skip() never invokes any
 // of its hooks or tests at all, so it sidesteps that entirely.
 describe.skip('Proposal Flow: Target entry validation', () => {
@@ -163,11 +164,11 @@ describe.skip('Proposal Flow: Target entry validation', () => {
   });
 
   it('Proposal: Verify name field error when target is duplicated', () => {
-    mockResolveTargetAPI();
+    spyOnResolveTargetAPI();
 
     //add target
     addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
+    waitForResolveTarget();
     clickToAddTarget();
 
     //attempt to add target with the same name

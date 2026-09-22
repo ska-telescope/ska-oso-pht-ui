@@ -10,7 +10,7 @@ import {
   verifyUserMenuReviews,
   verifyUserMenuDecisions,
   mockOSDAPI,
-  mockResolveTargetAPI,
+  spyOnResolveTargetAPI,
   beginScienceIdeaSession,
   selectScienceVerificationCycle,
   completeScienceIdeaCreation,
@@ -54,7 +54,7 @@ describe('Reviewer ( Science )', () => {
   describe('Perform a review', () => {
     // Matches createSubmission.test.js's pattern (its beforeEach does the same thing).
     beforeEach(() => {
-      mockResolveTargetAPI();
+      spyOnResolveTargetAPI();
     });
 
     afterEach(() => {
