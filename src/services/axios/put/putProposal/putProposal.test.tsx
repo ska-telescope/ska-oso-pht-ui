@@ -346,8 +346,8 @@ describe('getDataProductScriptParameters', () => {
         bitDepth: 8,
         outputFrequencyResolution: 1,
         outputSamplingInterval: 1,
-        dispersionMeasure: 10,
-        rotationMeasure: 5
+        dispersionMeasure: 10.5,
+        rotationMeasure: 5.25
       } as SDPFilterbankPSTData
     } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
@@ -356,8 +356,8 @@ describe('getDataProductScriptParameters', () => {
       bit_depth: 8,
       output_frequency_resolution: 1,
       output_sampling_interval: 1,
-      dispersion_measure: 10,
-      rotation_measure: 5,
+      dispersion_measure: 10.5,
+      rotation_measure: 5.25,
       kind: 'pst',
       variant: 'detected filterbank'
     } as DataProductSDPPSTDetectedFilterBankBackend);
