@@ -1,27 +1,59 @@
 import { Grid, Typography } from '@mui/material';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
-import { CUSTOM_VALID_FIELDS, STATUS_INITIAL } from '../../../../utils/constants';
-import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
+import {
+  CUSTOM_VALID_FIELDS,
+  FREQUENCY_STR_KHZ,
+  FREQUENCY_UNITS,
+  LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
+  REFERENCE_COORDINATE_TYPE_SSO,
+  SA_CUSTOM,
+  STATUS_INITIAL,
+  TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
+  TYPE_PST
+} from '../../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import TargetObservation from '@utils/types/targetObservation.tsx';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import Proposal from '@utils/types/proposal.tsx';
+import { getSpectralAveragingFactor } from '@services/axios/get/getSensitivityCalculator/getContinuumData/getContinuumData.tsx';
+import {
+  convertFrequencyToDisplayUnits,
+  getBandwidthZoom,
+  getSpectralResolutionHz
+} from '@utils/helpers.ts';
 
 interface SensCalcContentProps {
-  data?: SensCalcResults;
-  isCustom?: boolean;
+  targetObservation?: TargetObservation;
   isNatural?: boolean;
-  isSSO?: undefined | boolean;
 }
 
 const GAP = 4;
 const SPACER_HEIGHT = 30;
 
 export default function SensCalcContent({
-  data,
-  isCustom = false,
-  isNatural = false,
-  isSSO = false
+  targetObservation,
+  isNatural = false
 }: SensCalcContentProps) {
   const { t } = useScopedTranslation();
+
+  const { application } = storageObject.useStore();
+
+  const getProposal = () => application.content2 as Proposal;
+
+  const proposal = getProposal();
+
+  const target = proposal.targets?.find((target) => target.id === targetObservation?.targetId);
+
+  const observation = proposal.observations?.find(
+    (observation) => observation.id === targetObservation?.observationId
+  );
+
+  const dataProduct = proposal.dataProductSDP?.find(
+    (dataProduct) => dataProduct.id === targetObservation?.dataProductsSDPId
+  );
 
   const PresentCustomResultValue = (eValue: any, eId: string) => {
     if (eId === 'targetName') {
@@ -36,88 +68,113 @@ export default function SensCalcContent({
     return `${presentValue(eValue)}`;
   };
 
-  const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
+  const displayElement = (
+    elementId: string,
+    elementValue?: string | number,
+    elementUnits?: string
+  ) => {
     return (
-      <Grid key={eId} container direction="row" justifyContent="center" alignItems="center">
+      <Grid key={elementId} container direction="row" justifyContent="center" alignItems="center">
         <Grid size={{ xs: 6 }}>
-          <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
-            {eLabel}
+          <Typography id={elementId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
+            {t(`sensitivityCalculatorResults.${elementId}`)}
           </Typography>
         </Grid>
         <Grid size={{ xs: 6 }}>
           <Typography
-            id={eId + 'Label'}
-            data-testid={`field-${eId}`}
+            id={`${elementId}-label`}
+            data-testid={`field-${elementId}`}
             sx={{ align: 'left', fontWeight: 'bold' }}
             variant="body1"
           >
-            {eId === 'targetName' || isCustom || isNatural
-              ? PresentCustomResultValue(eValue, eId)
-              : presentValue(eValue)}{' '}
-            {eId === 'targetName' || isCustom || isNatural ? '' : presentUnits(eUnits)}
+            {observation?.subarray === SA_CUSTOM || isNatural
+              ? PresentCustomResultValue(elementValue, elementId)
+              : presentValue(elementValue)}{' '}
+            {!elementUnits || observation?.subarray === SA_CUSTOM || isNatural
+              ? ''
+              : presentUnits(elementUnits)}
           </Typography>
         </Grid>
       </Grid>
     );
   };
 
+  if (observation?.type === TYPE_PST) {
+    return (
+      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
+        <Typography p={GAP}>{t('page.7.pstUnavailable')}</Typography>
+      </Alert>
+    );
+  }
+
+  if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+    return (
+      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
+        <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
+      </Alert>
+    );
+  }
+
+  if (targetObservation?.sensCalc?.error) {
+    return (
+      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
+        <Typography p={GAP}>{targetObservation?.sensCalc?.error}</Typography>
+      </Alert>
+    );
+  }
+
+  if (
+    targetObservation?.sensCalc?.statusGUI === STATUS_INITIAL ||
+    targetObservation?.sensCalc == undefined
+  ) {
+    return (
+      <Alert>
+        <Typography p={GAP}>{t('sensitivityCalculatorResults.noData')}</Typography>
+      </Alert>
+    );
+  }
+
+  const spectralResolution = observation
+    ? convertFrequencyToDisplayUnits(
+        [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
+          observation?.type
+        )
+          ? getSpectralAveragingFactor(observation, dataProduct) *
+              LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
+          : getSpectralResolutionHz(observation) * 1e-3,
+        FREQUENCY_STR_KHZ
+      )
+    : undefined;
+
+  const bandwidth = [
+    TYPE_CONTINUUM,
+    TYPE_CONTINUUM_SPECTRAL,
+    TYPE_CONTINUUM_SPECTRAL_LONG
+  ].includes(observation?.type)
+    ? {
+        value: observation?.continuumBandwidth,
+        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits].label
+      }
+    : getBandwidthZoom(observation);
+
   return (
     <>
-      {isSSO ? (
-        <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-          <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
-        </Alert>
-      ) : data &&
-        data.statusGUI !== STATUS_INITIAL &&
-        data.title !== '*SHOW PST MESSAGE*' &&
-        (data.error === '' || data.error === undefined) ? (
-        <>
-          {displayElement(
-            t('sensitivityCalculatorResults.targetName'),
-            data.title,
-            '',
-            'targetName'
-          )}
-          {data?.section1 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section1?.map((rec) =>
-            displayElement(
-              t('sensitivityCalculatorResults.' + rec.field),
-              rec.value,
-              rec.units ?? '',
-              rec.field
-            )
-          )}
-          {data?.section2 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section2?.map((rec) =>
-            displayElement(
-              t('sensitivityCalculatorResults.' + rec.field),
-              rec.value,
-              rec.units ?? '',
-              rec.field
-            )
-          )}
-          {data?.section3 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section3?.map((rec) =>
-            displayElement(
-              t('sensitivityCalculatorResults.' + rec.field),
-              rec.value,
-              rec.units ?? '',
-              rec.field
-            )
-          )}
-        </>
-      ) : data?.statusGUI !== STATUS_INITIAL && data?.title === '*SHOW PST MESSAGE*' ? (
-        <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-          <Typography p={GAP}>{t('page.7.pstUnavailable')}</Typography>
-        </Alert>
-      ) : data?.error !== '' && data?.error !== undefined ? (
-        <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-          <Typography p={GAP}>{data.error}</Typography>
-        </Alert>
-      ) : (
-        <Alert>
-          <Typography p={GAP}>{t('sensitivityCalculatorResults.noData')}</Typography>
-        </Alert>
+      {displayElement('targetName', target?.name)}
+      {displayElement('bandwidth', bandwidth.value, bandwidth.unit)}
+      {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
+      {displayElement('integrationTime', observation?.supplied.value, 'h')}
+
+      {targetObservation?.sensCalc?.section1 && (
+        <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
+      )}
+      {targetObservation?.sensCalc?.section1?.map((rec) =>
+        displayElement(rec.field, rec.value, rec.units)
+      )}
+      {targetObservation?.sensCalc?.section2 && (
+        <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
+      )}
+      {targetObservation?.sensCalc?.section2?.map((rec) =>
+        displayElement(rec.field, rec.value, rec.units)
       )}
     </>
   );

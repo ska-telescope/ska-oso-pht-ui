@@ -12,6 +12,7 @@ import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import '@ska-telescope/ska-gui-components/dist/assets/index.css';
 import { useNotify } from '@/utils/notify/useNotify';
 import { validateIndigoConfig } from '@/utils/authConfig';
+import { useBlurNumberInputOnWheel } from '@/utils/hooks/useBlurNumberInputOnWheel';
 
 declare const window: any;
 
@@ -27,6 +28,8 @@ function App() {
     (localStorage.getItem('skao_button_variant') as typeof SKABrandColor) ?? SKABrandColor.Blue
   );
   const [flatten, setFlatten] = React.useState(localStorage.getItem('skao_flatten') === 'true');
+
+  useBlurNumberInputOnWheel();
 
   React.useEffect(() => {
     const missing = validateIndigoConfig();

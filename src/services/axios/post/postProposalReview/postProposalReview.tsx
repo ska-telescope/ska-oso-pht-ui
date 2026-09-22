@@ -1,10 +1,5 @@
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
-import {
-  OSO_SERVICES_REVIEWS_PATH,
-  REVIEW_TYPE,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
-} from '@/utils/constants';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
+import { OSO_SERVICES_REVIEWS_PATH, REVIEW_TYPE, SKA_OSO_SERVICES_URL } from '@/utils/constants';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,
@@ -71,19 +66,11 @@ export function mappingReviewFrontendToBackend(
   return transformedPanel;
 }
 
-export function postMockProposalReview(): string {
-  return 'PROPOSAL-REVIEW-ID-001';
-}
-
 async function PostProposalReview(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   review: ProposalReview,
   cycleId: string
 ): Promise<string | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return postMockProposalReview();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/create`;
     const convertedReview = mappingReviewFrontendToBackend(review, cycleId);

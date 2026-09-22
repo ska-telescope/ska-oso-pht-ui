@@ -36,7 +36,6 @@ export type ResultsDetailsBackend = {
 };
 
 export type SensCalcResults = {
-  title?: string;
   statusGUI: STATUS;
   error?: string;
   section1?: ResultsSection[];

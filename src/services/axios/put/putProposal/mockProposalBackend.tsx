@@ -265,8 +265,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
         observation_type_details: {
           observation_type: TYPE_ZOOM_LONG,
           bandwidth: {
-            value: 24.4140625,
-            unit: 'kHz'
+            value: 0.01446912,
+            unit: 'MHz'
           },
           central_frequency: {
             value: 200,
@@ -281,7 +281,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
           },
           spectral_resolution: '14.13 Hz (21.2 m/s)',
           effective_resolution: '14.13 Hz (21.2 m/s)',
-          spectral_averaging: '1',
           number_of_channels: '1024'
         }
       }

@@ -1,13 +1,6 @@
-import { cypressToken, USE_LOCAL_DATA } from '@utils/constants.ts';
 import axiosClientPDF from '../../axiosClientPDF/axiosClientPDF';
 
 async function PutUploadPDF(signedUrl: string, selectedFile: any) {
-  const UPLOAD_URL_DUMMY = 'https://httpbin.org/put';
-
-  if (USE_LOCAL_DATA || cypressToken) {
-    return `${UPLOAD_URL_DUMMY}`;
-  }
-
   try {
     // For S3 signed URLs, upload the file directly and let the browser set the Content-Type
     const result = await axiosClientPDF.put(`${signedUrl}`, selectedFile);

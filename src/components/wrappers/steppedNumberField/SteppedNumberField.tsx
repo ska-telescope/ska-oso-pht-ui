@@ -272,7 +272,11 @@ export default function SteppedNumberField({
           value={inputValue}
         />
       </Tooltip>
-      {errorText && <FormHelperText error>{errorText}</FormHelperText>}
+      {errorText && (
+        <FormHelperText data-testid={`${testId}Error`} error>
+          {errorText}
+        </FormHelperText>
+      )}
     </Box>
   );
 }

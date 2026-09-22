@@ -1,14 +1,10 @@
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
-import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@/utils/constants';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
+import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL } from '@/utils/constants';
 
 async function PostPanelAssignments(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   cycleDescription: string
 ): Promise<string | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return '';
-  }
-
   try {
     const result = await authAxiosClient.post(
       `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PANEL_PATH}/assignments?param=${cycleDescription}`

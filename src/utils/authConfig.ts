@@ -25,11 +25,10 @@ export function getUseIndigo(): boolean {
     return sessionStorage.getItem(USE_INDIGO_SESSION_KEY) === 'true';
   }
 
-  // Env var: authoritative for deployed Indigo environments.
-  if (env.USE_INDIGO === 'true') {
-    return true;
-  }
-  return false;
+  // Env var: authoritative for deployed environments. Indigo is the default - only an explicit
+  // 'false' opts back out to Entra, so an unset/misconfigured USE_INDIGO fails toward the
+  // auth mode the live-backend test suite (and most deployments) actually expect.
+  return env.USE_INDIGO !== 'false';
 }
 
 // Returns missing required env key names when USE_INDIGO is active. Empty array = all good.
@@ -51,7 +50,10 @@ export function buildAuthConfig() {
   if (getUseIndigo()) {
     // Kept the MSENTRA_ env var name for backwards-compatibility.
     // TODO: Remove when we're done with Entra.
-    const redirectUri = env.MSENTRA_REDIRECT_URI;
+    // Resolve to an absolute URL: deployed envs may set this to a relative path (see
+    // ska-oso-pht-ui.urls-redirectUri helper), and MSAL mishandles a relative/trailing-slash
+    // redirect_uri during its redirect-state matching (BTN-3402).
+    const redirectUri = new URL(env.MSENTRA_REDIRECT_URI, window.location.origin).href;
     return {
       authority: env.INDIGO_AUTHORITY,
       clientId: env.INDIGO_CLIENT_ID,

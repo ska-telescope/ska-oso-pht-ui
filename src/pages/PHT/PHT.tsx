@@ -8,17 +8,16 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Typography, CssBaseline, Tooltip, Paper } from '@mui/material';
+import { Typography, CssBaseline, Tooltip, Paper, Grid } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import {
-  cypressToken,
+  FOOTER_HEIGHT_PHT,
   NAV,
   PATH,
   PMT,
   PROPOSAL_STATUS,
   REVIEW_TYPE,
-  USE_LOCAL_DATA,
   SKA_OSO_SERVICES_URL,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
   PAGE_CALIBRATION_ENTRY,
@@ -115,9 +114,8 @@ export default function PHT({
   const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens, isSV } =
     useOSDAccessors();
   const navigate = useNavigate();
-  const authAxiosClient = useAxiosAuthClient();
   const location = useLocation();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { setHelp } = useHelp();
   const { notifyWarning, notifyError } = useNotify();
   const theme = useTheme();
@@ -125,7 +123,6 @@ export default function PHT({
 
   const LG = () => useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
-  const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
   const loggedIn = isLoggedIn();
 
   React.useEffect(() => {
@@ -167,7 +164,7 @@ export default function PHT({
       target,
       getProposal,
       setProposal,
-      authAxiosClient,
+      authClient,
       proposal.scienceCategory,
       proposal.abstract
     ).then((result) => {
@@ -189,10 +186,7 @@ export default function PHT({
       NAV.includes(previousPath) && (NAV.includes(currentPath) || currentPath === PATH[0]);
     const proposal = getProposal();
     const canAutoSave =
-      isProposalPageTransition &&
-      (loggedIn || cypressToken) &&
-      proposal?.id != null &&
-      proposal.id !== '';
+      isProposalPageTransition && loggedIn && proposal?.id != null && proposal.id !== '';
 
     if (canAutoSave) {
       void (async () => {
@@ -229,33 +223,48 @@ export default function PHT({
 
   const signIn = () => <ButtonUserMenu />;
 
+  const hasNotification = () => {
+    const note = application.content5 as Notification;
+    return note?.message?.length > 0;
+  };
+
   const showNotification = () => {
     const note = application.content5 as Notification;
     return note?.message?.length > 0 && note?.level !== AlertColorTypes.Error;
   };
 
-  const footerMainChildren = () => {
-    const opt2 = showNotification();
-
-    if (opt2)
-      return (
-        <div>
-          {opt2 && (
+  const footerNotification = () => {
+    if (!hasNotification()) return null;
+    const notification = application.content5 as Notification;
+    return (
+      <Paper
+        sx={{
+          bgcolor: 'transparent',
+          position: 'fixed',
+          bottom: FOOTER_HEIGHT_PHT,
+          left: 0,
+          right: 0,
+          zIndex: (theme) => theme.zIndex.snackbar,
+          pointerEvents: 'none'
+        }}
+        elevation={0}
+      >
+        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+          <Grid sx={{ pointerEvents: 'auto' }}>
             <TimedAlert
-              color={(application.content5 as Notification)?.level}
-              gap={0}
-              delay={(application.content5 as Notification)?.delay}
+              color={notification?.level}
+              delay={notification?.delay}
               testId="timeAlertFooter"
-              text={(application.content5 as Notification)?.message}
+              text={notification?.message}
             />
-          )}
-        </div>
-      );
+          </Grid>
+        </Grid>
+      </Paper>
+    );
   };
 
   const headerCountdown = () => {
-    const opt1 =
-      (!showNotification() && (loggedIn || cypressToken) && getProposal()?.id?.length) ?? false;
+    const opt1 = (!showNotification() && loggedIn && getProposal()?.id?.length) ?? false;
 
     if (!opt1) return null;
     return (
@@ -332,15 +341,9 @@ export default function PHT({
         application={t(LG() ? 'pht.short' : 'pht.title')}
         footerChildren={
           <Typography pt={1} variant="body1">
-            {loggedIn || cypressToken
-              ? getProposal()?.id
-                ? `Submission ID: ${getProposal()?.id}`
-                : ''
-              : ''}
-            {LOCAL_DATA}
+            {loggedIn ? (getProposal()?.id ? `Submission ID: ${getProposal()?.id}` : '') : ''}
           </Typography>
         }
-        footerChildrenMiddle={footerMainChildren()}
         headerChildren={headerCountdown()}
         iconDocsLabel={t('docs.label')}
         iconDocsToolTip={t('docs.toolTip')}
@@ -388,6 +391,7 @@ export default function PHT({
         version={packageJson.version}
         versionTooltip={versionToolTip()}
       />
+      {footerNotification()}
     </CssVarsProvider>
   );
 }

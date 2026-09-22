@@ -8,7 +8,6 @@ ingress:
 runtimeEnv:
   skaOsoServicesUrl: ~ # Set dynamically in the Makefile
   skaSensitivityCalcUrl: ""
-  useLocalData: "false"
   msentraRedirectUri: ""
   msentraClientId: "2445e300-54c9-470f-9578-0f54840672af"
   msentraTenantId: "78887040-bad7-494b-8760-88dcacfb3805"

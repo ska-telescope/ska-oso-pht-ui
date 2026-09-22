@@ -49,7 +49,7 @@ export default function TeamPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
   const { notifyError, notifySuccess } = useNotify();
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
   const [permissions, setPermissions] = React.useState<ProposalAccess[]>([]);
   const { isSV } = useOSDAccessors();

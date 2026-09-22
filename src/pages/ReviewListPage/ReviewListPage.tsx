@@ -17,8 +17,7 @@ import {
   REVIEW_TYPE,
   FEASIBLE_NO,
   FEASIBLE_YES,
-  CONFLICT_REASONS,
-  isCypress
+  CONFLICT_REASONS
 } from '@utils/constants.ts';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -30,7 +29,6 @@ import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
-import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -72,7 +70,7 @@ export default function ReviewListPage() {
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
 
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleId, getCycle } = useOSDAccessors();
   const userId = getUserId();
 
@@ -294,27 +292,19 @@ export default function ReviewListPage() {
     tecReview: { reviewType: { isFeasible: string } };
     sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
-    if (isCypress) {
-      return isReviewerScience();
-    } else {
-      return (
-        isReviewerScience() &&
-        row?.sciReview &&
-        isFeasible(row) &&
-        row?.sciReview?.reviewType.conflict.hasConflict !== true &&
-        row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
-      );
-    }
+    return (
+      isReviewerScience() &&
+      row?.sciReview &&
+      isFeasible(row) &&
+      row?.sciReview?.reviewType.conflict.hasConflict !== true &&
+      row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
+    );
   };
 
   const canEditTechnical = (tecReview: { status: string }) => {
-    if (isCypress) {
-      return isReviewerTechnical();
-    } else {
-      return (
-        isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED
-      );
-    }
+    return (
+      isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED
+    );
   };
 
   const hasTechnicalComments = (review: any) =>
@@ -612,7 +602,6 @@ export default function ReviewListPage() {
           )}
         </Grid>
       </Grid>
-      <PageFooterPMT />
       {conflictConfirm && conflictConfirmation()}
     </>
   );

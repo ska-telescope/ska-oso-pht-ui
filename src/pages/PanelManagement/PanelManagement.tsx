@@ -20,7 +20,6 @@ import { PanelProposal } from '@/utils/types/panelProposal';
 import Proposal from '@/utils/types/proposal';
 import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
-import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PutPanel from '@/services/axios/put/putPanel/putPanel';
 import AssignButton from '@/components/button/Assign/Assign';
@@ -123,7 +122,7 @@ export default function PanelManagement() {
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
   const [makeAssignment, setMakeAssignment] = React.useState(false);
-  const authClient = useAxiosAuthClient();
+  const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleDescription, osdCycleId } = useOSDAccessors();
 
   /*------------------------------------------------------------------*/
@@ -351,7 +350,6 @@ export default function PanelManagement() {
           </Grid>
         </Grid>
       </Box>
-      <PageFooterPMT />
     </Box>
   );
 }

@@ -1,12 +1,10 @@
 import {
-  cypressToken,
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
+  SKA_OSO_SERVICES_URL
 } from '@utils/constants.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import MappingPutProposal from './putProposalMapping.tsx';
 import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 
@@ -15,14 +13,10 @@ export function mockPutProposal() {
 }
 
 async function PutProposal(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   proposal: Proposal,
   status?: string
 ): Promise<ProposalBackend | { error: string }> {
-  if (USE_LOCAL_DATA || cypressToken) {
-    return mockPutProposal();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     const convertedProposal = MappingPutProposal(proposal, status as string);

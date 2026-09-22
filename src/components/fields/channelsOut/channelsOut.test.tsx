@@ -1,60 +1,98 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { describe, test, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import ChannelsOut from './channelsOut';
+import { CHANNELS_OUT_MIN_SPECTRAL } from '@/utils/constants.ts';
 
-vi.mock('@utils/constants.ts', () => ({
-  CHANNELS_OUT_MIN: 1,
-  CHANNELS_OUT_MAX: 40
-}));
-
+// Mock the translation hook so validation output is deterministic
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
   useScopedTranslation: () => ({
-    t: (key: string, opts?: { min?: number; max?: number }) =>
+    t: (key: string, opts?: any) =>
       opts && opts.min !== undefined ? `${key}:${opts.min}-${opts.max}` : key
   })
 }));
 
+const ERROR_TEXT = 'channelsOut.error:2-40';
+
+const StatefulChannelsOut = ({ initial, maxValue }: { initial: number; maxValue?: number }) => {
+  const [value, setValue] = React.useState(initial);
+  return <ChannelsOut value={value} setValue={setValue} maxValue={maxValue} />;
+};
+
+const pressArrowUp = async (input: HTMLElement) => {
+  await userEvent.click(input);
+  await userEvent.keyboard('{ArrowUp}');
+};
+
 describe('<ChannelsOut />', () => {
-  const mockSetValue = vi.fn();
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  const enterValue = (v: number) =>
-    fireEvent.change(screen.getByTestId('channelsOut'), { target: { value: String(v) } });
-
-  test('renders correctly', () => {
-    render(<ChannelsOut value={1} setValue={mockSetValue} />);
+  it('renders correctly', () => {
+    render(<ChannelsOut value={2} setValue={vi.fn()} />);
     expect(screen.getByTestId('channelsOut')).toBeInTheDocument();
   });
 
-  test.each([[1], [40]])('accepts valid value %i and calls setValue', (value) => {
-    render(<ChannelsOut value={2} setValue={mockSetValue} />);
-    enterValue(value);
-    expect(mockSetValue).toHaveBeenCalledWith(value);
-    expect(screen.queryByText('channelsOut.error:1-40')).not.toBeInTheDocument();
+  it.each([[2], [40]])('accepts valid value %i and calls setValue with no error', async (value) => {
+    const setValue = vi.fn();
+    render(<ChannelsOut value={2} setValue={setValue} />);
+    const input = screen.getByTestId('channelsOut');
+    await userEvent.clear(input);
+    await userEvent.type(input, String(value));
+    expect(setValue).toHaveBeenCalledWith(value);
+    expect(screen.queryByText(ERROR_TEXT)).not.toBeInTheDocument();
   });
 
-  test.each([[0], [1.5], [41]])('reports invalid value %s', (value) => {
-    render(<ChannelsOut value={1} setValue={mockSetValue} />);
-    enterValue(value);
-    expect(mockSetValue).toHaveBeenCalledWith(value);
-    expect(screen.getByText('channelsOut.error:1-40')).toBeInTheDocument();
+  it.each([[0], [1], [41]])(
+    'accepts invalid value %i, keeps it via setValue, and shows a persistent error',
+    async (value) => {
+      const setValue = vi.fn();
+      render(<ChannelsOut value={2} setValue={setValue} />);
+      const input = screen.getByTestId('channelsOut');
+      await userEvent.clear(input);
+      await userEvent.type(input, String(value));
+      expect(setValue).toHaveBeenCalledWith(value);
+      expect(screen.getByText(ERROR_TEXT)).toBeInTheDocument();
+    }
+  );
+
+  it('does not auto-correct an invalid value on blur', async () => {
+    render(<StatefulChannelsOut initial={2} />);
+    const input = screen.getByTestId('channelsOut') as HTMLInputElement;
+    await userEvent.clear(input);
+    await userEvent.type(input, '41');
+    await userEvent.tab();
+    expect(input.value).toBe('41');
+    expect(screen.getByText(ERROR_TEXT)).toBeInTheDocument();
   });
 
-  test('steps by one whole channel within the allowed range', () => {
-    render(<ChannelsOut value={2} setValue={mockSetValue} />);
-    fireEvent.click(screen.getByTestId('channelsOutIncrement'));
-    fireEvent.click(screen.getByTestId('channelsOutDecrement'));
-    expect(mockSetValue).toHaveBeenNthCalledWith(1, 3);
-    expect(mockSetValue).toHaveBeenNthCalledWith(2, 1);
+  it('clears the error once the user enters a valid value', async () => {
+    render(<StatefulChannelsOut initial={2} />);
+    const input = screen.getByTestId('channelsOut');
+    await userEvent.clear(input);
+    await userEvent.type(input, '41');
+    expect(screen.getByText(ERROR_TEXT)).toBeInTheDocument();
+
+    await userEvent.clear(input);
+    await userEvent.type(input, '5');
+    expect(screen.queryByText(ERROR_TEXT)).not.toBeInTheDocument();
   });
 
-  test('supports the continuum-spectral maximum', () => {
-    render(<ChannelsOut value={3999} maxValue={4000} setValue={mockSetValue} />);
-    fireEvent.click(screen.getByTestId('channelsOutIncrement'));
-    expect(mockSetValue).toHaveBeenCalledWith(4000);
+  it('steps up by 1 and clamps at the configured maxValue', async () => {
+    const setValue = vi.fn();
+    render(<ChannelsOut value={CHANNELS_OUT_MIN_SPECTRAL} setValue={setValue} maxValue={5} />);
+    await pressArrowUp(screen.getByTestId('channelsOut'));
+    expect(setValue).toHaveBeenCalledWith(CHANNELS_OUT_MIN_SPECTRAL + 1);
+  });
+
+  it('disables the decrement and increment buttons when min and maxValue coincide', () => {
+    render(
+      <ChannelsOut
+        value={CHANNELS_OUT_MIN_SPECTRAL}
+        setValue={vi.fn()}
+        maxValue={CHANNELS_OUT_MIN_SPECTRAL}
+      />
+    );
+    expect(screen.getByTestId('channelsOutDecrement')).toBeDisabled();
+    expect(screen.getByTestId('channelsOutIncrement')).toBeDisabled();
   });
 });

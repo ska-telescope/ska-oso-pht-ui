@@ -15,16 +15,14 @@ import { reviewerChairman } from '../users.js';
 describe('Review Chairman', () => {
   beforeEach(() => {
     initialize(reviewerChairman);
-    cy.window().then((win) => {
-      win.localStorage.setItem('USE_LOCAL_DATA', 'true');
-    });
   });
 
   afterEach(() => {
     clearLocalStorage();
   });
 
-  it('Validate menu options', () => {
+  // TODO Provision a 'Chair' test user and then reenable (see users.js).
+  it.skip('Validate menu options', () => {
     clickUserMenu();
     verifyUserMenuOverview(false);
     verifyUserMenuProposals(true);
@@ -33,7 +31,7 @@ describe('Review Chairman', () => {
     verifyUserMenuDecisions(true);
   });
 
-  it('Navigate using the dropdown menu', () => {
+  it.skip('Navigate using the dropdown menu', () => {
     clickUserMenuDecisions();
     clickUserMenuProposals();
   });

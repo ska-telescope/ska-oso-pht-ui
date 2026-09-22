@@ -41,7 +41,7 @@ import Target from '../types/target';
 import Proposal from '@utils/types/proposal.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
-import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
+import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 
 interface DefaultsResults {
@@ -78,7 +78,7 @@ export const newObservationForMode = (
 
 export const newCalibrationStrategy = async (
   observationId: string,
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   observation: Observation,
   target: Target,
   notes: string | null = null
@@ -214,7 +214,7 @@ export default async function autoLinking(
   target: Target,
   getProposal: Function,
   setProposal: Function,
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   observationMode?: string, // science category is used for observation mode on SV
   abstract?: string | undefined,
   maxZoomChannels?: number

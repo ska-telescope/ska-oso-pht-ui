@@ -1,11 +1,7 @@
-import {
-  OSO_SERVICES_PANEL_DECISIONS_PATH,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
-} from '@utils/constants.ts';
+import { OSO_SERVICES_PANEL_DECISIONS_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import { helpers } from '@utils/helpers.ts';
 import { PanelDecision, PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 // mapping frontend to backend format
 export function mappingPanelDecisionFrontendToBackend(
@@ -28,19 +24,11 @@ export function mappingPanelDecisionFrontendToBackend(
   return transformedPanel;
 }
 
-export function postMockPanelDecision(): string {
-  return 'PANEL-DECISION-ID-001';
-}
-
 async function PostPanelDecision(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  authAxiosClient: AxiosAuthClient,
   PanelDecision: PanelDecision,
   cycleId: string
 ): Promise<string | { error: string }> {
-  if (USE_LOCAL_DATA) {
-    return postMockPanelDecision();
-  }
-
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/create`;
     const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision, cycleId);

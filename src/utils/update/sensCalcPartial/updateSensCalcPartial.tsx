@@ -9,7 +9,6 @@ export const updateSensCalcPartial = (oldRecs: TargetObservation[], ob: Observat
         observationId: rec.observationId,
         targetId: rec.targetId,
         sensCalc: {
-          title: '',
           statusGUI: STATUS_PARTIAL,
           error: ''
         },

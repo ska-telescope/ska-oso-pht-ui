@@ -1,7 +1,6 @@
 import { Box } from '@mui/system';
+import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN_SPECTRAL } from '@utils/constants.ts';
 import React from 'react';
-import { z } from 'zod';
-import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
@@ -9,15 +8,12 @@ interface ChannelsOutFieldProps {
   disabled?: boolean;
   required?: boolean;
   maxValue?: number;
+  minValue?: number;
   onFocus?: () => void;
-  setValue?: (value: number) => void;
+  setValue?: Function;
+  suffix?: JSX.Element;
   value: number;
 }
-
-export const channelsOutSchemaForMax = (maxValue: number) =>
-  z.number().finite().int().min(CHANNELS_OUT_MIN).max(maxValue);
-
-export const channelsOutSchema = channelsOutSchemaForMax(CHANNELS_OUT_MAX);
 
 /**
  * Number of output channels selected, default is the max available.
@@ -26,57 +22,51 @@ export default function ChannelsOutField({
   disabled = false,
   required = false,
   maxValue = CHANNELS_OUT_MAX,
+  minValue = CHANNELS_OUT_MIN_SPECTRAL,
   onFocus,
   setValue,
+  suffix,
   value
 }: ChannelsOutFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'channelsOut';
-  const [errorText, setErrorText] = React.useState('');
-  const rangeErrorMessage = t(FIELD + '.error', {
-    min: CHANNELS_OUT_MIN,
-    max: maxValue
-  });
 
-  const validateChannelsOut = (channels: number) =>
-    channelsOutSchemaForMax(maxValue).safeParse(channels).success ? '' : rangeErrorMessage;
+  const validate = (num: number): string =>
+    Number.isInteger(num) && num >= minValue && num <= maxValue
+      ? ''
+      : t(FIELD + '.error', { min: minValue, max: maxValue });
 
-  const commit = (channels: number) => {
-    setValue?.(channels);
-    setErrorText(validateChannelsOut(channels));
+  const [errorMessage, setErrorMessage] = React.useState(() => validate(value));
+
+  const commit = (num: number) => {
+    setValue?.(num);
+    setErrorMessage(validate(num));
   };
 
-  const stepChannels = (channels: number, direction: 1 | -1) =>
-    Math.min(
-      maxValue,
-      Math.max(
-        CHANNELS_OUT_MIN,
-        Number.isInteger(channels)
-          ? channels + direction
-          : direction === 1
-            ? Math.ceil(channels)
-            : Math.floor(channels)
-      )
-    );
+  const step = (current: number, direction: 1 | -1) =>
+    Math.min(Math.max(current + direction, minValue), maxValue);
 
   React.useEffect(() => {
-    setErrorText(validateChannelsOut(value));
-  }, [value]);
+    setErrorMessage(validate(value));
+  }, [value, maxValue]);
 
   return (
     <Box pt={1}>
       <SteppedNumberField
         testId={FIELD}
+        label={t('channelsOut.label')}
         value={value}
-        onStep={stepChannels}
+        digitsOnly
         onCommit={commit}
-        label={t(FIELD + '.label')}
+        onStep={step}
         onFocus={onFocus}
         disabled={disabled}
         required={required}
-        min={CHANNELS_OUT_MIN}
+        errorText={errorMessage}
+        suffix={suffix}
+        min={minValue}
         max={maxValue}
-        errorText={errorText}
+        step={1}
       />
     </Box>
   );

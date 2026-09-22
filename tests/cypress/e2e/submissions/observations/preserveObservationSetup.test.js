@@ -1,51 +1,20 @@
 import {
-  initialize,
   clearLocalStorage,
-  clickCycleConfirm,
-  clickAddSubmission,
-  clickCreateSubmission,
-  enterScienceVerificationIdeaTitle,
-  clickCycleSelectionSV,
   pageConfirmed,
-  verifyScienceIdeaCreatedAlertFooter,
-  selectObservingMode,
   clickStatusIconNav,
-  addM2TargetUsingResolve,
-  clickToAddTarget,
-  mockResolveTargetAPI,
-  verifyAutoLinkAlertFooter,
+  spyOnResolveTargetAPI,
   updateFieldValue,
   addSubmissionSummary,
-  mockCreateSVIdeaAPI,
-  mockOSDAPI
+  addM2TargetAndAutoLink,
+  createScienceIdeaSession
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('SV Flow: Observation setup is preserved when details page fields change', () => {
   beforeEach(() => {
-    initialize(standardUser);
-    mockCreateSVIdeaAPI();
-    mockOSDAPI();
-    mockResolveTargetAPI();
-
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
-    clickCycleSelectionSV();
-    clickCycleConfirm();
-    enterScienceVerificationIdeaTitle();
-    clickCreateSubmission();
-    cy.wait('@mockCreateSVIdea');
-    verifyScienceIdeaCreatedAlertFooter();
-    pageConfirmed('TEAM');
-    clickStatusIconNav('statusId2');
-    pageConfirmed('DETAILS');
-    selectObservingMode('Continuum');
-    clickStatusIconNav('statusId4');
-    pageConfirmed('TARGET');
-    addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
-    clickToAddTarget();
-    verifyAutoLinkAlertFooter();
+    spyOnResolveTargetAPI();
+    createScienceIdeaSession(standardUser);
+    addM2TargetAndAutoLink('Continuum');
   });
 
   afterEach(() => {
@@ -59,8 +28,10 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
 
     // Keep focus on the abstract field for longer than ERROR_SECS (2000ms) so the debounce
     // fires before onBlur. When we navigate below, onBlur fires too, but the save has
-    // already happened via the timer.
-    cy.wait(2500);
+    // already happened via the timer. The margin above 2000ms is generous (rather than the
+    // previous 500ms) since this is a fixed wall-clock wait racing a client-side timer, and a
+    // loaded CI runner can delay JS timer firing.
+    cy.wait(4000);
 
     clickStatusIconNav('statusId5');
     pageConfirmed('OBSERVATION');

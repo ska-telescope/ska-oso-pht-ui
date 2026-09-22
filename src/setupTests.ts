@@ -8,6 +8,15 @@ vi.stubEnv('BASE_URL', '/');
 vi.stubEnv('BACKEND_URL', 'https://192.168.49.2/ska-oso-odt-ui/odt/api/v1/sbds');
 vi.stubEnv('ENVJS_FILE', './public/env.js');
 
+// authConfig.ts's getUseIndigo() now defaults to true unless USE_INDIGO is explicitly 'false',
+// matching how deployments are expected to be configured - so module-level code that reads
+// env.INDIGO_* on the Indigo branch (e.g. axiosAuthClient.ts's loginRequest) needs these stubbed
+// here too, or it throws at import time for every test file that pulls it in transitively.
+vi.stubEnv('INDIGO_AUTHORITY', 'https://iam-1.staging.devx.skao.int/');
+vi.stubEnv('INDIGO_CLIENT_ID', 'd546e462-637c-44ff-b2b9-3345a960ad42');
+vi.stubEnv('INDIGO_SCOPE', 'pht:readwrite pht:read openid profile');
+vi.stubEnv('INDIGO_AUDIENCE', 'test:pht');
+
 const mockedUseState = vi.fn();
 
 vi.mock('react-router', async () => {

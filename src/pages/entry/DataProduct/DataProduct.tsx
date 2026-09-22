@@ -19,7 +19,6 @@ import {
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
   CHANNELS_OUT_MAX_COMBINED,
-  CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
@@ -30,8 +29,6 @@ import {
   IMAGE_SIZE_UNIT_DEFAULT,
   IMAGE_WEIGHTING_DEFAULT,
   IW_BRIGGS,
-  IW_UNIFORM,
-  IW_NATURAL,
   NAV,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DATA_PRODUCTS,
@@ -39,9 +36,7 @@ import {
   PIXEL_SIZE_UNIT_DEFAULT,
   POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
-  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
-  SA_CUSTOM,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   STATUS_INITIAL,
   TAPER_DEFAULT,
@@ -52,7 +47,9 @@ import {
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
-  WRAPPER_HEIGHT
+  WRAPPER_HEIGHT,
+  CHANNELS_OUT_MIN_CONTINUUM,
+  CHANNELS_OUT_MIN_SPECTRAL
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
@@ -82,7 +79,11 @@ import OutputSamplingIntervalField from '@/components/fields/outputSamplingInter
 import TargetObservation from '@/utils/types/targetObservation';
 import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
-import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
+import {
+  isDataProductPolarisationsValid,
+  isDataProductRobustValid,
+  isSuppliedValueValid
+} from '@/utils/validation/validation';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -169,10 +170,23 @@ export default function DataProduct({ data }: DataProductProps) {
 
     return proposalObservations[0];
   };
-  const channelsOutMax =
-    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL
-      ? CHANNELS_OUT_MAX_COMBINED
-      : CHANNELS_OUT_MAX;
+  const isContinuum = () =>
+    getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
+
+  const isSpectral = () =>
+    getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
+
+  const isContinuumSpectral = () =>
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
+    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
+
+  const isPST = () =>
+    getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
+
+  const channelsOutMax = () =>
+    isContinuumSpectral() || isSpectral() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
+  const channelsOutMin = () =>
+    isContinuumSpectral() || isSpectral() ? CHANNELS_OUT_MIN_SPECTRAL : CHANNELS_OUT_MIN_CONTINUUM;
 
   const [channelsOut, setChannelsOut] = React.useState(channelsOutMax);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(
@@ -304,16 +318,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const getDefaultBitDepth = () =>
     getObservation()?.type === TYPE_PST ? getPstBitDepthDefault() : BIT_DEPTH_DEFAULT;
 
-  const isContinuum = () =>
-    getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
-  const isSpectral = () =>
-    getObservation()?.type === TYPE_ZOOM ||
-    getProposal()?.scienceCategory === TYPE_ZOOM ||
-    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
-    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
-  const isPST = () =>
-    getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
-
   const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
   const showSC = osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1;
@@ -385,7 +389,7 @@ export default function DataProduct({ data }: DataProductProps) {
     setWeighting(data?.weighting ?? IMAGE_WEIGHTING_DEFAULT);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
-    setChannelsOut(data?.channelsOut ?? channelsOutMax);
+    setChannelsOut(data?.channelsOut ?? channelsOutMax());
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
@@ -672,7 +676,7 @@ export default function DataProduct({ data }: DataProductProps) {
       const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
       setBitDepth(getDefaultBitDepth());
-      setChannelsOut(channelsOutMax);
+      setChannelsOut(channelsOutMax());
     }
   }, [observationId]);
 
@@ -843,11 +847,13 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        maxValue={channelsOutMax}
-        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: channelsOutMax })}
+        disabled={isSpectral()}
+        maxValue={channelsOutMax()}
+        minValue={channelsOutMin()}
+        onFocus={() => setHelp('channelsOut', { min: channelsOutMin(), max: channelsOutMax() })}
         required
         setValue={setChannelsOut}
-        value={channelsOut}
+        value={isSpectral() ? getObservation()?.zoomChannels : channelsOut}
       />
     );
 
@@ -908,8 +914,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const taperMidSizeValid = () => taperMidValue >= 0;
   const channelsOutValid = () =>
     Number.isInteger(channelsOut) &&
-    channelsOut >= CHANNELS_OUT_MIN &&
-    channelsOut <= channelsOutMax;
+    channelsOut >= channelsOutMin() &&
+    channelsOut <= channelsOutMax();
   const polarisationsValid = () => polarisations.length > 0;
 
   const pageFooter = () => {
@@ -921,6 +927,11 @@ export default function DataProduct({ data }: DataProductProps) {
         return false;
       }
 
+      const dataProduct = dataProductOut();
+      const polarisationsOk = dataProduct
+        ? isDataProductPolarisationsValid(getProposal(), dataProduct)
+        : polarisationsValid();
+
       switch (getObservation()?.type) {
         case TYPE_ZOOM:
         case TYPE_CONTINUUM_SPECTRAL:
@@ -930,15 +941,10 @@ export default function DataProduct({ data }: DataProductProps) {
             taperMidSizeValid() &&
             taperSizeValid() &&
             channelsOutValid() &&
-            polarisationsValid()
+            polarisationsOk
           );
         case TYPE_PST:
-          if (isFlowThrough()) {
-            return polarisationsValid();
-          } else if (isDetectedFilterbank()) {
-            return polarisationsValid();
-          }
-          return true;
+          return polarisationsOk;
         case TYPE_CONTINUUM:
         default:
           if (isDataTypeOne()) {
@@ -947,7 +953,7 @@ export default function DataProduct({ data }: DataProductProps) {
               imageSizeValid() &&
               taperSizeValid() &&
               channelsOutValid() &&
-              polarisationsValid()
+              polarisationsOk
             );
           } else {
             return true;
@@ -996,22 +1002,12 @@ export default function DataProduct({ data }: DataProductProps) {
     );
   };
 
-  // These two functions only work for the SV call as they assume one target
-  // and access the first element of an array. A better way here might be to find the
-  // targetObservation that is linked to the id of the DataProduct (that is stored in this component state `id`)
-  // and then use this to get the sensCalc and target. At the time of writing, that isn't a
-  // ball of string I want to start pulling..
-  const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
-  const isTargetSSO = (): boolean => {
-    const proposal = getProposal();
-    return proposal.targets?.[0]?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
-  };
-  const linkedScData = (): any =>
-    getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId)?.sensCalc;
+  // TODO These only works for the SV call as it assumes there is only one targetObservation for this observation
+  const targetObservation = (): TargetObservation =>
+    getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId);
 
-  const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
   const isNatural = () => {
-    if (!(isSpectral() || (isContinuum() && isDataTypeOne()))) {
+    if (!(isSpectral() || isContinuumSpectral() || (isContinuum() && isDataTypeOne()))) {
       return false;
     }
     return isNonGaussianBeamWeighting(weighting, robust);
@@ -1095,7 +1091,7 @@ export default function DataProduct({ data }: DataProductProps) {
               </BorderedSection>
             )}
 
-            {isSpectral() && (
+            {(isSpectral() || isContinuumSpectral()) && (
               <BorderedSection title={t('page.7.group.' + TYPE_ZOOM)}>
                 <Grid pb={1} container spacing={GAP}>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
@@ -1149,6 +1145,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
             {((isContinuum() && isDataTypeOne()) ||
               isSpectral() ||
+              isContinuumSpectral() ||
               (isPST() && !isPulsarTiming())) && (
               <Box pb={GAP}>
                 <BorderedSection
@@ -1163,7 +1160,9 @@ export default function DataProduct({ data }: DataProductProps) {
                 >
                   {fieldWrapper(
                     polarisationsField(),
-                    (isContinuum() && isDataTypeOne()) || isSpectral() ? '150px' : undefined
+                    (isContinuum() && isDataTypeOne()) || isSpectral() || isContinuumSpectral()
+                      ? '150px'
+                      : undefined
                   )}
                 </BorderedSection>
               </Box>
@@ -1188,23 +1187,19 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                isPST() || isTargetSSO()
+                targetObservation()?.sensCalc == undefined
                   ? theme.palette.warning.main
-                  : scData()?.statusGUI !== STATUS_INITIAL
+                  : targetObservation()?.sensCalc?.statusGUI !== STATUS_INITIAL
                     ? theme.palette.success.main
                     : theme.palette.error.main
               }
-              title={t('sensitivityCalculatorResults.title')}
+              title={
+                isContinuum()
+                  ? `${t('sensitivityCalculatorResults.title')} (Imaging ODP)`
+                  : t('sensitivityCalculatorResults.title')
+              }
             >
-              {isPST() && <Typography variant="subtitle1">{t('page.7.pstUnavailable')}</Typography>}
-              {!isPST() && (
-                <SensCalcContent
-                  data={linkedScData() ?? scData()}
-                  isSSO={isTargetSSO()}
-                  isCustom={isCustom()}
-                  isNatural={isNatural()}
-                />
-              )}
+              <SensCalcContent targetObservation={targetObservation()} isNatural={isNatural()} />
             </BorderedSection>
           )}
         </Grid>
