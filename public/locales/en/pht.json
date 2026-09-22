@@ -325,8 +325,8 @@
     "help": "This field displays the dispersion Measure.",
     "label": "Dispersion Measure",
     "units": "pc/cm³",
-    "range": {
-      "error": "A value between {{min}} and {{max}} is required"
+    "minimum": {
+      "error": "A value of {{min}} or greater is required"
     }
   },
   "displayProposal": {

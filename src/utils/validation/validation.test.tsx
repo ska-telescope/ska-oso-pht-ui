@@ -331,8 +331,8 @@ describe('validateSDPPage detected filterbank field rules', () => {
     expect(validateSDPPage(makeProposal({}))).toBe(STATUS_OK);
   });
 
-  it('returns STATUS_ERROR when dispersion measure is out of range', () => {
-    expect(validateSDPPage(makeProposal({ dispersionMeasure: 100001 }))).toBe(STATUS_ERROR);
+  it('returns STATUS_OK when dispersion measure exceeds the former maximum', () => {
+    expect(validateSDPPage(makeProposal({ dispersionMeasure: 100001 }))).toBe(STATUS_OK);
   });
 
   it('returns STATUS_ERROR when rotation measure is not numeric', () => {
@@ -354,7 +354,7 @@ describe('validateSDPPage detected filterbank field rules', () => {
           {
             outputFrequencyResolution: 1.5,
             outputSamplingInterval: 0,
-            dispersionMeasure: 100001,
+            dispersionMeasure: -1,
             rotationMeasure: 'invalid' as any
           },
           FLOW_THROUGH_VALUE

@@ -13,11 +13,8 @@ interface DispersionMeasureFieldProps {
   widthButton?: number;
 }
 
-export const DISPERSION_MEASURE_RANGE = { min: 0, max: 100000 };
-export const dispersionMeasureSchema = z
-  .number()
-  .min(DISPERSION_MEASURE_RANGE.min)
-  .max(DISPERSION_MEASURE_RANGE.max);
+export const DISPERSION_MEASURE_MIN = 0;
+export const dispersionMeasureSchema = z.number().min(DISPERSION_MEASURE_MIN);
 
 export default function DispersionMeasureField({
   disabled = false,
@@ -29,10 +26,10 @@ export default function DispersionMeasureField({
   const { setHelp } = useHelp();
   const FIELD = 'dispersionMeasure';
   const DISPERSION_MEASURE_UNIT_VALUE = 0;
-  const rangeErrorMessage = t(FIELD + '.range.error', DISPERSION_MEASURE_RANGE);
+  const minimumErrorMessage = t(FIELD + '.minimum.error', { min: DISPERSION_MEASURE_MIN });
   const validateDispersionMeasure = React.useCallback(
-    (num: number) => (dispersionMeasureSchema.safeParse(num).success ? '' : rangeErrorMessage),
-    [rangeErrorMessage]
+    (num: number) => (dispersionMeasureSchema.safeParse(num).success ? '' : minimumErrorMessage),
+    [minimumErrorMessage]
   );
 
   return (
@@ -41,10 +38,9 @@ export default function DispersionMeasureField({
       setValue={(nextValue) => setValue?.(nextValue)}
       required={required}
       disabled={disabled}
-      minValue={DISPERSION_MEASURE_RANGE.min}
-      maxValue={DISPERSION_MEASURE_RANGE.max}
-      requiredMessage={rangeErrorMessage}
-      rangeMessage={rangeErrorMessage}
+      minValue={DISPERSION_MEASURE_MIN}
+      requiredMessage={minimumErrorMessage}
+      rangeMessage={minimumErrorMessage}
       validate={validateDispersionMeasure}
       unitOptions={[{ label: t(FIELD + '.units'), value: DISPERSION_MEASURE_UNIT_VALUE }]}
       units={DISPERSION_MEASURE_UNIT_VALUE}
