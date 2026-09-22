@@ -78,18 +78,20 @@ export default function QuantityField({
           disabled={disabled}
           required={required}
         />
-        <Box sx={{ minWidth: unitsMinWidth }}>
-          <DropDown
-            options={unitOptions}
-            testId={unitsTestId}
-            value={units}
-            disabled={unitsDisabled ?? disabled}
-            setValue={setUnits}
-            label=""
-            onFocus={onUnitsFocus}
-            InputProps={{ disableUnderline: true }}
-          />
-        </Box>
+        {unitOptions !== undefined && (
+          <Box sx={{ minWidth: unitsMinWidth }}>
+            <DropDown
+              options={unitOptions}
+              testId={unitsTestId}
+              value={units}
+              disabled={unitsDisabled ?? disabled}
+              setValue={setUnits}
+              label=""
+              onFocus={onUnitsFocus}
+              InputProps={{ disableUnderline: true }}
+            />
+          </Box>
+        )}
       </Box>
       <FormHelperText error={!!error}>{error || ' '}</FormHelperText>
     </Box>
