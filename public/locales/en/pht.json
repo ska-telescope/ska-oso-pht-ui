@@ -1285,6 +1285,7 @@
     "spectralIntegrationTime": "Spectral integration time",
     "title": "Sensitivity Results",
     "targetName": "Target name",
+    "centralFrequency": "Central Frequency",
     "bandwidth": "Bandwidth",
     "spectralResolution": "Spectral resolution",
     "weightedSensitivity": "Weighted sensitivity",

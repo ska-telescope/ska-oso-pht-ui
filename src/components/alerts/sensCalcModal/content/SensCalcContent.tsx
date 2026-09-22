@@ -145,7 +145,6 @@ export default function SensCalcContent({
         FREQUENCY_STR_KHZ
       )
     : undefined;
-
   const bandwidth = [
     TYPE_CONTINUUM,
     TYPE_CONTINUUM_SPECTRAL,
@@ -153,13 +152,18 @@ export default function SensCalcContent({
   ].includes(observation?.type)
     ? {
         value: observation?.continuumBandwidth,
-        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits].label
+        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits - 1]?.label
       }
     : getBandwidthZoom(observation);
 
   return (
     <>
       {displayElement('targetName', target?.name)}
+      {displayElement(
+        'centralFrequency',
+        observation?.centralFrequency,
+        FREQUENCY_UNITS[observation?.centralFrequencyUnits - 1]?.label
+      )}
       {displayElement('bandwidth', bandwidth.value, bandwidth.unit)}
       {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
       {displayElement('integrationTime', observation?.supplied.value, 'h')}
