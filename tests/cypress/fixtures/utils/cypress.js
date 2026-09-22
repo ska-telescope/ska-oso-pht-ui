@@ -10,7 +10,7 @@ export const viewPort = (format = 'pc') => {
 export const click = (testId) =>
   get(testId).scrollIntoView().should('exist').should('be.visible').click();
 export const entry = (testId, value) => get(testId).type(value);
-export const get = (testId) => cy.get('[data-testid="' + testId + '"]');
+export const get = (testId, options) => cy.get('[data-testid="' + testId + '"]', options);
 export const selectId = (id) => cy.get('[id="' + id + '"]').click();
 export const selectValue = (value) => {
   cy.get(`li[role="option"][data-value="${value}"]`)

@@ -4,7 +4,7 @@ import {
   clickStatusIconNav,
   updateFieldValue,
   checkFieldDisabled,
-  mockResolveTargetAPI,
+  spyOnResolveTargetAPI,
   addM2TargetAndAutoLink,
   verifyOsdDataCycleID,
   verifyOsdDataCycleDescription,
@@ -18,7 +18,7 @@ import { standardUser } from '../../users/users.js';
 
 describe('SV Flow: Validate Observation Fields', () => {
   beforeEach(() => {
-    mockResolveTargetAPI();
+    spyOnResolveTargetAPI();
 
     //Create autoLink submission
     beginScienceIdeaSession(standardUser);
