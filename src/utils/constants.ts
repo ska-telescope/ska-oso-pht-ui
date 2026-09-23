@@ -63,7 +63,6 @@ export const CHANNELS_OUT_MIN_CONTINUUM = 1;
 export const CHANNELS_OUT_MIN_SPECTRAL = 2;
 export const CHANNELS_OUT_MAX = 40;
 export const CHANNELS_OUT_MAX_COMBINED = 4000;
-export const MAX_SENSITIVITY_SPECTRAL_AVERAGING_FACTOR = 13824;
 
 export const CONFLICT_REASONS = [
   'conflict-none',
