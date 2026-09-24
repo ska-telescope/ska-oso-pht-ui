@@ -28,6 +28,7 @@ import {
 interface SensCalcContentProps {
   targetObservation?: TargetObservation;
   isNatural?: boolean;
+  hideSpectralResults?: boolean;
 }
 
 const GAP = 4;
@@ -35,7 +36,8 @@ const SPACER_HEIGHT = 30;
 
 export default function SensCalcContent({
   targetObservation,
-  isNatural = false
+  isNatural = false,
+  hideSpectralResults = false
 }: SensCalcContentProps) {
   const { t } = useScopedTranslation();
 
@@ -174,12 +176,13 @@ export default function SensCalcContent({
       {targetObservation?.sensCalc?.section1?.map((rec) =>
         displayElement(rec.field, rec.value, rec.units)
       )}
-      {targetObservation?.sensCalc?.section2 && (
+      {!hideSpectralResults && targetObservation?.sensCalc?.section2 && (
         <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
       )}
-      {targetObservation?.sensCalc?.section2?.map((rec) =>
-        displayElement(rec.field, rec.value, rec.units)
-      )}
+      {!hideSpectralResults &&
+        targetObservation?.sensCalc?.section2?.map((rec) =>
+          displayElement(rec.field, rec.value, rec.units)
+        )}
     </>
   );
 }

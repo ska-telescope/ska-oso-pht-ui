@@ -214,6 +214,59 @@ describe('DataProduct component', () => {
     // expect(screen.getByTestId('imageWeighting')).toBeInTheDocument();
   });
 
+  it('hides continuum sensitivity results when only one output channel is selected', () => {
+    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
+    const singleChannelDataProduct = {
+      ...existingDataProduct,
+      data: { ...existingDataProduct.data, channelsOut: 1 }
+    } as DataProductSDPNew;
+    const sensCalc = {
+      section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }],
+      section2: [{ field: 'spectralSensitivityWeighted', value: '2', units: 'Jy' }],
+      statusGUI: 0
+    } as SensCalcResults;
+
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: TYPE_CONTINUUM,
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz',
+              supplied: { value: 1 },
+              continuumBandwidth: 1,
+              continuumBandwidthUnits: 2
+            }
+          ],
+          dataProductSDP: [singleChannelDataProduct],
+          targetObservation: [
+            {
+              observationId: 'OBS1',
+              dataProductsSDPId: 'DP1',
+              targetId: 'T1',
+              sensCalc
+            }
+          ]
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={singleChannelDataProduct} />
+      </ThemeProvider>
+    );
+
+    expect(
+      screen.getByText('sensitivityCalculatorResults.title (Imaging ODP)')
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toBeInTheDocument();
+    expect(screen.queryByTestId('field-spectralSensitivityWeighted')).not.toBeInTheDocument();
+  });
+
   it('updates taper value when user types', () => {
     wrapper(
       <ThemeProvider theme={theme}>
