@@ -25,7 +25,6 @@ import {
   clickToLinkTargetAndObservation,
   clickObservationFromTable,
   verifySensitivityCalculatorStatusSuccess,
-  validateProposal,
   clickFileUpload,
   clickToValidateSV,
   uploadTestFile,
@@ -175,12 +174,10 @@ describe('Edit Proposal', () => {
         verifyTestFileUploaded('testFile.pdf');
         clickFileUpload();
         verifyAlertFooter('Technical Justification PDF successfully uploaded');
-        validateProposal();
-        cy.wait('@mockValidate');
-        verifyAlertFooter('Proposal is Valid');
-        //submit proposal
+        //submit proposal (submit validates first)
         clickToSubmitProposal();
         cy.wait('@mockValidate');
+        verifyAlertFooter('Proposal is Valid');
         clickToConfirmProposalSubmission();
         verifyAlertFooter('Submission was successful');
       }

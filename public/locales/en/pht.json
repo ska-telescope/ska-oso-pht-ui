@@ -1374,7 +1374,10 @@
   },
   "submitBtn": {
     "label": "Submit",
-    "success": "Submission was successful",
+    "success": "Submission was successful"
+  },
+  "submitProposalBtn": {
+    "label": "Validate / Submit",
     "tooltip": "Progress the proposals to the submitted state"
   },
   "velocityType": {

@@ -36,10 +36,10 @@ describe('Verify validate', () => {
   it.skip('Proposal Flow: Verify validate becomes available only after proposal creation', () => {
     beginStandardProposalSession(standardUser);
     selectStandardProposalCycle();
-    //Verify validate is not visible before proposal creation
-    checkFieldIsVisible('validateBtn', false);
+    //Verify validate / submit is not visible before proposal creation
+    checkFieldIsVisible('submitBtnTestId', false);
     completeStandardProposalCreation();
     //Verify validate / submit is enabled after proposal creation
-    checkFieldDisabled('validateBtn', false);
+    checkFieldDisabled('submitBtnTestId', false);
   });
 });

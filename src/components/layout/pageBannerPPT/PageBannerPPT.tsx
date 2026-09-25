@@ -8,9 +8,6 @@ import { useTheme } from '@mui/material/styles';
 import {
   AUTO_SAVE_INTERVAL,
   NAV,
-  PAGE_LINKING,
-  PAGE_SRC_NET,
-  PAGE_TECHNICAL,
   PATH,
   PROPOSAL_STATUS,
   STATUS_ARRAY_PAGES_PROPOSAL,
@@ -26,14 +23,11 @@ import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
-import ValidateButton from '../../button/Validate/Validate';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
-import { accessSubmit } from '@/utils/aaa/aaaUtils';
-import ProposalAccess from '@/utils/types/proposalAccess';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useValidateProposal } from '@/utils/validation/validation';
@@ -59,7 +53,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { application, updateAppContent1 } = storageObject.useStore();
-  const [canSubmit, setCanSubmit] = React.useState(false);
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
@@ -74,10 +67,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const loggedIn = isLoggedIn();
 
-  const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
-
-  const accessCanSubmit = accessSubmit(getAccess(), getProposal().id);
 
   const isDisableEndpoints = () => {
     const maxTitleWords = Number(phtTranslations.title.maxWord);
@@ -95,10 +85,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
-  const validateTooltip = () => {
-    return 'validationBtn.tooltip';
-  };
-
   const validateTheProposal = async (): Promise<boolean> => {
     let result = false;
     setValidationResults([]);
@@ -109,13 +95,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
     statuses.forEach((status, key) => {
       if (
-        status === STATUS_ERROR ||
-        status === STATUS_PARTIAL ||
-        (status === STATUS_INITIAL && key !== PAGE_SRC_NET)
+        pages.includes(key) &&
+        (status === STATUS_ERROR || status === STATUS_PARTIAL || status === STATUS_INITIAL)
       ) {
-        if ((key !== PAGE_TECHNICAL && key !== PAGE_LINKING) || !isSV) {
-          results.push(t('page.' + key + '.pageError'));
-        }
+        results.push(t('page.' + key + '.pageError'));
       }
     });
     const response = await PostProposalValidate(authClient, getProposal());
@@ -128,12 +111,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       setOpenValidationResults(true);
     }
 
-    return result;
-  };
-
-  const validateClicked = async (): Promise<boolean> => {
-    const result = await validateTheProposal();
-    setCanSubmit(result);
     return result;
   };
 
@@ -197,23 +174,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     updateProposal(application.content2 as Proposal);
   }, [application.content2]);
 
-  React.useEffect(() => {
-    if (!isSV) {
-      setCanSubmit(false);
-      return;
-    }
-    const pagesIndexes = isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL;
-    const pagesNeedToCheck = (application.content1 as number[]).filter((_value, idx) =>
-      pagesIndexes.includes(idx)
-    );
-
-    if (pagesNeedToCheck.every((lvl) => lvl === 0) && accessCanSubmit) {
-      setCanSubmit(true);
-    } else {
-      setCanSubmit(false);
-    }
-  }, [application.content1]);
-
   const buttonsLeft = () => (
     <Grid
       container
@@ -253,18 +213,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       pr={2}
     >
       <Grid>
-        {!isSV && getProposal().id !== null && pages.includes(pageNo) && (
-          <ValidateButton
-            testId={'validateBtn'}
-            disabled={isDisableEndpoints()}
-            action={validateClicked}
-            toolTip={validateTooltip()}
-          />
-        )}
-      </Grid>
-      <Grid>
         {getProposal().id !== null && pages.includes(pageNo) && (
-          <SubmitButton action={submitClicked} disabled={!isSV && !canSubmit} />
+          <SubmitButton
+            action={submitClicked}
+            title="submitProposalBtn.label"
+            toolTip="submitProposalBtn.tooltip"
+          />
         )}
       </Grid>
     </Grid>
