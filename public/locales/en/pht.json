@@ -1483,11 +1483,8 @@
   "uploadPDF": {
     "label": "Upload PDF"
   },
-  "validationBtn": {
-    "label": "Validate",
-    "success": "Proposal is Valid",
-    "tooltip": "Performs validation upon the proposal",
-    "tooltipDisabled": "Disabled until all pages have a status of OK"
+  "validation": {
+    "success": "Proposal is Valid"
   },
   "validationResults": {
     "title": "Validation issues",

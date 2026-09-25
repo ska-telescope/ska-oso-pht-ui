@@ -183,9 +183,8 @@
   "uploadCsvBtn": {
     "uploadSuccessMsg": "All targets in file have been uploaded into the Science Verification Idea"
   },
-  "validationBtn": {
-    "success": "Science Verification Idea is Valid",
-    "tooltip": "Performs enhanced validation upon the Science Verification Idea"
+  "validation": {
+    "success": "Science Verification Idea is Valid"
   },
   "viewProposal": {
     "toolTip": "View Science Verification Idea"

@@ -104,7 +104,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const response = await PostProposalValidate(authClient, getProposal());
 
     if (response.valid && !response.error && results.length === 0) {
-      notifySuccess(t(`validationBtn.${response.valid}`));
+      notifySuccess(t('validation.success'));
       result = true;
     } else {
       setValidationResults(response.error ? results.concat(response.error) : results);
