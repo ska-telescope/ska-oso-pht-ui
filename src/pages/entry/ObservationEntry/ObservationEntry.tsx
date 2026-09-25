@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Box, Grid, Paper, Typography, Stack } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
@@ -1398,21 +1398,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                   title={t('observationSections.arraySetUp')}
                   sx={{ height: '100%' }}
                 >
-                  <Grid
-                    p={0}
-                    container
-                    direction="row"
-                    alignItems="flex-start"
-                    rowSpacing={isSV ? 0 : 2}
-                  >
-                    <Grid size={{ md: 12 }}>{observationsBandField()}</Grid>
-                    <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
-                    <Grid size={{ md: 12 }}>
-                      {!isSV && (isLow() ? numStationsField() : antennasFields())}
-                    </Grid>
-                    <Grid size={{ md: 12 }}>{suppliedTypeField()}</Grid>
-                    <Grid size={{ md: 12 }}>{suppliedField()}</Grid>
-                  </Grid>
+                  <Stack>
+                    {observationsBandField()}
+                    {subArrayField()}
+                    {!isSV && (isLow() ? numStationsField() : antennasFields())}
+                    {suppliedTypeField()}
+                    {suppliedField()}
+                  </Stack>
                 </BorderedSection>
               </Grid>
 
@@ -1422,20 +1414,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     title={t('observationSections.identifiers')}
                     sx={{ height: '100%' }}
                   >
-                    <Grid
-                      p={0}
-                      container
-                      direction="row"
-                      alignItems="flex-start"
-                      rowSpacing={isSV ? 0 : 2}
-                      justifyContent="space-between"
-                    >
-                      <Grid size={{ md: 12 }}>{idField()}</Grid>
-                      <Grid size={{ md: 12 }}>{observationTypeField()}</Grid>
-                      <Grid size={{ md: 12 }}>{groupObservationsField()}</Grid>
-                      <Grid size={{ md: 12 }}>{elevationField()}</Grid>
-                      <Grid size={{ md: 12 }}>{isLow() ? emptyField() : weatherField()}</Grid>
-                    </Grid>
+                    <Stack>
+                      {idField()}
+                      {observationTypeField()}
+                      {groupObservationsField()}
+                      {elevationField()}
+                      {isLow() ? emptyField() : weatherField()}
+                    </Stack>
                   </BorderedSection>
                 </Grid>
               )}
@@ -1446,16 +1431,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     title={t('observationSections.identifiers')}
                     sx={{ height: '100%' }}
                   >
-                    <Grid
-                      container
-                      direction="row"
-                      alignItems="flex-start"
-                      spacing={isSV ? 0 : 2}
-                      justifyContent="space-between"
-                    >
-                      <Grid size={{ md: 12 }}>{observationTypeField()}</Grid>
-                      <Grid size={{ md: 12 }}></Grid>
-                    </Grid>
+                    <Stack>{observationTypeField()}</Stack>
                   </BorderedSection>
                 </Grid>
               )}

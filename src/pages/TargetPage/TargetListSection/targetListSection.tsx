@@ -207,9 +207,9 @@ export default function TargetListSection() {
           <Box
             sx={{
               width: '100%',
-              border: isSV ? '1px solid red' : '1px solid grey',
-              borderColor: isSV ? theme.palette.primary.light : 'grey',
-              borderRadius: isSV ? '16px' : '0'
+              border: '1px solid',
+              borderColor: theme.palette.primary.light,
+              borderRadius: '16px'
             }}
           >
             <Tabs
@@ -218,27 +218,10 @@ export default function TargetListSection() {
               value={value}
               variant="fullWidth"
               onChange={handleChange}
-              aria-label="basic tabs example"
             >
-              <Tab
-                label={t('addTarget.label')}
-                {...a11yProps(0)}
-                sx={{ border: '1px solid grey', width: '100%' }}
-              />
-              {!isSV && (
-                <Tab
-                  label={t('importFromFile.label')}
-                  {...a11yProps(1)}
-                  sx={{ border: '1px solid grey', width: '100%' }}
-                />
-              )}
-              {!isSV && (
-                <Tab
-                  label={t('spatialImaging.label')}
-                  {...a11yProps(2)}
-                  sx={{ border: '1px solid grey', width: '100%' }}
-                />
-              )}
+              <Tab label={t('addTarget.label')} {...a11yProps(0)} />
+              {!isSV && <Tab label={t('importFromFile.label')} {...a11yProps(1)} />}
+              {!isSV && <Tab label={t('spatialImaging.label')} {...a11yProps(2)} />}
             </Tabs>
             {value === 0 && <TargetEntry textAlign="left" />}
             {value === 1 && (
