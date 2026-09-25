@@ -26,7 +26,6 @@ import {
   clickObservationFromTable,
   verifySensitivityCalculatorStatusSuccess,
   clickFileUpload,
-  clickToValidateSV,
   uploadTestFile,
   verifyTestFileUploaded,
   mockValidateAPI,
@@ -93,7 +92,7 @@ describe('Edit Proposal', () => {
       // sciencePDF.isUploadedPdf on completion - wait for the preview button, which only
       // renders once that's true, otherwise validate can run before the upload has landed.
       cy.get('[data-testid="pdfPreviewButtonTestId"]').should('exist');
-      clickToValidateSV();
+      clickToSubmitProposal();
       cy.wait('@mockValidate');
       verifyAlertFooter('Science Verification Idea is Valid');
       clickToConfirmProposalSubmission();

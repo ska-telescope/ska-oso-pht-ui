@@ -139,10 +139,6 @@ export const clickEditUserRightsIconForRow = (tableTestId, text) => {
       cy.get('[data-testid="lockIcon"]').should('be.visible').click();
     });
 };
-export const clickToValidateSV = () => {
-  cy.get('[data-testid="submitBtnTestId"]').should('exist');
-  cy.get('[data-testid="submitBtnTestId"]').click();
-};
 export const clickToSubmitProposal = () => {
   cy.get('[data-testid="submitBtnTestId"]').should('exist');
   cy.get('[data-testid="submitBtnTestId"]').click();
