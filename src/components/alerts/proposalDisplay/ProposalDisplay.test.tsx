@@ -19,7 +19,7 @@ describe('<ProposalDisplay />', () => {
   test('renders if null proposal', () => {
     wrapper(<ProposalDisplay proposal={null} open={false} onClose={vi.fn()} onConfirm={vi.fn()} />);
   });
-  test('renders correctly ( type 0 )', () => {
+  test('renders correctly ( no type )', () => {
     wrapper(
       <ProposalDisplay
         proposal={{
@@ -32,7 +32,7 @@ describe('<ProposalDisplay />', () => {
           createdBy: '',
           version: 0,
           cycle: '',
-          proposalType: 0,
+          proposalType: undefined,
           proposalSubType: undefined,
           scienceCategory: 0,
           scienceSubCategory: undefined,
@@ -60,7 +60,7 @@ describe('<ProposalDisplay />', () => {
     screen.getByTestId('cancelButtonTestId').click();
     expect(mockActionClose).toBeCalled();
   });
-  test('renders correctly ( type 1 )', () => {
+  test('renders correctly ( standard type with sub-type )', () => {
     wrapper(
       <ProposalDisplay
         proposal={{
@@ -73,8 +73,8 @@ describe('<ProposalDisplay />', () => {
           createdBy: '',
           version: 0,
           cycle: '',
-          proposalType: 1,
-          proposalSubType: [1],
+          proposalType: 'standard_proposal',
+          proposalSubType: ['target_of_opportunity'],
           scienceCategory: 1,
           scienceSubCategory: undefined,
           investigators: undefined,
@@ -98,6 +98,8 @@ describe('<ProposalDisplay />', () => {
         onConfirm={mockActionConfirm}
       />
     );
+    expect(screen.getByText('proposalType.title.standard_proposal')).toBeInTheDocument();
+    expect(screen.getByText('proposalAttribute.title.target_of_opportunity')).toBeInTheDocument();
   });
 
   test('does not show raw latex syntax in rendered title output', () => {
@@ -115,7 +117,7 @@ describe('<ProposalDisplay />', () => {
           createdBy: '',
           version: 0,
           cycle: '',
-          proposalType: 0,
+          proposalType: undefined,
           proposalSubType: undefined,
           scienceCategory: 0,
           scienceSubCategory: undefined,

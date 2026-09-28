@@ -27,7 +27,7 @@ export default function AddProposal() {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
   const titleValid = () =>
     getProposal()?.title?.length > 0 && countWords(getProposal()?.title) <= maxTitleWords;
-  const typeValid = () => (isSV ? true : getProposal()?.proposalType > 0);
+  const typeValid = () => (isSV ? true : !!getProposal()?.proposalType);
   const contentValid = () => titleValid() && typeValid();
 
   return (

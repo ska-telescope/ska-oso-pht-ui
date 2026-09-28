@@ -9,7 +9,7 @@ import {
   PAGE_TITLE_ADD,
   PAGE_TARGET,
   PAGE_OBSERVATION,
-  SCIENCE_VERIFICATION_TYPE_ID,
+  PROPOSAL_TYPE,
   STATUS_ARRAY_PAGES_PROPOSAL,
   STATUS_ARRAY_PAGES_SV
 } from '@utils/constants.ts';
@@ -69,7 +69,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       {
         ...proposal,
         cycle: osdCycleId ?? null,
-        proposalType: isSV ? SCIENCE_VERIFICATION_TYPE_ID : proposal.proposalType
+        proposalType: isSV ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : proposal.proposalType
       },
       PROPOSAL_STATUS.DRAFT
     );

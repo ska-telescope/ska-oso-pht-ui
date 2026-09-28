@@ -121,7 +121,7 @@ export const validateTitlePage = (proposal: Proposal) => {
   if (proposal?.title?.length > 0) {
     count++;
   }
-  if (proposal?.proposalType !== 0) {
+  if (proposal?.proposalType) {
     count++;
   }
   return result[count];

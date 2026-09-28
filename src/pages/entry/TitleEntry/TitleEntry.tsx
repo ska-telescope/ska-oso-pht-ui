@@ -12,7 +12,12 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
-import { PROJECTS } from '@utils/constants.ts';
+import {
+  PROPOSAL_TYPE,
+  PROPOSAL_TYPE_SUBTYPES,
+  ProposalSubType,
+  ProposalType
+} from '@utils/constants.ts';
 import { countWords, helpers } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateTitlePage } from '@utils/validation/validation.tsx';
@@ -35,7 +40,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const [validateToggle, setValidateToggle] = React.useState(false);
 
-  const [tempValue, setTempValue] = React.useState(0);
+  const [tempValue, setTempValue] = React.useState<ProposalType | undefined>(undefined);
   const [, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -82,22 +87,22 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     setOpenDialog(false);
   };
 
-  const confirmChange = (id: number) => {
-    setTempValue(id);
+  const confirmChange = (type: ProposalType) => {
+    setTempValue(type);
     setOpenDialog(true);
   };
 
-  function clickProposal(id: number) {
-    if (getProposal().proposalType === 0) {
-      setProposal({ ...getProposal(), proposalType: id });
-    } else if (getProposal().proposalType !== id) {
-      confirmChange(id);
+  function clickProposal(type: ProposalType) {
+    if (!getProposal().proposalType) {
+      setProposal({ ...getProposal(), proposalType: type });
+    } else if (getProposal().proposalType !== type) {
+      confirmChange(type);
     }
   }
 
-  function clickSubProposal(id: number) {
+  function clickSubProposal(id: ProposalSubType) {
     let removed = false;
-    const newList = [];
+    const newList: ProposalSubType[] = [];
     getProposal().proposalSubType?.forEach((subType) => {
       if (subType !== id) {
         newList.push(subType);
@@ -111,28 +116,27 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     setProposal({ ...getProposal(), proposalSubType: newList });
   }
 
-  const setCardBG = (in1: number, in2: number) =>
-    in1 && in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
-  const setCardFG = (in1: number, in2: number) =>
-    in1 && in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
-  const setCardClassName = (in1: number, in2: number) =>
-    in1 && in1 === in2 ? 'active' : 'inactive';
+  const setCardBG = (in1: ProposalType | undefined, in2: ProposalType) =>
+    in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
+  const setCardFG = (in1: ProposalType | undefined, in2: ProposalType) =>
+    in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
+  const setCardClassName = (in1: ProposalType | undefined, in2: ProposalType) =>
+    in1 === in2 ? 'active' : 'inactive';
 
-  const setCardBG2 = (in1: number[], in2: number) => {
+  const setCardBG2 = (in1: ProposalSubType[], in2: ProposalSubType) => {
     const num = in1.findIndex((obj) => obj === in2);
     return num !== -1 ? theme.palette.secondary.main : theme.palette.primary.main;
   };
-  const setCardFG2 = (in1: number[], in2: number) => {
+  const setCardFG2 = (in1: ProposalSubType[], in2: ProposalSubType) => {
     const num = in1.findIndex((obj) => obj === in2);
     return num !== -1 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
   };
-  const setCardClassName2 = (in1: number[], in2: number) => {
+  const setCardClassName2 = (in1: ProposalSubType[], in2: ProposalSubType) => {
     const num = in1.findIndex((obj) => obj === in2);
     return num !== -1 ? 'active' : 'inactive';
   };
 
-  function ProposalType(TYPE: any) {
-    const { id } = TYPE;
+  function ProposalTypeCard(id: ProposalType) {
     return (
       <Grid key={id} size={{ md: 4, lg: 3 }}>
         <CardTitle
@@ -151,8 +155,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     );
   }
 
-  function Attributes(TYPE: any) {
-    const { id } = TYPE;
+  function Attributes(id: ProposalSubType) {
     return (
       <Grid key={id} size={{ md: 6, lg: 3 }}>
         <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
@@ -267,9 +270,17 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         alignItems="baseline"
         spacing={4}
       >
-        {PROJECTS.map((proposalType: any) => ProposalType(proposalType))}
+        {/* Science verification is set automatically for SV cycles, so it is never picked here */}
+        {Object.values(PROPOSAL_TYPE)
+          .filter((type) => type !== PROPOSAL_TYPE.SCIENCE_VERIFICATION)
+          .map((type) => ProposalTypeCard(type))}
       </Grid>
     );
+  };
+
+  const getSubTypes = (): ProposalSubType[] => {
+    const type = getProposal().proposalType;
+    return type ? PROPOSAL_TYPE_SUBTYPES[type] : [];
   };
 
   const proposalAttributes = () => (
@@ -282,11 +293,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
       spacing={2}
       id="SubProposalContainer"
     >
-      {getProposal().proposalType > 0 &&
-        PROJECTS[getProposal().proposalType - 1].subProjects[0].id > 0 &&
-        PROJECTS[getProposal().proposalType - 1].subProjects?.map((proposalType: any) =>
-          Attributes(proposalType)
-        )}
+      {getSubTypes().map((subType) => Attributes(subType))}
     </Grid>
   );
 
@@ -365,7 +372,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         <>
           {row1()}
           {!isSV && row2()}
-          {!isSV && getProposal().proposalType > 0 && row3()}
+          {!isSV && !!getProposal().proposalType && row3()}
         </>
       )}
       <LatexPreviewModal

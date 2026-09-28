@@ -26,7 +26,7 @@ import {
 } from './columns/Columns';
 import GetProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import Proposal from '@/utils/types/proposal';
-import { PROPOSAL_STATUS, NAV, DETAILS, PROJECTS, PROPOSAL_TYPE } from '@/utils/constants';
+import { PROPOSAL_STATUS, NAV, DETAILS, PROPOSAL_TYPE } from '@/utils/constants';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
@@ -38,11 +38,6 @@ import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheck
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-
-export function getProposalType(value: number): string {
-  const type = PROJECTS.find((item) => item.id === value)?.mapping;
-  return type ? type : '';
-}
 
 export function filterProposals(
   proposals: Proposal[],
@@ -57,7 +52,7 @@ export function filterProposals(
         (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
       ) &&
       (searchScienceCategory === null || item?.scienceCategory === searchScienceCategory) &&
-      (searchProposalType === '' || getProposalType(item?.proposalType) === searchProposalType)
+      (searchProposalType === '' || item?.proposalType === searchProposalType)
   );
 }
 
