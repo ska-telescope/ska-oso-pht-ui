@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
+import { Box, Grid, Tab, Tabs, SvgIcon, Typography, useTheme } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { validateTeamPage } from '../../utils/validation/validation';
@@ -42,6 +42,7 @@ export function PHDThesis(value: any) {
 
 export default function TeamPage() {
   const { t } = useScopedTranslation();
+  const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -260,8 +261,9 @@ export default function TeamPage() {
             <Box
               sx={{
                 width: '100%',
-                border: '1px solid grey',
-                minHeight: isSV ? '300px' : '558px'
+                border: '1px solid',
+                borderColor: theme.palette.primary.light,
+                borderRadius: '16px'
               }}
             >
               <Box>
@@ -271,19 +273,9 @@ export default function TeamPage() {
                   indicatorColor="secondary"
                   value={theValue}
                   onChange={handleChange}
-                  aria-label="basic tabs example"
                 >
-                  <Tab
-                    label={t('inviteTeamMember.label')}
-                    {...a11yProps(0)}
-                    sx={{ border: '1px solid grey' }}
-                  />
-                  <Tab
-                    label={t('importFromFile.label')}
-                    {...a11yProps(1)}
-                    sx={{ border: '1px solid grey' }}
-                    disabled
-                  />
+                  <Tab label={t('inviteTeamMember.label')} {...a11yProps(0)} />
+                  <Tab label={t('importFromFile.label')} {...a11yProps(1)} disabled />
                 </Tabs>
               </Box>
               {theValue === 0 && <MemberEntry />}

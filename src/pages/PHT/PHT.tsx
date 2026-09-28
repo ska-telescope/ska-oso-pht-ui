@@ -111,7 +111,7 @@ export default function PHT({
 }: PHTPropTypes) {
   const { t } = useScopedTranslation();
   const { application, help, helpToggle, updateAppContent2 } = storageObject.useStore();
-  const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens, isSV } =
+  const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } =
     useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
@@ -198,7 +198,7 @@ export default function PHT({
     }
 
     previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, loggedIn, authClient, isSV, notifyError]);
+  }, [location.pathname, application.content2, loggedIn, authClient, notifyError]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />

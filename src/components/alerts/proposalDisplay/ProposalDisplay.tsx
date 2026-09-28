@@ -397,12 +397,7 @@ export default function ProposalDisplay({
 
   const justificationContent = () => (
     <Grid>
-      <Grid
-        container
-        direction="row"
-        justifyContent={isSV ? 'space-around' : 'space-between'}
-        alignItems="center"
-      >
+      <Grid container direction="row" justifyContent={'space-between'} alignItems="center">
         <Grid size={{ xs: 6 }}>
           {link(
             t('page.3.label'),
