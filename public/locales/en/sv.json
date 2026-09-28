@@ -93,25 +93,13 @@
   "proposal": {
     "error": "Unable to retrieve the Science Verification Idea from the server"
   },
-  "proposalAttribute": {
-    "desc": {
-      "4": "These projects require more than one Science Verification Idea cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
-    },
-    "help": "One or more of these optional attributes may be selected to further refine the Science Verification Idea.",
-    "title": {
-      "2": "Joint SKA Science Verification Idea"
-    }
-  },
   "proposals": {
     "empty": "THERE ARE NO SCIENCE VERIFICATION IDEAS TO BE DISPLAYED",
     "label": "Science Verification Ideas"
   },
   "proposalType": {
     "help": "Select from the options below the most appropriate type classification for the Science Verification Idea. This can be changed later if needed, but be aware that this may affect information previously entered.",
-    "all": "All Science Verification Idea types",
-    "title": {
-      "9": "Science Verification Idea"
-    }
+    "all": "All Science Verification Idea types"
   },
   "members": {
     "empty": "THERE ARE NO PARTICIPANTS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA",

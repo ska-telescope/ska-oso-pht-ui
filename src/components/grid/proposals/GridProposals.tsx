@@ -26,13 +26,7 @@ import {
 } from './columns/Columns';
 import GetProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import Proposal from '@/utils/types/proposal';
-import {
-  PROPOSAL_STATUS,
-  NAV,
-  DETAILS,
-  PROJECTS,
-  SEARCH_PROPOSAL_TYPE_OPTIONS
-} from '@/utils/constants';
+import { PROPOSAL_STATUS, NAV, DETAILS, PROJECTS, PROPOSAL_TYPE } from '@/utils/constants';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
@@ -294,7 +288,13 @@ export default function GridProposals({
   const proposalTypeDropdown = () => (
     <Box pt={1}>
       <DropDown
-        options={[{ label: t('proposalType.all'), value: '' }, ...SEARCH_PROPOSAL_TYPE_OPTIONS]}
+        options={[
+          { label: t('proposalType.all'), value: '' },
+          ...Object.values(PROPOSAL_TYPE).map((type) => ({
+            label: t('proposalType.title.' + type),
+            value: type
+          }))
+        ]}
         testId="proposalType"
         value={searchProposalType}
         setValue={setSearchProposalType}

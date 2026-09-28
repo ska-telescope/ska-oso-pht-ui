@@ -300,66 +300,41 @@ export const PMT = [
   '/review/technical'
 ];
 
-export const PROJECTS = [
-  {
-    id: 1,
-    mapping: 'standard_proposal',
-    subProjects: [
-      {
-        id: 1,
-        mapping: 'target_of_opportunity'
-      },
-      {
-        id: 2,
-        mapping: 'joint_proposal'
-      },
-      {
-        id: 3,
-        mapping: 'coordinated_proposal'
-      },
-      {
-        id: 4,
-        mapping: 'long_term_proposal'
-      }
-    ]
-  },
-  {
-    id: 2,
-    mapping: 'key_science_proposal',
-    subProjects: [
-      {
-        id: 1,
-        mapping: 'target_of_opportunity'
-      },
-      {
-        id: 2,
-        mapping: 'joint_proposal'
-      },
-      {
-        id: 3,
-        mapping: 'coordinated_proposal'
-      }
-    ]
-  },
-  {
-    id: 3,
-    mapping: 'director_time_proposal',
-    subProjects: [
-      {
-        id: 1,
-        mapping: 'target_of_opportunity'
-      },
-      {
-        id: 2,
-        mapping: 'joint_proposal'
-      },
-      {
-        id: 3,
-        mapping: 'coordinated_proposal'
-      }
-    ]
-  }
-];
+export const PROPOSAL_SUBTYPE = {
+  TARGET_OF_OPPORTUNITY: 'target_of_opportunity',
+  JOINT: 'joint_proposal',
+  COORDINATED: 'coordinated_proposal',
+  LONG_TERM: 'long_term_proposal'
+} as const;
+export type ProposalSubType = (typeof PROPOSAL_SUBTYPE)[keyof typeof PROPOSAL_SUBTYPE];
+
+export const PROPOSAL_TYPE = {
+  STANDARD: 'standard_proposal',
+  KEY_SCIENCE: 'key_science_proposal',
+  DIRECTOR_TIME: 'director_time_proposal',
+  SCIENCE_VERIFICATION: 'science_verification'
+} as const;
+export type ProposalType = (typeof PROPOSAL_TYPE)[keyof typeof PROPOSAL_TYPE];
+
+export const PROPOSAL_TYPE_SUBTYPES: Record<ProposalType, ProposalSubType[]> = {
+  [PROPOSAL_TYPE.STANDARD]: [
+    PROPOSAL_SUBTYPE.TARGET_OF_OPPORTUNITY,
+    PROPOSAL_SUBTYPE.JOINT,
+    PROPOSAL_SUBTYPE.COORDINATED,
+    PROPOSAL_SUBTYPE.LONG_TERM
+  ],
+  [PROPOSAL_TYPE.KEY_SCIENCE]: [
+    PROPOSAL_SUBTYPE.TARGET_OF_OPPORTUNITY,
+    PROPOSAL_SUBTYPE.JOINT,
+    PROPOSAL_SUBTYPE.COORDINATED
+  ],
+  [PROPOSAL_TYPE.DIRECTOR_TIME]: [
+    PROPOSAL_SUBTYPE.TARGET_OF_OPPORTUNITY,
+    PROPOSAL_SUBTYPE.JOINT,
+    PROPOSAL_SUBTYPE.COORDINATED
+  ],
+  [PROPOSAL_TYPE.SCIENCE_VERIFICATION]: []
+};
 
 export const FLOW_THROUGH_VALUE = 0;
 export const DETECTED_FILTER_BANK_VALUE = 1;
@@ -392,9 +367,6 @@ export const PST_MODES = [
     mapping: 'pulsar timing'
   }
 ];
-
-export const SCIENCE_VERIFICATION = 'science_verification';
-export const SCIENCE_VERIFICATION_TYPE_ID = 9;
 
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
@@ -546,11 +518,6 @@ export const SEARCH_TYPE_OPTIONS_REVIEWERS = [
   { label: 'Radio Transients', value: 'Radio Transients' },
   { label: 'Cosmic Magnetism', value: 'Cosmic Magnetism' },
   { label: 'HI Surveys', value: 'HI Surveys' }
-];
-export const SEARCH_PROPOSAL_TYPE_OPTIONS = [
-  { label: 'Principal Investigator (PI)', value: PROJECTS[0].mapping },
-  { label: 'Key Science Projects', value: PROJECTS[1].mapping },
-  { label: "Director-General's Discretionary Time", value: PROJECTS[2].mapping }
 ];
 
 export const SPECTRAL_AVERAGING_MIN = 1;
