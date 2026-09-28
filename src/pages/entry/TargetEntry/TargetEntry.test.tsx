@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, test, it, vi, expect, beforeEach } from 'vitest';
+import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
@@ -17,6 +17,8 @@ const wrapper = (component: React.ReactElement) => {
     </StoreProvider>
   );
 };
+
+const mockStore = vi.hoisted(() => ({ targets: [] as unknown[] }));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
@@ -42,7 +44,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
       application: {
         content2: {
           scienceCategory: TYPE_ZOOM,
-          targets: [],
+          targets: mockStore.targets,
           observations: [],
           dataProductSDP: [],
           targetObservation: [],
@@ -62,6 +64,29 @@ describe('<TargetEntry />', () => {
   test('renders correctly', () => {
     wrapper(<TargetEntry />);
   });
+});
+
+describe('<TargetEntry /> target limit', () => {
+  afterEach(() => {
+    mockStore.targets = [];
+  });
+
+  it('disables adding a target once the cycle policy maxTargets is reached', async () => {
+    mockStore.targets = [{ id: 1, name: 'Existing target' }];
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    await user.type(screen.getByTestId('name').querySelector('input')!, 'My Target');
+    await user.type(screen.getByTestId('skyDirectionValue1').querySelector('input')!, '12:34:56');
+    await user.type(screen.getByTestId('skyDirectionValue2').querySelector('input')!, '45:00:00');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('addTargetButton')).toBeDisabled();
+    });
+  }, 15000);
 });
 
 describe(

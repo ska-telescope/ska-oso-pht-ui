@@ -56,7 +56,7 @@ export default function TargetEntry({
   onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
-  const { autoLink, isSV, osdLOW, osdMID } = useOSDAccessors();
+  const { autoLink, isSV, osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
@@ -415,7 +415,8 @@ export default function TargetEntry({
     };
 
     const targetLengthCheck = () => {
-      return isSV ? getProposal()?.targets?.length === 0 : true;
+      const maxTargets = osdCyclePolicy?.maxTargets;
+      return maxTargets == null || (getProposal()?.targets?.length ?? 0) < maxTargets;
     };
 
     const hasAnyFieldEntered = () => {

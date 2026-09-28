@@ -251,16 +251,18 @@ export default function GridProposals({
   };
 
   const proposalColumns = [
-        ...(showSelection ? [colSelect] : []),
-        ...(showActions ? [colActions] : []),
-        getColProposalTitle(t),
-        getColProposalTypeCycle(t, osdPolicies),
-        getColProposalStatus(t),
-        getColProposalSC(t),
-        getColProposalPI(t)
-      ];
+    ...(showSelection ? [colSelect] : []),
+    ...(showActions ? [colActions] : []),
+    getColProposalTitle(t),
+    getColProposalTypeCycle(t, osdPolicies),
+    getColProposalStatus(t),
+    getColProposalSC(t),
+    getColProposalPI(t)
+  ];
 
-  const reviewColumns = [...[getColProposalType(t), getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]];
+  const reviewColumns = [
+    ...[getColProposalType(t), getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]
+  ];
 
   const selectedData = proposals
     ? proposals.filter((e) =>
