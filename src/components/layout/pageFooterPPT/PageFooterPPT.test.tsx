@@ -120,6 +120,25 @@ describe('PageFooterPPT', () => {
     });
   });
 
+  it('creates the proposal with its own type and the selected cycle', async () => {
+    const newProposal = { id: null, title: 'New SV idea', proposalType: 'science_verification' };
+    const store = storageObject.useStore();
+    storageObject.useStore = () =>
+      ({ ...store, application: { ...store.application, content2: newProposal } }) as any;
+
+    wrapper(<PageFooterPPT pageNo={-1} />);
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    await waitFor(() => {
+      expect(PostProposal).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        { ...newProposal, cycle: 'CYCLE-1' },
+        'draft'
+      );
+    });
+  });
+
   it('navigates to next page when next button clicked', async () => {
     wrapper(<PageFooterPPT pageNo={1} />);
     fireEvent.click(screen.getByTestId('nextButtonTestId'));

@@ -1,7 +1,7 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Box } from '@mui/material';
-import { EMPTY_STATUS, PAGE_TITLE_ADD } from '@utils/constants.ts';
+import { EMPTY_STATUS, PAGE_TITLE_ADD, PROPOSAL_TYPE } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
@@ -20,14 +20,21 @@ export default function AddProposal() {
 
   React.useEffect(() => {
     updateAppContent1(EMPTY_STATUS);
-    const temp = NEW_PROPOSAL;
-    updateAppContent2(temp);
   }, []);
+
+  // SV cycles have no type picker, so a new SV proposal gets its type straight away. Keyed on
+  // isSV because the cycle policy can load after the first render.
+  React.useEffect(() => {
+    updateAppContent2({
+      ...NEW_PROPOSAL,
+      proposalType: isSV ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined
+    });
+  }, [isSV]);
 
   const maxTitleWords = Number(phtTranslations.title.maxWord);
   const titleValid = () =>
     getProposal()?.title?.length > 0 && countWords(getProposal()?.title) <= maxTitleWords;
-  const typeValid = () => (isSV ? true : !!getProposal()?.proposalType);
+  const typeValid = () => !!getProposal()?.proposalType;
   const contentValid = () => titleValid() && typeValid();
 
   return (
