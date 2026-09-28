@@ -22,14 +22,12 @@ import {
   DETAILS,
   IMAGE_WEIGHTING,
   IW_BRIGGS,
-  PROJECTS,
   PROPOSAL_STATUS,
+  PROPOSAL_TYPE,
   PST_MODES,
   PULSAR_TIMING_VALUE,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
-  SCIENCE_VERIFICATION,
-  SCIENCE_VERIFICATION_TYPE_ID,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
@@ -76,17 +74,6 @@ const isPST = (type: string) => type === TYPE_PST;
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
-
-const getSubType = (proposalType: number, proposalSubType: number[]): any => {
-  const project = PROJECTS.find(({ id }) => id === proposalType);
-  const subTypes: string[] = [];
-  for (const subtype of proposalSubType) {
-    if (subtype && project) {
-      subTypes.push(project.subProjects.find((item) => item?.id === subtype)?.mapping as string);
-    }
-  }
-  return subTypes;
-};
 
 export const getReferenceCoordinate = (
   tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO
@@ -658,10 +645,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
-  const projectMapping = PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping;
-  // proposalType is always resolved before this is called (set explicitly at creation in
-  // PageFooterPPT.tsx), so it alone is authoritative for SV-ness.
-  const proposalIsSV = proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;
+  const proposalIsSV = proposal.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
   const userId = getUserId();
 
   const transformedProposal: ProposalBackend = {
@@ -676,11 +660,8 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: proposalIsSV ? SCIENCE_VERIFICATION : (projectMapping as string),
-        attributes:
-          !proposalIsSV && proposal.proposalSubType
-            ? getSubType(proposal.proposalType, proposal.proposalSubType)
-            : []
+        main_type: proposal.proposalType as string,
+        attributes: proposal.proposalSubType ?? []
       },
       abstract: proposal.abstract as string,
       science_category: proposalIsSV

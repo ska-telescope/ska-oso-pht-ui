@@ -20,7 +20,6 @@ import Observation from '@utils/types/observation.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import Supplied, { SuppliedBackend } from '@utils/types/supplied.tsx';
 import {
-  PROJECTS,
   SKA_OSO_SERVICES_URL,
   DETAILS,
   TYPE_CONTINUUM,
@@ -37,8 +36,9 @@ import {
   PDF_NAME_PREFIXES,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
-  SCIENCE_VERIFICATION,
-  SCIENCE_VERIFICATION_TYPE_ID,
+  PROPOSAL_TYPE,
+  ProposalSubType,
+  ProposalType,
   TYPE_PST,
   PST_MODES,
   DP_TYPE_IMAGES,
@@ -97,20 +97,6 @@ export const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
     });
   }
   return investigators;
-};
-
-const getAttributes = (proposalType: {
-  main_type: string;
-  attributes?: string[];
-}): number[] | null => {
-  const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
-
-  const subProjects = proposalType.attributes
-    ?.map((attr) => project?.subProjects?.find(({ mapping }) => mapping === attr))
-    ?.filter((sp): sp is { id: number; label: string; mapping: string } => sp !== undefined);
-
-  const result = subProjects?.map(({ id }) => id);
-  return result && result.length > 0 ? result : [];
 };
 
 export const getScienceCategory = (scienceCat: string) => {
@@ -762,7 +748,8 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 export function mapping(inRec: ProposalBackend): Proposal {
-  const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === SCIENCE_VERIFICATION;
+  const isSV: boolean =
+    inRec.proposal_info?.proposal_type?.main_type === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
 
   const sciencePDF: DocumentPDF = getPDF(
     inRec?.observation_info?.documents,
@@ -781,14 +768,8 @@ export function mapping(inRec: ProposalBackend): Proposal {
     metadata: inRec.metadata,
     id: inRec.prsl_id,
     title: inRec.proposal_info?.title,
-    proposalType: isSV
-      ? SCIENCE_VERIFICATION_TYPE_ID
-      : PROJECTS?.find((p) => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id,
-    proposalSubType: isSV
-      ? []
-      : inRec.proposal_info?.proposal_type?.attributes
-        ? getAttributes(inRec.proposal_info?.proposal_type)
-        : [],
+    proposalType: inRec.proposal_info?.proposal_type?.main_type as ProposalType,
+    proposalSubType: (inRec.proposal_info?.proposal_type?.attributes ?? []) as ProposalSubType[],
     status: inRec.status,
     lastUpdated: inRec.metadata?.last_modified_on,
     lastUpdatedBy: inRec.metadata?.last_modified_by,

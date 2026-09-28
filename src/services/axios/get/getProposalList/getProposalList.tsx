@@ -2,27 +2,17 @@ import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
-  PROJECTS,
   DETAILS,
   OSO_SERVICES_PROPOSAL_PATH,
-  SCIENCE_VERIFICATION
+  PROPOSAL_TYPE,
+  ProposalSubType,
+  ProposalType
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
-
-const getSubType = (proposalType: {
-  main_type: string | undefined;
-  attributes?: string[] | undefined;
-}): any => {
-  const project = PROJECTS.find(({ mapping }) => mapping === proposalType.main_type);
-  const subProjects = proposalType.attributes?.map((subType) =>
-    project?.subProjects?.find(({ mapping }) => mapping === subType)
-  ) as { id: number; mapping: string }[];
-  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
-};
 
 const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => {
   const investigators: Investigator[] = [];
@@ -62,7 +52,7 @@ const getTheScienceCategory = (tmp: ProposalBackend): string => {
   if (tmp.proposal_info?.science_category === undefined) {
     return '';
   }
-  const isSV = tmp.proposal_info?.proposal_type.main_type === SCIENCE_VERIFICATION;
+  const isSV = tmp.proposal_info?.proposal_type.main_type === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
   return isSV
     ? getObservingMode(tmp.proposal_info?.science_category)
     : getScienceCategory(tmp.proposal_info?.science_category);
@@ -80,13 +70,8 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       createdOn: tmp.metadata?.created_on as string,
       createdBy: tmp.metadata?.created_by as string,
       version: tmp.metadata?.version as number,
-      proposalType: PROJECTS.find((p) => p.mapping === tmp.proposal_info?.proposal_type.main_type)
-        ?.id as number,
-      proposalSubType:
-        tmp.proposal_info?.proposal_type.main_type !== SCIENCE_VERIFICATION &&
-        tmp.proposal_info?.proposal_type?.attributes
-          ? getSubType(tmp.proposal_info?.proposal_type)
-          : [],
+      proposalType: tmp.proposal_info?.proposal_type?.main_type as ProposalType,
+      proposalSubType: (tmp.proposal_info?.proposal_type?.attributes ?? []) as ProposalSubType[],
       scienceCategory: getTheScienceCategory(tmp),
       title: tmp.proposal_info?.title,
       cycle: tmp?.cycle,

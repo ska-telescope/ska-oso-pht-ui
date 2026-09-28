@@ -12,7 +12,8 @@ import {
   PULSAR_TIMING_VALUE,
   IW_BRIGGS,
   PST_MODES,
-  TYPE_ZOOM_LONG
+  TYPE_ZOOM_LONG,
+  PROPOSAL_TYPE
 } from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
@@ -70,6 +71,21 @@ describe('Helper Functions', () => {
         proposal_type: { ...MockProposalBackend.proposal_info.proposal_type, attributes: [] }
       }
     });
+  });
+
+  test('mappingPutProposal passes the science verification type through and encodes the observing mode', () => {
+    const proposal = {
+      ...MockProposalFrontend,
+      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      proposalSubType: [],
+      scienceCategory: TYPE_CONTINUUM
+    };
+    const proposalBackEnd: ProposalBackend = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
+    expect(proposalBackEnd.proposal_info.proposal_type).to.deep.equal({
+      main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      attributes: []
+    });
+    expect(proposalBackEnd.proposal_info.science_category).to.equal('Continuum');
   });
 });
 

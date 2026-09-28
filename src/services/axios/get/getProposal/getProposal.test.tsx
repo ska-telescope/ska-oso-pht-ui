@@ -4,7 +4,9 @@ import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   FREQUENCY_UNITS,
-  BAND_LOW_STR
+  BAND_LOW_STR,
+  PROPOSAL_TYPE,
+  TYPE_CONTINUUM
 } from '@utils/constants.ts';
 import GetProposal, {
   mapping,
@@ -31,6 +33,33 @@ describe('Helper Functions', () => {
   test('mapping returns mapped zoom proposal from backend to frontend format', () => {
     const proposalFrontEnd: Proposal = mapping(MockProposalBackendZoom);
     expect(proposalFrontEnd).to.deep.equal(MockProposalFrontendZoom);
+  });
+
+  test('mapping passes the science verification type through and decodes the observing mode', () => {
+    const proposalFrontEnd: Proposal = mapping({
+      ...MockProposalBackend,
+      proposal_info: {
+        ...MockProposalBackend.proposal_info,
+        proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, attributes: [] },
+        science_category: 'Continuum'
+      }
+    });
+    expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
+    expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
+    expect(proposalFrontEnd.scienceCategory).to.equal(TYPE_CONTINUUM);
+    expect(proposalFrontEnd.technicalPDF).to.equal(undefined);
+  });
+
+  test('mapping returns an empty sub-type list when the backend sends no attributes', () => {
+    const proposalFrontEnd: Proposal = mapping({
+      ...MockProposalBackend,
+      proposal_info: {
+        ...MockProposalBackend.proposal_info,
+        proposal_type: { main_type: PROPOSAL_TYPE.STANDARD }
+      }
+    });
+    expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.STANDARD);
+    expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
   });
 });
 
