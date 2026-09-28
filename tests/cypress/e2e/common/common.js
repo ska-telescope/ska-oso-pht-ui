@@ -177,8 +177,10 @@ export const selectOptionFromDropdown = (testId, value) => {
 // when a matching cycle exists on the real backend.
 export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
 export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
-export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
-export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
+export const clickProposalTypePrincipleInvestigator = () =>
+  selectId('ProposalType-standard_proposal');
+export const clickSubProposalTypeTargetOfOpportunity = () =>
+  selectId('proposalAttribute-target_of_opportunity');
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 export const verifyMockedProposalOnLandingPageIsVisible = () => {

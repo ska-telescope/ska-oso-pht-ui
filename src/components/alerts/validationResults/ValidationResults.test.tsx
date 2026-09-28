@@ -35,7 +35,7 @@ describe('<ValidationResults />', () => {
           createdBy: '',
           version: 0,
           cycle: '',
-          proposalType: 0,
+          proposalType: undefined,
           proposalSubType: undefined,
           scienceCategory: 0,
           scienceSubCategory: undefined,

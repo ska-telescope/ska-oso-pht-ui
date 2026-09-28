@@ -60,7 +60,7 @@ describe('fetchSensCalcPatches', () => {
     createdBy: '',
     version: 0,
     cycle: null,
-    proposalType: 0,
+    proposalType: undefined,
     scienceCategory: 0,
     sciencePDF: null,
     calibrationStrategy: [],
