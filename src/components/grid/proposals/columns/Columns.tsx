@@ -8,10 +8,6 @@ import ObservingType from '@/components/display/observingType/observingType';
 
 /*-----------------------------------------------------------------*/
 
-const displayProposalType = (proposalType: any) => {
-  return proposalType ? proposalType : NOT_SPECIFIED;
-};
-
 const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
 
 const getAuthors = (arr: Investigator[]) => {
@@ -65,10 +61,10 @@ export const getColProposalType = (t: any) => ({
   headerName: t('proposalType.label'),
   width: 160,
   renderCell: (e: { row: any }) => {
-    const str = t('proposalType.title.' + displayProposalType(e.row.proposalType));
+    const str = t('proposalType.title.' + (e.row.proposalType ?? NOT_SPECIFIED));
     return (
       <Tooltip title={str}>
-        <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
+        <>{t('proposalType.code.' + (e.row.proposalType ?? NOT_SPECIFIED))}</>
       </Tooltip>
     );
   }
