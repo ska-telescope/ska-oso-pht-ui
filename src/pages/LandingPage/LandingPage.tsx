@@ -25,10 +25,8 @@ import TargetObservation from '@/utils/types/targetObservation';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
-  DUMMY_PROPOSAL_ID,
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
-  TYPE_CONTINUUM,
   NAV,
   PAGE_LANDING,
   PATH,
@@ -52,7 +50,7 @@ export default function LandingPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
-  const { isSV, osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
+  const { osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
   const validateProposal = useValidateProposal();
   const theme = useTheme();
 
@@ -79,37 +77,6 @@ export default function LandingPage() {
   const getProposal = () => application.content2 as Proposal;
   const { setHelp } = useHelp();
   useOSDAPI(setAxiosError, Boolean(loggedIn));
-
-  const mock = {
-    abstract: '',
-    createdBy: '',
-    createdOn: '',
-    cycle: 'SKAO_2027_1',
-    dataProductSDP: [],
-    dataProductSRC: [],
-    groupObservations: [],
-    id: DUMMY_PROPOSAL_ID,
-    investigators: [],
-    lastUpdated: '',
-    lastUpdatedBy: '',
-    metadata: undefined,
-    observations: [],
-    pipeline: '',
-    proposalSubType: [],
-    proposalType: 0,
-    scienceCategory: isSV ? TYPE_CONTINUUM : undefined,
-    scienceLoadStatus: 0,
-    sciencePDF: undefined,
-    scienceSubCategory: [],
-    status: '',
-    targetObservation: [],
-    targetOption: 1,
-    targets: [],
-    technicalLoadStatus: 0,
-    technicalPDF: undefined,
-    title: '',
-    version: 0
-  } as unknown as Proposal;
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
