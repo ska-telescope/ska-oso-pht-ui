@@ -18,18 +18,15 @@ export default function AddProposal() {
   const { isSV } = useOSDAccessors();
   const getProposal = () => application.content2 as Proposal;
 
+  // SV cycles have no type picker, so a new SV proposal gets its type straight away. The cycle
+  // is always selected on the Landing page before this page opens.
   React.useEffect(() => {
     updateAppContent1(EMPTY_STATUS);
-  }, []);
-
-  // SV cycles have no type picker, so a new SV proposal gets its type straight away. Keyed on
-  // isSV because the cycle policy can load after the first render.
-  React.useEffect(() => {
     updateAppContent2({
       ...NEW_PROPOSAL,
       proposalType: isSV ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined
     });
-  }, [isSV]);
+  }, []);
 
   const maxTitleWords = Number(phtTranslations.title.maxWord);
   const titleValid = () =>
