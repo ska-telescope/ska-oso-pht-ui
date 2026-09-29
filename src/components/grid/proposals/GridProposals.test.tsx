@@ -70,6 +70,53 @@ describe('<GridProposals /> forReview', () => {
   vi.clearAllMocks();
 });
 
+describe('<GridProposals /> science category and observing mode columns', () => {
+  const svProposalBackend = {
+    ...MockProposalBackendList[0],
+    proposal_info: {
+      ...MockProposalBackendList[0].proposal_info,
+      proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, attributes: [] },
+      science_category: undefined
+    }
+  };
+
+  test('is shown next to the science category when only some proposals have one', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: [svProposalBackend, MockProposalBackendList[2]]
+    });
+    const { container } = wrapper(<GridProposals />);
+    await waitFor(() => {
+      expect(container.querySelector('[data-field="observingMode"]')).toBeInTheDocument();
+    });
+    expect(container.querySelector('[data-field="scienceCategory"]')).toBeInTheDocument();
+  });
+  vi.clearAllMocks();
+
+  test('replaces the science category column when no proposal has a science category', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: [svProposalBackend]
+    });
+    const { container } = wrapper(<GridProposals />);
+    await waitFor(() => {
+      expect(container.querySelector('[data-field="observingMode"]')).toBeInTheDocument();
+    });
+    expect(container.querySelector('[data-field="scienceCategory"]')).toBeNull();
+  });
+  vi.clearAllMocks();
+
+  test('is not shown when every proposal has a science category', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: [MockProposalBackendList[2]]
+    });
+    const { container } = wrapper(<GridProposals />);
+    await waitFor(() => {
+      expect(container.querySelector('[data-field="scienceCategory"]')).toBeInTheDocument();
+    });
+    expect(container.querySelector('[data-field="observingMode"]')).toBeNull();
+  });
+  vi.clearAllMocks();
+});
+
 describe('<GridProposals /> showSelection', () => {
   test('renders correctly, showSelection true', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({

@@ -9,6 +9,7 @@ import {
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
+import { getObservations } from '../getProposal/getProposal';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -65,6 +66,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       proposalType: tmp.proposal_info?.proposal_type?.main_type as ProposalType,
       proposalSubType: (tmp.proposal_info?.proposal_type?.attributes ?? []) as ProposalSubType[],
       scienceCategory: getTheScienceCategory(tmp),
+      observations: getObservations(tmp.observation_info?.observation_sets ?? null),
       title: tmp.proposal_info?.title,
       cycle: tmp?.cycle,
       investigators: tmp.proposal_info?.investigators

@@ -434,7 +434,7 @@ const typeCheck = (inType: string | undefined): any => {
   return inType;
 };
 
-const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
+export const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
   const results: Observation[] = [];
   if (!inValue || inValue.length === 0) {
     return results;

@@ -614,6 +614,10 @@
     "continuumSpectral": "Continuum-Spectral",
     "pst": "PST"
   },
+  "observingMode": {
+    "label": "Observing Mode",
+    "notSpecified": "Not specified"
+  },
   "observatoryDataProduct": {
     "id": "SDP Id",
     "label": "Observatory Data Product",

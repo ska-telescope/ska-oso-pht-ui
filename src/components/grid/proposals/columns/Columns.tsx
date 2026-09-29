@@ -3,6 +3,7 @@ import { NOT_SPECIFIED } from '@/utils/constants';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
 import Investigator from '@/utils/types/investigator';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
+import ObservingType from '@/components/display/observingType/observingType';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 /*-----------------------------------------------------------------*/
@@ -126,6 +127,20 @@ export const getColProposalStatus = (t: any) => ({
   headerName: t('status.label'),
   width: 160,
   renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
+});
+
+export const getColProposalObservingMode = (t: any) => ({
+  field: 'observingMode',
+  headerName: t('observingMode.label'),
+  flex: 2,
+  minWidth: 250,
+  renderCell: (e: { row: any }) => {
+    if (e.row.scienceCategory) {
+      return '';
+    }
+    const type = e.row.observations?.[0]?.type;
+    return type ? <ObservingType type={type} /> : t('observingMode.notSpecified');
+  }
 });
 
 export const getColProposalUpdated = (t: any) => ({
