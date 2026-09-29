@@ -17,7 +17,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import {
   NAV,
-  NOTIFICATION_DELAY_IN_SECONDS,
+  PROPOSAL_TYPE,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -61,7 +61,6 @@ import {
   generateCalibrationId,
   generateObsSetId,
   getBandwidthZoom,
-  obTypeTransform,
   timeConversion
 } from '@utils/helpers.ts';
 import {
@@ -78,6 +77,7 @@ import Observation from '@/utils/types/observation';
 import SubArrayField from '@/components/fields/subArray/SubArray';
 import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '@/components/fields/observationType/ObservationType';
+import { useObservationTypeOptions } from '@/components/fields/observationType/useObservationTypeOptions';
 import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
 import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
 import NumStations from '@/components/fields/numStations/NumStations';
@@ -92,8 +92,6 @@ import {
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
-import { useNotify } from '@/utils/notify/useNotify';
-import autoLinking from '@/utils/autoLinking/AutoLinking';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
@@ -129,9 +127,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const locationProperties = useLocation();
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const loggedIn = isLoggedIn();
-  const { notifyError, notifySuccess } = useNotify();
   const {
-    autoLink,
     isSV,
     osdLOW,
     osdMID,
@@ -946,20 +942,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /**************************************************************/
 
-  const low = isLow();
-
-  const obsTypeOptions = React.useMemo(() => {
-    const obj = low ? osdLOW : osdMID;
-    const rec =
-      (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(
-        (r) => r.subArray === subarrayConfig
-      ) ?? null;
-    const modes = obTypeTransform(rec?.cbfModes ?? []);
-    return modes.map((mode) => ({
-      label: t(`observationType.${mode}`),
-      value: mode
-    }));
-  }, [subarrayConfig, low, osdLOW, osdMID, t]);
+  const obsTypeOptions = useObservationTypeOptions(subarrayConfig, isLow());
 
   React.useEffect(() => {
     if (obsTypeOptions.length === 0) return;
@@ -975,39 +958,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   }, [observationType, obsTypeOptions, setObservationType]);
 
-  // When auto-linking, the observing mode drives the observation defaults, data products and
-  // results, so changing it regenerates all of them rather than only updating the type.
-  const changeObservationType = async (type: string) => {
-    const target = getProposal().targets?.[0];
-    if (!autoLink || !isEdit() || !target) {
-      setObservationType(type);
-      return;
-    }
-    if (type === observationType) return;
-    const defaults = await autoLinking(
-      target,
-      getProposal,
-      setProposal,
-      authAxiosClient,
-      type,
-      getProposal().abstract,
-      maxZoomChannels
-    );
-    if (defaults?.success) {
-      notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
-    } else {
-      notifyError(t(defaults?.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
-    }
-  };
-
+  // SV proposals set their observing mode on the Details page
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={!isLoggedIn()}
+        disabled={getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION}
         options={obsTypeOptions}
         required
         value={observationType}
-        setValue={changeObservationType}
+        setValue={setObservationType}
       />
     );
 

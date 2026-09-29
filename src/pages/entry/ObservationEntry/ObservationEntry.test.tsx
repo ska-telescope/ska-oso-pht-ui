@@ -1,10 +1,11 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, test, it, vi, expect, beforeEach } from 'vitest';
+import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import {
+  PROPOSAL_TYPE,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
@@ -13,6 +14,11 @@ import {
 import ObservationEntry from './ObservationEntry';
 
 // ---- Module mocks ----
+
+const mockState = vi.hoisted(() => ({
+  proposalType: undefined as string | undefined,
+  observationTypes: ['spectral']
+}));
 
 // Setting `state=null` ensures that we can define some non "edit mode" tests.
 // (If we didn't do this the testing environment created state would
@@ -78,6 +84,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
     useStore: () => ({
       application: {
         content2: {
+          proposalType: mockState.proposalType,
           observations: [],
           dataProductSDP: [],
           targetObservation: []
@@ -91,12 +98,12 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   StoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
-// Force a spectral zoom observation type for all tests, so we can verify bandwidth changes
+// Force a spectral zoom observation type by default, so we can verify bandwidth changes
 vi.mock('@utils/helpers.ts', async () => {
   const actual = await vi.importActual<typeof import('@utils/helpers')>('@utils/helpers.ts');
   return {
     ...actual,
-    obTypeTransform: () => ['spectral']
+    obTypeTransform: () => mockState.observationTypes
   };
 });
 
@@ -240,6 +247,36 @@ describe('<ObservationEntry />', () => {
           ])
         })
       );
+    });
+  });
+
+  describe('observation type field', () => {
+    const observationTypeCombobox = () =>
+      screen.getByTestId('observationType').querySelector('[role="combobox"]');
+
+    beforeEach(() => {
+      mockState.observationTypes = ['continuum', 'spectral'];
+    });
+
+    afterEach(() => {
+      mockState.proposalType = undefined;
+      mockState.observationTypes = ['spectral'];
+    });
+
+    it('is enabled for proposals that are not science verification', async () => {
+      mockState.proposalType = PROPOSAL_TYPE.STANDARD;
+      await act(async () => {
+        wrapper(<ObservationEntry />);
+      });
+      expect(observationTypeCombobox()).not.toHaveAttribute('aria-disabled', 'true');
+    });
+
+    it('is disabled for science verification proposals', async () => {
+      mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
+      await act(async () => {
+        wrapper(<ObservationEntry />);
+      });
+      expect(observationTypeCombobox()).toHaveAttribute('aria-disabled', 'true');
     });
   });
 });
