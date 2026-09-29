@@ -280,7 +280,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const getSubTypes = (): ProposalSubType[] => {
     const type = getProposal().proposalType;
-    return type ? PROPOSAL_TYPE_SUBTYPES[type] : [];
+    return type ? PROPOSAL_TYPE_SUBTYPES[type] ?? [] : [];
   };
 
   const proposalAttributes = () => (
