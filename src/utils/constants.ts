@@ -730,8 +730,6 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   pstMode: PULSAR_TIMING_VALUE
 };
 
-export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
-
 export const STATUS_ARRAY_PAGES_SV = [
   PAGE_TITLE_ADD,
   PAGE_TEAM,

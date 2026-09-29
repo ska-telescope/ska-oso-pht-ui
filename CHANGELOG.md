@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Base number of allowed targets on the cycle policy instead of hardcoded number
 * Changed: PHT validate and submit logic now follows same pattern as the SV tool  
 * CI Test Only: Remove temp E2E overrides and increase Cypress timeouts for long-running calls 
 * Bugfix: Ensure that if no polarisations are selected this is reflected in breadcrumbs

@@ -87,7 +87,7 @@ export default function GridProposals({
   tickBoxClicked = () => {}
 }: GridProposalsProps) {
   const { t } = useScopedTranslation();
-  const { isSV, osdPolicies } = useOSDAccessors();
+  const { osdPolicies } = useOSDAccessors();
   const navigate = useNavigate();
   const { setHelp } = useHelp();
 
@@ -250,29 +250,19 @@ export default function GridProposals({
     )
   };
 
-  const proposalColumns = isSV
-    ? [
-        ...(showSelection ? [colSelect] : []),
-        ...(showActions ? [colActions] : []),
-        getColProposalTitle(t),
-        getColProposalTypeCycle(t, osdPolicies),
-        getColProposalStatus(t),
-        getColProposalSC(t),
-        getColProposalPI(t)
-      ]
-    : [
-        ...(showSelection ? [colSelect] : []),
-        ...(showActions ? [colActions] : []),
-        getColProposalTitle(t),
-        getColProposalStatus(t),
-        getColProposalSC(t),
-        getColProposalType(t),
-        getColProposalPI(t)
-      ];
+  const proposalColumns = [
+    ...(showSelection ? [colSelect] : []),
+    ...(showActions ? [colActions] : []),
+    getColProposalTitle(t),
+    getColProposalTypeCycle(t, osdPolicies),
+    getColProposalStatus(t),
+    getColProposalSC(t),
+    getColProposalPI(t)
+  ];
 
-  const reviewColumns = isSV
-    ? [...[getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]]
-    : [...[getColProposalType(t), getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]];
+  const reviewColumns = [
+    ...[getColProposalType(t), getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]
+  ];
 
   const selectedData = proposals
     ? proposals.filter((e) =>
