@@ -78,7 +78,7 @@ describe('Helper Functions', () => {
       ...MockProposalFrontend,
       proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
       proposalSubType: [],
-      scienceCategory: null as unknown as string
+      scienceCategory: null
     };
     const proposalBackEnd: ProposalBackend = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
     expect(proposalBackEnd.proposal_info.proposal_type).to.deep.equal({

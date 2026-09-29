@@ -798,7 +798,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO remove this property from type as not needed
   };
-  return convertedProposal as unknown as Proposal;
+  return convertedProposal as Proposal;
 }
 
 async function GetProposal(

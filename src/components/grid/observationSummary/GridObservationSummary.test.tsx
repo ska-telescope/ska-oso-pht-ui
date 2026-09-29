@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import GridObservationSummary from './GridObservationSummary';
-import { BAND_LOW_STR } from '@/utils/constants';
+import { BAND_LOW_STR, TYPE_CONTINUUM } from '@/utils/constants';
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
@@ -38,7 +38,7 @@ describe('<GridObservationSummary />', () => {
               id: '',
               telescope: 0,
               subarray: '',
-              type: 0,
+              type: TYPE_CONTINUUM,
               observingBand: BAND_LOW_STR,
               elevation: 0,
               centralFrequency: 0,
@@ -57,6 +57,7 @@ describe('<GridObservationSummary />', () => {
           ],
           groupObservations: undefined,
           targetObservation: undefined,
+          calibrationStrategy: [],
           technicalPDF: null,
           technicalLoadStatus: undefined,
           dataProductSDP: undefined,
@@ -92,6 +93,7 @@ describe('<GridObservationSummary />', () => {
           observations: [],
           groupObservations: undefined,
           targetObservation: undefined,
+          calibrationStrategy: [],
           technicalPDF: null,
           technicalLoadStatus: undefined,
           dataProductSDP: undefined,
