@@ -22,7 +22,7 @@ import {
   clickFileUpload,
   clickStatusIconNav,
   pageConfirmed,
-  clickToValidateSV,
+  clickToSubmitProposal,
   verifyAlertFooter,
   clickToConfirmProposalSubmission,
   verifyData
@@ -95,7 +95,7 @@ describe('Creating Proposal', () => {
       verifyData('field-spectralSynthBeamSize', '5.93 x 3.97 arcsec²');
       verifyData('field-spectralSurfaceBrightnessSensitivity', '5.5e+4 K');
       verifyData('field-integrationTime', '1.00 h');
-      clickToValidateSV();
+      clickToSubmitProposal();
       cy.wait('@mockValidateSVIdea');
       verifyAlertFooter('Science Verification Idea is Valid');
       clickToConfirmProposalSubmission();
@@ -128,7 +128,7 @@ describe('Creating Proposal', () => {
       verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
       verifyData('field-spectralSurfaceBrightnessSensitivity', '9.5e+4 K');
       verifyData('field-integrationTime', '1.00 h');
-      clickToValidateSV();
+      clickToSubmitProposal();
       cy.wait('@mockValidateSVIdea');
       verifyAlertFooter('Science Verification Idea is Valid');
       clickToConfirmProposalSubmission();
@@ -158,7 +158,7 @@ describe('Creating Proposal', () => {
         'borderedSection-content',
         'PST mode is not currently supported within the Sensitivity Calculator application.'
       );
-      clickToValidateSV();
+      clickToSubmitProposal();
       cy.wait('@mockValidateSVIdea');
       verifyAlertFooter('Science Verification Idea is Valid');
       clickToConfirmProposalSubmission();

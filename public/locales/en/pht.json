@@ -1378,7 +1378,10 @@
   },
   "submitBtn": {
     "label": "Submit",
-    "success": "Submission was successful",
+    "success": "Submission was successful"
+  },
+  "submitProposalBtn": {
+    "label": "Validate / Submit",
     "tooltip": "Progress the proposals to the submitted state"
   },
   "velocityType": {
@@ -1487,11 +1490,8 @@
   "uploadPDF": {
     "label": "Upload PDF"
   },
-  "validationBtn": {
-    "label": "Validate",
-    "success": "Proposal is Valid",
-    "tooltip": "Performs validation upon the proposal",
-    "tooltipDisabled": "Disabled until all pages have a status of OK"
+  "validation": {
+    "success": "Proposal is Valid"
   },
   "validationResults": {
     "title": "Validation issues",

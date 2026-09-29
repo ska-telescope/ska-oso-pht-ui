@@ -463,7 +463,7 @@ export default function ReviewListPage() {
         <SubmitIcon
           onClick={() => submitIconClicked(e.row)}
           disabled={!canSubmit(e.row)}
-          toolTip={t('submitBtn.tooltip')}
+          toolTip={t('reviewProposal.submit')}
         />
       </>
     )

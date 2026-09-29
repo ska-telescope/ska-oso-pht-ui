@@ -25,9 +25,7 @@ import {
   clickToLinkTargetAndObservation,
   clickObservationFromTable,
   verifySensitivityCalculatorStatusSuccess,
-  validateProposal,
   clickFileUpload,
-  clickToValidateSV,
   uploadTestFile,
   verifyTestFileUploaded,
   mockValidateAPI,
@@ -94,7 +92,7 @@ describe('Edit Proposal', () => {
       // sciencePDF.isUploadedPdf on completion - wait for the preview button, which only
       // renders once that's true, otherwise validate can run before the upload has landed.
       cy.get('[data-testid="pdfPreviewButtonTestId"]').should('exist');
-      clickToValidateSV();
+      clickToSubmitProposal();
       cy.wait('@mockValidate');
       verifyAlertFooter('Science Verification Idea is Valid');
       clickToConfirmProposalSubmission();
@@ -175,12 +173,10 @@ describe('Edit Proposal', () => {
         verifyTestFileUploaded('testFile.pdf');
         clickFileUpload();
         verifyAlertFooter('Technical Justification PDF successfully uploaded');
-        validateProposal();
-        cy.wait('@mockValidate');
-        verifyAlertFooter('Proposal is Valid');
-        //submit proposal
+        //submit proposal (submit validates first)
         clickToSubmitProposal();
         cy.wait('@mockValidate');
+        verifyAlertFooter('Proposal is Valid');
         clickToConfirmProposalSubmission();
         verifyAlertFooter('Submission was successful');
       }

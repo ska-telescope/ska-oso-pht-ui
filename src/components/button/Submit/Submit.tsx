@@ -16,7 +16,7 @@ export default function SubmitButton({
   title = 'submitBtn.label',
   primary = true,
   testId = 'submitBtnTestId',
-  toolTip = 'submitBtn.tooltip'
+  toolTip = ''
 }: SubmitButtonProps) {
   return (
     <BaseButton
