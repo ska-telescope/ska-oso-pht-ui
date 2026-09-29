@@ -33,7 +33,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
         isSV && osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
       )
     ) {
-      notifyError(t('scienceCategory.validationNavigationError'));
+      notifyError(t('validation.navigationError'));
       setTimeout(() => {
         notifyClear();
       }, 4000);

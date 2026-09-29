@@ -77,7 +77,7 @@ export default function DetailsPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    setHelp('scienceCategory.help');
+    setHelp('page.' + PAGE + '.help');
   }, []);
 
   React.useEffect(() => {

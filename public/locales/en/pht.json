@@ -1176,11 +1176,6 @@
   "searchForMember": {
     "label": "Search for a member"
   },
-  "scienceSubCategory": {
-    "label": "Sub-category",
-    "help": "SUB-CATEGORY: Select a sub-category that best describes your proposal.",
-    "1": "Not specified"
-  },
   "sendInviteBtn": {
     "label": "Send invitation"
   },
@@ -1487,6 +1482,7 @@
     "label": "Upload PDF"
   },
   "validation": {
+    "navigationError": "A target is required. It is located on the Target page.",
     "success": "Proposal is Valid"
   },
   "validationResults": {
@@ -1560,6 +1556,7 @@
       "title": "General",
       "titleShort": "General",
       "desc": "This page allows the user to provide general details about the proposal.",
+      "help": "Select a category that best describes the science of your proposal.",
       "pageError": "The GENERAL page is not complete"
     },
     "3": {
