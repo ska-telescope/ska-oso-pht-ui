@@ -145,11 +145,11 @@ export const validateDetailsPage = (proposal: Proposal) => {
   if ((proposal?.abstract ?? '').length > 0) {
     count++;
   }
-  // SV proposals have no science category, so only the abstract is required
-  if (
-    proposal?.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
-    proposal?.scienceCategory !== null
-  ) {
+  const hasCategoryOrMode =
+    proposal?.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+      ? (proposal?.observations?.length ?? 0) > 0
+      : proposal?.scienceCategory !== null;
+  if (hasCategoryOrMode) {
     count++;
   }
   return result[count];

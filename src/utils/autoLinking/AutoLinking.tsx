@@ -277,3 +277,40 @@ export default async function autoLinking(
 
   return { success: true };
 }
+
+/**
+ * Sets the observing mode of a proposal with a single observation (e.g. SV).
+ *
+ * With a target, the observation, data products, results and calibration are all regenerated for
+ * the new mode via autoLinking. Without one, only a default observation and data products for the
+ * mode are created, as results and calibration need a target; autoLinking adds these once a target
+ * is added, using this observation's type as the mode.
+ */
+export async function setObservingMode(
+  observationMode: string,
+  getProposal: Function,
+  setProposal: Function,
+  authAxiosClient: AxiosAuthClient,
+  maxZoomChannels?: number
+): Promise<DefaultsResults> {
+  const target = getProposal().targets?.[0];
+  if (target) {
+    return autoLinking(
+      target,
+      getProposal,
+      setProposal,
+      authAxiosClient,
+      observationMode,
+      undefined,
+      maxZoomChannels
+    );
+  }
+
+  const newObservation = newObservationForMode(observationMode, maxZoomChannels);
+  setProposal({
+    ...getProposal(),
+    observations: [newObservation],
+    dataProductSDP: newDataProductsForMode(newObservation)
+  });
+  return { success: true };
+}

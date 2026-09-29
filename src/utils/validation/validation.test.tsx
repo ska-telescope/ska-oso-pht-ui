@@ -11,9 +11,11 @@ import {
   FLOW_THROUGH_VALUE,
   IW_BRIGGS,
   IW_UNIFORM,
+  PROPOSAL_TYPE,
   PULSAR_TIMING_VALUE,
   STATUS_ERROR,
   STATUS_OK,
+  STATUS_PARTIAL,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_M,
@@ -26,7 +28,7 @@ import {
   TYPE_ZOOM
 } from '../constants';
 import { timeConversion } from '../helpers';
-import { validateObservationPage, validateSDPPage } from './validation';
+import { validateDetailsPage, validateObservationPage, validateSDPPage } from './validation';
 
 describe('validateSDPPage robust rules', () => {
   const makeProposalWithDataProduct = (data: any) =>
@@ -424,5 +426,30 @@ describe('validateObservationPage supplied rules', () => {
       targetObservation: []
     };
     expect(validateObservationPage(invalidProposal as any, false)).toBe(STATUS_ERROR);
+  });
+});
+
+describe('validateDetailsPage', () => {
+  const observation = { id: 'obs-1', type: TYPE_CONTINUUM };
+
+  it('requires an abstract and a science category for standard proposals', () => {
+    const proposal = { proposalType: PROPOSAL_TYPE.STANDARD, abstract: 'An abstract' };
+    expect(validateDetailsPage({ ...proposal, scienceCategory: 1 } as any)).toBe(STATUS_OK);
+    expect(validateDetailsPage({ ...proposal, scienceCategory: null } as any)).toBe(STATUS_PARTIAL);
+  });
+
+  it('requires an abstract and an observation (the observing mode) for SV proposals', () => {
+    const proposal = {
+      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      scienceCategory: null,
+      abstract: 'An abstract'
+    };
+    expect(validateDetailsPage({ ...proposal, observations: [observation] } as any)).toBe(
+      STATUS_OK
+    );
+    expect(validateDetailsPage({ ...proposal, observations: [] } as any)).toBe(STATUS_PARTIAL);
+    expect(validateDetailsPage({ ...proposal, abstract: '', observations: [] } as any)).toBe(
+      STATUS_ERROR
+    );
   });
 });

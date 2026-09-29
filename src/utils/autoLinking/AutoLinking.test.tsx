@@ -21,7 +21,8 @@ import Observation from '../types/observation';
 import autoLinking, {
   newCalibrationStrategy,
   newDataProductsForMode,
-  newObservationForMode
+  newObservationForMode,
+  setObservingMode
 } from './AutoLinking';
 import {
   CONTINUUM_IMAGE_DATA_PRODUCT,
@@ -518,5 +519,86 @@ describe('autoLinking()', () => {
 
     // ...but with no sensitivity result attached
     expect(proposal.targetObservation?.[0].sensCalc).toBeUndefined(); // ← verify: may be null
+  });
+});
+
+describe('setObservingMode()', () => {
+  let proposal: Partial<Proposal>;
+  let getProposal: ReturnType<typeof vi.fn>;
+  let setProposal: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-0000000');
+    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-0000000');
+    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
+
+    proposal = {
+      abstract: 'An abstract',
+      targets: [],
+      observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'existing-obs' }],
+      dataProductSDP: [
+        { ...CONTINUUM_IMAGE_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' }
+      ],
+      targetObservation: [],
+      calibrationStrategy: []
+    };
+
+    getProposal = vi.fn(() => proposal);
+    setProposal = vi.fn((p: Proposal) => {
+      proposal = p;
+    });
+  });
+
+  it('replaces only the observation and data products when there is no target', async () => {
+    const result = await setObservingMode(TYPE_PST, getProposal, setProposal, mockAuthAxiosClient);
+
+    expect(result).toEqual({ success: true });
+    expect(setProposal).toHaveBeenCalledTimes(1);
+    expect(getSensCalc).not.toHaveBeenCalled();
+
+    expect(proposal.observations).toHaveLength(1);
+    expect(proposal.observations?.[0].type).toBe(TYPE_PST);
+    expect(proposal.observations?.[0].id).toBe('mock-0000000');
+    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProductSDP?.[0].observationId).toBe('mock-0000000');
+
+    // Results and calibration need a target, so nothing is created for them
+    expect(proposal.targetObservation).toEqual([]);
+    expect(proposal.calibrationStrategy).toEqual([]);
+    expect(proposal.abstract).toBe('An abstract');
+  });
+
+  it('applies the zoom channel cap to a spectral observation when there is no target', async () => {
+    await setObservingMode(TYPE_ZOOM, getProposal, setProposal, mockAuthAxiosClient, 1234);
+
+    expect(proposal.observations?.[0].type).toBe(TYPE_ZOOM);
+    expect(proposal.observations?.[0].zoomChannels).toBe(1234);
+  });
+
+  it('regenerates everything via auto-linking when there is a target', async () => {
+    proposal = { ...proposal, targets: [mockTarget] };
+
+    const result = await setObservingMode(TYPE_ZOOM, getProposal, setProposal, mockAuthAxiosClient);
+
+    expect(result).toEqual({ success: true });
+    expect(getSensCalc).toHaveBeenCalledTimes(1);
+    expect(proposal.observations).toHaveLength(1);
+    expect(proposal.observations?.[0].type).toBe(TYPE_ZOOM);
+    expect(proposal.targetObservation).toHaveLength(1);
+    expect(proposal.targetObservation?.[0].targetId).toBe(mockTarget.id);
+    expect(proposal.calibrationStrategy).toHaveLength(1);
+    expect(proposal.abstract).toBe('An abstract');
+  });
+
+  it('returns the auto-linking error when there is a target', async () => {
+    proposal = { ...proposal, targets: [mockTarget] };
+    vi.mocked(getSensCalc as any).mockResolvedValue({ statusGUI: STATUS_ERROR, error: 'bad' });
+
+    const result = await setObservingMode(TYPE_ZOOM, getProposal, setProposal, mockAuthAxiosClient);
+
+    expect(result).toEqual({ success: false, error: 'bad' });
+    expect(setProposal).not.toHaveBeenCalled();
   });
 });
