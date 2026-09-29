@@ -2,7 +2,7 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { PROPOSAL_TYPE } from '@utils/constants.ts';
+import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { countWords } from '@utils/helpers.ts';
@@ -95,5 +95,45 @@ describe('new proposal type', () => {
     expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
       expect.objectContaining({ proposalType: undefined })
     );
+  });
+});
+
+describe('new proposal observation', () => {
+  const originalUseStore = storageObject.useStore;
+  const mockStore = {
+    application: { content1: [], content2: {} },
+    updateAppContent1: vi.fn(),
+    updateAppContent2: vi.fn()
+  };
+
+  afterEach(() => {
+    storageObject.useStore = originalUseStore;
+    mockOSD.isSV = false;
+    vi.clearAllMocks();
+  });
+
+  test('is a default continuum observation with its data products for an SV cycle', () => {
+    mockOSD.isSV = true;
+    storageObject.useStore = () => mockStore as any;
+    wrapper(<AddProposal />);
+
+    const proposal = mockStore.updateAppContent2.mock.calls[0][0];
+    expect(proposal.observations).toHaveLength(1);
+    expect(proposal.observations[0].type).toBe(TYPE_CONTINUUM);
+    // Continuum has an images data product plus a hidden visibilities one
+    expect(proposal.dataProductSDP).toHaveLength(2);
+    proposal.dataProductSDP.forEach((dataProduct: { observationId: string }) =>
+      expect(dataProduct.observationId).toBe(proposal.observations[0].id)
+    );
+    expect(proposal.scienceCategory).toBeNull();
+  });
+
+  test('is not created for a normal cycle', () => {
+    storageObject.useStore = () => mockStore as any;
+    wrapper(<AddProposal />);
+
+    const proposal = mockStore.updateAppContent2.mock.calls[0][0];
+    expect(proposal.observations).toEqual([]);
+    expect(proposal.dataProductSDP).toEqual([]);
   });
 });
