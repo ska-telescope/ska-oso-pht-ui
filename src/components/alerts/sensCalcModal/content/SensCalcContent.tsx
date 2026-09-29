@@ -28,6 +28,7 @@ import {
 interface SensCalcContentProps {
   targetObservation?: TargetObservation;
   isNatural?: boolean;
+  hideSpectralResults?: boolean;
 }
 
 const GAP = 4;
@@ -35,7 +36,8 @@ const SPACER_HEIGHT = 30;
 
 export default function SensCalcContent({
   targetObservation,
-  isNatural = false
+  isNatural = false,
+  hideSpectralResults = false
 }: SensCalcContentProps) {
   const { t } = useScopedTranslation();
 
@@ -145,7 +147,6 @@ export default function SensCalcContent({
         FREQUENCY_STR_KHZ
       )
     : undefined;
-
   const bandwidth = [
     TYPE_CONTINUUM,
     TYPE_CONTINUUM_SPECTRAL,
@@ -153,13 +154,18 @@ export default function SensCalcContent({
   ].includes(observation?.type)
     ? {
         value: observation?.continuumBandwidth,
-        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits].label
+        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits - 1]?.label
       }
     : getBandwidthZoom(observation);
 
   return (
     <>
       {displayElement('targetName', target?.name)}
+      {displayElement(
+        'centralFrequency',
+        observation?.centralFrequency,
+        FREQUENCY_UNITS[observation?.centralFrequencyUnits - 1]?.label
+      )}
       {displayElement('bandwidth', bandwidth.value, bandwidth.unit)}
       {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
       {displayElement('integrationTime', observation?.supplied.value, 'h')}
@@ -170,12 +176,13 @@ export default function SensCalcContent({
       {targetObservation?.sensCalc?.section1?.map((rec) =>
         displayElement(rec.field, rec.value, rec.units)
       )}
-      {targetObservation?.sensCalc?.section2 && (
+      {!hideSpectralResults && targetObservation?.sensCalc?.section2 && (
         <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
       )}
-      {targetObservation?.sensCalc?.section2?.map((rec) =>
-        displayElement(rec.field, rec.value, rec.units)
-      )}
+      {!hideSpectralResults &&
+        targetObservation?.sensCalc?.section2?.map((rec) =>
+          displayElement(rec.field, rec.value, rec.units)
+        )}
     </>
   );
 }

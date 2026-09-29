@@ -402,6 +402,13 @@ export function getSpectralAveragingFactor(
     observation.type == TYPE_CONTINUUM && dataProduct.data.dataProductType == DP_TYPE_VISIBLE
       ? CHANNELS_OUT_DEFAULT
       : dataProduct.data.channelsOut;
+
+  // Spectral results ignored for channelsOut = 1.
+  // Sending a dummy value as the Sensitivity Calculator backend requires it.
+  if (channelsOut === 1) {
+    return 1;
+  }
+
   return Math.floor(totalChannels / channelsOut);
 }
 

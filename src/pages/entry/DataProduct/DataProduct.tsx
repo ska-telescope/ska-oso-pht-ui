@@ -2,12 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  BorderedSection,
-  DropDown,
-  Spacer,
-  SPACER_VERTICAL
-} from '@ska-telescope/ska-gui-components';
+import { BorderedSection, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
@@ -60,7 +55,6 @@ import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import AddButton from '@/components/button/Add/Add';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { presentUnits } from '@/utils/present/present';
 import Observation from '@/utils/types/observation';
 import GridObservation from '@/components/grid/observation/GridObservation';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
@@ -176,7 +170,6 @@ export default function DataProduct({ data }: DataProductProps) {
 
     return proposalObservations[0];
   };
-
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
 
@@ -328,6 +321,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
   const showSC = osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1;
+  const hideSpectralSensitivityResults =
+    isContinuum() && channelsOut === CHANNELS_OUT_MIN_CONTINUUM;
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -683,8 +678,6 @@ export default function DataProduct({ data }: DataProductProps) {
       const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
       setBitDepth(getDefaultBitDepth());
-      // channelsOut's initial state is set before an observation is selected (so isCombined()
-      // can't see it yet) - re-derive it once the observation for this new data product is known.
       setChannelsOut(channelsOutMax());
     }
   }, [observationId]);
@@ -761,26 +754,6 @@ export default function DataProduct({ data }: DataProductProps) {
     return output;
   };
 
-  const imageSizeUnitsField = () => {
-    const getOptions = () => {
-      return [0, 1, 2].map((e) => ({
-        label: presentUnits(t('imageSize.' + e)),
-        value: e
-      }));
-    };
-
-    return (
-      <DropDown
-        options={getOptions()}
-        testId="frequencyUnits"
-        value={imageSizeUnits}
-        setValue={setImageSizeUnits}
-        label=""
-        onFocus={() => setHelp('frequencyUnits')}
-      />
-    );
-  };
-
   const imageSizeField = () =>
     fieldWrapper(
       <ImageSizeField
@@ -788,7 +761,8 @@ export default function DataProduct({ data }: DataProductProps) {
         required
         setValue={setImageSizeValue}
         value={Number(imageSizeValue)}
-        suffix={imageSizeUnitsField()}
+        units={imageSizeUnits}
+        setUnits={setImageSizeUnits}
       />
     );
 
@@ -813,12 +787,6 @@ export default function DataProduct({ data }: DataProductProps) {
       />
     );
 
-  const pixelSizeUnitsField = () => {
-    return pixelSizeUnits === 0 || pixelSizeUnits === null
-      ? ''
-      : presentUnits(t('pixelSize.' + pixelSizeUnits));
-  };
-
   const pixelSizeField = () =>
     fieldWrapper(
       <PixelSizeField
@@ -826,7 +794,8 @@ export default function DataProduct({ data }: DataProductProps) {
         setValue={setPixelSizeValue}
         required
         value={pixelSizeValue}
-        suffix={pixelSizeUnitsField()}
+        units={pixelSizeUnits}
+        setUnits={setPixelSizeUnits}
       />
     );
 
@@ -1232,7 +1201,11 @@ export default function DataProduct({ data }: DataProductProps) {
                   : t('sensitivityCalculatorResults.title')
               }
             >
-              <SensCalcContent targetObservation={targetObservation()} isNatural={isNatural()} />
+              <SensCalcContent
+                targetObservation={targetObservation()}
+                isNatural={isNatural()}
+                hideSpectralResults={hideSpectralSensitivityResults}
+              />
             </BorderedSection>
           )}
         </Grid>
