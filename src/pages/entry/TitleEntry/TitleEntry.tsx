@@ -15,8 +15,8 @@ import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   PROPOSAL_TYPE,
   PROPOSAL_TYPE_SUBTYPES,
-  ProposalSubType,
-  ProposalType
+  ProposalSubTypeType,
+  ProposalTypeType
 } from '@utils/constants.ts';
 import { countWords, helpers } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
@@ -40,7 +40,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const [validateToggle, setValidateToggle] = React.useState(false);
 
-  const [tempValue, setTempValue] = React.useState<ProposalType | undefined>(undefined);
+  const [tempValue, setTempValue] = React.useState<ProposalTypeType | undefined>(undefined);
   const [, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -87,12 +87,12 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     setOpenDialog(false);
   };
 
-  const confirmChange = (type: ProposalType) => {
+  const confirmChange = (type: ProposalTypeType) => {
     setTempValue(type);
     setOpenDialog(true);
   };
 
-  function clickProposal(type: ProposalType) {
+  function clickProposal(type: ProposalTypeType) {
     if (!getProposal().proposalType) {
       setProposal({ ...getProposal(), proposalType: type });
     } else if (getProposal().proposalType !== type) {
@@ -100,9 +100,9 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     }
   }
 
-  function clickSubProposal(id: ProposalSubType) {
+  function clickSubProposal(id: ProposalSubTypeType) {
     let removed = false;
-    const newList: ProposalSubType[] = [];
+    const newList: ProposalSubTypeType[] = [];
     getProposal().proposalSubType?.forEach((subType) => {
       if (subType !== id) {
         newList.push(subType);
@@ -116,27 +116,27 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     setProposal({ ...getProposal(), proposalSubType: newList });
   }
 
-  const setCardBG = (in1: ProposalType | undefined, in2: ProposalType) =>
+  const setCardBG = (in1: ProposalTypeType | undefined, in2: ProposalTypeType) =>
     in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
-  const setCardFG = (in1: ProposalType | undefined, in2: ProposalType) =>
+  const setCardFG = (in1: ProposalTypeType | undefined, in2: ProposalTypeType) =>
     in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
-  const setCardClassName = (in1: ProposalType | undefined, in2: ProposalType) =>
+  const setCardClassName = (in1: ProposalTypeType | undefined, in2: ProposalTypeType) =>
     in1 === in2 ? 'active' : 'inactive';
 
-  const setCardBG2 = (in1: ProposalSubType[], in2: ProposalSubType) => {
+  const setCardBG2 = (in1: ProposalSubTypeType[], in2: ProposalSubTypeType) => {
     const num = in1.findIndex((obj) => obj === in2);
     return num !== -1 ? theme.palette.secondary.main : theme.palette.primary.main;
   };
-  const setCardFG2 = (in1: ProposalSubType[], in2: ProposalSubType) => {
+  const setCardFG2 = (in1: ProposalSubTypeType[], in2: ProposalSubTypeType) => {
     const num = in1.findIndex((obj) => obj === in2);
     return num !== -1 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
   };
-  const setCardClassName2 = (in1: ProposalSubType[], in2: ProposalSubType) => {
+  const setCardClassName2 = (in1: ProposalSubTypeType[], in2: ProposalSubTypeType) => {
     const num = in1.findIndex((obj) => obj === in2);
     return num !== -1 ? 'active' : 'inactive';
   };
 
-  function ProposalTypeCard(id: ProposalType) {
+  function ProposalTypeCard(id: ProposalTypeType) {
     return (
       <Grid key={id} size={{ md: 4, lg: 3 }}>
         <CardTitle
@@ -155,7 +155,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     );
   }
 
-  function Attributes(id: ProposalSubType) {
+  function Attributes(id: ProposalSubTypeType) {
     return (
       <Grid key={id} size={{ md: 6, lg: 3 }}>
         <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
@@ -278,9 +278,9 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     );
   };
 
-  const getSubTypes = (): ProposalSubType[] => {
+  const getSubTypes = (): ProposalSubTypeType[] => {
     const type = getProposal().proposalType;
-    return type ? PROPOSAL_TYPE_SUBTYPES[type] ?? [] : [];
+    return type ? (PROPOSAL_TYPE_SUBTYPES[type] ?? []) : [];
   };
 
   const proposalAttributes = () => (

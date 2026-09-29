@@ -1,5 +1,5 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import { ProposalSubType, ProposalType, TYPE_CONTINUUM } from '../constants';
+import { ProposalSubTypeType, ProposalTypeType, TYPE_CONTINUUM } from '../constants';
 import { DocumentBackend, DocumentPDF } from './document';
 import {
   DataProductSDPNew,
@@ -57,8 +57,8 @@ export type Proposal = {
   createdBy: string;
   version: number;
   cycle: string | null;
-  proposalType?: ProposalType;
-  proposalSubType?: ProposalSubType[];
+  proposalType?: ProposalTypeType;
+  proposalSubType?: ProposalSubTypeType[];
   scienceCategory: string;
   scienceSubCategory?: number[];
   investigators?: Investigator[];
