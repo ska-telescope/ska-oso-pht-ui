@@ -333,7 +333,8 @@ const selectDropDownOption = (testId, value) => {
 
 export const selectScienceCategory = (value) => selectDropDownOption('categoryId', value);
 
-// SV proposals have no science category - the observing mode is the observation's type
+// SV proposals have no science category - their observing mode, selected on the Details page, is
+// the observation's type
 export const selectObservingMode = (value) => selectDropDownOption('observationType', value);
 
 // Reads the actual response body of the (already cy.wait()-ed) '@mockOSDData' interception,
@@ -553,14 +554,20 @@ export const createStandardProposalSession = (user) => {
   completeStandardProposalCreation();
 };
 
-// The "add the M2 target via resolve, confirm auto-link, select observing mode" sub-flow that
+// The "select observing mode, add the M2 target via resolve, confirm auto-link" sub-flow that
 // most SV specs need once a session exists. summary is optional since callers add it at different
 // points (or not at all).
 export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = null) => {
-  if (summary) {
+  // New SV proposals start with a Continuum observation, so only other modes need selecting
+  if (observingMode !== 'Continuum' || summary) {
     clickStatusIconNav('statusId2'); // Details page
     pageConfirmed('DETAILS');
-    addSubmissionSummary(summary);
+    if (observingMode !== 'Continuum') {
+      selectObservingMode(observingMode);
+    }
+    if (summary) {
+      addSubmissionSummary(summary);
+    }
   }
   clickStatusIconNav('statusId4'); // Target page
   pageConfirmed('TARGET');
@@ -568,13 +575,6 @@ export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = nu
   waitForResolveTarget();
   clickToAddTarget();
   verifyAutoLinkAlertFooter();
-  // Auto-linking defaults to Continuum; any other mode is picked on the Observation page
-  if (observingMode !== 'Continuum') {
-    clickStatusIconNav('statusId5'); // Observation page
-    pageConfirmed('OBSERVATION');
-    selectObservingMode(observingMode);
-    verifyContent('timeAlertFooter', 'Observation setup auto-linked successfully', 30000);
-  }
 };
 
 export const addSubmissionSummary = (value) => {

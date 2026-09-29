@@ -1,29 +1,26 @@
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
-import { DataProductSDPNew } from '@utils/types/dataProduct.tsx';
-import Observation from '@utils/types/observation.tsx';
 import Target from '../types/target';
 
 const updateProposal = (
   targets: Target[],
   targetObservations: TargetObservation[],
   calibrationStrategy: CalibrationStrategy[],
-  dataProductsSDP: DataProductSDPNew[],
-  observations: Observation[],
   getProposal: Function,
   setProposal: Function
 ) => {
   const updatedProposal = {
     ...getProposal(),
     targets: targets,
-    observations: observations,
-    dataProductSDP: dataProductsSDP,
     targetObservation: targetObservations,
     calibrationStrategy: calibrationStrategy
   };
   setProposal(updatedProposal);
 };
 
+/**
+ * Removes a target and its results and calibration strategy.
+ */
 export default async function deleteAutoLinking(
   target: Target,
   getProposal: Function,
@@ -44,20 +41,6 @@ export default async function deleteAutoLinking(
           (e: CalibrationStrategy) => e.observationIdRef !== obsId
         )
       : undefined;
-  // filter out data product entry from associated targetObservation
-  const dataProductsSDP = getProposal().dataProductSDP.filter(
-    (e: DataProductSDPNew) => e.observationId !== obsId
-  );
-  // filter out observation entry from associated targetObservation
-  const observations = getProposal().observations.filter((e: Observation) => e.id !== obsId);
 
-  updateProposal(
-    targets,
-    targetObservations,
-    calibrationStrategy,
-    dataProductsSDP,
-    observations,
-    getProposal,
-    setProposal
-  );
+  updateProposal(targets, targetObservations, calibrationStrategy, getProposal, setProposal);
 }

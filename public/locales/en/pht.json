@@ -603,9 +603,9 @@
     "missing": "No observations have been added to this proposal yet"
   },
   "observationType": {
-    "label": "Observation Type",
+    "label": "Observing Mode",
     "help": "Specify if the observation type is continuum or spectral. Note that not all sub-arrays have spectral mode so this option is available based on the sub-array selected.",
-    "short": "Type",
+    "short": "Mode",
     "0": "Spectral",
     "1": "Continuum",
     "2": "PST",
