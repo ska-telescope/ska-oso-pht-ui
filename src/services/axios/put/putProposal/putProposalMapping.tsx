@@ -23,7 +23,6 @@ import {
   IMAGE_WEIGHTING,
   IW_BRIGGS,
   PROPOSAL_STATUS,
-  PROPOSAL_TYPE,
   PST_MODES,
   PULSAR_TIMING_VALUE,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
@@ -645,7 +644,6 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
-  const proposalIsSV = proposal.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
   const userId = getUserId();
 
   const transformedProposal: ProposalBackend = {
@@ -664,11 +662,9 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         attributes: proposal.proposalSubType ?? []
       },
       abstract: proposal.abstract as string,
-      science_category: proposalIsSV
-        ? (DETAILS.ObservingMode?.find((category) => category.value === proposal?.scienceCategory)
-            ?.label as string)
-        : (DETAILS.ScienceCategory?.find((category) => category.value === proposal?.scienceCategory)
-            ?.label as string),
+      science_category: DETAILS.ScienceCategory?.find(
+        (category) => category.value === proposal?.scienceCategory
+      )?.label as string,
       investigators: proposal?.investigators
         ? proposal.investigators.map((investigator) => {
             return {

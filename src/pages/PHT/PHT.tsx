@@ -154,7 +154,6 @@ export default function PHT({
       autoRepairAttemptedForId.current === proposal.id ||
       !autoLink ||
       !target ||
-      !proposal?.scienceCategory ||
       (proposal?.targetObservation?.length ?? 0) > 0
     ) {
       return;
@@ -165,7 +164,7 @@ export default function PHT({
       getProposal,
       setProposal,
       authClient,
-      proposal.scienceCategory,
+      proposal.observations?.[0]?.type,
       proposal.abstract
     ).then((result) => {
       if (!result?.success) {

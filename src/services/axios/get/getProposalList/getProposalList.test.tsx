@@ -5,7 +5,7 @@ import MockProposalBackendList from './mockProposalBackendList';
 import MockProposalFrontendList from './mockProposalFrontendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
-import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@/utils/constants';
+import { PROPOSAL_TYPE } from '@/utils/constants';
 
 describe('Helper Functions', () => {
   test('getUniqueMostRecentItems returns most recent items based on specified key', () => {
@@ -20,20 +20,20 @@ describe('Helper Functions', () => {
     expect(proposalFrontEnd).to.deep.equal(MockProposalFrontendList);
   });
 
-  test('mappingList passes the science verification type through and decodes the observing mode', () => {
+  test('mappingList passes the science verification type through with no science category', () => {
     const [proposalFrontEnd] = mappingList([
       {
         ...MockProposalBackendList[0],
         proposal_info: {
           ...MockProposalBackendList[0].proposal_info,
           proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, attributes: [] },
-          science_category: 'Continuum'
+          science_category: undefined
         }
       }
     ]);
     expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
     expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
-    expect(proposalFrontEnd.scienceCategory).to.equal(TYPE_CONTINUUM);
+    expect(proposalFrontEnd.scienceCategory).to.equal('');
   });
 });
 

@@ -17,6 +17,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import {
   NAV,
+  NOTIFICATION_DELAY_IN_SECONDS,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -91,6 +92,8 @@ import {
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
+import { useNotify } from '@/utils/notify/useNotify';
+import autoLinking from '@/utils/autoLinking/AutoLinking';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
@@ -126,7 +129,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const locationProperties = useLocation();
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const loggedIn = isLoggedIn();
+  const { notifyError, notifySuccess } = useNotify();
   const {
+    autoLink,
     isSV,
     osdLOW,
     osdMID,
@@ -152,11 +157,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  // Avoids a mismatch with obsTypeOptions (below), which collapses to a single entry matching
-  // the proposal's scienceCategory for SV.
-  const [observationType, setObservationType] = React.useState(() =>
-    isSV ? (getProposal().scienceCategory ?? TYPE_CONTINUUM) : TYPE_CONTINUUM
-  );
+  const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
@@ -948,15 +949,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const low = isLow();
 
   const obsTypeOptions = React.useMemo(() => {
-    if (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1) {
-      const sc = getProposal().scienceCategory;
-      return [
-        {
-          label: t(`observationType.${sc}`),
-          value: sc
-        }
-      ];
-    }
     const obj = low ? osdLOW : osdMID;
     const rec =
       (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(
@@ -983,17 +975,39 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   }, [observationType, obsTypeOptions, setObservationType]);
 
+  // When auto-linking, the observing mode drives the observation defaults, data products and
+  // results, so changing it regenerates all of them rather than only updating the type.
+  const changeObservationType = async (type: string) => {
+    const target = getProposal().targets?.[0];
+    if (!autoLink || !isEdit() || !target) {
+      setObservationType(type);
+      return;
+    }
+    if (type === observationType) return;
+    const defaults = await autoLinking(
+      target,
+      getProposal,
+      setProposal,
+      authAxiosClient,
+      type,
+      getProposal().abstract,
+      maxZoomChannels
+    );
+    if (defaults?.success) {
+      notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
+    } else {
+      notifyError(t(defaults?.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
+    }
+  };
+
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={
-          !isLoggedIn() ||
-          (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1)
-        }
+        disabled={!isLoggedIn()}
         options={obsTypeOptions}
         required
         value={observationType}
-        setValue={setObservationType}
+        setValue={changeObservationType}
       />
     );
 

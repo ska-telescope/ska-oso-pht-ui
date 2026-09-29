@@ -203,7 +203,11 @@ export default function ObservationPage() {
         {loggedIn &&
           osdCyclePolicy?.maxObservations === 1 &&
           (autoLink ? hasTargetObservations() : hasObservations()) && (
-            <ObservationEntry data={getProposal()?.observations?.[0]} />
+            // Keyed on id so the form reloads when auto-linking replaces the observation
+            <ObservationEntry
+              key={getProposal()?.observations?.[0]?.id}
+              data={getProposal()?.observations?.[0]}
+            />
           )}
       </>
     </Shell>

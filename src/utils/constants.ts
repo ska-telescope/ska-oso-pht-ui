@@ -141,32 +141,6 @@ export const DETAILS = {
     { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
     { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
-  ],
-  ObservingMode: [
-    {
-      label: 'Spectral',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: TYPE_ZOOM,
-      observationType: TYPE_ZOOM
-    },
-    {
-      label: 'Continuum',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: TYPE_CONTINUUM,
-      observationType: TYPE_CONTINUUM
-    },
-    {
-      label: 'Continuum-Spectral',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: TYPE_CONTINUUM_SPECTRAL,
-      observationType: TYPE_CONTINUUM_SPECTRAL
-    },
-    {
-      label: 'PST',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: TYPE_PST,
-      observationType: TYPE_PST
-    }
   ]
 };
 

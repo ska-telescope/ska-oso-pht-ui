@@ -11,7 +11,8 @@ import {
   NOT_SPECIFIED,
   PAGE_CYCLE,
   PAGE_OBSERVATION,
-  PAGE_TITLE_ADD
+  PAGE_TITLE_ADD,
+  PROPOSAL_TYPE
 } from '../../../utils/constants';
 import DownloadButton from '../../button/Download/Download';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -95,10 +96,12 @@ export default function ProposalDisplay({
     return t(`${prefix}.${cat}`);
   };
 
+  const isScienceVerification = proposal?.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
+
   const observationType = () => {
-    const cat = proposal?.scienceCategory;
-    if (cat === null || cat === undefined) return NOT_SPECIFIED;
-    return <ObservingType type={cat} />;
+    const type = proposal?.observations?.[0]?.type;
+    if (!type) return NOT_SPECIFIED;
+    return <ObservingType type={type} />;
   };
 
   const title = (inLabel: string, inValue: string) => {
@@ -353,10 +356,10 @@ export default function ProposalDisplay({
     <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid size={{ xs: 6 }}>{entry(t('proposalType.label'), proposalType())}</Grid>
-        {isSV && (
+        {isScienceVerification && (
           <Grid size={{ xs: 6 }}>{entryObject(t('observationType.label'), observationType())}</Grid>
         )}
-        {!isSV && (
+        {!isScienceVerification && (
           <>
             <Grid size={{ xs: 6 }}>{entry(t('scienceCategory.label'), scienceCategory())}</Grid>
             <Grid pt={2} size={{ xs: 6 }}>

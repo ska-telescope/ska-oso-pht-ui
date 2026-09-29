@@ -170,25 +170,16 @@ export default function DataProduct({ data }: DataProductProps) {
       return pstObservation;
     }
 
-    if (proposal?.scienceCategory) {
-      return { type: proposal.scienceCategory } as Observation;
-    }
-
     return proposalObservations[0];
   };
 
-  const isContinuum = () =>
-    getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
+  const isContinuum = () => getObservation()?.type === TYPE_CONTINUUM;
 
-  const isSpectral = () =>
-    getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
+  const isSpectral = () => getObservation()?.type === TYPE_ZOOM;
 
-  const isContinuumSpectral = () =>
-    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
-    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
+  const isContinuumSpectral = () => getObservation()?.type === TYPE_CONTINUUM_SPECTRAL;
 
-  const isPST = () =>
-    getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
+  const isPST = () => getObservation()?.type === TYPE_PST;
 
   const channelsOutMax = () =>
     isContinuumSpectral() || isSpectral() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;

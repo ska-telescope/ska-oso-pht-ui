@@ -4,7 +4,6 @@ import {
   SKA_OSO_SERVICES_URL,
   DETAILS,
   OSO_SERVICES_PROPOSAL_PATH,
-  PROPOSAL_TYPE,
   ProposalSubType,
   ProposalType
 } from '@/utils/constants';
@@ -37,10 +36,6 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
   return investigators as Investigator[];
 };
 
-const getObservingMode = (scienceCat: string): string => {
-  return scienceCat.toLowerCase();
-};
-
 const getScienceCategory = (scienceCat: string): string => {
   const cat = DETAILS.ScienceCategory.find(
     (cat) => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
@@ -52,10 +47,7 @@ const getTheScienceCategory = (tmp: ProposalBackend): string => {
   if (tmp.proposal_info?.science_category === undefined) {
     return '';
   }
-  const isSV = tmp.proposal_info?.proposal_type.main_type === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-  return isSV
-    ? getObservingMode(tmp.proposal_info?.science_category)
-    : getScienceCategory(tmp.proposal_info?.science_category);
+  return getScienceCategory(tmp.proposal_info?.science_category);
 };
 
 export function mappingList(inRec: ProposalBackend[]): Proposal[] {

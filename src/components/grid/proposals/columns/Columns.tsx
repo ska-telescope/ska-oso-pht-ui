@@ -4,7 +4,6 @@ import { presentDate, presentLatex, presentTime } from '@/utils/present/present'
 import Investigator from '@/utils/types/investigator';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import ObservingType from '@/components/display/observingType/observingType';
 
 /*-----------------------------------------------------------------*/
 
@@ -116,7 +115,10 @@ export const getColProposalSC = (t: any) => ({
   headerName: t('scienceCategory.label'),
   flex: 2,
   minWidth: 250,
-  renderCell: (e: { row: any }) => <ObservingType type={e.row.scienceCategory} />
+  renderCell: (e: { row: any }) =>
+    e.row.scienceCategory
+      ? t('scienceCategory.' + e.row.scienceCategory)
+      : t('scienceCategory.notSpecified')
 });
 
 export const getColProposalStatus = (t: any) => ({

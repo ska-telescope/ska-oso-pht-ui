@@ -174,7 +174,6 @@ describe('autoLinking()', () => {
 
     // Start with an existing set of entities so we can assert replacement
     proposal = {
-      scienceCategory: TYPE_CONTINUUM,
       targets: [mockTarget],
       observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'existing-obs' }],
       dataProductSDP: [
@@ -301,8 +300,8 @@ describe('autoLinking()', () => {
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
     expect(link?.sensCalc).toEqual(mockSensCal);
 
-    // scienceCategory updated to PST as well
-    expect(proposal.scienceCategory).toBe(TYPE_PST);
+    // The science category is left untouched
+    expect(proposal.scienceCategory).toBeUndefined();
   });
 
   it('replaces existing entities with a Spectral (Zoom) observation and default SDP', async () => {
@@ -353,14 +352,13 @@ describe('autoLinking()', () => {
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
     expect(link?.sensCalc).toEqual(mockSensCal);
 
-    // scienceCategory updated to Spectral (Zoom) as well
-    expect(proposal.scienceCategory).toBe(TYPE_ZOOM);
+    // The science category is left untouched
+    expect(proposal.scienceCategory).toBeUndefined();
   });
 
   it('replaces an initial PST observation with a Continuum observation and default SDP', async () => {
     // Override the initial proposal to start with PST entities
     proposal = {
-      scienceCategory: TYPE_PST,
       targets: [mockTarget],
       observations: [{ ...DEFAULT_PST_OBSERVATION_LOW, id: 'existing-pst-obs' }],
       dataProductSDP: [
@@ -426,8 +424,8 @@ describe('autoLinking()', () => {
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
     expect(link?.sensCalc).toEqual(validMockSensCal);
 
-    // scienceCategory updated to Continuum as well
-    expect(proposal.scienceCategory).toBe(TYPE_CONTINUUM);
+    // The science category is left untouched
+    expect(proposal.scienceCategory).toBeUndefined();
   });
 
   it('returns error when getSensCalc returns an object with error', async () => {
@@ -455,9 +453,22 @@ describe('autoLinking()', () => {
     expect(proposal.observations?.[0].id).toBe('existing-obs');
   });
 
+  it('keeps the existing observation type when no observing mode is passed', async () => {
+    proposal = {
+      ...proposal,
+      observations: [{ ...DEFAULT_PST_OBSERVATION_LOW, id: 'existing-pst-obs' }]
+    };
+    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
+
+    const result = await autoLinking(mockTarget, getProposal, setProposal, mockAuthAxiosClient);
+
+    expect(result).toEqual({ success: true });
+    expect(proposal.observations?.[0].type).toBe(TYPE_PST);
+  });
+
   it('handles missing properties in getProposal gracefully', async () => {
-    // Override proposal to have only scienceCategory to simulate missing fields
-    proposal = { scienceCategory: TYPE_CONTINUUM } as unknown as Proposal;
+    // Override proposal to an empty object to simulate missing fields
+    proposal = {} as unknown as Proposal;
 
     vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
 

@@ -148,7 +148,7 @@
     "2": "PST",
     "label": "Observing Mode",
     "help": "Detailed information about the capabilities available during the current call for SKA-Low Science Verification Ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification opportunities, and the choice of target. Indicate what will be tested or demonstrated through the observation.",
-    "validationNavigationError": "Observation mode and a target are required. They are located on the Details and Target pages.",
+    "validationNavigationError": "A target is required. It is located on the Target page.",
     "notSpecified": "Not specified",
     "short": "Mode",
     "error": "A value is required",

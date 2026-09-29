@@ -406,12 +406,11 @@ describe('DataProduct component', () => {
     }
   );
 
-  it('uses the PST proposal mode for the description when no observation is selected', () => {
+  it('falls back to the PST observation for the description when no observation is selected', () => {
     mockStoreReturn = {
       application: {
         content2: {
-          scienceCategory: 'pst',
-          observations: [],
+          observations: [{ id: 'OBS1', type: 'pst' }],
           dataProductSDP: []
         }
       },

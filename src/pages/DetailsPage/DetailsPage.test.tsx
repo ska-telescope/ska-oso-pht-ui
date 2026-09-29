@@ -2,9 +2,8 @@ import { describe, test, vi, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import DetailsPage, { checkAutoLink } from './DetailsPage';
+import DetailsPage from './DetailsPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import Target from '@/utils/types/target';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -102,56 +101,5 @@ describe('Abstract helperFunction', () => {
     );
     expect(container.textContent).toContain('Current: 11, Max: 10');
     expect(container.textContent).toContain('(WORD LIMIT EXCEEDED)');
-  });
-});
-
-describe('checkAutoLink function works as expected', () => {
-  const mockTarget: Target = {
-    kind: 0,
-    decStr: '-00:49:23.700',
-    id: 1,
-    name: 'm2',
-    b: 0,
-    l: 0,
-    raStr: '21:33:27.0200',
-    redshift: '',
-    vel: '-3.6',
-    velType: 0,
-    velUnit: 0
-  };
-
-  test('autoLink, obs mode but no targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [], 'continuum');
-    expect(isAutolink).toBe(false);
-  });
-
-  test('autoLink, no obs mode but targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [mockTarget], '');
-    expect(isAutolink).toBe(false);
-  });
-
-  test('autoLink, no obs mode and no targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [], '');
-    expect(isAutolink).toBe(false);
-  });
-
-  test('no autoLink, science category and targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(false, [mockTarget], 'Cosmology');
-    expect(isAutolink).toBe(false);
-  });
-
-  test('no autoLink, no science category and no targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(false, [], '');
-    expect(isAutolink).toBe(false);
-  });
-
-  test('autoLink, obs mode and targets - auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [mockTarget], 'continuum');
-    expect(isAutolink).toBe(true);
-  });
-
-  test('autoLink, obs mode and targets - auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [mockTarget], 'spectral');
-    expect(isAutolink).toBe(true);
   });
 });

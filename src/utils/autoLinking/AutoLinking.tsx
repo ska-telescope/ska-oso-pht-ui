@@ -215,7 +215,7 @@ export default async function autoLinking(
   getProposal: Function,
   setProposal: Function,
   authAxiosClient: AxiosAuthClient,
-  observationMode?: string, // science category is used for observation mode on SV
+  observationMode?: string,
   abstract?: string | undefined,
   maxZoomChannels?: number
 ): Promise<DefaultsResults> {
@@ -226,7 +226,7 @@ export default async function autoLinking(
    **/
 
   if (!observationMode) {
-    observationMode = getProposal().scienceCategory;
+    observationMode = getProposal().observations?.[0]?.type ?? TYPE_CONTINUUM;
   }
   if (!abstract) {
     abstract = getProposal().abstract;
@@ -265,8 +265,6 @@ export default async function autoLinking(
 
   const updatedProposal: Proposal = {
     ...getProposal(),
-    scienceCategory: observationMode,
-    scienceSubCategory: [1],
     abstract: abstract,
     targets: [target],
     observations: [newObservation],

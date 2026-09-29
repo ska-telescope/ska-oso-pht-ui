@@ -5,6 +5,7 @@ import {
   getColProposalTitle,
   getColProposalPI,
   getColProposalStatus,
+  getColProposalSC,
   getColProposalUpdated,
   getColCycle
 } from './Columns';
@@ -128,5 +129,19 @@ describe('Proposal Column Definitions', () => {
     const row = { ...mockRow, status: undefined };
     const col = getColProposalStatus(t);
     expect(col.renderCell({ row })).toBe('translated(proposalStatus.undefined)');
+  });
+
+  it('getColProposalSC shows the science category', () => {
+    const col = getColProposalSC(t);
+    expect(col.renderCell({ row: { ...mockRow, scienceCategory: 4 } })).toBe(
+      'translated(scienceCategory.4)'
+    );
+  });
+
+  it('getColProposalSC shows not specified when there is no science category', () => {
+    const col = getColProposalSC(t);
+    expect(col.renderCell({ row: { ...mockRow, scienceCategory: null } })).toBe(
+      'translated(scienceCategory.notSpecified)'
+    );
   });
 });

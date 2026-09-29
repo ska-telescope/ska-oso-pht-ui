@@ -22,9 +22,6 @@ import {
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
-  TYPE_PST,
-  TYPE_ZOOM,
-  TYPE_CONTINUUM,
   NOTIFICATION_DELAY_IN_SECONDS,
   SA_AA2
 } from '@/utils/constants';
@@ -383,12 +380,7 @@ export default function TargetEntry({
       };
 
       const addTargetAsync = async () => {
-        const proposal = getProposal();
-        if (
-          (autoLink && proposal.scienceCategory === TYPE_CONTINUUM) ||
-          proposal.scienceCategory === TYPE_ZOOM ||
-          proposal.scienceCategory === TYPE_PST
-        ) {
+        if (autoLink) {
           generateAutoLinkData();
           return;
         }
