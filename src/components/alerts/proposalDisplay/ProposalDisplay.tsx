@@ -80,19 +80,12 @@ export default function ProposalDisplay({
 
   const proposalType = () => {
     const proposalType = proposal?.proposalType;
-    const proposalName =
-      !proposalType || proposalType < 1 ? NOT_SPECIFIED : t('proposalType.title.' + proposalType);
+    const proposalName = !proposalType ? NOT_SPECIFIED : t('proposalType.title.' + proposalType);
     return `${proposalName}`;
   };
 
-  const proposalAttributes = () => {
-    const output: string[] = [];
-    const subTypes: number[] = proposal?.proposalSubType ?? [];
-    if (subTypes?.length && subTypes[0] > 0) {
-      subTypes.forEach((element) => output.push(t('proposalAttribute.title.' + element)));
-    }
-    return output;
-  };
+  const proposalAttributes = () =>
+    (proposal?.proposalSubType ?? []).map((subType) => t('proposalAttribute.title.' + subType));
 
   const scienceCategory = (): string => {
     const cat = proposal?.scienceCategory;

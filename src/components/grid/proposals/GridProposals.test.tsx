@@ -3,10 +3,11 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
-import GridProposals, { filterProposals, getProposalType } from './GridProposals';
+import GridProposals, { filterProposals } from './GridProposals';
 import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';
 import MockProposalBackendList from '@/services/axios/get/getProposalList/mockProposalBackendList';
 import { IdObject } from '@/utils/types/idObject';
+import { PROPOSAL_TYPE } from '@/utils/constants';
 
 const mockedSelectedProposals: IdObject[] = [
   { id: MockProposalBackendList[0].prsl_id },
@@ -165,18 +166,6 @@ describe('<GridProposals /> showTitle', () => {
   });
 });
 
-describe('Get proposal type', () => {
-  test('retrieves type correctly', () => {
-    const type = getProposalType(1);
-    expect(type).toBe('standard_proposal');
-  });
-
-  test('returns an empty string when no match', () => {
-    const type = getProposalType(999);
-    expect(type).toBe('');
-  });
-});
-
 describe('filterProposals', () => {
   test('filters by title', () => {
     const result = filterProposals(MockProposalFrontendList, 'In a galaxy far, far away', null, '');
@@ -187,15 +176,25 @@ describe('filterProposals', () => {
   test('filters by proposal type', () => {
     const result = filterProposals(MockProposalFrontendList, '', null, 'standard_proposal');
     expect(result).toHaveLength(3);
-    expect(result[0].proposalType).toBe(1);
-    expect(result[1].proposalType).toBe(1);
-    expect(result[2].proposalType).toBe(1);
+    expect(result[0].proposalType).toBe('standard_proposal');
+    expect(result[1].proposalType).toBe('standard_proposal');
+    expect(result[2].proposalType).toBe('standard_proposal');
+  });
+
+  test('filters by the science verification proposal type', () => {
+    const proposals = [
+      { ...MockProposalFrontendList[0], proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION },
+      ...MockProposalFrontendList.slice(1)
+    ];
+    const result = filterProposals(proposals, '', null, PROPOSAL_TYPE.SCIENCE_VERIFICATION);
+    expect(result).toHaveLength(1);
+    expect(result[0].proposalType).toBe(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
   });
 
   test('filters by science category', () => {
     const result = filterProposals(MockProposalFrontendList, '', '4', '');
     expect(result).toHaveLength(1);
-    expect(result[0].proposalType).toBe(1);
+    expect(result[0].proposalType).toBe('standard_proposal');
   });
 
   test('filters by multiple criteria', () => {
@@ -207,7 +206,7 @@ describe('filterProposals', () => {
     );
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe('The Milky Way View');
-    expect(result[0].proposalType).toBe(1);
+    expect(result[0].proposalType).toBe('standard_proposal');
     expect(result[0].scienceCategory).toBe('');
   });
 
@@ -220,7 +219,7 @@ describe('filterProposals', () => {
     );
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe('Incomplete Proposal');
-    expect(result[0].proposalType).toBe(1);
+    expect(result[0].proposalType).toBe('standard_proposal');
     expect(result[0].scienceCategory).toBe('4');
   });
 });

@@ -816,25 +816,25 @@
   },
   "proposalAttribute": {
     "code": {
-      "1": "ToO",
-      "2": "JSP",
-      "3": "CP",
-      "4": "LTP"
+      "target_of_opportunity": "ToO",
+      "joint_proposal": "JSP",
+      "coordinated_proposal": "CP",
+      "long_term_proposal": "LTP"
     },
     "desc": {
-      "1": "These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.",
-      "2": "A JSP project requires both SKA-Low and SKA-Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.",
-      "3": "A project requiring SKA observations to be coordinated with another facility (either ground-based or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.",
-      "4": "These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
+      "target_of_opportunity": "These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.",
+      "joint_proposal": "A JSP project requires both SKA-Low and SKA-Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.",
+      "coordinated_proposal": "A project requiring SKA observations to be coordinated with another facility (either ground-based or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.",
+      "long_term_proposal": "These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
     },
     "help": "One or more of these optional attributes may be selected to further refine the proposal.",
     "label": "Attribute",
     "plural": "Attributes",
     "title": {
-      "1": "Target of Opportunity",
-      "2": "Joint SKA proposal",
-      "3": "Coordinated Project",
-      "4": "Long-term Projects"
+      "target_of_opportunity": "Target of Opportunity",
+      "joint_proposal": "Joint SKA proposal",
+      "coordinated_proposal": "Coordinated Project",
+      "long_term_proposal": "Long-term Projects"
     }
   },
   "proposals": {
@@ -854,15 +854,17 @@
   },
   "proposalType": {
     "code": {
-      "1": "PI",
-      "2": "KSP",
-      "3": "DDT",
+      "standard_proposal": "PI",
+      "key_science_proposal": "KSP",
+      "director_time_proposal": "DDT",
+      "science_verification": "SV",
       "notSpecified": ""
     },
     "desc": {
-      "1": "Observing projects that require less time than a KSP, typically over a single time allocation cycle.",
-      "2": "Observing projects that require the allocation of significant observing time and resources, often over a period longer than a single observing cycle. Specific criteria that define a KSP will be described in each call for proposals.",
-      "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TAC)."
+      "standard_proposal": "Observing projects that require less time than a KSP, typically over a single time allocation cycle.",
+      "key_science_proposal": "Observing projects that require the allocation of significant observing time and resources, often over a period longer than a single observing cycle. Specific criteria that define a KSP will be described in each call for proposals.",
+      "director_time_proposal": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TAC).",
+      "science_verification": "Ideas submitted during a Science Verification cycle to test and characterise the capabilities of the telescope."
     },
     "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, but be aware that this may affect information previously entered.",
     "label": "Type",
@@ -870,9 +872,10 @@
     "short": "Type",
     "all": "All proposal types",
     "title": {
-      "1": "Principal Investigator (PI)",
-      "2": "Key Science Projects",
-      "3": "Director-General's Discretionary Time"
+      "standard_proposal": "Principal Investigator (PI)",
+      "key_science_proposal": "Key Science Projects",
+      "director_time_proposal": "Director-General's Discretionary Time",
+      "science_verification": "Science Verification Idea"
     }
   },
   "members": {

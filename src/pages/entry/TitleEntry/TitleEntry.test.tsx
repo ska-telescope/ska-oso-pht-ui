@@ -1,8 +1,30 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TitleEntry from './TitleEntry';
+import { PROPOSAL_TYPE } from '@/utils/constants';
+
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({ isSV: false })
+}));
+
+// A single store object, so TitleEntry's effect on application.content2 doesn't re-run every render
+const mockStore = vi.hoisted(() => ({
+  application: {
+    content1: [],
+    content2: { title: 'A title', proposalType: undefined, proposalSubType: [] }
+  },
+  updateAppContent1: () => {},
+  updateAppContent2: () => {}
+}));
+
+vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+  storageObject: {
+    useStore: () => mockStore
+  },
+  StoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
+}));
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
@@ -11,6 +33,16 @@ const wrapper = (component: React.ReactElement) => {
 describe('<TitleEntry />', () => {
   test('renders correctly', () => {
     wrapper(<TitleEntry page={0} />);
+  });
+
+  test('offers every proposal type except science verification', () => {
+    const { container } = wrapper(<TitleEntry page={0} />);
+    [PROPOSAL_TYPE.STANDARD, PROPOSAL_TYPE.KEY_SCIENCE, PROPOSAL_TYPE.DIRECTOR_TIME].forEach(
+      (type) => expect(container.querySelector(`#ProposalType-${type}`)).toBeInTheDocument()
+    );
+    expect(
+      container.querySelector(`#ProposalType-${PROPOSAL_TYPE.SCIENCE_VERIFICATION}`)
+    ).not.toBeInTheDocument();
   });
 });
 

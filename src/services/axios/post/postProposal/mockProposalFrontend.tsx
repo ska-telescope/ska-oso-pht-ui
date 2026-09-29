@@ -4,8 +4,8 @@ import Proposal from '@utils/types/proposal.tsx';
 export const MockProposalFrontend: Proposal = {
   id: 'prsl-t0001-20250613-00002',
   title: 'New Proposal',
-  proposalType: 1,
-  proposalSubType: [3],
+  proposalType: 'standard_proposal',
+  proposalSubType: ['coordinated_proposal'],
   status: PROPOSAL_STATUS.DRAFT,
   lastUpdated: '2025-06-24T16:48:47.127032Z',
   lastUpdatedBy: DEFAULT_USER,
