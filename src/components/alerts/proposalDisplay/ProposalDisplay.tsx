@@ -23,7 +23,6 @@ import GridObservationSummary from '../../../components/grid/observationSummary/
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import ObservingType from '@/components/display/observingType/observingType';
 
 interface ProposalDisplayProps {
@@ -51,7 +50,6 @@ export default function ProposalDisplay({
   onConfirmLabel = ''
 }: ProposalDisplayProps) {
   const { t } = useScopedTranslation();
-  const { isSV } = useOSDAccessors();
   const theme = useTheme();
   const { axiosClient: authClient } = useAxiosAuthClient();
 
@@ -402,7 +400,7 @@ export default function ProposalDisplay({
             proposal?.sciencePDF
           )}
         </Grid>
-        {!isSV && (
+        {!isScienceVerification && (
           <Grid size={{ xs: 6 }}>
             {link(
               t('page.6.label'),
