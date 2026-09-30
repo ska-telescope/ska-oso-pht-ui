@@ -61,6 +61,10 @@ import autoLinking from '@/utils/autoLinking/AutoLinking';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
+import { getDetailsValues } from '@/models/proposal/details.ts';
+import { getProposalSchema, ProposalType } from '@/models/proposal/proposal.ts';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -139,6 +143,27 @@ export default function PHT({
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const autoRepairAttemptedForId = React.useRef<string | undefined>(undefined);
+
+  // TODO the form below has the context of the whole app, not just the proposal
+  // prep. We should split the routes and build a parent component for just the proposal prep
+  const formMethods = useForm<ProposalType>({
+    mode: 'all',
+    resolver: zodResolver(getProposalSchema()),
+    defaultValues: {
+      targets: getProposal()?.targets ?? [],
+      details: getDetailsValues(getProposal())
+    }
+  });
+
+  const { control } = formMethods;
+
+  const formValues = useWatch<ProposalType>({
+    control
+  });
+
+  React.useEffect(() => {
+    // Map here and save to local store? Also temp save to the existing store?
+  }, [formValues]);
 
   // A target can end up linked with no matching targetObservation entry (e.g. an older
   // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
@@ -364,15 +389,17 @@ export default function PHT({
               minHeight: '100vh'
             }}
           >
-            {REQUIRED_WIDTH ? (
-              <Routes>
-                {ROUTES.map((ROUTE, index) => (
-                  <Route key={index} path={ROUTE.path} element={ROUTE.element} />
-                ))}
-              </Routes>
-            ) : (
-              mediaSizeNotSupported()
-            )}
+            <FormProvider {...formMethods}>
+              {REQUIRED_WIDTH ? (
+                <Routes>
+                  {ROUTES.map((ROUTE, index) => (
+                    <Route key={index} path={ROUTE.path} element={ROUTE.element} />
+                  ))}
+                </Routes>
+              ) : (
+                mediaSizeNotSupported()
+              )}
+            </FormProvider>
           </Paper>
         }
         selectTelescope={false}

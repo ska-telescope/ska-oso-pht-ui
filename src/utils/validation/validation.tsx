@@ -6,6 +6,7 @@ import {
   SDPSpectralData,
   SDPVisibilitiesContinuumData
 } from '../types/dataProduct';
+import { getDetailsSchema, getDetailsValues } from '@/models/proposal/details.ts';
 import { z } from 'zod';
 import Observation from '../types/observation';
 import {
@@ -133,22 +134,8 @@ export const validateTeamPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateDetailsPage = (proposal: Proposal) => {
-  const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
-  if (countWords(proposal?.abstract ?? '') > maxAbstractWords) {
-    return STATUS_ERROR;
-  }
-  const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  let count = 0;
-
-  if ((proposal?.abstract ?? '').length > 0) {
-    count++;
-  }
-  if (proposal?.scienceCategory !== null) {
-    count++;
-  }
-  return result[count];
-};
+export const validateDetailsFields = (proposal: Proposal) =>
+  getDetailsSchema().safeParse(getDetailsValues(proposal)).success ? STATUS_OK : STATUS_ERROR;
 
 export const validateSciencePage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -453,7 +440,7 @@ export const useValidateProposal = () => {
     return [
       validateTitlePage(proposal),
       validateTeamPage(proposal),
-      validateDetailsPage(proposal),
+      validateDetailsFields(proposal),
       validateSciencePage(proposal),
       validateTargetPage(proposal),
       obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,

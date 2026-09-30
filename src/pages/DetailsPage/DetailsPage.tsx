@@ -2,21 +2,17 @@ import React from 'react';
 import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
-import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   SA_AA2,
   DETAILS,
   ERROR_SECS,
   PAGE_DETAILS,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
-  TYPE_ZOOM,
+  STATUS_ERROR,
+  STATUS_OK,
   NOTIFICATION_DELAY_IN_SECONDS
 } from '@utils/constants.ts';
 import { countWords, obTypeTransform } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { validateDetailsPage } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
@@ -27,6 +23,10 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
 import Target from '@/utils/types/target';
+import { ControlledTextField } from '@components/controlled/controlledTextField.tsx';
+import { ControlledSelect } from '@components/controlled/controlledSelect.tsx';
+import { useFormContext, useFormState, useWatch } from 'react-hook-form';
+import { ProposalType } from '@/models/proposal/proposal.ts';
 
 const PAGE = PAGE_DETAILS;
 const LINE_OFFSET = 30;
@@ -41,95 +41,70 @@ export const checkAutoLink = (autolink: boolean, targets: Target[], scienceCat: 
 };
 
 export default function DetailsPage() {
+  const ctrlName = `details` as const;
+  const { getValues } = useFormContext<ProposalType>();
+  const { errors } = useFormState();
+
+  const formValues = useWatch<ProposalType>({
+    name: ctrlName
+  });
+
+  React.useEffect(() => {
+    // Updates the old store with the form values, so we can do the migration piecewise
+    // We should be able to delete this once the full object is got from the form.
+    // TODO I think this should be done in one place in the PHT component, and we can use mappers
+    // (which are graudally built up during the refactoring) on the whole form object
+    setProposal({
+      ...getProposal(),
+      scienceCategory: getValues(`${ctrlName}.mode`),
+      scienceSubCategory: [1],
+      abstract: getValues(`${ctrlName}.summary`)
+    });
+  }, [formValues]);
+
+  const modeValue = useWatch<ProposalType>({
+    name: ctrlName
+  });
+
+  React.useEffect(() => {
+    // This replaces the second half of the old handleChanges
+    // It triggers autolinking if the mode changes. Really when the full form is in place,
+    // some parent component should watch for everything that autolinking should be triggered from
+    // in one place
+    generateAutoLinkData();
+  }, [modeValue]);
+
   const { t } = useScopedTranslation();
-  const theme = useTheme();
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
   const { setHelp } = useHelp();
-  const { autoLink, osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
+  const { osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
 
+  // Should eventually be able to remove these
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
   const { isSV } = useOSDAccessors();
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
-  const [scienceCategoryId, setScienceCategoryId] = React.useState(
-    getProposal().scienceCategory ?? ''
-  );
-  const [abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
-  const [initial, setInitial] = React.useState(true);
 
   const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = () => {
-    const status = validateDetailsPage(getProposal());
+
+  // This replaces the validation toggle and setTheProposalState, and sets the
+  // content1 with the state (should get rid of this altogether?)
+  React.useEffect(() => {
+    const status = errors.details ? STATUS_ERROR : STATUS_OK; // do a better is empty check on the error
     const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
     updateAppContent1(temp);
-  };
-
-  const saveAbstract = () => {
-    const p = { ...getProposal(), abstract };
-    setProposal(p);
-    const status = validateDetailsPage(p);
-    const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
-    updateAppContent1(temp);
-  };
-
-  // Avoid a stale copy of the abstract being stored on the debounce by explicitly keeping a ref to it.
-  const saveAbstractRef = React.useRef(saveAbstract);
-  saveAbstractRef.current = saveAbstract;
+  }, [errors]);
 
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
   const handleOpenAbstractLatexModal = () => setOpenAbstractLatexModal(true);
   const handleCloseAbstractLatexModal = () => setOpenAbstractLatexModal(false);
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
     setHelp('scienceCategory.help');
   }, []);
-
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, [getProposal()]);
-
-  React.useEffect(() => {
-    setTheProposalState();
-  }, [validateToggle]);
-
-  // Science category changes (should trigger auto-linking / regeneration)
-  React.useEffect(() => {
-    if (!initial) {
-      handleChanges();
-    }
-    setInitial(false);
-  }, [scienceCategoryId]);
-
-  // Abstract changes (save without triggering autogeneration)
-  React.useEffect(() => {
-    if (!initial) {
-      // Debounce to avoid saving on every keystroke; breadcrumb validation is also
-      // updated here (rather than relying on the [getProposal()] chain) to ensure
-      // it reflects the saved abstract without requiring a full re-render cycle.
-      const timer = setTimeout(() => saveAbstractRef.current(), ERROR_SECS);
-      return () => clearTimeout(timer);
-    }
-  }, [abstract]);
-
-  const handleChanges = () => {
-    const isAutolink = checkAutoLink(autoLink, getProposal().targets ?? [], scienceCategoryId);
-    if (!isAutolink) {
-      // set proposal category and abstract here when no autolink needed
-      setProposal({
-        ...getProposal(),
-        scienceCategory: scienceCategoryId,
-        scienceSubCategory: [1],
-        abstract: abstract
-      });
-    } else {
-      // set category and abstract along with autolink data
-      generateAutoLinkData();
-    }
-  };
 
   const generateAutoLinkData = async () => {
     const target = getProposal().targets![0]; // there should be only 1 target for auto-generation
@@ -142,8 +117,8 @@ export default function DetailsPage() {
       getProposal,
       setProposal,
       authAxiosClient,
-      scienceCategoryId,
-      abstract,
+      modeValue,
+       `${ctrlName}.summary`,
       sArray?.numberZoomChannels
     );
     if (defaults && defaults.success) {
@@ -154,53 +129,19 @@ export default function DetailsPage() {
   };
 
   const abstractField = () => {
-    const MAX_CHAR = Number(t('abstract.maxChar'));
-    const MAX_WORD = Number(t('abstract.maxWord'));
     const numRows = Number(t('abstract.minDisplayRows'));
-
-    const setValue = (e: string) => {
-      setAbstract(e.substring(0, MAX_CHAR));
-    };
-
-    const helperFunction = (abstract: string) => {
-      const color = theme.palette.error.dark;
-
-      const baseHelperText = t('abstract.helper', {
-        current: countWords(abstract),
-        max: MAX_WORD
-      });
-      return countWords(abstract) > MAX_WORD ? (
-        <>
-          {baseHelperText} <span style={{ color: color }}>(WORD LIMIT EXCEEDED)</span>
-        </>
-      ) : (
-        baseHelperText
-      );
-    };
-
-    function validateWordCount(title: string) {
-      if (countWords(title) > MAX_WORD) {
-        return `${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
-      }
-    }
-
+    const summaryFieldName = `${ctrlName}.summary`;
     return (
       <Box sx={{ height: LINE_OFFSET * numRows }}>
-        <TextEntry
+        <ControlledTextField
+          name={summaryFieldName}
           label={t('abstract.label')}
-          testId="abstractId"
-          rows={numRows}
-          required
-          value={abstract}
-          setValue={(e: string) => setValue(e)}
-          onFocus={() => setHelp('abstract.help')}
-          onBlur={saveAbstract}
-          helperText={helperFunction(abstract)}
-          errorText={validateWordCount(abstract)}
-          suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
+          multiline
+          minRows={numRows}
         />
+        <ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />
         <LatexPreviewModal
-          value={getProposal().abstract as string}
+          value={getValues(summaryFieldName)}
           open={openAbstractLatexModal}
           onClose={handleCloseAbstractLatexModal}
           title={t('abstract.latexPreviewTitle')}
@@ -235,25 +176,9 @@ export default function DetailsPage() {
 
   const categoryField = () => (
     <Box pt={0} sx={{ maxWidth: 500 }}>
-      {' '}
-      <DropDown
+      <ControlledSelect
+        name={`${ctrlName}.mode`}
         options={getCategoryOptions()}
-        errorText={
-          isSV
-            ? getProposal().scienceCategory === TYPE_CONTINUUM ||
-              getProposal().scienceCategory === TYPE_ZOOM ||
-              getProposal().scienceCategory === TYPE_PST ||
-              getProposal().scienceCategory === TYPE_CONTINUUM_SPECTRAL
-              ? ''
-              : t('scienceCategory.error')
-            : typeof getProposal().scienceCategory === 'number'
-              ? ''
-              : t('scienceCategory.error')
-        }
-        required
-        testId="categoryId"
-        value={scienceCategoryId}
-        setValue={setScienceCategoryId}
         label={t('scienceCategory.label')}
         onFocus={() => setHelp('scienceCategory.help')}
       />
