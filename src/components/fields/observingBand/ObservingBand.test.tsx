@@ -39,10 +39,6 @@ vi.mock('@mui/material', () => ({
   Grid: ({ children }: any) => <div>{children}</div>
 }));
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({ t: (key: string) => key })
-}));
-
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({ setHelp: vi.fn() })
 }));

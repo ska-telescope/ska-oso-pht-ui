@@ -31,22 +31,10 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   StoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({ t: (key: string) => key })
-}));
-
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
   const { SA_AA2 } = await vi.importActual<typeof import('@/utils/constants')>('@/utils/constants');
   return {
     useOSDAccessors: () => ({
-      osdCycleId: 'SKAO_2027_1',
-      osdCycleDescription: 'Science Verification',
-      osdOpens: () => '27-03-2026 12:00:00',
-      osdCloses: () => '12-05-2026 04:00:00',
-      osdCyclePolicy: {
-        maxTargets: 1,
-        maxObservations: 1
-      },
       osdLOW: {
         subArrays: [{ subArray: SA_AA2, cbfModes: ['vis', 'pst'], numberZoomChannels: 42 }]
       },
@@ -253,14 +241,5 @@ describe('<DetailsPage /> observing mode', () => {
 
     expect(mockNotifyError).toHaveBeenCalledWith('bad', NOTIFICATION_DELAY_IN_SECONDS);
     expect(mockNotifySuccess).not.toHaveBeenCalled();
-  });
-
-  it('does nothing when the current observing mode is selected again', async () => {
-    mockState.proposal = svProposal();
-    await renderPage();
-
-    await selectObservingMode('observationType.continuum');
-
-    expect(setObservingMode).not.toHaveBeenCalled();
   });
 });

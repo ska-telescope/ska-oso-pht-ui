@@ -66,12 +66,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({
     setHelp: mockSetHelp

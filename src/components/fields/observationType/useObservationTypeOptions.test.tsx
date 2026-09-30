@@ -2,10 +2,6 @@ import { describe, test, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useObservationTypeOptions } from './useObservationTypeOptions';
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({ t: (key: string) => key })
-}));
-
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
     osdLOW: { subArrays: [{ subArray: 'AA2', cbfModes: ['vis', 'pst'] }] },

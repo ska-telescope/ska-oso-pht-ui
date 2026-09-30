@@ -32,12 +32,6 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   }
 }));
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({
-    t: (key: string) => key // identity mock
-  })
-}));
-
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({
     setHelp: vi.fn()

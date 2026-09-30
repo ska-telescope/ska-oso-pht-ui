@@ -31,10 +31,6 @@ vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: () => ({ notifyError: notifyErrorMock, notifySuccess: notifySuccessMock })
 }));
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({ t: (key: string) => key })
-}));
-
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({ setHelp: vi.fn() })
 }));

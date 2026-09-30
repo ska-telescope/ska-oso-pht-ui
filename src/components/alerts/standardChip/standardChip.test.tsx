@@ -3,13 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import StandardChip from './standardChip';
 
-// Mock translation hook
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 // Mock StatusIconDisplay
 vi.mock('../../../components/icon/status/statusIcon', () => ({
   default: ({ testId }: { testId: string }) => <div data-testid={testId}>Icon</div>

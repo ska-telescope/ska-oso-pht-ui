@@ -5,7 +5,7 @@ import MockProposalBackendList from './mockProposalBackendList';
 import MockProposalFrontendList from './mockProposalFrontendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
-import { PROPOSAL_TYPE } from '@/utils/constants';
+import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@/utils/constants';
 
 // The list maps every proposal's observations. The fixture leaves them out to stay readable,
 // so they are compared separately, against the backend's observation sets.
@@ -41,25 +41,16 @@ describe('Helper Functions', () => {
   });
 
   test('mappingList passes the science verification type through with no science category', () => {
-    const [proposalFrontEnd] = mappingList([
-      {
-        ...MockProposalBackendList[0],
-        proposal_info: {
-          ...MockProposalBackendList[0].proposal_info,
-          proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, attributes: [] },
-          science_category: undefined
-        }
-      }
-    ]);
+    const svProposal = MockProposalBackendList[1];
+    expect(svProposal.proposal_info.proposal_type.main_type).to.equal(
+      PROPOSAL_TYPE.SCIENCE_VERIFICATION
+    );
+    const [proposalFrontEnd] = mappingList([svProposal]);
     expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
     expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
     expect(proposalFrontEnd.scienceCategory).to.equal('');
     // The observations are what the observing mode is shown from
-    expect(proposalFrontEnd.observations?.map((obs) => obs.type)).to.deep.equal(
-      MockProposalBackendList[0].observation_info.observation_sets?.map(
-        (set) => set.observation_type_details?.observation_type
-      )
-    );
+    expect(proposalFrontEnd.observations?.map((obs) => obs.type)).to.deep.equal([TYPE_CONTINUUM]);
   });
 });
 

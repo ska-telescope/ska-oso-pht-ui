@@ -11,12 +11,6 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   }
 }));
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({
-    t: (key: string) => key // simple passthrough
-  })
-}));
-
 // Stub child components so we can assert they’re called
 vi.mock('./tableObservationsRow/TableObservationsRow', () => ({
   default: ({ item }: any) => <div data-testid="row">Row for {item.name}</div>
