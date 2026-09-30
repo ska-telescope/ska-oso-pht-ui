@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "audit:prod": "yarn audit --groups dependencies",
+    "audit:prod": "yarn npm audit --environment production --recursive",
     "build": "vite build",
     "checker": "yarn prettier:fix && yarn lint:fix",
     "code-analysis": "eslint src -f junit -o linting.xml",
@@ -117,12 +117,12 @@
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
-    "@vitejs/plugin-react": "^4.5.0",
-    "@vitejs/plugin-react-swc": "^3.10.0",
-    "@vitest/browser": "^3.2.5",
-    "@vitest/coverage-istanbul": "^3.1.4",
-    "@vitest/coverage-v8": "^3.2.4",
-    "@vitest/ui": "^3.1.4",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitejs/plugin-react-swc": "^4.3.3",
+    "@vitest/browser": "^3.2.7",
+    "@vitest/coverage-istanbul": "^3.2.7",
+    "@vitest/coverage-v8": "^3.2.7",
+    "@vitest/ui": "^3.2.7",
     "css-loader": "^6.7.1",
     "cypress": "15.10.0",
     "cypress-ctrf-json-reporter": "^0.0.10",
@@ -134,7 +134,7 @@
     "cypress-xray-junit-reporter": "^1.1.12",
     "cypress-xray-plugin": "^8.5.0",
     "debug": "^4.4.1",
-    "esbuild": "^0.25.5",
+    "esbuild": "^0.28.2",
     "eslint": "9.x",
     "eslint-formatter-junit": "^9.0.1",
     "eslint-plugin-cypress": "^4.1.0",
@@ -145,17 +145,17 @@
     "happy-dom": "^20.0.2",
     "istanbul-lib-coverage": "^3.2.0",
     "minimatch": "^10.2.1",
-    "mocha": "^11.7.5",
+    "mocha": "^12.0.2",
     "mocha-junit-reporter": "^2.2.1",
     "multiple-cucumber-html-reporter": "3.6.2",
-    "nyc": "^17.1.0",
+    "nyc": "^18.0.0",
     "prettier": "^3.3.3",
     "sass": "^1.49.4",
     "typescript-eslint": "^8.58.0",
-    "vite": "^7.1.11",
-    "vite-plugin-svgr": "^4.3.0",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.6"
+    "vite": "^8.3.1",
+    "vite-plugin-svgr": "^5.2.0",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^3.2.7"
   },
   "browserslist": [
     ">0.2%",
@@ -172,7 +172,8 @@
     "react-is": "^18.3.1",
     "js-yaml": "4.1.1",
     "minimatch": "^10.2.3",
-    "systeminformation": "^5.27.14"
+    "systeminformation": "^5.27.14",
+    "@ska-telescope/ska-javascript-components/vite": "^7.3.6"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@4.12.0"
 }
