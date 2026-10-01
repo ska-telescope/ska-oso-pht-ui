@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Base number of allowed targets on the cycle policy instead of hardcoded number
+* Changed: PHT validate and submit logic now follows same pattern as the SV tool  
 * CI Test Only: Remove temp E2E overrides and increase Cypress timeouts for long-running calls 
 * Bugfix: Ensure that if no polarisations are selected this is reflected in breadcrumbs
 * Remove references to USE_LOCAL_DATA
@@ -86,6 +88,7 @@ UNRELEASED
 * Changed: Debounce SensCalc API calls
 * Changed: Default image weighting is now Briggs with robust=0 for continuum, spectral and continuum-spectral data products (was uniform)
 * Changed: PST detected filterbank data product fields use SteppedNumberField and QuantityField components
+* Changed: Data product image size, pixel size, channels out, time averaging and frequency averaging fields use SteppedNumberField and QuantityField components
 * Added: Use of `Get /calibrators` to fetch likely calibration strategy for a given telescope, target and integration time
 * Changed: upgrade to oso-services v16.3.0
 

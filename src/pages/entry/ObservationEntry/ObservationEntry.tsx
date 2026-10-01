@@ -49,9 +49,6 @@ import {
   SUPPLIED_TYPE_INTEGRATION,
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
-  SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
-  SUPPLIED_INTEGRATION_TIME_STEP_MINS,
-  SUPPLIED_SENSITIVITY_STEP,
   INTEGRATION_TIME_UNITS,
   LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
   REFERENCE_COORDINATE_TYPE_SSO
@@ -1017,12 +1014,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         : undefined;
     const label = '';
     const currentUnitLabel = getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? '';
-    const step =
-      suppliedType === SUPPLIED_TYPE_INTEGRATION
-        ? suppliedUnits === TIME_HOURS
-          ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS
-          : SUPPLIED_INTEGRATION_TIME_STEP_MINS
-        : SUPPLIED_SENSITIVITY_STEP;
 
     let rangeMessage = '';
     if (maxValue !== undefined) {
@@ -1056,7 +1047,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         maxValue={maxValue}
         minInclusive={false}
         maxInclusive={true}
-        step={step}
         requiredMessage={t(`${FIELD}.required`)}
         rangeMessage={rangeMessage}
         onFocus={() => setHelp(FIELD)}

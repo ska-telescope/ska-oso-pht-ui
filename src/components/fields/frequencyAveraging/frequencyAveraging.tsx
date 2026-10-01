@@ -1,23 +1,26 @@
-import { DropDown } from '@ska-telescope/ska-gui-components';
+import React from 'react';
+import { Box } from '@mui/material';
+import { z } from 'zod';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { range } from '@mui/x-data-grid/utils/utils';
-import { Grid, InputAdornment } from '@mui/material';
-import { presentUnits } from '@/utils/present/present';
+import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface FrequencyAveragingFieldProps {
   disabled?: boolean;
   required?: boolean;
-  onFocus?: Function;
+  onFocus?: () => void;
   setValue?: (frequencyAveragingFactor: number) => void;
   value: number;
 }
 
-const UNAVERAGED_VALUE_KHZ = 781.25 / 144;
-
-const OPTIONS = range(1, 13).map((value) => ({
-  label: (value * UNAVERAGED_VALUE_KHZ).toFixed(2),
-  value
-}));
+export const UNAVERAGED_VALUE_KHZ = 781.25 / 144;
+const MIN_MULTIPLIER = 1;
+const MAX_MULTIPLIER = 12;
+export const frequencyAveragingSchema = z
+  .number()
+  .finite()
+  .int()
+  .min(MIN_MULTIPLIER)
+  .max(MAX_MULTIPLIER);
 
 export default function FrequencyAveragingField({
   disabled = false,
@@ -28,32 +31,72 @@ export default function FrequencyAveragingField({
 }: FrequencyAveragingFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'frequencyAveraging';
-  const unitLabel = presentUnits(t('frequencyAveraging.0'));
+  const [errorText, setErrorText] = React.useState('');
+  const rangeErrorMessage = t(FIELD + '.error.range', {
+    min: (MIN_MULTIPLIER * UNAVERAGED_VALUE_KHZ).toFixed(2),
+    max: (MAX_MULTIPLIER * UNAVERAGED_VALUE_KHZ).toFixed(2)
+  });
+  const stepErrorMessage = t(FIELD + '.error.step');
+
+  const validateMultiplier = (multiplier: number) => {
+    if (
+      !Number.isFinite(multiplier) ||
+      multiplier < MIN_MULTIPLIER ||
+      multiplier > MAX_MULTIPLIER
+    ) {
+      return rangeErrorMessage;
+    }
+    return frequencyAveragingSchema.safeParse(multiplier).success ? '' : stepErrorMessage;
+  };
+
+  const commit = (multiplier: number) => {
+    setValue?.(multiplier);
+    setErrorText(validateMultiplier(multiplier));
+  };
+
+  const stepMultiplier = (multiplier: number, direction: 1 | -1) =>
+    Math.min(
+      MAX_MULTIPLIER,
+      Math.max(
+        MIN_MULTIPLIER,
+        Number.isInteger(multiplier)
+          ? multiplier + direction
+          : direction === 1
+            ? Math.ceil(multiplier)
+            : Math.floor(multiplier)
+      )
+    );
+
+  React.useEffect(() => {
+    setErrorText(validateMultiplier(value));
+  }, [value]);
 
   return (
-    <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-      <Grid size={{ xs: 11 }}>
-        <DropDown
-          disabled={disabled}
-          disabledUnderline={disabled}
-          options={OPTIONS}
-          testId={FIELD}
-          value={value}
-          setValue={setValue}
-          label={t('frequencyAveraging.label')}
-          onFocus={onFocus}
-          required={required}
-        />
-      </Grid>
-      <Grid
-        size={{ xs: 1 }}
-        sx={{
-          display: 'flex',
-          alignItems: 'flex-end'
+    <Box pt={1}>
+      <SteppedNumberField
+        testId={FIELD}
+        value={value}
+        format={(multiplier) => (multiplier * UNAVERAGED_VALUE_KHZ).toFixed(2)}
+        parse={(raw) => {
+          if (raw === '' || Number.isNaN(Number(raw))) return null;
+          const typedDisplayValue = Number(raw);
+          const rawMultiplier = typedDisplayValue / UNAVERAGED_VALUE_KHZ;
+          const nearestMultiplier = Math.min(
+            MAX_MULTIPLIER,
+            Math.max(MIN_MULTIPLIER, Math.round(rawMultiplier))
+          );
+          const nearestDisplayValue = Number((nearestMultiplier * UNAVERAGED_VALUE_KHZ).toFixed(2));
+          return typedDisplayValue === nearestDisplayValue ? nearestMultiplier : rawMultiplier;
         }}
-      >
-        <InputAdornment position="end">{unitLabel}</InputAdornment>
-      </Grid>
-    </Grid>
+        onStep={stepMultiplier}
+        onCommit={commit}
+        label={t(FIELD + '.label')}
+        onFocus={onFocus}
+        required={required}
+        disabled={disabled}
+        errorText={errorText}
+        suffix={<Box sx={{ minWidth: 90 }}>{t(FIELD + '.0')}</Box>}
+      />
+    </Box>
   );
 }

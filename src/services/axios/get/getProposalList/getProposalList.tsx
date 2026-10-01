@@ -4,8 +4,8 @@ import {
   SKA_OSO_SERVICES_URL,
   DETAILS,
   OSO_SERVICES_PROPOSAL_PATH,
-  ProposalSubType,
-  ProposalType
+  ProposalSubTypeType,
+  ProposalTypeType
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
@@ -63,8 +63,9 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       createdOn: tmp.metadata?.created_on as string,
       createdBy: tmp.metadata?.created_by as string,
       version: tmp.metadata?.version as number,
-      proposalType: tmp.proposal_info?.proposal_type?.main_type as ProposalType,
-      proposalSubType: (tmp.proposal_info?.proposal_type?.attributes ?? []) as ProposalSubType[],
+      proposalType: tmp.proposal_info?.proposal_type?.main_type as ProposalTypeType,
+      proposalSubType: (tmp.proposal_info?.proposal_type?.attributes ??
+        []) as ProposalSubTypeType[],
       scienceCategory: getTheScienceCategory(tmp),
       observations: getObservations(tmp.observation_info?.observation_sets ?? null),
       title: tmp.proposal_info?.title,

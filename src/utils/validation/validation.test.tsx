@@ -116,7 +116,12 @@ describe('validateSDPPage polarisation rules', () => {
         {
           id: 'SDP-1',
           observationId: 'obs-1',
-          data: { dataProductType: DP_TYPE_VISIBLE, polarisations: [] }
+          data: {
+            dataProductType: DP_TYPE_VISIBLE,
+            polarisations: [],
+            timeAveraging: 1,
+            frequencyAveraging: 1
+          }
         }
       ]
     } as any;
@@ -172,7 +177,12 @@ describe('validateSDPPage polarisation rules', () => {
         {
           id: 'SDP-1',
           observationId: 'obs-1',
-          data: { polarisations: ['I', 'XX'], channelsOut: CHANNELS_OUT_MIN_SPECTRAL } // the displayed spectral product - valid
+          data: {
+            polarisations: ['I', 'XX'],
+            channelsOut: CHANNELS_OUT_MIN_SPECTRAL,
+            imageSizeValue: 100,
+            pixelSizeValue: 1
+          } // the displayed spectral product - valid
         },
         {
           id: 'SDP-1-hidden',
@@ -196,7 +206,13 @@ describe('validateSDPPage channelsOut rules', () => {
       dataProductSDP: dataProducts.map((dp, idx) => ({
         id: `SDP-${idx + 1}`,
         observationId: dp.observationId ?? 'obs-1',
-        data: dp.data
+        data: {
+          imageSizeValue: 100,
+          pixelSizeValue: 1,
+          timeAveraging: 1,
+          frequencyAveraging: 1,
+          ...dp.data
+        }
       })) as DataProductSDPNew[]
     }) as any;
 
@@ -317,8 +333,8 @@ describe('validateSDPPage detected filterbank field rules', () => {
     expect(validateSDPPage(makeProposal({}))).toBe(STATUS_OK);
   });
 
-  it('returns STATUS_ERROR when dispersion measure is out of range', () => {
-    expect(validateSDPPage(makeProposal({ dispersionMeasure: 100001 }))).toBe(STATUS_ERROR);
+  it('returns STATUS_OK when dispersion measure exceeds the former maximum', () => {
+    expect(validateSDPPage(makeProposal({ dispersionMeasure: 100001 }))).toBe(STATUS_OK);
   });
 
   it('returns STATUS_ERROR when rotation measure is not numeric', () => {
@@ -340,13 +356,44 @@ describe('validateSDPPage detected filterbank field rules', () => {
           {
             outputFrequencyResolution: 1.5,
             outputSamplingInterval: 0,
-            dispersionMeasure: 100001,
+            dispersionMeasure: -1,
             rotationMeasure: 'invalid' as any
           },
           FLOW_THROUGH_VALUE
         )
       )
     ).toBe(STATUS_OK);
+  });
+});
+
+describe('validateSDPPage continuum visibilities rules', () => {
+  const makeProposal = (
+    data: { timeAveraging?: number; frequencyAveraging?: number },
+    observationType = TYPE_CONTINUUM
+  ) =>
+    ({
+      observations: [{ id: 'obs-1', type: observationType }],
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data: {
+            dataProductType: DP_TYPE_VISIBLE,
+            timeAveraging: 1,
+            frequencyAveraging: 1,
+            ...data
+          }
+        }
+      ]
+    }) as any;
+
+  it.each([
+    ['time averaging below range', { timeAveraging: 0 }],
+    ['time averaging off-step', { timeAveraging: 1.5 }],
+    ['frequency averaging above range', { frequencyAveraging: 13 }],
+    ['frequency averaging off-step', { frequencyAveraging: 1.5 }]
+  ])('returns STATUS_ERROR when combined continuum-spectral %s is invalid', (_field, data) => {
+    expect(validateSDPPage(makeProposal(data, TYPE_CONTINUUM_SPECTRAL))).toBe(STATUS_ERROR);
   });
 });
 

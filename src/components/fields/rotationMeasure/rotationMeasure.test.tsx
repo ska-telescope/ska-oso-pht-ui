@@ -16,7 +16,7 @@ describe('<RotationMeasureField />', () => {
         <RotationMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 250 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(250));
   });
@@ -28,7 +28,7 @@ describe('<RotationMeasureField />', () => {
         <RotationMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: -250 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(-250));
   });
@@ -40,11 +40,11 @@ describe('<RotationMeasureField />', () => {
         <RotationMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 1.5 } });
     fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(Number(1.5));
-    expect(input).toHaveAttribute('step', '1');
+    expect(input).toBeValid();
     expect(screen.queryByText('rotationMeasure.required')).not.toBeInTheDocument();
   });
 
@@ -55,7 +55,7 @@ describe('<RotationMeasureField />', () => {
         <RotationMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: '' } });
     fireEvent.blur(input);
     expect(input).not.toHaveAttribute('min');

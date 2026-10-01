@@ -16,7 +16,7 @@ describe('<DispersionMeasureField />', () => {
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 250 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(250));
   });
@@ -28,38 +28,37 @@ describe('<DispersionMeasureField />', () => {
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 1.5 } });
     expect(handleSetValue).toHaveBeenCalledWith(Number(1.5));
-    expect(screen.queryByText('dispersionMeasure.range.error')).not.toBeInTheDocument();
+    expect(screen.queryByText('dispersionMeasure.minimum.error')).not.toBeInTheDocument();
   });
 
-  test('shows range error when value changed to negative', async () => {
+  test('shows minimum error when value changed to negative', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: -1 } });
     fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(Number(-1));
-    expect(screen.getByText('dispersionMeasure.range.error')).toBeInTheDocument();
+    expect(screen.getByText('dispersionMeasure.minimum.error')).toBeInTheDocument();
   });
 
-  test('shows range error when value exceeds maximum', async () => {
+  test('allows values above the former maximum', async () => {
     const handleSetValue = vi.fn();
     render(
       <StoreProvider>
         <DispersionMeasureField value={0} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 100001 } });
-    fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(Number(100001));
-    expect(screen.getByText('dispersionMeasure.range.error')).toBeInTheDocument();
+    expect(screen.queryByText('dispersionMeasure.minimum.error')).not.toBeInTheDocument();
   });
 
   test('renders fixed disabled units dropdown', async () => {

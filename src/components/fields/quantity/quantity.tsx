@@ -15,7 +15,6 @@ interface QuantityFieldProps {
   maxValue?: number;
   minInclusive?: boolean;
   maxInclusive?: boolean;
-  step?: number;
   requiredMessage: string;
   rangeMessage?: string;
   validate?: (value: number) => string;
@@ -40,7 +39,6 @@ export default function QuantityField({
   maxValue,
   minInclusive = true,
   maxInclusive = true,
-  step,
   requiredMessage,
   rangeMessage,
   validate,
@@ -69,34 +67,31 @@ export default function QuantityField({
       <Box display="flex" alignItems="flex-end" gap={1}>
         <TextField
           variant="standard"
-          type="number"
+          type="text"
+          inputMode="decimal"
           fullWidth
           label={label}
           value={text}
           error={!!error}
           onChange={(e) => handleChange(e.target.value)}
           onFocus={onFocus}
-          slotProps={{
-            htmlInput: {
-              min: minValue,
-              max: maxValue,
-              step: step
-            }
-          }}
+          disabled={disabled}
           required={required}
         />
-        <Box sx={{ minWidth: unitsMinWidth }}>
-          <DropDown
-            options={unitOptions}
-            testId={unitsTestId}
-            value={units}
-            disabled={unitsDisabled ?? disabled}
-            setValue={setUnits}
-            label=""
-            onFocus={onUnitsFocus}
-            InputProps={{ disableUnderline: true }}
-          />
-        </Box>
+        {unitOptions !== undefined && (
+          <Box sx={{ minWidth: unitsMinWidth }}>
+            <DropDown
+              options={unitOptions}
+              testId={unitsTestId}
+              value={units}
+              disabled={unitsDisabled ?? disabled}
+              setValue={setUnits}
+              label=""
+              onFocus={onUnitsFocus}
+              InputProps={{ disableUnderline: true }}
+            />
+          </Box>
+        )}
       </Box>
       <FormHelperText error={!!error}>{error || ' '}</FormHelperText>
     </Box>

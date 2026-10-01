@@ -280,7 +280,7 @@ export const PROPOSAL_SUBTYPE = {
   COORDINATED: 'coordinated_proposal',
   LONG_TERM: 'long_term_proposal'
 } as const;
-export type ProposalSubType = (typeof PROPOSAL_SUBTYPE)[keyof typeof PROPOSAL_SUBTYPE];
+export type ProposalSubTypeType = (typeof PROPOSAL_SUBTYPE)[keyof typeof PROPOSAL_SUBTYPE];
 
 export const PROPOSAL_TYPE = {
   STANDARD: 'standard_proposal',
@@ -288,9 +288,9 @@ export const PROPOSAL_TYPE = {
   DIRECTOR_TIME: 'director_time_proposal',
   SCIENCE_VERIFICATION: 'science_verification'
 } as const;
-export type ProposalType = (typeof PROPOSAL_TYPE)[keyof typeof PROPOSAL_TYPE];
+export type ProposalTypeType = (typeof PROPOSAL_TYPE)[keyof typeof PROPOSAL_TYPE];
 
-export const PROPOSAL_TYPE_SUBTYPES: Record<ProposalType, ProposalSubType[]> = {
+export const PROPOSAL_TYPE_SUBTYPES: Record<ProposalTypeType, ProposalSubTypeType[]> = {
   [PROPOSAL_TYPE.STANDARD]: [
     PROPOSAL_SUBTYPE.TARGET_OF_OPPORTUNITY,
     PROPOSAL_SUBTYPE.JOINT,
