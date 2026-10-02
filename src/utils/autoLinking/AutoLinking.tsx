@@ -210,37 +210,26 @@ export const newDataProductsForMode = (observation: Observation) => {
   return [newDSP];
 };
 
-export default async function autoLinking(
+/**
+ * Builds the sensitivity results and calibrators linking a target to an observation
+ * and its main data product, or returns the sensitivity calculator error on a failed
+ * sensitivity calculation.
+ */
+const buildTargetLink = async (
   target: Target,
+  observation: Observation,
+  mainDataProduct: DataProductSDPNew,
   getProposal: Function,
-  setProposal: Function,
-  authAxiosClient: AxiosAuthClient,
-  observationMode?: string,
-  abstract?: string | undefined,
-  maxZoomChannels?: number
-): Promise<DefaultsResults> {
-  /**
-   * This function is used to automatically create an observing set up and data products
-   * when a target is added, and link them in the Proposal. It is also called again if the target or observing mode is changed.
-   * This is useful UX for the SV call as only one observation is allowed.
-   **/
-
-  if (!observationMode) {
-    observationMode = getProposal().observations?.[0]?.type ?? TYPE_CONTINUUM;
-  }
-  if (!abstract) {
-    abstract = getProposal().abstract;
-  }
-
-  const newObservation = newObservationForMode(observationMode as string, maxZoomChannels);
-
-  const newDataProducts = newDataProductsForMode(newObservation);
-
-  // For the SV call, we want the Proposal to contain both data products (where applicable)
-  // but only the one the user selects in the dropdown to be linked via the results
-  const mainDataProduct = newDataProducts[0];
-
-  const sensCalcResult = await getSensCalc(newObservation, target, mainDataProduct);
+  authAxiosClient: AxiosAuthClient
+): Promise<
+  | {
+      success: true;
+      targetObservation: TargetObservation;
+      calibrationStrategy: CalibrationStrategy;
+    }
+  | { success: false; error?: string }
+> => {
+  const sensCalcResult = await getSensCalc(observation, target, mainDataProduct);
 
   if (sensCalcResult?.statusGUI == STATUS_ERROR) {
     return { success: false, error: sensCalcResult.error };
@@ -248,7 +237,7 @@ export default async function autoLinking(
 
   const targetObservation: TargetObservation = {
     targetId: target?.id,
-    observationId: newObservation?.id,
+    observationId: observation.id,
     dataProductsSDPId: mainDataProduct.id,
     sensCalc: sensCalcResult
   };
@@ -256,24 +245,95 @@ export default async function autoLinking(
   const existingNotes = getProposal()?.calibrationStrategy?.[0]?.notes ?? null;
 
   const calibrationStrategy = await newCalibrationStrategy(
-    newObservation?.id,
+    observation.id,
     authAxiosClient,
-    newObservation,
+    observation,
     target,
     existingNotes
   );
 
-  const updatedProposal: Proposal = {
+  return { success: true, targetObservation, calibrationStrategy };
+};
+
+/**
+ * Replaces the observation and data products of a proposal based on given mode,
+ * and links them to the target with new sensitivity results and calibration.
+ * Used when the observing mode changes.
+ */
+export async function regenerateForMode(
+  target: Target,
+  getProposal: Function,
+  setProposal: Function,
+  authAxiosClient: AxiosAuthClient,
+  observationMode?: string,
+  maxZoomChannels?: number
+): Promise<DefaultsResults> {
+  const mode = observationMode ?? getProposal().observations?.[0]?.type ?? TYPE_CONTINUUM;
+  const newObservation = newObservationForMode(mode, maxZoomChannels);
+  const newDataProducts = newDataProductsForMode(newObservation);
+  const link = await buildTargetLink(
+    target,
+    newObservation,
+    newDataProducts[0],
+    getProposal,
+    authAxiosClient
+  );
+
+  if (!link.success) {
+    return { success: false, error: link.error };
+  }
+
+  setProposal({
     ...getProposal(),
-    abstract: abstract,
     targets: [target],
     observations: [newObservation],
     dataProductSDP: newDataProducts,
-    targetObservation: [targetObservation],
-    calibrationStrategy: [calibrationStrategy]
-  };
+    targetObservation: [link.targetObservation],
+    calibrationStrategy: [link.calibrationStrategy]
+  });
 
-  setProposal(updatedProposal);
+  return { success: true };
+}
+
+/**
+ * Links a target to the existing observation and data products of a proposal in a cycle
+ * that allows only one target and observation (autoLink), adding the sensitivity results
+ * and calibration for it. A default continuum observation is created if there is none yet.
+ */
+export async function linkTarget(
+  target: Target,
+  getProposal: Function,
+  setProposal: Function,
+  authAxiosClient: AxiosAuthClient
+): Promise<DefaultsResults> {
+  const proposal: Proposal = getProposal();
+  const observation = proposal.observations?.[0] ?? newObservationForMode(TYPE_CONTINUUM);
+  const existingDataProducts = (proposal.dataProductSDP ?? []).filter(
+    (dp) => dp.observationId === observation.id
+  );
+  const newDataProducts = existingDataProducts.length ? [] : newDataProductsForMode(observation);
+  const mainDataProduct = existingDataProducts[0] ?? newDataProducts[0];
+
+  const link = await buildTargetLink(
+    target,
+    observation,
+    mainDataProduct,
+    getProposal,
+    authAxiosClient
+  );
+
+  if (!link.success) {
+    return { success: false, error: link.error };
+  }
+
+  setProposal({
+    ...getProposal(),
+    targets: [target],
+    observations: [observation],
+    dataProductSDP: [...(getProposal().dataProductSDP ?? []), ...newDataProducts],
+    targetObservation: [link.targetObservation],
+    calibrationStrategy: [link.calibrationStrategy]
+  });
 
   return { success: true };
 }
@@ -282,9 +342,9 @@ export default async function autoLinking(
  * Sets the observing mode of a proposal with a single observation (e.g. SV).
  *
  * With a target, the observation, data products, results and calibration are all regenerated for
- * the new mode via autoLinking. Without one, only a default observation and data products for the
- * mode are created, as results and calibration need a target; autoLinking adds these once a target
- * is added, using this observation's type as the mode.
+ * the new mode via regenerateForMode. Without one, only a default observation and data products
+ * for the mode are created, as results and calibration need a target; linkTarget adds these once
+ * a target is added.
  */
 export async function setObservingMode(
   observationMode: string,
@@ -295,13 +355,12 @@ export async function setObservingMode(
 ): Promise<DefaultsResults> {
   const target = getProposal().targets?.[0];
   if (target) {
-    return autoLinking(
+    return regenerateForMode(
       target,
       getProposal,
       setProposal,
       authAxiosClient,
       observationMode,
-      undefined,
       maxZoomChannels
     );
   }

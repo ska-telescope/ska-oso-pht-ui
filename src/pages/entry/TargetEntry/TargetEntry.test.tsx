@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TargetEntry from './TargetEntry';
-import autoLinking from '@/utils/autoLinking/AutoLinking';
+import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 
 const wrapper = (component: React.ReactElement) => {
@@ -18,10 +18,11 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 const mockStore = vi.hoisted(() => ({ targets: [] as unknown[] }));
+const mockOSD = vi.hoisted(() => ({ autoLink: true }));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
-    autoLink: true,
+    autoLink: mockOSD.autoLink,
     osdCycleId: 'CYCLE-1',
     osdCyclePolicy: {
       maxTargets: 1,
@@ -31,7 +32,7 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 }));
 
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({
-  default: vi.fn()
+  linkTarget: vi.fn()
 }));
 
 vi.mock('@services/axios/get/getCoordinates/getCoordinates', () => ({
@@ -89,14 +90,14 @@ describe('<TargetEntry /> target limit', () => {
 });
 
 describe(
-  '<TargetEntry /> form preservation on autoLinking error',
+  '<TargetEntry /> form preservation on auto-linking error',
   () => {
     beforeEach(() => {
       vi.clearAllMocks();
     });
 
     it('retains field values when the sensitivity calculator returns an error', async () => {
-      const mockedAutoLinking = vi.mocked(autoLinking);
+      const mockedAutoLinking = vi.mocked(linkTarget);
 
       mockedAutoLinking.mockResolvedValue({
         success: false,
@@ -132,7 +133,7 @@ describe(
       expect(decInput.value).toBe('45:00:00.000');
     }, 15000);
 
-    it('shows a loading state while coordinates are resolving', async () => {
+    it('shows a loading state and disables editing and clearing while coordinates are resolving', async () => {
       const mockedGetCoordinates = vi.mocked(GetCoordinates);
       mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
 
@@ -149,6 +150,8 @@ describe(
 
       await waitFor(() => {
         expect(screen.queryByTestId('resolveButton')).not.toBeInTheDocument();
+        expect(nameInput).toBeDisabled();
+        expect(screen.getByTestId('clearFormButton')).toBeDisabled();
       });
     });
 
@@ -183,27 +186,6 @@ describe(
 
       await waitFor(() => {
         expect(raInput.value).toBe('11:22:33');
-      });
-    });
-
-    it('disables editing and clearing while coordinates are resolving', async () => {
-      const mockedGetCoordinates = vi.mocked(GetCoordinates);
-      mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
-
-      const user = userEvent.setup();
-
-      await act(async () => {
-        wrapper(<TargetEntry />);
-      });
-
-      const nameInput = screen.getByTestId('name').querySelector('input')!;
-      await user.type(nameInput, 'Resolving target');
-
-      await user.click(screen.getByTestId('resolveButton'));
-
-      await waitFor(() => {
-        expect(nameInput).toBeDisabled();
-        expect(screen.getByTestId('clearFormButton')).toBeDisabled();
       });
     });
 
@@ -255,3 +237,48 @@ describe(
   },
   { timeout: 10000 }
 );
+
+describe('<TargetEntry /> auto-linking route', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(linkTarget).mockResolvedValue({ success: true });
+  });
+
+  afterEach(() => {
+    mockOSD.autoLink = true;
+  });
+
+  const addTarget = async () => {
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    await user.type(screen.getByTestId('name').querySelector('input')!, 'My Target');
+    await user.type(screen.getByTestId('skyDirectionValue1').querySelector('input')!, '12:34:56');
+    await user.type(screen.getByTestId('skyDirectionValue2').querySelector('input')!, '45:00:00');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('addTargetButton')).not.toBeDisabled();
+    });
+
+    await user.click(screen.getByTestId('addTargetButton'));
+  };
+
+  it('links the target to the existing observation when the cycle auto-links', async () => {
+    await addTarget();
+
+    await waitFor(() => {
+      expect(linkTarget).toHaveBeenCalledTimes(1);
+    });
+  }, 15000);
+
+  it('does not link the target when the cycle does not auto-link', async () => {
+    mockOSD.autoLink = false;
+
+    await addTarget();
+
+    expect(linkTarget).not.toHaveBeenCalled();
+  }, 15000);
+});
