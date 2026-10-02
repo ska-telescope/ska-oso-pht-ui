@@ -4,9 +4,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import RotationMeasureField from './rotationMeasure';
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({ t: (k: string) => k })
-}));
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({ setHelp: () => {} })
 }));

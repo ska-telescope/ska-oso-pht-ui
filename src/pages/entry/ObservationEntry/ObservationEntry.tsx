@@ -17,6 +17,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import {
   NAV,
+  PROPOSAL_TYPE,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -57,7 +58,6 @@ import {
   generateCalibrationId,
   generateObsSetId,
   getBandwidthZoom,
-  obTypeTransform,
   timeConversion
 } from '@utils/helpers.ts';
 import {
@@ -74,6 +74,7 @@ import Observation from '@/utils/types/observation';
 import SubArrayField from '@/components/fields/subArray/SubArray';
 import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '@/components/fields/observationType/ObservationType';
+import { useObservationTypeOptions } from '@/components/fields/observationType/useObservationTypeOptions';
 import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
 import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
 import NumStations from '@/components/fields/numStations/NumStations';
@@ -149,11 +150,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  // Avoids a mismatch with obsTypeOptions (below), which collapses to a single entry matching
-  // the proposal's scienceCategory for SV.
-  const [observationType, setObservationType] = React.useState(() =>
-    isSV ? (getProposal().scienceCategory ?? TYPE_CONTINUUM) : TYPE_CONTINUUM
-  );
+  const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
@@ -942,29 +939,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /**************************************************************/
 
-  const low = isLow();
-
-  const obsTypeOptions = React.useMemo(() => {
-    if (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1) {
-      const sc = getProposal().scienceCategory;
-      return [
-        {
-          label: t(`observationType.${sc}`),
-          value: sc
-        }
-      ];
-    }
-    const obj = low ? osdLOW : osdMID;
-    const rec =
-      (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(
-        (r) => r.subArray === subarrayConfig
-      ) ?? null;
-    const modes = obTypeTransform(rec?.cbfModes ?? []);
-    return modes.map((mode) => ({
-      label: t(`observationType.${mode}`),
-      value: mode
-    }));
-  }, [subarrayConfig, low, osdLOW, osdMID, t]);
+  const obsTypeOptions = useObservationTypeOptions(subarrayConfig, isLow());
 
   React.useEffect(() => {
     if (obsTypeOptions.length === 0) return;
@@ -980,13 +955,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   }, [observationType, obsTypeOptions, setObservationType]);
 
+  // SV proposals set their observing mode on the Details page
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={
-          !isLoggedIn() ||
-          (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1)
-        }
+        disabled={getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION}
         options={obsTypeOptions}
         required
         value={observationType}

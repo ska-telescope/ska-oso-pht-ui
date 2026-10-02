@@ -106,13 +106,6 @@ export const getScienceCategory = (scienceCat: string) => {
   return cat === null || cat === undefined ? null : cat;
 };
 
-export const getObservingMode = (observingMode: string) => {
-  const obsMode = DETAILS.ObservingMode?.find(
-    (obsMode) => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
-  )?.value;
-  return obsMode === null || obsMode === undefined ? null : obsMode;
-};
-
 const getPDF = (documents: DocumentBackend[] | null, documentId: string): DocumentPDF | null => {
   if (!documents) return null;
 
@@ -441,7 +434,7 @@ const typeCheck = (inType: string | undefined): any => {
   return inType;
 };
 
-const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
+export const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
   const results: Observation[] = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -780,9 +773,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
     cycle: inRec.cycle,
     investigators: getInvestigators(inRec.proposal_info?.investigators),
     abstract: inRec.proposal_info?.abstract,
-    scienceCategory: isSV
-      ? getObservingMode((inRec.proposal_info?.science_category as string) || '')
-      : getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
+    scienceCategory: getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
     scienceSubCategory: [1], // Not used currently
     sciencePDF: sciencePDF,
     scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL,

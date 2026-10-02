@@ -25,6 +25,7 @@ import {
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
+  PROPOSAL_TYPE,
   SENSITIVITY_UNITS,
   STATUS_ERROR,
   STATUS_OK,
@@ -149,7 +150,11 @@ export const validateDetailsPage = (proposal: Proposal) => {
   if ((proposal?.abstract ?? '').length > 0) {
     count++;
   }
-  if (proposal?.scienceCategory !== null) {
+  const hasCategoryOrMode =
+    proposal?.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+      ? (proposal?.observations?.length ?? 0) > 0
+      : proposal?.scienceCategory !== null;
+  if (hasCategoryOrMode) {
     count++;
   }
   return result[count];
@@ -433,8 +438,7 @@ export const isDataProductChannelsOutValid = (
   );
 
   const observation = proposal?.observations?.find((obs) => obs.id === dataProduct.observationId);
-  const matchesMode = (type: string) =>
-    observation?.type === type || proposal?.scienceCategory === type;
+  const matchesMode = (type: string) => observation?.type === type;
   const isContinuumSpectral = matchesMode(TYPE_CONTINUUM_SPECTRAL);
   const isSpectral = matchesMode(TYPE_ZOOM);
   const isRelevantMode = isSpectral || isContinuumSpectral || matchesMode(TYPE_CONTINUUM);
@@ -517,21 +521,14 @@ export const useValidateProposal = () => {
 
 /**
  * Checks whether the proposal can navigate to the given page, e.g. blocking the
- * Observation/Data Products/Calibration pages until a valid science category and target exist.
+ * Observation/Data Products/Calibration pages until a target exists.
  */
 export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
   if (
     checkLink &&
     (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS || page === PAGE_CALIBRATION)
   ) {
-    return (
-      (proposal.scienceCategory === TYPE_CONTINUUM ||
-        proposal.scienceCategory === TYPE_PST ||
-        proposal.scienceCategory === TYPE_CONTINUUM_SPECTRAL ||
-        proposal.scienceCategory === TYPE_ZOOM) &&
-      Array.isArray(proposal?.targets) &&
-      proposal.targets.length > 0
-    );
+    return Array.isArray(proposal?.targets) && proposal.targets.length > 0;
   }
   return true;
 };

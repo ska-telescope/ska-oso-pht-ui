@@ -70,6 +70,46 @@ describe('<GridProposals /> forReview', () => {
   vi.clearAllMocks();
 });
 
+describe('<GridProposals /> science category and observing mode columns', () => {
+  const svProposalBackend = MockProposalBackendList[1];
+
+  test('is shown next to the science category when only some proposals have one', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: [svProposalBackend, MockProposalBackendList[2]]
+    });
+    const { container } = wrapper(<GridProposals />);
+    await waitFor(() => {
+      expect(container.querySelector('[data-field="observingMode"]')).toBeInTheDocument();
+    });
+    expect(container.querySelector('[data-field="scienceCategory"]')).toBeInTheDocument();
+  });
+  vi.clearAllMocks();
+
+  test('replaces the science category column when no proposal has a science category', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: [svProposalBackend]
+    });
+    const { container } = wrapper(<GridProposals />);
+    await waitFor(() => {
+      expect(container.querySelector('[data-field="observingMode"]')).toBeInTheDocument();
+    });
+    expect(container.querySelector('[data-field="scienceCategory"]')).toBeNull();
+  });
+  vi.clearAllMocks();
+
+  test('is not shown when every proposal has a science category', async () => {
+    vi.spyOn(axios, 'get').mockResolvedValue({
+      data: [MockProposalBackendList[2]]
+    });
+    const { container } = wrapper(<GridProposals />);
+    await waitFor(() => {
+      expect(container.querySelector('[data-field="scienceCategory"]')).toBeInTheDocument();
+    });
+    expect(container.querySelector('[data-field="observingMode"]')).toBeNull();
+  });
+  vi.clearAllMocks();
+});
+
 describe('<GridProposals /> showSelection', () => {
   test('renders correctly, showSelection true', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
@@ -174,21 +214,22 @@ describe('filterProposals', () => {
   });
 
   test('filters by proposal type', () => {
-    const result = filterProposals(MockProposalFrontendList, '', null, 'standard_proposal');
-    expect(result).toHaveLength(3);
-    expect(result[0].proposalType).toBe('standard_proposal');
-    expect(result[1].proposalType).toBe('standard_proposal');
-    expect(result[2].proposalType).toBe('standard_proposal');
+    const result = filterProposals(MockProposalFrontendList, '', null, PROPOSAL_TYPE.STANDARD);
+    expect(result.map((proposal) => proposal.title)).toEqual([
+      'In a galaxy far, far away',
+      'Incomplete Proposal'
+    ]);
   });
 
   test('filters by the science verification proposal type', () => {
-    const proposals = [
-      { ...MockProposalFrontendList[0], proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION },
-      ...MockProposalFrontendList.slice(1)
-    ];
-    const result = filterProposals(proposals, '', null, PROPOSAL_TYPE.SCIENCE_VERIFICATION);
+    const result = filterProposals(
+      MockProposalFrontendList,
+      '',
+      null,
+      PROPOSAL_TYPE.SCIENCE_VERIFICATION
+    );
     expect(result).toHaveLength(1);
-    expect(result[0].proposalType).toBe(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
+    expect(result[0].title).toBe('The Milky Way View');
   });
 
   test('filters by science category', () => {
@@ -202,11 +243,11 @@ describe('filterProposals', () => {
       MockProposalFrontendList,
       'The Milky Way View',
       null,
-      'standard_proposal'
+      PROPOSAL_TYPE.SCIENCE_VERIFICATION
     );
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe('The Milky Way View');
-    expect(result[0].proposalType).toBe('standard_proposal');
+    expect(result[0].proposalType).toBe(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
     expect(result[0].scienceCategory).toBe('');
   });
 

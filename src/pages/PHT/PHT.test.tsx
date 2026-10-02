@@ -66,12 +66,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({
     setHelp: mockSetHelp
@@ -115,7 +109,7 @@ const fullProps = {
 const { mockProposal, mockUpdateAppContent2 } = vi.hoisted(() => ({
   mockProposal: {
     id: 'prsl-t0001-20250101-00001',
-    scienceCategory: 'continuum',
+    scienceCategory: null,
     abstract: 'Test abstract',
     targets: [{ id: 1, name: 'Target 1' }],
     observations: [] as any[],
@@ -242,7 +236,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
       expect.any(Function),
       expect.any(Function),
       {},
-      mockProposal.scienceCategory,
+      undefined,
       mockProposal.abstract
     );
   });

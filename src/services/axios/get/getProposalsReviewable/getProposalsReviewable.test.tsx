@@ -1,9 +1,26 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import Proposal from '@utils/types/proposal.tsx';
+import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import MockProposalBackendList from '../getProposalList/mockProposalBackendList.tsx';
 import MockProposalFrontendList from '../getProposalList/mockProposalFrontendList.tsx';
 import GetProposalsReviewable from './getProposalsReviewable.tsx';
+
+// The list maps every proposal's observations. The fixture leaves them out to stay readable,
+// so they are compared separately, against the backend's observation sets.
+const withoutObservations = (proposals: Proposal[]) =>
+  proposals.map((proposal) => {
+    const rest = { ...proposal };
+    delete rest.observations;
+    return rest;
+  });
+
+const observationIds = (proposals: Proposal[]) =>
+  proposals.map((proposal) => proposal.observations?.map((observation) => observation.id));
+
+const backendObservationIds = (proposals: ProposalBackend[]) =>
+  proposals.map((proposal) =>
+    proposal.observation_info.observation_sets?.map((set) => set.observation_set_id)
+  );
 
 describe('GetProposalsReviewable Service', () => {
   let mockedAuthClient: any;
@@ -24,13 +41,15 @@ describe('GetProposalsReviewable Service', () => {
   test('returns mapped data from API', async () => {
     mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackendList });
     const result = (await GetProposalsReviewable(mockedAuthClient)) as Proposal[];
-    expect(result).to.deep.equal(MockProposalFrontendList);
+    expect(withoutObservations(result)).to.deep.equal(MockProposalFrontendList);
+    expect(observationIds(result)).to.deep.equal(backendObservationIds(MockProposalBackendList));
   });
 
   test('returns unsorted data when API returns only one proposal', async () => {
     mockedAuthClient.get.mockResolvedValue({ data: [MockProposalBackendList[0]] });
-    const result = await GetProposalsReviewable(mockedAuthClient);
-    expect(result).toEqual([MockProposalFrontendList[0]]);
+    const result = (await GetProposalsReviewable(mockedAuthClient)) as Proposal[];
+    expect(withoutObservations(result)).toEqual([MockProposalFrontendList[0]]);
+    expect(observationIds(result)).toEqual(backendObservationIds([MockProposalBackendList[0]]));
   });
 
   test('returns error message on API failure', async () => {

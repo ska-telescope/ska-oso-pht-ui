@@ -606,9 +606,9 @@
     "missing": "No observations have been added to this proposal yet"
   },
   "observationType": {
-    "label": "Observation Type",
+    "label": "Observing Mode",
     "help": "Specify if the observation type is continuum or spectral. Note that not all sub-arrays have spectral mode so this option is available based on the sub-array selected.",
-    "short": "Type",
+    "short": "Mode",
     "0": "Spectral",
     "1": "Continuum",
     "2": "PST",
@@ -616,6 +616,10 @@
     "continuum": "Continuum",
     "continuumSpectral": "Continuum-Spectral",
     "pst": "PST"
+  },
+  "observingMode": {
+    "label": "Observing Mode",
+    "notSpecified": "Not specified"
   },
   "observatoryDataProduct": {
     "id": "SDP Id",
@@ -1179,11 +1183,6 @@
   "searchForMember": {
     "label": "Search for a member"
   },
-  "scienceSubCategory": {
-    "label": "Sub-category",
-    "help": "SUB-CATEGORY: Select a sub-category that best describes your proposal.",
-    "1": "Not specified"
-  },
   "sendInviteBtn": {
     "label": "Send invitation"
   },
@@ -1494,6 +1493,7 @@
     "label": "Upload PDF"
   },
   "validation": {
+    "navigationError": "A target is required. It is located on the Target page.",
     "success": "Proposal is Valid"
   },
   "validationResults": {
@@ -1567,6 +1567,7 @@
       "title": "General",
       "titleShort": "General",
       "desc": "This page allows the user to provide general details about the proposal.",
+      "help": "Select a category that best describes the science of your proposal.",
       "pageError": "The GENERAL page is not complete"
     },
     "3": {

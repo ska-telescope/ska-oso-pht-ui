@@ -148,7 +148,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     }
 
     if (nextPageInvalid) {
-      notifyError(t('scienceCategory.validationNavigationError'));
+      notifyError(t('validation.navigationError'));
       setTimeout(() => {
         notifyClear();
       }, 4000);

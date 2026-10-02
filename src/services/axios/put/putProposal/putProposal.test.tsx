@@ -73,19 +73,19 @@ describe('Helper Functions', () => {
     });
   });
 
-  test('mappingPutProposal passes the science verification type through and encodes the observing mode', () => {
+  test('mappingPutProposal passes the science verification type through with no science category', () => {
     const proposal = {
       ...MockProposalFrontend,
       proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
       proposalSubType: [],
-      scienceCategory: TYPE_CONTINUUM
+      scienceCategory: null
     };
     const proposalBackEnd: ProposalBackend = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
     expect(proposalBackEnd.proposal_info.proposal_type).to.deep.equal({
       main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
       attributes: []
     });
-    expect(proposalBackEnd.proposal_info.science_category).to.equal('Continuum');
+    expect(proposalBackEnd.proposal_info.science_category).to.equal(undefined);
   });
 });
 

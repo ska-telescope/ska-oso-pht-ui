@@ -4,12 +4,12 @@ import {
   SKA_OSO_SERVICES_URL,
   DETAILS,
   OSO_SERVICES_PROPOSAL_PATH,
-  PROPOSAL_TYPE,
   ProposalSubTypeType,
   ProposalTypeType
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
+import { getObservations } from '../getProposal/getProposal';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -37,10 +37,6 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
   return investigators as Investigator[];
 };
 
-const getObservingMode = (scienceCat: string): string => {
-  return scienceCat.toLowerCase();
-};
-
 const getScienceCategory = (scienceCat: string): string => {
   const cat = DETAILS.ScienceCategory.find(
     (cat) => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
@@ -52,10 +48,7 @@ const getTheScienceCategory = (tmp: ProposalBackend): string => {
   if (tmp.proposal_info?.science_category === undefined) {
     return '';
   }
-  const isSV = tmp.proposal_info?.proposal_type.main_type === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-  return isSV
-    ? getObservingMode(tmp.proposal_info?.science_category)
-    : getScienceCategory(tmp.proposal_info?.science_category);
+  return getScienceCategory(tmp.proposal_info?.science_category);
 };
 
 export function mappingList(inRec: ProposalBackend[]): Proposal[] {
@@ -74,6 +67,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       proposalSubType: (tmp.proposal_info?.proposal_type?.attributes ??
         []) as ProposalSubTypeType[],
       scienceCategory: getTheScienceCategory(tmp),
+      observations: getObservations(tmp.observation_info?.observation_sets ?? null),
       title: tmp.proposal_info?.title,
       cycle: tmp?.cycle,
       investigators: tmp.proposal_info?.investigators

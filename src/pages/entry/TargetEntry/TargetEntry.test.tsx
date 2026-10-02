@@ -7,7 +7,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TargetEntry from './TargetEntry';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
-import { TYPE_ZOOM } from '@/utils/constants';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 
 const wrapper = (component: React.ReactElement) => {
@@ -22,6 +21,7 @@ const mockStore = vi.hoisted(() => ({ targets: [] as unknown[] }));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
+    autoLink: true,
     osdCycleId: 'CYCLE-1',
     osdCyclePolicy: {
       maxTargets: 1,
@@ -43,7 +43,6 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
     useStore: () => ({
       application: {
         content2: {
-          scienceCategory: TYPE_ZOOM,
           targets: mockStore.targets,
           observations: [],
           dataProductSDP: [],

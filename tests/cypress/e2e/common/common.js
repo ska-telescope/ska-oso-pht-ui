@@ -318,9 +318,9 @@ export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
 export const enterScienceVerificationIdeaTitle = (title = 'Science Verification Idea Title') =>
   entry('titleId', title);
 
-export const selectObservingMode = (value) => {
+const selectDropDownOption = (testId, value) => {
   // Open the dropdown using mousedown instead of click
-  cy.get('[data-testid="categoryId"] [role="combobox"]').trigger('mousedown', {
+  cy.get('[data-testid="' + testId + '"] [role="combobox"]').trigger('mousedown', {
     button: 0,
     force: true
   });
@@ -330,6 +330,12 @@ export const selectObservingMode = (value) => {
     .filter((_, el) => el.innerText.trim() === value)
     .click({ force: true });
 };
+
+export const selectScienceCategory = (value) => selectDropDownOption('categoryId', value);
+
+// SV proposals have no science category - their observing mode, selected on the Details page, is
+// the observation's type
+export const selectObservingMode = (value) => selectDropDownOption('observationType', value);
 
 // Reads the actual response body of the (already cy.wait()-ed) '@mockOSDData' interception,
 // rather than re-reading a specific fixture file directly - that keeps these assertions honest
@@ -552,11 +558,16 @@ export const createStandardProposalSession = (user) => {
 // most SV specs need once a session exists. summary is optional since callers add it at different
 // points (or not at all).
 export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = null) => {
-  clickStatusIconNav('statusId2'); // Details page
-  pageConfirmed('DETAILS');
-  selectObservingMode(observingMode);
-  if (summary) {
-    addSubmissionSummary(summary);
+  // New SV proposals start with a Continuum observation, so only other modes need selecting
+  if (observingMode !== 'Continuum' || summary) {
+    clickStatusIconNav('statusId2'); // Details page
+    pageConfirmed('DETAILS');
+    if (observingMode !== 'Continuum') {
+      selectObservingMode(observingMode);
+    }
+    if (summary) {
+      addSubmissionSummary(summary);
+    }
   }
   clickStatusIconNav('statusId4'); // Target page
   pageConfirmed('TARGET');

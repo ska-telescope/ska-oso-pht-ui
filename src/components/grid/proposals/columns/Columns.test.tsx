@@ -5,6 +5,8 @@ import {
   getColProposalTitle,
   getColProposalPI,
   getColProposalStatus,
+  getColProposalSC,
+  getColProposalObservingMode,
   getColProposalUpdated,
   getColCycle
 } from './Columns';
@@ -128,5 +130,45 @@ describe('Proposal Column Definitions', () => {
     const row = { ...mockRow, status: undefined };
     const col = getColProposalStatus(t);
     expect(col.renderCell({ row })).toBe('translated(proposalStatus.undefined)');
+  });
+
+  it('getColProposalSC shows the science category', () => {
+    const col = getColProposalSC(t);
+    expect(col.renderCell({ row: { ...mockRow, scienceCategory: 4 } })).toBe(
+      'translated(scienceCategory.4)'
+    );
+  });
+
+  it('getColProposalSC shows not specified when there is no science category', () => {
+    const col = getColProposalSC(t);
+    expect(col.renderCell({ row: { ...mockRow, scienceCategory: null } })).toBe(
+      'translated(scienceCategory.notSpecified)'
+    );
+  });
+
+  it('getColProposalObservingMode is empty when there is a science category', () => {
+    const col = getColProposalObservingMode(t);
+    expect(col.field).toBe('observingMode');
+    expect(col.headerName).toBe('translated(observingMode.label)');
+    expect(
+      col.renderCell({
+        row: { ...mockRow, scienceCategory: 4, observations: [{ type: 'continuum' }] }
+      })
+    ).toBe('');
+  });
+
+  it('getColProposalObservingMode shows the observation type when there is no science category', () => {
+    const col = getColProposalObservingMode(t);
+    const rendered = col.renderCell({
+      row: { ...mockRow, scienceCategory: null, observations: [{ type: 'pst' }] }
+    }) as React.ReactElement<{ type: string }>;
+    expect(rendered.props.type).toBe('pst');
+  });
+
+  it('getColProposalObservingMode shows not specified when there is no science category or observation', () => {
+    const col = getColProposalObservingMode(t);
+    expect(col.renderCell({ row: { ...mockRow, scienceCategory: null } })).toBe(
+      'translated(observingMode.notSpecified)'
+    );
   });
 });

@@ -1,10 +1,59 @@
-import { describe, test, vi, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, test, it, vi, expect, beforeEach } from 'vitest';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import DetailsPage, { checkAutoLink } from './DetailsPage';
+import DetailsPage from './DetailsPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import Target from '@/utils/types/target';
+import {
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  NOTIFICATION_DELAY_IN_SECONDS,
+  PROPOSAL_TYPE,
+  TYPE_PST
+} from '@/utils/constants';
+import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
+
+// ---- Module mocks ----
+
+const mockState = vi.hoisted(() => ({ proposal: {} as Record<string, unknown> }));
+const mockNotifyError = vi.hoisted(() => vi.fn());
+const mockNotifySuccess = vi.hoisted(() => vi.fn());
+
+vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+  storageObject: {
+    useStore: () => ({
+      application: { content1: [], content2: mockState.proposal },
+      updateAppContent1: vi.fn(),
+      updateAppContent2: vi.fn(),
+      helpComponent: vi.fn(),
+      helpComponentURL: vi.fn()
+    })
+  },
+  StoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
+}));
+
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
+  const { SA_AA2 } = await vi.importActual<typeof import('@/utils/constants')>('@/utils/constants');
+  return {
+    useOSDAccessors: () => ({
+      osdLOW: {
+        subArrays: [{ subArray: SA_AA2, cbfModes: ['vis', 'pst'], numberZoomChannels: 42 }]
+      },
+      osdMID: undefined
+    })
+  };
+});
+
+vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
+  default: () => ({ axiosClient: {} })
+}));
+
+vi.mock('@/utils/notify/useNotify', () => ({
+  useNotify: () => ({ notifyError: mockNotifyError, notifySuccess: mockNotifySuccess })
+}));
+
+vi.mock('@/utils/autoLinking/AutoLinking', () => ({
+  setObservingMode: vi.fn()
+}));
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -13,19 +62,6 @@ const wrapper = (component: React.ReactElement) => {
     </StoreProvider>
   );
 };
-
-vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
-  useOSDAccessors: () => ({
-    osdCycleId: 'SKAO_2027_1',
-    osdCycleDescription: 'Science Verification',
-    osdOpens: () => '27-03-2026 12:00:00',
-    osdCloses: () => '12-05-2026 04:00:00',
-    osdCyclePolicy: {
-      maxTargets: 1,
-      maxObservations: 1
-    }
-  })
-}));
 
 describe('<DetailsPage />', () => {
   test('renders correctly', () => {
@@ -105,53 +141,105 @@ describe('Abstract helperFunction', () => {
   });
 });
 
-describe('checkAutoLink function works as expected', () => {
-  const mockTarget: Target = {
-    kind: 0,
-    decStr: '-00:49:23.700',
-    id: 1,
-    name: 'm2',
-    b: 0,
-    l: 0,
-    raStr: '21:33:27.0200',
-    redshift: '',
-    vel: '-3.6',
-    velType: 0,
-    velUnit: 0
-  };
+// ---- Helpers ----
 
-  test('autoLink, obs mode but no targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [], 'continuum');
-    expect(isAutolink).toBe(false);
+const svProposal = (extra: Record<string, unknown> = {}) => ({
+  proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+  scienceCategory: null,
+  abstract: '',
+  targets: [],
+  observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
+  ...extra
+});
+
+const renderPage = async () => {
+  await act(async () => {
+    render(<DetailsPage />);
+  });
+};
+
+const observingModeCombobox = () =>
+  within(screen.getByTestId('observationType')).getByRole('combobox');
+
+const selectObservingMode = async (label: string) => {
+  fireEvent.mouseDown(observingModeCombobox());
+  await act(async () => {
+    fireEvent.click(screen.getByRole('option', { name: label }));
+  });
+};
+
+// ---- Tests ----
+
+describe('<DetailsPage /> observing mode', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(setObservingMode).mockResolvedValue({ success: true });
   });
 
-  test('autoLink, no obs mode but targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [mockTarget], '');
-    expect(isAutolink).toBe(false);
+  it('shows the science category and no observing mode for standard proposals', async () => {
+    mockState.proposal = {
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      scienceCategory: null,
+      abstract: ''
+    };
+    await renderPage();
+
+    expect(screen.getByTestId('categoryId')).toBeInTheDocument();
+    expect(screen.queryByTestId('observationType')).not.toBeInTheDocument();
   });
 
-  test('autoLink, no obs mode and no targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [], '');
-    expect(isAutolink).toBe(false);
+  it('shows the observing mode of the observation and no science category for SV proposals', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    expect(screen.queryByTestId('categoryId')).not.toBeInTheDocument();
+    expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
   });
 
-  test('no autoLink, science category and targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(false, [mockTarget], 'Cosmology');
-    expect(isAutolink).toBe(false);
+  it('shows continuum for SV proposals without an observation', async () => {
+    mockState.proposal = svProposal({ observations: [] });
+    await renderPage();
+
+    expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
   });
 
-  test('no autoLink, no science category and no targets - no auto link triggered', () => {
-    const isAutolink = checkAutoLink(false, [], '');
-    expect(isAutolink).toBe(false);
+  it('sets the observing mode on the observation when changed, without a notification if there is no target', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    await selectObservingMode('observationType.pst');
+
+    expect(setObservingMode).toHaveBeenCalledWith(
+      TYPE_PST,
+      expect.any(Function),
+      expect.any(Function),
+      {},
+      42
+    );
+    expect(mockNotifySuccess).not.toHaveBeenCalled();
+    expect(mockNotifyError).not.toHaveBeenCalled();
   });
 
-  test('autoLink, obs mode and targets - auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [mockTarget], 'continuum');
-    expect(isAutolink).toBe(true);
+  it('notifies of the auto-link success when changed with a target', async () => {
+    mockState.proposal = svProposal({ targets: [{ id: 1, name: 'M2' }] });
+    await renderPage();
+
+    await selectObservingMode('observationType.pst');
+
+    expect(mockNotifySuccess).toHaveBeenCalledWith(
+      'autoLink.success',
+      NOTIFICATION_DELAY_IN_SECONDS
+    );
   });
 
-  test('autoLink, obs mode and targets - auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [mockTarget], 'spectral');
-    expect(isAutolink).toBe(true);
+  it('notifies of the error when setting the observing mode fails', async () => {
+    vi.mocked(setObservingMode).mockResolvedValue({ success: false, error: 'bad' });
+    mockState.proposal = svProposal({ targets: [{ id: 1, name: 'M2' }] });
+    await renderPage();
+
+    await selectObservingMode('observationType.pst');
+
+    expect(mockNotifyError).toHaveBeenCalledWith('bad', NOTIFICATION_DELAY_IN_SECONDS);
+    expect(mockNotifySuccess).not.toHaveBeenCalled();
   });
 });

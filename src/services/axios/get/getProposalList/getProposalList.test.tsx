@@ -7,6 +7,23 @@ import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@/utils/constants';
 
+// The list maps every proposal's observations. The fixture leaves them out to stay readable,
+// so they are compared separately, against the backend's observation sets.
+const withoutObservations = (proposals: Proposal[]) =>
+  proposals.map((proposal) => {
+    const rest = { ...proposal };
+    delete rest.observations;
+    return rest;
+  });
+
+const observationIds = (proposals: Proposal[]) =>
+  proposals.map((proposal) => proposal.observations?.map((observation) => observation.id));
+
+const backendObservationIds = (proposals: ProposalBackend[]) =>
+  proposals.map((proposal) =>
+    proposal.observation_info.observation_sets?.map((set) => set.observation_set_id)
+  );
+
 describe('Helper Functions', () => {
   test('getUniqueMostRecentItems returns most recent items based on specified key', () => {
     const result: ProposalBackend[] = getUniqueMostRecentItems(MockProposalBackendList, 'prsl_id');
@@ -17,23 +34,23 @@ describe('Helper Functions', () => {
 
   test('mappingList returns mapped proposal list from backend to frontend format', () => {
     const proposalFrontEnd: Proposal[] = mappingList(MockProposalBackendList);
-    expect(proposalFrontEnd).to.deep.equal(MockProposalFrontendList);
+    expect(withoutObservations(proposalFrontEnd)).to.deep.equal(MockProposalFrontendList);
+    expect(observationIds(proposalFrontEnd)).to.deep.equal(
+      backendObservationIds(MockProposalBackendList)
+    );
   });
 
-  test('mappingList passes the science verification type through and decodes the observing mode', () => {
-    const [proposalFrontEnd] = mappingList([
-      {
-        ...MockProposalBackendList[0],
-        proposal_info: {
-          ...MockProposalBackendList[0].proposal_info,
-          proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, attributes: [] },
-          science_category: 'Continuum'
-        }
-      }
-    ]);
+  test('mappingList passes the science verification type through with no science category', () => {
+    const svProposal = MockProposalBackendList[1];
+    expect(svProposal.proposal_info.proposal_type.main_type).to.equal(
+      PROPOSAL_TYPE.SCIENCE_VERIFICATION
+    );
+    const [proposalFrontEnd] = mappingList([svProposal]);
     expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
     expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
-    expect(proposalFrontEnd.scienceCategory).to.equal(TYPE_CONTINUUM);
+    expect(proposalFrontEnd.scienceCategory).to.equal('');
+    // The observations are what the observing mode is shown from
+    expect(proposalFrontEnd.observations?.map((obs) => obs.type)).to.deep.equal([TYPE_CONTINUUM]);
   });
 });
 
@@ -56,13 +73,15 @@ describe('GetProposalList Service', () => {
   test('returns mapped data from API', async () => {
     mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackendList });
     const result = (await GetProposalList(mockedAuthClient)) as Proposal[];
-    expect(result).to.deep.equal(MockProposalFrontendList);
+    expect(withoutObservations(result)).to.deep.equal(MockProposalFrontendList);
+    expect(observationIds(result)).to.deep.equal(backendObservationIds(MockProposalBackendList));
   });
 
   test('returns unsorted data when API returns only one proposal', async () => {
     mockedAuthClient.get.mockResolvedValue({ data: [MockProposalBackendList[0]] });
-    const result = await GetProposalList(mockedAuthClient);
-    expect(result).toEqual([MockProposalFrontendList[0]]);
+    const result = (await GetProposalList(mockedAuthClient)) as Proposal[];
+    expect(withoutObservations(result)).toEqual([MockProposalFrontendList[0]]);
+    expect(observationIds(result)).toEqual(backendObservationIds([MockProposalBackendList[0]]));
   });
 
   test('returns error message on API failure', async () => {
