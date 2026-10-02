@@ -189,11 +189,12 @@ export const HiddenSDPData = (
   }
 };
 
-export const newDataProductsForMode = (observation: Observation) => {
+export const newDataProductsForMode = (observation: Observation): DataProductSDPNew[] => {
   const data = SDPData(observation);
   const newDSP: DataProductSDPNew = {
     id: generateDataProductId(),
     observationId: observation.id,
+    selected: true,
     data
   };
 
@@ -312,7 +313,8 @@ export async function linkTarget(
     (dp) => dp.observationId === observation.id
   );
   const newDataProducts = existingDataProducts.length ? [] : newDataProductsForMode(observation);
-  const mainDataProduct = existingDataProducts[0] ?? newDataProducts[0];
+  const mainDataProduct =
+    existingDataProducts.find((dp) => dp.selected) ?? existingDataProducts[0] ?? newDataProducts[0];
 
   const link = await buildTargetLink(
     target,

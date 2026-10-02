@@ -29,7 +29,7 @@ export default function DataProductsPage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentRow, setCurrentRow] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const { osdCyclePolicy } = useOSDAccessors();
   const navigate = useNavigate();
 
   const getProposal = () => application.content2 as Proposal;
@@ -115,21 +115,13 @@ export default function DataProductsPage() {
     return !!proposal && Array.isArray(proposal.observations) && proposal.observations.length > 0;
   };
 
-  const hasTargetObservations = () => {
-    return (getProposal()?.targetObservation?.length ?? 0) > 0;
-  };
-
   const noObservations = () => {
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid size={{ md: 10 }}>
           <Alert
             color={AlertColorTypes.Warning}
-            text={
-              osdCyclePolicy?.maxObservations === 1 && hasTargetObservations()
-                ? t('page.8.noObservations')
-                : t('error.noObservationsLoggedOut')
-            }
+            text={t('error.noObservations')}
             testId="noObservationsNotification"
           />
         </Grid>
@@ -138,7 +130,7 @@ export default function DataProductsPage() {
   };
 
   const dataProductList = () => {
-    if (autoLink ? !hasTargetObservations() : !hasObservations()) {
+    if (!hasObservations()) {
       return null;
     }
 
@@ -174,9 +166,9 @@ export default function DataProductsPage() {
   return (
     <Shell page={PAGE}>
       <>
-        {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
+        {!hasObservations() && noObservations()}
 
-        {(autoLink ? hasTargetObservations() : hasObservations()) && (
+        {hasObservations() && (
           <>
             {osdCyclePolicy?.maxDataProducts !== 1 && dataProductList()}
             {osdCyclePolicy?.maxDataProducts === 1 && (

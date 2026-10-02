@@ -97,9 +97,11 @@ describe('AutoLinking, newDataProductsForMode', () => {
     };
     const sdps = newDataProductsForMode(obs);
     expect(sdps).toHaveLength(2);
-    expect(sdps[0]).to.deep.equal(CONTINUUM_IMAGE_DATA_PRODUCT);
+    // The main data product is selected; the hidden visibilities one is not
+    expect(sdps[0]).to.deep.equal({ ...CONTINUUM_IMAGE_DATA_PRODUCT, selected: true });
     expect(sdps[1].observationId).toBe('obs-123');
     expect(sdps[1].data?.dataProductType).toBe(DP_TYPE_VISIBLE);
+    expect(sdps[1].selected).toBeUndefined();
   });
 
   test('SDP default spectral', () => {
@@ -112,9 +114,11 @@ describe('AutoLinking, newDataProductsForMode', () => {
     };
     const sdps = newDataProductsForMode(obs);
     expect(sdps).toHaveLength(2);
-    expect(sdps[0]).to.deep.equal(SPECTRAL_DATA_PRODUCT);
+    // The main data product is selected; the hidden visibilities one is not
+    expect(sdps[0]).to.deep.equal({ ...SPECTRAL_DATA_PRODUCT, selected: true });
     expect(sdps[1].observationId).toBe('obs-123');
     expect(sdps[1].data?.dataProductType).toBe(DP_TYPE_VISIBLE);
+    expect(sdps[1].selected).toBeUndefined();
   });
 
   test('SDP default PST', () => {
@@ -125,7 +129,7 @@ describe('AutoLinking, newDataProductsForMode', () => {
     };
     const sdps = newDataProductsForMode(obs);
     expect(sdps).toHaveLength(1);
-    expect(sdps[0]).to.deep.equal(PST_TIMING_DATA_PRODUCT);
+    expect(sdps[0]).to.deep.equal({ ...PST_TIMING_DATA_PRODUCT, selected: true });
   });
 
   // Continuum and spectral weighting is already covered by the deep-equal fixture tests above;
@@ -678,6 +682,30 @@ describe('linkTarget()', () => {
         sensCalc: validMockSensCal
       }
     ]);
+  });
+
+  it('links the selected data product rather than the first one', async () => {
+    proposal = {
+      ...proposal,
+      dataProductSDP: [
+        { ...SPECTRAL_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' },
+        {
+          id: 'existing-hidden-sdp',
+          observationId: 'existing-obs',
+          selected: true,
+          data: { dataProductType: DP_TYPE_VISIBLE }
+        } as any
+      ]
+    };
+
+    await linkTarget(mockTarget, getProposal, setProposal, mockAuthAxiosClient);
+
+    expect(getSensCalc).toHaveBeenCalledWith(
+      editedObservation,
+      mockTarget,
+      expect.objectContaining({ id: 'existing-hidden-sdp' })
+    );
+    expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('existing-hidden-sdp');
   });
 
   it('creates a calibration strategy for the existing observation, keeping existing notes', async () => {

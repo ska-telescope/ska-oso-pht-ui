@@ -243,6 +243,7 @@ export const MockProposalFrontend: Proposal = {
     {
       id: 'SDP-2',
       observationId: 'obs-obR1Ej',
+      selected: true,
       data: {
         dataProductType: DP_TYPE_IMAGES,
         dispersionMeasure: 0,
@@ -417,6 +418,7 @@ export const MockProposalFrontendZoom: Proposal = {
     {
       id: 'SDP-1',
       observationId: 'obs-arMIoY',
+      selected: true,
       data: {
         dataProductType: DP_TYPE_IMAGES,
         dispersionMeasure: 0,
