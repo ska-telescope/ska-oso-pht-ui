@@ -1042,7 +1042,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={suppliedValue}
         setValue={setSuppliedValue}
         label={label}
-        disabled={isLow()}
+        unitsDisabled={isLow()}
         minValue={minValue}
         maxValue={maxValue}
         minInclusive={false}
