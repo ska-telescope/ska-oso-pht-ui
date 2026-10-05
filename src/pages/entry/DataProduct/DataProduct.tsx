@@ -77,9 +77,7 @@ import DispersionMeasureField from '@/components/fields/dispersionMeasure/disper
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
 import TargetObservation from '@/utils/types/targetObservation';
-import {
-  updateImagesDataProductSizes
-} from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
+import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import {
   isDataProductPolarisationsValid,
@@ -1191,11 +1189,13 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                targetObservation()?.sensCalc == undefined
-                  ? theme.palette.warning.main
-                  : targetObservation()?.sensCalc?.statusGUI !== STATUS_INITIAL
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
+                !targetObservation()
+                  ? theme.palette.error.main
+                  : targetObservation()?.sensCalc == undefined
+                    ? theme.palette.warning.main
+                    : targetObservation()?.sensCalc?.statusGUI !== STATUS_INITIAL
+                      ? theme.palette.success.main
+                      : theme.palette.error.main
               }
               title={
                 isContinuum()

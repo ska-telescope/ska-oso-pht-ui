@@ -78,11 +78,11 @@ describe('<CalibrationPage />', () => {
   });
 
   describe('auto-linked proposals', () => {
-    test('shows the same no-target message as other proposals when there is no target', () => {
+    test('asks for a target when there is no target', () => {
       mockOSD.autoLink = true;
       renderWithProposal({ targets: [], targetObservation: [], calibrationStrategy: [] });
 
-      expect(screen.getByText('error.noCalibrationsLinking')).toBeInTheDocument();
+      expect(screen.getByText('error.noCalibrationsNoTarget')).toBeInTheDocument();
       expect(screen.queryByTestId('calibrationEntryStub')).not.toBeInTheDocument();
     });
 

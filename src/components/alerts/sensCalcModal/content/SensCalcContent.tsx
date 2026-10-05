@@ -101,6 +101,14 @@ export default function SensCalcContent({
     );
   };
 
+  if (!targetObservation) {
+    return (
+      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
+        <Typography p={GAP}>{t('sensitivityCalculatorResults.noTarget')}</Typography>
+      </Alert>
+    );
+  }
+
   if (observation?.type === TYPE_PST) {
     return (
       <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
