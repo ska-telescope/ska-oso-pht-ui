@@ -157,7 +157,6 @@
     "uploadSuccessMsg": "All targets in file have been uploaded into the Science Verification Idea"
   },
   "validation": {
-    "navigationError": "A target is required. It is located on the Target page.",
     "success": "Science Verification Idea is Valid"
   },
   "viewProposal": {

@@ -22,9 +22,6 @@ import {
   FREQUENCY_MHZ,
   INTEGRATION_TIME_UNITS,
   IW_BRIGGS,
-  PAGE_CALIBRATION,
-  PAGE_DATA_PRODUCTS,
-  PAGE_OBSERVATION,
   PROPOSAL_TYPE,
   SENSITIVITY_UNITS,
   STATUS_ERROR,
@@ -53,7 +50,6 @@ import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
 import { imageSizeSchema } from '../../components/fields/imageSize/imageSize';
 import { pixelSizeSchema } from '../../components/fields/pixelSize/pixelSize';
-import { channelsOutSchemaForMax } from '../../components/fields/channelsOut/channelsOut';
 import { timeAveragingSchema } from '../../components/fields/timeAveraging/timeAveraging';
 import { frequencyAveragingSchema } from '../../components/fields/frequencyAveraging/frequencyAveraging';
 import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
@@ -522,20 +518,6 @@ export const useValidateProposal = () => {
       /* See SRCNet INACTIVE - validateSRCPage() */
     ];
   };
-};
-
-/**
- * Checks whether the proposal can navigate to the given page, e.g. blocking the
- * Observation/Data Products/Calibration pages until a target exists.
- */
-export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
-  if (
-    checkLink &&
-    (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS || page === PAGE_CALIBRATION)
-  ) {
-    return Array.isArray(proposal?.targets) && proposal.targets.length > 0;
-  }
-  return true;
 };
 
 export function validateSkyDirection1Text(value: string): string | null {

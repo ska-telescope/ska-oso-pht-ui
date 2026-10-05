@@ -1493,7 +1493,6 @@
     "label": "Upload PDF"
   },
   "validation": {
-    "navigationError": "A target is required. It is located on the Target page.",
     "success": "Proposal is Valid"
   },
   "validationResults": {
