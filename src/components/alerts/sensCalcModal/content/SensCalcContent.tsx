@@ -89,9 +89,11 @@ export default function SensCalcContent({
             sx={{ align: 'left', fontWeight: 'bold' }}
             variant="body1"
           >
-            {observation?.subarray === SA_CUSTOM || isNatural
-              ? PresentCustomResultValue(elementValue, elementId)
-              : presentValue(elementValue)}{' '}
+            {elementId === 'targetName'
+              ? elementValue
+              : observation?.subarray === SA_CUSTOM || isNatural
+                ? PresentCustomResultValue(elementValue, elementId)
+                : presentValue(elementValue)}{' '}
             {!elementUnits || observation?.subarray === SA_CUSTOM || isNatural
               ? ''
               : presentUnits(elementUnits)}
