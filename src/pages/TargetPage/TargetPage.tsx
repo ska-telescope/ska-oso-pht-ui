@@ -4,18 +4,11 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
-import {
-  validateTargetPage,
-  validateObservationPage,
-  validateSDPPage,
-  validateLinkingPage,
-  validateCalibrationPage
-} from '../../utils/validation/validation';
+import { useValidateProposal } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import {
   PAGE_TARGET,
   PAGE_OBSERVATION,
-  STATUS_OK,
   TARGET_OPTION,
   PAGE_DATA_PRODUCTS,
   PAGE_LINKING,
@@ -38,48 +31,22 @@ export default function TargetPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { isSV, autoLink } = useOSDAccessors();
+  const { isSV } = useOSDAccessors();
   const getProposalState = () => application.content1 as number[];
+  const validateProposal = useValidateProposal();
 
+  // The pages that depend on the target are revalidated with it, so their statuses are updated
+  // when the target is added or deleted
   const setTheProposalState = () => {
-    const proposal = getProposal();
-    const currentState = getProposalState();
-    const targetStatus = validateTargetPage(proposal);
-
-    const observationStatus =
-      targetStatus === STATUS_OK
-        ? validateObservationPage(proposal, autoLink)
-        : currentState[PAGE_OBSERVATION];
-
-    const sdpStatus =
-      targetStatus === STATUS_OK ? validateSDPPage(proposal) : currentState[PAGE_DATA_PRODUCTS];
-
-    const linkingStatus =
-      targetStatus === STATUS_OK ? validateLinkingPage(proposal) : currentState[PAGE_LINKING];
-
-    const calibrationStatus =
-      targetStatus === STATUS_OK
-        ? validateCalibrationPage(proposal)
-        : currentState[PAGE_CALIBRATION];
-
-    const nextState = currentState.map((v, i) => {
-      switch (i) {
-        case PAGE_TARGET:
-          return targetStatus;
-        case PAGE_OBSERVATION:
-          return observationStatus;
-        case PAGE_DATA_PRODUCTS:
-          return sdpStatus;
-        case PAGE_LINKING:
-          return linkingStatus;
-        case PAGE_CALIBRATION:
-          return calibrationStatus;
-        default:
-          return v;
-      }
-    });
-
-    updateAppContent1(nextState);
+    const statuses = validateProposal(getProposal());
+    const pages = [
+      PAGE_TARGET,
+      PAGE_OBSERVATION,
+      PAGE_DATA_PRODUCTS,
+      PAGE_LINKING,
+      PAGE_CALIBRATION
+    ];
+    updateAppContent1(getProposalState().map((v, i) => (pages.includes(i) ? statuses[i] : v)));
   };
 
   React.useEffect(() => {

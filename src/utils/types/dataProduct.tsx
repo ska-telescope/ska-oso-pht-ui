@@ -79,6 +79,9 @@ export type DataProductSDPNew = {
   // TODO rename DataProductSDP instead
   id: string;
   observationId: string;
+  // the data product used for the sensitivity results
+  // (and selected when Data Product page renders)
+  selected?: boolean;
   data:
     | SDPImageContinuumData
     | SDPVisibilitiesContinuumData

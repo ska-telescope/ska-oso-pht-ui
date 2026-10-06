@@ -287,6 +287,18 @@ const getDataProductType = (el: any) => {
   }
 };
 
+/**
+ * Marks the data products linked to results as selected. Selection is not stored in the backend,
+ * so this keeps it in step with the results and keeps it if the target is later removed.
+ */
+const markSelectedDataProducts = (
+  dataProducts: DataProductSDPNew[],
+  results: ResultsDetailsBackend[] | null | undefined
+): DataProductSDPNew[] => {
+  const linkedIds = new Set((results ?? []).map((result) => result.data_product_ref));
+  return dataProducts.map((dp) => (linkedIds.has(dp.id) ? { ...dp, selected: true } : dp));
+};
+
 const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDPNew[] => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
@@ -794,7 +806,10 @@ export function mapping(inRec: ProposalBackend): Proposal {
         ? FileUploadStatus.OK
         : FileUploadStatus.INITIAL,
     dataProductSDP: inRec?.observation_info?.data_product_sdps
-      ? getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[])
+      ? markSelectedDataProducts(
+          getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[]),
+          inRec.observation_info?.result_details
+        )
       : [],
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO remove this property from type as not needed

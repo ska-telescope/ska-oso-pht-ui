@@ -1,5 +1,5 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { afterEach, describe, expect, test } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { MockCalibratorFrontendList } from '@services/axios/get/getCalibratorList/mockCalibratorListFrontend.tsx';
@@ -27,80 +27,75 @@ vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   };
 });
 
+const mockOSD = vi.hoisted(() => ({ autoLink: false }));
+
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
+    autoLink: mockOSD.autoLink,
     osdCycleId: 'CYCLE-1',
     osdCyclePolicy: {
       maxTargets: 1,
-      maxObservations: 1
+      maxObservations: 1,
+      calibrationFactoryDefined: true
     }
   })
 }));
 
+vi.mock('../../components/layout/Shell/Shell', () => ({
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>
+}));
+
+vi.mock('../entry/Calibration/CalibrationEntry', () => ({
+  default: () => <div data-testid="calibrationEntryStub" />
+}));
+
+const renderWithProposal = (proposal: object) => {
+  vi.spyOn(storageObject, 'useStore').mockReturnValue({
+    ...completeMockStore,
+    application: {
+      ...completeMockStore.application,
+      content2: { ...completeMockStore.application.content2, ...proposal }
+    }
+  } as any);
+  wrapper(<CalibrationPage />);
+};
+
 describe('<CalibrationPage />', () => {
+  afterEach(() => {
+    mockOSD.autoLink = false;
+    vi.restoreAllMocks();
+  });
+
   test('renders correctly', async () => {
     wrapper(<CalibrationPage />);
   });
 
-  // test('renders calibration strategy elements', async () => {
-  //   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
-  //   wrapper(<CalibrationPage />);
-  //   expect(await screen.getAllByTestId('calibratorName')).toHaveLength(2);
-  //   expect(await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].name)).toHaveLength(2);
-  //   expect(await screen.getAllByTestId('duration')).toHaveLength(2);
-  //   expect(
-  //     await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].durationMin)
-  //   ).toHaveLength(2);
-  //   expect(await screen.getAllByTestId('intent')).toHaveLength(2);
-  //   expect(
-  //     await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].calibrationIntent)
-  //   ).toHaveLength(2);
-  //   expect(await screen.getByTestId('target')).toBeInTheDocument();
-  //   expect(
-  //     await screen.getByDisplayValue(MockProposalFrontend?.observations?.[0]?.linked as string)
-  //   ).toBeInTheDocument();
-  //   expect(await screen.getByTestId('integrationTime')).toBeInTheDocument();
-  //   expect(await screen.getByDisplayValue('60.00')).toBeInTheDocument();
-  // });
+  test('shows that no calibration was created when a target is linked without one', () => {
+    renderWithProposal({ calibrationStrategy: null });
 
-  test('renders no calibration strategy', async () => {
-    vi.spyOn(storageObject, 'useStore').mockReturnValue({
-      ...completeMockStore,
-      application: {
-        ...completeMockStore.application,
-        content2: {
-          ...completeMockStore.application.content2,
-          calibrationStrategy: null
-        }
-      }
-    } as any);
-    wrapper(<CalibrationPage />);
+    expect(screen.getByText('error.noCalibrationsLoggedOut')).toBeInTheDocument();
+    expect(screen.queryByTestId('calibrationEntryStub')).not.toBeInTheDocument();
   });
 
-  // test('renders checkbox and comment field', async () => {
-  //   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
-  //   wrapper(<CalibrationPage />);
-  //   const checkboxContainer = await screen.findByTestId('calibratorCheckbox');
-  //   expect(checkboxContainer).toBeInTheDocument();
-  //   const checkbox = screen.getByRole('checkbox');
-  //   expect(checkbox).toBeChecked(); // test data should already be checked
-  //   const commentField = await screen.findByTestId('commentId');
-  //   expect(commentField).toBeInTheDocument(); // test data should already have comment
-  //   expect(
-  //     await screen.getByDisplayValue('This is an observatory defined calibration strategy.')
-  //   ).toBeInTheDocument();
-  // });
+  describe('auto-linked proposals', () => {
+    test('asks for a target when there is no target', () => {
+      mockOSD.autoLink = true;
+      renderWithProposal({ targets: [], targetObservation: [], calibrationStrategy: [] });
 
-  // test('updates checkbox and toggles comment field', async () => {
-  //   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
-  //   wrapper(<CalibrationPage />);
-  //   const checkbox = await screen.findByTestId('calibratorCheckbox');
-  //   expect(checkbox).toBeInTheDocument();
-  //   act(() => {
-  //     fireEvent.click(checkbox);
-  //   });
-  //   expect(checkbox).not.toBeChecked();
-  //   const commentField = await screen.queryByTestId('commentId');
-  //   expect(commentField).not.toBeInTheDocument();
-  // });
+      expect(screen.getByText('error.noCalibrationsNoTarget')).toBeInTheDocument();
+      expect(screen.queryByTestId('calibrationEntryStub')).not.toBeInTheDocument();
+    });
+
+    test('shows the calibration once the target is linked', () => {
+      mockOSD.autoLink = true;
+      renderWithProposal({
+        targetObservation: [
+          { targetId: 'target-1', observationId: 'obs-1', dataProductsSDPId: 'sdp-1' }
+        ]
+      });
+
+      expect(screen.getByTestId('calibrationEntryStub')).toBeInTheDocument();
+      expect(screen.queryByTestId('noDataNotification')).not.toBeInTheDocument();
+    });
+  });
 });

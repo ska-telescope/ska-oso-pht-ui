@@ -48,6 +48,20 @@ describe('Helper Functions', () => {
     expect(proposalFrontEnd.technicalPDF).to.equal(undefined);
   });
 
+  test('mapping marks the data product linked to the results as selected', () => {
+    const proposalFrontEnd: Proposal = mapping(MockProposalBackend);
+    expect(proposalFrontEnd.dataProductSDP?.[0].id).to.equal('SDP-2');
+    expect(proposalFrontEnd.dataProductSDP?.[0].selected).to.equal(true);
+  });
+
+  test('mapping leaves data products unselected when there are no results', () => {
+    const proposalFrontEnd: Proposal = mapping({
+      ...MockProposalBackend,
+      observation_info: { ...MockProposalBackend.observation_info, result_details: [] }
+    } as any);
+    proposalFrontEnd.dataProductSDP?.forEach((dp) => expect(dp.selected).to.equal(undefined));
+  });
+
   test('mapping returns an empty sub-type list when the backend sends no attributes', () => {
     const proposalFrontEnd: Proposal = mapping({
       ...MockProposalBackend,

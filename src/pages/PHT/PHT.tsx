@@ -57,7 +57,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
-import autoLinking from '@/utils/autoLinking/AutoLinking';
+import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
@@ -159,14 +159,7 @@ export default function PHT({
       return;
     }
     autoRepairAttemptedForId.current = proposal.id;
-    autoLinking(
-      target,
-      getProposal,
-      setProposal,
-      authClient,
-      proposal.observations?.[0]?.type,
-      proposal.abstract
-    ).then((result) => {
+    linkTarget(target, getProposal, setProposal, authClient).then((result) => {
       if (!result?.success) {
         notifyWarning(result?.error ?? t('autoLink.error'));
       }

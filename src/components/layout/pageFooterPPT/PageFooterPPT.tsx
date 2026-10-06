@@ -22,7 +22,6 @@ import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { validateProposalNavigation } from '@/utils/validation/validation';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -34,9 +33,9 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
   const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
-  const { notifyClear, notifyError, notifySuccess, notifyWarning } = useNotify();
+  const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
-  const { isSV, osdCycleId, osdCyclePolicy } = useOSDAccessors();
+  const { isSV, osdCycleId } = useOSDAccessors();
 
   const proposal = application.content2 as Proposal;
 
@@ -99,12 +98,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     t
   ]);
 
-  const nextPageInvalid = !validateProposalNavigation(
-    proposal,
-    nextPageNo,
-    isSV && osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
-  );
-
   const showPrevNav = () => {
     if (loggedIn && currPageNo > 0) {
       return true;
@@ -147,25 +140,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       return;
     }
 
-    if (nextPageInvalid) {
-      notifyError(t('validation.navigationError'));
-      setTimeout(() => {
-        notifyClear();
-      }, 4000);
-    }
-
-    if (!nextPageInvalid && nextPageNo < NAV.length) {
+    if (nextPageNo < NAV.length) {
       navigate(NAV[nextPageNo]);
     }
-  }, [
-    currPageNo,
-    nextPageNo,
-    loggedIn,
-    navigate,
-    proposal,
-    osdCyclePolicy?.maxTargets,
-    osdCyclePolicy?.maxObservations
-  ]);
+  }, [currPageNo, nextPageNo, loggedIn, navigate]);
 
   const nextPageClicked = () => {
     if (currPageNo === -1) createProposal();

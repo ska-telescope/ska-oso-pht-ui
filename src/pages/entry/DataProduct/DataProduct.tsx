@@ -19,6 +19,8 @@ import {
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
   CHANNELS_OUT_MAX_COMBINED,
+  CHANNELS_OUT_MIN_CONTINUUM,
+  CHANNELS_OUT_MIN_SPECTRAL,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
@@ -35,21 +37,19 @@ import {
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
   POLARISATIONS_DEFAULT,
+  PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
+  PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   STATUS_INITIAL,
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
-  PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
-  PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
-  WRAPPER_HEIGHT,
-  CHANNELS_OUT_MIN_CONTINUUM,
-  CHANNELS_OUT_MIN_SPECTRAL
+  WRAPPER_HEIGHT
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
@@ -270,8 +270,11 @@ export default function DataProduct({ data }: DataProductProps) {
     );
   };
 
+  // The linked data product is the one in the results, or the selected one while no target is linked
   const getLinkedDataProductId = (obsId: string, fallbackId = '') =>
-    getObservationTargetObservations(obsId)[0]?.dataProductsSDPId ?? fallbackId;
+    getObservationTargetObservations(obsId)[0]?.dataProductsSDPId ??
+    getObservationDataProducts(obsId).find((dp) => dp.selected)?.id ??
+    fallbackId;
 
   const getLinkedDataProduct = (obsId: string, fallbackId = '') => {
     const observationDataProducts = getObservationDataProducts(obsId);
@@ -408,9 +411,11 @@ export default function DataProduct({ data }: DataProductProps) {
     }
 
     const taper = isLow() ? taperLowValue : taperMidValue;
-    const newDataProduct: DataProductSDPNew = {
+    const selected = getProposal()?.dataProductSDP?.find((dp) => dp.id === id)?.selected;
+    return {
       id: id,
       observationId,
+      selected,
       data: {
         dataProductType,
         imageSizeValue,
@@ -432,7 +437,6 @@ export default function DataProduct({ data }: DataProductProps) {
         rotationMeasure
       }
     };
-    return newDataProduct;
   };
 
   /* ------------------------------------------- */
@@ -600,6 +604,10 @@ export default function DataProduct({ data }: DataProductProps) {
     const dataProductsAfterReset = updateDataProducts(
       updateDataProducts(proposal.dataProductSDP ?? [], resetUnlinkedDataProduct),
       nextLinkedDataProduct
+    ).map((dp) =>
+      dp.observationId === observation.id
+        ? { ...dp, selected: dp.id === nextLinkedDataProduct.id }
+        : dp
     );
     const linkedTargetObservations = updateLinkedDataProductId(
       proposal.targetObservation ?? [],
@@ -1181,11 +1189,13 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                targetObservation()?.sensCalc == undefined
-                  ? theme.palette.warning.main
-                  : targetObservation()?.sensCalc?.statusGUI !== STATUS_INITIAL
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
+                !targetObservation()
+                  ? theme.palette.error.main
+                  : targetObservation()?.sensCalc == undefined
+                    ? theme.palette.warning.main
+                    : targetObservation()?.sensCalc?.statusGUI !== STATUS_INITIAL
+                      ? theme.palette.success.main
+                      : theme.palette.error.main
               }
               title={
                 isContinuum()

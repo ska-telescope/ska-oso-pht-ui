@@ -397,6 +397,46 @@ describe('validateSDPPage continuum visibilities rules', () => {
   });
 });
 
+describe('validateSDPPage auto-linked sensitivity rules', () => {
+  const observation = { id: 'obs-1', type: TYPE_PST };
+  const dataProduct = {
+    id: 'sdp-1',
+    observationId: 'obs-1',
+    data: { dataProductType: PULSAR_TIMING_VALUE }
+  } as DataProductSDPNew;
+  const makeProposal = (targetObservation: unknown[]) =>
+    ({
+      observations: [observation],
+      dataProductSDP: [dataProduct],
+      targetObservation
+    }) as any;
+  const link = { targetId: 'target-1', observationId: 'obs-1', dataProductsSDPId: 'sdp-1' };
+
+  it('is valid without a target when the cycle does not auto-link', () => {
+    expect(validateSDPPage(makeProposal([]))).toBe(STATUS_OK);
+  });
+
+  it('is invalid without a target when the cycle auto-links', () => {
+    expect(validateSDPPage(makeProposal([]), true)).toBe(STATUS_ERROR);
+  });
+
+  it('is valid when the target is linked with sensitivity results', () => {
+    expect(
+      validateSDPPage(makeProposal([{ ...link, sensCalc: { statusGUI: STATUS_OK } }]), true)
+    ).toBe(STATUS_OK);
+  });
+
+  it('is invalid when the sensitivity results are an error', () => {
+    expect(
+      validateSDPPage(makeProposal([{ ...link, sensCalc: { statusGUI: STATUS_ERROR } }]), true)
+    ).toBe(STATUS_ERROR);
+  });
+
+  it('is valid when the target is linked without results, as for SSO targets and PST', () => {
+    expect(validateSDPPage(makeProposal([link]), true)).toBe(STATUS_OK);
+  });
+});
+
 describe('validateObservationPage supplied rules', () => {
   const baseObservation = {
     supplied: {
@@ -406,12 +446,12 @@ describe('validateObservationPage supplied rules', () => {
     }
   };
 
-  it('returns STATUS_OK for non-autoLink when observations exist with valid supplied values', () => {
+  it('returns STATUS_OK when observations exist with valid supplied values, with no target', () => {
     const proposal = {
       observations: [baseObservation],
       targetObservation: []
     };
-    expect(validateObservationPage(proposal as any, false)).toBe(STATUS_OK);
+    expect(validateObservationPage(proposal as any)).toBe(STATUS_OK);
   });
 
   it('returns STATUS_ERROR for integration supplied values above the converted max', () => {
@@ -433,7 +473,7 @@ describe('validateObservationPage supplied rules', () => {
       ],
       targetObservation: []
     };
-    expect(validateObservationPage(proposal as any, false)).toBe(STATUS_ERROR);
+    expect(validateObservationPage(proposal as any)).toBe(STATUS_ERROR);
   });
 
   it('returns STATUS_OK for sensitivity supplied values greater than zero', () => {
@@ -450,15 +490,15 @@ describe('validateObservationPage supplied rules', () => {
       ],
       targetObservation: []
     };
-    expect(validateObservationPage(proposal as any, false)).toBe(STATUS_OK);
+    expect(validateObservationPage(proposal as any)).toBe(STATUS_OK);
   });
 
-  it('returns STATUS_ERROR for autoLink when target observations exist but supplied is invalid', () => {
+  it('returns STATUS_ERROR when a linked observation has an invalid supplied value', () => {
     const proposal = {
       observations: [{ ...baseObservation, supplied: { ...baseObservation.supplied, value: -1 } }],
       targetObservation: [{ targetId: '1', observationId: 'obs-1' }]
     };
-    expect(validateObservationPage(proposal as any, true)).toBe(STATUS_ERROR);
+    expect(validateObservationPage(proposal as any)).toBe(STATUS_ERROR);
   });
 
   it('transitions Observation breadcrumb status from STATUS_OK to STATUS_ERROR when supplied becomes invalid', () => {
@@ -466,13 +506,13 @@ describe('validateObservationPage supplied rules', () => {
       observations: [baseObservation],
       targetObservation: []
     };
-    expect(validateObservationPage(validProposal as any, false)).toBe(STATUS_OK);
+    expect(validateObservationPage(validProposal as any)).toBe(STATUS_OK);
 
     const invalidProposal = {
       observations: [{ ...baseObservation, supplied: { ...baseObservation.supplied, value: -1 } }],
       targetObservation: []
     };
-    expect(validateObservationPage(invalidProposal as any, false)).toBe(STATUS_ERROR);
+    expect(validateObservationPage(invalidProposal as any)).toBe(STATUS_ERROR);
   });
 });
 

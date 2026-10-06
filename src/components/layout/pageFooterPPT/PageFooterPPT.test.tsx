@@ -8,6 +8,7 @@ import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposa
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import { NAV, PAGE_OBSERVATION, PAGE_TARGET } from '@/utils/constants';
 
 // --- Additional mocks ---
 vi.mock('@/utils/notify/useNotify', () => ({
@@ -16,10 +17,6 @@ vi.mock('@/utils/notify/useNotify', () => ({
     notifySuccess: vi.fn(),
     notifyWarning: vi.fn()
   })
-}));
-
-vi.mock('@/utils/validation/validation', () => ({
-  validateProposalNavigation: vi.fn(() => true)
 }));
 
 // --- Existing mocks ---
@@ -31,9 +28,11 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: vi.fn(() => true)
 }));
 
+const mockOSD = vi.hoisted(() => ({ isSV: false }));
+
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
-    isSV: false,
+    isSV: mockOSD.isSV,
     osdCycleId: 'CYCLE-1',
     osdCyclePolicy: {
       maxTargets: 1,
@@ -68,6 +67,7 @@ const mockNotification = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mockOSD.isSV = false;
 
   storageObject.useStore = () =>
     ({
@@ -145,6 +145,16 @@ describe('PageFooterPPT', () => {
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalled();
+    });
+  });
+
+  it('moves on from the Target page of an SV proposal without a target', async () => {
+    mockOSD.isSV = true;
+    wrapper(<PageFooterPPT pageNo={PAGE_TARGET} />);
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(NAV[PAGE_OBSERVATION]);
     });
   });
 

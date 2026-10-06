@@ -24,8 +24,6 @@ export default function CalibrationPage() {
 
   const getProposal = () => application.content2 as Proposal;
 
-  const maxObservations = osdCyclePolicy?.maxObservations ?? 99999999;
-
   React.useEffect(() => {
     setHelp('page.' + PAGE + '.help');
   }, []);
@@ -45,18 +43,20 @@ export default function CalibrationPage() {
   };
 
   const noData = () => {
-    const theText =
-      maxObservations === 1
-        ? hasTargetObservations()
-          ? t('page.6.noObservations')
-          : t('error.noCalibrationsLoggedOut')
-        : hasTargetObservations()
-          ? t('page.6.noObservations')
-          : t('error.noCalibrationsLinking');
+    // Calibration needs a target linked to an observation, which is the same for every proposal
+    const theText = autoLink
+      ? t('error.noCalibrationsNoTarget')
+      : hasTargetObservations()
+        ? t('error.noCalibrationsLoggedOut')
+        : t('error.noCalibrationsLinking');
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid size={{ md: 10 }}>
-          <Alert color={AlertColorTypes.Warning} text={theText} testId="noDataNotification" />
+          <Alert
+            color={autoLink ? AlertColorTypes.Error : AlertColorTypes.Warning}
+            text={theText}
+            testId="noDataNotification"
+          />
         </Grid>
       </Grid>
     );

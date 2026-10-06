@@ -1280,6 +1280,7 @@
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "noTarget": "Define a target to see sensitivity results",
     "notApplicableForSSO": "Currently unavailable for non-sidereal objects",
     "sensitivity": "Sensitivity",
     "spectralSensitivityWeighted": "Weighted spectral sensitivity",
@@ -1493,7 +1494,6 @@
     "label": "Upload PDF"
   },
   "validation": {
-    "navigationError": "A target is required. It is located on the Target page.",
     "success": "Proposal is Valid"
   },
   "validationResults": {
@@ -1732,6 +1732,7 @@
     "noObservationsLoggedOut": "NO OBSERVATION SETUP CREATED",
     "noCalibrationsLoggedOut": "NO CALIBRATIONS CREATED",
     "noCalibrationsLinking": "THERE NEEDS TO BE TARGETS LINKED TO OBSERVATION / DATA PRODUCT COMBINATIONS",
+    "noCalibrationsNoTarget": "Define a target to show calibration strategy",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "proposalNotLoaded": "No proposal loaded — please select a proposal to continue.",
