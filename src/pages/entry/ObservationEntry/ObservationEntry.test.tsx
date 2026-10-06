@@ -7,6 +7,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import {
   PROPOSAL_TYPE,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
   ZOOM_CHANNELS_DEFAULT_LOW
@@ -277,6 +278,45 @@ describe('<ObservationEntry />', () => {
         wrapper(<ObservationEntry />);
       });
       expect(observationTypeCombobox()).toHaveAttribute('aria-disabled', 'true');
+    });
+  });
+
+  describe('frequency set up', () => {
+    beforeEach(() => {
+      mockState.observationTypes = ['continuum', 'spectral', 'pst'];
+    });
+
+    afterEach(() => {
+      mockState.proposalType = undefined;
+      mockState.observationTypes = ['spectral'];
+    });
+
+    it('shows the continuum bandwidth for a PST observation', async () => {
+      mockState.proposalType = PROPOSAL_TYPE.STANDARD;
+      await act(async () => {
+        wrapper(<ObservationEntry data={DEFAULT_PST_OBSERVATION_LOW} />);
+      });
+      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
+      expect(screen.queryByTestId('bandwidth-change-btn')).not.toBeInTheDocument();
+      expect(screen.getByTestId('pstMode')).toBeInTheDocument();
+    });
+
+    it('shows sub-bands for a continuum observation', async () => {
+      mockState.proposalType = PROPOSAL_TYPE.STANDARD;
+      await act(async () => {
+        wrapper(<ObservationEntry data={DEFAULT_CONTINUUM_OBSERVATION_LOW} />);
+      });
+      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
+      expect(screen.getByTestId('subBands')).toBeInTheDocument();
+    });
+
+    it('hides sub-bands for a continuum observation in a science verification proposal', async () => {
+      mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
+      await act(async () => {
+        wrapper(<ObservationEntry data={DEFAULT_CONTINUUM_OBSERVATION_LOW} />);
+      });
+      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
+      expect(screen.queryByTestId('subBands')).not.toBeInTheDocument();
     });
   });
 });

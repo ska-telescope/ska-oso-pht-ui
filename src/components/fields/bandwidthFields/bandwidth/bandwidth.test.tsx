@@ -6,6 +6,11 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import Bandwidth from './bandwidth';
 import { TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM } from '@/utils/constants.ts';
 
+const mockSetHelp = vi.hoisted(() => vi.fn());
+vi.mock('@/utils/help/useHelp', () => ({
+  useHelp: () => ({ setHelp: mockSetHelp })
+}));
+
 const RESOLUTION_HZ = 1808.449074;
 const MAX_ZOOM_CHANNELS_FOR_AA2 = 1800;
 
@@ -153,5 +158,21 @@ describe('<Bandwidth />', () => {
     );
     await pressArrowUp(screen.getByTestId('zoomChannels'));
     expect(setZoomChannels).not.toHaveBeenCalled();
+  });
+
+  test('LOW: focusing the channel-count field shows help with the max channel count', async () => {
+    wrapper(
+      <Bandwidth
+        telescope={TELESCOPE_LOW_NUM}
+        value={8}
+        setValue={vi.fn()}
+        zoomChannels={1000}
+        setZoomChannels={vi.fn()}
+        maxZoomChannels={MAX_ZOOM_CHANNELS_FOR_AA2}
+        resolutionHz={RESOLUTION_HZ}
+      />
+    );
+    await userEvent.click(screen.getByTestId('zoomChannels'));
+    expect(mockSetHelp).toHaveBeenCalledWith('zoomChannels', { max: MAX_ZOOM_CHANNELS_FOR_AA2 });
   });
 });

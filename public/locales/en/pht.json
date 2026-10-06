@@ -1758,9 +1758,6 @@
   },
   "zoomChannels": {
     "help": "Maximum number of channels for Low AA2 is {{max}}. To increase bandwidth, increase the spectral averaging parameter",
-    "label": "Number of channels",
-    "range": {
-      "error": "Valid range is {{min}} - {{max}}"
-    }
+    "label": "Number of channels"
   }
 }

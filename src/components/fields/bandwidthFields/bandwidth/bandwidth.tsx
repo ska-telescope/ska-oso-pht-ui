@@ -161,7 +161,7 @@ export default function BandwidthField({
             digitsOnly
             onCommit={commitChannels}
             onStep={stepChannelsValue}
-            onFocus={() => setHelp('zoomChannels')}
+            onFocus={() => setHelp('zoomChannels', { max: maxZoomChannels })}
             incrementDisabled={disabled || zoomChannels >= maxZoomChannels}
             decrementDisabled={disabled || zoomChannels <= 1}
             disabled={disabled}
