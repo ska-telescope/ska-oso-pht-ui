@@ -169,8 +169,6 @@ export const TIME_AVERAGING_DEFAULT = 1;
 export const FREQUENCY_AVERAGING_DEFAULT = 1;
 export const POLARISATIONS_DEFAULT = ['I'];
 
-export const BANDWIDTH_LABEL_SELECTOR = 0;
-
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: IW_NATURAL },
   { label: 'uniform', lookup: 'uniform', value: IW_UNIFORM },
