@@ -706,7 +706,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   }, [zoomChannels]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
+    <Box
+      sx={{
+        p: 0,
+        pt: 1,
+        height: WRAPPER_HEIGHT
+      }}
+    >
       {children}
     </Box>
   );
@@ -729,7 +735,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const idField = () => {
     return fieldWrapper(
-      <Box pt={1}>
+      <Box
+        sx={{
+          pt: 1
+        }}
+      >
         <TextEntry
           disabled
           errorText={isEdit() ? '' : validateId()}
@@ -787,7 +797,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
     return fieldWrapper(
-      <Grid container justifyContent="space-around">
+      <Grid
+        container
+        sx={{
+          justifyContent: 'space-around'
+        }}
+      >
         <Grid size={{ xs: 12 }}>
           <FrequencySpectrum
             minFreq={minFreq}
@@ -905,7 +920,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     };
 
     return fieldWrapper(
-      <Grid pt={1} container direction="row" spacing={GAP}>
+      <Grid
+        container
+        direction="row"
+        spacing={GAP}
+        sx={{
+          pt: 1
+        }}
+      >
         <Grid size={{ xs: 6 }}>{NumOf15mAntennasField()}</Grid>
         <Grid size={{ xs: 6 }}>{numOf13mAntennasField()}</Grid>
       </Grid>
@@ -978,7 +1000,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     };
 
     return (
-      <Box pt={2}>
+      <Box
+        sx={{
+          pt: 2
+        }}
+      >
         <DropDown
           options={getOptions()}
           testId="suppliedType"
@@ -1062,7 +1088,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const centralFrequencyField = () => {
     return fieldWrapper(
-      <Box pt={1}>
+      <Box
+        sx={{
+          pt: 1
+        }}
+      >
         <CentralFrequency
           observingBand={observingBand}
           value={centralFrequency}
@@ -1097,7 +1127,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       );
     };
     return fieldWrapper(
-      <Box pt={1}>
+      <Box
+        sx={{
+          pt: 1
+        }}
+      >
         <ContinuumBandwidthField
           setValue={setContinuumBandwidth}
           value={continuumBandwidth}
@@ -1183,7 +1217,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (isLow() && isZoom()) {
       return (
         <>
-          <Grid size={{ md: 12, lg: 12 }} p={2}>
+          <Grid
+            size={{ md: 12, lg: 12 }}
+            sx={{
+              p: 2
+            }}
+          >
             {frequencySpectrumField()}
           </Grid>
           <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
@@ -1195,7 +1234,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (isZoom()) {
       return (
         <>
-          <Grid size={{ md: 12, lg: 12 }} p={2}>
+          <Grid
+            size={{ md: 12, lg: 12 }}
+            sx={{
+              p: 2
+            }}
+          >
             {frequencySpectrumField()}
           </Grid>
           <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
@@ -1208,7 +1252,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (isPST()) {
       return (
         <>
-          <Grid size={{ md: 12, lg: 12 }} p={2}>
+          <Grid
+            size={{ md: 12, lg: 12 }}
+            sx={{
+              p: 2
+            }}
+          >
             {frequencySpectrumField()}
           </Grid>
           <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
@@ -1221,7 +1270,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const isSVProposal = getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
     return (
       <>
-        <Grid size={{ md: 12, lg: 12 }} p={2}>
+        <Grid
+          size={{ md: 12, lg: 12 }}
+          sx={{
+            p: 2
+          }}
+        >
           {frequencySpectrumField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
@@ -1256,11 +1310,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         elevation={0}
       >
         <Grid
-          p={2}
           container
           direction="row"
-          alignItems="space-between"
-          justifyContent="space-between"
+          sx={{
+            p: 2,
+            alignItems: 'space-between',
+            justifyContent: 'space-between'
+          }}
         >
           <Grid />
           <Grid />
@@ -1282,27 +1338,35 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   return (
     <HelpShell page={PAGE}>
-      <Box pt={2}>
+      <Box
+        sx={{
+          pt: 2
+        }}
+      >
         {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
           <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         )}
         <Grid
-          pl={4}
-          pr={4}
           container
           direction="row"
-          alignItems="space-evenly"
-          justifyContent="space-between"
           spacing={1}
+          sx={{
+            pl: 4,
+            pr: 4,
+            alignItems: 'space-evenly',
+            justifyContent: 'space-between'
+          }}
         >
           <Grid size={{ md: 12, lg: 9 }}>
             <Grid
               container
               direction="row"
               spacing={2}
-              pb={2}
-              alignItems="stretch"
-              justifyContent="flex-start"
+              sx={{
+                pb: 2,
+                alignItems: 'stretch',
+                justifyContent: 'flex-start'
+              }}
             >
               <Grid size={{ md: 6 }}>
                 <BorderedSection
@@ -1350,13 +1414,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
             <BorderedSection title={t('observationSections.frequencySetUp')}>
               <Grid
-                p={0}
                 container
                 direction="row"
-                alignItems="center"
                 columnSpacing={6}
                 rowSpacing={1}
-                justifyContent="space-between"
+                sx={{
+                  p: 0,
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}
               >
                 {frequencySetUp()}
               </Grid>
@@ -1365,7 +1431,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isLow() &&
             subarrayConfig === SA_AA2 && ( // STAR-1923 : Need to make this generic from OSD Data or endpoint
               <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
-                <Box px={3}>
+                <Box
+                  sx={{
+                    px: 3
+                  }}
+                >
                   <img src={lowAA2Image} alt="Low AA2" width="100%" />
                 </Box>
               </Grid>

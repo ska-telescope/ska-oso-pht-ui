@@ -55,7 +55,10 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
       style={{ cursor: 'hand' }}
       disabled={disableIcons()}
     >
-      <Grid container direction="column" alignItems="center" justifyContent="center">
+      <Grid
+        container
+        sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+      >
         <div style={{ all: 'initial', display: 'inline-block' }}>
           <StatusIcon
             ariaDescription={t('pageStatus.toolTip', {

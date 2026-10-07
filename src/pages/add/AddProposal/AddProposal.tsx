@@ -45,7 +45,11 @@ export default function AddProposal() {
   const contentValid = () => titleValid() && typeValid();
 
   return (
-    <Box pt={2}>
+    <Box
+      sx={{
+        pt: 2
+      }}
+    >
       <Shell page={PAGE} footerPage={PAGE_FOOTER} buttonDisabled={!contentValid()} helpDisabled>
         <TitleEntry page={PAGE_INNER} />
       </Shell>

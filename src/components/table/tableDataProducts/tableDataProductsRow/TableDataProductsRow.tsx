@@ -116,7 +116,13 @@ export default function TableDataProductsRow({
         {/* Collapse / Edit / Delete */}
         <TableCell role="gridcell" sx={{ maxWidth: 120, p: 0 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-            <Box display="flex" flexDirection="column" alignItems="center">
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+              }}
+            >
               <ExpandIcon
                 onClick={() => toggleRow(item.id)}
                 toolTip={t('editDataProduct.toolTip')}
@@ -127,7 +133,13 @@ export default function TableDataProductsRow({
               </Typography>
             </Box>
             {editClicked && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <EditIcon
                   onClick={() => editClicked(item)}
                   toolTip={t('editDataProduct.toolTip')}
@@ -137,7 +149,13 @@ export default function TableDataProductsRow({
             )}
 
             {deleteClicked && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <TrashIcon
                   onClick={() => deleteClicked(item)}
                   toolTip={t('deleteDataProduct.toolTip')}
@@ -150,7 +168,12 @@ export default function TableDataProductsRow({
 
         {/* SDP ID */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {item.id}
           </Typography>
         </TableCell>
@@ -167,7 +190,12 @@ export default function TableDataProductsRow({
           }}
         >
           <Box>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary'
+              }}
+            >
               {t('observationType.' + observation?.type)}
             </Typography>
           </Box>
@@ -175,7 +203,12 @@ export default function TableDataProductsRow({
 
         {/* Observation ID */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {item.observationId}
           </Typography>
         </TableCell>
@@ -192,8 +225,11 @@ export default function TableDataProductsRow({
           >
             <Typography
               variant="body2"
-              color={colorsTelescope.fg[0]}
-              sx={{ whiteSpace: 'nowrap', p: 1 }}
+              sx={{
+                color: colorsTelescope.fg[0],
+                whiteSpace: 'nowrap',
+                p: 1
+              }}
             >
               {t('telescopes.' + observation?.telescope)}{' '}
               {t('subArrayConfiguration.' + observation?.subarray)}

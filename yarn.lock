@@ -2094,13 +2094,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.17.25":
-  version: 4.17.25
-  resolution: "@types/lodash@npm:4.17.25"
-  checksum: 10c0/ca2049f16bf527e04d6e27702e3912a484faaff587de77a5c58e0d243b9292a655e1d7f7e5bdf2ffdf49a76da10673097f8dd4901990679058d47ccd99051877
-  languageName: node
-  linkType: hard
-
 "@types/ms@npm:*":
   version: 2.1.0
   resolution: "@types/ms@npm:2.1.0"
@@ -6491,7 +6484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"katex@npm:^0.16.0":
+"katex@npm:^0.16.47":
   version: 0.16.47
   resolution: "katex@npm:0.16.47"
   dependencies:
@@ -6708,7 +6701,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.23, lodash@npm:^4.18.1":
+"lodash@npm:^4.17.23":
   version: 4.18.1
   resolution: "lodash@npm:4.18.1"
   checksum: 10c0/757228fc68805c59789e82185135cf85f05d0b2d3d54631d680ca79ec21944ec8314d4533639a14b8bcfbd97a517e78960933041a5af17ecb693ec6eecb99a27
@@ -7048,13 +7041,6 @@ __metadata:
   bin:
     lookup-amd: bin/cli.js
   checksum: 10c0/f06dfb844fc9ed2dcb6d66971d2c641d2f915d95383724a903592a58f2a616b9dbe208ead863f72bb680ec56b8a7011ad55879f68f9e881bf3600661b11189c4
-  languageName: node
-  linkType: hard
-
-"moment@npm:^2.31.0":
-  version: 2.31.0
-  resolution: "moment@npm:2.31.0"
-  checksum: 10c0/3755b186b8ff62c565685ce69dde55bf46003c0329139be5c8dd7845cd567bfd7d02be3a13e379a25acb9e98f6b87136c4776745e440615a4f5ca8dd9a8815b9
   languageName: node
   linkType: hard
 
@@ -7836,18 +7822,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-latex-next@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "react-latex-next@npm:3.0.0"
-  dependencies:
-    katex: "npm:^0.16.0"
-  peerDependencies:
-    react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
-  checksum: 10c0/ab34bad39931aadaeb05e1fa50b0ba1f80c81555d7e8e09c142e456de312a1011018afd7694eefee02c36cd92b06330d6266c6cd61e1affd84aa13d518d7c986
-  languageName: node
-  linkType: hard
-
 "react-pdf@npm:^11.0.0":
   version: 11.0.0
   resolution: "react-pdf@npm:11.0.0"
@@ -8526,7 +8500,6 @@ __metadata:
     "@types/cypress-cucumber-preprocessor": "npm:^4.0.5"
     "@types/d3": "npm:^7.4.3"
     "@types/debug": "npm:^4"
-    "@types/lodash": "npm:^4.17.25"
     "@types/node": "npm:^22.20.5"
     "@types/papaparse": "npm:^5.5.2"
     "@types/react": "npm:^19.3.0"
@@ -8557,17 +8530,15 @@ __metadata:
     i18next: "npm:^26.4.2"
     i18next-browser-languagedetector: "npm:^8.2.1"
     i18next-http-backend: "npm:^4.0.2"
-    lodash: "npm:^4.18.1"
+    katex: "npm:^0.16.47"
     mocha: "npm:^12.0.3"
     mocha-junit-reporter: "npm:^2.2.1"
-    moment: "npm:^2.31.0"
     nyc: "npm:^18.0.0"
     papaparse: "npm:^5.7.0"
     prettier: "npm:^3.9.9"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
     react-i18next: "npm:^17.0.16"
-    react-latex-next: "npm:^3.0.0"
     react-pdf: "npm:^11.0.0"
     react-redux: "npm:^9.3.0"
     react-router: "npm:^8.4.0"

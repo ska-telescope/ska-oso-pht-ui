@@ -165,12 +165,14 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       elevation={0}
     >
       <Grid
-        p={4}
-        pt={0}
         container
         direction="row"
-        alignItems="flex-end"
-        justifyContent="space-between"
+        sx={{
+          p: 4,
+          pt: 0,
+          alignItems: 'flex-end',
+          justifyContent: 'space-between'
+        }}
       >
         <Grid sx={{ pointerEvents: 'auto' }}>
           {showPrevNav() && (

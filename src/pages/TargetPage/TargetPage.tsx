@@ -95,7 +95,14 @@ export default function TargetPage() {
 
   const cardOptions = () => {
     return !isSV ? (
-      <Grid container direction="row" justifyContent="space-evenly" spacing={2}>
+      <Grid
+        container
+        direction="row"
+        spacing={2}
+        sx={{
+          justifyContent: 'space-evenly'
+        }}
+      >
         {targetCard(TARGET_OPTION.LIST_OF_TARGETS)}
         {targetCard(TARGET_OPTION.TARGET_MOSAIC)}
         {targetCard(TARGET_OPTION.NO_SPECIFIC_TARGET)}
@@ -109,14 +116,16 @@ export default function TargetPage() {
     <Shell page={PAGE}>
       {cardOptions()}
       <Grid
-        mt={1}
-        pl={3}
-        pr={3}
-        pb={18}
         container
-        direction="column"
-        justifyContent="space-between"
-        alignItems="center"
+        sx={{
+          flexDirection: 'column',
+          mt: 1,
+          pl: 3,
+          pr: 3,
+          pb: 18,
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
       >
         {getProposal().targetOption === 1 && <TargetListSection />}
         {getProposal().targetOption === 2 && <TargetMosaicSection />}

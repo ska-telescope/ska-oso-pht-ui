@@ -135,14 +135,26 @@ export default function TableObservationsRow({
             )}
 
             {editClicked && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <EditIcon onClick={() => editClicked(item)} toolTip={t('observations.edit')} />
                 <Typography variant="caption">{t('edit.label')}</Typography>
               </Box>
             )}
 
             {deleteClicked && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('observations.delete')} />
                 <Typography variant="caption">{t('deleteBtn.label')}</Typography>
               </Box>
@@ -161,21 +173,36 @@ export default function TableObservationsRow({
             whiteSpace: 'nowrap'
           }}
         >
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {t('observationType.' + observation?.type)}
           </Typography>
         </TableCell>
 
         {/* Observation ID */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {item.id}
           </Typography>
         </TableCell>
 
         {/* Observation Group ID */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {item.id2}
           </Typography>
         </TableCell>
@@ -192,8 +219,11 @@ export default function TableObservationsRow({
           >
             <Typography
               variant="body2"
-              color={colorsTelescope.fg[0]}
-              sx={{ whiteSpace: 'nowrap', p: 1 }}
+              sx={{
+                color: colorsTelescope.fg[0],
+                whiteSpace: 'nowrap',
+                p: 1
+              }}
             >
               {t('telescopes.' + observation?.telescope)}{' '}
               {t('subArrayConfiguration.' + observation?.subarray)}

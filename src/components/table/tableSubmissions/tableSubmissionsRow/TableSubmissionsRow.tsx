@@ -80,7 +80,13 @@ export default function TableSubmissionsRow({
         <TableCell role="gridcell" sx={{ p: 0, whiteSpace: { xs: 'normal', md: 'nowrap' } }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
             {editClicked && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <EditIcon
                   onClick={() => editClicked(item.id)}
                   disabled={!canEdit(item)}
@@ -90,7 +96,13 @@ export default function TableSubmissionsRow({
               </Box>
             )}
             {viewClicked && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <ViewIcon
                   onClick={() => viewClicked(item.id)}
                   toolTip={t('viewProposal.toolTip')}
@@ -99,7 +111,13 @@ export default function TableSubmissionsRow({
               </Box>
             )}
             {cloneClicked && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <CloneIcon
                   onClick={() => cloneClicked(item.id)}
                   disabled={!canClone(item)}
@@ -109,7 +127,13 @@ export default function TableSubmissionsRow({
               </Box>
             )}
             {deleteClicked && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <TrashIcon
                   onClick={() => deleteClicked(item.id)}
                   disabled={!canDelete(item)}
@@ -124,13 +148,23 @@ export default function TableSubmissionsRow({
         </TableCell>
 
         <TableCell role="gridcell" sx={nonTitleTextCellSx}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {item.id}
           </Typography>
         </TableCell>
 
         <TableCell role="gridcell" sx={nonTitleTextCellSx}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {item.cycle}
           </Typography>
         </TableCell>
@@ -145,9 +179,9 @@ export default function TableSubmissionsRow({
         >
           <Typography
             variant="body2"
-            color="text.secondary"
             data-testid={`row-title-${item.id}`}
             sx={{
+              color: 'text.secondary',
               display: { xs: '-webkit-box', md: 'block' },
               width: '100%',
               overflow: 'hidden',
@@ -163,7 +197,12 @@ export default function TableSubmissionsRow({
         </TableCell>
 
         <TableCell role="gridcell" sx={nonTitleTextCellSx}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {cycleInfo?.type ?? NOT_SPECIFIED}
           </Typography>
         </TableCell>
@@ -175,13 +214,23 @@ export default function TableSubmissionsRow({
             backgroundColor: getStatusColor(item.status).bg[0]
           }}
         >
-          <Typography variant="body2" color={getStatusColor(item.status).fg[0]}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: getStatusColor(item.status).fg[0]
+            }}
+          >
             {item.status}
           </Typography>
         </TableCell>
 
         <TableCell role="gridcell" sx={nonTitleTextCellSx}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {presentDateTime(item.lastUpdated)}
           </Typography>
         </TableCell>

@@ -20,7 +20,11 @@ export default function SolarSystemObjectField({
 
   const SolarSystemObjectValueField = () => {
     return (
-      <Box pt={1}>
+      <Box
+        sx={{
+          pt: 1
+        }}
+      >
         <DropDown
           options={SSO_OPTIONS}
           required
@@ -35,7 +39,13 @@ export default function SolarSystemObjectField({
   };
 
   return (
-    <Box pb={0} pt={0} sx={{ width: '100%' }}>
+    <Box
+      sx={{
+        pb: 0,
+        pt: 0,
+        width: '100%'
+      }}
+    >
       {SolarSystemObjectValueField()}
     </Box>
   );

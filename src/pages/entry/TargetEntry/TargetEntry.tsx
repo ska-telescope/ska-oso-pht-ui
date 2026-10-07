@@ -413,12 +413,12 @@ export default function TargetEntry({
       <Grid
         size={{ xs: 12 }}
         sx={{
+          mb: 4,
           position: 'relative',
           display: 'flex',
           justifyContent: 'space-between',
           width: '90%'
         }}
-        mb={4}
       >
         <AddButton
           action={addButtonAction}
@@ -528,13 +528,25 @@ export default function TargetEntry({
   const isRequired = () => name !== '' || coord1 !== '' || coord2 !== '';
 
   const wrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
+    <Box
+      sx={{
+        p: 0,
+        pt: 1,
+        height: WRAPPER_HEIGHT
+      }}
+    >
       {children}
     </Box>
   );
 
   const wrapper2 = (children?: React.JSX.Element) => (
-    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT }}>
+    <Box
+      sx={{
+        p: 0,
+        pt: 2,
+        height: WRAPPER_HEIGHT
+      }}
+    >
       {children}
     </Box>
   );
@@ -556,7 +568,11 @@ export default function TargetEntry({
 
   const fieldPatternTypeField = () => {
     return wrapper(
-      <Box pt={1}>
+      <Box
+        sx={{
+          pt: 1
+        }}
+      >
         <TextEntry
           disabled={true}
           label={t('fieldPattern.label')}
@@ -640,15 +656,37 @@ export default function TargetEntry({
 
   return (
     <>
-      <Grid pt={4}>
-        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+      <Grid
+        sx={{
+          pt: 4
+        }}
+      >
+        <Box
+          sx={{
+            pl: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '90%'
+          }}
+        >
           <BorderedSection title={t('referenceCoordinates.label')}>
             {referenceCoordinatesField()}
           </BorderedSection>
         </Box>
       </Grid>
-      <Grid pt={1}>
-        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+      <Grid
+        sx={{
+          pt: 1
+        }}
+      >
+        <Box
+          sx={{
+            pl: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '90%'
+          }}
+        >
           <BorderedSection title={t('coordinate.label')}>
             {isSSO ? solarSystemObjectField() : nameField()}
             {!isSSO && (
@@ -656,8 +694,10 @@ export default function TargetEntry({
                 container
                 spacing={GAP}
                 direction="row"
-                justifyContent="space-between"
-                alignItems="center"
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
               >
                 <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
                 <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
@@ -667,15 +707,28 @@ export default function TargetEntry({
         </Box>
       </Grid>
       {!isSSO && (
-        <Grid pt={1}>
-          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+        <Grid
+          sx={{
+            pt: 1
+          }}
+        >
+          <Box
+            sx={{
+              pl: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '90%'
+            }}
+          >
             <BorderedSection title={t('radialMotion.label')}>
               <Grid
                 container
                 spacing={GAP}
                 direction="row"
-                justifyContent="space-between"
-                alignItems="center"
+                sx={{
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
               >
                 <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
                 <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
@@ -686,15 +739,34 @@ export default function TargetEntry({
         </Grid>
       )}
       {!isSV && (
-        <Grid pt={1}>
-          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+        <Grid
+          sx={{
+            pt: 1
+          }}
+        >
+          <Box
+            sx={{
+              pl: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '90%'
+            }}
+          >
             <BorderedSection title={t('fieldPattern.groupLabel')}>
               {fieldPatternTypeField()}
             </BorderedSection>
           </Box>
         </Grid>
       )}
-      {!id && <Grid pl={10}>{addButton()}</Grid>}
+      {!id && (
+        <Grid
+          sx={{
+            pl: 10
+          }}
+        >
+          {addButton()}
+        </Grid>
+      )}
     </>
   );
 }

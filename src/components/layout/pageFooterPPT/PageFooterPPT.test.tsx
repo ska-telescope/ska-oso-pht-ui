@@ -81,6 +81,7 @@ beforeEach(() => {
         content8: {},
         content9: {}
       },
+
       updateAppContent2: vi.fn(),
       updateAppContent4: vi.fn()
     }) as any;
@@ -124,7 +125,10 @@ describe('PageFooterPPT', () => {
     const newProposal = { id: null, title: 'New SV idea', proposalType: 'science_verification' };
     const store = storageObject.useStore();
     storageObject.useStore = () =>
-      ({ ...store, application: { ...store.application, content2: newProposal } }) as any;
+      ({
+        ...store,
+        application: { ...store.application, content2: newProposal }
+      }) as any;
 
     wrapper(<PageFooterPPT pageNo={-1} />);
     fireEvent.click(screen.getByTestId('nextButtonTestId'));

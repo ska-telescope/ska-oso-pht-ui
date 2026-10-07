@@ -57,7 +57,11 @@ export default function OutputSamplingIntervalField({
   }, [value]);
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <SteppedNumberField
         testId={FIELD}
         value={value}

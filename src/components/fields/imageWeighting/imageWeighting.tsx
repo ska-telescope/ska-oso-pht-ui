@@ -27,7 +27,11 @@ export default function ImageWeightingField({
     });
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <DropDown
         disabled={disabled}
         disabledUnderline={disabled}

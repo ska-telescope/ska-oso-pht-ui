@@ -218,7 +218,11 @@ export default function SensCalcModalMultiple({
     disableClickEventBubbling: true,
     renderCell: (e: { row: { statusGUI: number; error: string } }) => {
       return (
-        <Box pt={1}>
+        <Box
+          sx={{
+            pt: 1
+          }}
+        >
           <StatusIcon
             ariaTitle={t('sensitivityCalculatorResults.status', {
               status: t('statusValue.' + e.row.statusGUI),
@@ -273,17 +277,19 @@ export default function SensCalcModalMultiple({
 
   return (
     <Dialog
-      PaperProps={{
-        style: {
-          minWidth: '95%',
-          maxWidth: '95%'
-        }
-      }}
       open={open}
       onClose={handleClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
+      slotProps={{
+        paper: {
+          style: {
+            minWidth: '95%',
+            maxWidth: '95%'
+          }
+        }
+      }}
     >
       <Card variant="outlined">
         <CardHeader

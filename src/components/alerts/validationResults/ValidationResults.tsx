@@ -40,10 +40,13 @@ export default function ValidationResults({
     <Grid>
       <Grid
         container
-        sx={{ minHeight: '0.5rem', backgroundColor: theme.palette.primary.main }}
         direction="row"
-        justifyContent="space-around"
-        alignItems="center"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          minHeight: '0.5rem',
+          backgroundColor: theme.palette.primary.main
+        }}
       >
         <Grid>
           <Typography variant="button"> </Typography>
@@ -53,7 +56,11 @@ export default function ValidationResults({
   );
 
   const headerContent = () => (
-    <Grid pb={2}>
+    <Grid
+      sx={{
+        pb: 2
+      }}
+    >
       <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
         {t('validationResults.title')}
       </Typography>
@@ -102,8 +109,19 @@ export default function ValidationResults({
 
   const footerContent = () => (
     <Grid>
-      <Grid container direction="row" justifyContent="right" alignItems="right">
-        <Grid pt={1}>
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'right',
+          alignItems: 'right'
+        }}
+      >
+        <Grid
+          sx={{
+            pt: 1
+          }}
+        >
           <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
         </Grid>
       </Grid>
@@ -117,9 +135,11 @@ export default function ValidationResults({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
-      PaperProps={{
-        style: {
-          minWidth: MODAL_WIDTH
+      slotProps={{
+        paper: {
+          style: {
+            minWidth: MODAL_WIDTH
+          }
         }
       }}
     >
@@ -134,11 +154,13 @@ export default function ValidationResults({
         <>
           <DialogContent>
             <Grid
-              p={2}
               container
-              direction="column"
-              alignItems="space-evenly"
-              justifyContent="space-around"
+              sx={{
+                flexDirection: 'column',
+                p: 2,
+                alignItems: 'space-evenly',
+                justifyContent: 'space-around'
+              }}
             >
               {headerContent()}
               {sectionTitle()}

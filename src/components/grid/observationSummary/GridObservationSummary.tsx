@@ -43,7 +43,15 @@ export default function GridObservationSummary({
       | Iterable<React.ReactNode>
       | null
       | undefined
-  ) => <Box pt={1}>{inValue}</Box>;
+  ) => (
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
+      {inValue}
+    </Box>
+  );
 
   const element = (inValue: number | string) =>
     inValue === NOT_SPECIFIED ? emptyCell() : display(inValue);
@@ -53,7 +61,10 @@ export default function GridObservationSummary({
       <>
         {!inArr || (inArr?.length === 0 && emptyCell())}
         {inArr && inArr?.length > 0 && (
-          <Grid container direction="column" justifyContent="space-between" alignItems="left">
+          <Grid
+            container
+            sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'left' }}
+          >
             {inArr.map((el) => {
               return (
                 <Grid key={el} size={{ xs: 12 }}>

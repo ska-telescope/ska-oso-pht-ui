@@ -307,7 +307,13 @@ export default function LandingPage() {
   };
 
   const pageDescription = () => (
-    <Typography align="center" variant="h6" minHeight="5vh">
+    <Typography
+      align="center"
+      variant="h6"
+      sx={{
+        minHeight: '5vh'
+      }}
+    >
       {t('page.' + PAGE_LANDING + '.desc')}
     </Typography>
   );
@@ -363,18 +369,47 @@ export default function LandingPage() {
 
   return (
     <>
-      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          p: 5,
+          alignItems: 'center',
+          justifyContent: 'space-around'
+        }}
+      >
         <Grid size={{ xs: 12 }}>{loggedIn && pageDescription()}</Grid>
-        <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
+        <Grid
+          size={{ sm: 4, md: 3, lg: 2 }}
+          sx={{
+            p: 2
+          }}
+        >
           {loggedIn ? addSubmissionButton() : null}
         </Grid>
-        <Grid size={{ sm: 4 }} p={2}>
+        <Grid
+          size={{ sm: 4 }}
+          sx={{
+            p: 2
+          }}
+        >
           {displayField() && searchDropdown()}
         </Grid>
-        <Grid size={{ sm: 4, md: 6, lg: 6 }} p={2} mt={-1}>
+        <Grid
+          size={{ sm: 4, md: 6, lg: 6 }}
+          sx={{
+            p: 2,
+            mt: -1
+          }}
+        >
           {displayField() && searchEntryField('searchId')}
         </Grid>
-        <Grid size={{ xs: 12 }} pt={1}>
+        <Grid
+          size={{ xs: 12 }}
+          sx={{
+            pt: 1
+          }}
+        >
           {/* TODO(BTN-3258): remove "under test" notice before go-live */}
           {!axiosViewError && (
             <Alert
@@ -387,7 +422,11 @@ export default function LandingPage() {
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
           {!axiosViewError && filteredData.length > 0 && (
-            <Box pt={5}>
+            <Box
+              sx={{
+                pt: 5
+              }}
+            >
               <TableSubmissions
                 data={filteredData}
                 editFunction={editIconClicked}
@@ -398,18 +437,32 @@ export default function LandingPage() {
           )}
         </Grid>
         {!loggedIn && (
-          <Grid size={{ xs: 12, md: 6 }} pt={5}>
+          <Grid
+            size={{ xs: 12, md: 6 }}
+            sx={{
+              pt: 5
+            }}
+          >
             <Stack spacing={4}>
               <BorderedSection
                 title={t('landingWelcome.label')}
                 borderColor={theme.palette.info.main}
               >
-                <Stack spacing={5} alignItems="center" justifyContent="center" p={4}>
+                <Stack
+                  spacing={5}
+                  sx={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    p: 4
+                  }}
+                >
                   <Typography
                     align="center"
                     variant="h6"
-                    minHeight="5vh"
-                    sx={{ whiteSpace: 'pre-line' }}
+                    sx={{
+                      minHeight: '5vh',
+                      whiteSpace: 'pre-line'
+                    }}
                   >
                     {t('landingWelcome.description')}
                   </Typography>
@@ -425,12 +478,21 @@ export default function LandingPage() {
                 </Stack>
               </BorderedSection>
               <BorderedSection title={t('sensCalc.label')} borderColor={theme.palette.grey[600]}>
-                <Stack spacing={3} alignItems="center" justifyContent="center" p={4}>
+                <Stack
+                  spacing={3}
+                  sx={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    p: 4
+                  }}
+                >
                   <Typography
                     align="center"
                     variant="h6"
-                    minHeight="5vh"
-                    color={theme.palette.grey[600]}
+                    sx={{
+                      minHeight: '5vh',
+                      color: theme.palette.grey[600]
+                    }}
                   >
                     {t('sensCalc.description')}
                   </Typography>
@@ -458,7 +520,10 @@ export default function LandingPage() {
         }}
         elevation={0}
       >
-        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+        <Grid
+          container
+          sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}
+        >
           <Grid>
             {axiosViewError && (
               <Alert

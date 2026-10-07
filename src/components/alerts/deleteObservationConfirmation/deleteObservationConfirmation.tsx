@@ -25,7 +25,10 @@ export default function DeleteObservationConfirmation({
 
   const alertContent = (rec: any) => {
     return (
-      <Grid p={2} container direction="column" alignItems="center" justifyContent="space-around">
+      <Grid
+        container
+        sx={{ flexDirection: 'column', p: 2, alignItems: 'center', justifyContent: 'space-around' }}
+      >
         <FieldWrapper
           label={t('arrayConfiguration.label')}
           labelWidth={LABEL_WIDTH}

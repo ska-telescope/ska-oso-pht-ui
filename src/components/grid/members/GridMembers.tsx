@@ -51,7 +51,11 @@ export default function GridMembers({
   );
 
   const dataDisplay = (value: string, toolTip: string, testId: string) => (
-    <Box pt={2}>
+    <Box
+      sx={{
+        pt: 2
+      }}
+    >
       <Tooltip data-testid={testId} title={toolTip ? toolTip : ''} arrow>
         <Typography variant="subtitle2">{value}</Typography>
       </Tooltip>

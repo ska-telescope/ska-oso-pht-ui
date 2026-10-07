@@ -131,7 +131,15 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                       px: 2
                     }}
                   >
-                    <Grid container direction="row" alignItems="center" gap={1} wrap="nowrap">
+                    <Grid
+                      container
+                      direction="row"
+                      wrap="nowrap"
+                      sx={{
+                        alignItems: 'center',
+                        gap: 1
+                      }}
+                    >
                       <Grid>
                         <IconButton
                           onClick={() =>

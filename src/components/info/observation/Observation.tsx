@@ -25,9 +25,11 @@ export default function ObservationInfo({ observation }: ObservationProps) {
           container
           data-testid="continuum-grid"
           direction="row"
-          justifyContent="space-around"
-          alignItems="center"
-          minHeight={100}
+          sx={{
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            minHeight: 100
+          }}
         ></Grid>
       )}
       {isSpectral() && (
@@ -35,9 +37,11 @@ export default function ObservationInfo({ observation }: ObservationProps) {
           container
           data-testid="spectral-grid"
           direction="row"
-          justifyContent="space-around"
-          alignItems="center"
-          minHeight={100}
+          sx={{
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            minHeight: 100
+          }}
         ></Grid>
       )}
       {isPST() && (
@@ -45,9 +49,11 @@ export default function ObservationInfo({ observation }: ObservationProps) {
           container
           data-testid="pst-grid"
           direction="row"
-          justifyContent="space-around"
-          alignItems="center"
-          minHeight={100}
+          sx={{
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            minHeight: 100
+          }}
         ></Grid>
       )}
     </>

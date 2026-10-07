@@ -139,7 +139,14 @@ export default function ObservationPage() {
 
   const noObservations = () => {
     return (
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
+      >
         <Grid size={{ md: 10 }}>
           <Alert
             color={AlertColorTypes.Warning}
@@ -152,7 +159,12 @@ export default function ObservationPage() {
   };
 
   const AddTheButton = () => (
-    <Box p={GAP} pt={0}>
+    <Box
+      sx={{
+        p: GAP,
+        pt: 0
+      }}
+    >
       <AddButton
         action={PATH[PAGE_OBSERVATION_ENTRY]}
         primary={!hasObservations()}
@@ -164,7 +176,12 @@ export default function ObservationPage() {
 
   const observationList = () => {
     return (
-      <Box pl={GAP} pr={GAP}>
+      <Box
+        sx={{
+          pl: GAP,
+          pr: GAP
+        }}
+      >
         <TableObservations
           data={elementsO ?? []}
           deleteFunction={deleteIconClicked}

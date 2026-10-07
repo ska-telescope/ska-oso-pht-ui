@@ -117,7 +117,11 @@ export default function SpectralResolutionField({
   }, [bandWidth, bandWidthUnits, frequency, frequencyUnits, observingBand, observationType]);
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       {interactive ? (
         <SelectField
           testId="spectralResolution"

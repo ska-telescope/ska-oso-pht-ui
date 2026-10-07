@@ -76,25 +76,56 @@ export default function RankEntryField({
   return (
     <>
       {/* Visual feedback */}
-      <Box textAlign="center">
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+      <Box
+        sx={{
+          textAlign: 'center'
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            mt: 1
+          }}
+        >
           {t('rank.helper')}
         </Typography>
       </Box>
 
       {suggestedRank > 0 && (
-        <Box pt={1} textAlign="center">
+        <Box
+          sx={{
+            pt: 1,
+            textAlign: 'center'
+          }}
+        >
           <Typography variant="body2" component="p">
             {t('rank.selected')}:{' '}
-            <Typography component="span" variant="body2" fontWeight="bold">
+            <Typography
+              component="span"
+              variant="body2"
+              sx={{
+                fontWeight: 'bold'
+              }}
+            >
               {suggestedRank}
             </Typography>
           </Typography>
         </Box>
       )}
 
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <Box position="relative">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+      >
+        <Box
+          sx={{
+            position: 'relative'
+          }}
+        >
           <svg
             width="240"
             height="240"
@@ -221,10 +252,20 @@ export default function RankEntryField({
           </svg>
         </Box>
 
-        <Box textAlign="center">
+        <Box
+          sx={{
+            textAlign: 'center'
+          }}
+        >
           <Typography variant="h6" component="p">
             {t('rank.selected')}:{' '}
-            <Typography component="span" variant="h4" fontWeight="bold">
+            <Typography
+              component="span"
+              variant="h4"
+              sx={{
+                fontWeight: 'bold'
+              }}
+            >
               {selectedRank}
             </Typography>
           </Typography>
@@ -240,19 +281,33 @@ export default function RankEntryField({
             backgroundColor: theme.palette.background.default
           }}
         >
-          <Box textAlign="center">
+          <Box
+            sx={{
+              textAlign: 'center'
+            }}
+          >
             <Typography variant="h6" component="h3" gutterBottom>
               {t('rank.label')} {hoveredRank !== null ? hoveredRank : selectedRank}:{' '}
               {t('rank.' + (hoveredRank !== null ? hoveredRank : selectedRank) + '.title')}
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                lineHeight: 1.6
+              }}
+            >
               {t('rank.' + (hoveredRank !== null ? hoveredRank : selectedRank) + '.description')}
             </Typography>
             {hoveredRank !== null && hoveredRank !== selectedRank && (
               <Typography
                 variant="caption"
-                color="info.main"
-                sx={{ mt: 1, fontStyle: 'italic', display: 'block' }}
+                sx={{
+                  color: 'info.main',
+                  mt: 1,
+                  fontStyle: 'italic',
+                  display: 'block'
+                }}
               >
                 {t('rank.hovering')}
               </Typography>

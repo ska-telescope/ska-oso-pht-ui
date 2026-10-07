@@ -88,7 +88,13 @@ export default function GridTargets({
         return (
           <>
             {chartClicked !== null && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <ChartIcon
                   onClick={() => (chartClicked ? chartClicked(rec) : null)}
                   toolTip={t('chartTarget.toolTip')}
@@ -97,7 +103,13 @@ export default function GridTargets({
               </Box>
             )}
             {editClicked !== null && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <EditIcon
                   onClick={() => (editClicked ? editClicked(rec) : null)}
                   toolTip={t('editTarget.toolTip')}
@@ -106,7 +118,13 @@ export default function GridTargets({
               </Box>
             )}
             {deleteClicked !== null && (
-              <Box display="flex" flexDirection="column" alignItems="center">
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center'
+                }}
+              >
                 <TrashIcon
                   onClick={() => (deleteClicked ? deleteClicked(rec) : null)}
                   toolTip={t('deleteTarget.toolTip')}

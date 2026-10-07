@@ -15,6 +15,10 @@ UNRELEASED
 * Changed: Upgraded to React 19, `@ska-telescope/ska-gui-components` 3.0.0 and `@ska-telescope/ska-login-page` 2.0.0, removing the deprecated `@ska-telescope/ska-javascript-components`; adapted to MSAL 5, and declared `@azure/msal-browser` and `@azure/msal-react` as direct dependencies (BTN-3551)
 * Changed: Upgraded Vitest to 5, Cypress to 16, i18next to 26 (with react-i18next 17), react-pdf to 11, zod to 4, react-router to 8 (replacing `react-router-dom`) and `@testing-library/jest-dom` to 7; removed unused dependencies, including the Cucumber and Xray tooling (BTN-3551)
 * CI: Run the JS lint, test, audit, e2e and typecheck jobs on `ska-build-node-ubuntu26:1.0.2`, which provides yarn 4 (BTN-3551)
+* Bugfix: LaTeX in proposal titles is now rendered by an in-app KaTeX component that escapes the surrounding text, replacing `react-latex-next`, which inserted it as unescaped HTML (BTN-3551)
+* Changed: Replaced MUI system props, deprecated `*Props` props and `Grid` column direction with `sx` and `slotProps`, in preparation for MUI 9 (BTN-3551)
+* Changed: Enabled `eslint-plugin-react-hooks`; rules with existing violations report as warnings (BTN-3551)
+* Changed: Removed `lodash` and `moment` (BTN-3551)
 * CI Test Only: Remove temp E2E overrides and increase Cypress timeouts for long-running calls 
 * Bugfix: Ensure that if no polarisations are selected this is reflected in breadcrumbs
 * Remove references to USE_LOCAL_DATA

@@ -387,7 +387,16 @@ export default function SciencePage() {
   );
 
   const uploadSuffix = () => (
-    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
+    <Grid
+      spacing={1}
+      container
+      direction="row"
+      sx={{
+        pt: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
       <Grid>
         {getProposal()?.sciencePDF?.isUploadedPdf && (
           <PDFPreviewButton
@@ -425,7 +434,14 @@ export default function SciencePage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
+      >
         <Grid size={{ xs: 6 }} data-testid="fileUpload">
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>

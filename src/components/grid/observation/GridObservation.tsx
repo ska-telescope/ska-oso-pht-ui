@@ -72,7 +72,12 @@ export default function GridObservation({
           pointerEvents: disabled ? 'none' : 'auto'
         }}
       >
-        <Typography variant="subtitle1" fontWeight="bold">
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontWeight: 'bold'
+          }}
+        >
           {row.id}
         </Typography>
         <Typography variant="subtitle2">

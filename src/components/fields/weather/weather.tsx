@@ -52,7 +52,11 @@ export default function WeatherField({
   const weatherUnitsField = () => t('weather.units');
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <NumberEntry
         errorText={errorMessage}
         label={label}

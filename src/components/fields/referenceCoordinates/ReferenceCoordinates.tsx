@@ -21,7 +21,11 @@ export default function ReferenceCoordinatesField({
 
   const ReferenceCoordinatesValueField = () => {
     return (
-      <Box pt={1}>
+      <Box
+        sx={{
+          pt: 1
+        }}
+      >
         <DropDown
           options={REFERENCE_COORDINATE_OPTIONS}
           required
@@ -38,7 +42,13 @@ export default function ReferenceCoordinatesField({
   };
 
   return (
-    <Box pb={0} pt={0} sx={{ width: '100%' }}>
+    <Box
+      sx={{
+        pb: 0,
+        pt: 0,
+        width: '100%'
+      }}
+    >
       {ReferenceCoordinatesValueField()}
     </Box>
   );

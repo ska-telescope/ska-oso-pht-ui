@@ -18,11 +18,13 @@ export default function StatusArray() {
 
   return (
     <Grid
-      sx={{ bgcolor: 'transparent' }}
       container
       direction="row"
-      alignItems="center"
-      justifyContent="space-evenly"
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        bgcolor: 'transparent'
+      }}
     >
       {pages.map((page, idx) => (
         <React.Fragment key={page}>
@@ -31,7 +33,12 @@ export default function StatusArray() {
           </Grid>
 
           {sizeOk && idx < pages.length - 1 && (
-            <Grid mt={-2} sx={{ width: '3%' }}>
+            <Grid
+              sx={{
+                mt: -2,
+                width: '3%'
+              }}
+            >
               <Divider sx={{ width: '100%', borderBottomWidth: '3px' }} />
             </Grid>
           )}

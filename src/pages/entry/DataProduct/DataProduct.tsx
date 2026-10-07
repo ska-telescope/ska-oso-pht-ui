@@ -716,7 +716,13 @@ export default function DataProduct({ data }: DataProductProps) {
   ]);
 
   const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
-    <Box p={0} pt={1} sx={{ height: height }}>
+    <Box
+      sx={{
+        p: 0,
+        pt: 1,
+        height: height
+      }}
+    >
       {children}
     </Box>
   );
@@ -982,11 +988,13 @@ export default function DataProduct({ data }: DataProductProps) {
         elevation={0}
       >
         <Grid
-          p={2}
           container
           direction="row"
-          alignItems="space-between"
-          justifyContent="space-between"
+          sx={{
+            p: 2,
+            alignItems: 'space-between',
+            justifyContent: 'space-between'
+          }}
         >
           <Grid />
           <Grid />
@@ -1030,12 +1038,14 @@ export default function DataProduct({ data }: DataProductProps) {
       <Grid
         container
         direction="row"
-        justifyContent="space-between"
-        alignItems="stretch"
         spacing={GAP}
-        m={GAP}
-        mt={1}
-        sx={{ flexGrow: 1 }}
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'stretch',
+          m: GAP,
+          mt: 1,
+          flexGrow: 1
+        }}
       >
         <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
           <BorderedSection title={t('page.7.obsTitle')}>
@@ -1071,7 +1081,13 @@ export default function DataProduct({ data }: DataProductProps) {
             {isContinuum() && (
               <BorderedSection title={t('page.7.group.' + TYPE_CONTINUUM + '.' + dataProductType)}>
                 {isDataTypeOne() && (
-                  <Grid pb={1} container spacing={GAP}>
+                  <Grid
+                    container
+                    spacing={GAP}
+                    sx={{
+                      pb: 1
+                    }}
+                  >
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>
@@ -1085,7 +1101,12 @@ export default function DataProduct({ data }: DataProductProps) {
                   </Grid>
                 )}
                 {!isDataTypeOne() && (
-                  <Grid pb={1} container>
+                  <Grid
+                    container
+                    sx={{
+                      pb: 1
+                    }}
+                  >
                     <Grid size={{ md: COL_MID }}>{fieldWrapper(timeAveragingField())}</Grid>
                     <Grid size={{ md: COL_MID }}>{fieldWrapper(frequencyAveragingField())}</Grid>
                   </Grid>
@@ -1095,7 +1116,13 @@ export default function DataProduct({ data }: DataProductProps) {
 
             {(isSpectral() || isContinuumSpectral()) && (
               <BorderedSection title={t('page.7.group.' + TYPE_ZOOM)}>
-                <Grid pb={1} container spacing={GAP}>
+                <Grid
+                  container
+                  spacing={GAP}
+                  sx={{
+                    pb: 1
+                  }}
+                >
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
@@ -1114,19 +1141,34 @@ export default function DataProduct({ data }: DataProductProps) {
             {isPST() && (
               <BorderedSection title={t('page.7.group.' + TYPE_PST + '.' + dataProductType)}>
                 {isFlowThrough() && (
-                  <Grid pb={1} container>
+                  <Grid
+                    container
+                    sx={{
+                      pb: 1
+                    }}
+                  >
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(bitDepthField())}</Grid>
                   </Grid>
                 )}
                 {isPulsarTiming() && (
-                  <Grid pb={1} container>
+                  <Grid
+                    container
+                    sx={{
+                      pb: 1
+                    }}
+                  >
                     <Grid size={{ md: COL_MID, lg: COL }}>
                       {<TickIcon onClick={() => {}} />}All set!
                     </Grid>
                   </Grid>
                 )}
                 {isDetectedFilterbank() && (
-                  <Grid pb={1} container>
+                  <Grid
+                    container
+                    sx={{
+                      pb: 1
+                    }}
+                  >
                     <Grid size={{ md: COL_MID, lg: COL }}>
                       {fieldWrapper(outputFrequencyResolutionField())}
                     </Grid>
@@ -1149,7 +1191,11 @@ export default function DataProduct({ data }: DataProductProps) {
               isSpectral() ||
               isContinuumSpectral() ||
               (isPST() && !isPulsarTiming())) && (
-              <Box pb={GAP}>
+              <Box
+                sx={{
+                  pb: GAP
+                }}
+              >
                 <BorderedSection
                   borderColor={
                     polarisationsValid() && polarisationsError.length === 0

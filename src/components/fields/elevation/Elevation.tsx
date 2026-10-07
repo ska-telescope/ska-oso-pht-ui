@@ -63,7 +63,11 @@ export default function ElevationField({
       });
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <NumberEntry
         disabled={disabled}
         errorText={errorMessage}

@@ -1,5 +1,4 @@
-import Latex from 'react-latex-next';
-import 'katex/dist/katex.min.css';
+import Latex from './Latex';
 import { NOT_APPLICABLE } from '../constants';
 
 export const presentLatex = (inStr: string) => {

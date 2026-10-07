@@ -157,7 +157,13 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const pageTitle = () => (
-    <Typography id="pageTitle" variant="h6" m={2}>
+    <Typography
+      id="pageTitle"
+      variant="h6"
+      sx={{
+        m: 2
+      }}
+    >
       {LG
         ? t(`page.${pageNo}.titleShort`)?.toUpperCase()
         : t(`page.${pageNo}.title`)?.toUpperCase()}
@@ -165,7 +171,13 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const pageDesc = () => (
-    <Typography id="pageDesc" variant="body1" m={2}>
+    <Typography
+      id="pageDesc"
+      variant="body1"
+      sx={{
+        m: 2
+      }}
+    >
       {t(`page.${pageNo}.desc`)}
     </Typography>
   );
@@ -179,9 +191,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       container
       spacing={1}
       direction="row"
-      alignItems="center"
-      justifyContent="flex-start"
-      pl={2}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        pl: 2
+      }}
     >
       <Grid>
         {backPage && backPage > 0 && (
@@ -207,10 +221,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       container
       spacing={1}
       direction="row"
-      alignItems="center"
-      justifyContent="flex-end"
       wrap="nowrap"
-      pr={2}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        pr: 2
+      }}
     >
       <Grid>
         {getProposal().id !== null && pages.includes(pageNo) && (
@@ -225,22 +241,51 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const row1 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid
+      container
+      direction="row"
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}
+    >
       <Grid>{buttonsLeft()}</Grid>
       {wrapStatusArray ? (
-        <Grid size={{ xs: 7 }} display={'none'}>
+        <Grid
+          size={{ xs: 7 }}
+          sx={{
+            display: 'none'
+          }}
+        >
           {pageNo > -1 && pages.includes(pageNo) && <StatusArray />}
         </Grid>
       ) : (
-        <Grid size={{ xs: 7 }} display={'block'}>
+        <Grid
+          size={{ xs: 7 }}
+          sx={{
+            display: 'block'
+          }}
+        >
           {getProposal().id !== '' && pages.includes(pageNo) && <StatusArray />}
         </Grid>
       )}
 
       {wrapStatusArray ? (
-        <Grid display={'block'}>{pageTitle()}</Grid>
+        <Grid
+          sx={{
+            display: 'block'
+          }}
+        >
+          {pageTitle()}
+        </Grid>
       ) : (
-        <Grid display={'none'}>{pageTitle()}</Grid>
+        <Grid
+          sx={{
+            display: 'none'
+          }}
+        >
+          {pageTitle()}
+        </Grid>
       )}
 
       <Grid>{buttonsRight()}</Grid>
@@ -248,19 +293,43 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const row1buttonsLeft = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid
+      container
+      direction="row"
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}
+    >
       <Grid>{buttonsLeft()}</Grid>
     </Grid>
   );
 
   const row2 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid
+      container
+      direction="row"
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}
+    >
       {wrapStatusArray ? (
-        <Grid size={{ xs: 12 }} display={'block'}>
+        <Grid
+          size={{ xs: 12 }}
+          sx={{
+            display: 'block'
+          }}
+        >
           {pages.includes(pageNo) && <StatusArray />}
         </Grid>
       ) : (
-        <Grid size={{ xs: 12 }} display={'none'}>
+        <Grid
+          size={{ xs: 12 }}
+          sx={{
+            display: 'none'
+          }}
+        >
           {pages.includes(pageNo) && <StatusArray />}
         </Grid>
       )}
@@ -268,9 +337,21 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const row3 = () => (
-    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid
+      container
+      direction="row"
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between'
+      }}
+    >
       {wrapStatusArray && (
-        <Grid container justifyContent="center">
+        <Grid
+          container
+          sx={{
+            justifyContent: 'center'
+          }}
+        >
           <Grid size={{ sm: 11 }}>{pageDesc()}</Grid>
         </Grid>
       )}
@@ -282,7 +363,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   return (
-    <Box p={2}>
+    <Box
+      sx={{
+        p: 2
+      }}
+    >
       {loggedIn ? row1() : row1buttonsLeft()}
       {/* I'm assuming intention is to display row2() when loggedIn is true?
       if someone understands better than I do please feel free to

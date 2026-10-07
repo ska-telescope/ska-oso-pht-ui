@@ -241,7 +241,10 @@ export default function PHT({
         }}
         elevation={0}
       >
-        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+        <Grid
+          container
+          sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}
+        >
           <Grid sx={{ pointerEvents: 'auto' }}>
             <TimedAlert
               color={notification?.level}
@@ -282,7 +285,12 @@ export default function PHT({
             arrow
             placement="top"
           >
-            <Typography pt={1} variant="body1">
+            <Typography
+              variant="body1"
+              sx={{
+                pt: 1
+              }}
+            >
               {osdCountdown}
             </Typography>
           </Tooltip>
@@ -332,7 +340,12 @@ export default function PHT({
         accessibilityColor={getAccessibilityColors()}
         application={t(LG() ? 'pht.short' : 'pht.title')}
         footerChildren={
-          <Typography pt={1} variant="body1">
+          <Typography
+            variant="body1"
+            sx={{
+              pt: 1
+            }}
+          >
             {loggedIn ? (getProposal()?.id ? `Submission ID: ${getProposal()?.id}` : '') : ''}
           </Typography>
         }

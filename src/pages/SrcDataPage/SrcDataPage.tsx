@@ -45,14 +45,24 @@ export default function SrcDataPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          p: 1,
+          alignItems: 'space-evenly',
+          justifyContent: 'center'
+        }}
+      >
         <Grid size={{ xs: 4 }}>
           <Grid
-            p={1}
             container
-            direction="column"
-            alignItems="space-evenly"
-            justifyContent="center"
+            sx={{
+              flexDirection: 'column',
+              p: 1,
+              alignItems: 'space-evenly',
+              justifyContent: 'center'
+            }}
           >
             <Grid>
               <Alert

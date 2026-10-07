@@ -42,7 +42,14 @@ export default function AlertDialog({
   };
 
   const alertTitle = () => (
-    <Grid container direction="row" justifyContent="space-around" alignItems="center">
+    <Grid
+      container
+      direction="row"
+      sx={{
+        justifyContent: 'space-around',
+        alignItems: 'center'
+      }}
+    >
       <Grid>
         <Typography variant="h5">{t(title)}</Typography>
       </Grid>
@@ -66,8 +73,10 @@ export default function AlertDialog({
           spacing={1}
           container
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
         >
           <Grid>
             <CancelButton testId="dialogCancelButton" action={handleCancel} />

@@ -63,8 +63,18 @@ export default function QuantityField({
   });
 
   return (
-    <Box pt={topPadding}>
-      <Box display="flex" alignItems="flex-end" gap={1}>
+    <Box
+      sx={{
+        pt: topPadding
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: 1
+        }}
+      >
         <TextField
           variant="standard"
           type="text"

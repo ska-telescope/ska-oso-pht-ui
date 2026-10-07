@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
-import Latex from 'react-latex-next';
+import Latex from './Latex';
 import { NOT_APPLICABLE } from '../constants';
 import {
   presentDate,

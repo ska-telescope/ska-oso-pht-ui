@@ -131,7 +131,11 @@ export default function GroupObservationsField({
   };
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       {editing && (
         <TextEntry
           inputRef={inputRef}

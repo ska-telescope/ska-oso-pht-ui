@@ -25,7 +25,11 @@ export default function VelocityTypeField({
     };
 
     return (
-      <Box pt={1}>
+      <Box
+        sx={{
+          pt: 1
+        }}
+      >
         <DropDown
           options={getOptions()}
           testId="velocityType"

@@ -492,8 +492,11 @@ export default function LinkingPage() {
             >
               <Typography
                 variant="body2"
-                color={colorsTelescope.fg[0]}
-                sx={{ whiteSpace: 'nowrap', p: 1 }}
+                sx={{
+                  color: colorsTelescope.fg[0],
+                  whiteSpace: 'nowrap',
+                  p: 1
+                }}
               >
                 {t('telescopes.' + e.row.telescope)} {t('subArrayConfiguration.' + e.row.subarray)}
               </Typography>
@@ -545,8 +548,8 @@ export default function LinkingPage() {
         field: 'id',
         renderHeader: () => (
           <Box
-            pl={2}
             sx={{
+              pl: 2,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -671,13 +674,15 @@ export default function LinkingPage() {
   return (
     <Shell page={PAGE}>
       <Grid
-        pl={GAP}
-        pr={GAP}
         container
         spacing={GAP}
         direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-around"
+        sx={{
+          pl: GAP,
+          pr: GAP,
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
       >
         <Grid size={{ md: 12, lg: 6 }}>
           <BorderedSection title={t('observatoryDataProduct.linkedObservation')}>

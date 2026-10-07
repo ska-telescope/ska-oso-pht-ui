@@ -76,7 +76,15 @@ export default function SensCalcContent({
     elementUnits?: string
   ) => {
     return (
-      <Grid key={elementId} container direction="row" justifyContent="center" alignItems="center">
+      <Grid
+        key={elementId}
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: 6 }}>
           <Typography id={elementId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
             {t(`sensitivityCalculatorResults.${elementId}`)}
@@ -106,7 +114,13 @@ export default function SensCalcContent({
   if (!targetObservation) {
     return (
       <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-        <Typography p={GAP}>{t('sensitivityCalculatorResults.noTarget')}</Typography>
+        <Typography
+          sx={{
+            p: GAP
+          }}
+        >
+          {t('sensitivityCalculatorResults.noTarget')}
+        </Typography>
       </Alert>
     );
   }
@@ -114,7 +128,13 @@ export default function SensCalcContent({
   if (observation?.type === TYPE_PST) {
     return (
       <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-        <Typography p={GAP}>{t('page.7.pstUnavailable')}</Typography>
+        <Typography
+          sx={{
+            p: GAP
+          }}
+        >
+          {t('page.7.pstUnavailable')}
+        </Typography>
       </Alert>
     );
   }
@@ -122,7 +142,13 @@ export default function SensCalcContent({
   if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
     return (
       <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-        <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
+        <Typography
+          sx={{
+            p: GAP
+          }}
+        >
+          {t('sensitivityCalculatorResults.notApplicableForSSO')}
+        </Typography>
       </Alert>
     );
   }
@@ -130,7 +156,13 @@ export default function SensCalcContent({
   if (targetObservation?.sensCalc?.error) {
     return (
       <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-        <Typography p={GAP}>{targetObservation?.sensCalc?.error}</Typography>
+        <Typography
+          sx={{
+            p: GAP
+          }}
+        >
+          {targetObservation?.sensCalc?.error}
+        </Typography>
       </Alert>
     );
   }
@@ -141,7 +173,13 @@ export default function SensCalcContent({
   ) {
     return (
       <Alert>
-        <Typography p={GAP}>{t('sensitivityCalculatorResults.noData')}</Typography>
+        <Typography
+          sx={{
+            p: GAP
+          }}
+        >
+          {t('sensitivityCalculatorResults.noData')}
+        </Typography>
       </Alert>
     );
   }

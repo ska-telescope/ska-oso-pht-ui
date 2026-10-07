@@ -153,14 +153,21 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
 
   return (
     <Grid
-      p={1}
       spacing={1}
       container
       direction="row"
-      alignItems="flex-start"
-      justifyContent="space-around"
+      sx={{
+        p: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'space-around'
+      }}
     >
-      <Grid pt={2} size={{ xs: 11 }}>
+      <Grid
+        size={{ xs: 11 }}
+        sx={{
+          pt: 2
+        }}
+      >
         <Typography>{t('importFromFile.descriptionTarget')}</Typography>
       </Grid>
       <Grid size={{ xs: 7 }}>

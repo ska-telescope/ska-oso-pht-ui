@@ -39,9 +39,9 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
-      p={0}
-      pt={1}
       sx={{
+        p: 0,
+        pt: 1,
         height: WRAPPER_HEIGHT
       }}
     >
@@ -99,21 +99,25 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
   return (
     <>
       <Grid
-        p={2}
-        pb={5}
         container
         direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-between"
+        sx={{
+          p: 2,
+          pb: 5,
+          alignItems: 'space-evenly',
+          justifyContent: 'space-between'
+        }}
       >
         <Grid size={{ sm: 12, md: 6, lg: 6 }}>
           <Grid
             size={{ sm: 12, md: 12, lg: 10 }}
-            pt={1}
             container
-            direction="column"
-            alignItems="stretch"
-            justifyContent="space-evenly"
+            sx={{
+              flexDirection: 'column',
+              pt: 1,
+              alignItems: 'stretch',
+              justifyContent: 'space-evenly'
+            }}
           >
             {submitField()}
             {editField()}

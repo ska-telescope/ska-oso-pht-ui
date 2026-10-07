@@ -51,7 +51,11 @@ export default function ChannelsOutField({
   }, [value, maxValue]);
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <SteppedNumberField
         testId={FIELD}
         label={t('channelsOut.label')}
