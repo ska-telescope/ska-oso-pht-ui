@@ -17,6 +17,7 @@ import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import {
   getColAuthors,
+  getColProposalObservingMode,
   getColProposalPI,
   getColProposalSC,
   getColProposalStatus,
@@ -239,18 +240,34 @@ export default function GridProposals({
     )
   };
 
+  // Each column is only shown when some proposal needs it: the science category when a proposal
+  // has one, and the observing mode when a proposal has none (e.g. SV)
+  const scienceCategoryColumn = proposals.some((proposal) => proposal.scienceCategory)
+    ? [getColProposalSC(t)]
+    : [];
+  const observingModeColumn = proposals.some((proposal) => !proposal.scienceCategory)
+    ? [getColProposalObservingMode(t)]
+    : [];
+
   const proposalColumns = [
     ...(showSelection ? [colSelect] : []),
     ...(showActions ? [colActions] : []),
     getColProposalTitle(t),
     getColProposalTypeCycle(t, osdPolicies),
     getColProposalStatus(t),
-    getColProposalSC(t),
+    ...scienceCategoryColumn,
+    ...observingModeColumn,
     getColProposalPI(t)
   ];
 
   const reviewColumns = [
-    ...[getColProposalType(t), getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]
+    ...[
+      getColProposalType(t),
+      getColProposalTitle(t),
+      getColAuthors(t),
+      ...scienceCategoryColumn,
+      ...observingModeColumn
+    ]
   ];
 
   const selectedData = proposals

@@ -22,16 +22,12 @@ import {
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
-  TYPE_PST,
-  TYPE_ZOOM,
-  TYPE_CONTINUUM,
-  NOTIFICATION_DELAY_IN_SECONDS,
-  SA_AA2
+  NOTIFICATION_DELAY_IN_SECONDS
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import autoLinking from '@/utils/autoLinking/AutoLinking';
+import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import VelocityTypeField from '@/components/fields/velocityType/VelocityType';
 interface TargetEntryProps {
@@ -56,7 +52,7 @@ export default function TargetEntry({
   onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
-  const { autoLink, isSV, osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
+  const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
@@ -361,19 +357,7 @@ export default function TargetEntry({
       const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
-        // The default zoom observation's zoomChannels is a static placeholder with no knowledge
-        // of the actual subarray's channel cap - pass the real cap through so it isn't baked in.
-        const record = osdLOW ? osdLOW : osdMID;
-        const sArray = record?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
-        const defaults = await autoLinking(
-          newTarget,
-          getProposal,
-          setProposal,
-          authAxiosClient,
-          undefined,
-          undefined,
-          sArray?.numberZoomChannels
-        );
+        const defaults = await linkTarget(newTarget, getProposal, setProposal, authAxiosClient);
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
           clearForm();
@@ -383,12 +367,7 @@ export default function TargetEntry({
       };
 
       const addTargetAsync = async () => {
-        const proposal = getProposal();
-        if (
-          (autoLink && proposal.scienceCategory === TYPE_CONTINUUM) ||
-          proposal.scienceCategory === TYPE_ZOOM ||
-          proposal.scienceCategory === TYPE_PST
-        ) {
+        if (autoLink) {
           generateAutoLinkData();
           return;
         }

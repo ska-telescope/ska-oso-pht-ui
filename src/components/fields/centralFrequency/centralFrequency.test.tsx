@@ -17,13 +17,6 @@ vi.mock(import('@/utils/constants.ts'), async (importOriginal) => {
   };
 });
 
-// Mock the translation hook
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({
-    t: (key: string) => key // just return the key for testing
-  })
-}));
-
 // Mock the help hook
 const setHelpMock = vi.fn();
 vi.mock('@/utils/help/useHelp', () => ({

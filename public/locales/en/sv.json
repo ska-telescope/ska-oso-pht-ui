@@ -23,12 +23,7 @@
     "warning": "Please wait whilst we assign the Science Verification Ideas."
   },
   "bandwidth": {
-    "0": {
-      "help": "The overall bandwidth is limited by the number of channels. To increase/decrease the bandwidth, increase/decrease the spectral averaging parameter."
-    },
-    "1": {
-      "help": "Maximum bandwidth available for Low AA2 is 150 MHz."
-    }
+    "help": "The overall bandwidth is limited by the number of channels. To increase/decrease the bandwidth, increase/decrease the spectral averaging parameter."
   },
   "changeProposal": {
     "label": "Change Science Verification Idea's type?",
@@ -142,21 +137,6 @@
   "saveBtn": {
     "tooltip": "Saves the Science Verification Idea in the current state to the database"
   },
-  "scienceCategory": {
-    "0": "Spectral",
-    "1": "Continuum",
-    "2": "PST",
-    "label": "Observing Mode",
-    "help": "Detailed information about the capabilities available during the current call for SKA-Low Science Verification Ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification opportunities, and the choice of target. Indicate what will be tested or demonstrated through the observation.",
-    "validationNavigationError": "Observation mode and a target are required. They are located on the Details and Target pages.",
-    "notSpecified": "Not specified",
-    "short": "Mode",
-    "error": "A value is required",
-    "all": "All Observing modes"
-  },
-  "scienceSubCategory": {
-    "help": "SUB-CATEGORY: Select a sub-category that best describes your Science Verification Idea."
-  },
   "submitAllBtn": {
     "tooltip": "Submit all reviewed Science Verification Ideas"
   },
@@ -211,18 +191,13 @@
     },
     "5": {
       "desc": "Review the Observation Configuration. The available parameters on this page are determined by the mode you selected earlier. Review the configuration below and provide the required observing details. Some parameters are predefined for Science Verification and cannot be modified.",
-      "noTarget": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE  OBSERVATION SET-UP,  AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. THE OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE.",
       "help": "The array layout for SKA-Low Science Verification is shown for reference. Further details on the array configuration and parameters are available here. Descriptions of the available modes can be found here (Continuum, Spectral Line, PST). The Spectral Line page provides additional information on available spectral resolutions, while the PST page describes the supported PST modes in more detail. Please note that the frequency range 242–272 MHz is significantly affected by radio frequency interference (RFI) and should be used with caution."
-    },
-    "6": {
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY, AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE."
     },
     "7": {
       "desc": "Review the Observatory Data Products. This page outlines the data products available for the selected mode. Science Verification includes a predefined set of ODPs. You may adjust the active parameters. Sensitivity estimates for the target are provided below to help you assess the expected performance.",
       "help": "The observation setup panel on the left provides a summary of the parameters selected in previous steps. To modify any of these values, please return to the Details section. The data product panel describes the standard outputs available based on the mode selected. Further details on standard SKA-Low Science Verification data products are available here. The default image size and pixel size provide a suitable starting point for typical SKA-Low imaging observations. Review these values carefully and adjust them to suit your Science Verification Idea and target characteristics. Please adjust these parameters if this default setup does not match the science verification case. Sensitivity estimates are shown based on the selected parameters to help assess expected performance. For more detailed analysis, you can access the full Sensitivity Calculator."
     },
     "8": {
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE DATA PRODUCTS, AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE.",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA"
     },
     "9": {
@@ -231,7 +206,9 @@
     "11": {
       "desc": "Optionally add further suggested parameters of the observation setup.",
       "empty": "NO SCIENCE VERIFICATION IDEAS AVAILABLE"
-    },
+    }
+  },
+  "error": {
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA"
   }
 }

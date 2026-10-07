@@ -106,19 +106,8 @@
     "label": "Authors"
   },
   "bandwidth": {
-    "0": {
-      "help": "Spectral Bandwidth of the observation. LOW supports eight channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth."
-    },
-    "1": {
-      "help": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz."
-    },
-    "2": {
-      "help": "Maximum bandwidth available for Low AA2 is 150 MHz ."
-    },
-    "label": {
-      "0": "Bandwidth",
-      "1": "Bandwidth"
-    },
+    "help": "Spectral Bandwidth of the observation. LOW supports eight channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth.",
+    "label": "Bandwidth",
     "range": {
       "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
       "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
@@ -606,9 +595,9 @@
     "missing": "No observations have been added to this proposal yet"
   },
   "observationType": {
-    "label": "Observation Type",
+    "label": "Observing Mode",
     "help": "Specify if the observation type is continuum or spectral. Note that not all sub-arrays have spectral mode so this option is available based on the sub-array selected.",
-    "short": "Type",
+    "short": "Mode",
     "0": "Spectral",
     "1": "Continuum",
     "2": "PST",
@@ -616,6 +605,10 @@
     "continuum": "Continuum",
     "continuumSpectral": "Continuum-Spectral",
     "pst": "PST"
+  },
+  "observingMode": {
+    "label": "Observing Mode",
+    "notSpecified": "Not specified"
   },
   "observatoryDataProduct": {
     "id": "SDP Id",
@@ -1179,11 +1172,6 @@
   "searchForMember": {
     "label": "Search for a member"
   },
-  "scienceSubCategory": {
-    "label": "Sub-category",
-    "help": "SUB-CATEGORY: Select a sub-category that best describes your proposal.",
-    "1": "Not specified"
-  },
   "sendInviteBtn": {
     "label": "Send invitation"
   },
@@ -1281,6 +1269,7 @@
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "noTarget": "Define a target to see sensitivity results",
     "notApplicableForSSO": "Currently unavailable for non-sidereal objects",
     "sensitivity": "Sensitivity",
     "spectralSensitivityWeighted": "Weighted spectral sensitivity",
@@ -1567,6 +1556,7 @@
       "title": "General",
       "titleShort": "General",
       "desc": "This page allows the user to provide general details about the proposal.",
+      "help": "Select a category that best describes the science of your proposal.",
       "pageError": "The GENERAL page is not complete"
     },
     "3": {
@@ -1731,6 +1721,7 @@
     "noObservationsLoggedOut": "NO OBSERVATION SETUP CREATED",
     "noCalibrationsLoggedOut": "NO CALIBRATIONS CREATED",
     "noCalibrationsLinking": "THERE NEEDS TO BE TARGETS LINKED TO OBSERVATION / DATA PRODUCT COMBINATIONS",
+    "noCalibrationsNoTarget": "Define a target to show calibration strategy",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "proposalNotLoaded": "No proposal loaded — please select a proposal to continue.",
@@ -1757,9 +1748,6 @@
   },
   "zoomChannels": {
     "help": "Maximum number of channels for Low AA2 is {{max}}. To increase bandwidth, increase the spectral averaging parameter",
-    "label": "Number of channels",
-    "range": {
-      "error": "Valid range is {{min}} - {{max}}"
-    }
+    "label": "Number of channels"
   }
 }

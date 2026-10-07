@@ -106,13 +106,6 @@ export const getScienceCategory = (scienceCat: string) => {
   return cat === null || cat === undefined ? null : cat;
 };
 
-export const getObservingMode = (observingMode: string) => {
-  const obsMode = DETAILS.ObservingMode?.find(
-    (obsMode) => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
-  )?.value;
-  return obsMode === null || obsMode === undefined ? null : obsMode;
-};
-
 const getPDF = (documents: DocumentBackend[] | null, documentId: string): DocumentPDF | null => {
   if (!documents) return null;
 
@@ -294,6 +287,18 @@ const getDataProductType = (el: any) => {
   }
 };
 
+/**
+ * Marks the data products linked to results as selected. Selection is not stored in the backend,
+ * so this keeps it in step with the results and keeps it if the target is later removed.
+ */
+const markSelectedDataProducts = (
+  dataProducts: DataProductSDPNew[],
+  results: ResultsDetailsBackend[] | null | undefined
+): DataProductSDPNew[] => {
+  const linkedIds = new Set((results ?? []).map((result) => result.data_product_ref));
+  return dataProducts.map((dp) => (linkedIds.has(dp.id) ? { ...dp, selected: true } : dp));
+};
+
 const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDPNew[] => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
@@ -441,7 +446,7 @@ const typeCheck = (inType: string | undefined): any => {
   return inType;
 };
 
-const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
+export const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
   const results: Observation[] = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -780,9 +785,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
     cycle: inRec.cycle,
     investigators: getInvestigators(inRec.proposal_info?.investigators),
     abstract: inRec.proposal_info?.abstract,
-    scienceCategory: isSV
-      ? getObservingMode((inRec.proposal_info?.science_category as string) || '')
-      : getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
+    scienceCategory: getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
     scienceSubCategory: [1], // Not used currently
     sciencePDF: sciencePDF,
     scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL,
@@ -803,7 +806,10 @@ export function mapping(inRec: ProposalBackend): Proposal {
         ? FileUploadStatus.OK
         : FileUploadStatus.INITIAL,
     dataProductSDP: inRec?.observation_info?.data_product_sdps
-      ? getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[])
+      ? markSelectedDataProducts(
+          getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[]),
+          inRec.observation_info?.result_details
+        )
       : [],
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO remove this property from type as not needed

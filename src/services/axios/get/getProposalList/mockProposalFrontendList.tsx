@@ -1,4 +1,4 @@
-import { PROPOSAL_STATUS } from '@/utils/constants';
+import { PROPOSAL_STATUS, PROPOSAL_TYPE } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 
 const MockProposalFrontendList: Proposal[] = [
@@ -43,11 +43,11 @@ const MockProposalFrontendList: Proposal[] = [
     createdOn: '2022-09-23T15:43:53.971548Z',
     createdBy: 'TestUser',
     version: 1,
-    proposalType: 'standard_proposal',
-    proposalSubType: ['coordinated_proposal'],
+    proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+    proposalSubType: [],
     scienceCategory: '',
     title: 'The Milky Way View',
-    cycle: 'SKA_2026_1',
+    cycle: 'SKAO_2027_1',
     sciencePDF: null,
     technicalPDF: null,
     abstract:

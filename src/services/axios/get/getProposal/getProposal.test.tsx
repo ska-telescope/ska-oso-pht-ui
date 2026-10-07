@@ -5,14 +5,12 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   FREQUENCY_UNITS,
   BAND_LOW_STR,
-  PROPOSAL_TYPE,
-  TYPE_CONTINUUM
+  PROPOSAL_TYPE
 } from '@utils/constants.ts';
 import GetProposal, {
   mapping,
   getInvestigators,
   getScienceCategory,
-  getObservingMode,
   getReferenceCoordinate,
   getBandwidth,
   getFrequencyAndBandwidthUnits
@@ -35,19 +33,33 @@ describe('Helper Functions', () => {
     expect(proposalFrontEnd).to.deep.equal(MockProposalFrontendZoom);
   });
 
-  test('mapping passes the science verification type through and decodes the observing mode', () => {
+  test('mapping passes the science verification type through with no science category', () => {
     const proposalFrontEnd: Proposal = mapping({
       ...MockProposalBackend,
       proposal_info: {
         ...MockProposalBackend.proposal_info,
         proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, attributes: [] },
-        science_category: 'Continuum'
+        science_category: undefined
       }
     });
     expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
     expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
-    expect(proposalFrontEnd.scienceCategory).to.equal(TYPE_CONTINUUM);
+    expect(proposalFrontEnd.scienceCategory).to.equal(null);
     expect(proposalFrontEnd.technicalPDF).to.equal(undefined);
+  });
+
+  test('mapping marks the data product linked to the results as selected', () => {
+    const proposalFrontEnd: Proposal = mapping(MockProposalBackend);
+    expect(proposalFrontEnd.dataProductSDP?.[0].id).to.equal('SDP-2');
+    expect(proposalFrontEnd.dataProductSDP?.[0].selected).to.equal(true);
+  });
+
+  test('mapping leaves data products unselected when there are no results', () => {
+    const proposalFrontEnd: Proposal = mapping({
+      ...MockProposalBackend,
+      observation_info: { ...MockProposalBackend.observation_info, result_details: [] }
+    } as any);
+    proposalFrontEnd.dataProductSDP?.forEach((dp) => expect(dp.selected).to.equal(undefined));
   });
 
   test('mapping returns an empty sub-type list when the backend sends no attributes', () => {
@@ -178,20 +190,6 @@ describe('getInvestigators', () => {
 
     const result = getInvestigators(input);
     expect(result).toEqual(expected);
-  });
-});
-
-describe('getObservingMode', () => {
-  test('returns the correct value for a valid observing mode', () => {
-    expect(getObservingMode('Continuum')).toBe('continuum');
-    expect(getObservingMode('PST')).toBe('pst');
-  });
-
-  test('returns null for an invalid observing mode', () => {
-    expect(getObservingMode('Zoom')).toBeNull();
-    expect(getObservingMode('')).toBeNull();
-    expect(getObservingMode(null as unknown as string)).toBeNull();
-    expect(getObservingMode('undefined')).toBeNull();
   });
 });
 

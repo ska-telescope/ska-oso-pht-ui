@@ -22,9 +22,7 @@ import {
   FREQUENCY_MHZ,
   INTEGRATION_TIME_UNITS,
   IW_BRIGGS,
-  PAGE_CALIBRATION,
-  PAGE_DATA_PRODUCTS,
-  PAGE_OBSERVATION,
+  PROPOSAL_TYPE,
   SENSITIVITY_UNITS,
   STATUS_ERROR,
   STATUS_OK,
@@ -52,7 +50,6 @@ import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
 import { imageSizeSchema } from '../../components/fields/imageSize/imageSize';
 import { pixelSizeSchema } from '../../components/fields/pixelSize/pixelSize';
-import { channelsOutSchemaForMax } from '../../components/fields/channelsOut/channelsOut';
 import { timeAveragingSchema } from '../../components/fields/timeAveraging/timeAveraging';
 import { frequencyAveragingSchema } from '../../components/fields/frequencyAveraging/frequencyAveraging';
 import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
@@ -149,7 +146,11 @@ export const validateDetailsPage = (proposal: Proposal) => {
   if ((proposal?.abstract ?? '').length > 0) {
     count++;
   }
-  if (proposal?.scienceCategory !== null) {
+  const hasCategoryOrMode =
+    proposal?.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+      ? (proposal?.observations?.length ?? 0) > 0
+      : proposal?.scienceCategory !== null;
+  if (hasCategoryOrMode) {
     count++;
   }
   return result[count];
@@ -174,22 +175,15 @@ const hasValidSuppliedValue = (observation: Observation): boolean => {
   });
 };
 
-export const validateObservationPage = (proposal: Proposal, autoLink: boolean) => {
+export const validateObservationPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasObservations = () =>
     Array.isArray(proposal?.observations) && proposal.observations.length > 0;
   const hasSuppliedErrors = () =>
     (proposal?.observations ?? []).some((obs) => !hasValidSuppliedValue(obs));
 
-  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
-
-  if (autoLink) {
-    const count = hasTargetObservations() && !hasSuppliedErrors() ? 2 : 0;
-    return result[count];
-  } else {
-    const count = hasObservations() && !hasSuppliedErrors() ? 2 : 0;
-    return result[count];
-  }
+  const count = hasObservations() && !hasSuppliedErrors() ? 2 : 0;
+  return result[count];
 };
 
 // Only the "centre frequency ± bandwidth spills past the band edge" check - deliberately does
@@ -433,8 +427,7 @@ export const isDataProductChannelsOutValid = (
   );
 
   const observation = proposal?.observations?.find((obs) => obs.id === dataProduct.observationId);
-  const matchesMode = (type: string) =>
-    observation?.type === type || proposal?.scienceCategory === type;
+  const matchesMode = (type: string) => observation?.type === type;
   const isContinuumSpectral = matchesMode(TYPE_CONTINUUM_SPECTRAL);
   const isSpectral = matchesMode(TYPE_ZOOM);
   const isRelevantMode = isSpectral || isContinuumSpectral || matchesMode(TYPE_CONTINUUM);
@@ -458,9 +451,21 @@ export const isDataProductChannelsOutValid = (
   );
 };
 
-export const validateSDPPage = (proposal: Proposal) => {
+// Auto-linked proposals have no Linking page, so each observation's link to the target and its
+// sensitivity results are checked with the data products instead. A link without results can be
+// valid, as the sensitivity calculator does not support SSO targets or PST.
+const hasUsableTargetLinks = (proposal: Proposal) =>
+  (proposal?.observations ?? []).every((obs) => {
+    const link = proposal?.targetObservation?.find((to) => to.observationId === obs.id);
+    return !!link && link.sensCalc?.statusGUI !== STATUS_ERROR;
+  });
+
+export const validateSDPPage = (proposal: Proposal, autoLink = false) => {
   const dataProducts = proposal?.dataProductSDP;
   if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
+    return STATUS_ERROR;
+  }
+  if (autoLink && !hasUsableTargetLinks(proposal)) {
     return STATUS_ERROR;
   }
   const hasInvalidDataProduct = dataProducts.some(
@@ -495,7 +500,7 @@ export const useValidateProposal = () => {
   const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
 
   return (proposal: Proposal) => {
-    const obsStatus = validateObservationPage(proposal, autoLink);
+    const obsStatus = validateObservationPage(proposal);
     const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
       isObservationFrequencyOutOfRange(obs)
     );
@@ -507,33 +512,12 @@ export const useValidateProposal = () => {
       validateTargetPage(proposal),
       obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
       validateTechnicalPage(proposal),
-      validateSDPPage(proposal),
+      validateSDPPage(proposal, autoLink),
       validateLinkingPage(proposal),
       validateCalibrationPage(proposal)
       /* See SRCNet INACTIVE - validateSRCPage() */
     ];
   };
-};
-
-/**
- * Checks whether the proposal can navigate to the given page, e.g. blocking the
- * Observation/Data Products/Calibration pages until a valid science category and target exist.
- */
-export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
-  if (
-    checkLink &&
-    (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS || page === PAGE_CALIBRATION)
-  ) {
-    return (
-      (proposal.scienceCategory === TYPE_CONTINUUM ||
-        proposal.scienceCategory === TYPE_PST ||
-        proposal.scienceCategory === TYPE_CONTINUUM_SPECTRAL ||
-        proposal.scienceCategory === TYPE_ZOOM) &&
-      Array.isArray(proposal?.targets) &&
-      proposal.targets.length > 0
-    );
-  }
-  return true;
 };
 
 export function validateSkyDirection1Text(value: string): string | null {

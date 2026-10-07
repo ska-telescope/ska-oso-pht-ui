@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { useValidateProposal } from '@utils/validation/validation.tsx';
 import {
@@ -32,7 +31,7 @@ export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyWarning } = useNotify();
-  const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const { osdCyclePolicy } = useOSDAccessors();
   const validateProposal = useValidateProposal();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
@@ -40,7 +39,6 @@ export default function ObservationPage() {
   const [currObs, setCurrObs] = React.useState<Observation | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<any[]>([]);
-  const loggedIn = isLoggedIn();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -137,11 +135,7 @@ export default function ObservationPage() {
     setTheProposalState(statuses[PAGE], statuses[PAGE_LINKING], statuses[PAGE_CALIBRATION]);
   }, [validateToggle]);
 
-  const hasObservations = () => elementsO?.length > 0;
-
-  const hasTargetObservations = () => {
-    return (getProposal()?.targetObservation?.length ?? 0) > 0;
-  };
+  const hasObservations = () => (getProposal()?.observations?.length ?? 0) > 0;
 
   const noObservations = () => {
     return (
@@ -149,11 +143,7 @@ export default function ObservationPage() {
         <Grid size={{ md: 10 }}>
           <Alert
             color={AlertColorTypes.Warning}
-            text={
-              loggedIn && osdCyclePolicy?.maxObservations === 1 && hasTargetObservations()
-                ? t('page.5.noTarget')
-                : t('error.noObservationsLoggedOut')
-            }
+            text={t('error.noObservations')}
             testId="noObservationsNotification"
           />
         </Grid>
@@ -195,16 +185,16 @@ export default function ObservationPage() {
   return (
     <Shell page={PAGE} helpDisabled>
       <>
-        {(osdCyclePolicy?.maxObservations !== 1 || !loggedIn) && AddTheButton()}
-        {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
-        {(!loggedIn || osdCyclePolicy?.maxObservations !== 1) &&
-          (autoLink ? hasTargetObservations() : hasObservations()) &&
-          observationList()}
-        {loggedIn &&
-          osdCyclePolicy?.maxObservations === 1 &&
-          (autoLink ? hasTargetObservations() : hasObservations()) && (
-            <ObservationEntry data={getProposal()?.observations?.[0]} />
-          )}
+        {osdCyclePolicy?.maxObservations !== 1 && AddTheButton()}
+        {!hasObservations() && noObservations()}
+        {osdCyclePolicy?.maxObservations !== 1 && hasObservations() && observationList()}
+        {osdCyclePolicy?.maxObservations === 1 && hasObservations() && (
+          // Keyed on id so the form reloads when auto-linking replaces the observation
+          <ObservationEntry
+            key={getProposal()?.observations?.[0]?.id}
+            data={getProposal()?.observations?.[0]}
+          />
+        )}
       </>
     </Shell>
   );

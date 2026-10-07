@@ -1,13 +1,7 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import {
-  BANDWIDTH_LABEL_SELECTOR,
-  FREQUENCY_HZ,
-  FREQUENCY_KHZ,
-  FREQUENCY_MHZ,
-  TELESCOPE_LOW_NUM
-} from '@utils/constants.ts';
+import { FREQUENCY_HZ, FREQUENCY_KHZ, FREQUENCY_MHZ, TELESCOPE_LOW_NUM } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
@@ -120,7 +114,7 @@ export default function BandwidthField({
         <Grid size={{ xs: 8 }}>
           <SteppedNumberField
             testId={FIELD}
-            label={t(FIELD + '.label.' + BANDWIDTH_LABEL_SELECTOR)}
+            label={t(FIELD + '.label')}
             value={bandwidthDisplayValue}
             format={(v) => v.toFixed(BANDWIDTH_DECIMAL_PLACES[bandwidthUnits] ?? 2)}
             onCommit={commitBandwidth}
@@ -161,7 +155,7 @@ export default function BandwidthField({
             digitsOnly
             onCommit={commitChannels}
             onStep={stepChannelsValue}
-            onFocus={() => setHelp('zoomChannels')}
+            onFocus={() => setHelp('zoomChannels', { max: maxZoomChannels })}
             incrementDisabled={disabled || zoomChannels >= maxZoomChannels}
             decrementDisabled={disabled || zoomChannels <= 1}
             disabled={disabled}
@@ -184,7 +178,7 @@ export default function BandwidthField({
           testId={FIELD}
           value={value}
           setValue={setValue}
-          label={t(FIELD + '.label.' + BANDWIDTH_LABEL_SELECTOR)}
+          label={t(FIELD + '.label')}
           onFocus={() => setHelp(FIELD)}
           required={required}
         />

@@ -8,7 +8,7 @@ import { NAV, PATH, PROPOSAL_STATUS } from '@/utils/constants';
 import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
-import autoLinking from '@/utils/autoLinking/AutoLinking';
+import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 
 const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
@@ -66,12 +66,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({
     setHelp: mockSetHelp
@@ -115,7 +109,7 @@ const fullProps = {
 const { mockProposal, mockUpdateAppContent2 } = vi.hoisted(() => ({
   mockProposal: {
     id: 'prsl-t0001-20250101-00001',
-    scienceCategory: 'continuum',
+    scienceCategory: null,
     abstract: 'Test abstract',
     targets: [{ id: 1, name: 'Target 1' }],
     observations: [] as any[],
@@ -134,7 +128,7 @@ vi.mock('../LandingPage/LandingPage', () => ({
 }));
 
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({
-  default: vi.fn().mockResolvedValue({ success: true })
+  linkTarget: vi.fn().mockResolvedValue({ success: true })
 }));
 
 const defaultProps = {
@@ -223,27 +217,25 @@ describe('<PHT />', () => {
 describe('<PHT /> auto-repair for a linked target with no observation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(autoLinking as any).mockResolvedValue({ success: true });
+    vi.mocked(linkTarget).mockResolvedValue({ success: true });
     mockProposal.targetObservation = [];
     mockApplicationContent2.current = mockProposal;
   });
 
-  it('re-runs the auto-link route as soon as the proposal loads, regardless of the current page', async () => {
+  it('re-links the target as soon as the proposal loads, regardless of the current page', async () => {
     await act(async () => {
       wrapper(<PHT {...fullProps} />);
     });
 
     await waitFor(() => {
-      expect(vi.mocked(autoLinking as any)).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(linkTarget)).toHaveBeenCalledTimes(1);
     });
 
-    expect(vi.mocked(autoLinking as any)).toHaveBeenCalledWith(
+    expect(vi.mocked(linkTarget)).toHaveBeenCalledWith(
       mockProposal.targets[0],
       expect.any(Function),
       expect.any(Function),
-      {},
-      mockProposal.scienceCategory,
-      mockProposal.abstract
+      {}
     );
   });
 
@@ -261,6 +253,6 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
       wrapper(<PHT {...fullProps} />);
     });
 
-    expect(vi.mocked(autoLinking as any)).not.toHaveBeenCalled();
+    expect(linkTarget).not.toHaveBeenCalled();
   });
 });

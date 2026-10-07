@@ -20,8 +20,14 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<SensCalcModalSingle />', () => {
-  test('renders the no-data state when results have not been calculated', () => {
+  test('renders the no-target state when there is no target observation', () => {
     wrapper(<SensCalcContent />);
+
+    expect(screen.getByText('sensitivityCalculatorResults.noTarget')).toBeInTheDocument();
+  });
+
+  test('renders the no-data state when results have not been calculated', () => {
+    wrapper(<SensCalcContent targetObservation={{}} />);
 
     expect(screen.getByText('sensitivityCalculatorResults.noData')).toBeInTheDocument();
   });

@@ -11,7 +11,8 @@ import {
   NOT_SPECIFIED,
   PAGE_CYCLE,
   PAGE_OBSERVATION,
-  PAGE_TITLE_ADD
+  PAGE_TITLE_ADD,
+  PROPOSAL_TYPE
 } from '../../../utils/constants';
 import DownloadButton from '../../button/Download/Download';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -22,7 +23,6 @@ import GridObservationSummary from '../../../components/grid/observationSummary/
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import ObservingType from '@/components/display/observingType/observingType';
 
 interface ProposalDisplayProps {
@@ -50,7 +50,6 @@ export default function ProposalDisplay({
   onConfirmLabel = ''
 }: ProposalDisplayProps) {
   const { t } = useScopedTranslation();
-  const { isSV } = useOSDAccessors();
   const theme = useTheme();
   const { axiosClient: authClient } = useAxiosAuthClient();
 
@@ -95,10 +94,12 @@ export default function ProposalDisplay({
     return t(`${prefix}.${cat}`);
   };
 
+  const isScienceVerification = proposal?.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
+
   const observationType = () => {
-    const cat = proposal?.scienceCategory;
-    if (cat === null || cat === undefined) return NOT_SPECIFIED;
-    return <ObservingType type={cat} />;
+    const type = proposal?.observations?.[0]?.type;
+    if (!type) return NOT_SPECIFIED;
+    return <ObservingType type={type} />;
   };
 
   const title = (inLabel: string, inValue: string) => {
@@ -353,10 +354,10 @@ export default function ProposalDisplay({
     <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid size={{ xs: 6 }}>{entry(t('proposalType.label'), proposalType())}</Grid>
-        {isSV && (
+        {isScienceVerification && (
           <Grid size={{ xs: 6 }}>{entryObject(t('observationType.label'), observationType())}</Grid>
         )}
-        {!isSV && (
+        {!isScienceVerification && (
           <>
             <Grid size={{ xs: 6 }}>{entry(t('scienceCategory.label'), scienceCategory())}</Grid>
             <Grid pt={2} size={{ xs: 6 }}>
@@ -399,7 +400,7 @@ export default function ProposalDisplay({
             proposal?.sciencePDF
           )}
         </Grid>
-        {!isSV && (
+        {!isScienceVerification && (
           <Grid size={{ xs: 6 }}>
             {link(
               t('page.6.label'),

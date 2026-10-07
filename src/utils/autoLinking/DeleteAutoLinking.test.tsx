@@ -30,7 +30,7 @@ describe('deleteAutoLinking', () => {
     setProposal = vi.fn();
   });
 
-  it('removes the target and all associated data', async () => {
+  it('removes the target with its results and calibration, keeping the observation and data products', async () => {
     await deleteAutoLinking(target, getProposal, setProposal);
 
     expect(setProposal).toHaveBeenCalledWith({
@@ -38,8 +38,8 @@ describe('deleteAutoLinking', () => {
       targets: [{ id: 't2' }],
       targetObservation: [{ targetId: 't2', observationId: 'o2' }],
       calibrationStrategy: [{ observationIdRef: 'o2' }],
-      dataProductSDP: [{ observationId: 'o2' }],
-      observations: [{ id: 'o2' }]
+      dataProductSDP: [{ observationId: 'o1' }, { observationId: 'o2' }],
+      observations: [{ id: 'o1' }, { id: 'o2' }]
     });
   });
 
@@ -71,9 +71,7 @@ describe('deleteAutoLinking', () => {
       ...proposal,
       calibrationStrategy: undefined,
       targets: [{ id: 't2' }],
-      targetObservation: [{ targetId: 't2', observationId: 'o2' }],
-      dataProductSDP: [{ observationId: 'o2' }],
-      observations: [{ id: 'o2' }]
+      targetObservation: [{ targetId: 't2', observationId: 'o2' }]
     });
   });
 });

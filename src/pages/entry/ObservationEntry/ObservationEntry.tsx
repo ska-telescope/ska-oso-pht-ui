@@ -17,6 +17,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import {
   NAV,
+  PROPOSAL_TYPE,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -57,7 +58,6 @@ import {
   generateCalibrationId,
   generateObsSetId,
   getBandwidthZoom,
-  obTypeTransform,
   timeConversion
 } from '@utils/helpers.ts';
 import {
@@ -74,6 +74,7 @@ import Observation from '@/utils/types/observation';
 import SubArrayField from '@/components/fields/subArray/SubArray';
 import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '@/components/fields/observationType/ObservationType';
+import { useObservationTypeOptions } from '@/components/fields/observationType/useObservationTypeOptions';
 import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
 import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
 import NumStations from '@/components/fields/numStations/NumStations';
@@ -89,7 +90,6 @@ import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
-import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
@@ -149,11 +149,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  // Avoids a mismatch with obsTypeOptions (below), which collapses to a single entry matching
-  // the proposal's scienceCategory for SV.
-  const [observationType, setObservationType] = React.useState(() =>
-    isSV ? (getProposal().scienceCategory ?? TYPE_CONTINUUM) : TYPE_CONTINUUM
-  );
+  const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
@@ -414,7 +410,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const setDefaultContinuumBandwidth = (inBand: string) => {
-    if (!isContinuum()) {
+    if (!isContinuum() && !isPST()) {
       return;
     }
     const newUnits = inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ;
@@ -942,29 +938,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /**************************************************************/
 
-  const low = isLow();
-
-  const obsTypeOptions = React.useMemo(() => {
-    if (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1) {
-      const sc = getProposal().scienceCategory;
-      return [
-        {
-          label: t(`observationType.${sc}`),
-          value: sc
-        }
-      ];
-    }
-    const obj = low ? osdLOW : osdMID;
-    const rec =
-      (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(
-        (r) => r.subArray === subarrayConfig
-      ) ?? null;
-    const modes = obTypeTransform(rec?.cbfModes ?? []);
-    return modes.map((mode) => ({
-      label: t(`observationType.${mode}`),
-      value: mode
-    }));
-  }, [subarrayConfig, low, osdLOW, osdMID, t]);
+  const obsTypeOptions = useObservationTypeOptions(subarrayConfig, isLow());
 
   React.useEffect(() => {
     if (obsTypeOptions.length === 0) return;
@@ -980,13 +954,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   }, [observationType, obsTypeOptions, setObservationType]);
 
+  // SV proposals set their observing mode on the Details page
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={
-          !isLoggedIn() ||
-          (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1)
-        }
+        disabled={getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION}
         options={obsTypeOptions}
         required
         value={observationType}
@@ -1069,7 +1041,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={suppliedValue}
         setValue={setSuppliedValue}
         label={label}
-        disabled={isLow()}
+        unitsDisabled={isLow()}
         minValue={minValue}
         maxValue={maxValue}
         minInclusive={false}
@@ -1085,19 +1057,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         validate={validateSuppliedValue}
         required
       />
-    );
-  };
-
-  const zoomChannelsField = () => {
-    return fieldWrapper(
-      <Box pt={1}>
-        <ZoomChannels
-          maxValue={maxZoomChannels}
-          required
-          value={zoomChannels}
-          setValue={handleZoomChannelsChange}
-        />
-      </Box>
     );
   };
 
@@ -1233,31 +1192,33 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </>
       );
     }
-    return (
-      <>
-        <Grid size={{ md: 12, lg: 12 }} p={2}>
-          {frequencySpectrumField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>
-          {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-        </Grid>
-
-        <Grid size={{ md: 12, lg: 6 }}>
-          {isPST()
-            ? pstModeField()
-            : isZoom()
-              ? emptyField()
-              : isContinuum()
-                ? SubBandsField()
-                : emptyField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
-      </>
-    );
-  };
-
-  const frequencySetUpContinuumSV = () => {
+    if (isZoom()) {
+      return (
+        <>
+          <Grid size={{ md: 12, lg: 12 }} p={2}>
+            {frequencySpectrumField()}
+          </Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
+        </>
+      );
+    }
+    if (isPST()) {
+      return (
+        <>
+          <Grid size={{ md: 12, lg: 12 }} p={2}>
+            {frequencySpectrumField()}
+          </Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
+        </>
+      );
+    }
+    // Sub-bands are not shown for SV proposals
+    const isSVProposal = getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
@@ -1265,47 +1226,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
-      </>
-    );
-  };
-
-  const frequencySetUpSpectralSV = () => {
-    if (isLow()) {
-      return (
-        <>
-          <Grid size={{ md: 12, lg: 12 }} p={2}>
-            {frequencySpectrumField()}
-          </Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
-          <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
-          <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-        </>
-      );
-    }
-    return (
-      <>
-        <Grid size={{ md: 12, lg: 12 }} p={2}>
-          {frequencySpectrumField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
-      </>
-    );
-  };
-
-  const frequencySetUpPSTSV = () => {
-    return (
-      <>
-        <Grid size={{ md: 12, lg: 12 }} p={2}>
-          {frequencySpectrumField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}> {continuumBandwidthField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isSVProposal ? emptyField() : SubBandsField()}</Grid>
       </>
     );
   };
@@ -1437,10 +1358,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 rowSpacing={1}
                 justifyContent="space-between"
               >
-                {!isSV && frequencySetUp()}
-                {isSV && isContinuum() && frequencySetUpContinuumSV()}
-                {isSV && isZoom() && frequencySetUpSpectralSV()}
-                {isSV && isPST() && frequencySetUpPSTSV()}
+                {frequencySetUp()}
               </Grid>
             </BorderedSection>
           </Grid>

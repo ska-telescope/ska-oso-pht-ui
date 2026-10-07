@@ -10,7 +10,7 @@ import {
   clickToAddTarget,
   addM2TargetUsingResolve,
   clickObservationSetup,
-  selectObservingMode,
+  selectScienceCategory,
   verifyAutoLinkAlertFooter,
   spyOnResolveTargetAPI,
   waitForResolveTarget,
@@ -73,7 +73,6 @@ describe('Edit Proposal', () => {
       //complete mandatory fields
       clickStatusIconNav('statusId2'); //Click to details page
       pageConfirmed('DETAILS');
-      selectObservingMode('Continuum');
       addSubmissionSummary('This is a summary of the science idea.');
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
@@ -131,7 +130,7 @@ describe('Edit Proposal', () => {
         //complete mandatory fields
         clickStatusIconNav('statusId2'); //Click to general page
         pageConfirmed('GENERAL');
-        selectObservingMode('Cosmology');
+        selectScienceCategory('Cosmology');
         addSubmissionSummary('This is a summary of the proposal.');
         clickStatusIconNav('statusId4'); //Click to target page
         pageConfirmed('TARGET');

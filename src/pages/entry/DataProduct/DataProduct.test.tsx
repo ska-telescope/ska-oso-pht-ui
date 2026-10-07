@@ -21,9 +21,6 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 // --- Mocks ---
-vi.mock('@/services/i18n/useScopedTranslation', () => ({
-  useScopedTranslation: () => ({ t: (key: string) => key })
-}));
 vi.mock('@/utils/help/useHelp', () => ({ useHelp: () => ({ setHelp: vi.fn() }) }));
 let mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
@@ -48,37 +45,8 @@ vi.mock('@/utils/helpers', () => ({
   getSpectralResolutionHz: () => 1000000,
   frequencyConversion: (value: number) => value
 }));
-vi.mock('@/utils/present/present', () => ({
-  presentUnits: (val: string) => `unit(${val})`,
-  presentValue: (val: string) => val
-}));
-
-// Safe constants mock
-vi.mock('@/utils/constants.ts', async (importOriginal) => {
-  const actual = await importOriginal<any>();
-  return {
-    ...actual,
-    PAGE_DATA_PRODUCTS: 'PAGE_DATA_PRODUCTS',
-    NAV: { PAGE_DATA_PRODUCTS: '/mock-nav' },
-    FOOTER_HEIGHT_PHT: 0,
-    WRAPPER_HEIGHT: 100,
-    CHANNELS_OUT_MAX: 10
-  };
-});
 
 // Lightweight mocks for child components
-vi.mock('@/components/fields/outputFrequencyResolution/outputFrequencyResolution', () => ({
-  default: () => <div data-testid="OutputFrequencyResolutionField" />
-}));
-vi.mock('@/components/fields/outputSamplingInterval/outputSamplingInterval', () => ({
-  default: () => <div data-testid="OutputSamplingIntervalField" />
-}));
-vi.mock('@/components/fields/dispersionMeasure/dispersionMeasure', () => ({
-  default: () => <div data-testid="DispersionMeasureField" />
-}));
-vi.mock('@/components/fields/rotationMeasure/rotationMeasure', () => ({
-  default: () => <div data-testid="RotationMeasureField" />
-}));
 vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
   default: ({ value, options }: { value: number; options?: Array<{ value: number }> }) => (
     <div
@@ -88,41 +56,13 @@ vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
     />
   )
 }));
-vi.mock('@/components/fields/polarisations/polarisations', () => ({
-  default: () => <div data-testid="PolarisationsField" />
-}));
 vi.mock('@/components/fields/dataProductType/dataProductType', () => ({
-  default: () => <div data-testid="DataProductTypeField" />
-}));
-vi.mock('@/components/fields/imageSize/imageSize', () => ({
-  default: () => <div data-testid="ImageSizeField" />
-}));
-vi.mock('@/components/fields/pixelSize/pixelSize', () => ({
-  default: () => <div data-testid="PixelSizeField" />
-}));
-vi.mock('@/components/fields/robust/Robust', () => ({
-  default: () => <div data-testid="RobustField" />
-}));
-vi.mock('@/components/fields/channelsOut/channelsOut', () => ({
-  default: () => <div data-testid="ChannelsOutField" />
-}));
-vi.mock('@/components/fields/continuumSubtraction/continuumSubtraction', () => ({
-  default: () => <div data-testid="ContinuumSubtractionField" />
-}));
-vi.mock('@/components/fields/imageWeighting/imageWeighting', () => ({
-  default: () => <div data-testid="ImageWeightingField" />
-}));
-vi.mock('@/components/fields/taper/taper', () => ({
-  default: () => <div data-testid="TaperField" />
-}));
-vi.mock('@/components/fields/taperDropdown/taperDropdown', () => ({
-  default: () => <div data-testid="TaperDropdown" />
-}));
-vi.mock('@/components/fields/timeAveraging/timeAveraging', () => ({
-  default: () => <div data-testid="TimeAveragingField" />
-}));
-vi.mock('@/components/fields/frequencyAveraging/frequencyAveraging', () => ({
-  default: () => <div data-testid="FrequencyAveragingField" />
+  default: (props: any) => (
+    <div data-testid="DataProductTypeField" data-value={String(props.value)}>
+      {/* 2 = DP_TYPE_VISIBLE */}
+      <button data-testid="selectVisibilities" onClick={() => props.setValue(2)} />
+    </div>
+  )
 }));
 vi.mock('@/components/grid/observation/GridObservation', () => ({
   default: (props: any) => (
@@ -455,16 +395,15 @@ describe('DataProduct component', () => {
     (observationType) => {
       renderExistingDataProduct(undefined, observationType);
 
-      expect(screen.getByTestId('RobustField')).toBeInTheDocument();
+      expect(screen.getByLabelText('robust.label')).toBeInTheDocument();
     }
   );
 
-  it('uses the PST proposal mode for the description when no observation is selected', () => {
+  it('falls back to the PST observation for the description when no observation is selected', () => {
     mockStoreReturn = {
       application: {
         content2: {
-          scienceCategory: 'pst',
-          observations: [],
+          observations: [{ id: 'OBS1', type: 'pst' }],
           dataProductSDP: []
         }
       },

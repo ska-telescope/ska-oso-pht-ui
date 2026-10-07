@@ -3,7 +3,6 @@ import { Box, Stack } from '@mui/system';
 import { Typography } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import Observation from '@/utils/types/observation';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getBandwidthOrFrequencyUnitsLabel } from '@/utils/helpers';
 
 interface GridObservationProps {
@@ -26,7 +25,6 @@ export default function GridObservation({
 }: GridObservationProps) {
   const { t } = useScopedTranslation();
   const hasSelectedRef = React.useRef(false);
-  const { isSV } = useOSDAccessors();
 
   React.useEffect(() => {
     if (data.length === 0) return;
@@ -55,7 +53,7 @@ export default function GridObservation({
   const rowContent = (row: Observation) => {
     const centralFrequencyUnits =
       getBandwidthOrFrequencyUnitsLabel(row.centralFrequencyUnits) ?? '';
-    const observingMode = t((isSV ? 'observationType.' : 'scienceCategory.') + row.type);
+    const observingMode = t('observationType.' + row.type);
     const integrationTime = row.supplied?.value != null ? `${row.supplied.value} h` : '-';
     const spectralResolution =
       row.type === 'spectral'
