@@ -90,7 +90,6 @@ import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
-import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
@@ -411,7 +410,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const setDefaultContinuumBandwidth = (inBand: string) => {
-    if (!isContinuum()) {
+    if (!isContinuum() && !isPST()) {
       return;
     }
     const newUnits = inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ;
@@ -1061,19 +1060,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
   };
 
-  const zoomChannelsField = () => {
-    return fieldWrapper(
-      <Box pt={1}>
-        <ZoomChannels
-          maxValue={maxZoomChannels}
-          required
-          value={zoomChannels}
-          setValue={handleZoomChannelsChange}
-        />
-      </Box>
-    );
-  };
-
   const centralFrequencyField = () => {
     return fieldWrapper(
       <Box pt={1}>
@@ -1206,31 +1192,33 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </>
       );
     }
-    return (
-      <>
-        <Grid size={{ md: 12, lg: 12 }} p={2}>
-          {frequencySpectrumField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>
-          {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-        </Grid>
-
-        <Grid size={{ md: 12, lg: 6 }}>
-          {isPST()
-            ? pstModeField()
-            : isZoom()
-              ? emptyField()
-              : isContinuum()
-                ? SubBandsField()
-                : emptyField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
-      </>
-    );
-  };
-
-  const frequencySetUpContinuumSV = () => {
+    if (isZoom()) {
+      return (
+        <>
+          <Grid size={{ md: 12, lg: 12 }} p={2}>
+            {frequencySpectrumField()}
+          </Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
+        </>
+      );
+    }
+    if (isPST()) {
+      return (
+        <>
+          <Grid size={{ md: 12, lg: 12 }} p={2}>
+            {frequencySpectrumField()}
+          </Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
+        </>
+      );
+    }
+    // Sub-bands are not shown for SV proposals
+    const isSVProposal = getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
@@ -1238,47 +1226,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
-      </>
-    );
-  };
-
-  const frequencySetUpSpectralSV = () => {
-    if (isLow()) {
-      return (
-        <>
-          <Grid size={{ md: 12, lg: 12 }} p={2}>
-            {frequencySpectrumField()}
-          </Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
-          <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
-          <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-        </>
-      );
-    }
-    return (
-      <>
-        <Grid size={{ md: 12, lg: 12 }} p={2}>
-          {frequencySpectrumField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
-      </>
-    );
-  };
-
-  const frequencySetUpPSTSV = () => {
-    return (
-      <>
-        <Grid size={{ md: 12, lg: 12 }} p={2}>
-          {frequencySpectrumField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}> {continuumBandwidthField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isSVProposal ? emptyField() : SubBandsField()}</Grid>
       </>
     );
   };
@@ -1410,10 +1358,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 rowSpacing={1}
                 justifyContent="space-between"
               >
-                {!isSV && frequencySetUp()}
-                {isSV && isContinuum() && frequencySetUpContinuumSV()}
-                {isSV && isZoom() && frequencySetUpSpectralSV()}
-                {isSV && isPST() && frequencySetUpPSTSV()}
+                {frequencySetUp()}
               </Grid>
             </BorderedSection>
           </Grid>
