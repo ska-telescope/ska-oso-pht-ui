@@ -11,7 +11,7 @@ interface ChannelsOutFieldProps {
   minValue?: number;
   onFocus?: () => void;
   setValue?: Function;
-  suffix?: JSX.Element;
+  suffix?: React.JSX.Element;
   value: number;
 }
 

@@ -6,7 +6,7 @@ import React from 'react';
 // would otherwise leave a repeated non-resting value on its original, stale timer.
 export function useAutoClearingState<T>(restingValue: T, delayMs: number) {
   const [value, setValueState] = React.useState(restingValue);
-  const timerRef = React.useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = React.useRef<ReturnType<typeof setTimeout>>(undefined);
 
   const setValue = React.useCallback(
     (next: T) => {

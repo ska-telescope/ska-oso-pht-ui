@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER } from '@/utils/constants';
 import EdgeSlider from '../EdgeSlider/EdgeSlider';

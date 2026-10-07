@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
-import { EventType, AuthError } from '@azure/msal-browser';
+import { EventType, AuthError, InteractionType } from '@azure/msal-browser';
 import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout, getUserInfo } from '@ska-telescope/ska-login-page';
@@ -32,7 +32,7 @@ export default function ButtonUserMenu({
   label = 'Mocked',
   onClick,
   toolTip = 'Additional user functionality including sign out'
-}: ButtonUserMenuProps): JSX.Element {
+}: ButtonUserMenuProps): React.JSX.Element {
   useInitializeAccessStore();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -66,7 +66,11 @@ export default function ButtonUserMenu({
 
   React.useEffect(() => {
     const callbackId = instance.addEventCallback((event) => {
-      if (event.eventType === EventType.LOGIN_FAILURE && event.error) {
+      if (
+        event.eventType === EventType.ACQUIRE_TOKEN_FAILURE &&
+        event.interactionType !== InteractionType.Silent &&
+        event.error
+      ) {
         const err = event.error as AuthError;
         notifyError(`Login failed (${err.errorCode}): ${err.message}`);
       }

@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { HEADER_HEIGHT } from '@/utils/constants';
 

@@ -32,7 +32,7 @@ interface SteppedNumberFieldProps {
   parse?: (raw: string) => number | null;
   required?: boolean;
   step?: number;
-  suffix?: JSX.Element;
+  suffix?: React.JSX.Element;
   testId: string;
   value: number;
 }
@@ -148,8 +148,8 @@ export default function SteppedNumberField({
   // interval always calls the current one.
   const doStepRef = React.useRef(doStep);
   doStepRef.current = doStep;
-  const holdTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>();
-  const holdIntervalRef = React.useRef<ReturnType<typeof setInterval>>();
+  const holdTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>(undefined);
+  const holdIntervalRef = React.useRef<ReturnType<typeof setInterval>>(undefined);
   const didAutoRepeatRef = React.useRef(false);
 
   const stopHold = () => {

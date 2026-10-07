@@ -64,7 +64,7 @@ export const getColProposalType = (t: any) => ({
     const str = t('proposalType.title.' + (e.row.proposalType ?? NOT_SPECIFIED));
     return (
       <Tooltip title={str}>
-        <>{t('proposalType.code.' + (e.row.proposalType ?? NOT_SPECIFIED))}</>
+        <span>{t('proposalType.code.' + (e.row.proposalType ?? NOT_SPECIFIED))}</span>
       </Tooltip>
     );
   }
@@ -78,7 +78,7 @@ export const getColProposalTypeCycle = (t: any, policies: any) => ({
     const cycle = policies.find((c: any) => c?.cycleInformation?.cycleId === e.row?.cycle);
     return (
       <Tooltip title={cycle?.cycleDescription ?? '????'}>
-        <>{cycle ? cycle?.type : '????'}</>
+        <span>{cycle ? cycle?.type : '????'}</span>
       </Tooltip>
     );
   }

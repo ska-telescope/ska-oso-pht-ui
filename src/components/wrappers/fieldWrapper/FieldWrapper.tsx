@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { Grid, Typography } from '@mui/material';
 
 interface FieldWrapperProps {
