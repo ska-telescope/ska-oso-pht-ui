@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import CycleSelection from './CycleSelection';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import * as accessors from '@/utils/osd/useOSDAccessors/useOSDAccessors';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, Grid, Typography } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import {

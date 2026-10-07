@@ -1,7 +1,7 @@
 // ObservingBandField.test.tsx
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import { BAND_LOW_STR } from '../../../utils/constants';
 import ObservingBandField from './ObservingBand';
 import { FREQUENCY_HZ, FREQUENCY_MHZ, FREQUENCY_GHZ } from '@/utils/constants';

@@ -1,4 +1,4 @@
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { useState, useEffect } from 'react';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import ObservatoryData from '@/utils/types/observatoryData';

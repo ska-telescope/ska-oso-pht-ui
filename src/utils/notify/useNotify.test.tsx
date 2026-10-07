@@ -6,7 +6,7 @@ import { useNotify } from './useNotify';
 // Spy for updateAppContent5
 const mockUpdateAppContent5 = vi.fn();
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       updateAppContent5: mockUpdateAppContent5

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import TableSubmissionsHeader from './TableSubmissionsHeader';
 
 const wrapper = (component: React.ReactElement) => {

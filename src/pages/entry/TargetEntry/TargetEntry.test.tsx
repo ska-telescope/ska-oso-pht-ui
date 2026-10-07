@@ -3,7 +3,7 @@ import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TargetEntry from './TargetEntry';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
@@ -39,7 +39,7 @@ vi.mock('@services/axios/get/getCoordinates/getCoordinates', () => ({
   default: vi.fn()
 }));
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import TableReviewDecisionRow from './TableReviewDecisionRow';
 import { REVIEW_TYPE } from '@/utils/constants';
 

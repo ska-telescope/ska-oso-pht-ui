@@ -1,6 +1,6 @@
 import { describe, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import ValidationResults from './ValidationResults';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';

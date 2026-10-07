@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import TimedAlert from './TimedAlert';
 import { useNotify } from '@/utils/notify/useNotify';

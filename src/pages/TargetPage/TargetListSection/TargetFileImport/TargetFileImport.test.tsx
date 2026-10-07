@@ -36,7 +36,7 @@ vi.mock('@/utils/help/useHelp', () => ({
 }));
 
 const updateAppContent2Mock = vi.fn();
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: { content2: { targets: [] } },

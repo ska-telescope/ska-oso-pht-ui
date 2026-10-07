@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import CentralFrequency from './centralFrequency';
 import { BAND_LOW_STR } from '@/utils/constants.ts';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';

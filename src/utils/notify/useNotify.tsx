@@ -1,5 +1,5 @@
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import Notification from '@/utils/types/notification';
 
 export function useNotify() {

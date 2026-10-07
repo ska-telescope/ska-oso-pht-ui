@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject, StoreProvider } from '@utils/storage/store';
 import TargetPage from './TargetPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import completeMockStore from '@/utils/MockStore';

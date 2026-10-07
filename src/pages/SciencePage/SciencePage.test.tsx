@@ -42,7 +42,7 @@ const mockStore = {
   updateAppContent1: vi.fn(),
   updateAppContent2: vi.fn()
 };
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => mockStore
   }

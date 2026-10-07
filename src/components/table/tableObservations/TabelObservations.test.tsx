@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import TableObservations from './TableObservations';
 
 // --- Mocks ---
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: { content2: { id: 'proposal-1', name: 'Test Proposal' } }

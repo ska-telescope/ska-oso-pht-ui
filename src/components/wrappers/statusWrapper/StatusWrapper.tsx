@@ -4,7 +4,7 @@ import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { NAV, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Proposal from '@utils/types/proposal.tsx';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StatusWrapperProps {

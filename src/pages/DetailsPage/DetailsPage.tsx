@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Grid, Stack } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   DETAILS,

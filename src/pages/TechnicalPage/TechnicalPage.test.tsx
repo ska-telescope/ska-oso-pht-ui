@@ -49,7 +49,7 @@ vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   };
 });
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => mockStore
   }

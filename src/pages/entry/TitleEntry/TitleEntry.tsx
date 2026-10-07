@@ -10,7 +10,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   PROPOSAL_TYPE,

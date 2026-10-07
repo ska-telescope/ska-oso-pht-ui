@@ -16,7 +16,7 @@ import {
 } from '../../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal.tsx';
 import { getSpectralAveragingFactor } from '@services/axios/get/getSensitivityCalculator/getContinuumData/getContinuumData.tsx';
 import {

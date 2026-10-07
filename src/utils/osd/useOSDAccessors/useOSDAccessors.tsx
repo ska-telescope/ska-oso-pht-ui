@@ -1,7 +1,7 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo } from 'react';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { find } from 'lodash';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDateTime } from '@/utils/present/present';

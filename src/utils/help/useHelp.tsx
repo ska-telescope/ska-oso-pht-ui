@@ -1,4 +1,4 @@
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export function useHelp() {

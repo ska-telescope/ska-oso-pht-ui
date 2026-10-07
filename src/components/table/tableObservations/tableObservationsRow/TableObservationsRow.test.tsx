@@ -51,7 +51,7 @@ vi.mock('@/utils/helpers', async () => {
 // ------------------------------------------------------------
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import TableObservationsRow from './TableObservationsRow';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import { FREQUENCY_GHZ, FREQUENCY_HZ, FREQUENCY_MHZ } from '@/utils/constants';

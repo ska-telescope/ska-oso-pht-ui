@@ -1,6 +1,6 @@
 import { TableRow, TableCell, Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { getColors } from '@ska-telescope/ska-gui-components';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';

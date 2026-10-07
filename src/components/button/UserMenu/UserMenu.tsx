@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout, getUserInfo } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useNavigate } from 'react-router-dom';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { PMT, PATH, PAGE_PANEL_MANAGEMENT } from '@/utils/constants';
 import {
   isReviewerAdmin,

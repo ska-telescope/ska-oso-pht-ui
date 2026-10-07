@@ -1,4 +1,4 @@
-import { Telescope } from '@ska-telescope/ska-gui-local-storage';
+import { Telescope } from '@utils/types/typesSensCalc';
 import { AxiosAuthClient } from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { SKA_SENSITIVITY_CALCULATOR_API_URL, STATUS_ERROR } from '@/utils/constants';
 import { SensCalcResults } from '@utils/types/sensCalcResults.tsx';

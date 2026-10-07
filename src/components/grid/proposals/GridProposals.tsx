@@ -8,7 +8,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Typography, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { useValidateProposal } from '@utils/validation/validation';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';

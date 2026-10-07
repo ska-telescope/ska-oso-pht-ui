@@ -1,7 +1,7 @@
 import { describe, expect, test, vi, beforeEach, Mock } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import ReviewListPage from './ReviewListPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import getProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';

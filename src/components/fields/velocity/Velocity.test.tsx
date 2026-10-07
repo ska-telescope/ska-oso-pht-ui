@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import Velocity from './Velocity';
 import { VELOCITY_TYPE } from '../../../utils/constants';

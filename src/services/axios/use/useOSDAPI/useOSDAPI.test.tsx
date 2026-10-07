@@ -105,7 +105,7 @@ const mockObservatoryData: ObservatoryData = {
   ]
 };
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {

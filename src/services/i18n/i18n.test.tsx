@@ -16,7 +16,7 @@ vi.mock('@/utils/appFlow/AppFlowContext', () => ({
   useAppFlow: () => ({ isSV: () => false })
 }));
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: { content8: null },

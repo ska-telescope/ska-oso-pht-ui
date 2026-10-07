@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject, StoreProvider } from '@utils/storage/store';
 import DataProductPage from './DataProductPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE } from '@/utils/constants';

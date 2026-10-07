@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Divider, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { STATUS_ARRAY_PAGES_PROPOSAL, STATUS_ARRAY_PAGES_SV } from '@utils/constants.ts';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';

@@ -1,4 +1,4 @@
-import { Telescope } from '@ska-telescope/ska-gui-local-storage';
+import { Telescope } from '@utils/types/typesSensCalc';
 import Observation from '../../../../../utils/types/observation';
 import Target from '../../../../../utils/types/target';
 import { SensCalcResults } from '../../../../../utils/types/sensCalcResults';

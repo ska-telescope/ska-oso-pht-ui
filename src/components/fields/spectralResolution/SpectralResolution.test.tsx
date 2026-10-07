@@ -1,7 +1,7 @@
 import { describe, test, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import SpectralResolution from './SpectralResolution';
 import { BAND_LOW_STR, SA_AA2, SA_CUSTOM, TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
 

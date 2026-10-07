@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import SensCalcModalSingle from './SensCalcModalSingle';
 import { STATUS_ERROR, STATUS_INITIAL } from '@/utils/constants';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';

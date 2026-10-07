@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject, StoreProvider } from '@utils/storage/store';
 import { useNavigate } from 'react-router-dom';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';

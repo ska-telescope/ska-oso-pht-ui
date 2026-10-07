@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import {
   PROPOSAL_TYPE,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
@@ -80,7 +80,7 @@ const mockUpdateAppContent2 = vi.fn();
 const mockHelpComponent = vi.fn();
 const mockHelpComponentURL = vi.fn();
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {

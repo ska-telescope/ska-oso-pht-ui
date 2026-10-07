@@ -1,6 +1,6 @@
 import { describe, test, vi, expect } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import OutputSamplingIntervalField from './outputSamplingInterval';
 

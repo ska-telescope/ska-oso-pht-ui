@@ -1,7 +1,7 @@
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { beforeEach, describe, expect, test, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import { MemoryRouter } from 'react-router-dom';
 import PHT from './PHT';
 import { NAV, PATH, PROPOSAL_STATUS } from '@/utils/constants';
@@ -28,7 +28,7 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: () => true
 }));
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   StoreProvider: ({ children }: React.PropsWithChildren) => <>{children}</>,
   storageObject: {
     useStore: () => ({

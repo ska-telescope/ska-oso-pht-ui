@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography, useTheme } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { validateTeamPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';

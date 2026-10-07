@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
   useScopedTranslation: () => ({ t: (k: string) => k })

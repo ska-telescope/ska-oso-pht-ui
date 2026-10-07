@@ -7,7 +7,7 @@ import {
   THEME_DARK,
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { Typography, CssBaseline, Tooltip, Paper, Grid } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';

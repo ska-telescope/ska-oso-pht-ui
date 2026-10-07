@@ -21,7 +21,7 @@ import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';
 import { OSD_CONSTANTS } from './OSDConstants';
 import { channelsToBandwidthHz } from '@utils/zoomWindow.ts';
-import { Telescope } from '@ska-telescope/ska-gui-local-storage';
+import { Telescope } from '@utils/types/typesSensCalc';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const arraysAreEqual = (a: any[], b: any[]) => {

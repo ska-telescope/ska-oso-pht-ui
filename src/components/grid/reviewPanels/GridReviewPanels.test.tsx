@@ -18,7 +18,7 @@ vi.mock('@/services/axios/put/putPanel/putPanel', () => ({
   default: vi.fn()
 }));
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => {
       return {

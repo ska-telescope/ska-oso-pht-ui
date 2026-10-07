@@ -2,7 +2,7 @@ import { describe, test, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import Bandwidth from './bandwidth';
 import { TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM } from '@/utils/constants.ts';
 

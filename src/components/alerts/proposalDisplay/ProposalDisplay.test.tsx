@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import ProposalDisplay from './ProposalDisplay';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';

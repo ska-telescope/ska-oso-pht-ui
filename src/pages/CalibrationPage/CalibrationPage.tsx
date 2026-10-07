@@ -1,5 +1,5 @@
 import React from 'react';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Box, Grid } from '@mui/material';
 import { Proposal } from '@utils/types/proposal.tsx';
