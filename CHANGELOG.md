@@ -13,7 +13,7 @@ UNRELEASED
 * Changed: Upgraded TypeScript from 5.1.6 to 6.x and moved it, `@types/papaparse`, `react-test-renderer` and `@badeball/cypress-cucumber-preprocessor` to `devDependencies`; removed the unused `bundle-loader`, `json-loader`, `path-browserify` and `dotenv` dependencies; pinned `js-yaml` to 4.3.2+ and `serialize-javascript` to 7.1.2+ to clear high-severity advisories (BTN-3551)
 * Changed: Replaced the deprecated `@ska-telescope/ska-gui-local-storage` with an in-app Redux store providing the same `StoreProvider` and `storageObject.useStore()` API (BTN-3551)
 * Changed: Upgraded to React 19, `@ska-telescope/ska-gui-components` 3.0.0 and `@ska-telescope/ska-login-page` 2.0.0, removing the deprecated `@ska-telescope/ska-javascript-components`; adapted to MSAL 5, and declared `@azure/msal-browser` and `@azure/msal-react` as direct dependencies (BTN-3551)
-* Changed: Upgraded Vitest to 5, Cypress to 16, i18next to 26 (with react-i18next 17), react-pdf to 11 and `@testing-library/jest-dom` to 7; removed unused dependencies, including the Cucumber and Xray tooling (BTN-3551)
+* Changed: Upgraded Vitest to 5, Cypress to 16, i18next to 26 (with react-i18next 17), react-pdf to 11, zod to 4, react-router to 8 (replacing `react-router-dom`) and `@testing-library/jest-dom` to 7; removed unused dependencies, including the Cucumber and Xray tooling (BTN-3551)
 * CI: Run the JS lint, test, audit, e2e and typecheck jobs on `ska-build-node-ubuntu26:1.0.2`, which provides yarn 4 (BTN-3551)
 * CI Test Only: Remove temp E2E overrides and increase Cypress timeouts for long-running calls 
 * Bugfix: Ensure that if no polarisations are selected this is reflected in breadcrumbs

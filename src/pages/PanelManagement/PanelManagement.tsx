@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';

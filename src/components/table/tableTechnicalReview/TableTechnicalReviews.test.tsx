@@ -6,7 +6,7 @@ import { REVIEW_TYPE } from '@/utils/constants';
 
 const mockNavigate = vi.fn();
 
-vi.mock('react-router-dom', () => {
+vi.mock('react-router', () => {
   return {
     useNavigate: () => mockNavigate
   };

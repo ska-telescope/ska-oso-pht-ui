@@ -83,7 +83,7 @@ const integrationUnitSchema = numberLiteralEnum(INTEGRATION_TIME_UNITS.map((unit
 const sensitivityUnitSchema = numberLiteralEnum(SENSITIVITY_UNITS.map((unit) => unit.id));
 
 const suppliedValueBaseSchema = z.object({
-  value: z.number().finite().gt(0)
+  value: z.number().gt(0)
 });
 const suppliedIntegrationSchema = suppliedValueBaseSchema
   .extend({
@@ -98,7 +98,7 @@ const suppliedIntegrationSchema = suppliedValueBaseSchema
     );
     if (supplied.value > maxValue) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
         message: `Supplied value must be <= ${maxValue} for selected unit.`
       });
     }

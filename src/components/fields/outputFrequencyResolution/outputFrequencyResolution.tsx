@@ -15,7 +15,7 @@ interface OutputFrequencyResolutionFieldProps {
   widthButton?: number;
 }
 
-export const outputFrequencyResolutionSchema = z.number().finite().int().min(1);
+export const outputFrequencyResolutionSchema = z.number().int().min(1);
 
 export default function OutputFrequencyResolutionField({
   disabled = false,

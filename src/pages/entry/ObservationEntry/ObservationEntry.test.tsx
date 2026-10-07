@@ -26,8 +26,8 @@ const mockState = vi.hoisted(() => ({
 // look as though it had some content so the component would always think
 // it's in edit mode.)
 // Edit-mode tests supply a `data` prop instead to explicitly trigger edit mode.
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router');
   return {
     ...actual,
     useLocation: () => ({ pathname: '/', state: null, search: '', hash: '' }),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { Box, Grid, Paper, Typography, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';

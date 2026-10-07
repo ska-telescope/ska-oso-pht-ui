@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { Box, Divider, Grid, Paper, Stack, Tab, Tabs } from '@mui/material';
 import {
   BorderedSection,

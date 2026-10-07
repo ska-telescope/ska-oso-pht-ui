@@ -13,7 +13,7 @@ interface PixelSizeFieldProps {
   value: number;
 }
 
-export const pixelSizeSchema = z.number().finite().gt(0);
+export const pixelSizeSchema = z.number().gt(0);
 
 export default function PixelSizeField({
   disabled = false,

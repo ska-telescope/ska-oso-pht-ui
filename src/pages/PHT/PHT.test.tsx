@@ -2,7 +2,7 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import { beforeEach, describe, expect, test, it, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import PHT from './PHT';
 import { NAV, PATH, PROPOSAL_STATUS } from '@/utils/constants';
 import PutProposal from '@/services/axios/put/putProposal/putProposal';
@@ -16,7 +16,7 @@ const mockPathname = { current: PATH[0] };
 const mockApplicationContent2 = { current: { id: 'prsl-123' } as any };
 const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } as any };
 
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
   useNavigate: () => mockNavigate,
   useLocation: () => ({ pathname: mockPathname.current }),
   MemoryRouter: ({ children }: React.PropsWithChildren) => <>{children}</>,

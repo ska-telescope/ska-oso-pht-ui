@@ -21,7 +21,7 @@ import Proposal from '@/utils/types/proposal';
 // ---- Module mocks ----
 
 const mockNavigate = vi.fn();
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
   useNavigate: () => mockNavigate
 }));
 

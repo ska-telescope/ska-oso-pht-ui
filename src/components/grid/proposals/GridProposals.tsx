@@ -7,7 +7,7 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Typography, Box, Grid } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { storageObject } from '@utils/storage/store';
 import { useValidateProposal } from '@utils/validation/validation';
 import PutProposal from '@services/axios/put/putProposal/putProposal';

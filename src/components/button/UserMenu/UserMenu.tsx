@@ -5,7 +5,7 @@ import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout, getUserInfo } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { storageObject } from '@utils/storage/store';
 import { PMT, PATH, PAGE_PANEL_MANAGEMENT } from '@/utils/constants';
 import {

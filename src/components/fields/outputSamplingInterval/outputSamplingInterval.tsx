@@ -15,7 +15,7 @@ interface OutputSamplingIntervalFieldProps {
   widthButton?: number;
 }
 
-export const outputSamplingIntervalSchema = z.number().finite().int().min(1);
+export const outputSamplingIntervalSchema = z.number().int().min(1);
 
 export default function OutputSamplingIntervalField({
   disabled = false,

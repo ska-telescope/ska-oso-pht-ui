@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useMsal } from '@azure/msal-react';
 import { Logger } from '@azure/msal-browser';
 import { useUserGroups } from '@ska-telescope/ska-login-page';
@@ -19,7 +19,7 @@ vi.mock('@azure/msal-react', () => ({
   useMsal: vi.fn()
 }));
 
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
   useNavigate: vi.fn()
 }));
 

@@ -24,7 +24,7 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
     }
   })
 }));
-vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }));
+vi.mock('react-router', () => ({ useNavigate: () => vi.fn() }));
 vi.mock('../../components/layout/Shell/Shell', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));

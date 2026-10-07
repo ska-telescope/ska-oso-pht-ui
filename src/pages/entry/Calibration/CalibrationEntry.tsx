@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';

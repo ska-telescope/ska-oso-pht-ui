@@ -83,9 +83,8 @@
     "react-latex-next": "^3.0.0",
     "react-pdf": "^11.0.0",
     "react-redux": "^9.3.0",
-    "react-router": "^7.18.4",
-    "react-router-dom": "^7.18.4",
-    "zod": "^3.25.76"
+    "react-router": "^8.4.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.8",
@@ -141,7 +140,7 @@
     "not op_mini all"
   ],
   "engines": {
-    "node": ">=22.16.0"
+    "node": ">=22.22.0"
   },
   "resolutions": {
     "diff": "^8.0.3",
