@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+import { describe, it, expect, vi, beforeEach, beforeAll, type Mock } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StoreProvider } from '@utils/storage/store';
@@ -88,7 +88,7 @@ const expectSpectralResolutionText = (value: string) => {
 };
 
 describe('GridObservation', () => {
-  let rowClickMock: ReturnType<typeof vi.fn>;
+  let rowClickMock: Mock<(params: unknown) => void>;
 
   beforeEach(() => {
     rowClickMock = vi.fn();
@@ -115,7 +115,7 @@ describe('GridObservation', () => {
 });
 
 describe('GridObservation unit label display', () => {
-  let rowClickMock: ReturnType<typeof vi.fn>;
+  let rowClickMock: Mock<(params: unknown) => void>;
 
   beforeEach(() => {
     rowClickMock = vi.fn();
@@ -174,7 +174,7 @@ describe('GridObservation unit label display', () => {
 });
 
 describe('GridObservation border styling', () => {
-  let rowClickMock: ReturnType<typeof vi.fn>;
+  let rowClickMock: Mock<(params: unknown) => void>;
 
   beforeEach(() => {
     rowClickMock = vi.fn();
@@ -191,7 +191,7 @@ describe('GridObservation border styling', () => {
 });
 
 describe('GridObservation spectral resolution conditional rendering', () => {
-  let rowClickMock: ReturnType<typeof vi.fn>;
+  let rowClickMock: Mock<(params: unknown) => void>;
 
   beforeEach(() => {
     rowClickMock = vi.fn();
@@ -286,7 +286,7 @@ describe('GridObservation spectral resolution conditional rendering', () => {
 });
 
 describe('GridObservation auto-select behavior', () => {
-  let rowClickMock: ReturnType<typeof vi.fn>;
+  let rowClickMock: Mock<(params: unknown) => void>;
 
   beforeEach(() => {
     rowClickMock = vi.fn();
@@ -325,7 +325,7 @@ describe('GridObservation auto-select behavior', () => {
 });
 
 describe('GridObservation disabled state', () => {
-  let rowClickMock: ReturnType<typeof vi.fn>;
+  let rowClickMock: Mock<(params: unknown) => void>;
 
   beforeEach(() => {
     rowClickMock = vi.fn();
@@ -354,7 +354,7 @@ describe('GridObservation disabled state', () => {
   });
 });
 describe('GridObservation hard-coded spectral resolution fallback', () => {
-  let rowClickMock: ReturnType<typeof vi.fn>;
+  let rowClickMock: Mock<(params: unknown) => void>;
 
   beforeEach(() => {
     rowClickMock = vi.fn();

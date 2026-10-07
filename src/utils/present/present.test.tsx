@@ -134,13 +134,15 @@ describe('Present', () => {
   });
   describe('uses browser locale/timezone when locale and timezone are omitted', () => {
     beforeEach(() => {
-      vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(
-        ((locale, options) =>
-          new RealDateTimeFormat(locale ?? 'en-ZA', {
-            ...options,
-            timeZone: options?.timeZone ?? 'Africa/Johannesburg'
-          })) as typeof Intl.DateTimeFormat
-      );
+      vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(function (
+        locale?: string | string[],
+        options?: Intl.DateTimeFormatOptions
+      ) {
+        return new RealDateTimeFormat(locale ?? 'en-ZA', {
+          ...options,
+          timeZone: options?.timeZone ?? 'Africa/Johannesburg'
+        });
+      } as typeof Intl.DateTimeFormat);
     });
 
     afterEach(() => {

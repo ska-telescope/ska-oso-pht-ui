@@ -89,154 +89,150 @@ describe('<TargetEntry /> target limit', () => {
   }, 15000);
 });
 
-describe(
-  '<TargetEntry /> form preservation on auto-linking error',
-  () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
+describe('<TargetEntry /> form preservation on auto-linking error', { timeout: 10000 }, () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('retains field values when the sensitivity calculator returns an error', async () => {
+    const mockedAutoLinking = vi.mocked(linkTarget);
+
+    mockedAutoLinking.mockResolvedValue({
+      success: false,
+      error: 'Declination not supported by sensitivity calculator'
+    } as never);
+
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
     });
 
-    it('retains field values when the sensitivity calculator returns an error', async () => {
-      const mockedAutoLinking = vi.mocked(linkTarget);
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+    const decInput = screen.getByTestId('skyDirectionValue2').querySelector('input')!;
 
-      mockedAutoLinking.mockResolvedValue({
-        success: false,
-        error: 'Declination not supported by sensitivity calculator'
-      } as never);
+    await user.type(nameInput, 'My Target');
+    await user.type(raInput, '12:34:56');
+    await user.type(decInput, '45:00:00');
 
-      const user = userEvent.setup();
-
-      await act(async () => {
-        wrapper(<TargetEntry />);
-      });
-
-      const nameInput = screen.getByTestId('name').querySelector('input')!;
-      const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
-      const decInput = screen.getByTestId('skyDirectionValue2').querySelector('input')!;
-
-      await user.type(nameInput, 'My Target');
-      await user.type(raInput, '12:34:56');
-      await user.type(decInput, '45:00:00');
-
-      await waitFor(() => {
-        expect(screen.getByTestId('addTargetButton')).not.toBeDisabled();
-      });
-
-      await user.click(screen.getByTestId('addTargetButton'));
-
-      await waitFor(() => {
-        expect(mockedAutoLinking).toHaveBeenCalled();
-      });
-
-      expect(nameInput.value).toBe('My Target');
-      expect(raInput.value).toBe('12:34:56.000');
-      expect(decInput.value).toBe('45:00:00.000');
-    }, 15000);
-
-    it('shows a loading state and disables editing and clearing while coordinates are resolving', async () => {
-      const mockedGetCoordinates = vi.mocked(GetCoordinates);
-      mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
-
-      const user = userEvent.setup();
-
-      await act(async () => {
-        wrapper(<TargetEntry />);
-      });
-
-      const nameInput = screen.getByTestId('name').querySelector('input')!;
-      await user.type(nameInput, 'Resolving target');
-
-      await user.click(screen.getByTestId('resolveButton'));
-
-      await waitFor(() => {
-        expect(screen.queryByTestId('resolveButton')).not.toBeInTheDocument();
-        expect(nameInput).toBeDisabled();
-        expect(screen.getByTestId('clearFormButton')).toBeDisabled();
-      });
+    await waitFor(() => {
+      expect(screen.getByTestId('addTargetButton')).not.toBeDisabled();
     });
 
-    it('ignores stale resolution responses after the form changes', async () => {
-      let resolvePromiseResolver: ((value: unknown) => void) | undefined;
-      const deferredResponse = new Promise<unknown>((resolve) => {
-        resolvePromiseResolver = resolve;
-      });
+    await user.click(screen.getByTestId('addTargetButton'));
 
-      vi.mocked(GetCoordinates).mockReturnValue(deferredResponse as never);
+    await waitFor(() => {
+      expect(mockedAutoLinking).toHaveBeenCalled();
+    });
 
-      const user = userEvent.setup();
+    expect(nameInput.value).toBe('My Target');
+    expect(raInput.value).toBe('12:34:56.000');
+    expect(decInput.value).toBe('45:00:00.000');
+  }, 15000);
 
-      await act(async () => {
-        wrapper(<TargetEntry />);
-      });
+  it('shows a loading state and disables editing and clearing while coordinates are resolving', async () => {
+    const mockedGetCoordinates = vi.mocked(GetCoordinates);
+    mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
 
-      const nameInput = screen.getByTestId('name').querySelector('input')!;
-      const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+    const user = userEvent.setup();
 
-      await user.type(nameInput, 'Original target');
-      await user.click(screen.getByTestId('resolveButton'));
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
 
-      fireEvent.change(raInput, { target: { value: '11:22:33' } });
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'Resolving target');
 
-      await act(async () => {
-        resolvePromiseResolver?.({
-          reference_coordinate: { kind: 'icrs', ra_str: '01:02:03', dec_str: '04:05:06' },
-          radial_velocity: { quantity: { value: 5 }, redshift: 0 }
-        });
-      });
+    await user.click(screen.getByTestId('resolveButton'));
 
-      await waitFor(() => {
-        expect(raInput.value).toBe('11:22:33');
+    await waitFor(() => {
+      expect(screen.queryByTestId('resolveButton')).not.toBeInTheDocument();
+      expect(nameInput).toBeDisabled();
+      expect(screen.getByTestId('clearFormButton')).toBeDisabled();
+    });
+  });
+
+  it('ignores stale resolution responses after the form changes', async () => {
+    let resolvePromiseResolver: ((value: unknown) => void) | undefined;
+    const deferredResponse = new Promise<unknown>((resolve) => {
+      resolvePromiseResolver = resolve;
+    });
+
+    vi.mocked(GetCoordinates).mockReturnValue(deferredResponse as never);
+
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+
+    await user.type(nameInput, 'Original target');
+    await user.click(screen.getByTestId('resolveButton'));
+
+    fireEvent.change(raInput, { target: { value: '11:22:33' } });
+
+    await act(async () => {
+      resolvePromiseResolver?.({
+        reference_coordinate: { kind: 'icrs', ra_str: '01:02:03', dec_str: '04:05:06' },
+        radial_velocity: { quantity: { value: 5 }, redshift: 0 }
       });
     });
 
-    it('shows clear button only when at least one field has been entered', async () => {
-      const user = userEvent.setup();
+    await waitFor(() => {
+      expect(raInput.value).toBe('11:22:33');
+    });
+  });
 
-      await act(async () => {
-        wrapper(<TargetEntry />);
-      });
+  it('shows clear button only when at least one field has been entered', async () => {
+    const user = userEvent.setup();
 
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    expect(screen.queryByTestId('clearFormButton')).not.toBeInTheDocument();
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'Temporary target');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('clearFormButton')).toBeInTheDocument();
+    });
+  });
+
+  it('clears entered values when clear button is clicked', async () => {
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+    const decInput = screen.getByTestId('skyDirectionValue2').querySelector('input')!;
+
+    await user.type(nameInput, 'Reset me');
+    await user.type(raInput, '10:20:30');
+    await user.type(decInput, '40:50:00');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('clearFormButton')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('clearFormButton'));
+
+    await waitFor(() => {
+      expect(nameInput.value).toBe('');
+      expect(raInput.value).toBe('');
+      expect(decInput.value).toBe('');
       expect(screen.queryByTestId('clearFormButton')).not.toBeInTheDocument();
-
-      const nameInput = screen.getByTestId('name').querySelector('input')!;
-      await user.type(nameInput, 'Temporary target');
-
-      await waitFor(() => {
-        expect(screen.getByTestId('clearFormButton')).toBeInTheDocument();
-      });
     });
-
-    it('clears entered values when clear button is clicked', async () => {
-      const user = userEvent.setup();
-
-      await act(async () => {
-        wrapper(<TargetEntry />);
-      });
-
-      const nameInput = screen.getByTestId('name').querySelector('input')!;
-      const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
-      const decInput = screen.getByTestId('skyDirectionValue2').querySelector('input')!;
-
-      await user.type(nameInput, 'Reset me');
-      await user.type(raInput, '10:20:30');
-      await user.type(decInput, '40:50:00');
-
-      await waitFor(() => {
-        expect(screen.getByTestId('clearFormButton')).toBeInTheDocument();
-      });
-
-      await user.click(screen.getByTestId('clearFormButton'));
-
-      await waitFor(() => {
-        expect(nameInput.value).toBe('');
-        expect(raInput.value).toBe('');
-        expect(decInput.value).toBe('');
-        expect(screen.queryByTestId('clearFormButton')).not.toBeInTheDocument();
-      });
-    });
-  },
-  { timeout: 10000 }
-);
+  });
+});
 
 describe('<TargetEntry /> auto-linking route', () => {
   beforeEach(() => {

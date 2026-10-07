@@ -180,9 +180,6 @@ describe('SciencePage', () => {
       }
       return 2;
     });
-    vi.mock('@ska-telescope/ska-login-page', () => ({
-      isLoggedIn: () => true
-    }));
   });
 
   it('renders file upload and buttons when logged in', () => {

@@ -17,7 +17,7 @@ i18n
     lng: 'en',
     ns: ['sv', 'pht'],
     defaultNS: 'pht',
-    initImmediate: false,
+    initAsync: false,
     useSuspense: true,
     debug: false,
     interpolation: {

@@ -64,6 +64,7 @@ export default function PDFViewer({
         {url ? (
           <Document
             file={url}
+            suspense={false}
             onLoadSuccess={onDocumentLoadSuccess}
             onLoadError={onDocumentLoadError}
             loading={<Typography color="text.secondary">{t('pdfViewer.loading')}</Typography>}
@@ -73,6 +74,7 @@ export default function PDFViewer({
               <Page
                 key={`page_${index + 1}`}
                 pageNumber={index + 1}
+                suspense={false}
                 width={containerPixelWidth}
                 renderTextLayer={false}
                 renderAnnotationLayer={false}
