@@ -45,18 +45,31 @@ const DEFAULT_OPS_PASSWORD = 'test';
 const DEFAULT_MEMBER_EMAIL = 'mark.nicol@community.skao.int';
 const DEFAULT_MEMBER_FIRST_NAME = 'Mark';
 
-const envOr = (key, fallback) => Cypress.env(key) || fallback;
+const ENV_KEYS = [
+  'INDIGO_TEST_CLIENT_ID',
+  'INDIGO_TEST_CLIENT_SECRET',
+  'INDIGO_TEST_USERNAME',
+  'INDIGO_TEST_PASSWORD',
+  'INDIGO_TEST_SCOPE',
+  'INDIGO_TEST_AUDIENCE',
+  'INDIGO_OPS_USERNAME',
+  'INDIGO_OPS_PASSWORD'
+];
 
-export const liveMemberEmail = () => envOr('LIVE_MEMBER_EMAIL', DEFAULT_MEMBER_EMAIL);
-export const liveMemberFirstName = () => envOr('LIVE_MEMBER_FIRST_NAME', DEFAULT_MEMBER_FIRST_NAME);
+const withEnv = (callback) =>
+  cy.env(ENV_KEYS).then((env) => callback((key, fallback) => env[key] || fallback));
+
+export const liveMemberEmail = () => Cypress.expose('LIVE_MEMBER_EMAIL') || DEFAULT_MEMBER_EMAIL;
+export const liveMemberFirstName = () =>
+  Cypress.expose('LIVE_MEMBER_FIRST_NAME') || DEFAULT_MEMBER_FIRST_NAME;
 
 // Full raw ROPC token response (id_token/access_token/expires_in/scope/...) - this exact shape is
 // what MSAL's loadExternalTokens() expects as its "response" argument (see
 // ExternalTokenResponse in @azure/msal-common), so hydrateIndigoSession below can pass it through
 // with no reshaping.
 const fetchLiveIndigoTokenResponse = ({ username, password } = {}) =>
-  cy
-    .request({
+  withEnv((envOr) =>
+    cy.request({
       method: 'POST',
       url: INDIGO_IAM_TOKEN_URL,
       form: true,
@@ -73,7 +86,7 @@ const fetchLiveIndigoTokenResponse = ({ username, password } = {}) =>
       },
       timeout: 15000
     })
-    .then((response) => response.body);
+  ).then((response) => response.body);
 
 export const fetchLiveIndigoToken = (opts) =>
   fetchLiveIndigoTokenResponse(opts).then((body) => body.access_token);
@@ -81,10 +94,12 @@ export const fetchLiveIndigoToken = (opts) =>
 // Token for the ops/reviewer-admin account (see DEFAULT_OPS_USERNAME above) - only used by
 // assignProposalToPanel's own direct API calls, see the file header comment.
 export const fetchLiveOpsToken = () =>
-  fetchLiveIndigoToken({
-    username: envOr('INDIGO_OPS_USERNAME', DEFAULT_OPS_USERNAME),
-    password: envOr('INDIGO_OPS_PASSWORD', DEFAULT_OPS_PASSWORD)
-  });
+  withEnv((envOr) =>
+    fetchLiveIndigoToken({
+      username: envOr('INDIGO_OPS_USERNAME', DEFAULT_OPS_USERNAME),
+      password: envOr('INDIGO_OPS_PASSWORD', DEFAULT_OPS_PASSWORD)
+    })
+  );
 
 // Seeds MSAL's cache from a real token response via the app's __msalLoadExternalTokens hook (see
 // axiosAuthClient.ts) - scopes must match what axiosAuthClient.ts's loginRequest asks for, or the
@@ -104,12 +119,14 @@ const hydrateIndigoSession = (tokenResponse) => {
   cy.visit('/?use_indigo=true');
   cy.window({ timeout: 15000 })
     .its('__msalLoadExternalTokens')
-    .then((loadExternalTokens) => {
-      const request = {
-        scopes: envOr('INDIGO_TEST_SCOPE', DEFAULT_SCOPE).split(' ').filter(Boolean)
-      };
-      return cy.wrap(loadExternalTokens(request, tokenResponse), { timeout: 15000 });
-    });
+    .then((loadExternalTokens) =>
+      withEnv((envOr) => {
+        const request = {
+          scopes: envOr('INDIGO_TEST_SCOPE', DEFAULT_SCOPE).split(' ').filter(Boolean)
+        };
+        return cy.wrap(loadExternalTokens(request, tokenResponse), { timeout: 15000 });
+      })
+    );
   cy.visit('/?use_indigo=true');
   cy.get('[data-testid="usernameMenu"]', { timeout: 15000 }).should('exist');
 };
@@ -158,11 +175,13 @@ export const loginAsUser = (username) => {
       `No live IAM credentials configured for Cypress test user "${username}" - add one to ACCOUNTS in cypressTestAuth.js.`
     );
   }
-  const resolvedUsername = envOr(account.usernameEnvKey, username);
-  const password = envOr(account.passwordEnvKey, account.defaultPassword);
-  return loginWithHydratedMsal(resolvedUsername, () =>
-    fetchLiveIndigoTokenResponse({ username: resolvedUsername, password })
-  );
+  return withEnv((envOr) => {
+    const resolvedUsername = envOr(account.usernameEnvKey, username);
+    const password = envOr(account.passwordEnvKey, account.defaultPassword);
+    return loginWithHydratedMsal(resolvedUsername, () =>
+      fetchLiveIndigoTokenResponse({ username: resolvedUsername, password })
+    );
+  });
 };
 
 export const stubMsalForceRefresh = () => {

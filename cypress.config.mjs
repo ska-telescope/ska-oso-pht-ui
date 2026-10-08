@@ -14,18 +14,20 @@ export default defineConfig({
   screenshotsFolder: 'tests/cypress/artefacts/screenshots',
   videosFolder: 'tests/cypress/artefacts/videos',
   downloadsFolder: 'tests/cypress/artefacts/downloads',
+  expose: {
+    LIVE_MEMBER_EMAIL: process.env.CYPRESS_LIVE_MEMBER_EMAIL,
+    LIVE_MEMBER_FIRST_NAME: process.env.CYPRESS_LIVE_MEMBER_FIRST_NAME
+  },
   e2e: {
     baseUrl: 'http://localhost:6101',
     //
     defaultCommandTimeout: 10000,  // 4000
-    execTimeout: 120000, // 60000
     taskTimeout: 120000, // 60000
     pageLoadTimeout:  120000, // 60000
     requestTimeout:  10000, // 5000
     responseTimeout:  60000, // 30000
     //
     experimentalRunAllSpecs: true,
-    experimentalMemoryManagement: true,
     supportFile: 'tests/cypress/support/e2e.ts',
     specPattern: ['tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
     setupNodeEvents(on, config) {
