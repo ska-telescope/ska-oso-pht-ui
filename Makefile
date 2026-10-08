@@ -9,6 +9,7 @@ K8S_WAIT_LABEL_FILTER_ARGS = -l release=$(HELM_RELEASE)
 # JS Template Variables
 JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
 JS_E2E_COVERAGE_ENABLED = false
+JS_E2E_TEST_SWITCHES ?= $(if $(shell command -v google-chrome 2>/dev/null),--browser chrome)
 JS_ESLINT_CONFIG ?= eslint.config.js
 
 $(info $(JS_E2E_TEST_BASE_URL))
