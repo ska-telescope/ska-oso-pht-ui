@@ -76,7 +76,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   const PAGE = isEdit() ? PAGE_CALIBRATION_UPDATE : PAGE_CALIBRATION_ADD;
 
-  const [, setAxiosViewError] = React.useState('');
   const [target, setTarget] = React.useState<Target>();
   const [observation, setObservation] = React.useState<Observation>();
 
@@ -144,11 +143,11 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     }
   }, []);
 
-  const isFirstRender = React.useRef(true);
+  const isFirstRenderRef = React.useRef(true);
 
   React.useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
       return;
     }
     updateStorageProposal();
@@ -178,12 +177,8 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
         calibrationStrategy: [calibrationOut()]
       };
       setProposal(record);
-    } catch (e) {
-      if (e instanceof Error) {
-        setAxiosViewError(e.message);
-      } else {
-        setAxiosViewError('error.API_UNKNOWN_ERROR');
-      }
+    } catch {
+      return;
     }
   }
 

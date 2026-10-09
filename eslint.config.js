@@ -1,23 +1,30 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import reactPlugin from 'eslint-plugin-react';
+import eslintReact from '@eslint-react/eslint-plugin';
 import reactHooks from 'eslint-plugin-react-hooks';
 
 export default [
-  { settings: { react: { version: 'detect' } } },
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
   { languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } } },
   { languageOptions: { globals: globals.browser } },
   { ignores: ['node_modules', 'coverage', 'build', 'dist', 'src/env.js'] },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
-  { ...reactPlugin.configs.flat.recommended },
+  eslintReact.configs['recommended-typescript'],
   reactHooks.configs.flat.recommended,
   {
     rules: {
-      'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-namespace': 'off',
+      '@eslint-react/error-boundaries': 'off',
+      '@eslint-react/exhaustive-deps': 'off',
+      '@eslint-react/purity': 'off',
+      '@eslint-react/rules-of-hooks': 'off',
+      '@eslint-react/set-state-in-effect': 'off',
+      '@eslint-react/set-state-in-render': 'off',
+      '@eslint-react/static-components': 'off',
+      '@eslint-react/unsupported-syntax': 'off',
+      '@eslint-react/use-memo': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '_' }],
       // Pre-existing patterns — warn rather than block until codebase is cleaned up
       '@typescript-eslint/no-explicit-any': 'warn',
@@ -33,6 +40,12 @@ export default [
       'react-hooks/refs': 'warn',
       'react-hooks/static-components': 'warn',
       'react-hooks/globals': 'warn'
+    }
+  },
+  {
+    files: ['**/*.test.{ts,tsx}'],
+    rules: {
+      '@eslint-react/no-unnecessary-use-prefix': 'off'
     }
   }
 ];

@@ -3,7 +3,6 @@
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import viteTsconfigPaths from 'vite-tsconfig-paths';
 
 const proxyTarget = process.env.BACKEND_PROXY;
 // Lets /oso/ be redirected to a local dev instance of ska-oso-services (e.g. for testing an
@@ -14,7 +13,8 @@ const osoProxyTarget = process.env.OSO_SERVICES_PROXY || proxyTarget;
 export default defineConfig({
   base: './',
   build: { rollupOptions: { external: ['/env.js'] } },
-  plugins: [react(), viteTsconfigPaths()],
+  plugins: [react()],
+  resolve: { tsconfigPaths: true },
   server: {
     historyApiFallback: true,
     host: true,

@@ -31,13 +31,14 @@ export default function SaveButton({
 
   React.useEffect(() => {
     if (autoSaveInterval > 0) {
+      let warnTimeoutId: ReturnType<typeof setTimeout> | undefined;
       const intervalId = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
             if (typeof action === 'function') {
               action(); // trigger auto-save
               setWarn(true); // switch to warning color
-              setTimeout(() => setWarn(false), 600); // revert after 600ms
+              warnTimeoutId = setTimeout(() => setWarn(false), 600); // revert after 600ms
             }
             return autoSaveInterval; // reset countdown
           }
@@ -45,7 +46,10 @@ export default function SaveButton({
         });
       }, 1000);
 
-      return () => clearInterval(intervalId); // cleanup
+      return () => {
+        clearInterval(intervalId);
+        clearTimeout(warnTimeoutId);
+      };
     }
   }, [autoSaveInterval, action]);
 

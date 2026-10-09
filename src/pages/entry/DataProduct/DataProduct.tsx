@@ -110,7 +110,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const latestProposalRef = React.useRef(getProposal());
-  const hasInitializedDataProduct = React.useRef(false);
+  const hasInitializedDataProductRef = React.useRef(false);
   const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestSensCalcRequestIdRef = React.useRef(0);
 
@@ -191,7 +191,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [rotationMeasure, setRotationMeasure] = React.useState(0);
 
   const [polarisationsError, setPolarisationsError] = React.useState('');
-  const loadedDataProduct = React.useRef<DataProductSDPNew | null>(null);
+  const loadedDataProductRef = React.useRef<DataProductSDPNew | null>(null);
 
   const persistProposal = (proposal: Proposal) => {
     latestProposalRef.current = proposal;
@@ -509,11 +509,11 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!newDataProduct) {
       return;
     }
-    const loaded = loadedDataProduct.current;
+    const loaded = loadedDataProductRef.current;
     const existingDataProduct = (proposal.dataProductSDP ?? []).find(
       (dp) => dp.id === newDataProduct.id && dp.observationId === newDataProduct.observationId
     );
-    loadedDataProduct.current = null;
+    loadedDataProductRef.current = null;
     if (
       loaded?.id === newDataProduct.id &&
       loaded.observationId === newDataProduct.observationId &&
@@ -538,7 +538,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const updateStorageProposal = () => {
-    if (!hasInitializedDataProduct.current) {
+    if (!hasInitializedDataProductRef.current) {
       return;
     }
     if (osdCyclePolicy?.maxDataProducts === 1) {
@@ -652,7 +652,7 @@ export default function DataProduct({ data }: DataProductProps) {
       );
 
       const dataProductToLoad = linkedDataProduct ?? selectedDataProduct;
-      loadedDataProduct.current = dataProductToLoad;
+      loadedDataProductRef.current = dataProductToLoad;
       dataProductIn(dataProductToLoad);
     } else {
       const fallbackObservation =
@@ -662,7 +662,7 @@ export default function DataProduct({ data }: DataProductProps) {
       }
       setId(generateDataProductId());
     }
-    hasInitializedDataProduct.current = true;
+    hasInitializedDataProductRef.current = true;
   }, []);
 
   React.useEffect(() => {
@@ -1220,15 +1220,8 @@ export default function DataProduct({ data }: DataProductProps) {
 
         <Grid size={{ md: 11, lg: 3 }}>
           <BorderedSection borderColor={theme.palette.info.main} title={t('page.7.descTitle')}>
-            <Typography variant="subtitle1">
-              {t('page.7.descContent.' + getObservation()?.type + '.' + getSuffix())
-                .split('\n')
-                .map((line, index) => (
-                  <React.Fragment key={index}>
-                    {line.trim()}
-                    <br />
-                  </React.Fragment>
-                ))}
+            <Typography variant="subtitle1" sx={{ whiteSpace: 'pre-line' }}>
+              {t('page.7.descContent.' + getObservation()?.type + '.' + getSuffix())}
             </Typography>
           </BorderedSection>
           {showSC && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}

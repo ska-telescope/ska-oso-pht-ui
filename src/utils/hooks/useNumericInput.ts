@@ -24,7 +24,7 @@ export const useNumericInput = (
   }: NumericInputOptions = {}
 ) => {
   const formatFiniteValue = (num: number) => (Number.isFinite(num) ? String(num) : null);
-  const [text, setText] = React.useState<string>(formatFiniteValue(value) ?? '');
+  const [text, setText] = React.useState<string>(() => formatFiniteValue(value) ?? '');
   const [error, setError] = React.useState('');
   const valueRef = React.useRef(value);
   const textRef = React.useRef(text);

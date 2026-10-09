@@ -382,7 +382,7 @@ export default function SciencePage() {
     setTheProposalState(validateSciencePage(getProposal()));
   }, [validateToggle]);
 
-  const PDFView = () => (
+  const renderPDFView = () => (
     <PDFWrapper open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
   );
 
@@ -512,7 +512,7 @@ export default function SciencePage() {
           )}
         </Grid>
       </Grid>
-      {PDFView()}
+      {renderPDFView()}
     </Shell>
   );
 }

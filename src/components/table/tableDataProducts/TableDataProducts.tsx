@@ -23,8 +23,8 @@ export default function TableDataProducts({
 
   const getProposal = () => application.content2 as Proposal;
 
-  const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
-  const [expandedRows, setExpandedRows] = React.useState(new Set<number>());
+  const expandButtonsRef = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
+  const [expandedRows, setExpandedRows] = React.useState(() => new Set<number>());
 
   const toggleRow = (id: number) => {
     const newExpandedRows = new Set(expandedRows);
@@ -55,7 +55,7 @@ export default function TableDataProducts({
               index={index}
               expanded={expandedRows.has(item.id)}
               toggleRow={toggleRow}
-              expandButtonRef={(el) => (expandButtonRefs.current[item.id] = el)}
+              expandButtonRef={(el) => (expandButtonsRef.current[item.id] = el)}
               deleteClicked={deleteFunction}
               editClicked={updateFunction}
               t={t} // useScopedTranslation

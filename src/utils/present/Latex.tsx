@@ -2,7 +2,7 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
 type Delimiter = { left: string; right: string; display: boolean };
-type Fragment = { type: 'text' | 'math'; data: string; display?: boolean };
+type Fragment = { type: 'text' | 'math'; data: string; display?: boolean; offset?: number };
 
 const DELIMITERS: Delimiter[] = [
   { left: '$$', right: '$$', display: true },
@@ -50,7 +50,12 @@ const splitAtDelimiters = (input: string, delimiters: Delimiter[]): Fragment[] =
     if (index === -1) break;
     const rawData = text.slice(0, index + delimiter.right.length);
     const math = amsRegex.test(rawData) ? rawData : text.slice(delimiter.left.length, index);
-    fragments.push({ type: 'math', data: math, display: delimiter.display });
+    fragments.push({
+      type: 'math',
+      data: math,
+      display: delimiter.display,
+      offset: input.length - text.length
+    });
     text = text.slice(index + delimiter.right.length);
   }
   if (text !== '') fragments.push({ type: 'text', data: text });
@@ -68,13 +73,14 @@ const renderMath = (math: string, displayMode: boolean): string | null => {
 export default function Latex({ children }: { children: string }) {
   return (
     <span>
-      {splitAtDelimiters(children, DELIMITERS).map((fragment, index) => {
+      {splitAtDelimiters(children, DELIMITERS).map((fragment) => {
         if (fragment.type === 'text') return fragment.data;
         const html = renderMath(fragment.data, fragment.display ?? false);
         return html === null ? (
           fragment.data
         ) : (
-          <span key={index} dangerouslySetInnerHTML={{ __html: html }} />
+          // eslint-disable-next-line @eslint-react/dom-no-dangerously-set-innerhtml
+          <span key={fragment.offset} dangerouslySetInnerHTML={{ __html: html }} />
         );
       })}
     </span>

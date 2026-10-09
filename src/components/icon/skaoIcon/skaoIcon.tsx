@@ -6,10 +6,10 @@ interface SKAOIconProps {
 }
 
 export default function SKAOIcon({ logoHeight = 60, useSymbol = false }: SKAOIconProps) {
-  const DarkTheme = () => useTheme().palette.mode === THEME_DARK;
+  const darkTheme = useTheme().palette.mode === THEME_DARK;
   if (useSymbol) {
-    return <Symbol dark={DarkTheme()} height={logoHeight} />;
+    return <Symbol dark={darkTheme} height={logoHeight} />;
   } else {
-    return <Logo dark={DarkTheme()} height={logoHeight} />;
+    return <Logo dark={darkTheme} height={logoHeight} />;
   }
 }

@@ -20,8 +20,8 @@ export default function TableReviewDecision({
 }: TableReviewDecisionProps) {
   const { t } = useScopedTranslation();
 
-  const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
-  const [expandedRows, setExpandedRows] = React.useState(new Set<number>());
+  const expandButtonsRef = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
+  const [expandedRows, setExpandedRows] = React.useState(() => new Set<number>());
 
   const getReviews = (reviews: any[], reviewType: string) =>
     reviews?.filter((el) => el?.reviewType?.kind === reviewType) ?? [];
@@ -101,7 +101,7 @@ export default function TableReviewDecision({
               index={index}
               expanded={expandedRows.has(item.id)}
               toggleRow={toggleRow}
-              expandButtonRef={(el) => (expandButtonRefs.current[item.id] = el)}
+              expandButtonRef={(el) => (expandButtonsRef.current[item.id] = el)}
               excludeFunction={excludeFunction}
               updateDecisionItem={updateFunction}
               getReviews={getReviews}

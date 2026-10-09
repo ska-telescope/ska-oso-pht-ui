@@ -123,13 +123,8 @@ export default function EdgeSlider() {
             }}
           >
             <Stack spacing={GAP}>
-              <Typography align="left">
-                {theHelp.split('\n').map((line, index) => (
-                  <React.Fragment key={index}>
-                    {line.trim()}
-                    <br />
-                  </React.Fragment>
-                ))}
+              <Typography align="left" sx={{ whiteSpace: 'pre-line' }}>
+                {theHelp}
               </Typography>
               {hasLink && (
                 <Typography align="left">
