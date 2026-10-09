@@ -11,6 +11,10 @@ export default defineConfig({
     setupFiles: ['src/setupTests.ts'],
 
     includeTaskLocation: true,
+    reporters: ['junit', 'default'],
+    outputFile: {
+      junit: 'build/reports/unit-tests.xml'
+    },
     server: {
       deps: {
         inline: ['@mui/material']
@@ -20,7 +24,7 @@ export default defineConfig({
       enabled: true,
       provider: 'v8',
       reporter: ['cobertura', 'text', 'json', 'html', 'lcov'],
-      reportsDirectory: 'build/coverage',
+      reportsDirectory: 'build/reports',
       include: ['src/{components,pages,utils,services}/**/*.tsx'],
       exclude: [
         '**/node_modules/**',

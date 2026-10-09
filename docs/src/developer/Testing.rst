@@ -26,25 +26,18 @@ See the SKAO developer guide for more information
 Running
 =======
 
-To run the interactive test runner, execute
+To run the unit tests once, with coverage (the same as `make js-test`, which CI runs), execute
 
-    > yarn test
+    > yarn test:unit
 
-This will also watch the source files and re-run when any changes are detected
+A JUnit report is written to `./build/reports/unit-tests.xml`. The coverage results are displayed
+in the console and also written to the `build/reports` folder.
 
-To run the tests with coverage, execute
+    `./build/reports/index.html` - open in a web browser to view
 
-    > yarn test:unit:coverage
+To skip coverage, execute
 
-The coverage results are displayed in the console. They are also written to the `coverage` folder.
-
-    `./build/coverage/index.html` - open in a web browser to view
-
-To run the ui test runner for unit tests, execute
-
-    > yarn test:unit:ui
-
-The coverage results are also available when using this mode.
+    > yarn test:unit --coverage.enabled=false
 
 **All the tests should pass before merging the code**
 
