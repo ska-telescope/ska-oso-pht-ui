@@ -1,50 +1,18 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { ProposalSubTypeType, ProposalTypeType } from '../constants';
-import { DocumentBackend, DocumentPDF } from './document';
-import {
-  DataProductSDPNew,
-  DataProductSDPsBackend,
-  DataProductSRC,
-  DataProductSRCNetBackend
-} from './dataProduct';
+import { DocumentPDF } from './document';
+import { DataProductSDPNew, DataProductSRC } from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
-import { ResultsDetailsBackend } from './sensCalcResults';
-import Target, { TargetBackend } from './target';
+import Target from './target';
 import TargetObservation from './targetObservation';
-import Investigator, { InvestigatorBackend } from './investigator';
-import { ObservationSetBackend } from './observationSet';
+import Investigator from './investigator';
 import { Metadata } from './metadata';
-import { CalibrationStrategy, CalibrationStrategyBackend } from './calibrationStrategy';
+import { CalibrationStrategy } from './calibrationStrategy';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 
-export type ProposalBackend = {
-  prsl_id: string;
-  status: string;
-  submitted_by?: string;
-  submitted_on: string | null; // note: null since oso-services 1.1.0 does not support ''
-  investigator_refs?: string[];
-  metadata?: Metadata;
-  cycle: string | null;
-  proposal_info: {
-    title: string;
-    proposal_type: {
-      main_type: string;
-      attributes?: string[];
-    };
-    abstract: string | null;
-    science_category?: string;
-    investigators: InvestigatorBackend[] | null;
-  };
-  observation_info: {
-    targets: TargetBackend[];
-    documents: DocumentBackend[] | null;
-    observation_sets: ObservationSetBackend[] | null;
-    calibration_strategy: CalibrationStrategyBackend[];
-    data_product_sdps: DataProductSDPsBackend[] | null;
-    data_product_src_nets: DataProductSRCNetBackend[] | null;
-    result_details: ResultsDetailsBackend[] | null;
-  };
-};
+// investigator_refs is not part of the PDM, but it is still sent when saving a proposal
+export type ProposalBackend = ProposalPDM & { investigator_refs?: string[] };
 
 export type Proposal = {
   metadata?: Metadata;

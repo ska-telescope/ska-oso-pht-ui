@@ -180,6 +180,34 @@ If the UI fails to load data:
 - Confirm Minikube IP
 - Ensure API versions (`v13`, `v11`) match deployed services
 
+# Code Generation
+
+The API for ska-oso-services is defined in an OpenAPI specification.
+This is then used to generate an API client and the model interfaces for the UI project, in `src/generated`.
+Only the routes and models used by the PHT / SV Ideas tool are kept, so ODT-specific and other unrelated routes are left out.
+If the API definition has changed (i.e if a new version of ska-oso-services is being used),
+the code generation needs to be redone in this project, by the following steps.
+
+1. Get the OpenAPI JSON from `http://<minikube-ip>/<namespace>/oso/api/v<ska-oso-services major version>/openapi.json` and copy to `local` directory
+   at the root of this project, as `local/phtopenapi.json`. This directory is ignored by git.
+2. Convert JSON file to YAML with `yq -p json -o yaml '(.. | select(tag == "!!str")) style="single"' local/phtopenapi.json > local/phtopenapi.yaml`.
+3. The OpenAPI yaml then needs a bit of manual tweaking before generating the code:
+   - A few places, like the paths in the URLs, will contain the namespace you just got the OpenAPI specification from - likely /ska-oso-services. This should be removed
+     in the following places (It is easiest to do a Ctrl + R and replace this segment with an empty string):
+     - In the URLs: **/ska-oso-services**/oso/api/...
+     - In the `operationId` key: get_report **\_ska_oso_services**\_oso_api_v16_pht_report\_\_get
+     - In the response titles: Response Get Systemcoordinates **Ska Oso Services** Oso Api...
+   - The security scheme currently contains spaces which are not allowed - find and replace 'SKAO Authentication' with 'SKAO-Authentication'
+   - Remove the paths the PHT UI does not use, keeping the `/pht/`, `/coordinates/`, `/visibility/` and `/odt/configuration` routes,
+     and then remove the schemas that are no longer referenced.
+4. Run `make models` which will use the openapitools/openapi-generator-cli Docker image to generate the code in a container,
+   which is mounted so that the code will be available in the local src directory.
+5. Examine the generated code changes to make sure they seem sensible, and that the `--model-name-mappings` in the `make models`
+   command are still applicable.
+
+The `*Backend` types in `src/utils/types` are aliases of the generated models.
+Fields that the UI reads or sends but that are not part of the PDM (for example `investigator_refs` on a proposal) are added to the alias.
+
 # Git Hooks (Pre-Commit Checks)
 
 To enable local pre-commit checks:

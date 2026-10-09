@@ -1,4 +1,4 @@
-import { ValueUnitPair } from './valueUnitPair';
+import type { Supplied as SuppliedPDM } from '@/generated/models/supplied';
 
 type Supplied = {
   type: number;
@@ -6,9 +6,6 @@ type Supplied = {
   units: number;
 };
 
-export type SuppliedBackend = {
-  supplied_type: string;
-  quantity: ValueUnitPair;
-};
+export type SuppliedBackend = SuppliedPDM;
 
 export default Supplied;

@@ -10,59 +10,23 @@ export type TargetBackend = {
 };
 */
 
-import { ValueUnitPair } from './valueUnitPair';
+import type { Target as TargetPDM } from '@/generated/models/target';
+import type { ICRSCoordinates } from '@/generated/models/icrscoordinates';
+import type { GalacticCoordinates } from '@/generated/models/galactic-coordinates';
+import type { SpecialCoordinates } from '@/generated/models/special-coordinates';
+import type { PointingPatternParameters } from '@/generated/models/pointing-pattern-parameters';
 
-export type PointingPatternParamsBackend = {
-  kind: string;
-  offset_x_arcsec: number;
-  offset_y_arcsec: number;
-};
+export type PointingPatternParamsBackend = PointingPatternParameters;
 
-export type ReferenceCoordinateGalacticBackend = {
-  kind: string;
-  l: number; // replaces Galactic longitude
-  b: number; // replaces Galactic latitude
-  pm_l?: number;
-  pm_b?: number;
-  epoch?: number;
-  parallax?: number;
-};
+export type ReferenceCoordinateGalacticBackend = GalacticCoordinates;
 
 // ICRS now replaces equatorial
-export type ReferenceCoordinateICRSBackend = {
-  kind: string;
-  ra_str: string;
-  dec_str: string;
-  pm_ra?: number;
-  pm_dec?: number;
-  parallax?: number;
-  epoch?: number;
-};
+export type ReferenceCoordinateICRSBackend = ICRSCoordinates;
 
 // Solar System objects
-export type ReferenceCoordinateSSOBackend = {
-  kind: string;
-  name: string;
-};
+export type ReferenceCoordinateSSOBackend = SpecialCoordinates;
 
-export type TargetBackend = {
-  target_id: string;
-  name: string;
-  pointing_pattern?: {
-    active: string;
-    parameters: PointingPatternParamsBackend[];
-  };
-  reference_coordinate:
-    | ReferenceCoordinateICRSBackend
-    | ReferenceCoordinateGalacticBackend
-    | ReferenceCoordinateSSOBackend;
-  radial_velocity: {
-    quantity: ValueUnitPair;
-    definition: string;
-    reference_frame: string;
-    redshift: number;
-  };
-};
+export type TargetBackend = TargetPDM;
 
 /************************************************************************************
  *  NOTE : coordinates are currently mapped as follows:

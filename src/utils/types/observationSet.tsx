@@ -1,42 +1,12 @@
-import { ValueUnitPair } from './valueUnitPair';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from './arrayDetails';
-import { SuppliedBackend } from './supplied';
+import type { ObservationSets } from '@/generated/models/observation-sets';
+import type { SpectralLineSetup } from '@/generated/models/spectral-line-setup';
+import type { ContinuumSetup } from '@/generated/models/continuum-setup';
+import type { PstSetup } from '@/generated/models/pst-setup';
 
-export type ObservationSetBackend = {
-  observation_set_id: string;
-  group_id?: string;
-  observing_band: string;
-  elevation?: number;
-  array_details: ArrayDetailsLowBackend | ArrayDetailsMidBackend;
-  observation_type_details:
-    | ObservationTypeDetailsSpectralBackend
-    | ObservationTypeDetailsContinuumBackend
-    | ObservationTypeDetailsPSTBackend
-    | null;
-};
+export type ObservationSetBackend = ObservationSets;
 
-export type ObservationTypeDetailsSpectralBackend = {
-  bandwidth: ValueUnitPair;
-  central_frequency: ValueUnitPair;
-  supplied: SuppliedBackend | null;
-  observation_type?: string;
-  spectral_resolution?: string;
-  effective_resolution?: string;
-  spectral_averaging?: string;
-  number_of_channels?: string;
-};
+export type ObservationTypeDetailsSpectralBackend = SpectralLineSetup;
 
-export type ObservationTypeDetailsContinuumBackend = {
-  bandwidth: ValueUnitPair;
-  central_frequency: ValueUnitPair;
-  supplied: SuppliedBackend | null;
-  observation_type?: string;
-};
+export type ObservationTypeDetailsContinuumBackend = ContinuumSetup;
 
-export type ObservationTypeDetailsPSTBackend = {
-  bandwidth: ValueUnitPair;
-  central_frequency: ValueUnitPair;
-  supplied: SuppliedBackend | null;
-  observation_type?: string;
-  pst_mode?: string;
-};
+export type ObservationTypeDetailsPSTBackend = PstSetup;

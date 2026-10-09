@@ -165,3 +165,32 @@ set-dev-env-vars:
 
 dev-start: set-dev-env-vars
 	BACKEND_PROXY="$(BACKEND_PROXY)" yarn start
+
+# The generator creates supporting files, some of which we do not want. To achieve this, it is simplest to whitelist the ones we do want
+CODEGEN_TARGETS = \
+	models        \
+	apis,supportingFiles=api.ts \
+	supportingFiles=base.ts   \
+	supportingFiles=common.ts   \
+	supportingFiles=configuration.ts   \
+	supportingFiles=index.ts
+
+
+models:
+	rm -fr src/generated
+	$(foreach var,$(CODEGEN_TARGETS),$(OCI_BUILDER) run --rm --user `id -u $$USER`:`id -g $$USER` --volume "$(MINIKUBE_NFS_SHARES_ROOT)$(PWD):/spec" openapitools/openapi-generator-cli:v7.14.0 \
+	generate \
+	-i /spec/local/phtopenapi.yaml \
+	-g typescript-axios \
+	-o /spec/src/generated \
+	--additional-properties "withSeparateModelsAndApi=true,apiPackage=api,modelPackage=models" \
+	--global-property "$(var)" \
+	--inline-schema-options REFACTOR_ALLOF_INLINE_SCHEMAS=true \
+	--model-name-mappings "PointingPattern_parameters_inner=PointingPatternParameters" \
+	--model-name-mappings "Configuration=OsdConfiguration" \
+	;)
+	rm -r src/generated/.openapi-generator
+	rm -fr src/generated/docs
+	git add src/generated/
+# The --inline-schema-options fixes this bug: https://github.com/OpenAPITools/openapi-generator/issues/16150
+# with a fix suggested here: https://github.com/OpenAPITools/openapi-generator/issues/16831

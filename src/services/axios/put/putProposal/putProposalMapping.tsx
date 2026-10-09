@@ -117,7 +117,7 @@ export const getTargets = (targets: Target[]): TargetBackend[] => {
   const mappedTargets = targets.map((tar) => ({
     name: tar.name,
     target_id: tar.id,
-    reference_coordinate: getReferenceCoordinate(tar),
+    reference_coordinate: getReferenceCoordinate(tar) as TargetBackend['reference_coordinate'],
     radial_velocity: {
       quantity: {
         value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
@@ -126,7 +126,7 @@ export const getTargets = (targets: Target[]): TargetBackend[] => {
       definition: 'RADIO',
       reference_frame: tar.raReferenceFrame ?? 'LSRK',
       redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
-    }
+    } as TargetBackend['radial_velocity']
   }));
   return mappedTargets;
 };
@@ -135,16 +135,16 @@ const getDocuments = (
   sciencePDF: DocumentPDF | null,
   technicalPDF: DocumentPDF | null
 ): DocumentBackend[] => {
-  const documents = [];
+  const documents: DocumentBackend[] = [];
   if (sciencePDF) {
     documents.push({
-      document_id: sciencePDF.documentId,
+      document_id: sciencePDF.documentId as string,
       uploaded_pdf: sciencePDF.isUploadedPdf
     });
   }
   if (technicalPDF) {
     documents.push({
-      document_id: technicalPDF.documentId,
+      document_id: technicalPDF.documentId as string,
       uploaded_pdf: technicalPDF.isUploadedPdf
     });
   }
@@ -161,13 +161,16 @@ function calibratorToFluxCal(calibrator: Calibrator): FluxCalBackend {
 export const mapCalibrationStrategyToBackend = (
   calibrationStrategies: CalibrationStrategy[]
 ): CalibrationStrategyBackend[] => {
-  return calibrationStrategies?.map((strategy) => ({
-    observatory_defined: strategy?.observatoryDefined,
-    calibration_id: strategy?.id,
-    observation_set_ref: strategy?.observationIdRef,
-    calibrators: strategy?.calibrators ? strategy.calibrators.map(calibratorToFluxCal) : null,
-    notes: strategy?.notes
-  }));
+  return calibrationStrategies?.map(
+    (strategy) =>
+      ({
+        observatory_defined: strategy?.observatoryDefined,
+        calibration_id: strategy?.id,
+        observation_set_ref: strategy?.observationIdRef,
+        calibrators: strategy?.calibrators ? strategy.calibrators.map(calibratorToFluxCal) : null,
+        notes: strategy?.notes
+      }) as CalibrationStrategyBackend
+  );
 };
 
 /**
@@ -232,7 +235,7 @@ export const getDataProductScriptParameters = (
         return result;
       }
       const data = dp?.data as SDPSpectralData;
-      const result: DataProductSDPSpectralImageBackend = {
+      const result = {
         image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
         image_cellsize: {
           value: data?.pixelSizeValue,
@@ -254,7 +257,7 @@ export const getDataProductScriptParameters = (
             ? `${TYPE_CONTINUUM_SPECTRAL_LONG} image`
             : 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
-      };
+      } as unknown as DataProductSDPSpectralImageBackend;
       return result;
     }
     case TYPE_PST:
@@ -296,7 +299,10 @@ const getDataProductSDP = (
   const sdp = dataProducts?.map((dp) => ({
     data_product_id: dp.id?.toString(),
     observation_set_ref: dp.observationId,
-    script_parameters: getDataProductScriptParameters(obs, dp)
+    script_parameters: getDataProductScriptParameters(
+      obs,
+      dp
+    ) as unknown as DataProductSDPsBackend['script_parameters']
   }));
   return sdp;
 };
@@ -424,8 +430,10 @@ const getObservationsSets = (
         group_id: getGroupObservation(obs?.id, incObservationGroups),
         elevation: obs.elevation,
         observing_band: getObservingBand(obs.observingBand) as string,
-        array_details: getArrayDetails(obs),
-        observation_type_details: getObservationTypeDetails(obs)
+        array_details: getArrayDetails(obs) as ObservationSetBackend['array_details'],
+        observation_type_details: getObservationTypeDetails(
+          obs
+        ) as unknown as ObservationSetBackend['observation_type_details']
       };
       outObservationsSets.push(observation);
     }
@@ -603,7 +611,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
       result.result = {
         supplied_type: suppliedType,
         ...suppliedRelatedFields
-      };
+      } as unknown as ResultsDetailsBackend['result'];
 
       result.continuum_confusion_noise = {
         value:
@@ -627,7 +635,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
             : '',
         unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
           ?.units
-      };
+      } as ResultsDetailsBackend['synthesized_beam_size'];
 
       result.spectral_confusion_noise = {
         value: Number(
@@ -648,13 +656,13 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
-    status: status,
+    status: status as ProposalBackend['status'],
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
     submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? userId : '',
     investigator_refs: proposal.investigators?.map((investigator) => {
       return investigator?.id?.toString();
     }),
-    cycle: proposal.cycle,
+    cycle: proposal.cycle as string,
     proposal_info: {
       title: proposal.title,
       proposal_type: {
@@ -680,7 +688,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
               jobTitle: investigator.jobTitle
             };
           })
-        : null
+        : (null as unknown as undefined) // still sent as null; the PDM type has no null here
     },
     observation_info: {
       targets: getTargets(proposal?.targets ? proposal.targets : []),

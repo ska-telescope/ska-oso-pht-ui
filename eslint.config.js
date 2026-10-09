@@ -9,7 +9,7 @@ export default [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
   { languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } } },
   { languageOptions: { globals: globals.browser } },
-  { ignores: ['node_modules', 'coverage', 'build', 'dist', 'src/env.js'] },
+  { ignores: ['node_modules', 'coverage', 'build', 'dist', 'src/env.js', 'src/generated'] },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   { ...reactPlugin.configs.flat.recommended },

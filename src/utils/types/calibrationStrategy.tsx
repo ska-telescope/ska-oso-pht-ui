@@ -1,4 +1,6 @@
 import { TargetBackend } from '@utils/types/target.tsx';
+import type { CalibrationStrategy as CalibrationStrategyPDM } from '@/generated/models/calibration-strategy';
+import type { FluxCal } from '@/generated/models/flux-cal';
 
 export type CalibrationIntent = 'flux'; // this will eventually be extended with '| "amplitude" | "phase"' too
 export type RelativeToScan = 'before_each_scan' | 'after_each_scan';
@@ -11,18 +13,9 @@ export type CalibratorBackend = {
 };
 
 // this is what the proposal data model expects
-export type FluxCalBackend = {
-  kind: string;
-  name: string;
-};
+export type FluxCalBackend = FluxCal;
 
-export type CalibrationStrategyBackend = {
-  observatory_defined: boolean;
-  calibration_id: string;
-  observation_set_ref: string;
-  calibrators: FluxCalBackend[] | null;
-  notes: string | null;
-};
+export type CalibrationStrategyBackend = CalibrationStrategyPDM;
 
 export type Calibrator = {
   targetId: string;

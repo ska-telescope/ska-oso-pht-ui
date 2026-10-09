@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: The backend proposal types are now the PDM types generated from the ska-oso-services OpenAPI specification (`make models`, output in `src/generated`), using the same generator as the ODT UI (BTN-3588)
 * Bugfix: Base number of allowed targets on the cycle policy instead of hardcoded number
 * Changed: PHT validate and submit logic now follows same pattern as the SV tool  
 * Changed: Migrated from yarn classic (1.22.22) to yarn 4.12.0, simplified the Makefile and .gitlab-ci.yml to rely on the SKAO shared templates and .make targets, and updated .make submodule to latest master

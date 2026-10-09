@@ -53,3 +53,6 @@ unit-tests.xml
 PrivateRules.mak
 
 manifests.yaml
+
+# Expected location of the OpenAPI spec used for code generation (make models)
+/local/
