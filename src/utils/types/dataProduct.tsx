@@ -1,79 +1,27 @@
-import { ValueUnitPair } from './valueUnitPair';
+import type { ContinuumImage } from '@/generated/models/continuum-image';
+import type { ContinuumVisibilities } from '@/generated/models/continuum-visibilities';
+import type { SpectralImage } from '@/generated/models/spectral-image';
+import type { PstDetectedFilterbank } from '@/generated/models/pst-detected-filterbank';
+import type { PstTiming } from '@/generated/models/pst-timing';
+import type { PstFlowthrough } from '@/generated/models/pst-flowthrough';
+import type { DataProductSDP } from '@/generated/models/data-product-sdp';
+import type { DataProductSRC as DataProductSRCPDM } from '@/generated/models/data-product-src';
 
-export type DataProductSDPContinuumImageBackend = {
-  image_size: ValueUnitPair;
-  image_cellsize?: ValueUnitPair;
-  weight: {
-    weighting?: string;
-    robust?: number;
-  };
-  polarisations: string[];
-  channels_out?: number;
-  gaussian_taper?: string;
-  kind: string;
-  variant: string;
-};
+export type DataProductSDPContinuumImageBackend = ContinuumImage;
 
-export type DataProductSDPContinuumVisibilitiesBackend = {
-  time_averaging: number;
-  frequency_averaging: number;
-  kind: string;
-  variant: string;
-};
+export type DataProductSDPContinuumVisibilitiesBackend = ContinuumVisibilities;
 
-export type DataProductSDPSpectralImageBackend = {
-  image_size: ValueUnitPair;
-  image_cellsize?: ValueUnitPair;
-  weight: {
-    weighting?: string;
-    robust?: number;
-  };
-  polarisations: string[];
-  channels_out?: number;
-  gaussian_taper?: string;
-  continuum_subtraction?: boolean;
-  kind: string;
-  variant: string;
-};
+export type DataProductSDPSpectralImageBackend = SpectralImage;
 
-export type DataProductSDPPSTDetectedFilterBankBackend = {
-  polarisations: string[];
-  bit_depth: number;
-  output_frequency_resolution: number;
-  output_sampling_interval: number;
-  dispersion_measure: number;
-  rotation_measure: number;
-  kind: string;
-  variant: string;
-};
+export type DataProductSDPPSTDetectedFilterBankBackend = PstDetectedFilterbank;
 
-export type DataProductSDPPSTTimingBackend = {
-  kind: string;
-  variant: string;
-};
+export type DataProductSDPPSTTimingBackend = PstTiming;
 
-export type DataProductSDPPSTFlowthroughBackend = {
-  polarisations: string[];
-  bit_depth: number;
-  kind: string;
-  variant: string;
-};
+export type DataProductSDPPSTFlowthroughBackend = PstFlowthrough;
 
-export type DataProductSDPsBackend = {
-  data_product_id: string;
-  observation_set_ref: string;
-  script_parameters:
-    | DataProductSDPContinuumImageBackend
-    | DataProductSDPContinuumVisibilitiesBackend
-    | DataProductSDPSpectralImageBackend
-    | DataProductSDPPSTDetectedFilterBankBackend
-    | DataProductSDPPSTTimingBackend
-    | DataProductSDPPSTFlowthroughBackend;
-};
+export type DataProductSDPsBackend = DataProductSDP;
 
-export type DataProductSRCNetBackend = {
-  data_products_src_id: string;
-};
+export type DataProductSRCNetBackend = DataProductSRCPDM;
 
 export type DataProductSDPNew = {
   // TODO rename DataProductSDP instead

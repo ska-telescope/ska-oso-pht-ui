@@ -30,8 +30,8 @@ const DEFAULT_DURATION_SECS = 600;
 
 function calibratorMapping(data: CalibratorBackend): Calibrator {
   return {
-    targetId: data.calibrator.target_id,
-    name: data.calibrator.name,
+    targetId: data.calibrator.target_id as string,
+    name: data.calibrator.name as string,
     calibrationIntent: DEFAULT_CALIBRATION_INTENT,
     durationSeconds: DEFAULT_DURATION_SECS,
     selectionStrategy: DEFAULT_SELECTION_STRATEGY,

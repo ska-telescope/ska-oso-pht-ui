@@ -47,22 +47,23 @@ const investigators: InvestigatorBackend[] = [
   }
 ];
 
-const target = (targetId: string, raStr: string, decStr: string): TargetBackend => ({
-  target_id: targetId,
-  name: targetId,
-  reference_coordinate: {
-    kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-    ra_str: raStr,
-    dec_str: decStr,
-    epoch: 2000
-  },
-  radial_velocity: {
-    quantity: { value: 0, unit: 'km/s' },
-    definition: 'RADIO',
-    reference_frame: 'LSRK',
-    redshift: 0
-  }
-});
+const target = (targetId: string, raStr: string, decStr: string): TargetBackend =>
+  ({
+    target_id: targetId,
+    name: targetId,
+    reference_coordinate: {
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
+      ra_str: raStr,
+      dec_str: decStr,
+      epoch: 2000
+    },
+    radial_velocity: {
+      quantity: { value: 0, unit: 'km/s' },
+      definition: 'RADIO',
+      reference_frame: 'LSRK',
+      redshift: 0
+    }
+  }) as TargetBackend;
 
 const targetM28 = target('M28', '18:24:32.89', '-24:52:11.4');
 const targetM1 = target('M1', '05:34:31.94', '+22:00:52.2');
@@ -72,87 +73,93 @@ const documents: DocumentBackend[] = [
   { document_id: 'doc_ref_02', uploaded_pdf: true }
 ];
 
-const lowObservationSet = (id: string, observationType: string): ObservationSetBackend => ({
-  observation_set_id: id,
-  group_id: '',
-  observing_band: BAND_LOW_STR,
-  elevation: 20,
-  array_details: {
-    array: 'ska_low',
-    subarray: SA_AA2,
-    number_of_stations: 68
-  },
-  observation_type_details: {
-    observation_type: observationType,
-    bandwidth: { value: 150, unit: 'MHz' },
-    central_frequency: { value: 200, unit: 'MHz' },
-    supplied: { supplied_type: 'integration_time', quantity: { value: 1, unit: 'h' } }
-  }
-});
+const lowObservationSet = (id: string, observationType: string): ObservationSetBackend =>
+  ({
+    observation_set_id: id,
+    group_id: '',
+    observing_band: BAND_LOW_STR,
+    elevation: 20,
+    array_details: {
+      array: 'ska_low',
+      subarray: SA_AA2,
+      number_of_stations: 68
+    },
+    observation_type_details: {
+      observation_type: observationType,
+      bandwidth: { value: 150, unit: 'MHz' },
+      central_frequency: { value: 200, unit: 'MHz' },
+      supplied: { supplied_type: 'integration_time', quantity: { value: 1, unit: 'h' } }
+    }
+  }) as ObservationSetBackend;
 
-const midObservationSet = (id: string, observationType: string): ObservationSetBackend => ({
-  observation_set_id: id,
-  group_id: '',
-  observing_band: BAND_1_STR,
-  elevation: 15,
-  array_details: {
-    array: 'ska_mid',
-    subarray: SA_AA2,
-    weather: 3,
-    number_15_antennas: 64,
-    number_13_antennas: 4,
-    number_sub_bands: 1
-  },
-  observation_type_details: {
-    observation_type: observationType,
-    bandwidth: { value: 435, unit: 'MHz' },
-    central_frequency: { value: 797.5, unit: 'MHz' },
-    supplied: { supplied_type: 'integration_time', quantity: { value: 1, unit: 'h' } }
-  }
-});
+const midObservationSet = (id: string, observationType: string): ObservationSetBackend =>
+  ({
+    observation_set_id: id,
+    group_id: '',
+    observing_band: BAND_1_STR,
+    elevation: 15,
+    array_details: {
+      array: 'ska_mid',
+      subarray: SA_AA2,
+      weather: 3,
+      number_15_antennas: 64,
+      number_13_antennas: 4,
+      number_sub_bands: 1
+    },
+    observation_type_details: {
+      observation_type: observationType,
+      bandwidth: { value: 435, unit: 'MHz' },
+      central_frequency: { value: 797.5, unit: 'MHz' },
+      supplied: { supplied_type: 'integration_time', quantity: { value: 1, unit: 'h' } }
+    }
+  }) as ObservationSetBackend;
 
-const continuumImage = (observationSetRef: string): DataProductSDPsBackend => ({
-  data_product_id: 'SDP-1',
-  observation_set_ref: observationSetRef,
-  script_parameters: {
-    variant: 'continuum image',
-    kind: 'continuum',
-    channels_out: 1,
-    gaussian_taper: '1',
-    polarisations: ['I'],
-    image_size: { value: 15, unit: 'deg' },
-    image_cellsize: { value: 1.007, unit: 'arcsec' },
-    weight: { weighting: 'uniform' }
-  }
-});
+const continuumImage = (observationSetRef: string): DataProductSDPsBackend =>
+  ({
+    data_product_id: 'SDP-1',
+    observation_set_ref: observationSetRef,
+    script_parameters: {
+      variant: 'continuum image',
+      kind: 'continuum',
+      channels_out: 1,
+      gaussian_taper: '1',
+      polarisations: ['I'],
+      image_size: { value: 15, unit: 'deg' },
+      image_cellsize: { value: 1.007, unit: 'arcsec' },
+      weight: { weighting: 'uniform' }
+    }
+  }) as unknown as DataProductSDPsBackend;
 
-const observatoryCalibration = (observationSetRef: string): CalibrationStrategyBackend => ({
-  observatory_defined: true,
-  calibration_id: 'cal-001',
-  observation_set_ref: observationSetRef,
-  calibrators: null,
-  notes: 'This is an observatory defined calibration strategy.'
-});
+const observatoryCalibration = (observationSetRef: string): CalibrationStrategyBackend =>
+  ({
+    observatory_defined: true,
+    calibration_id: 'cal-001',
+    observation_set_ref: observationSetRef,
+    calibrators: null,
+    notes: 'This is an observatory defined calibration strategy.'
+  }) as unknown as CalibrationStrategyBackend;
 
-const continuumResult = (observationSetRef: string, targetRef: string): ResultsDetailsBackend => ({
-  observation_set_ref: observationSetRef,
-  data_product_ref: 'SDP-1',
-  target_ref: targetRef,
-  result: {
-    supplied_type: 'integration_time',
-    weighted_continuum_sensitivity: { value: 107.54, unit: 'μJy/beam' },
-    weighted_spectral_sensitivity: { value: 18.72, unit: 'mJy/beam' },
-    total_continuum_sensitivity: { value: 107.54, unit: 'μJy/beam' },
-    total_spectral_sensitivity: { value: 18.72, unit: 'mJy/beam' },
-    surface_brightness_sensitivity: { continuum: 282.72, spectral: 19489.22, unit: 'K' }
-  },
-  continuum_confusion_noise: { value: 1.02, unit: 'μJy/beam' },
-  synthesized_beam_size: { continuum: '3.85 x 3.02', spectral: '5.84 x 5.02', unit: 'arcsec²' },
-  spectral_confusion_noise: { value: 3.53, unit: 'μJy/beam' }
-});
+const continuumResult = (observationSetRef: string, targetRef: string): ResultsDetailsBackend =>
+  ({
+    observation_set_ref: observationSetRef,
+    data_product_ref: 'SDP-1',
+    target_ref: targetRef,
+    result: {
+      supplied_type: 'integration_time',
+      weighted_continuum_sensitivity: { value: 107.54, unit: 'μJy/beam' },
+      weighted_spectral_sensitivity: { value: 18.72, unit: 'mJy/beam' },
+      total_continuum_sensitivity: { value: 107.54, unit: 'μJy/beam' },
+      total_spectral_sensitivity: { value: 18.72, unit: 'mJy/beam' },
+      surface_brightness_sensitivity: { continuum: 282.72, spectral: 19489.22, unit: 'K' }
+    },
+    continuum_confusion_noise: { value: 1.02, unit: 'μJy/beam' },
+    synthesized_beam_size: { continuum: '3.85 x 3.02', spectral: '5.84 x 5.02', unit: 'arcsec²' },
+    spectral_confusion_noise: { value: 3.53, unit: 'μJy/beam' }
+  }) as ResultsDetailsBackend;
 
 // A standard proposal using both telescopes, with continuum and zoom observations on each
-const standardObservationInfo: ProposalBackend['observation_info'] = {
+// The mocks mirror payloads that are looser than the PDM schema (e.g. numbers sent as strings)
+const standardObservationInfo = {
   targets: [targetM28, targetM1],
   documents,
   observation_sets: [
@@ -164,10 +171,10 @@ const standardObservationInfo: ProposalBackend['observation_info'] = {
   calibration_strategy: [observatoryCalibration('low-001')],
   data_product_sdps: [continuumImage('low-001')],
   data_product_src_nets: [{ data_products_src_id: '2' }],
-  result_details: [continuumResult('low-001', targetM28.target_id)]
-};
+  result_details: [continuumResult('low-001', targetM28.target_id as string)]
+} as unknown as ProposalBackend['observation_info'];
 
-const MockProposalBackendList: ProposalBackend[] = [
+const MockProposalBackendList = [
   {
     prsl_id: 'prp-ska01-202204-02',
     status: PROPOSAL_STATUS.DRAFT,
@@ -215,7 +222,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       calibration_strategy: [observatoryCalibration('low-001')],
       data_product_sdps: [continuumImage('low-001')],
       data_product_src_nets: [],
-      result_details: [continuumResult('low-001', targetM28.target_id)]
+      result_details: [continuumResult('low-001', targetM28.target_id as string)]
     }
   },
   {
@@ -237,6 +244,6 @@ const MockProposalBackendList: ProposalBackend[] = [
     },
     observation_info: standardObservationInfo
   }
-];
+] as unknown as ProposalBackend[];
 
 export default MockProposalBackendList;

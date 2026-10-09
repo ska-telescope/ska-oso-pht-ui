@@ -1,7 +1,6 @@
-export type DocumentBackend = {
-  document_id?: string;
-  uploaded_pdf?: boolean;
-};
+import type { Document } from '@/generated/models/document';
+
+export type DocumentBackend = Document;
 
 export type DocumentPDF = {
   documentId?: string;

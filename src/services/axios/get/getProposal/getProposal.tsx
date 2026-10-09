@@ -8,6 +8,7 @@ import {
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import Target, {
   PointingPatternParams,
+  PointingPatternParamsBackend,
   ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
@@ -76,24 +77,31 @@ import {
   Calibrator,
   FluxCalBackend
 } from '@/utils/types/calibrationStrategy.tsx';
+import type { Integration } from '@/generated/models/integration';
+import type { Sensitivity } from '@/generated/models/sensitivity';
 
-export const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
+// The PDM result is a union on supplied_type, but the mapping reads the fields of both variants.
+type ResultsDetailsAnySupplied = Omit<ResultsDetailsBackend, 'result'> & {
+  result?: Partial<Omit<Integration, 'supplied_type'> & Omit<Sensitivity, 'supplied_type'>> | null;
+};
+
+export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefined) => {
   const investigators = [] as Investigator[];
   if (!inValue || inValue.length === 0) {
     return investigators;
   }
   for (let i = 0; i < inValue?.length; i++) {
     investigators.push({
-      id: inValue[i].user_id,
+      id: inValue[i].user_id as string,
       status: inValue[i].status,
-      firstName: inValue[i].given_name,
-      lastName: inValue[i].family_name,
-      email: inValue[i]?.email,
+      firstName: inValue[i].given_name as string,
+      lastName: inValue[i].family_name as string,
+      email: inValue[i]?.email as string,
       affiliation: inValue[i].organization as string,
       phdThesis: inValue[i].for_phd as boolean,
       pi: inValue[i].principal_investigator as boolean,
-      officeLocation: inValue[i].officeLocation,
-      jobTitle: inValue[i].jobTitle
+      officeLocation: inValue[i].officeLocation as string | null,
+      jobTitle: inValue[i].jobTitle as string | null
     });
   }
   return investigators;
@@ -106,7 +114,10 @@ export const getScienceCategory = (scienceCat: string) => {
   return cat === null || cat === undefined ? null : cat;
 };
 
-const getPDF = (documents: DocumentBackend[] | null, documentId: string): DocumentPDF | null => {
+const getPDF = (
+  documents: DocumentBackend[] | null | undefined,
+  documentId: string
+): DocumentPDF | null => {
   if (!documents) return null;
 
   const documentById = documents.find((document) => document.document_id === documentId);
@@ -136,12 +147,12 @@ export const getReferenceCoordinate = (
     case REFERENCE_COORDINATE_TYPE_ICRS.label:
       return {
         kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-        raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
-        decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
-        pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
-        pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
+        raStr: (tar as ReferenceCoordinateICRSBackend).ra_str as string,
+        decStr: (tar as ReferenceCoordinateICRSBackend).dec_str as string,
+        pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra as number | undefined,
+        pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec as number | undefined,
         epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
-        parallax: (tar as ReferenceCoordinateICRSBackend).parallax
+        parallax: (tar as ReferenceCoordinateICRSBackend).parallax as number | undefined
       };
 
     case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
@@ -181,44 +192,54 @@ const getTargetType = (kind: string): number => {
   }
 };
 
-const getTargets = (inRec: TargetBackend[]): Target[] => {
+const getTargets = (inRec: TargetBackend[] = []): Target[] => {
   const results = [];
   for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
-    const referenceCoordinate = e.reference_coordinate.kind;
+    const referenceCoordinate = e.reference_coordinate!.kind as string;
+    const icrs = e.reference_coordinate as ReferenceCoordinateICRSBackend;
+    const radialVelocity = e.radial_velocity as Required<
+      NonNullable<TargetBackend['radial_velocity']>
+    >;
     const target: Partial<Target> = {
       kind: getTargetType(referenceCoordinate),
-      epoch: e?.reference_coordinate?.epoch,
-      parallax: e?.reference_coordinate?.parallax,
-      id: e.target_id,
-      name: e?.name,
+      epoch: icrs?.epoch,
+      parallax: icrs?.parallax as number | undefined,
+      id: e.target_id as string,
+      name: e?.name as string,
       b: undefined,
       l: undefined,
-      redshift: e.radial_velocity.redshift.toString(),
-      raReferenceFrame: e.radial_velocity.reference_frame,
-      raDefinition: e.radial_velocity.definition,
-      velType: getVelType(e.radial_velocity.definition),
-      vel: e.radial_velocity.quantity?.value?.toString(),
+      redshift: radialVelocity.redshift.toString(),
+      raReferenceFrame: radialVelocity.reference_frame,
+      raDefinition: radialVelocity.definition,
+      velType: getVelType(radialVelocity.definition),
+      vel: radialVelocity.quantity?.value?.toString(),
       velUnit: VEL_UNITS.find(
-        (u) => u.label === e.radial_velocity?.quantity?.unit?.split(' ').join('')
+        (u) => u.label === radialVelocity?.quantity?.unit?.split(' ').join('')
       )?.value as number,
       pointingPattern: {
         active: e.pointing_pattern?.active as string,
-        parameters: e.pointing_pattern?.parameters?.map((p) => ({
-          kind: p.kind,
-          offsetXArcsec: p.offset_x_arcsec,
-          offsetYArcsec: p.offset_y_arcsec
-        })) as PointingPatternParams[]
+        parameters: e.pointing_pattern?.parameters?.map((p) => {
+          const params = p as PointingPatternParamsBackend & {
+            offset_x_arcsec: number;
+            offset_y_arcsec: number;
+          };
+          return {
+            kind: params.kind,
+            offsetXArcsec: params.offset_x_arcsec,
+            offsetYArcsec: params.offset_y_arcsec
+          };
+        }) as PointingPatternParams[]
       }
     };
     /*------- reference coordinate properties --------------------- */
 
     switch (referenceCoordinate) {
       case REFERENCE_COORDINATE_TYPE_ICRS.label:
-        target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
-        target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
-        target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
-        target.pmDec = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_dec;
+        target.raStr = icrs.ra_str;
+        target.decStr = icrs.dec_str;
+        target.pmRa = icrs.pm_ra as number | undefined;
+        target.pmDec = icrs.pm_dec as number | undefined;
         break;
 
       case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
@@ -240,7 +261,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
   return results as Target[];
 };
 
-const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {
+const getGroupObservations = (inValue: ObservationSetBackend[] | null | undefined) => {
   const results: any = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -259,7 +280,9 @@ const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {
   return results;
 };
 
-const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProductSRC[] => {
+const getDataProductSRC = (
+  inValue: DataProductSRCNetBackend[] | null | undefined
+): DataProductSRC[] => {
   return inValue
     ? inValue.map((dp) => ({
         id: dp?.data_products_src_id,
@@ -299,7 +322,9 @@ const markSelectedDataProducts = (
   return dataProducts.map((dp) => (linkedIds.has(dp.id) ? { ...dp, selected: true } : dp));
 };
 
-const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDPNew[] => {
+const getDataProductSDP = (
+  inValue: DataProductSDPsBackend[] | null | undefined
+): DataProductSDPNew[] => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
 
@@ -336,8 +361,9 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
           taperValue: 'gaussian_taper' in script ? (Number(script.gaussian_taper) ?? 0) : 0,
           // TODO - we shouldn't need so many conditionals in this function. Fix when we have
           // refactored with better typing
-          timeAveraging: script.time_averaging ?? 1,
-          frequencyAveraging: script.frequency_averaging ?? 1,
+          timeAveraging: 'time_averaging' in script ? (script.time_averaging ?? 1) : 1,
+          frequencyAveraging:
+            'frequency_averaging' in script ? (script.frequency_averaging ?? 1) : 1,
           bitDepth: 'bit_depth' in script ? (Number(script.bit_depth) ?? 1) : 1,
           continuumSubtraction:
             'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false,
@@ -371,17 +397,19 @@ function fluxCalToCalibrator(data: FluxCalBackend, index: number): Calibrator {
 }
 
 const getCalibrationStrategy = (
-  inValue: CalibrationStrategyBackend[] | null
+  inValue: CalibrationStrategyBackend[] | null | undefined
 ): CalibrationStrategy[] => {
   return inValue
     ? inValue.map((strategy) => ({
         observatoryDefined: strategy?.observatory_defined,
-        id: strategy?.calibration_id,
-        observationIdRef: strategy?.observation_set_ref,
+        id: strategy?.calibration_id as unknown as string,
+        observationIdRef: strategy?.observation_set_ref as unknown as string,
         calibrators: strategy?.calibrators
-          ? strategy.calibrators.map((calibrator, index) => fluxCalToCalibrator(calibrator, index))
+          ? (strategy.calibrators as unknown as FluxCalBackend[]).map((calibrator, index) =>
+              fluxCalToCalibrator(calibrator, index)
+            )
           : null,
-        notes: strategy.notes
+        notes: strategy.notes as unknown as string | null
       }))
     : [];
 };
@@ -446,7 +474,9 @@ const typeCheck = (inType: string | undefined): any => {
   return inType;
 };
 
-export const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
+export const getObservations = (
+  inValue: ObservationSetBackend[] | null | undefined
+): Observation[] => {
   const results: Observation[] = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -546,7 +576,7 @@ export const getObservations = (inValue: ObservationSetBackend[] | null): Observ
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
 
 const getResultsSection1 = (
-  inResult: ResultsDetailsBackend,
+  inResult: ResultsDetailsAnySupplied,
   isContinuum: boolean,
   isPST: boolean,
   isSensitivity: boolean,
@@ -613,7 +643,7 @@ const getResultsSection1 = (
 };
 
 const getResultsSection2 = (
-  inResult: ResultsDetailsBackend,
+  inResult: ResultsDetailsAnySupplied,
   isSensitivity: boolean,
   inObservationSets: ObservationSetBackend[],
   inResultObservationRef: string | null
@@ -688,8 +718,8 @@ const getResultObsType = (
 };
 
 const getTargetObservation = (
-  inResults: ResultsDetailsBackend[] | null,
-  inObservationSets: ObservationSetBackend[] | null,
+  inResults: ResultsDetailsBackend[] | null | undefined,
+  inObservationSets: ObservationSetBackend[] | null | undefined,
   // inTargets: TargetBackend[],
   outTargets: Target[]
 ): TargetObservation[] => {

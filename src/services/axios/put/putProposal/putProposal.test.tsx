@@ -421,8 +421,9 @@ describe('getDataProductScriptParameters', () => {
       }
     } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
-    expect(result?.weight?.weighting).toBe('briggs');
-    expect(result?.weight?.robust).toBe(0.5);
+    const weight = (result as { weight?: { weighting?: string; robust?: number } })?.weight;
+    expect(weight?.weighting).toBe('briggs');
+    expect(weight?.robust).toBe(0.5);
   });
 });
 

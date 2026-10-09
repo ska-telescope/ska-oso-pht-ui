@@ -1,39 +1,7 @@
-import { ValueUnitPair } from './valueUnitPair';
 import { STATUS } from '@utils/constants.ts';
+import type { Result } from '@/generated/models/result';
 
-export type ResultsDetailsBackend = {
-  observation_set_ref: string;
-  data_product_ref: string;
-  target_ref: string;
-  result?: {
-    supplied_type: string;
-    // only for Supplied Integration Time - suggested to swap Integration Time/Sensitivity in STAR-670
-    // check if it's the other way around
-    // ********************************** //
-    weighted_continuum_sensitivity?: ValueUnitPair;
-    weighted_spectral_sensitivity?: ValueUnitPair;
-    total_continuum_sensitivity?: ValueUnitPair;
-    total_spectral_sensitivity?: ValueUnitPair;
-    surface_brightness_sensitivity?: {
-      continuum?: number;
-      spectral: number;
-      unit: string;
-    } | null;
-    // ********************************** //
-    // only for Supplied Sensitivity- suggested to swap Integration Time/Sensitivity in STAR-670
-    // ********************************** //
-    continuum?: ValueUnitPair;
-    spectral?: ValueUnitPair;
-    // ********************************** //
-  } | null;
-  continuum_confusion_noise?: ValueUnitPair | null;
-  synthesized_beam_size?: {
-    continuum?: string;
-    spectral: string;
-    unit: string;
-  } | null;
-  spectral_confusion_noise?: ValueUnitPair | null;
-};
+export type ResultsDetailsBackend = Result;
 
 export type SensCalcResults = {
   statusGUI: STATUS;

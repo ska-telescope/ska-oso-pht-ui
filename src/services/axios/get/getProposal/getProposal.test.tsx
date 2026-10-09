@@ -22,6 +22,8 @@ import {
   MockProposalFrontendZoom
 } from './mockProposalFrontend.tsx';
 
+type ReferenceCoordinateInput = Parameters<typeof getReferenceCoordinate>[0];
+
 describe('Helper Functions', () => {
   test('mapping returns mapped continuum proposal from backend to frontend format', () => {
     const proposalFrontEnd: Proposal = mapping(MockProposalBackend);
@@ -93,31 +95,34 @@ describe('GetProposal Service', () => {
 
   test('returns mapped data from API', async () => {
     mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackend });
-    const result = (await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id)) as Proposal;
+    const result = (await GetProposal(
+      mockedAuthClient,
+      MockProposalBackend.prsl_id as string
+    )) as Proposal;
     expect(result).to.deep.equal(MockProposalFrontend);
   });
 
   test('returns error message on API failure', async () => {
     mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
-    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id as string);
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
-    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id as string);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test("mapping doesn't crash when receiving unexpected data", async () => {
     mockedAuthClient.get.mockResolvedValue({ data: { not: 'expected' } });
-    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id as string);
     expect(result).toEqual(MockNullProposalFrontend);
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns no data', async () => {
     mockedAuthClient.get.mockResolvedValue(undefined);
-    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id as string);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });
@@ -229,7 +234,7 @@ describe('getReferenceCoordinate', () => {
       parallax: 0.5
     };
 
-    const result = getReferenceCoordinate(input);
+    const result = getReferenceCoordinate(input as unknown as ReferenceCoordinateInput);
     expect(result).toEqual(expectedOutput);
   });
 
@@ -254,7 +259,7 @@ describe('getReferenceCoordinate', () => {
       parallax: 0.1
     };
 
-    const result = getReferenceCoordinate(input);
+    const result = getReferenceCoordinate(input as unknown as ReferenceCoordinateInput);
     expect(result).toEqual(expectedOutput);
   });
 
@@ -275,7 +280,7 @@ describe('getReferenceCoordinate', () => {
       parallax: undefined
     };
 
-    const result = getReferenceCoordinate(input);
+    const result = getReferenceCoordinate(input as unknown as ReferenceCoordinateInput);
     expect(result).toEqual(expectedOutput);
   });
 });

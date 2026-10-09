@@ -4,6 +4,10 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+UNRELEASED
+----------
+* Changed: The backend proposal types are now the PDM types generated from the ska-oso-services OpenAPI specification (`make models`, output in `src/generated`), using the same generator as the ODT UI (BTN-3588)
+
 11.0.1
 ----------
 

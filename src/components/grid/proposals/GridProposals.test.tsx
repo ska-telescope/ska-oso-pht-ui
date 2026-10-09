@@ -10,8 +10,8 @@ import { IdObject } from '@/utils/types/idObject';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 
 const mockedSelectedProposals: IdObject[] = [
-  { id: MockProposalBackendList[0].prsl_id },
-  { id: MockProposalBackendList[1].prsl_id }
+  { id: MockProposalBackendList[0].prsl_id as string },
+  { id: MockProposalBackendList[1].prsl_id as string }
 ];
 
 const wrapper = (component: React.ReactElement) => {
