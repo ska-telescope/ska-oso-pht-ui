@@ -21,7 +21,6 @@ JS_SWITCHES_FOR_INSTALL ?= --immutable
 
 js-pre-e2e-test:
 	mkdir -p build/reports
-	mkdir -p build/.nyc_output
 
 js-pre-lint:
 	$(JS_COMMAND_RUNNER) prettier

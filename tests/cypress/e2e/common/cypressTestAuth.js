@@ -59,9 +59,8 @@ const ENV_KEYS = [
 const withEnv = (callback) =>
   cy.env(ENV_KEYS).then((env) => callback((key, fallback) => env[key] || fallback));
 
-export const liveMemberEmail = () => Cypress.expose('LIVE_MEMBER_EMAIL') || DEFAULT_MEMBER_EMAIL;
-export const liveMemberFirstName = () =>
-  Cypress.expose('LIVE_MEMBER_FIRST_NAME') || DEFAULT_MEMBER_FIRST_NAME;
+export const liveMemberEmail = () => DEFAULT_MEMBER_EMAIL;
+export const liveMemberFirstName = () => DEFAULT_MEMBER_FIRST_NAME;
 
 // Full raw ROPC token response (id_token/access_token/expires_in/scope/...) - this exact shape is
 // what MSAL's loadExternalTokens() expects as its "response" argument (see

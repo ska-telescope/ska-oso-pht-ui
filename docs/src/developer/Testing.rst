@@ -118,14 +118,13 @@ Running
 
 To run the analysis tools, execute
 
-    > yarn code-analysis
+    > yarn lint
 
-This will display any errors in the command line. If there are any errors, YARN will exit with a non-zero code, the `-s` argument suppresses this and cleans up the output.
+This runs ESLint on ``src`` and checks formatting with Prettier, displaying any errors in the command line.
 
+To fix linting and formatting issues automatically, run
 
-Alternatively, you can also run
+    > yarn lint:fix
 
-    > yarn checker
-
-This will display any errors in the command line and fix linting issues by running yarn prettier:fix && yarn lint:fix.
+This runs Prettier (``yarn prettier:fix``) followed by ``eslint --fix``.
 

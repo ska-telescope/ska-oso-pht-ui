@@ -28,7 +28,7 @@ const groupBy = <T,>(items: T[], key: keyof T): Record<string, T[]> =>
     const group = String(item[key]);
     (groups[group] ??= []).push(item);
     return groups;
-  }, {});
+  }, Object.create(null));
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
