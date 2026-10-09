@@ -1,4 +1,4 @@
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import ObservatoryData from '@/utils/types/observatoryData';
 
 export function useOSD(): ObservatoryData {

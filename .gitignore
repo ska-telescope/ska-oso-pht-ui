@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn/*
+!.yarn/patches
 
 charts/*/Chart.lock
 charts/*/charts
@@ -35,8 +37,6 @@ ctrf/ctrf-report.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-/.nyc_output/*
 
 public/env.js
 *.test.ts

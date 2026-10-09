@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Stack } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
@@ -273,7 +273,12 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     };
 
     return (
-      <Box p={0} mt={-1}>
+      <Box
+        sx={{
+          p: 0,
+          mt: -1
+        }}
+      >
         <UserSearchButton
           action={userSearchClickFunction}
           disabled={emailInvalid}
@@ -345,7 +350,12 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   );
 
   const piField = () => (
-    <Box p={0} m={0}>
+    <Box
+      sx={{
+        p: 0,
+        m: 0
+      }}
+    >
       <TickBox
         label={t('pi.label')}
         labelPosition={LAB_POS_TICK}
@@ -359,7 +369,12 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   );
 
   const phdThesisField = () => (
-    <Box p={0} m={0}>
+    <Box
+      sx={{
+        p: 0,
+        m: 0
+      }}
+    >
       <TickBox
         label={t('phdThesis.label')}
         labelPosition={LAB_POS_TICK}
@@ -373,7 +388,12 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   );
 
   return (
-    <Stack p={GAP} spacing={GAP}>
+    <Stack
+      spacing={GAP}
+      sx={{
+        p: GAP
+      }}
+    >
       {emailField()}
       {firstNameField()}
       {lastNameField()}

@@ -215,12 +215,32 @@ export default function ReviewDecisionListPage() {
     <>
       <PageBannerPMT title={t('reviewDecisionsList.title')} />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Grid container direction="row" alignItems="center" justifyContent="space-around">
-        <Grid mt={-1} size={{ sm: 4, md: 5, lg: 6 }}>
+      <Grid
+        container
+        direction="row"
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'space-around'
+        }}
+      >
+        <Grid
+          size={{ sm: 4, md: 5, lg: 6 }}
+          sx={{
+            mt: -1
+          }}
+        >
           {searchEntryField('searchId')}
         </Grid>
       </Grid>
-      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-between">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          p: 5,
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
+      >
         <Grid size={{ sm: 12 }}>
           <div>
             {filteredData && (

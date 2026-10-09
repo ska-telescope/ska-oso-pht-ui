@@ -71,10 +71,13 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       }}
     >
       <Typography
-        id="alert-dialog-title" // accessibility link
+        // accessibility link
+        id="alert-dialog-title"
         variant="h5"
-        fontWeight={600}
-        color="text.primary"
+        sx={{
+          fontWeight: 600,
+          color: 'text.primary'
+        }}
       >
         {t('cycle.label')}
       </Typography>
@@ -85,10 +88,13 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
     <Grid>
       <Grid
         container
-        sx={{ minHeight: '0.5rem', backgroundColor: theme.palette.primary.main }}
         direction="row"
-        justifyContent="space-around"
-        alignItems="center"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          minHeight: '0.5rem',
+          backgroundColor: theme.palette.primary.main
+        }}
       >
         <Grid>
           <Typography variant="button"> </Typography>
@@ -102,9 +108,11 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       container
       spacing={1}
       direction="row"
-      alignItems="center"
-      justifyContent="flex-end"
-      pr={2}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        pr: 2
+      }}
     >
       <Grid>
         <CancelButton
@@ -118,7 +126,15 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
   );
 
   const buttonsRight = () => (
-    <Grid container spacing={1} direction="row" alignItems="center" justifyContent="flex-start">
+    <Grid
+      container
+      spacing={1}
+      direction="row"
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'flex-start'
+      }}
+    >
       <Grid>
         <ConfirmButton
           action={() => currentPolicy && onConfirm(currentPolicy)}
@@ -134,9 +150,11 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
     <Grid
       container
       direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{ width: '100%' }}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%'
+      }}
     >
       <Grid>{buttonsLeft()}</Grid>
       <Grid>{buttonsRight()}</Grid>
@@ -174,21 +192,27 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_ID'}
                     variant="h6"
-                    color="text.primary"
+                    sx={{
+                      color: 'text.primary'
+                    }}
                   >
                     {t('id.label')}: {policy.cycleInformation.cycleId}
                   </Typography>
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_description'}
                     variant="body1"
-                    color="text.secondary"
+                    sx={{
+                      color: 'text.secondary'
+                    }}
                   >
                     {t('cycleDescription.label')}: {policy?.cycleDescription}
                   </Typography>
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_opens'}
                     variant="body2"
-                    color="text.secondary"
+                    sx={{
+                      color: 'text.secondary'
+                    }}
                   >
                     {t('cycleOpens.label')}:{' '}
                     {presentDateTime(policy.cycleInformation.proposalOpen, {
@@ -198,7 +222,9 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_closes'}
                     variant="body2"
-                    color="text.secondary"
+                    sx={{
+                      color: 'text.secondary'
+                    }}
                   >
                     {t('cycleCloses.label')}:{' '}
                     {presentDateTime(policy.cycleInformation.proposalClose, {
@@ -221,21 +247,25 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
-      PaperProps={{
-        style: {
-          minWidth: MODAL_WIDTH,
-          maxWidth: MODAL_WIDTH
+      slotProps={{
+        paper: {
+          style: {
+            minWidth: MODAL_WIDTH,
+            maxWidth: MODAL_WIDTH
+          }
         }
       }}
     >
       <DialogContent>
         <Grid
-          p={2}
           spacing={1}
           container
-          direction="column"
-          alignItems="space-evenly"
-          justifyContent="space-around"
+          sx={{
+            flexDirection: 'column',
+            p: 2,
+            alignItems: 'space-evenly',
+            justifyContent: 'space-around'
+          }}
         >
           {headerContent()}
           {sectionTitle()}

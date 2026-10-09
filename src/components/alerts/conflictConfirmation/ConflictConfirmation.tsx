@@ -86,7 +86,14 @@ export default function ConflictConfirmation({
 
   const details = (inLabel: string, inValue: string | number) => {
     return (
-      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: LABEL_WIDTH + 1 }}>{label(inLabel)}</Grid>
         <Grid size={{ xs: 11 - LABEL_WIDTH }}>{content(inValue)}</Grid>
       </Grid>
@@ -97,10 +104,13 @@ export default function ConflictConfirmation({
     <Grid>
       <Grid
         container
-        sx={{ minHeight: '0.5rem', backgroundColor: theme.palette.primary.main }}
         direction="row"
-        justifyContent="space-around"
-        alignItems="center"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          minHeight: '0.5rem',
+          backgroundColor: theme.palette.primary.main
+        }}
       >
         <Grid>
           <Typography variant="button"> </Typography>
@@ -126,9 +136,21 @@ export default function ConflictConfirmation({
   );
 
   const pageDropdown = () => (
-    <Grid p={5} container direction="row" alignItems="center" justifyContent="space-around">
+    <Grid
+      container
+      direction="row"
+      sx={{
+        p: 5,
+        alignItems: 'center',
+        justifyContent: 'space-around'
+      }}
+    >
       <Grid>
-        <Box minWidth={800}>
+        <Box
+          sx={{
+            minWidth: 800
+          }}
+        >
           <DropDown
             value={reason}
             label={t('conflict.label')}
@@ -146,9 +168,11 @@ export default function ConflictConfirmation({
     <Grid
       container
       direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{ width: '100%' }}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%'
+      }}
     >
       <Grid>{buttonLeft()}</Grid>
       <Grid>{buttonRight()}</Grid>
@@ -157,13 +181,23 @@ export default function ConflictConfirmation({
 
   const headerContent = () => (
     <Grid>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: 2 }}>{skaoIcon({ useSymbol: false })}</Grid>
         <Grid size={{ xs: 6 }}>
           {title(t('page.' + PAGE_TITLE_ADD + '.title') + '  ', proposal?.title ?? '')}
         </Grid>
         <Grid size={{ xs: 4 }}>
-          <Grid container direction="column" justifyContent="space-between" alignItems="right">
+          <Grid
+            container
+            sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'right' }}
+          >
             <Grid>{details(t('page.' + PAGE_CYCLE + '.short'), proposal?.cycle ?? '')}</Grid>
             <Grid>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid>
           </Grid>
@@ -190,10 +224,12 @@ export default function ConflictConfirmation({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
-      PaperProps={{
-        style: {
-          minWidth: MODAL_WIDTH,
-          maxWidth: MODAL_WIDTH
+      slotProps={{
+        paper: {
+          style: {
+            minWidth: MODAL_WIDTH,
+            maxWidth: MODAL_WIDTH
+          }
         }
       }}
     >
@@ -207,11 +243,13 @@ export default function ConflictConfirmation({
       {proposal !== null && (
         <DialogContent>
           <Grid
-            p={2}
             container
-            direction="column"
-            alignItems="space-evenly"
-            justifyContent="space-around"
+            sx={{
+              flexDirection: 'column',
+              p: 2,
+              alignItems: 'space-evenly',
+              justifyContent: 'space-around'
+            }}
           >
             {headerContent()}
             {sectionTitle()}

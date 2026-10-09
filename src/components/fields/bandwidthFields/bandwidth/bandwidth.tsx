@@ -110,7 +110,15 @@ export default function BandwidthField({
 
   if (isLow()) {
     return (
-      <Grid pt={1} spacing={2} container justifyContent="space-between" direction="row">
+      <Grid
+        spacing={2}
+        container
+        direction="row"
+        sx={{
+          pt: 1,
+          justifyContent: 'space-between'
+        }}
+      >
         <Grid size={{ xs: 8 }}>
           <SteppedNumberField
             testId={FIELD}
@@ -137,9 +145,11 @@ export default function BandwidthField({
                 />
                 <Typography
                   variant="body1"
-                  whiteSpace="nowrap"
-                  pl={1}
                   data-testid={FIELD + 'Velocity'}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    pl: 1
+                  }}
                 >
                   ({calculateVelocity(bandwidthHz, centralFrequencyHz)})
                 </Typography>
@@ -170,8 +180,21 @@ export default function BandwidthField({
   }
 
   return (
-    <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-      <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
+    <Grid
+      spacing={0}
+      container
+      direction="row"
+      sx={{
+        pt: 1,
+        justifyContent: 'space-between'
+      }}
+    >
+      <Grid
+        size={{ xs: suffix ? 12 - widthButton : 12 }}
+        sx={{
+          pl: suffix ? 1 : 0
+        }}
+      >
         <DropDown
           disabled={disabled}
           options={getOptions()}

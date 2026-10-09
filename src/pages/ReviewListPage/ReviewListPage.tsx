@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Grid, Tooltip, Typography } from '@mui/material';
 import {
   DataGrid,
@@ -384,7 +384,12 @@ export default function ReviewListPage() {
 
       return (
         <Tooltip title={t('conflict.reason.' + (reason?.length > 0 ? reason : 'conflict-none'))}>
-          <Typography pt={2} variant="body2">
+          <Typography
+            variant="body2"
+            sx={{
+              pt: 2
+            }}
+          >
             {label}
           </Typography>
         </Tooltip>
@@ -579,13 +584,33 @@ export default function ReviewListPage() {
     <>
       <PageBannerPMT title={t('reviewProposalList.title')} fwdBtn={fwdButton()} />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Grid container direction="row" alignItems="center" justifyContent="space-around">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'space-around'
+        }}
+      >
         <Grid size={{ sm: 4, md: 4, lg: 4 }}>{searchDropdown()}</Grid>
-        <Grid mt={-1} size={{ sm: 4, md: 5, lg: 6 }}>
+        <Grid
+          size={{ sm: 4, md: 5, lg: 6 }}
+          sx={{
+            mt: -1
+          }}
+        >
           {searchEntryField('searchId')}
         </Grid>
       </Grid>
-      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-between">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          p: 5,
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
+      >
         <Grid size={{ sm: 12 }}>
           {(!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />

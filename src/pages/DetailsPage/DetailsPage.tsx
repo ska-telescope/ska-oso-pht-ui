@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Grid, Stack } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   DETAILS,
@@ -199,7 +199,12 @@ export default function DetailsPage() {
   };
 
   const observingModeField = () => (
-    <Box pt={0} sx={{ maxWidth: 500 }}>
+    <Box
+      sx={{
+        pt: 0,
+        maxWidth: 500
+      }}
+    >
       <ObservationTypeField
         options={observingModeOptions}
         required
@@ -210,7 +215,12 @@ export default function DetailsPage() {
   );
 
   const categoryField = () => (
-    <Box pt={0} sx={{ maxWidth: 500 }}>
+    <Box
+      sx={{
+        pt: 0,
+        maxWidth: 500
+      }}
+    >
       {' '}
       <DropDown
         options={DETAILS.ScienceCategory}
@@ -228,7 +238,14 @@ export default function DetailsPage() {
   );
 
   const row2 = (component: React.ReactNode) => (
-    <Grid container alignItems="center" justifyContent="center" spacing={GAP}>
+    <Grid
+      container
+      spacing={GAP}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
       <Grid size={{ xs: 7 }} style={{ textAlign: 'left' }}>
         {component}
       </Grid>
@@ -238,15 +255,30 @@ export default function DetailsPage() {
   // SV proposals have no science category; observing mode is chosen here instead
   return (
     <Shell page={PAGE}>
-      <Stack pt={GAP} spacing={GAP}>
-        <Grid mt={4}>
+      <Stack
+        spacing={GAP}
+        sx={{
+          pt: GAP
+        }}
+      >
+        <Grid
+          sx={{
+            mt: 4
+          }}
+        >
           {row2(
             getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION
               ? observingModeField()
               : categoryField()
           )}
         </Grid>
-        <Grid mt={7}>{row2(abstractField())}</Grid>
+        <Grid
+          sx={{
+            mt: 7
+          }}
+        >
+          {row2(abstractField())}
+        </Grid>
       </Stack>
     </Shell>
   );

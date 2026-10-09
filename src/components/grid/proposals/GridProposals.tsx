@@ -7,8 +7,8 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Typography, Box, Grid } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { useNavigate } from 'react-router';
+import { storageObject } from '@utils/storage/store';
 import { useValidateProposal } from '@utils/validation/validation';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
@@ -174,8 +174,8 @@ export default function GridProposals({
     headerName: 'Select',
     renderHeader: () => (
       <Box
-        pl={2}
         sx={{
+          pl: 2,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -280,13 +280,24 @@ export default function GridProposals({
     : [];
 
   const ProposalsSectionTitle = () => (
-    <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
+    <Typography
+      align="center"
+      variant="h6"
+      sx={{
+        minHeight: '4vh',
+        textAlign: 'left'
+      }}
+    >
       {t('proposals.label')}
     </Typography>
   );
 
   const scienceCategoryDropdown = () => (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <DropDown
         options={[{ label: t('scienceCategory.all'), value: null }, ...DETAILS.ScienceCategory]}
         testId="proposalScienceCategory"
@@ -298,7 +309,11 @@ export default function GridProposals({
   );
 
   const proposalTypeDropdown = () => (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <DropDown
         options={[
           { label: t('proposalType.all'), value: '' },
@@ -435,13 +450,15 @@ export default function GridProposals({
 
       {showSearch && (
         <Grid
-          pb={2}
           size={{ sm: 12 }}
           container
           direction="row"
           spacing={2}
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{
+            pb: 2,
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
         >
           <Grid size={{ sm: 3 }}>{proposalTypeDropdown()}</Grid>
           <Grid size={{ sm: 3 }}>{scienceCategoryDropdown()}</Grid>

@@ -50,7 +50,11 @@ export default function StandardChip({
   if (!shouldRender) return null;
 
   return (
-    <Box p={0.5}>
+    <Box
+      sx={{
+        p: 0.5
+      }}
+    >
       <Fade in={visible} timeout={fadeDuration}>
         <div>
           <Chip
@@ -58,7 +62,12 @@ export default function StandardChip({
             data-testid={testId}
             label={text}
             icon={
-              <Box p={0.5} pt={1.5}>
+              <Box
+                sx={{
+                  p: 0.5,
+                  pt: 1.5
+                }}
+              >
                 <StatusIcon
                   ariaDescription=" "
                   ariaTitle=" "

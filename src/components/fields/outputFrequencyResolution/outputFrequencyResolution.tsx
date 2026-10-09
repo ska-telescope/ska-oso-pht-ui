@@ -15,7 +15,7 @@ interface OutputFrequencyResolutionFieldProps {
   widthButton?: number;
 }
 
-export const outputFrequencyResolutionSchema = z.number().finite().int().min(1);
+export const outputFrequencyResolutionSchema = z.number().int().min(1);
 
 export default function OutputFrequencyResolutionField({
   disabled = false,
@@ -57,7 +57,11 @@ export default function OutputFrequencyResolutionField({
   }, [value]);
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <SteppedNumberField
         testId={FIELD}
         value={value}

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import HomeIcon from '@mui/icons-material/Home';
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';

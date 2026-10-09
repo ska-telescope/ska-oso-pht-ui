@@ -13,7 +13,7 @@ interface ImageSizeFieldProps {
   value: number;
 }
 
-export const imageSizeSchema = z.number().finite().gt(0);
+export const imageSizeSchema = z.number().gt(0);
 
 export default function ImageSizeField({
   disabled = false,

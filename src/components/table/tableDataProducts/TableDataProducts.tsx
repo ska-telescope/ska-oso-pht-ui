@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, TableBody } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import TableContainer from '../tableContainer/TableContainer';
 import TableDataProductsHeader from './tableDataProductsHeader/TableDataProductsHeader';
 import TableDataProductsRow from './tableDataProductsRow/TableDataProductsRow';

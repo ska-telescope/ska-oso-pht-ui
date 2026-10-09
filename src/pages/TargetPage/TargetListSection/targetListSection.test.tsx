@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import TargetListSection from './targetListSection';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
@@ -30,7 +30,7 @@ const mockProposal = {
   targetObservation: [{ targetId: '1' }]
 };
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: { content2: mockProposal },

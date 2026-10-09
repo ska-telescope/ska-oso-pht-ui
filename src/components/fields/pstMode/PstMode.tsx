@@ -32,7 +32,11 @@ export default function PstModeField({
   };
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       {getOptions() && (
         <DropDown
           disabled={disabled || getOptions()?.length < 2}

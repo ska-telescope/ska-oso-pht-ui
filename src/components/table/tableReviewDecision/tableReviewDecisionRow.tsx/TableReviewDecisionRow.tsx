@@ -121,8 +121,8 @@ export default function TableReviewDecisionRow({
         </IconButton>
         <Typography
           variant="caption"
-          color="text.secondary"
           sx={{
+            color: 'text.secondary',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -140,8 +140,8 @@ export default function TableReviewDecisionRow({
     <TableCell role="gridcell">
       <Typography
         variant="body2"
-        color="text.secondary"
         sx={{
+          color: 'text.secondary',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
@@ -157,8 +157,8 @@ export default function TableReviewDecisionRow({
     <TableCell role="gridcell">
       <Typography
         variant="body2"
-        fontWeight="medium"
         sx={{
+          fontWeight: 'medium',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
@@ -173,8 +173,8 @@ export default function TableReviewDecisionRow({
     <TableCell role="gridcell">
       <Typography
         variant="body2"
-        color="text.secondary"
         sx={{
+          color: 'text.secondary',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
@@ -206,8 +206,8 @@ export default function TableReviewDecisionRow({
     <TableCell role="gridcell">
       <Typography
         variant="body2"
-        color="text.secondary"
         sx={{
+          color: 'text.secondary',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',

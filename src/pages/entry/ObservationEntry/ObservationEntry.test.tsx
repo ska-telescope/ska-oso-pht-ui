@@ -3,7 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import {
   PROPOSAL_TYPE,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
@@ -26,8 +26,8 @@ const mockState = vi.hoisted(() => ({
 // look as though it had some content so the component would always think
 // it's in edit mode.)
 // Edit-mode tests supply a `data` prop instead to explicitly trigger edit mode.
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router');
   return {
     ...actual,
     useLocation: () => ({ pathname: '/', state: null, search: '', hash: '' }),
@@ -80,7 +80,7 @@ const mockUpdateAppContent2 = vi.fn();
 const mockHelpComponent = vi.fn();
 const mockHelpComponentURL = vi.fn();
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {

@@ -132,8 +132,8 @@ export default function GridReviewers({
     headerName: 'Select',
     renderHeader: () => (
       <Box
-        pl={2}
         sx={{
+          pl: 2,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -191,13 +191,24 @@ export default function GridReviewers({
     : [];
 
   const ReviewersSectionTitle = () => (
-    <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
+    <Typography
+      align="center"
+      variant="h6"
+      sx={{
+        minHeight: '4vh',
+        textAlign: 'left'
+      }}
+    >
       {t('reviewers.label')}
     </Typography>
   );
 
   const searchDropdownExpertise = () => (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <DropDown
         options={[{ label: t('subjectExpertise.0'), value: '' }, ...SEARCH_TYPE_OPTIONS_REVIEWERS]}
         testId="subExpertise"
@@ -219,7 +230,11 @@ export default function GridReviewers({
   };
 
   const searchDropdownAffiliation = () => (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <DropDown
         options={[{ label: t('affiliation.0'), value: '' }, ...getAffiliationOptions()]}
         testId="officeLocation"
@@ -275,13 +290,15 @@ export default function GridReviewers({
 
       {showSearch && (
         <Grid
-          pb={2}
           size={{ sm: 12 }}
           container
           direction="row"
           spacing={2}
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{
+            pb: 2,
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
         >
           <Grid size={{ sm: 3 }}>{searchDropdownExpertise()}</Grid>
           <Grid size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid>

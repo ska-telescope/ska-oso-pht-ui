@@ -11,7 +11,14 @@ const PAGE = PAGE_DATA_PRODUCTS_ADD;
 export default function AddDataProduct() {
   return (
     <HelpShell page={PAGE}>
-      <Box pt={2} sx={{ height: '91vh', display: 'flex', flexDirection: 'column' }}>
+      <Box
+        sx={{
+          pt: 2,
+          height: '91vh',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
         <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
         <DataProduct />

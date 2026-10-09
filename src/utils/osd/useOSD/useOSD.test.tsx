@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useOSD } from './useOSD'; // adjust path if needed
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {

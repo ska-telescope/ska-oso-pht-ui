@@ -18,32 +18,16 @@ export default defineConfig({
     baseUrl: 'http://localhost:6101',
     //
     defaultCommandTimeout: 10000,  // 4000
-    execTimeout: 120000, // 60000
     taskTimeout: 120000, // 60000
     pageLoadTimeout:  120000, // 60000
     requestTimeout:  10000, // 5000
     responseTimeout:  60000, // 30000
     //
     experimentalRunAllSpecs: true,
-    experimentalMemoryManagement: true,
     supportFile: 'tests/cypress/support/e2e.ts',
     specPattern: ['tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
     setupNodeEvents(on, config) {
       on('file:preprocessor', vitePreprocessor());
-
-      // Default reporter for a plain `cypress run`/`cypress open` - only applied if the caller
-      // hasn't already asked for a specific reporter (e.g. scripts/cypressParallel.mjs passes its
-      // own `--reporter junit --reporter-options mochaFile=...` per worker, to give each worker's
-      // specs their own file; config.reporter/reporterOptions are already populated from those CLI
-      // flags by the time setupNodeEvents runs, so unconditionally overwriting them here would
-      // silently send every worker's every spec to this same single hardcoded path instead).
-      if (!config.reporter) {
-        config.reporter = 'mocha-junit-reporter';
-        config.reporterOptions = {
-          mochaFile: 'cypress/results/e2e-coverage.xml',
-          toConsole: true
-        };
-      }
 
       // Lets scripts/cypressParallel.mjs hand each worker a slice of the spec list via the
       // SPLIT/SPLIT_INDEX env vars instead of the orchestrator computing `--spec` itself. Only

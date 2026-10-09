@@ -1,7 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Grid } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
 import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
@@ -190,7 +190,16 @@ export default function TechnicalPage() {
   );
 
   const uploadSuffix = () => (
-    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
+    <Grid
+      spacing={1}
+      container
+      direction="row"
+      sx={{
+        pt: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
       <Grid>
         {getProposal().technicalPDF?.isUploadedPdf && (
           <PDFPreviewButton
@@ -223,7 +232,14 @@ export default function TechnicalPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
+      >
         <Grid size={{ xs: 6 }} data-testid="fileUpload">
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>

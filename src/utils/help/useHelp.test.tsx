@@ -1,7 +1,7 @@
 // useHelp.test.tsx
 import { renderHook } from '@testing-library/react';
 import { describe, it, vi } from 'vitest';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import { useHelp } from './useHelp';
 
 // Your wrapper from the app

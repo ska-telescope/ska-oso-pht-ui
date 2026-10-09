@@ -54,12 +54,13 @@ const COMBINED_OBSERVATION: Observation = {
   type: CONSTANTS.TYPE_CONTINUUM_SPECTRAL
 };
 
+vi.mock('../axiosClient', () => ({
+  default: { get: vi.fn() }
+}));
+
 describe('getSensitivityCalculatorAPIData Service', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.mock('../axiosClient', () => ({
-      default: { get: vi.fn() }
-    }));
   });
 
   test('returns continuum mapped data from API', async () => {

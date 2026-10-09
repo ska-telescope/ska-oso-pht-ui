@@ -55,10 +55,12 @@ export default function SensCalcModalSingle({
           }
           component={Box}
           title={t('sensitivityCalculatorResults.title')}
-          titleTypographyProps={{
-            align: 'center',
-            fontWeight: 'bold',
-            variant: 'h5'
+          slotProps={{
+            title: {
+              align: 'center',
+              fontWeight: 'bold',
+              variant: 'h5'
+            }
           }}
         />
       </Card>

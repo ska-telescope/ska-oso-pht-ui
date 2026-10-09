@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import { Box, Divider, Grid, Paper, Stack, Tab, Tabs } from '@mui/material';
 import {
   BorderedSection,
@@ -204,7 +204,14 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   );
 
   const actionButtons = () => (
-    <Grid spacing={1} container justifyContent="space-between" direction="row">
+    <Grid
+      spacing={1}
+      container
+      direction="row"
+      sx={{
+        justifyContent: 'space-between'
+      }}
+    >
       <SaveButton action={saveButtonClicked} primary toolTip={''} />
       <SubmitButton action={submitButtonClicked} disabled={submitDisabled()} primary toolTip={''} />
     </Grid>
@@ -228,7 +235,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           boxSizing: 'border-box'
         }}
       >
-        <Typography id={id} fontWeight="bold" variant={'h6'}>
+        <Typography
+          id={id}
+          variant={'h6'}
+          sx={{
+            fontWeight: 'bold'
+          }}
+        >
           {label?.length ? t(label) : ''}
         </Typography>
       </Box>
@@ -316,7 +329,14 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const rankField = () => {
     return (
-      <Box p={2} pl={4} sx={{ height: '65vh', overflow: 'auto' }}>
+      <Box
+        sx={{
+          p: 2,
+          pl: 4,
+          height: '65vh',
+          overflow: 'auto'
+        }}
+      >
         {!isView() && <RankEntryField selectedRank={rank} setSelectedRank={setRank} />}
         {isView() && showLabel('rank', locationProperties?.state?.reviews[0].rank)}
       </Box>
@@ -336,8 +356,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       )}
       {isView() && (
         <Box
-          p={2}
           sx={{
+            p: 2,
             width: '100%',
             height: '65vh',
             overflow: 'auto',
@@ -386,8 +406,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       )}
       {isView() && (
         <Box
-          p={2}
           sx={{
+            p: 2,
             width: '100%',
             height: '65vh',
             overflow: 'auto',
@@ -473,10 +493,12 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         container
         spacing={2}
         direction="row"
-        justifyContent="space-between"
-        pl={2}
-        pr={6}
-        sx={{ backgroundColor: 'background.default' }}
+        sx={{
+          justifyContent: 'space-between',
+          pl: 2,
+          pr: 6,
+          backgroundColor: 'background.default'
+        }}
       >
         {/* Left Column: scrollable content */}
         <Grid size={{ sm: 9 }}>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { loadExternalTokens } from '@azure/msal-browser';
 import { useMsal } from '@azure/msal-react';
 
 /**
@@ -31,9 +32,9 @@ export default function CypressMsalHydrationBridge(): null {
       return;
     }
     (window as unknown as { __msalLoadExternalTokens?: unknown }).__msalLoadExternalTokens = (
-      request: Parameters<ReturnType<typeof instance.getTokenCache>['loadExternalTokens']>[0],
-      response: Parameters<ReturnType<typeof instance.getTokenCache>['loadExternalTokens']>[1]
-    ) => instance.getTokenCache().loadExternalTokens(request, response, {});
+      request: Parameters<typeof loadExternalTokens>[1],
+      response: Parameters<typeof loadExternalTokens>[2]
+    ) => loadExternalTokens(instance.getConfiguration(), request, response, {});
     (window as unknown as { __msalInstance?: unknown }).__msalInstance = instance;
   }, [instance]);
 

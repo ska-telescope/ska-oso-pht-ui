@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import AddIcon from '@mui/icons-material/Add';
 import BaseButton from './Button';
 import '@testing-library/jest-dom';

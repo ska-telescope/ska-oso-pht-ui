@@ -1,7 +1,7 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { Box, Grid, Typography } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import {
@@ -197,10 +197,10 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
-      p={0}
-      mr={10}
-      pt={1}
       sx={{
+        p: 0,
+        mr: 10,
+        pt: 1,
         height: WRAPPER_HEIGHT,
         width: 'auto'
       }}
@@ -304,17 +304,36 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
       <Grid
         container
         direction="row"
-        alignItems="center"
-        justifyContent="flex-start"
-        sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
+        sx={{
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          flexWrap: 'nowrap',
+          xs: 4,
+          md: 8
+        }}
       >
-        <Grid size="grow" minWidth={WIDTH_FIELD1}>
+        <Grid
+          size="grow"
+          sx={{
+            minWidth: WIDTH_FIELD1
+          }}
+        >
           {field1()}
         </Grid>
-        <Grid size="grow" minWidth={WIDTH_FIELD2}>
+        <Grid
+          size="grow"
+          sx={{
+            minWidth: WIDTH_FIELD2
+          }}
+        >
           {field2()}
         </Grid>
-        <Grid size="grow" minWidth={WIDTH_FIELD3}>
+        <Grid
+          size="grow"
+          sx={{
+            minWidth: WIDTH_FIELD3
+          }}
+        >
           {field3 ? field3() : null}
         </Grid>
       </Grid>
@@ -327,7 +346,13 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
       color={AlertColorTypes.Warning}
       sx={{ textAlign: 'center', width: '100%' }}
     >
-      <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
+      <Typography
+        sx={{
+          p: GAP
+        }}
+      >
+        {t('sensitivityCalculatorResults.notApplicableForSSO')}
+      </Typography>
     </Alert>
   );
 
@@ -335,20 +360,28 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   return (
     <HelpShell page={PAGE}>
-      <Box pl={GAP} pr={GAP}>
+      <Box
+        sx={{
+          pl: GAP,
+          pr: GAP
+        }}
+      >
         {(!loggedIn || osdCyclePolicy?.calibrationFactoryDefined !== true) && (
           <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         )}
         <Grid
           container
           spacing={GAP}
-          direction="column"
-          sx={{ overflow: 'hidden', width: '100%', xs: 4, md: 8 }}
+          sx={{ flexDirection: 'column', overflow: 'hidden', width: '100%', xs: 4, md: 8 }}
         >
           <Grid>
             <Typography>{t('calibrator.desc')}</Typography>
           </Grid>
-          <Grid pr={10}>
+          <Grid
+            sx={{
+              pr: 10
+            }}
+          >
             <BorderedSection
               title={t('calibrator.observatoryDefined')}
               borderColor={isSSO ? theme.palette.warning.main : undefined}
@@ -369,7 +402,13 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
             <Typography>{t('calibrator.disclaimer')}</Typography>
           </Grid>
           <Grid>
-            <Grid pr={10}>{commentField()}</Grid>
+            <Grid
+              sx={{
+                pr: 10
+              }}
+            >
+              {commentField()}
+            </Grid>
           </Grid>
         </Grid>
       </Box>

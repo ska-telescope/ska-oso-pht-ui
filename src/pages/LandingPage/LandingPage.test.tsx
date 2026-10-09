@@ -1,7 +1,7 @@
 import { describe, expect, test, vi, beforeEach, Mock } from 'vitest';
 import { fireEvent, screen, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider, storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider, storageObject } from '@utils/storage/store';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import LandingPage from './LandingPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
@@ -21,7 +21,7 @@ import Proposal from '@/utils/types/proposal';
 // ---- Module mocks ----
 
 const mockNavigate = vi.fn();
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
   useNavigate: () => mockNavigate
 }));
 

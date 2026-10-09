@@ -1,7 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import * as bandwidthValidationCommon from '../bandwidthValidationCommon';
 import ContinuumBandwidth from './continuumBandwidth';
 import { SA_AA2 } from '@/utils/constants';

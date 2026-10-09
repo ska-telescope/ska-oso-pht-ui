@@ -2,8 +2,9 @@ import { pdfjs } from './pdfSetup';
 
 export async function getPdfPageCount(file: File): Promise<number> {
   const buffer = await file.arrayBuffer();
-  const doc = await pdfjs.getDocument({ data: buffer }).promise;
+  const loadingTask = pdfjs.getDocument({ data: buffer });
+  const doc = await loadingTask.promise;
   const numPages = doc.numPages;
-  await doc.destroy();
+  await loadingTask.destroy();
   return numPages;
 }

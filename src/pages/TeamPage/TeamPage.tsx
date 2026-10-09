@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography, useTheme } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { validateTeamPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -176,11 +176,13 @@ export default function TeamPage() {
     const rec = getProposal()?.investigators?.find((p) => p.id === currentMember);
     return (
       <Grid
-        p={2}
         container
-        direction="column"
-        alignItems="space-evenly"
-        justifyContent="space-around"
+        sx={{
+          flexDirection: 'column',
+          p: 2,
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
       >
         <FieldWrapper label={t('firstName.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.firstName}</Typography>
@@ -232,22 +234,31 @@ export default function TeamPage() {
   return (
     <Shell page={PAGE}>
       <Grid
-        pr={3}
-        pl={3}
         container
-        direction="column"
-        alignItems="space-evenly"
-        justifyContent="space-around"
+        sx={{
+          flexDirection: 'column',
+          pr: 3,
+          pl: 3,
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
       >
         <Grid
-          p={1}
           container
           direction="row"
-          alignItems="space-evenly"
-          justifyContent="space-around"
           spacing={1}
+          sx={{
+            p: 1,
+            alignItems: 'space-evenly',
+            justifyContent: 'space-around'
+          }}
         >
-          <Grid size={{ md: 11, lg: 6 }} order={{ md: 2, lg: 1 }}>
+          <Grid
+            size={{ md: 11, lg: 6 }}
+            sx={{
+              order: { md: 2, lg: 1 }
+            }}
+          >
             <GridMembers
               action={actionsAvailable()}
               actionClicked={actionClicked}
@@ -257,7 +268,12 @@ export default function TeamPage() {
               permissions={permissions}
             />
           </Grid>
-          <Grid size={{ md: 11, lg: 5 }} order={{ md: 1, lg: 2 }}>
+          <Grid
+            size={{ md: 11, lg: 5 }}
+            sx={{
+              order: { md: 1, lg: 2 }
+            }}
+          >
             <Box
               sx={{
                 width: '100%',

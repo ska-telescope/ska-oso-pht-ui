@@ -19,7 +19,8 @@ describe('getPdfPageCount', () => {
   it('returns correct page count for a valid PDF', async () => {
     const mockDestroy = vi.fn().mockResolvedValue(undefined);
     mockGetDocument.mockReturnValue({
-      promise: Promise.resolve({ numPages: 3, destroy: mockDestroy })
+      promise: Promise.resolve({ numPages: 3 }),
+      destroy: mockDestroy
     });
 
     const file = new File(['dummy'], 'test.pdf', { type: 'application/pdf' });
@@ -28,10 +29,11 @@ describe('getPdfPageCount', () => {
     expect(count).toBe(3);
   });
 
-  it('awaits and verifies that doc.destroy() was called', async () => {
+  it('awaits and verifies that loadingTask.destroy() was called', async () => {
     const mockDestroy = vi.fn().mockResolvedValue(undefined);
     mockGetDocument.mockReturnValue({
-      promise: Promise.resolve({ numPages: 1, destroy: mockDestroy })
+      promise: Promise.resolve({ numPages: 1 }),
+      destroy: mockDestroy
     });
 
     const file = new File(['dummy'], 'test.pdf', { type: 'application/pdf' });

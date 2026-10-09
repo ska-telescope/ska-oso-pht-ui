@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { NAV, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Proposal from '@utils/types/proposal.tsx';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StatusWrapperProps {
@@ -55,7 +55,10 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
       style={{ cursor: 'hand' }}
       disabled={disableIcons()}
     >
-      <Grid container direction="column" alignItems="center" justifyContent="center">
+      <Grid
+        container
+        sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+      >
         <div style={{ all: 'initial', display: 'inline-block' }}>
           <StatusIcon
             ariaDescription={t('pageStatus.toolTip', {

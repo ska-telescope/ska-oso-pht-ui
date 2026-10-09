@@ -51,11 +51,13 @@ export default function SaveButton({
 
   const iconWithCountdown = (
     <Box
-      pr={1}
-      position="relative"
-      display="inline-flex"
-      alignItems="center"
-      justifyContent="center"
+      sx={{
+        pr: 1,
+        position: 'relative',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
     >
       <SaveIcon
         sx={{

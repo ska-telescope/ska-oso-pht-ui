@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { Box } from '@mui/system';
 import Proposal from '../../../utils/types/proposal';
 import GroupObservation from '../../../utils/types/groupObservation';
@@ -131,7 +131,11 @@ export default function GroupObservationsField({
   };
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       {editing && (
         <TextEntry
           inputRef={inputRef}

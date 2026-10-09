@@ -1,11 +1,11 @@
 import type { ReactElement, ReactNode } from 'react';
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import type { Proposal } from '@/utils/types/proposal';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {

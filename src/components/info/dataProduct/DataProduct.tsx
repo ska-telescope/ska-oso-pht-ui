@@ -73,7 +73,13 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const sdpData = sdp?.data;
 
   const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
-    <Box p={0} pt={1} sx={{ height: height }}>
+    <Box
+      sx={{
+        p: 0,
+        pt: 1,
+        height: height
+      }}
+    >
       {children}
     </Box>
   );
@@ -176,7 +182,12 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
 
   const pulsarTimingValueField = () =>
     fieldWrapper(
-      <Typography p={GAP} data-testid="pulsarTimingValue">
+      <Typography
+        data-testid="pulsarTimingValue"
+        sx={{
+          p: GAP
+        }}
+      >
         {t('page.7.group.pst.2')}
       </Typography>
     );
@@ -253,9 +264,11 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
         <Grid
           container
           direction="row"
-          justifyContent="space-around"
-          alignItems="center"
-          minHeight={100}
+          sx={{
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            minHeight: 100
+          }}
         >
           {isImages() && <Grid size={{ md: 5 }}>{dataProductTypeField()}</Grid>}
           {isImages() && <Grid size={{ md: 5 }}></Grid>}
@@ -280,9 +293,11 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
         <Grid
           container
           direction="row"
-          justifyContent="space-around"
-          alignItems="center"
-          minHeight={100}
+          sx={{
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            minHeight: 100
+          }}
         >
           <Grid size={{ md: 5 }}>{imageSizeField()}</Grid>
           <Grid size={{ md: 5 }}>{pixelSizeField()}</Grid>
@@ -300,9 +315,11 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
         <Grid
           container
           direction="row"
-          justifyContent="space-around"
-          alignItems="center"
-          minHeight={100}
+          sx={{
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            minHeight: 100
+          }}
         >
           {isPulsarTimingValue() && <Grid size={{ md: 5 }}>{pulsarTimingValueField()}</Grid>}
 

@@ -72,7 +72,11 @@ export default function SubBands({
   };
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <NumberEntry
         disabled={disabled}
         label={t(FIELD + '.label')}

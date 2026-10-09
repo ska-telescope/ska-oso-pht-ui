@@ -57,7 +57,13 @@ export default function CardTitle({
               </Avatar>
             }
             title={
-              <Typography variant="h6" component="div" maxWidth={230}>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  maxWidth: 230
+                }}
+              >
                 <Typography>{title}</Typography>
               </Typography>
             }

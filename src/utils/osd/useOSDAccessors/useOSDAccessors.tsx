@@ -1,8 +1,7 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo } from 'react';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { find } from 'lodash';
+import { storageObject } from '@utils/storage/store';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDateTime } from '@/utils/present/present';
 import {
@@ -144,9 +143,9 @@ export function useOSDAccessors() {
         return selectedPolicy?.capabilities?.low?.basicCapabilities || null;
       }
       return (
-        find(selectedPolicy?.capabilities?.mid?.basicCapabilities?.receiverInformation, {
-          rxId: observingBand
-        }) || null
+        selectedPolicy?.capabilities?.mid?.basicCapabilities?.receiverInformation?.find(
+          (receiver) => receiver.rxId === observingBand
+        ) || null
       );
     },
 

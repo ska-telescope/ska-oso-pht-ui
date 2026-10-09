@@ -6,7 +6,12 @@ export default function TableSubmissionsHeader() {
 
   const displayHeader = (inValue: string) => (
     <TableCell sx={{ whiteSpace: { xs: 'normal', md: 'nowrap' }, paddingRight: 2 }}>
-      <Typography variant="subtitle2" fontWeight="bold">
+      <Typography
+        variant="subtitle2"
+        sx={{
+          fontWeight: 'bold'
+        }}
+      >
         {inValue ? t(inValue) : ''}
       </Typography>
     </TableCell>

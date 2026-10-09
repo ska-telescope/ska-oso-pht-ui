@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
 import {
@@ -102,12 +102,14 @@ export default function TargetListSection() {
     const isSSO = rec?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
     return (
       <Grid
-        p={2}
-        pb={0}
         container
-        direction="column"
-        alignItems="center"
-        justifyContent="space-around"
+        sx={{
+          flexDirection: 'column',
+          p: 2,
+          pb: 0,
+          alignItems: 'center',
+          justifyContent: 'space-around'
+        }}
       >
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.name}</Typography>
@@ -173,12 +175,20 @@ export default function TargetListSection() {
       <Grid
         container
         direction="row"
-        justifyContent="space-between"
-        alignItems="top"
         spacing={GAP}
-        sx={{ height: '100%', width: '95vw' }}
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'top',
+          height: '100%',
+          width: '95vw'
+        }}
       >
-        <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
+        <Grid
+          size={{ md: 12, lg: 6 }}
+          sx={{
+            order: { md: 2, lg: 1 }
+          }}
+        >
           <Stack
             spacing={GAP}
             sx={{
@@ -203,7 +213,12 @@ export default function TargetListSection() {
             )}
           </Stack>
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
+        <Grid
+          size={{ md: 12, lg: 6 }}
+          sx={{
+            order: { md: 1, lg: 2 }
+          }}
+        >
           <Box
             sx={{
               width: '100%',
@@ -237,7 +252,12 @@ export default function TargetListSection() {
   return (
     <Box>
       {maxTargets !== null && (getProposal()?.targets?.length ?? 0) > maxTargets - 1 && (
-        <Box pb={GAP} px={10}>
+        <Box
+          sx={{
+            pb: GAP,
+            px: 10
+          }}
+        >
           <Alert
             color={AlertColorTypes.Warning}
             text={t(maxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached', {

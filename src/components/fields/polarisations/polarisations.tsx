@@ -72,15 +72,28 @@ export default function PolarisationsField({
     ?.join(', ');
 
   return (
-    <Box pl={1} pt={2}>
-      <Grid container spacing={2} alignItems="flex-start">
+    <Box
+      sx={{
+        pl: 1,
+        pt: 2
+      }}
+    >
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          alignItems: 'flex-start'
+        }}
+      >
         {labelWidth > 0 && (
           <Grid size={{ md: labelWidth }}>
             <Typography
               variant="subtitle1"
-              fontWeight="normal"
-              sx={{ mb: 1 }}
-              color={disabled ? 'text.disabled' : 'text.primary'}
+              sx={{
+                fontWeight: 'normal',
+                color: disabled ? 'text.disabled' : 'text.primary',
+                mb: 1
+              }}
             >
               {t(`${FIELD}.label`)}
               {required && <span style={{ color: 'red' }}> *</span>}
@@ -90,7 +103,13 @@ export default function PolarisationsField({
 
         <Grid size={{ md: 12 - labelWidth }}>
           {displayOnly ? (
-            <Typography pt={1} variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                pt: 1,
+                color: 'text.secondary'
+              }}
+            >
               {displayString || t(`${FIELD}.noneSelected`)}
             </Typography>
           ) : (

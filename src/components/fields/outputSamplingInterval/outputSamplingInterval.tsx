@@ -15,7 +15,7 @@ interface OutputSamplingIntervalFieldProps {
   widthButton?: number;
 }
 
-export const outputSamplingIntervalSchema = z.number().finite().int().min(1);
+export const outputSamplingIntervalSchema = z.number().int().min(1);
 
 export default function OutputSamplingIntervalField({
   disabled = false,
@@ -57,7 +57,11 @@ export default function OutputSamplingIntervalField({
   }, [value]);
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <SteppedNumberField
         testId={FIELD}
         value={value}

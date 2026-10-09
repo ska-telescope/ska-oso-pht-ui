@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
-import Latex from 'react-latex-next';
+import Latex from './Latex';
 import { NOT_APPLICABLE } from '../constants';
 import {
   presentDate,
@@ -134,13 +134,15 @@ describe('Present', () => {
   });
   describe('uses browser locale/timezone when locale and timezone are omitted', () => {
     beforeEach(() => {
-      vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(
-        ((locale, options) =>
-          new RealDateTimeFormat(locale ?? 'en-ZA', {
-            ...options,
-            timeZone: options?.timeZone ?? 'Africa/Johannesburg'
-          })) as typeof Intl.DateTimeFormat
-      );
+      vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(function (
+        locale?: string | string[],
+        options?: Intl.DateTimeFormatOptions
+      ) {
+        return new RealDateTimeFormat(locale ?? 'en-ZA', {
+          ...options,
+          timeZone: options?.timeZone ?? 'Africa/Johannesburg'
+        });
+      } as typeof Intl.DateTimeFormat);
     });
 
     afterEach(() => {

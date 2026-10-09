@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router';
 import Loader from '@components/layout/Loader/Loader';
 import PHT from '@/pages/PHT/PHT';
 import {

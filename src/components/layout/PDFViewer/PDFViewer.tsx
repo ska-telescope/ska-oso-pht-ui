@@ -48,7 +48,12 @@ export default function PDFViewer({
   );
 
   return (
-    <Box p={2} sx={{ backgroundColor: theme.palette.background.default }}>
+    <Box
+      sx={{
+        p: 2,
+        backgroundColor: theme.palette.background.default
+      }}
+    >
       <Box
         ref={containerRef}
         sx={{
@@ -64,15 +69,25 @@ export default function PDFViewer({
         {url ? (
           <Document
             file={url}
+            suspense={false}
             onLoadSuccess={onDocumentLoadSuccess}
             onLoadError={onDocumentLoadError}
-            loading={<Typography color="text.secondary">{t('pdfViewer.loading')}</Typography>}
+            loading={
+              <Typography
+                sx={{
+                  color: 'text.secondary'
+                }}
+              >
+                {t('pdfViewer.loading')}
+              </Typography>
+            }
             error={<Typography color="error">{loadError}</Typography>}
           >
             {Array.from(new Array(numPages), (_, index) => (
               <Page
                 key={`page_${index + 1}`}
                 pageNumber={index + 1}
+                suspense={false}
                 width={containerPixelWidth}
                 renderTextLayer={false}
                 renderAnnotationLayer={false}

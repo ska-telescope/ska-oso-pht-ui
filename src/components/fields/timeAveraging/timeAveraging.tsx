@@ -15,12 +15,7 @@ interface TimeAveragingFieldProps {
 export const UNAVERAGED_VALUE_S = 0.84934656;
 const MIN_MULTIPLIER = 1;
 const MAX_MULTIPLIER = 12;
-export const timeAveragingSchema = z
-  .number()
-  .finite()
-  .int()
-  .min(MIN_MULTIPLIER)
-  .max(MAX_MULTIPLIER);
+export const timeAveragingSchema = z.number().int().min(MIN_MULTIPLIER).max(MAX_MULTIPLIER);
 
 export default function TimeAveragingField({
   disabled = false,
@@ -72,7 +67,11 @@ export default function TimeAveragingField({
   }, [value]);
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <SteppedNumberField
         testId={FIELD}
         value={value}

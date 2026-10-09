@@ -1,7 +1,7 @@
 import { describe, test, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import TitleEntry from './TitleEntry';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 
@@ -19,7 +19,7 @@ const mockStore = vi.hoisted(() => ({
   updateAppContent2: () => {}
 }));
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => mockStore
   },

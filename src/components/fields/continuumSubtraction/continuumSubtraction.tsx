@@ -27,9 +27,18 @@ export default function ContinuumSubtractionField({
   const FIELD = 'continuumSubtraction';
 
   return (
-    <Box pt={2}>
+    <Box
+      sx={{
+        pt: 2
+      }}
+    >
       {displayOnly ? (
-        <Typography variant="subtitle1" color={disabled ? 'text.disabled' : 'text.primary'}>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            color: disabled ? 'text.disabled' : 'text.primary'
+          }}
+        >
           {t(`${FIELD}.label`)}: {t(value ? 'yes' : 'no')}
         </Typography>
       ) : (

@@ -71,7 +71,13 @@ export default function GridReviewPanels({
     minWidth: 250,
     renderHeader: () => {
       return listOnly ? (
-        <Typography sx={{ paddingTop: 1 }} variant="h6" minHeight="4vh">
+        <Typography
+          variant="h6"
+          sx={{
+            minHeight: '4vh',
+            paddingTop: 1
+          }}
+        >
           {t('panels.label')}
         </Typography>
       ) : (
@@ -84,7 +90,14 @@ export default function GridReviewPanels({
   const stdColumns = [...[colTitle]];
 
   const ProposalsSectionTitle = () => (
-    <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
+    <Typography
+      align="center"
+      variant="h6"
+      sx={{
+        minHeight: '4vh',
+        textAlign: 'left'
+      }}
+    >
       {t('proposals.label')}
     </Typography>
   );

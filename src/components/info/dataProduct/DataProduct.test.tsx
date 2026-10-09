@@ -17,7 +17,7 @@ import {
 } from '@/utils/constants';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 // --- Mock all field components with simple test ids ---

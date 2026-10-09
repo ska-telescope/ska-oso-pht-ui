@@ -22,27 +22,42 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
       aria-labelledby="latex-preview-title"
       aria-describedby="latex-preview-description"
       id="latex-preview-id"
-      PaperProps={{
-        style: {
-          minWidth: MODAL_WIDTH,
-          maxWidth: MODAL_WIDTH
+      slotProps={{
+        paper: {
+          style: {
+            minWidth: MODAL_WIDTH,
+            maxWidth: MODAL_WIDTH
+          }
         }
       }}
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Grid
-          p={2}
           container
-          direction="column"
-          alignItems="space-evenly"
-          justifyContent="space-around"
           spacing={1}
+          sx={{
+            flexDirection: 'column',
+            p: 2,
+            alignItems: 'space-evenly',
+            justifyContent: 'space-around'
+          }}
         >
           <Grid size={{ xs: 12 }}>{presentLatex(value)}</Grid>
           <Grid>
-            <Grid container direction="row" justifyContent="right" alignItems="right">
-              <Grid pt={1}>
+            <Grid
+              container
+              direction="row"
+              sx={{
+                justifyContent: 'right',
+                alignItems: 'right'
+              }}
+            >
+              <Grid
+                sx={{
+                  pt: 1
+                }}
+              >
                 <CancelButton
                   action={handleClose}
                   title="closeBtn.label"

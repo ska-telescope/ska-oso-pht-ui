@@ -6,7 +6,12 @@ export default function TableReviewDecisionHeader() {
 
   const displayHeader = (inValue: string) => (
     <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-      <Typography variant="subtitle2" fontWeight="bold">
+      <Typography
+        variant="subtitle2"
+        sx={{
+          fontWeight: 'bold'
+        }}
+      >
         {t(inValue)}
       </Typography>
     </TableCell>

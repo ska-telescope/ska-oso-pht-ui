@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import axios from 'axios';
 import GridProposals, { filterProposals } from './GridProposals';
 import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';

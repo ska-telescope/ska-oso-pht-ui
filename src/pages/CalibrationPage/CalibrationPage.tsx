@@ -1,5 +1,5 @@
 import React from 'react';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Box, Grid } from '@mui/material';
 import { Proposal } from '@utils/types/proposal.tsx';
@@ -50,7 +50,14 @@ export default function CalibrationPage() {
         ? t('error.noCalibrationsLoggedOut')
         : t('error.noCalibrationsLinking');
     return (
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
+      >
         <Grid size={{ md: 10 }}>
           <Alert
             color={autoLink ? AlertColorTypes.Error : AlertColorTypes.Warning}
@@ -69,9 +76,17 @@ export default function CalibrationPage() {
 
   return (
     <Shell page={PAGE}>
-      <Box pl={GAP}>
+      <Box
+        sx={{
+          pl: GAP
+        }}
+      >
         {!autoLink && osdCyclePolicy?.calibrationFactoryDefined !== true && (
-          <Box pb={GAP}>
+          <Box
+            sx={{
+              pb: GAP
+            }}
+          >
             <AddButton
               title={'page.' + PAGE + '.title'}
               action={PATH[PAGE_CALIBRATION_ENTRY]}
@@ -86,7 +101,11 @@ export default function CalibrationPage() {
           <>
             {osdCyclePolicy?.calibrationFactoryDefined !== true && dataList()}
             {osdCyclePolicy?.calibrationFactoryDefined && (
-              <Box p={GAP}>
+              <Box
+                sx={{
+                  p: GAP
+                }}
+              >
                 <CalibrationEntry data={getProposal()?.calibrationStrategy?.[0]} />
               </Box>
             )}

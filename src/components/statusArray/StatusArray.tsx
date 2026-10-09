@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Divider, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { STATUS_ARRAY_PAGES_PROPOSAL, STATUS_ARRAY_PAGES_SV } from '@utils/constants.ts';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -18,11 +18,13 @@ export default function StatusArray() {
 
   return (
     <Grid
-      sx={{ bgcolor: 'transparent' }}
       container
       direction="row"
-      alignItems="center"
-      justifyContent="space-evenly"
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        bgcolor: 'transparent'
+      }}
     >
       {pages.map((page, idx) => (
         <React.Fragment key={page}>
@@ -31,7 +33,12 @@ export default function StatusArray() {
           </Grid>
 
           {sizeOk && idx < pages.length - 1 && (
-            <Grid mt={-2} sx={{ width: '3%' }}>
+            <Grid
+              sx={{
+                mt: -2,
+                width: '3%'
+              }}
+            >
               <Divider sx={{ width: '100%', borderBottomWidth: '3px' }} />
             </Grid>
           )}

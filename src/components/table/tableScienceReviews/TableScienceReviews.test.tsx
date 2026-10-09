@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import TableScienceReviews from './TableScienceReviews';
 import { CONFLICT_REASONS, REVIEW_TYPE } from '@/utils/constants';
 
 const mockNavigate = vi.fn();
 
-vi.mock('react-router-dom', () => {
+vi.mock('react-router', () => {
   return {
     useNavigate: () => mockNavigate
   };

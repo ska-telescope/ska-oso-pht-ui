@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CalibrationEntry from './CalibrationEntry';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 // ----------------------
@@ -13,7 +13,7 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: vi.fn(() => true)
 }));
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {

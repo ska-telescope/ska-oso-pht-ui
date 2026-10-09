@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject, StoreProvider } from '@utils/storage/store';
 import { MockCalibratorFrontendList } from '@services/axios/get/getCalibratorList/mockCalibratorListFrontend.tsx';
 import completeMockStore from '../../utils/MockStore';
 import CalibrationPage from './CalibrationPage';

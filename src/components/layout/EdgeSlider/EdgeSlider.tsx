@@ -1,8 +1,8 @@
 import React from 'react';
 import { Paper, Box, Stack, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutlineOutlined';
+import { storageObject } from '@utils/storage/store';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const PANEL_WIDTH = 300;

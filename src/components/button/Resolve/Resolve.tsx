@@ -21,7 +21,11 @@ export default function ResolveButton({
   toolTip
 }: ResolveButtonProps) {
   return (
-    <Box pb={1}>
+    <Box
+      sx={{
+        pb: 1
+      }}
+    >
       <BaseButton
         action={action}
         disabled={disabled}

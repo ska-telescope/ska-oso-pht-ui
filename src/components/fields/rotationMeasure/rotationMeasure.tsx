@@ -13,7 +13,7 @@ interface RotationMeasureFieldProps {
   widthButton?: number;
 }
 
-export const rotationMeasureSchema = z.number().finite();
+export const rotationMeasureSchema = z.number();
 
 export default function RotationMeasureField({
   disabled = false,

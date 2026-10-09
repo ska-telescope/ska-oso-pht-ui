@@ -42,7 +42,7 @@ const mockStore = {
   updateAppContent1: vi.fn(),
   updateAppContent2: vi.fn()
 };
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => mockStore
   }
@@ -180,9 +180,6 @@ describe('SciencePage', () => {
       }
       return 2;
     });
-    vi.mock('@ska-telescope/ska-login-page', () => ({
-      isLoggedIn: () => true
-    }));
   });
 
   it('renders file upload and buttons when logged in', () => {

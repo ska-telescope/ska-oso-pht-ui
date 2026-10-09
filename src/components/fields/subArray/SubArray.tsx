@@ -51,8 +51,21 @@ export default function SubArrayField({
   }, [telescope, observingBand, selectedPolicy, osdCapabilities, isCustomAllowed]);
 
   return (
-    <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-      <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
+    <Grid
+      spacing={0}
+      container
+      direction="row"
+      sx={{
+        pt: 1,
+        justifyContent: 'space-between'
+      }}
+    >
+      <Grid
+        size={{ xs: suffix ? 12 - widthButton : 12 }}
+        sx={{
+          pl: suffix ? 1 : 0
+        }}
+      >
         {options.length > 0 && (
           <DropDown
             disabled={disabled || options.length < 2}

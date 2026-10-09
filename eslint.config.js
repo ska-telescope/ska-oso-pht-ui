@@ -2,6 +2,7 @@ import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 
 export default [
   { settings: { react: { version: 'detect' } } },
@@ -12,6 +13,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   { ...reactPlugin.configs.flat.recommended },
+  reactHooks.configs.flat.recommended,
   {
     rules: {
       'react/react-in-jsx-scope': 'off',
@@ -24,7 +26,13 @@ export default [
       'no-constant-binary-expression': 'warn',
       'no-unsafe-optional-chaining': 'warn',
       'no-case-declarations': 'warn',
-      'no-empty': 'warn'
+      'no-empty': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/static-components': 'warn',
+      'react-hooks/globals': 'warn'
     }
   }
 ];

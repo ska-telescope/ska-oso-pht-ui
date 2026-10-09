@@ -203,6 +203,7 @@ describe('validateSDPPage channelsOut rules', () => {
   ) =>
     ({
       observations,
+
       dataProductSDP: dataProducts.map((dp, idx) => ({
         id: `SDP-${idx + 1}`,
         observationId: dp.observationId ?? 'obs-1',
@@ -312,6 +313,7 @@ describe('validateSDPPage detected filterbank field rules', () => {
   ) =>
     ({
       observations: [{ id: 'obs-1', type: TYPE_PST, pstMode }],
+
       dataProductSDP: [
         {
           id: 'SDP-1',
@@ -373,6 +375,7 @@ describe('validateSDPPage continuum visibilities rules', () => {
   ) =>
     ({
       observations: [{ id: 'obs-1', type: observationType }],
+
       dataProductSDP: [
         {
           id: 'SDP-1',

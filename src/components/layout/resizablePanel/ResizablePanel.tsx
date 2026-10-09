@@ -34,7 +34,13 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
         flexDirection: 'column'
       }}
     >
-      <Typography p={1} variant="h5" data-testid="panel-title">
+      <Typography
+        variant="h5"
+        data-testid="panel-title"
+        sx={{
+          p: 1
+        }}
+      >
         {title}
       </Typography>
 

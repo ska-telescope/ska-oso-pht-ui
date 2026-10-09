@@ -31,7 +31,7 @@ let mockStoreReturn: any = {
   application: { content2: { observations: [], dataProductSDP: [] } },
   updateAppContent2: vi.fn()
 };
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: { useStore: () => mockStoreReturn }
 }));
 vi.mock('@/utils/update/sensCalc/updateSensCalc', () => ({

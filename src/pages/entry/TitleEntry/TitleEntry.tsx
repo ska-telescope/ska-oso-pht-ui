@@ -10,7 +10,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   PROPOSAL_TYPE,
@@ -203,11 +203,13 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const alertContent = () => {
     return (
       <Grid
-        p={2}
         container
-        direction="column"
-        alignItems="space-evenly"
-        justifyContent="space-around"
+        sx={{
+          flexDirection: 'column',
+          p: 2,
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
       >
         <Typography variant="body1">{t('changeProposal.content1')}</Typography>
         <Typography variant="body1">{t('changeProposal.content2')}</Typography>
@@ -263,12 +265,14 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const proposalTypes = () => {
     return (
       <Grid
-        p={2}
         container
         direction="row"
-        justifyContent="center"
-        alignItems="baseline"
         spacing={4}
+        sx={{
+          p: 2,
+          justifyContent: 'center',
+          alignItems: 'baseline'
+        }}
       >
         {/* Science verification is set automatically for SV cycles, so it is never picked here */}
         {Object.values(PROPOSAL_TYPE)
@@ -285,13 +289,15 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const proposalAttributes = () => (
     <Grid
-      p={2}
       container
       direction="row"
-      justifyContent="center"
-      alignItems="baseline"
       spacing={2}
       id="SubProposalContainer"
+      sx={{
+        p: 2,
+        justifyContent: 'center',
+        alignItems: 'baseline'
+      }}
     >
       {getSubTypes().map((subType) => Attributes(subType))}
     </Grid>
@@ -301,19 +307,31 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     return (
       getProposal().title !== undefined && (
         <Grid
-          pl={2}
-          pb={4}
           container
           direction="row"
-          justifyContent="center"
-          alignItems="center"
           spacing={2}
+          sx={{
+            pl: 2,
+            pb: 4,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
         >
-          <Grid size={{ md: 12, lg: 6 }} display={{ xs: 'block', lg: 'none' }}>
+          <Grid
+            size={{ md: 12, lg: 6 }}
+            sx={{
+              display: { xs: 'block', lg: 'none' }
+            }}
+          >
             {titleField(true)}
           </Grid>
 
-          <Grid size={{ md: 12, lg: 6 }} display={{ xs: 'none', lg: 'block' }}>
+          <Grid
+            size={{ md: 12, lg: 6 }}
+            sx={{
+              display: { xs: 'none', lg: 'block' }
+            }}
+          >
             {titleField()}
           </Grid>
         </Grid>
@@ -324,13 +342,15 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const row2 = () => {
     return (
       <Grid
-        pl={2}
-        pt={3}
         container
         direction="row"
-        justifyContent="center"
-        alignItems="center"
         spacing={2}
+        sx={{
+          pl: 2,
+          pt: 3,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
       >
         <Grid>
           <BorderedSection title={t('proposalType.plural')} sx={{ width: '80vw' }}>
@@ -347,12 +367,14 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const row3 = () => {
     return (
       <Grid
-        pl={2}
         container
         direction="row"
-        justifyContent="center"
-        alignItems="center"
         spacing={2}
+        sx={{
+          pl: 2,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
       >
         <Grid>
           <BorderedSection title={t('proposalAttribute.plural')} sx={{ width: '80vw' }}>

@@ -7,7 +7,6 @@ import {
   Spacer
 } from '@ska-telescope/ska-gui-components';
 import { Box, Card, Grid, Typography } from '@mui/material';
-import { groupBy } from 'lodash';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -23,6 +22,13 @@ import D3PieChart from '@/components/charts/pie/D3PieChart';
 import D3ColumnWrapper from '@/components/charts/column/wrapper/D3Wrapper';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+
+const groupBy = <T,>(items: T[], key: keyof T): Record<string, T[]> =>
+  items.reduce<Record<string, T[]>>((groups, item) => {
+    const group = String(item[key]);
+    (groups[group] ??= []).push(item);
+    return groups;
+  }, Object.create(null));
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
@@ -363,10 +369,28 @@ export default function ReviewDashboard() {
   }, [filter, currentReport, search]);
 
   const filters = () => (
-    <Box pt={5} pl={5} pr={5}>
+    <Box
+      sx={{
+        pt: 5,
+        pl: 5,
+        pr: 5
+      }}
+    >
       <Card>
-        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-          <Grid pl={5} size={{ sm: 2 }}>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Grid
+            size={{ sm: 2 }}
+            sx={{
+              pl: 5
+            }}
+          >
             <DropDown
               options={[
                 { value: '', label: 'All' },
@@ -387,7 +411,11 @@ export default function ReviewDashboard() {
               setValue={setSearch}
             />
           </Grid>
-          <Grid pr={5}>
+          <Grid
+            sx={{
+              pr: 5
+            }}
+          >
             <ResetButton
               action={() => {
                 setSearch('');
@@ -591,7 +619,12 @@ export default function ReviewDashboard() {
           <Typography variant="h6" sx={{ mb: 0.5 }}>
             {t('reviewDashboard.' + key + '.title')}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {t('reviewDashboard.' + key + '.subtitle')}
           </Typography>
         </Card>
@@ -602,7 +635,15 @@ export default function ReviewDashboard() {
   const proposalCards = () => {
     return (
       <>
-        <Grid p={5} spacing={5} container alignItems="center" justifyContent="space-between">
+        <Grid
+          spacing={5}
+          container
+          sx={{
+            p: 5,
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
           {pieChart('reviewDashboard.panel.title2', proposalStatusData, 'proposalStatus')}
           {pieChart('reviewDashboard.panel.title3', proposalCategoryData, 'observationType')}
           {pieChart('reviewDashboard.panel.title9', proposalLocationData)}
@@ -614,7 +655,15 @@ export default function ReviewDashboard() {
   const reviewCards = () => {
     return (
       <>
-        <Grid p={5} spacing={5} container alignItems="center" justifyContent="space-between">
+        <Grid
+          spacing={5}
+          container
+          sx={{
+            p: 5,
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
           {pieChart('reviewDashboard.panel.title12', reviewStatusData, 'reviewStatus')}
           {pieChart('reviewDashboard.panel.title1', reviewAssignmentData, 'boolean')}
           {pieChart('reviewDashboard.panel.title3', reviewCategoryData, 'observationType')}
@@ -624,13 +673,15 @@ export default function ReviewDashboard() {
           )}
         </Grid>
         <Grid
-          p={5}
-          pt={0}
-          pb={10}
           spacing={5}
           container
-          alignItems="center"
-          justifyContent="space-between"
+          sx={{
+            p: 5,
+            pt: 0,
+            pb: 10,
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
         >
           {panel4()}
           {panel5()}
@@ -642,7 +693,14 @@ export default function ReviewDashboard() {
 
   const decisionCards = () => {
     return (
-      <Grid p={5} pt={3} container spacing={3}>
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          p: 5,
+          pt: 3
+        }}
+      >
         {pieChart('reviewDashboard.panel.title7', proposalDecisionData)}
         {/* {sliderChart(
           'reviewDashboard.panel.title10',
@@ -661,7 +719,15 @@ export default function ReviewDashboard() {
       <PageBannerPMT title={t('reviewDashboard.title')} />
       <Spacer size={BANNER_PMT_SPACER_MIN} axis={SPACER_VERTICAL} />
 
-      <Grid p={5} pt={0} container spacing={3} alignItems="stretch">
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          p: 5,
+          pt: 0,
+          alignItems: 'stretch'
+        }}
+      >
         {card(VIEW_PROPOSAL)}
         {card(VIEW_REVIEW)}
         {card(VIEW_DECISION)}

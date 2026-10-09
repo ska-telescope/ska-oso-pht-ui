@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { useNavigate } from 'react-router-dom';
+import { storageObject, StoreProvider } from '@utils/storage/store';
+import { useNavigate } from 'react-router';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
@@ -20,7 +20,7 @@ vi.mock('@/utils/notify/useNotify', () => ({
 }));
 
 // --- Existing mocks ---
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router', () => ({
   useNavigate: vi.fn()
 }));
 
@@ -81,6 +81,7 @@ beforeEach(() => {
         content8: {},
         content9: {}
       },
+
       updateAppContent2: vi.fn(),
       updateAppContent4: vi.fn()
     }) as any;
@@ -124,7 +125,10 @@ describe('PageFooterPPT', () => {
     const newProposal = { id: null, title: 'New SV idea', proposalType: 'science_verification' };
     const store = storageObject.useStore();
     storageObject.useStore = () =>
-      ({ ...store, application: { ...store.application, content2: newProposal } }) as any;
+      ({
+        ...store,
+        application: { ...store.application, content2: newProposal }
+      }) as any;
 
     wrapper(<PageFooterPPT pageNo={-1} />);
     fireEvent.click(screen.getByTestId('nextButtonTestId'));

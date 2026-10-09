@@ -34,7 +34,11 @@ export default function BitDepthField({
   const resolvedValue = typeof value === 'string' ? Number(value) : value;
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <DropDown
         disabled={disabled}
         disabledUnderline={disabled}

@@ -41,7 +41,11 @@ export default function TaperField({
   const errorMessage = fieldValid ? '' : t(FIELD + '.error');
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <NumberEntry
         label={t(FIELD + '.label')}
         testId={FIELD}

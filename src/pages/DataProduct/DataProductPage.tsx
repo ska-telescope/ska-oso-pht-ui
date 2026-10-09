@@ -1,7 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Grid, Stack, Typography } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { presentUnits } from '@utils/present/present';
 import { validateSDPPage } from '@utils/validation/validation.tsx';
@@ -84,11 +84,13 @@ export default function DataProductsPage() {
     const data = rec?.data as SDPImageContinuumData;
     return (
       <Grid
-        p={2}
         container
-        direction="column"
-        alignItems="space-evenly"
-        justifyContent="space-around"
+        sx={{
+          flexDirection: 'column',
+          p: 2,
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
       >
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.observationId}</Typography>
@@ -117,7 +119,14 @@ export default function DataProductsPage() {
 
   const noObservations = () => {
     return (
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          alignItems: 'space-evenly',
+          justifyContent: 'space-around'
+        }}
+      >
         <Grid size={{ md: 10 }}>
           <Alert
             color={AlertColorTypes.Warning}
@@ -136,7 +145,13 @@ export default function DataProductsPage() {
 
     return (
       <>
-        <Stack pl={GAP} pr={GAP} spacing={GAP}>
+        <Stack
+          spacing={GAP}
+          sx={{
+            pl: GAP,
+            pr: GAP
+          }}
+        >
           <AddButton
             title="dataProduct.button"
             action={PATH[3]}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
@@ -263,11 +263,14 @@ export default function PanelManagement() {
         <Grid
           container
           direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
           spacing={GAP}
-          m={GAP}
-          sx={{ flexGrow: 1, minHeight: 0 }}
+          sx={{
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            m: GAP,
+            flexGrow: 1,
+            minHeight: 0
+          }}
         >
           <Grid size={{ sm: 12, md: 4, lg: 2.75 }} sx={{ height: '100%' }}>
             <Box
@@ -293,11 +296,13 @@ export default function PanelManagement() {
 
           <Grid
             size={{ sm: 12, md: 8, lg: 9.25 }}
-            sx={{ height: '100%' }}
             container
             direction="row"
-            justifyContent="space-around"
-            alignItems="flex-start"
+            sx={{
+              justifyContent: 'space-around',
+              alignItems: 'flex-start',
+              height: '100%'
+            }}
           >
             <Box sx={{ height: '100%', width: '100%' }}>
               <Tabs

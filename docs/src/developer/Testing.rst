@@ -26,25 +26,18 @@ See the SKAO developer guide for more information
 Running
 =======
 
-To run the interactive test runner, execute
+To run the unit tests once, with coverage (the same as `make js-test`, which CI runs), execute
 
-    > yarn test
+    > yarn test:unit
 
-This will also watch the source files and re-run when any changes are detected
+A JUnit report is written to `./build/reports/unit-tests.xml`. The coverage results are displayed
+in the console and also written to the `build/reports` folder.
 
-To run the tests with coverage, execute
+    `./build/reports/index.html` - open in a web browser to view
 
-    > yarn test:unit:coverage
+To skip coverage, execute
 
-The coverage results are displayed in the console. They are also written to the `coverage` folder.
-
-    `./build/coverage/index.html` - open in a web browser to view
-
-To run the ui test runner for unit tests, execute
-
-    > yarn test:unit:ui
-
-The coverage results are also available when using this mode.
+    > yarn test:unit --coverage.enabled=false
 
 **All the tests should pass before merging the code**
 
@@ -118,14 +111,13 @@ Running
 
 To run the analysis tools, execute
 
-    > yarn code-analysis
+    > yarn lint
 
-This will display any errors in the command line. If there are any errors, YARN will exit with a non-zero code, the `-s` argument suppresses this and cleans up the output.
+This runs ESLint on ``src`` and checks formatting with Prettier, displaying any errors in the command line.
 
+To fix linting and formatting issues automatically, run
 
-Alternatively, you can also run
+    > yarn lint:fix
 
-    > yarn checker
-
-This will display any errors in the command line and fix linting issues by running yarn prettier:fix && yarn lint:fix.
+This runs Prettier (``yarn prettier:fix``) followed by ``eslint --fix``.
 

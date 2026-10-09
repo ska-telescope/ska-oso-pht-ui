@@ -6,7 +6,12 @@ export default function TableDataProductsHeader() {
 
   const displayHeader = (inValue: string) => (
     <TableCell sx={{ whiteSpace: 'nowrap', width: 0, paddingRight: 2 }}>
-      <Typography variant="subtitle2" fontWeight="bold">
+      <Typography
+        variant="subtitle2"
+        sx={{
+          fontWeight: 'bold'
+        }}
+      >
         {inValue ? t(inValue) : ''}
       </Typography>
     </TableCell>

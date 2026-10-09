@@ -15,12 +15,7 @@ interface FrequencyAveragingFieldProps {
 export const UNAVERAGED_VALUE_KHZ = 781.25 / 144;
 const MIN_MULTIPLIER = 1;
 const MAX_MULTIPLIER = 12;
-export const frequencyAveragingSchema = z
-  .number()
-  .finite()
-  .int()
-  .min(MIN_MULTIPLIER)
-  .max(MAX_MULTIPLIER);
+export const frequencyAveragingSchema = z.number().int().min(MIN_MULTIPLIER).max(MAX_MULTIPLIER);
 
 export default function FrequencyAveragingField({
   disabled = false,
@@ -72,7 +67,11 @@ export default function FrequencyAveragingField({
   }, [value]);
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <SteppedNumberField
         testId={FIELD}
         value={value}

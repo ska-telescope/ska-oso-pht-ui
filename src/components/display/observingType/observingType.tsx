@@ -45,8 +45,11 @@ export default function ObservingType({ type }: ObservingTypeProps) {
     >
       <Typography
         variant="body2"
-        color={colorsTelescopeDim.fg[0]}
-        sx={{ whiteSpace: 'nowrap', p: 1 }}
+        sx={{
+          color: colorsTelescopeDim.fg[0],
+          whiteSpace: 'nowrap',
+          p: 1
+        }}
       >
         {t(`observationType.${type}`)}
       </Typography>

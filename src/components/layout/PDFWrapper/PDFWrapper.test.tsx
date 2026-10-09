@@ -1,7 +1,7 @@
 import { describe, test, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { StoreProvider } from '@utils/storage/store';
 import PDFWrapper from './PDFWrapper';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 

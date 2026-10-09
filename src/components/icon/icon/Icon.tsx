@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 
 interface IconProps {

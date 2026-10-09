@@ -20,7 +20,7 @@ vi.mock('@/utils/present/present', () => ({
   presentTime: (ts: string) => `time(${ts})`
 }));
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {

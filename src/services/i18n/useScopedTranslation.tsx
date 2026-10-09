@@ -12,7 +12,7 @@ export const useScopedTranslation = (namespaces?: string[]) => {
 
   const t = React.useCallback(
     (key: string, options?: any) => {
-      const translation = rawT(key, options);
+      const translation = rawT(key, options) as string;
       const isMissing = translation === key;
 
       if (isDev && isMissing) {

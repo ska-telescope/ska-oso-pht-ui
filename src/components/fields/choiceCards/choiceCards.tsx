@@ -75,7 +75,12 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Typography variant="h6" color="text.secondary">
+        <Typography
+          variant="h6"
+          sx={{
+            color: 'text.secondary'
+          }}
+        >
           {t('feasibility.label')}
         </Typography>
       </Box>
@@ -129,7 +134,12 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
                 >
                   <Icon sx={{ color: 'white', fontSize: 20 }} />
                 </Box>
-                <Typography variant="body1" fontWeight="medium">
+                <Typography
+                  variant="body1"
+                  sx={{
+                    fontWeight: 'medium'
+                  }}
+                >
                   {choice.label}
                 </Typography>
               </Button>
@@ -177,7 +187,12 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
               }}
             >
               <Icon sx={{ color: maybe.color, fontSize: 30 }} />
-              <Typography variant="body1" fontWeight="medium">
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 'medium'
+                }}
+              >
                 {maybe.label}
               </Typography>
             </Button>
@@ -186,7 +201,13 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
       })()}
 
       {selectedValue && selectedValue !== FEASIBLE_YES && (
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            mt: 2
+          }}
+        >
           {t('feasibility.info')}
         </Typography>
       )}

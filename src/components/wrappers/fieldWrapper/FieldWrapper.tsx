@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { Grid, Typography } from '@mui/material';
 
 interface FieldWrapperProps {
@@ -23,11 +24,13 @@ export default function FieldWrapper({
   return (
     <Grid
       container
-      sx={{ width: '100%' }}
       direction="row"
-      alignItems="center"
-      justifyContent="center"
       spacing={2}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'
+      }}
     >
       <Grid size={{ xs: labelWidth }} sx={{ textAlign: textAlign }}>
         <Typography id={testId + 'Label'} sx={{ fontWeight: 'bold' }} variant={variant}>

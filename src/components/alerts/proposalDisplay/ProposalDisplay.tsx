@@ -177,7 +177,14 @@ export default function ProposalDisplay({
 
   const details = (inLabel: string, inValue: string | number) => {
     return (
-      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: LABEL_WIDTH + 1 }}>{label(inLabel)}</Grid>
         <Grid size={{ xs: 11 - LABEL_WIDTH }}>{content(inValue)}</Grid>
       </Grid>
@@ -192,7 +199,10 @@ export default function ProposalDisplay({
       <>
         {!optional && inArr?.length === 0 && emptyCell()}
         {inArr?.length > 0 && (
-          <Grid container direction="column" justifyContent="space-between" alignItems="left">
+          <Grid
+            container
+            sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'left' }}
+          >
             {inArr.map((el) => (
               <Grid key={el} size={{ xs: 12 }}>
                 {element(el)}
@@ -210,7 +220,14 @@ export default function ProposalDisplay({
     optional: boolean = false
   ) => {
     return (
-      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: 7 }}>{label(inLabel)}</Grid>
         <Grid size={{ xs: 5 }}>
           {typeof inValue !== 'number' &&
@@ -225,7 +242,14 @@ export default function ProposalDisplay({
 
   const entryObject = (inLabel: string, inValue: React.ReactNode) => {
     return (
-      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: 7 }}>{label(inLabel)}</Grid>
         <Grid size={{ xs: 5 }}>{inValue}</Grid>
       </Grid>
@@ -234,7 +258,14 @@ export default function ProposalDisplay({
 
   const link = (inLabel: string, toolTip: string, onClick: Function, contents: any) => {
     return (
-      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: 7 }}>{label(inLabel)}</Grid>
         <Grid size={{ xs: 5 }}>
           {contents && <DownloadIcon toolTip={toolTip} onClick={onClick} />}
@@ -248,10 +279,13 @@ export default function ProposalDisplay({
     <Grid>
       <Grid
         container
-        sx={{ minHeight: '0.5rem', backgroundColor: theme.palette.primary.main }}
         direction="row"
-        justifyContent="space-around"
-        alignItems="center"
+        sx={{
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          minHeight: '0.5rem',
+          backgroundColor: theme.palette.primary.main
+        }}
       >
         <Grid>
           <Typography variant="button"> </Typography>
@@ -265,9 +299,11 @@ export default function ProposalDisplay({
       container
       spacing={1}
       direction="row"
-      alignItems="center"
-      justifyContent="flex-end"
-      pr={2}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        pr: 2
+      }}
     >
       <Grid>
         <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
@@ -280,9 +316,11 @@ export default function ProposalDisplay({
       container
       spacing={1}
       direction="row"
-      alignItems="center"
-      justifyContent="flex-start"
-      pr={2}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        pr: 2
+      }}
     >
       {onConfirmLabel && (
         <Grid>
@@ -300,12 +338,21 @@ export default function ProposalDisplay({
     <Grid
       container
       direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{ width: '100%' }}
+      sx={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%'
+      }}
     >
       <Grid size={{ xs: 3 }}>
-        <Grid container direction="row" alignItems="center" justifyContent="flex-start">
+        <Grid
+          container
+          direction="row"
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'flex-start'
+          }}
+        >
           <Grid>{buttonsLeft()}</Grid>
         </Grid>
       </Grid>
@@ -317,7 +364,14 @@ export default function ProposalDisplay({
         }
       </Grid>
       <Grid size={{ xs: 3 }}>
-        <Grid container direction="row" alignItems="center" justifyContent="flex-end">
+        <Grid
+          container
+          direction="row"
+          sx={{
+            alignItems: 'center',
+            justifyContent: 'flex-end'
+          }}
+        >
           <Grid>{buttonsRight()}</Grid>
         </Grid>
       </Grid>
@@ -326,13 +380,23 @@ export default function ProposalDisplay({
 
   const headerContent = () => (
     <Grid>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: 2 }}>{skaoIcon({ useSymbol: false })}</Grid>
         <Grid size={{ xs: 6 }}>
           {title(t('page.' + PAGE_TITLE_ADD + '.title') + '  ', proposal?.title ?? '')}
         </Grid>
         <Grid size={{ xs: 4 }}>
-          <Grid container direction="column" justifyContent="space-between" alignItems="right">
+          <Grid
+            container
+            sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'right' }}
+          >
             <Grid>{details(t('page.' + PAGE_CYCLE + '.short'), proposal?.cycle ?? '')}</Grid>
             <Grid>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid>
           </Grid>
@@ -343,7 +407,10 @@ export default function ProposalDisplay({
 
   const abstractContent = () => (
     <Grid>
-      <Grid container direction="column" justifyContent="center" alignItems="center">
+      <Grid
+        container
+        sx={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+      >
         <Grid>{label(t('abstract.label'))}</Grid>
         <Grid>{proposal?.abstract?.length ? showLaTex(proposal?.abstract) : emptyCell()}</Grid>
       </Grid>
@@ -352,7 +419,14 @@ export default function ProposalDisplay({
 
   const titleContent = () => (
     <Grid>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: 6 }}>{entry(t('proposalType.label'), proposalType())}</Grid>
         {isScienceVerification && (
           <Grid size={{ xs: 6 }}>{entryObject(t('observationType.label'), observationType())}</Grid>
@@ -360,7 +434,12 @@ export default function ProposalDisplay({
         {!isScienceVerification && (
           <>
             <Grid size={{ xs: 6 }}>{entry(t('scienceCategory.label'), scienceCategory())}</Grid>
-            <Grid pt={2} size={{ xs: 6 }}>
+            <Grid
+              size={{ xs: 6 }}
+              sx={{
+                pt: 2
+              }}
+            >
               {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
             </Grid>
           </>
@@ -391,7 +470,14 @@ export default function ProposalDisplay({
 
   const justificationContent = () => (
     <Grid>
-      <Grid container direction="row" justifyContent={'space-between'} alignItems="center">
+      <Grid
+        container
+        direction="row"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
         <Grid size={{ xs: 6 }}>
           {link(
             t('page.3.label'),
@@ -421,10 +507,12 @@ export default function ProposalDisplay({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
-      PaperProps={{
-        style: {
-          minWidth: MODAL_WIDTH,
-          maxWidth: MODAL_WIDTH
+      slotProps={{
+        paper: {
+          style: {
+            minWidth: MODAL_WIDTH,
+            maxWidth: MODAL_WIDTH
+          }
         }
       }}
     >
@@ -438,11 +526,13 @@ export default function ProposalDisplay({
       {proposal !== null && (
         <DialogContent>
           <Grid
-            p={2}
             container
-            direction="column"
-            alignItems="space-evenly"
-            justifyContent="space-around"
+            sx={{
+              flexDirection: 'column',
+              p: 2,
+              alignItems: 'space-evenly',
+              justifyContent: 'space-around'
+            }}
           >
             {headerContent()}
             {sectionTitle()}

@@ -1,5 +1,5 @@
 import { Table, TableBody } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import TableContainer from '../tableContainer/TableContainer';
 import TableSubmissionsHeader from './tableSubmissionsHeader/TableSubmissionsHeader';
 import TableSubmissionsRow from './tableSubmissionsRow/TableSubmissionsRow';

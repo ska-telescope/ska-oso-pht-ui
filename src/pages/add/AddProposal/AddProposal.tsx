@@ -1,5 +1,5 @@
 import React from 'react';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { storageObject } from '@utils/storage/store';
 import { Box } from '@mui/material';
 import { EMPTY_STATUS, PAGE_TITLE_ADD, PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
@@ -45,7 +45,11 @@ export default function AddProposal() {
   const contentValid = () => titleValid() && typeValid();
 
   return (
-    <Box pt={2}>
+    <Box
+      sx={{
+        pt: 2
+      }}
+    >
       <Shell page={PAGE} footerPage={PAGE_FOOTER} buttonDisabled={!contentValid()} helpDisabled>
         <TitleEntry page={PAGE_INNER} />
       </Shell>

@@ -49,7 +49,7 @@ vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   };
 });
 
-vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => mockStore
   }
@@ -93,9 +93,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 describe('TechnicalPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mock('@ska-telescope/ska-login-page', () => ({
-      isLoggedIn: () => true
-    }));
   });
 
   it('previews PDF and opens viewer', async () => {

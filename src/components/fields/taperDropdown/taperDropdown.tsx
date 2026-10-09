@@ -49,7 +49,11 @@ export default function TaperDropdown({
   };
 
   return (
-    <Box pt={1}>
+    <Box
+      sx={{
+        pt: 1
+      }}
+    >
       <DropDown
         options={getOptions([{ label: t('tapering.0'), value: 0 }], centralFrequency)}
         testId={FIELD}

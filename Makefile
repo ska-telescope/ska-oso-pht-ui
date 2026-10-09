@@ -9,23 +9,18 @@ K8S_WAIT_LABEL_FILTER_ARGS = -l release=$(HELM_RELEASE)
 # JS Template Variables
 JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
 JS_E2E_COVERAGE_ENABLED = false
+JS_E2E_TEST_SWITCHES ?= $(if $(shell command -v google-chrome 2>/dev/null),--browser chrome)
 JS_ESLINT_CONFIG ?= eslint.config.js
-JS_E2E_TESTS_DIR ?= tests/cypress
 
 $(info $(JS_E2E_TEST_BASE_URL))
 
 JS_COMMAND_RUNNER ?= yarn
 JS_TEST_COMMAND ?= vitest
-JS_TEST_DEFAULT_SWITCHES = run --coverage.enabled=true --reporter=junit --reporter=default --coverage.reportsDirectory=$(JS_BUILD_REPORTS_DIRECTORY) --outputFile=$(JS_BUILD_REPORTS_DIRECTORY)/unit-tests.xml
-
-# # Post hook for coverage reports
-# js-post-e2e-test:
-# 	yarn test:e2e:coverage
-# 	cp build/reports/cobertura-coverage.xml build/reports/code-coverage.xml
+JS_TEST_DEFAULT_SWITCHES = run
+JS_SWITCHES_FOR_INSTALL ?= --immutable
 
 js-pre-e2e-test:
 	mkdir -p build/reports
-	mkdir -p build/.nyc_output
 
 js-pre-lint:
 	$(JS_COMMAND_RUNNER) prettier
@@ -64,6 +59,8 @@ K8S_CHART_PARAMS += \
 -include .make/xray.mk
 -include .make/js.mk
 
+js-do-audit:
+	yarn npm audit --recursive
 
 XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
 XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json

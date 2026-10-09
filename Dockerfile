@@ -1,6 +1,6 @@
 # pull the base image
-ARG BASE_IMAGE="artefact.skao.int/ska-build-node:0.1.2"
-ARG FINAL_IMAGE="artefact.skao.int/ska-webserver:0.1.4"
+ARG BASE_IMAGE="artefact.skao.int/ska-build-node-ubuntu26:1.0.2"
+ARG FINAL_IMAGE="artefact.skao.int/ska-webserver:1.0.2"
 FROM $BASE_IMAGE AS base
 
 ARG http_proxy
@@ -11,7 +11,7 @@ WORKDIR /app
 COPY . .
 
 # install app dependencies and build the app
-RUN yarn install && yarn cache clean
+RUN yarn install --immutable && yarn cache clean
 
 RUN yarn build
 

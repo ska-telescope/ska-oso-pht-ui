@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import EdgeSlider from '../EdgeSlider/EdgeSlider';
 import { PAGE_TITLE_ADD } from '@/utils/constants';
 
