@@ -20,22 +20,13 @@ stages:
   - production
 
 ts-typecheck:
-  image: &js_build_image artefact.skao.int/ska-build-node-ubuntu26:1.0.2
+  image: ${JS_BUILD_IMAGE}
   stage: lint
   allow_failure: true
   before_script:
     - make js-install
   script:
     - make typecheck
-
-js-lint:
-  image: *js_build_image
-
-js-test:
-  image: *js_build_image
-
-js-audit:
-  image: *js_build_image
 
 CHANGELOG:
   stage: lint
