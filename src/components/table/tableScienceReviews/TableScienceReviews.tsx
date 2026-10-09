@@ -11,7 +11,6 @@ import {
   Typography,
   Grid
 } from '@mui/material';
-import { Key } from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/system';
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
@@ -62,14 +61,15 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
             {filteredData(data.reviews)?.map(
               (
                 detail: {
+                  id: string;
                   status: string;
                   comments: string;
                   srcNet: string;
                   reviewType: ScienceReview;
                 },
-                detailIndex: Key | null | undefined
+                detailIndex: number
               ) => (
-                <TableRow key={detailIndex}>
+                <TableRow key={detail.id}>
                   <TableCell
                     sx={{
                       borderBottom: `1px solid ${theme.palette.divider}`,

@@ -45,7 +45,7 @@ export default function SkyDirection1Field({
     }
   }, [errorText, errorNumber]);
 
-  const SkyDirectionValueText = () => (
+  const renderSkyDirectionValueText = () => (
     <TextEntry
       errorText={errorText}
       label={t(FIELD + '.label.1.' + skyUnits.toString())}
@@ -59,7 +59,7 @@ export default function SkyDirection1Field({
     />
   );
 
-  const SkyDirectionValueNumber = () => (
+  const renderSkyDirectionValueNumber = () => (
     <NumberEntry
       errorText={errorNumber}
       label={t(FIELD + '.label.1.' + skyUnits.toString())}
@@ -75,8 +75,8 @@ export default function SkyDirection1Field({
 
   return (
     <Box sx={{ width: '100%' }}>
-      {skyUnits.toString() === '0' && SkyDirectionValueText()}
-      {skyUnits.toString() === '1' && SkyDirectionValueNumber()}
+      {skyUnits.toString() === '0' && renderSkyDirectionValueText()}
+      {skyUnits.toString() === '1' && renderSkyDirectionValueNumber()}
     </Box>
   );
 }

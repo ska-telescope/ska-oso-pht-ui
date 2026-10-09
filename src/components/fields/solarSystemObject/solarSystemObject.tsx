@@ -18,7 +18,7 @@ export default function SolarSystemObjectField({
   const { t } = useScopedTranslation();
   const FIELD = 'solarSystemObject';
 
-  const SolarSystemObjectValueField = () => {
+  const renderSolarSystemObjectValueField = () => {
     return (
       <Box
         sx={{
@@ -46,7 +46,7 @@ export default function SolarSystemObjectField({
         width: '100%'
       }}
     >
-      {SolarSystemObjectValueField()}
+      {renderSolarSystemObjectValueField()}
     </Box>
   );
 }

@@ -151,7 +151,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
   const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
-  const [weather, setWeather] = React.useState(Number(t('weather.default')));
+  const [weather, setWeather] = React.useState(() => Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
@@ -169,9 +169,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [zoomChannels, setZoomChannels] = React.useState<number>(0);
   // Tracks a genuine user edit, as opposed to the value merely matching the interim default -
   // e.g. the user deliberately choosing/keeping ZOOM_CHANNELS_DEFAULT_LOW is not "unedited".
-  const zoomChannelsEditedByUser = React.useRef(false);
+  const zoomChannelsEditedByUserRef = React.useRef(false);
   const handleZoomChannelsChange = (newValue: number) => {
-    zoomChannelsEditedByUser.current = true;
+    zoomChannelsEditedByUserRef.current = true;
     setZoomChannels(newValue);
     // Snapped synchronously (same batch as the state update above) rather than left to the
     // effect further down, so the channel-grid warning never has a render where zoomChannels has
@@ -559,7 +559,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setAfterChange();
   }, [subarrayConfig]);
 
-  const hasRefreshedMaxChannelsCap = React.useRef(false);
+  const hasRefreshedMaxChannelsCapRef = React.useRef(false);
 
   // If this mounted before osdLOW/osdMID arrived, setMaxChannelsZoom ran against an undefined
   // record and fell back to a 0 cap, and (being tied only to mount/subarrayConfig) never
@@ -570,15 +570,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   // settled to a value the loaded record recognises yet, this keeps retrying (also depends on
   // subarrayConfig) rather than giving up.
   React.useEffect(() => {
-    if (hasRefreshedMaxChannelsCap.current) return;
+    if (hasRefreshedMaxChannelsCapRef.current) return;
     const record = isLow() ? osdLOW : osdMID;
     if (!record) return;
     const maxChannels = setMaxChannelsZoom(subarrayConfig);
     if (maxChannels <= 0) return;
-    hasRefreshedMaxChannelsCap.current = true;
+    hasRefreshedMaxChannelsCapRef.current = true;
   }, [osdLOW, osdMID, subarrayConfig]);
 
-  const hasSetZoomChannelsDefault = React.useRef(false);
+  const hasSetZoomChannelsDefaultRef = React.useRef(false);
 
   // Correcting zoomChannels used to be duplicated inside whichever effect happened to first
   // compute a real maxZoomChannels, which meant it only actually fired for the specific
@@ -586,9 +586,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   // instead catches the moment the cap becomes valid regardless of which of the several places
   // that call setMaxChannelsZoom is the one that gets there first.
   React.useEffect(() => {
-    if (hasSetZoomChannelsDefault.current) return;
-    if (isEdit() || !isLow() || maxZoomChannels <= 0 || zoomChannelsEditedByUser.current) return;
-    hasSetZoomChannelsDefault.current = true;
+    if (hasSetZoomChannelsDefaultRef.current) return;
+    if (isEdit() || !isLow() || maxZoomChannels <= 0 || zoomChannelsEditedByUserRef.current) return;
+    hasSetZoomChannelsDefaultRef.current = true;
     setZoomChannels(maxZoomChannels);
   }, [maxZoomChannels]);
 
@@ -772,8 +772,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
     }) ?? [theme.palette.primary.main, theme.palette.primary.contrastText];
 
-    let min = 0;
-    let max = 0;
+    let min: number;
+    let max: number;
     if (isMid()) {
       const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
         (e) => e.rxId === String(observingBand)
@@ -871,7 +871,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
   const antennasFields = () => {
-    const NumOf15mAntennasField = () => {
+    const renderNumOf15mAntennasField = () => {
       const validate = (e: number) => {
         const num = Number(Math.abs(e).toFixed(0));
         if (num < Number(t('numOf15mAntennas.range.lower'))) {
@@ -928,7 +928,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           pt: 1
         }}
       >
-        <Grid size={{ xs: 6 }}>{NumOf15mAntennasField()}</Grid>
+        <Grid size={{ xs: 6 }}>{renderNumOf15mAntennasField()}</Grid>
         <Grid size={{ xs: 6 }}>{numOf13mAntennasField()}</Grid>
       </Grid>
     );

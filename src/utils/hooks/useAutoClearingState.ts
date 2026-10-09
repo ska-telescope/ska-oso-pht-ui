@@ -5,15 +5,15 @@ import React from 'react';
 // out of re-rendering (and so the effect) when set to an already-equal value, which
 // would otherwise leave a repeated non-resting value on its original, stale timer.
 export function useAutoClearingState<T>(restingValue: T, delayMs: number) {
-  const [value, setValueState] = React.useState(restingValue);
+  const [value, setValue] = React.useState(restingValue);
   const timerRef = React.useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const setValue = React.useCallback(
+  const setAutoClearingValue = React.useCallback(
     (next: T) => {
       clearTimeout(timerRef.current);
-      setValueState(next);
+      setValue(next);
       if (next !== restingValue) {
-        timerRef.current = setTimeout(() => setValueState(restingValue), delayMs);
+        timerRef.current = setTimeout(() => setValue(restingValue), delayMs);
       }
     },
     [restingValue, delayMs]
@@ -21,5 +21,5 @@ export function useAutoClearingState<T>(restingValue: T, delayMs: number) {
 
   React.useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  return [value, setValue] as const;
+  return [value, setAutoClearingValue] as const;
 }

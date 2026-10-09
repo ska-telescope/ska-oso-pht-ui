@@ -18,7 +18,10 @@ UNRELEASED
 * Bugfix: LaTeX in proposal titles is now rendered by an in-app KaTeX component that escapes the surrounding text, replacing `react-latex-next`, which inserted it as unescaped HTML (BTN-3551)
 * Changed: Replaced MUI system props, deprecated `*Props` props and `Grid` column direction with `sx` and `slotProps`, in preparation for MUI 9 (BTN-3551)
 * Changed: Enabled `eslint-plugin-react-hooks`; rules with existing violations report as warnings (BTN-3551)
+* Changed: Upgraded ESLint to 10, replacing the unmaintained `eslint-plugin-react` with `@eslint-react/eslint-plugin`, and fixed the newly reported issues: nested component definitions, refs and state naming, unused state, array index keys and an uncleared timeout (BTN-3551)
 * Changed: Removed `lodash` and `moment` (BTN-3551)
+* Changed: Upgraded KaTeX to 0.19 and replaced `vite-tsconfig-paths` with Vite's built-in tsconfig paths support, clearing `yarn npm audit` findings (BTN-3551)
+* CI Test Only: Adapted the Cypress tests to Cypress 16 (`cy.env()`/`Cypress.expose()` in place of the removed `Cypress.env()`), run e2e tests in Chrome when it is installed, and restored the `junit-report-merger` dependency used to merge e2e reports (BTN-3551)
 * CI Test Only: Remove temp E2E overrides and increase Cypress timeouts for long-running calls 
 * Bugfix: Ensure that if no polarisations are selected this is reflected in breadcrumbs
 * Remove references to USE_LOCAL_DATA

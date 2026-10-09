@@ -10,7 +10,6 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { Key } from 'react';
 import { REVIEW_TYPE } from '@/utils/constants';
 import { TechnicalReview } from '@/utils/types/proposalReview';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -47,16 +46,14 @@ export default function TableTechnicalReviews({ data }: TableTechnicalReviewsPro
           </TableHead>
           <TableBody>
             {filteredData(data.reviews)?.map(
-              (
-                detail: {
-                  comments: string;
-                  status: string;
-                  reviewType: TechnicalReview;
-                },
-                detailIndex: Key | null | undefined
-              ) => (
+              (detail: {
+                id: string;
+                comments: string;
+                status: string;
+                reviewType: TechnicalReview;
+              }) => (
                 <TableRow
-                  key={detailIndex}
+                  key={detail.id}
                   sx={{
                     borderBottom: `1px solid ${theme.palette.divider}`,
                     py: 1.5,

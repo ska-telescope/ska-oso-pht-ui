@@ -16,7 +16,7 @@ export default function VelocityTypeField({
 }: VelocityTypeFieldProps) {
   const { t } = useScopedTranslation();
 
-  const VelocityTypeTypeField = () => {
+  const renderVelocityTypeTypeField = () => {
     const getOptions = () => {
       return [VELOCITY_TYPE.VELOCITY, VELOCITY_TYPE.REDSHIFT].map((e) => ({
         label: t('velocity.' + e + '.label'),
@@ -45,6 +45,8 @@ export default function VelocityTypeField({
   };
 
   return (
-    <Box sx={{ height: '100%', width: '100%' }}>{velType !== null && VelocityTypeTypeField()}</Box>
+    <Box sx={{ height: '100%', width: '100%' }}>
+      {velType !== null && renderVelocityTypeTypeField()}
+    </Box>
   );
 }

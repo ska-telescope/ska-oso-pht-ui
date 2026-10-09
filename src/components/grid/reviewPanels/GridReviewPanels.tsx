@@ -25,13 +25,10 @@ export default function GridReviewPanels({
   const [data, setData] = React.useState<Panel[]>([]);
   const [createList, setCreateList] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
-  const [, setAxiosError] = React.useState('');
 
   const GetReviewPanels = async () => {
     const response = await GetPanelList(authClient);
-    if (typeof response === 'string') {
-      setAxiosError(response);
-    } else {
+    if (typeof response !== 'string') {
       return response;
     }
   };
@@ -89,7 +86,7 @@ export default function GridReviewPanels({
 
   const stdColumns = [...[colTitle]];
 
-  const ProposalsSectionTitle = () => (
+  const renderProposalsSectionTitle = () => (
     <Typography
       align="center"
       variant="h6"
@@ -108,7 +105,7 @@ export default function GridReviewPanels({
 
   return (
     <>
-      {!listOnly && <Grid>{ProposalsSectionTitle()}</Grid>}
+      {!listOnly && <Grid>{renderProposalsSectionTitle()}</Grid>}
 
       <Grid>
         {(!data || data.length === 0) && (

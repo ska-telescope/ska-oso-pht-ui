@@ -127,7 +127,7 @@ export default function PanelManagement() {
 
   /*------------------------------------------------------------------*/
 
-  const boxRefPanel = React.useRef<HTMLDivElement>(null);
+  const panelBoxRef = React.useRef<HTMLDivElement>(null);
 
   /*------------------------------------------------------------------*/
 
@@ -284,7 +284,7 @@ export default function PanelManagement() {
                 borderRadius: '8px',
                 overflow: 'auto'
               }}
-              ref={boxRefPanel}
+              ref={panelBoxRef}
             >
               <GridReviewPanels
                 height={'100%'}

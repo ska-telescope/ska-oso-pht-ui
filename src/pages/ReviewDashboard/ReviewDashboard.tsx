@@ -45,7 +45,6 @@ export default function ReviewDashboard() {
   const [search, setSearch] = useState('');
   const [currentReport, setCurrentReport] = React.useState<any[]>([]);
   const [filteredReport, setFilteredReport] = React.useState<any[]>([]);
-  const [, setAxiosError] = React.useState('');
   const [proposalCategoryData, setProposalCategoryData] = React.useState<any[]>([]);
   const [proposalStatusData, setProposalStatusData] = React.useState<any[]>([]);
   const [reviewAssignmentData, setReviewAssignmentData] = React.useState<any[]>([]);
@@ -322,14 +321,11 @@ export default function ReviewDashboard() {
   const fetchReport = () => {
     const fetchData = async () => {
       setCurrentReport([]);
-      setAxiosError('');
       const response = await getReviewDashboard(authClient);
       if (typeof response === 'string') {
-        setAxiosError(response);
         return;
       }
       if (response && typeof response === 'object' && 'error' in response) {
-        setAxiosError((response as { error: string }).error);
         return;
       }
       setCurrentReport(response);

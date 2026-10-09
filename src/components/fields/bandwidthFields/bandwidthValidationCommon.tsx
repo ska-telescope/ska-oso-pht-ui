@@ -78,19 +78,14 @@ const getBandLimitsForAntennaCounts = (
   n15mAntennas: number,
   n13mAntennas: number
 ) => {
-  let limits = [];
   switch (true) {
     case n13mAntennas > 0 && !n15mAntennas:
-      limits = bandLimits[ANTENNA_13M] ?? [];
-      break;
+      return bandLimits[ANTENNA_13M] ?? [];
     case n15mAntennas > 0 && !n13mAntennas:
-      limits = bandLimits[ANTENNA_15M] ?? [];
-      break;
+      return bandLimits[ANTENNA_15M] ?? [];
     default:
-      limits = bandLimits[ANTENNA_MIXED] ?? [];
-      break;
+      return bandLimits[ANTENNA_MIXED] ?? [];
   }
-  return limits;
 };
 
 const getBandLimits = (
