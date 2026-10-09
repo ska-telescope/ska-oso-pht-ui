@@ -14,6 +14,10 @@ export default defineConfig({
   screenshotsFolder: 'tests/cypress/artefacts/screenshots',
   videosFolder: 'tests/cypress/artefacts/videos',
   downloadsFolder: 'tests/cypress/artefacts/downloads',
+  // Wide enough for the app's desktop layout: full page headings (lg breakpoint), the page
+  // status indicators on one row (1500px), and room for fields above the fixed page footer
+  viewportWidth: 2000,
+  viewportHeight: 1500,
   e2e: {
     baseUrl: 'http://localhost:6101',
     //

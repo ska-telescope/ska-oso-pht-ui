@@ -4,7 +4,7 @@ import { useMsal } from '@azure/msal-react';
 
 /**
  * Exists only for Cypress. Exposes MSAL's own official loadExternalTokens() "bring your own
- * tokens" cache-seeding API on window (see tests/cypress/e2e/common/cypressTestAuth.js's
+ * tokens" cache-seeding API on window (see tests/cypress/e2e/common/auth.js's
  * hydrateIndigoSession), so specs can seed a real MSAL session instantly from a genuine
  * Indigo-issued token instead of driving the full interactive loginRedirect() -> Indigo ->
  * PKCE-redirect-back flow for every test. Doesn't fake or special-case any auth logic itself -
@@ -15,7 +15,7 @@ import { useMsal } from '@azure/msal-react';
  * exercised via this bridge.
  *
  * Also exposes the live MSAL `instance` itself on window, as __msalInstance - see
- * cypressTestAuth.js's stubMsalForceRefresh, which uses it to stub out just the
+ * auth.js's stubMsalForceRefresh, which uses it to stub out just the
  * `acquireTokenSilent({ forceRefresh: true })` call that axiosAuthClient.ts's refreshAuthToken
  * makes after creating a proposal/panel. That call forces a genuine network round trip to Indigo,
  * which is unmocked and can be slow/flaky in CI, so specs stub it directly rather than fake a

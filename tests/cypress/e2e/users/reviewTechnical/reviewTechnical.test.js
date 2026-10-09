@@ -3,7 +3,7 @@ import {
   clickUserMenu,
   clickUserMenuProposals,
   clickUserMenuReviews,
-  initialize,
+  visitWithAuth,
   verifyUserMenuOverview,
   verifyUserMenuProposals,
   verifyUserMenuPanels,
@@ -18,7 +18,7 @@ describe('Reviewer ( Technical )', () => {
     // The review list's title/wording is derived from the reviewed proposal's own cycle (see
     // ReviewListPage.tsx) - OSD cycle data must be mocked for that lookup to resolve.
     mockOSDAPI();
-    initialize(reviewerTechnical);
+    visitWithAuth(reviewerTechnical);
     cy.wait('@mockOSDData');
   });
 

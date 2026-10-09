@@ -4,7 +4,7 @@ import {
   clickUserMenuProposals,
   clickUserMenuReviews,
   clickUserMenuDecisions,
-  initialize,
+  visitWithAuth,
   clearLocalStorage,
   clickUserMenuOverview,
   verifyUserMenuOverview,
@@ -17,7 +17,7 @@ import { reviewerAdmin } from '../users.js';
 
 describe('Software Engineer', () => {
   beforeEach(() => {
-    initialize(reviewerAdmin);
+    visitWithAuth(reviewerAdmin);
   });
 
   afterEach(() => {

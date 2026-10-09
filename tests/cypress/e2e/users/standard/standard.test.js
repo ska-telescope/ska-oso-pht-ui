@@ -1,7 +1,7 @@
 import {
   clickUserMenu,
   clearLocalStorage,
-  initialize,
+  visitWithAuth,
   verifyUserMenuOverview,
   verifyUserMenuProposals,
   verifyUserMenuPanels,
@@ -12,7 +12,7 @@ import { standardUser } from '../users.js';
 
 describe('Standard', () => {
   beforeEach(() => {
-    initialize(standardUser);
+    visitWithAuth(standardUser);
   });
 
   afterEach(() => {

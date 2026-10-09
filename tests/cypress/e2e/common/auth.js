@@ -1,7 +1,7 @@
 // Real MSAL sessions for Cypress specs, so tests exercise the app's actual auth code paths
 // instead of a fake bypass.
 //
-// loginAsUser (used by almost every spec, via common.js's initialize()) seeds MSAL's cache
+// loginAsUser (used by almost every spec, via common.js's visitWithAuth()) seeds MSAL's cache
 // instantly from a real token - fast, and indistinguishable from a real login to the rest of the
 // app. See hydrateIndigoSession's own comment below for how/why that works (it bypasses Indigo's
 // login/consent HTML forms via direct API calls rather than cy.origin() - cy.origin() turned out
@@ -171,7 +171,7 @@ export const loginAsUser = (username) => {
   const account = ACCOUNTS[username];
   if (!account) {
     throw new Error(
-      `No live IAM credentials configured for Cypress test user "${username}" - add one to ACCOUNTS in cypressTestAuth.js.`
+      `No live IAM credentials configured for Cypress test user "${username}" - add one to ACCOUNTS in auth.js.`
     );
   }
   return withEnv((envOr) => {

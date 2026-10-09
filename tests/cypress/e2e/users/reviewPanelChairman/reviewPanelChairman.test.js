@@ -3,7 +3,7 @@ import {
   clickUserMenu,
   clickUserMenuProposals,
   clickUserMenuDecisions,
-  initialize,
+  visitWithAuth,
   verifyUserMenuOverview,
   verifyUserMenuProposals,
   verifyUserMenuPanels,
@@ -14,7 +14,7 @@ import { reviewerChairman } from '../users.js';
 
 describe('Review Chairman', () => {
   beforeEach(() => {
-    initialize(reviewerChairman);
+    visitWithAuth(reviewerChairman);
   });
 
   afterEach(() => {

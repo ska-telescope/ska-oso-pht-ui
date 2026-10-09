@@ -9,7 +9,7 @@ import {
   EXT_REVIEWER_TECHNICAL
 } from '../../../../src/utils/aaa/aaaUtils';
 
-// `username` names which live IAM account (see cypressTestAuth.js's ACCOUNTS) initialize() logs
+// `username` names which live IAM account (see auth.js's ACCOUNTS) visitWithAuth() logs
 // in as for this fixture - astronomer1 isn't granted any of the reviewer/admin roles below.
 
 export const standardUser = {

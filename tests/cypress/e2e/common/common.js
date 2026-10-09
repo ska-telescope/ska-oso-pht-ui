@@ -4,8 +4,7 @@ import {
   selectId,
   verifyContent,
   verifyExists,
-  verifyVisible,
-  viewPort
+  verifyVisible
 } from '../../fixtures/utils/cypress';
 import {
   fetchLiveOpsToken,
@@ -13,28 +12,22 @@ import {
   liveMemberFirstName,
   loginAsUser,
   stubMsalForceRefresh
-} from './cypressTestAuth';
+} from './auth';
 
 export { liveMemberEmail, liveMemberFirstName };
 
-// visitWithAuth logs in via a real MSAL session (see cypressTestAuth.js's loginAsUser) and then
+// visitWithAuth logs in via a real MSAL session (see auth.js's loginAsUser) and then
 // does its own cy.visit() on top of that restored session - login itself no longer happens here.
-const visitWithAuth = (user) => {
+export const visitWithAuth = (user) => {
   loginAsUser(user.username);
   cy.visit('/');
   // stub until User Portal is fully integrated with the new auth flow. Otherwise this can cause the tests to timeout.
   stubMsalForceRefresh();
 };
 
-export const initialize = (user) => {
-  viewPort();
-  visitWithAuth(user);
-};
-
 // IMPROVEMENT  move cy. commands out of this file into cypress.js and create a function for it
 
 export const initializeUserNotLoggedIn = () => {
-  viewPort();
   cy.visit('/', {
     onBeforeLoad(win) {
       win.localStorage.setItem('proposal:noLogin', 'true');
@@ -493,7 +486,7 @@ export const assignProposalToPanel = (panelId, prslId) => {
 
 export const beginScienceIdeaSession = (user) => {
   mockOSDAPI();
-  initialize(user);
+  visitWithAuth(user);
   mockCreateSVIdeaAPI();
   clickAddSubmission();
   cy.wait('@mockOSDData');
@@ -510,7 +503,7 @@ export const completeScienceIdeaCreation = (title) => {
   cy.wait('@mockCreateSVIdea');
   // postProposal.tsx calls the real refreshAuthToken() itself after creating the proposal, to
   // fetch a fresh token reflecting the new group membership - stubMsalForceRefresh (wired up in
-  // initialize()) short-circuits just that call, so it doesn't stall the success message below.
+  // visitWithAuth()) short-circuits just that call, so it doesn't stall the success message below.
   verifyScienceIdeaCreatedAlertFooter();
   pageConfirmed('TEAM');
 };
@@ -527,7 +520,7 @@ export const createScienceIdeaSession = (user) => {
 // currently skipped for that reason).
 export const beginStandardProposalSession = (user) => {
   mockOSDAPI();
-  initialize(user);
+  visitWithAuth(user);
   mockCreateProposalAPI();
   clickAddSubmission();
   cy.wait('@mockOSDData');
