@@ -49,6 +49,7 @@ export default function SaveButton({
       return () => {
         clearInterval(intervalId);
         clearTimeout(warnTimeoutId);
+        setWarn(false);
       };
     }
   }, [autoSaveInterval, action]);

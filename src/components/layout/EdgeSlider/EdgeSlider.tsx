@@ -38,6 +38,7 @@ export default function EdgeSlider() {
     }
   }
 
+  // TODO: hoist these styled components to module scope; recreating them each render remounts the panel
   const Container = styled(Box)({
     position: 'fixed',
     top: CONTAINER_SPACER_TOP,
