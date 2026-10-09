@@ -110,12 +110,6 @@
     "vite": "^8.3.3",
     "vitest": "^5.0.3"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "engines": {
     "node": ">=22.22.0"
   },
