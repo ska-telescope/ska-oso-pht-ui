@@ -1,0 +1,48 @@
+diff --git a/FormControl/FormControl.js b/FormControl/FormControl.js
+index d8855bb069a80ce7fa838971eaaea5a7f79fe121..71bac0aeff8f71e092ce6977fd4fbccf08bfd7e4 100644
+--- a/FormControl/FormControl.js
++++ b/FormControl/FormControl.js
+@@ -176,7 +176,9 @@ const FormControl = /*#__PURE__*/React.forwardRef(function FormControl(inProps,
+   let registerEffect;
+   const registeredInput = React.useRef(false);
+   if (process.env.NODE_ENV !== 'production') {
+-    registerEffect = () => {
++    // Patched: memoise so FormControl's context doesn't change every render in dev (React 19 nested-update limit)
++    // eslint-disable-next-line react-hooks/rules-of-hooks
++    registerEffect = React.useCallback(() => {
+       if (registeredInput.current) {
+         console.error(['MUI: There are multiple `InputBase` components inside a FormControl.', 'This creates visual inconsistencies, only use one `InputBase`.'].join('\n'));
+       }
+@@ -184,7 +186,7 @@ const FormControl = /*#__PURE__*/React.forwardRef(function FormControl(inProps,
+       return () => {
+         registeredInput.current = false;
+       };
+-    };
++    }, []);
+   }
+   const onFilled = React.useCallback(() => {
+     setFilled(true);
+diff --git a/esm/FormControl/FormControl.js b/esm/FormControl/FormControl.js
+index ca26bada1afd8d9e86e8d7d55dbd2deeb684c8ae..9459f20e858c6e55a7632347b7f329c8fd1b4714 100644
+--- a/esm/FormControl/FormControl.js
++++ b/esm/FormControl/FormControl.js
+@@ -169,7 +169,9 @@ const FormControl = /*#__PURE__*/React.forwardRef(function FormControl(inProps,
+   let registerEffect;
+   const registeredInput = React.useRef(false);
+   if (process.env.NODE_ENV !== 'production') {
+-    registerEffect = () => {
++    // Patched: memoise so FormControl's context doesn't change every render in dev (React 19 nested-update limit)
++    // eslint-disable-next-line react-hooks/rules-of-hooks
++    registerEffect = React.useCallback(() => {
+       if (registeredInput.current) {
+         console.error(['MUI: There are multiple `InputBase` components inside a FormControl.', 'This creates visual inconsistencies, only use one `InputBase`.'].join('\n'));
+       }
+@@ -177,7 +179,7 @@ const FormControl = /*#__PURE__*/React.forwardRef(function FormControl(inProps,
+       return () => {
+         registeredInput.current = false;
+       };
+-    };
++    }, []);
+   }
+   const onFilled = React.useCallback(() => {
+     setFilled(true);

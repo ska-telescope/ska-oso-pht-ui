@@ -55,13 +55,16 @@
     "singleQuote": true,
     "jsxSingleQuote": false
   },
+  "//dependencies": {
+    "@mui/material": "Patch on MUI should be removed in BTN-3598, it's a temporary workaround for redux re-render issue with Cypress"
+  },
   "dependencies": {
     "@azure/msal-browser": "^5.25.0",
     "@azure/msal-react": "^5.7.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.11",
-    "@mui/material": "^7.3.11",
+    "@mui/material": "patch:@mui/material@npm%3A7.3.11#~/.yarn/patches/@mui-material-npm-7.3.11-4fadb3e7fe.patch",
     "@mui/system": "^7.3.11",
     "@mui/x-data-grid": "^7.29.13",
     "@reduxjs/toolkit": "^2.13.0",

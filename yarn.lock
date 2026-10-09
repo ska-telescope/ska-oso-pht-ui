@@ -987,7 +987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^7.3.11":
+"@mui/material@npm:7.3.11":
   version: 7.3.11
   resolution: "@mui/material@npm:7.3.11"
   dependencies:
@@ -1020,6 +1020,42 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/ad2cca3f84a8c5f5b980d6126a0bf3dd35deb82438adc3bc29e125e19554c8fcf9f68cff5f471f18d8ca921524f3a312254041021ef49ee872ecc383da835805
+  languageName: node
+  linkType: hard
+
+"@mui/material@patch:@mui/material@npm%3A7.3.11#~/.yarn/patches/@mui-material-npm-7.3.11-4fadb3e7fe.patch":
+  version: 7.3.11
+  resolution: "@mui/material@patch:@mui/material@npm%3A7.3.11#~/.yarn/patches/@mui-material-npm-7.3.11-4fadb3e7fe.patch::version=7.3.11&hash=959ef9"
+  dependencies:
+    "@babel/runtime": "npm:^7.28.6"
+    "@mui/core-downloads-tracker": "npm:^7.3.11"
+    "@mui/system": "npm:^7.3.11"
+    "@mui/types": "npm:^7.4.12"
+    "@mui/utils": "npm:^7.3.11"
+    "@popperjs/core": "npm:^2.11.8"
+    "@types/react-transition-group": "npm:^4.4.12"
+    clsx: "npm:^2.1.1"
+    csstype: "npm:^3.2.3"
+    prop-types: "npm:^15.8.1"
+    react-is: "npm:^19.2.3"
+    react-transition-group: "npm:^4.4.5"
+  peerDependencies:
+    "@emotion/react": ^11.5.0
+    "@emotion/styled": ^11.3.0
+    "@mui/material-pigment-css": ^7.3.11
+    "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
+    react: ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    "@emotion/react":
+      optional: true
+    "@emotion/styled":
+      optional: true
+    "@mui/material-pigment-css":
+      optional: true
+    "@types/react":
+      optional: true
+  checksum: 10c0/940739be61fdea4662fc6839b6148134d039b7bedc55585c6d913fd880c77edfd40b67ee6411c0779bd4d412e39f7c55f0852645b0dac79678bb4abbdec07909
   languageName: node
   linkType: hard
 
@@ -8543,7 +8579,7 @@ __metadata:
     "@emotion/styled": "npm:^11.14.1"
     "@eslint/js": "npm:^9.39.5"
     "@mui/icons-material": "npm:^7.3.11"
-    "@mui/material": "npm:^7.3.11"
+    "@mui/material": "patch:@mui/material@npm%3A7.3.11#~/.yarn/patches/@mui-material-npm-7.3.11-4fadb3e7fe.patch"
     "@mui/system": "npm:^7.3.11"
     "@mui/x-data-grid": "npm:^7.29.13"
     "@reduxjs/toolkit": "npm:^2.13.0"
