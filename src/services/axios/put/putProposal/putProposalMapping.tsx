@@ -46,7 +46,6 @@ import {
   DataProductSDPContinuumVisibilitiesBackend,
   DataProductSDPNew,
   DataProductSDPsBackend,
-  DataProductSDPSpectralImageBackend,
   DataProductSRC,
   DataProductSRCNetBackend,
   SDPFilterbankPSTData,
@@ -67,6 +66,9 @@ import {
   FluxCalBackend
 } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
+import type { ScriptParameters } from '@/generated/models/script-parameters';
+import type { Weighting } from '@/generated/models/weighting';
+import type { Polarisation } from '@/generated/models/polarisation';
 
 const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
 const isPST = (type: string) => type === TYPE_PST;
@@ -179,8 +181,23 @@ export const mapCalibrationStrategyToBackend = (
 export const getDataProductScriptParameters = (
   obs: Observation[] | null,
   dp: DataProductSDPNew
-) => {
+): ScriptParameters => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+  const getWeight = (data: SDPImageContinuumData | SDPSpectralData): Weighting => ({
+    weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
+      ?.label as Weighting['weighting'],
+    ...(Number(data?.weighting) === IW_BRIGGS && {
+      robust: data?.robust != null ? Number(data?.robust) : undefined
+    })
+  });
+  const getVisibilities = (
+    data: SDPVisibilitiesContinuumData
+  ): DataProductSDPContinuumVisibilitiesBackend & { variant: 'visibilities' } => ({
+    time_averaging: data?.timeAveraging ?? 0,
+    frequency_averaging: data?.frequencyAveraging ?? 0,
+    kind: 'continuum',
+    variant: 'visibilities'
+  });
   const obType = obs?.find((o) => o?.id === dp.observationId)?.type;
   switch (obType) {
     case TYPE_CONTINUUM: {
@@ -195,28 +212,15 @@ export const getDataProductScriptParameters = (
             value: data?.pixelSizeValue,
             unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
           },
-          weight: {
-            weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
-              ?.label as string,
-            ...(Number(data?.weighting) === IW_BRIGGS && {
-              robust: data?.robust != null ? Number(data?.robust) : undefined
-            })
-          },
-          polarisations: data?.polarisations,
+          weight: getWeight(data),
+          polarisations: data?.polarisations as Polarisation[],
           channels_out: data?.channelsOut,
-          gaussian_taper: data?.taperValue?.toString(),
+          gaussian_taper: data?.taperValue,
           kind: 'continuum',
           variant: 'continuum image'
         };
       } else {
-        const data = dp?.data as SDPVisibilitiesContinuumData;
-        const result: DataProductSDPContinuumVisibilitiesBackend = {
-          time_averaging: data?.timeAveraging ?? 0,
-          frequency_averaging: data?.frequencyAveraging ?? 0,
-          kind: 'continuum',
-          variant: 'visibilities'
-        };
-        return result;
+        return getVisibilities(dp?.data as SDPVisibilitiesContinuumData);
       }
     }
     case TYPE_ZOOM:
@@ -225,40 +229,33 @@ export const getDataProductScriptParameters = (
       // AutoLinking.tsx) - the backend only has one "visibilities" script-parameters shape
       // (kind: continuum / variant: visibilities), regardless of the mode that created it.
       if ((dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE) {
-        const data = dp?.data as SDPVisibilitiesContinuumData;
-        const result: DataProductSDPContinuumVisibilitiesBackend = {
-          time_averaging: data?.timeAveraging ?? 0,
-          frequency_averaging: data?.frequencyAveraging ?? 0,
-          kind: 'continuum',
-          variant: 'visibilities'
-        };
-        return result;
+        return getVisibilities(dp?.data as SDPVisibilitiesContinuumData);
       }
       const data = dp?.data as SDPSpectralData;
-      const result = {
+      const common = {
         image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
         image_cellsize: {
           value: data?.pixelSizeValue,
           unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
         },
-        weight: {
-          weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
-            ?.label as string,
-          ...(Number(data?.weighting) === IW_BRIGGS && {
-            robust: data?.robust != null ? Number(data?.robust) : undefined
-          })
-        },
-        polarisations: data?.polarisations ?? [],
+        weight: getWeight(data),
+        polarisations: (data?.polarisations ?? []) as Polarisation[],
         channels_out: data?.channelsOut ?? 0,
-        gaussian_taper: data?.taperValue?.toString() ?? '0',
-        kind: obType === TYPE_CONTINUUM_SPECTRAL ? TYPE_CONTINUUM_SPECTRAL_LONG : 'spectral',
-        variant:
-          obType === TYPE_CONTINUUM_SPECTRAL
-            ? `${TYPE_CONTINUUM_SPECTRAL_LONG} image`
-            : 'spectral image',
+        gaussian_taper: data?.taperValue ?? 0
+      };
+      if (obType === TYPE_CONTINUUM_SPECTRAL) {
+        return {
+          ...common,
+          kind: TYPE_CONTINUUM_SPECTRAL_LONG,
+          variant: 'continuum and spectral line image'
+        };
+      }
+      return {
+        ...common,
+        kind: 'spectral',
+        variant: 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
-      } as unknown as DataProductSDPSpectralImageBackend;
-      return result;
+      };
     }
     case TYPE_PST:
     default:
@@ -266,7 +263,7 @@ export const getDataProductScriptParameters = (
       if (pstMode === DETECTED_FILTER_BANK_VALUE) {
         const data = dp?.data as SDPFilterbankPSTData;
         return {
-          polarisations: data?.polarisations,
+          polarisations: data?.polarisations as Polarisation[],
           bit_depth: Number(data?.bitDepth),
           output_frequency_resolution: data?.outputFrequencyResolution ?? 0,
           output_sampling_interval: data?.outputSamplingInterval ?? 0,
@@ -283,7 +280,7 @@ export const getDataProductScriptParameters = (
       } else {
         const data = dp?.data as SDPFlowthroughPSTData;
         return {
-          polarisations: data?.polarisations,
+          polarisations: data?.polarisations as Polarisation[],
           bit_depth: data?.bitDepth ?? 1,
           kind: 'pst',
           variant: 'flow through'
@@ -299,10 +296,7 @@ const getDataProductSDP = (
   const sdp = dataProducts?.map((dp) => ({
     data_product_id: dp.id?.toString(),
     observation_set_ref: dp.observationId,
-    script_parameters: getDataProductScriptParameters(
-      obs,
-      dp
-    ) as unknown as DataProductSDPsBackend['script_parameters']
+    script_parameters: getDataProductScriptParameters(obs, dp)
   }));
   return sdp;
 };

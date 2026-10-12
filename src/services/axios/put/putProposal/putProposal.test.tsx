@@ -5,6 +5,7 @@ import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_ZOOM,
   TYPE_PST,
   DP_TYPE_IMAGES,
@@ -266,7 +267,8 @@ describe('getDataProductScriptParameters', () => {
     { id: '2', type: TYPE_ZOOM, pstMode: undefined },
     { id: '3', type: TYPE_PST, pstMode: DETECTED_FILTER_BANK_VALUE },
     { id: '4', type: TYPE_PST, pstMode: PULSAR_TIMING_VALUE },
-    { id: '5', type: TYPE_PST, pstMode: 999 }
+    { id: '5', type: TYPE_PST, pstMode: 999 },
+    { id: '6', type: TYPE_CONTINUUM_SPECTRAL, pstMode: undefined }
   ] as any[];
 
   test('should return correct parameters for continuum image', () => {
@@ -336,8 +338,35 @@ describe('getDataProductScriptParameters', () => {
       image_cellsize: { value: 1, unit: 'deg' },
       kind: 'spectral',
       variant: 'spectral image',
-      continuum_subtraction: true
+      continuum_subtraction: true,
+      gaussian_taper: 0.1
     });
+  });
+
+  test('should return continuum and spectral line image for combined mode', () => {
+    const dp = {
+      id: 'dp-6',
+      observationId: '6',
+      data: {
+        imageSizeValue: 20,
+        imageSizeUnits: 2,
+        pixelSizeValue: 1,
+        pixelSizeUnits: 0,
+        weighting: 2,
+        polarisations: ['XY'],
+        channelsOut: 8,
+        taperValue: 0.1,
+        continuumSubtraction: true,
+        robust: 1
+      }
+    } as DataProductSDPNew;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toMatchObject({
+      kind: 'continuum and spectral line',
+      variant: 'continuum and spectral line image',
+      gaussian_taper: 0.1
+    });
+    expect(result).not.toHaveProperty('continuum_subtraction');
   });
 
   test('should return detected filterbank for PST', () => {

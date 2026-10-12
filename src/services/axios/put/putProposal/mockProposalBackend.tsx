@@ -136,7 +136,7 @@ export const MockProposalBackend = {
           variant: 'continuum image',
           kind: 'continuum',
           channels_out: 1,
-          gaussian_taper: '1',
+          gaussian_taper: 1,
           polarisations: ['I'],
           image_size: {
             value: 15,
@@ -293,7 +293,7 @@ export const MockProposalBackendZoom = {
           variant: 'spectral image',
           kind: 'spectral',
           channels_out: 1,
-          gaussian_taper: '1',
+          gaussian_taper: 1,
           polarisations: ['I'],
           continuum_subtraction: undefined,
           image_size: {
