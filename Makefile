@@ -189,6 +189,7 @@ models:
 	--model-name-mappings "PointingPattern_parameters_inner=PointingPatternParameters" \
 	--model-name-mappings "Configuration=OsdConfiguration" \
 	;)
+	cd src/generated/models && ls *.ts | grep -v '^index.ts$$' | LC_ALL=C sort | sed "s/\.ts$$//; s|^|export * from './|; s|$$|';|" > index.ts
 	rm -r src/generated/.openapi-generator
 	rm -fr src/generated/docs
 	git add src/generated/
