@@ -1,25 +1,15 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails.tsx';
-import {
-  ResultsSection,
-  SensCalcResults,
-  ResultsDetailsBackend
-} from '@utils/types/sensCalcResults.tsx';
+import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import Target, {
   PointingPatternParams,
-  PointingPatternParamsBackend,
   ReferenceCoordinateGalactic,
-  ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
-  ReferenceCoordinateICRSBackend,
-  ReferenceCoordinateSSO,
-  ReferenceCoordinateSSOBackend,
-  TargetBackend
+  ReferenceCoordinateSSO
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import Supplied, { SuppliedBackend } from '@utils/types/supplied.tsx';
+import Supplied from '@utils/types/supplied.tsx';
 import {
   SKA_OSO_SERVICES_URL,
   DETAILS,
@@ -56,32 +46,36 @@ import {
   TYPE_ZOOM_LONG,
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
-import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
-import {
-  ObservationSetBackend,
-  ObservationTypeDetailsPSTBackend,
-  ObservationTypeDetailsSpectralBackend
-} from '@utils/types/observationSet.tsx';
-import {
-  DataProductSDPNew,
-  DataProductSDPsBackend,
-  DataProductSRC,
-  DataProductSRCNetBackend
-} from '@utils/types/dataProduct.tsx';
+import { DocumentPDF } from '@utils/types/document.tsx';
+import { DataProductSDPNew, DataProductSRC } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
-import {
-  CalibrationStrategy,
-  CalibrationStrategyBackend,
-  Calibrator,
-  FluxCalBackend
-} from '@/utils/types/calibrationStrategy.tsx';
-import type { Integration } from '@/generated/models/integration';
-import type { Sensitivity } from '@/generated/models/sensitivity';
+import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy.tsx';
+import type {
+  CalibrationStrategy as CalibrationStrategyTransport,
+  DataProductSDP as DataProductSDPTransport,
+  DataProductSRC as DataProductSRCTransport,
+  Document as DocumentTransport,
+  FluxCal,
+  GalacticCoordinates,
+  ICRSCoordinates,
+  Integration,
+  LowArray,
+  MidArray,
+  ObservationSets,
+  PointingPatternParameters,
+  PstSetup,
+  Result,
+  Sensitivity,
+  SpecialCoordinates,
+  SpectralLineSetup,
+  Supplied as SuppliedTransport,
+  Target as TargetTransport
+} from '@/generated/models';
 
 // The PDM result is a union on supplied_type, but the mapping reads the fields of both variants.
-type ResultsDetailsAnySupplied = Omit<ResultsDetailsBackend, 'result'> & {
+type ResultsDetailsAnySupplied = Omit<Result, 'result'> & {
   result?: Partial<Omit<Integration, 'supplied_type'> & Omit<Sensitivity, 'supplied_type'>> | null;
 };
 
@@ -115,7 +109,7 @@ export const getScienceCategory = (scienceCat: string) => {
 };
 
 const getPDF = (
-  documents: DocumentBackend[] | null | undefined,
+  documents: DocumentTransport[] | null | undefined,
   documentId: string
 ): DocumentPDF | null => {
   if (!documents) return null;
@@ -138,32 +132,29 @@ export const getVelType = (InDefinition: string) => {
 };
 
 export const getReferenceCoordinate = (
-  tar:
-    | ReferenceCoordinateICRSBackend
-    | ReferenceCoordinateGalacticBackend
-    | ReferenceCoordinateSSOBackend
+  tar: ICRSCoordinates | GalacticCoordinates | SpecialCoordinates
 ): ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO => {
   switch (tar.kind) {
     case REFERENCE_COORDINATE_TYPE_ICRS.label:
       return {
         kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-        raStr: (tar as ReferenceCoordinateICRSBackend).ra_str as string,
-        decStr: (tar as ReferenceCoordinateICRSBackend).dec_str as string,
-        pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra as number | undefined,
-        pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec as number | undefined,
-        epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
-        parallax: (tar as ReferenceCoordinateICRSBackend).parallax as number | undefined
+        raStr: (tar as ICRSCoordinates).ra_str as string,
+        decStr: (tar as ICRSCoordinates).dec_str as string,
+        pmRa: (tar as ICRSCoordinates).pm_ra as number | undefined,
+        pmDec: (tar as ICRSCoordinates).pm_dec as number | undefined,
+        epoch: (tar as ICRSCoordinates).epoch,
+        parallax: (tar as ICRSCoordinates).parallax as number | undefined
       };
 
     case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
       return {
         kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-        l: (tar as ReferenceCoordinateGalacticBackend).l,
-        b: (tar as ReferenceCoordinateGalacticBackend).b,
-        pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
-        pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
-        epoch: (tar as ReferenceCoordinateGalacticBackend).epoch,
-        parallax: (tar as ReferenceCoordinateGalacticBackend).parallax
+        l: (tar as GalacticCoordinates).l,
+        b: (tar as GalacticCoordinates).b,
+        pmL: (tar as GalacticCoordinates).pm_l,
+        pmB: (tar as GalacticCoordinates).pm_b,
+        epoch: (tar as GalacticCoordinates).epoch,
+        parallax: (tar as GalacticCoordinates).parallax
       };
 
     case REFERENCE_COORDINATE_TYPE_SSO.label:
@@ -192,14 +183,14 @@ const getTargetType = (kind: string): number => {
   }
 };
 
-const getTargets = (inRec: TargetBackend[] = []): Target[] => {
+const getTargets = (inRec: TargetTransport[] = []): Target[] => {
   const results = [];
   for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate!.kind as string;
-    const icrs = e.reference_coordinate as ReferenceCoordinateICRSBackend;
+    const icrs = e.reference_coordinate as ICRSCoordinates;
     const radialVelocity = e.radial_velocity as Required<
-      NonNullable<TargetBackend['radial_velocity']>
+      NonNullable<TargetTransport['radial_velocity']>
     >;
     const target: Partial<Target> = {
       kind: getTargetType(referenceCoordinate),
@@ -220,7 +211,7 @@ const getTargets = (inRec: TargetBackend[] = []): Target[] => {
       pointingPattern: {
         active: e.pointing_pattern?.active as string,
         parameters: e.pointing_pattern?.parameters?.map((p) => {
-          const params = p as PointingPatternParamsBackend & {
+          const params = p as PointingPatternParameters & {
             offset_x_arcsec: number;
             offset_y_arcsec: number;
           };
@@ -243,10 +234,10 @@ const getTargets = (inRec: TargetBackend[] = []): Target[] => {
         break;
 
       case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
-        target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
-        target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
-        target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
-        target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
+        target.l = (e.reference_coordinate as GalacticCoordinates).l;
+        target.b = (e.reference_coordinate as GalacticCoordinates).b;
+        target.pmL = (e.reference_coordinate as GalacticCoordinates).pm_l;
+        target.pmB = (e.reference_coordinate as GalacticCoordinates).pm_b;
         break;
 
       case REFERENCE_COORDINATE_TYPE_SSO.label:
@@ -261,7 +252,7 @@ const getTargets = (inRec: TargetBackend[] = []): Target[] => {
   return results as Target[];
 };
 
-const getGroupObservations = (inValue: ObservationSetBackend[] | null | undefined) => {
+const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => {
   const results: any = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -281,7 +272,7 @@ const getGroupObservations = (inValue: ObservationSetBackend[] | null | undefine
 };
 
 const getDataProductSRC = (
-  inValue: DataProductSRCNetBackend[] | null | undefined
+  inValue: DataProductSRCTransport[] | null | undefined
 ): DataProductSRC[] => {
   return inValue
     ? inValue.map((dp) => ({
@@ -316,14 +307,14 @@ const getDataProductType = (el: any) => {
  */
 const markSelectedDataProducts = (
   dataProducts: DataProductSDPNew[],
-  results: ResultsDetailsBackend[] | null | undefined
+  results: Result[] | null | undefined
 ): DataProductSDPNew[] => {
   const linkedIds = new Set((results ?? []).map((result) => result.data_product_ref));
   return dataProducts.map((dp) => (linkedIds.has(dp.id) ? { ...dp, selected: true } : dp));
 };
 
 const getDataProductSDP = (
-  inValue: DataProductSDPsBackend[] | null | undefined
+  inValue: DataProductSDPTransport[] | null | undefined
 ): DataProductSDPNew[] => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
@@ -384,7 +375,7 @@ const getDataProductSDP = (
   );
 };
 
-function fluxCalToCalibrator(data: FluxCalBackend, index: number): Calibrator {
+function fluxCalToCalibrator(data: FluxCal, index: number): Calibrator {
   return {
     targetId: '',
     name: data.name,
@@ -397,7 +388,7 @@ function fluxCalToCalibrator(data: FluxCalBackend, index: number): Calibrator {
 }
 
 const getCalibrationStrategy = (
-  inValue: CalibrationStrategyBackend[] | null | undefined
+  inValue: CalibrationStrategyTransport[] | null | undefined
 ): CalibrationStrategy[] => {
   return inValue
     ? inValue.map((strategy) => ({
@@ -405,7 +396,7 @@ const getCalibrationStrategy = (
         id: strategy?.calibration_id as unknown as string,
         observationIdRef: strategy?.observation_set_ref as unknown as string,
         calibrators: strategy?.calibrators
-          ? (strategy.calibrators as unknown as FluxCalBackend[]).map((calibrator, index) =>
+          ? (strategy.calibrators as unknown as FluxCal[]).map((calibrator, index) =>
               fluxCalToCalibrator(calibrator, index)
             )
           : null,
@@ -421,7 +412,7 @@ const getWeighting = (inImageWeighting?: string): number | undefined =>
   IMAGE_WEIGHTING?.find((item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase())
     ?.value;
 
-const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
+const getSupplied = (inSupplied: SuppliedTransport | null): Supplied => {
   const suppliedType = OSD_CONSTANTS.Supplied?.find(
     (s) => s.mappingLabel === inSupplied?.supplied_type
   );
@@ -474,9 +465,7 @@ const typeCheck = (inType: string | undefined): any => {
   return inType;
 };
 
-export const getObservations = (
-  inValue: ObservationSetBackend[] | null | undefined
-): Observation[] => {
+export const getObservations = (inValue: ObservationSets[] | null | undefined): Observation[] => {
   const results: Observation[] = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -499,7 +488,7 @@ export const getObservations = (
     // MID array details
     let weather, num15mAntennas, num13mAntennas, numSubBands;
     if (inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING) {
-      const midDetails = inValue[i].array_details as ArrayDetailsMidBackend;
+      const midDetails = inValue[i].array_details as MidArray;
       weather = midDetails.weather;
       num15mAntennas = midDetails.number_15_antennas;
       num13mAntennas = midDetails.number_13_antennas;
@@ -509,7 +498,7 @@ export const getObservations = (
     // LOW array details
     let numStations;
     if (inValue[i]?.array_details?.array === TELESCOPE_LOW_BACKEND_MAPPING) {
-      const lowDetails = inValue[i].array_details as ArrayDetailsLowBackend;
+      const lowDetails = inValue[i].array_details as LowArray;
       numStations = lowDetails.number_of_stations;
     }
 
@@ -535,12 +524,10 @@ export const getObservations = (
           : null,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied ?? null),
       spectralResolution: String(
-        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-          ?.spectral_resolution
+        (inValue[i].observation_type_details as SpectralLineSetup)?.spectral_resolution
       ),
       effectiveResolution: String(
-        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-          ?.effective_resolution
+        (inValue[i].observation_type_details as SpectralLineSetup)?.effective_resolution
       ),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
@@ -556,15 +543,12 @@ export const getObservations = (
       numStations: numStations,
       ...(type === TYPE_ZOOM && {
         zoomChannels: Number(
-          (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-            ?.number_of_channels
+          (inValue[i].observation_type_details as SpectralLineSetup)?.number_of_channels
         )
       }),
       ...(type === TYPE_PST && {
         pstMode: PST_MODES?.find(
-          (mode) =>
-            mode?.mapping ===
-            (inValue[i].observation_type_details as ObservationTypeDetailsPSTBackend)?.pst_mode
+          (mode) => mode?.mapping === (inValue[i].observation_type_details as PstSetup)?.pst_mode
         )?.value
       })
     };
@@ -580,7 +564,7 @@ const getResultsSection1 = (
   isContinuum: boolean,
   isPST: boolean,
   isSensitivity: boolean,
-  inObservationSets: ObservationSetBackend[],
+  inObservationSets: ObservationSets[],
   inResultObservationRef: string | null
 ): SensCalcResults['section1'] => {
   let section1 = [];
@@ -645,7 +629,7 @@ const getResultsSection1 = (
 const getResultsSection2 = (
   inResult: ResultsDetailsAnySupplied,
   isSensitivity: boolean,
-  inObservationSets: ObservationSetBackend[],
+  inObservationSets: ObservationSets[],
   inResultObservationRef: string | null
 ): SensCalcResults['section2'] => {
   const section2 = [];
@@ -693,8 +677,8 @@ const getResultsSection2 = (
 
 const getResultsSection3 = (
   inResultObservationRef: string | null,
-  inObservationSets: ObservationSetBackend[],
-  _inResult: ResultsDetailsBackend,
+  inObservationSets: ObservationSets[],
+  _inResult: Result,
   isSensitivity: boolean
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
@@ -708,18 +692,15 @@ const getResultsSection3 = (
   ];
 };
 
-const getResultObsType = (
-  result: ResultsDetailsBackend,
-  inObservationSets: ObservationSetBackend[]
-) => {
+const getResultObsType = (result: Result, inObservationSets: ObservationSets[]) => {
   const obsSetRef = result.observation_set_ref;
   const obs = inObservationSets.find((item) => item.observation_set_id === obsSetRef);
   return obs?.observation_type_details?.observation_type;
 };
 
 const getTargetObservation = (
-  inResults: ResultsDetailsBackend[] | null | undefined,
-  inObservationSets: ObservationSetBackend[] | null | undefined,
+  inResults: Result[] | null | undefined,
+  inObservationSets: ObservationSets[] | null | undefined,
   // inTargets: TargetBackend[],
   outTargets: Target[]
 ): TargetObservation[] => {
@@ -837,7 +818,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
         : FileUploadStatus.INITIAL,
     dataProductSDP: inRec?.observation_info?.data_product_sdps
       ? markSelectedDataProducts(
-          getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[]),
+          getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPTransport[]),
           inRec.observation_info?.result_details
         )
       : [],

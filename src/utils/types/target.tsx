@@ -10,24 +10,6 @@ export type TargetBackend = {
 };
 */
 
-import type { Target as TargetPDM } from '@/generated/models/target';
-import type { ICRSCoordinates } from '@/generated/models/icrscoordinates';
-import type { GalacticCoordinates } from '@/generated/models/galactic-coordinates';
-import type { SpecialCoordinates } from '@/generated/models/special-coordinates';
-import type { PointingPatternParameters } from '@/generated/models/pointing-pattern-parameters';
-
-export type PointingPatternParamsBackend = PointingPatternParameters;
-
-export type ReferenceCoordinateGalacticBackend = GalacticCoordinates;
-
-// ICRS now replaces equatorial
-export type ReferenceCoordinateICRSBackend = ICRSCoordinates;
-
-// Solar System objects
-export type ReferenceCoordinateSSOBackend = SpecialCoordinates;
-
-export type TargetBackend = TargetPDM;
-
 /************************************************************************************
  *  NOTE : coordinates are currently mapped as follows:
  *   '0' : values are Right Ascension & Declination

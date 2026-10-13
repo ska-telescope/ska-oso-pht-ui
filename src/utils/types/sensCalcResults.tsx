@@ -1,7 +1,4 @@
 import { STATUS } from '@utils/constants.ts';
-import type { Result } from '@/generated/models/result';
-
-export type ResultsDetailsBackend = Result;
 
 export type SensCalcResults = {
   statusGUI: STATUS;

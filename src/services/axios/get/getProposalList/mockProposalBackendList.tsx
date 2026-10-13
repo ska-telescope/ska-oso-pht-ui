@@ -12,12 +12,14 @@ import {
 import { ProposalBackend } from '@/utils/types/proposal';
 import { Metadata } from '@/utils/types/metadata';
 import { InvestigatorBackend } from '@/utils/types/investigator';
-import { TargetBackend } from '@/utils/types/target';
-import { DocumentBackend } from '@/utils/types/document';
-import { ObservationSetBackend } from '@/utils/types/observationSet';
-import { DataProductSDPsBackend } from '@/utils/types/dataProduct';
-import { CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
-import { ResultsDetailsBackend } from '@/utils/types/sensCalcResults';
+import type {
+  CalibrationStrategy as CalibrationStrategyTransport,
+  DataProductSDP as DataProductSDPTransport,
+  Document as DocumentTransport,
+  ObservationSets,
+  Result,
+  Target as TargetTransport
+} from '@/generated/models';
 
 const TIMESTAMP = '2022-09-23T15:43:53.971548Z';
 const ABSTRACT =
@@ -47,7 +49,7 @@ const investigators: InvestigatorBackend[] = [
   }
 ];
 
-const target = (targetId: string, raStr: string, decStr: string): TargetBackend =>
+const target = (targetId: string, raStr: string, decStr: string): TargetTransport =>
   ({
     target_id: targetId,
     name: targetId,
@@ -63,17 +65,17 @@ const target = (targetId: string, raStr: string, decStr: string): TargetBackend 
       reference_frame: 'LSRK',
       redshift: 0
     }
-  }) as TargetBackend;
+  }) as TargetTransport;
 
 const targetM28 = target('M28', '18:24:32.89', '-24:52:11.4');
 const targetM1 = target('M1', '05:34:31.94', '+22:00:52.2');
 
-const documents: DocumentBackend[] = [
+const documents: DocumentTransport[] = [
   { document_id: 'doc_ref_01', uploaded_pdf: true },
   { document_id: 'doc_ref_02', uploaded_pdf: true }
 ];
 
-const lowObservationSet = (id: string, observationType: string): ObservationSetBackend =>
+const lowObservationSet = (id: string, observationType: string): ObservationSets =>
   ({
     observation_set_id: id,
     group_id: '',
@@ -90,9 +92,9 @@ const lowObservationSet = (id: string, observationType: string): ObservationSetB
       central_frequency: { value: 200, unit: 'MHz' },
       supplied: { supplied_type: 'integration_time', quantity: { value: 1, unit: 'h' } }
     }
-  }) as ObservationSetBackend;
+  }) as ObservationSets;
 
-const midObservationSet = (id: string, observationType: string): ObservationSetBackend =>
+const midObservationSet = (id: string, observationType: string): ObservationSets =>
   ({
     observation_set_id: id,
     group_id: '',
@@ -112,9 +114,9 @@ const midObservationSet = (id: string, observationType: string): ObservationSetB
       central_frequency: { value: 797.5, unit: 'MHz' },
       supplied: { supplied_type: 'integration_time', quantity: { value: 1, unit: 'h' } }
     }
-  }) as ObservationSetBackend;
+  }) as ObservationSets;
 
-const continuumImage = (observationSetRef: string): DataProductSDPsBackend =>
+const continuumImage = (observationSetRef: string): DataProductSDPTransport =>
   ({
     data_product_id: 'SDP-1',
     observation_set_ref: observationSetRef,
@@ -128,18 +130,18 @@ const continuumImage = (observationSetRef: string): DataProductSDPsBackend =>
       image_cellsize: { value: 1.007, unit: 'arcsec' },
       weight: { weighting: 'uniform' }
     }
-  }) as unknown as DataProductSDPsBackend;
+  }) as unknown as DataProductSDPTransport;
 
-const observatoryCalibration = (observationSetRef: string): CalibrationStrategyBackend =>
+const observatoryCalibration = (observationSetRef: string): CalibrationStrategyTransport =>
   ({
     observatory_defined: true,
     calibration_id: 'cal-001',
     observation_set_ref: observationSetRef,
     calibrators: null,
     notes: 'This is an observatory defined calibration strategy.'
-  }) as unknown as CalibrationStrategyBackend;
+  }) as unknown as CalibrationStrategyTransport;
 
-const continuumResult = (observationSetRef: string, targetRef: string): ResultsDetailsBackend =>
+const continuumResult = (observationSetRef: string, targetRef: string): Result =>
   ({
     observation_set_ref: observationSetRef,
     data_product_ref: 'SDP-1',
@@ -155,7 +157,7 @@ const continuumResult = (observationSetRef: string, targetRef: string): ResultsD
     continuum_confusion_noise: { value: 1.02, unit: 'μJy/beam' },
     synthesized_beam_size: { continuum: '3.85 x 3.02', spectral: '5.84 x 5.02', unit: 'arcsec²' },
     spectral_confusion_noise: { value: 3.53, unit: 'μJy/beam' }
-  }) as ResultsDetailsBackend;
+  }) as Result;
 
 // A standard proposal using both telescopes, with continuum and zoom observations on each
 // The mocks mirror payloads that are looser than the PDM schema (e.g. numbers sent as strings)

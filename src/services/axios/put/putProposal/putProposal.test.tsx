@@ -19,12 +19,14 @@ import {
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   DataProductSDPNew,
-  DataProductSDPPSTDetectedFilterBankBackend,
   DataProductSRC,
-  DataProductSRCNetBackend,
   SDPFilterbankPSTData,
   SDPVisibilitiesContinuumData
 } from '@utils/types/dataProduct.tsx';
+import type {
+  DataProductSRC as DataProductSRCTransport,
+  PstDetectedFilterbank
+} from '@/generated/models';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
@@ -393,7 +395,7 @@ describe('getDataProductScriptParameters', () => {
       rotation_measure: 5.25,
       kind: 'pst',
       variant: 'detected filterbank'
-    } as DataProductSDPPSTDetectedFilterBankBackend);
+    } as PstDetectedFilterbank);
   });
 
   test('should return pulsar timing for PST', () => {
@@ -459,7 +461,7 @@ describe('getDataProductScriptParameters', () => {
 describe('getDataProductSRC', () => {
   test('should map DataProductSRC array to DataProductSRCNetBackend array', () => {
     const input: Partial<DataProductSRC>[] = [{ id: '1' }, { id: '2' }, { id: '3' }];
-    const expected: DataProductSRCNetBackend[] = [
+    const expected: DataProductSRCTransport[] = [
       { data_products_src_id: '1' },
       { data_products_src_id: '2' },
       { data_products_src_id: '3' }

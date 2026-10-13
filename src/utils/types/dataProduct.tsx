@@ -1,28 +1,3 @@
-import type { ContinuumImage } from '@/generated/models/continuum-image';
-import type { ContinuumVisibilities } from '@/generated/models/continuum-visibilities';
-import type { SpectralImage } from '@/generated/models/spectral-image';
-import type { PstDetectedFilterbank } from '@/generated/models/pst-detected-filterbank';
-import type { PstTiming } from '@/generated/models/pst-timing';
-import type { PstFlowthrough } from '@/generated/models/pst-flowthrough';
-import type { DataProductSDP } from '@/generated/models/data-product-sdp';
-import type { DataProductSRC as DataProductSRCPDM } from '@/generated/models/data-product-src';
-
-export type DataProductSDPContinuumImageBackend = ContinuumImage;
-
-export type DataProductSDPContinuumVisibilitiesBackend = ContinuumVisibilities;
-
-export type DataProductSDPSpectralImageBackend = SpectralImage;
-
-export type DataProductSDPPSTDetectedFilterBankBackend = PstDetectedFilterbank;
-
-export type DataProductSDPPSTTimingBackend = PstTiming;
-
-export type DataProductSDPPSTFlowthroughBackend = PstFlowthrough;
-
-export type DataProductSDPsBackend = DataProductSDP;
-
-export type DataProductSRCNetBackend = DataProductSRCPDM;
-
 export type DataProductSDPNew = {
   // TODO rename DataProductSDP instead
   id: string;

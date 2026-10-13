@@ -176,6 +176,12 @@ CODEGEN_TARGETS = \
 	supportingFiles=index.ts
 
 
+# Turns the raw local/phtopenapi.json into the trimmed local/phtopenapi.yaml used by `models`
+openapi-spec:
+	jq -f scripts/pht_openapi.jq local/phtopenapi.json > local/phtopenapi.filtered.json
+	yq -p json -o yaml '(.. | select(tag == "!!str")) style="single"' local/phtopenapi.filtered.json > local/phtopenapi.yaml
+	rm local/phtopenapi.filtered.json
+
 CODEGEN_TMP = src/generated.tmp
 
 models:
