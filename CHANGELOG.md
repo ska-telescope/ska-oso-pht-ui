@@ -4,8 +4,11 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-UNRELEASED
+11.0.0
 ----------
+
+Many changes, bugfixes and improvements in preparation for the SV Call, as detailed below:
+
 * Bugfix: Base number of allowed targets on the cycle policy instead of hardcoded number
 * Changed: PHT validate and submit logic now follows same pattern as the SV tool  
 * Changed: Migrated from yarn classic (1.22.22) to yarn 4.12.0, simplified the Makefile and .gitlab-ci.yml to rely on the SKAO shared templates and .make targets, and updated .make submodule to latest master
