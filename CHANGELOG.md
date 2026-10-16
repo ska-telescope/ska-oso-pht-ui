@@ -4,6 +4,11 @@ Changelog
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+11.0.1
+----------
+
+* Changed: Update Docker base images to `ska-build-node-ubuntu26:1.1.2` and `ska-webserver:1.1.2` (BTN-3551)
+
 11.0.0
 ----------
 
