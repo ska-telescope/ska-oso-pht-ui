@@ -180,6 +180,30 @@ If the UI fails to load data:
 - Confirm Minikube IP
 - Ensure API versions (`v13`, `v11`) match deployed services
 
+# Code Generation
+
+The API for ska-oso-services is defined in an OpenAPI specification.
+This is then used to generate an API client and the model interfaces for the UI project, in `src/generated`.
+Only the routes and models used by the PHT / SV Ideas tool are kept, so ODT-specific and other unrelated routes are left out.
+If the API definition has changed (i.e if a new version of ska-oso-services is being used),
+the code generation needs to be redone in this project, by the following steps.
+
+1. Get the OpenAPI JSON from `http://<minikube-ip>/<namespace>/oso/api/v<ska-oso-services major version>/openapi.json` and copy to `local` directory
+   at the root of this project, as `local/phtopenapi.json`. This directory is ignored by git.
+2. Run `make openapi-spec` (requires `jq` and `yq`). This uses `scripts/pht_openapi.jq` to strip the service namespace (likely `/ska-oso-services`)
+   from the URLs, `operationId`s and response titles, rename the security scheme to `SKAO-Authentication` (the generator does not allow spaces),
+   keep only the `/pht/`, `/coordinates/`, `/visibility/` and `/odt/configuration` routes, and drop the schemas that are no longer referenced.
+   It then converts the result to `local/phtopenapi.yaml`.
+3. Run `make models` which will use the openapitools/openapi-generator-cli Docker image to generate the code in a container,
+   which is mounted so that the code will be available in the local src directory.
+4. Examine the generated code changes to make sure they seem sensible, and that the `--model-name-mappings` in the `make models`
+   command are still applicable.
+
+The generated models are imported directly from `@/generated/models`. Where a generated name clashes with one of the UI's own types
+(for example `Target`, `Supplied` and `Document`), rename it at the import, e.g. `import type { Target as TargetTransport }`.
+The only types in `src/utils/types` built on a generated model are `ProposalBackend` and `InvestigatorBackend`, which add fields
+the UI reads or sends that are not part of the PDM (for example `investigator_refs` on a proposal).
+
 # Git Hooks (Pre-Commit Checks)
 
 To enable local pre-commit checks:

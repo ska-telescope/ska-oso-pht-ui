@@ -1,7 +1,7 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { PROPOSAL_STATUS } from '@/utils/constants';
 
-export const MockProposalBackend: ProposalBackend = {
+export const MockProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
   status: PROPOSAL_STATUS.DRAFT,
   submitted_by: '',
@@ -27,4 +27,4 @@ export const MockProposalBackend: ProposalBackend = {
     result_details: [],
     calibration_strategy: []
   }
-};
+} as unknown as ProposalBackend;

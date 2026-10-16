@@ -1,3 +1,5 @@
+import type { Investigator as InvestigatorPDM } from '@/generated/models/investigator';
+
 type Investigator = {
   id: string;
   firstName: string;
@@ -13,17 +15,10 @@ type Investigator = {
 
 export default Investigator;
 
-export type InvestigatorBackend = {
-  user_id: string;
-  status: string;
-  given_name: string;
-  family_name: string;
-  email: string;
-  organization?: string;
-  for_phd?: boolean;
-  principal_investigator?: boolean;
-  officeLocation: string | null;
-  jobTitle: string | null;
+// officeLocation and jobTitle are not part of the PDM; the UI carries them on the investigator
+export type InvestigatorBackend = InvestigatorPDM & {
+  officeLocation?: string | null;
+  jobTitle?: string | null;
 };
 
 export type InvestigatorMSGraph = {

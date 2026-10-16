@@ -1131,9 +1131,11 @@ export default function DataProduct({ data }: DataProductProps) {
                   </Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>
-                    {fieldWrapper(continuumSubtractionField())}
-                  </Grid>
+                  {isSpectral() && (
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {fieldWrapper(continuumSubtractionField())}
+                    </Grid>
+                  )}
                 </Grid>
               </BorderedSection>
             )}

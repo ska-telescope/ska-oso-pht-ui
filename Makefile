@@ -165,3 +165,43 @@ set-dev-env-vars:
 
 dev-start: set-dev-env-vars
 	BACKEND_PROXY="$(BACKEND_PROXY)" yarn start
+
+# The generator creates supporting files, some of which we do not want. To achieve this, it is simplest to whitelist the ones we do want
+CODEGEN_TARGETS = \
+	models        \
+	apis,supportingFiles=api.ts \
+	supportingFiles=base.ts   \
+	supportingFiles=common.ts   \
+	supportingFiles=configuration.ts   \
+	supportingFiles=index.ts
+
+
+# Turns the raw local/phtopenapi.json into the trimmed local/phtopenapi.yaml used by `models`
+openapi-spec:
+	jq -f scripts/pht_openapi.jq local/phtopenapi.json > local/phtopenapi.filtered.json
+	yq -p json -o yaml '(.. | select(tag == "!!str")) style="single"' local/phtopenapi.filtered.json > local/phtopenapi.yaml
+	rm local/phtopenapi.filtered.json
+
+CODEGEN_TMP = src/generated.tmp
+
+models:
+	rm -fr $(CODEGEN_TMP)
+	$(foreach var,$(CODEGEN_TARGETS),$(OCI_BUILDER) run --rm --user `id -u $$USER`:`id -g $$USER` --volume "$(MINIKUBE_NFS_SHARES_ROOT)$(PWD):/spec" openapitools/openapi-generator-cli:v7.14.0 \
+	generate \
+	-i /spec/local/phtopenapi.yaml \
+	-g typescript-axios \
+	-o /spec/$(CODEGEN_TMP) \
+	--additional-properties "withSeparateModelsAndApi=true,apiPackage=api,modelPackage=models" \
+	--global-property "$(var)" \
+	--inline-schema-options REFACTOR_ALLOF_INLINE_SCHEMAS=true \
+	--model-name-mappings "PointingPattern_parameters_inner=PointingPatternParameters" \
+	--model-name-mappings "Configuration=OsdConfiguration" \
+	&&) true
+	cd $(CODEGEN_TMP)/models && ls *.ts | grep -v '^index.ts$$' | LC_ALL=C sort | sed "s/\.ts$$//; s|^|export * from './|; s|$$|';|" > index.ts
+	rm -r $(CODEGEN_TMP)/.openapi-generator
+	rm -fr $(CODEGEN_TMP)/docs
+	rm -fr src/generated
+	mv $(CODEGEN_TMP) src/generated
+	git add src/generated/
+# The --inline-schema-options fixes this bug: https://github.com/OpenAPITools/openapi-generator/issues/16150
+# with a fix suggested here: https://github.com/OpenAPITools/openapi-generator/issues/16831
