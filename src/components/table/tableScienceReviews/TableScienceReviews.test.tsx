@@ -39,6 +39,7 @@ const mockData = {
   title: 'Test Proposal',
   reviews: [
     {
+      id: 'review-1',
       status: 'Complete',
       comments: 'General comments',
       srcNet: 'SRCNet comments',
@@ -53,6 +54,7 @@ const mockData = {
       }
     },
     {
+      id: 'review-2',
       status: 'To Do',
       comments: 'General comments',
       srcNet: 'SRCNet comments',
@@ -93,5 +95,33 @@ describe('TableScienceReviews', () => {
     // const icon = screen.getByTestId('includeIcon-proposal-1-1');
     // fireEvent.click(icon);
     // expect(excludeFn).not.toHaveBeenCalled();
+  });
+
+  it('keeps each review on its own row when reviews are reordered or removed', () => {
+    const { rerender } = wrapper(<TableScienceReviews data={mockData} excludeFunction={vi.fn()} />);
+    const rowA = screen.getByText('A').closest('tr');
+    const rowB = screen.getByText('B').closest('tr');
+
+    rerender(
+      <StoreProvider>
+        <TableScienceReviews
+          data={{ ...mockData, reviews: [...mockData.reviews].reverse() }}
+          excludeFunction={vi.fn()}
+        />
+      </StoreProvider>
+    );
+    expect(screen.getByText('A').closest('tr')).toBe(rowA);
+    expect(screen.getByText('B').closest('tr')).toBe(rowB);
+
+    rerender(
+      <StoreProvider>
+        <TableScienceReviews
+          data={{ ...mockData, reviews: [mockData.reviews[1]] }}
+          excludeFunction={vi.fn()}
+        />
+      </StoreProvider>
+    );
+    expect(screen.queryByText('A')).not.toBeInTheDocument();
+    expect(screen.getByText('B').closest('tr')).toBe(rowB);
   });
 });

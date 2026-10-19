@@ -1,19 +1,12 @@
 import Target, {
   ReferenceCoordinateGalactic,
-  ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
-  ReferenceCoordinateICRSBackend,
-  ReferenceCoordinateSSO,
-  ReferenceCoordinateSSOBackend,
-  TargetBackend
+  ReferenceCoordinateSSO
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
-import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
 import GroupObservation from '@utils/types/groupObservation.tsx';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails.tsx';
 import { ValueUnitPair } from '@utils/types/valueUnitPair.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import { ResultsDetailsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
@@ -43,30 +36,40 @@ import {
   STATUS_OK
 } from '@utils/constants.ts';
 import {
-  DataProductSDPContinuumVisibilitiesBackend,
   DataProductSDPNew,
-  DataProductSDPsBackend,
-  DataProductSDPSpectralImageBackend,
   DataProductSRC,
-  DataProductSRCNetBackend,
   SDPFilterbankPSTData,
   SDPFlowthroughPSTData,
   SDPImageContinuumData,
   SDPSpectralData,
   SDPVisibilitiesContinuumData
 } from '@utils/types/dataProduct.tsx';
-import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
+import { DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
-import {
-  CalibrationStrategy,
-  CalibrationStrategyBackend,
-  Calibrator,
-  FluxCalBackend
-} from '@/utils/types/calibrationStrategy';
-import { SuppliedBackend } from '@/utils/types/supplied';
+import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
+import type {
+  CalibrationStrategy as CalibrationStrategyTransport,
+  ContinuumVisibilities,
+  DataProductSDP as DataProductSDPTransport,
+  DataProductSRC as DataProductSRCTransport,
+  Document as DocumentTransport,
+  FluxCal,
+  GalacticCoordinates,
+  ICRSCoordinates,
+  LowArray,
+  MidArray,
+  ObservationSets,
+  Polarisation,
+  Result,
+  ScriptParameters,
+  SpecialCoordinates,
+  Supplied as SuppliedTransport,
+  Target as TargetTransport,
+  Weighting
+} from '@/generated/models';
 
 const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
 const isPST = (type: string) => type === TYPE_PST;
@@ -76,10 +79,7 @@ const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
 
 export const getReferenceCoordinate = (
   tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO
-):
-  | ReferenceCoordinateICRSBackend
-  | ReferenceCoordinateGalacticBackend
-  | ReferenceCoordinateSSOBackend => {
+): ICRSCoordinates | GalacticCoordinates | SpecialCoordinates => {
   switch (tar.kind) {
     case REFERENCE_COORDINATE_TYPE_ICRS.value:
       return {
@@ -90,7 +90,7 @@ export const getReferenceCoordinate = (
         pm_dec: (tar as Target).pmDec,
         epoch: (tar as Target).epoch,
         parallax: (tar as Target).parallax
-      } as ReferenceCoordinateICRSBackend;
+      } as ICRSCoordinates;
 
     case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
       return {
@@ -101,23 +101,23 @@ export const getReferenceCoordinate = (
         pm_b: (tar as Target).pmB,
         epoch: (tar as Target).epoch,
         parallax: (tar as Target).parallax
-      } as ReferenceCoordinateGalacticBackend;
+      } as GalacticCoordinates;
 
     case REFERENCE_COORDINATE_TYPE_SSO.value:
       return {
         kind: REFERENCE_COORDINATE_TYPE_SSO.label,
         name: (tar as Target).name
-      } as ReferenceCoordinateSSOBackend;
+      } as SpecialCoordinates;
     default:
       throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
   }
 };
 
-export const getTargets = (targets: Target[]): TargetBackend[] => {
+export const getTargets = (targets: Target[]): TargetTransport[] => {
   const mappedTargets = targets.map((tar) => ({
     name: tar.name,
     target_id: tar.id,
-    reference_coordinate: getReferenceCoordinate(tar),
+    reference_coordinate: getReferenceCoordinate(tar) as TargetTransport['reference_coordinate'],
     radial_velocity: {
       quantity: {
         value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
@@ -126,7 +126,7 @@ export const getTargets = (targets: Target[]): TargetBackend[] => {
       definition: 'RADIO',
       reference_frame: tar.raReferenceFrame ?? 'LSRK',
       redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
-    }
+    } as TargetTransport['radial_velocity']
   }));
   return mappedTargets;
 };
@@ -134,24 +134,24 @@ export const getTargets = (targets: Target[]): TargetBackend[] => {
 const getDocuments = (
   sciencePDF: DocumentPDF | null,
   technicalPDF: DocumentPDF | null
-): DocumentBackend[] => {
-  const documents = [];
+): DocumentTransport[] => {
+  const documents: DocumentTransport[] = [];
   if (sciencePDF) {
     documents.push({
-      document_id: sciencePDF.documentId,
+      document_id: sciencePDF.documentId as string,
       uploaded_pdf: sciencePDF.isUploadedPdf
     });
   }
   if (technicalPDF) {
     documents.push({
-      document_id: technicalPDF.documentId,
+      document_id: technicalPDF.documentId as string,
       uploaded_pdf: technicalPDF.isUploadedPdf
     });
   }
   return documents;
 };
 
-function calibratorToFluxCal(calibrator: Calibrator): FluxCalBackend {
+function calibratorToFluxCal(calibrator: Calibrator): FluxCal {
   return {
     kind: 'flux',
     name: calibrator.name
@@ -160,14 +160,17 @@ function calibratorToFluxCal(calibrator: Calibrator): FluxCalBackend {
 
 export const mapCalibrationStrategyToBackend = (
   calibrationStrategies: CalibrationStrategy[]
-): CalibrationStrategyBackend[] => {
-  return calibrationStrategies?.map((strategy) => ({
-    observatory_defined: strategy?.observatoryDefined,
-    calibration_id: strategy?.id,
-    observation_set_ref: strategy?.observationIdRef,
-    calibrators: strategy?.calibrators ? strategy.calibrators.map(calibratorToFluxCal) : null,
-    notes: strategy?.notes
-  }));
+): CalibrationStrategyTransport[] => {
+  return calibrationStrategies?.map(
+    (strategy) =>
+      ({
+        observatory_defined: strategy?.observatoryDefined,
+        calibration_id: strategy?.id,
+        observation_set_ref: strategy?.observationIdRef,
+        calibrators: strategy?.calibrators ? strategy.calibrators.map(calibratorToFluxCal) : null,
+        notes: strategy?.notes
+      }) as CalibrationStrategyTransport
+  );
 };
 
 /**
@@ -176,8 +179,23 @@ export const mapCalibrationStrategyToBackend = (
 export const getDataProductScriptParameters = (
   obs: Observation[] | null,
   dp: DataProductSDPNew
-) => {
+): ScriptParameters => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+  const getWeight = (data: SDPImageContinuumData | SDPSpectralData): Weighting => ({
+    weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
+      ?.label as Weighting['weighting'],
+    ...(Number(data?.weighting) === IW_BRIGGS && {
+      robust: data?.robust != null ? Number(data?.robust) : undefined
+    })
+  });
+  const getVisibilities = (
+    data: SDPVisibilitiesContinuumData
+  ): ContinuumVisibilities & { variant: 'visibilities' } => ({
+    time_averaging: data?.timeAveraging ?? 0,
+    frequency_averaging: data?.frequencyAveraging ?? 0,
+    kind: 'continuum',
+    variant: 'visibilities'
+  });
   const obType = obs?.find((o) => o?.id === dp.observationId)?.type;
   switch (obType) {
     case TYPE_CONTINUUM: {
@@ -192,28 +210,15 @@ export const getDataProductScriptParameters = (
             value: data?.pixelSizeValue,
             unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
           },
-          weight: {
-            weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
-              ?.label as string,
-            ...(Number(data?.weighting) === IW_BRIGGS && {
-              robust: data?.robust != null ? Number(data?.robust) : undefined
-            })
-          },
-          polarisations: data?.polarisations,
+          weight: getWeight(data),
+          polarisations: data?.polarisations as Polarisation[],
           channels_out: data?.channelsOut,
-          gaussian_taper: data?.taperValue?.toString(),
+          gaussian_taper: data?.taperValue,
           kind: 'continuum',
           variant: 'continuum image'
         };
       } else {
-        const data = dp?.data as SDPVisibilitiesContinuumData;
-        const result: DataProductSDPContinuumVisibilitiesBackend = {
-          time_averaging: data?.timeAveraging ?? 0,
-          frequency_averaging: data?.frequencyAveraging ?? 0,
-          kind: 'continuum',
-          variant: 'visibilities'
-        };
-        return result;
+        return getVisibilities(dp?.data as SDPVisibilitiesContinuumData);
       }
     }
     case TYPE_ZOOM:
@@ -222,40 +227,33 @@ export const getDataProductScriptParameters = (
       // AutoLinking.tsx) - the backend only has one "visibilities" script-parameters shape
       // (kind: continuum / variant: visibilities), regardless of the mode that created it.
       if ((dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE) {
-        const data = dp?.data as SDPVisibilitiesContinuumData;
-        const result: DataProductSDPContinuumVisibilitiesBackend = {
-          time_averaging: data?.timeAveraging ?? 0,
-          frequency_averaging: data?.frequencyAveraging ?? 0,
-          kind: 'continuum',
-          variant: 'visibilities'
-        };
-        return result;
+        return getVisibilities(dp?.data as SDPVisibilitiesContinuumData);
       }
       const data = dp?.data as SDPSpectralData;
-      const result: DataProductSDPSpectralImageBackend = {
+      const common = {
         image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
         image_cellsize: {
           value: data?.pixelSizeValue,
           unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
         },
-        weight: {
-          weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
-            ?.label as string,
-          ...(Number(data?.weighting) === IW_BRIGGS && {
-            robust: data?.robust != null ? Number(data?.robust) : undefined
-          })
-        },
-        polarisations: data?.polarisations ?? [],
+        weight: getWeight(data),
+        polarisations: (data?.polarisations ?? []) as Polarisation[],
         channels_out: data?.channelsOut ?? 0,
-        gaussian_taper: data?.taperValue?.toString() ?? '0',
-        kind: obType === TYPE_CONTINUUM_SPECTRAL ? TYPE_CONTINUUM_SPECTRAL_LONG : 'spectral',
-        variant:
-          obType === TYPE_CONTINUUM_SPECTRAL
-            ? `${TYPE_CONTINUUM_SPECTRAL_LONG} image`
-            : 'spectral image',
+        gaussian_taper: data?.taperValue ?? 0
+      };
+      if (obType === TYPE_CONTINUUM_SPECTRAL) {
+        return {
+          ...common,
+          kind: TYPE_CONTINUUM_SPECTRAL_LONG,
+          variant: 'continuum and spectral line image'
+        };
+      }
+      return {
+        ...common,
+        kind: 'spectral',
+        variant: 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
       };
-      return result;
     }
     case TYPE_PST:
     default:
@@ -263,7 +261,7 @@ export const getDataProductScriptParameters = (
       if (pstMode === DETECTED_FILTER_BANK_VALUE) {
         const data = dp?.data as SDPFilterbankPSTData;
         return {
-          polarisations: data?.polarisations,
+          polarisations: data?.polarisations as Polarisation[],
           bit_depth: Number(data?.bitDepth),
           output_frequency_resolution: data?.outputFrequencyResolution ?? 0,
           output_sampling_interval: data?.outputSamplingInterval ?? 0,
@@ -280,7 +278,7 @@ export const getDataProductScriptParameters = (
       } else {
         const data = dp?.data as SDPFlowthroughPSTData;
         return {
-          polarisations: data?.polarisations,
+          polarisations: data?.polarisations as Polarisation[],
           bit_depth: data?.bitDepth ?? 1,
           kind: 'pst',
           variant: 'flow through'
@@ -292,7 +290,7 @@ export const getDataProductScriptParameters = (
 const getDataProductSDP = (
   obs: Observation[] | null,
   dataProducts: DataProductSDPNew[]
-): DataProductSDPsBackend[] => {
+): DataProductSDPTransport[] => {
   const sdp = dataProducts?.map((dp) => ({
     data_product_id: dp.id?.toString(),
     observation_set_ref: dp.observationId,
@@ -301,7 +299,7 @@ const getDataProductSDP = (
   return sdp;
 };
 
-export const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
+export const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCTransport[] => {
   return dataProducts?.map((dp) => ({ data_products_src_id: dp?.id }));
 };
 
@@ -318,16 +316,16 @@ const getSubArray = (incSubArray: string, incTelescope: number): string => {
   return subArray ? subArray : SA_AA4;
 };
 
-const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDetailsMidBackend => {
+const getArrayDetails = (incObs: Observation): LowArray | MidArray => {
   if (incObs.telescope === TELESCOPE_LOW_NUM) {
-    const lowArrayDetails: ArrayDetailsLowBackend = {
+    const lowArrayDetails: LowArray = {
       array: TELESCOPE_LOW_BACKEND_MAPPING,
       subarray: getSubArray(incObs.subarray, incObs.telescope),
       number_of_stations: incObs.numStations
     };
     return lowArrayDetails;
   } else {
-    const midArrayDetails: ArrayDetailsMidBackend = {
+    const midArrayDetails: MidArray = {
       array: TELESCOPE_MID_BACKEND_MAPPING,
       subarray: getSubArray(incObs.subarray, incObs.telescope),
       weather: incObs.weather,
@@ -380,21 +378,21 @@ export const getObservationTypeDetails = (obs: Observation) => {
       return {
         bandwidth: getBandwidth(obs),
         central_frequency: getCentralFrequency(obs),
-        supplied: getSupplied(obs) as SuppliedBackend,
+        supplied: getSupplied(obs) as SuppliedTransport,
         observation_type: TYPE_CONTINUUM
       };
     case TYPE_CONTINUUM_SPECTRAL:
       return {
         bandwidth: getBandwidth(obs),
         central_frequency: getCentralFrequency(obs),
-        supplied: getSupplied(obs) as SuppliedBackend,
+        supplied: getSupplied(obs) as SuppliedTransport,
         observation_type: TYPE_CONTINUUM_SPECTRAL_LONG
       };
     case TYPE_ZOOM:
       return {
         bandwidth: getBandwidth(obs),
         central_frequency: getCentralFrequency(obs),
-        supplied: getSupplied(obs) as SuppliedBackend,
+        supplied: getSupplied(obs) as SuppliedTransport,
         observation_type: TYPE_ZOOM_LONG,
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
@@ -405,7 +403,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
       return {
         bandwidth: getBandwidth(obs),
         central_frequency: getCentralFrequency(obs),
-        supplied: getSupplied(obs) as SuppliedBackend,
+        supplied: getSupplied(obs) as SuppliedTransport,
         observation_type: TYPE_PST,
         pst_mode: typeof obs.pstMode !== 'undefined' ? PST_MODES[obs.pstMode].mapping : undefined
       };
@@ -415,17 +413,19 @@ export const getObservationTypeDetails = (obs: Observation) => {
 const getObservationsSets = (
   incObservationsSets: Observation[] | undefined,
   incObservationGroups: GroupObservation[] | undefined
-): ObservationSetBackend[] => {
+): ObservationSets[] => {
   const outObservationsSets = [];
   if (incObservationsSets) {
     for (const obs of incObservationsSets) {
-      const observation: ObservationSetBackend = {
+      const observation: ObservationSets = {
         observation_set_id: obs?.id,
         group_id: getGroupObservation(obs?.id, incObservationGroups),
         elevation: obs.elevation,
         observing_band: getObservingBand(obs.observingBand) as string,
-        array_details: getArrayDetails(obs),
-        observation_type_details: getObservationTypeDetails(obs)
+        array_details: getArrayDetails(obs) as ObservationSets['array_details'],
+        observation_type_details: getObservationTypeDetails(
+          obs
+        ) as unknown as ObservationSets['observation_type_details']
       };
       outObservationsSets.push(observation);
     }
@@ -575,7 +575,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
   const resultsArr = [];
   for (const tarObs of incTargetObservations) {
     // refs always populate; result/noise blocks are null when there's no sensCalc (SSO, PST)
-    const result: ResultsDetailsBackend = {
+    const result: Result = {
       observation_set_ref: tarObs.observationId,
       data_product_ref: tarObs.dataProductsSDPId,
       target_ref: tarObs.targetId,
@@ -603,7 +603,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
       result.result = {
         supplied_type: suppliedType,
         ...suppliedRelatedFields
-      };
+      } as unknown as Result['result'];
 
       result.continuum_confusion_noise = {
         value:
@@ -627,7 +627,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
             : '',
         unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
           ?.units
-      };
+      } as Result['synthesized_beam_size'];
 
       result.spectral_confusion_noise = {
         value: Number(
@@ -648,13 +648,13 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
-    status: status,
+    status: status as ProposalBackend['status'],
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
     submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? userId : '',
     investigator_refs: proposal.investigators?.map((investigator) => {
       return investigator?.id?.toString();
     }),
-    cycle: proposal.cycle,
+    cycle: proposal.cycle as string,
     proposal_info: {
       title: proposal.title,
       proposal_type: {
@@ -680,7 +680,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
               jobTitle: investigator.jobTitle
             };
           })
-        : null
+        : (null as unknown as undefined) // still sent as null; the PDM type has no null here
     },
     observation_info: {
       targets: getTargets(proposal?.targets ? proposal.targets : []),

@@ -2,7 +2,8 @@ import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { SA_AA2, BAND_LOW_STR, DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
 import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 
-export const MockProposalBackend: ProposalBackend = {
+// The mocks mirror payloads that are looser than the PDM schema (e.g. numbers sent as strings)
+export const MockProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
   status: PROPOSAL_STATUS.DRAFT,
   submitted_by: '',
@@ -232,9 +233,9 @@ export const MockProposalBackend: ProposalBackend = {
       }
     ]
   }
-};
+} as unknown as ProposalBackend;
 
-export const MockProposalBackendZoom: ProposalBackend = {
+export const MockProposalBackendZoom = {
   prsl_id: 'prsl-t0001-20250624-00049',
   status: PROPOSAL_STATUS.DRAFT,
   submitted_by: '',
@@ -404,4 +405,4 @@ export const MockProposalBackendZoom: ProposalBackend = {
       }
     ]
   }
-};
+} as unknown as ProposalBackend;

@@ -185,7 +185,7 @@ export default function TechnicalPage() {
     setTheProposalState(validateTechnicalPage(getProposal()));
   }, [validateToggle]);
 
-  const PDFView = () => (
+  const renderPDFView = () => (
     <PDFWrapper open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
   );
 
@@ -269,7 +269,7 @@ export default function TechnicalPage() {
           )}
         </Grid>
       </Grid>
-      {PDFView()}
+      {renderPDFView()}
     </Shell>
   );
 }

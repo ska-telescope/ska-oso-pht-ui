@@ -7,7 +7,7 @@ import {
   TYPE_ZOOM_LONG
 } from '@utils/constants.ts';
 
-export const MockProposalBackend: ProposalBackend = {
+export const MockProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
   status: PROPOSAL_STATUS.DRAFT,
   submitted_by: '',
@@ -136,7 +136,7 @@ export const MockProposalBackend: ProposalBackend = {
           variant: 'continuum image',
           kind: 'continuum',
           channels_out: 1,
-          gaussian_taper: '1',
+          gaussian_taper: 1,
           polarisations: ['I'],
           image_size: {
             value: 15,
@@ -207,9 +207,9 @@ export const MockProposalBackend: ProposalBackend = {
       }
     ]
   }
-};
+} as unknown as ProposalBackend;
 
-export const MockProposalBackendZoom: ProposalBackend = {
+export const MockProposalBackendZoom = {
   prsl_id: 'prsl-t0001-20250624-00049',
   status: PROPOSAL_STATUS.DRAFT,
   submitted_by: '',
@@ -293,7 +293,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           variant: 'spectral image',
           kind: 'spectral',
           channels_out: 1,
-          gaussian_taper: '1',
+          gaussian_taper: 1,
           polarisations: ['I'],
           continuum_subtraction: undefined,
           image_size: {
@@ -367,4 +367,4 @@ export const MockProposalBackendZoom: ProposalBackend = {
     documents: [],
     data_product_src_nets: []
   }
-};
+} as unknown as ProposalBackend;

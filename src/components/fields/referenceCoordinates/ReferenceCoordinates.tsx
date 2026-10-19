@@ -19,7 +19,7 @@ export default function ReferenceCoordinatesField({
   const { t } = useScopedTranslation();
   const FIELD = 'referenceCoordinates';
 
-  const ReferenceCoordinatesValueField = () => {
+  const renderReferenceCoordinatesValueField = () => {
     return (
       <Box
         sx={{
@@ -49,7 +49,7 @@ export default function ReferenceCoordinatesField({
         width: '100%'
       }}
     >
-      {ReferenceCoordinatesValueField()}
+      {renderReferenceCoordinatesValueField()}
     </Box>
   );
 }

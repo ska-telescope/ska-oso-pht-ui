@@ -1,6 +1,6 @@
 # pull the base image
-ARG BASE_IMAGE="artefact.skao.int/ska-build-node-ubuntu26:1.0.2"
-ARG FINAL_IMAGE="artefact.skao.int/ska-webserver:1.0.2"
+ARG BASE_IMAGE="artefact.skao.int/ska-build-node-ubuntu26:1.1.2"
+ARG FINAL_IMAGE="artefact.skao.int/ska-webserver:1.1.2"
 FROM $BASE_IMAGE AS base
 
 ARG http_proxy

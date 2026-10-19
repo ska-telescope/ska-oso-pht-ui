@@ -121,7 +121,7 @@ export default function PHT({
   const theme = useTheme();
   const previousPathRef = React.useRef(location.pathname);
 
-  const LG = () => useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
+  const belowLg = useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
   const loggedIn = isLoggedIn();
 
@@ -138,7 +138,7 @@ export default function PHT({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const autoRepairAttemptedForId = React.useRef<string | undefined>(undefined);
+  const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
 
   // A target can end up linked with no matching targetObservation entry (e.g. an older
   // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
@@ -151,14 +151,14 @@ export default function PHT({
     const target = proposal?.targets?.[0];
     if (
       !proposal?.id ||
-      autoRepairAttemptedForId.current === proposal.id ||
+      autoRepairAttemptedForIdRef.current === proposal.id ||
       !autoLink ||
       !target ||
       (proposal?.targetObservation?.length ?? 0) > 0
     ) {
       return;
     }
-    autoRepairAttemptedForId.current = proposal.id;
+    autoRepairAttemptedForIdRef.current = proposal.id;
     linkTarget(target, getProposal, setProposal, authClient).then((result) => {
       if (!result?.success) {
         notifyWarning(result?.error ?? t('autoLink.error'));
@@ -338,7 +338,7 @@ export default function PHT({
       <AppWrapper
         accessibility
         accessibilityColor={getAccessibilityColors()}
-        application={t(LG() ? 'pht.short' : 'pht.title')}
+        application={t(belowLg ? 'pht.short' : 'pht.title')}
         footerChildren={
           <Typography
             variant="body1"
@@ -371,8 +371,8 @@ export default function PHT({
           >
             {REQUIRED_WIDTH ? (
               <Routes>
-                {ROUTES.map((ROUTE, index) => (
-                  <Route key={index} path={ROUTE.path} element={ROUTE.element} />
+                {ROUTES.map((ROUTE) => (
+                  <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
                 ))}
               </Routes>
             ) : (

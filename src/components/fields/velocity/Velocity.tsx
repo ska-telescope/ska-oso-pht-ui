@@ -47,7 +47,7 @@ export default function VelocityField({
     }
   }, [setErrorText, rmFieldError]);
 
-  const RedShiftValueField = () => {
+  const renderRedShiftValueField = () => {
     return (
       <TextEntry
         errorText={rmFieldError}
@@ -61,7 +61,7 @@ export default function VelocityField({
     );
   };
 
-  const VelocityValueField = () => {
+  const renderVelocityValueField = () => {
     return (
       <TextEntry
         errorText={rmFieldError}
@@ -69,14 +69,14 @@ export default function VelocityField({
         testId="velocityValue"
         value={vel}
         setValue={setVel}
-        suffix={VelocityUnitField()}
+        suffix={renderVelocityUnitField()}
         onFocus={velFocus}
         onBlur={velBlur}
       />
     );
   };
 
-  const VelocityUnitField = () => {
+  const renderVelocityUnitField = () => {
     const OPTIONS = [0, 1];
 
     const getOptions = () => {
@@ -97,8 +97,8 @@ export default function VelocityField({
 
   return (
     <Box sx={{ height: '100%', width: '100%' }}>
-      {velType === VELOCITY_TYPE.VELOCITY && VelocityValueField()}
-      {velType === VELOCITY_TYPE.REDSHIFT && RedShiftValueField()}
+      {velType === VELOCITY_TYPE.VELOCITY && renderVelocityValueField()}
+      {velType === VELOCITY_TYPE.REDSHIFT && renderRedShiftValueField()}
     </Box>
   );
 }

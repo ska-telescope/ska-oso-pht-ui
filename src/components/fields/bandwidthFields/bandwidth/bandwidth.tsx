@@ -74,10 +74,10 @@ export default function BandwidthField({
   // before. Pick a sensible default once real data is available, based on its magnitude, rather
   // than always defaulting to kHz - guarded to fire only once so it doesn't override a later
   // manual unit change.
-  const hasSetInitialUnits = React.useRef(false);
+  const hasSetInitialUnitsRef = React.useRef(false);
   React.useEffect(() => {
-    if (hasSetInitialUnits.current || zoomChannels <= 0 || resolutionHz <= 0) return;
-    hasSetInitialUnits.current = true;
+    if (hasSetInitialUnitsRef.current || zoomChannels <= 0 || resolutionHz <= 0) return;
+    hasSetInitialUnitsRef.current = true;
     setBandwidthUnits(bandwidthHz >= 1_000_000 ? FREQUENCY_MHZ : FREQUENCY_KHZ);
   }, [zoomChannels, resolutionHz, bandwidthHz]);
 

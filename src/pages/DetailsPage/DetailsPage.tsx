@@ -47,9 +47,9 @@ export default function DetailsPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const [scienceCategoryId, setScienceCategoryId] = React.useState(
-    getProposal().scienceCategory ?? ''
+    () => getProposal().scienceCategory ?? ''
   );
-  const [abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
+  const [abstract, setAbstract] = React.useState(() => getProposal().abstract ?? '');
   const [initial, setInitial] = React.useState(true);
 
   const getProposalState = () => application.content1 as number[];

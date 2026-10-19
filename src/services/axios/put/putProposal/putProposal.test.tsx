@@ -5,6 +5,7 @@ import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_ZOOM,
   TYPE_PST,
   DP_TYPE_IMAGES,
@@ -18,12 +19,14 @@ import {
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   DataProductSDPNew,
-  DataProductSDPPSTDetectedFilterBankBackend,
   DataProductSRC,
-  DataProductSRCNetBackend,
   SDPFilterbankPSTData,
   SDPVisibilitiesContinuumData
 } from '@utils/types/dataProduct.tsx';
+import type {
+  DataProductSRC as DataProductSRCTransport,
+  PstDetectedFilterbank
+} from '@/generated/models';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
@@ -266,7 +269,8 @@ describe('getDataProductScriptParameters', () => {
     { id: '2', type: TYPE_ZOOM, pstMode: undefined },
     { id: '3', type: TYPE_PST, pstMode: DETECTED_FILTER_BANK_VALUE },
     { id: '4', type: TYPE_PST, pstMode: PULSAR_TIMING_VALUE },
-    { id: '5', type: TYPE_PST, pstMode: 999 }
+    { id: '5', type: TYPE_PST, pstMode: 999 },
+    { id: '6', type: TYPE_CONTINUUM_SPECTRAL, pstMode: undefined }
   ] as any[];
 
   test('should return correct parameters for continuum image', () => {
@@ -336,8 +340,35 @@ describe('getDataProductScriptParameters', () => {
       image_cellsize: { value: 1, unit: 'deg' },
       kind: 'spectral',
       variant: 'spectral image',
-      continuum_subtraction: true
+      continuum_subtraction: true,
+      gaussian_taper: 0.1
     });
+  });
+
+  test('should return continuum and spectral line image for combined mode', () => {
+    const dp = {
+      id: 'dp-6',
+      observationId: '6',
+      data: {
+        imageSizeValue: 20,
+        imageSizeUnits: 2,
+        pixelSizeValue: 1,
+        pixelSizeUnits: 0,
+        weighting: 2,
+        polarisations: ['XY'],
+        channelsOut: 8,
+        taperValue: 0.1,
+        continuumSubtraction: true,
+        robust: 1
+      }
+    } as DataProductSDPNew;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toMatchObject({
+      kind: 'continuum and spectral line',
+      variant: 'continuum and spectral line image',
+      gaussian_taper: 0.1
+    });
+    expect(result).not.toHaveProperty('continuum_subtraction');
   });
 
   test('should return detected filterbank for PST', () => {
@@ -364,7 +395,7 @@ describe('getDataProductScriptParameters', () => {
       rotation_measure: 5.25,
       kind: 'pst',
       variant: 'detected filterbank'
-    } as DataProductSDPPSTDetectedFilterBankBackend);
+    } as PstDetectedFilterbank);
   });
 
   test('should return pulsar timing for PST', () => {
@@ -421,15 +452,16 @@ describe('getDataProductScriptParameters', () => {
       }
     } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
-    expect(result?.weight?.weighting).toBe('briggs');
-    expect(result?.weight?.robust).toBe(0.5);
+    const weight = (result as { weight?: { weighting?: string; robust?: number } })?.weight;
+    expect(weight?.weighting).toBe('briggs');
+    expect(weight?.robust).toBe(0.5);
   });
 });
 
 describe('getDataProductSRC', () => {
   test('should map DataProductSRC array to DataProductSRCNetBackend array', () => {
     const input: Partial<DataProductSRC>[] = [{ id: '1' }, { id: '2' }, { id: '3' }];
-    const expected: DataProductSRCNetBackend[] = [
+    const expected: DataProductSRCTransport[] = [
       { data_products_src_id: '1' },
       { data_products_src_id: '2' },
       { data_products_src_id: '3' }

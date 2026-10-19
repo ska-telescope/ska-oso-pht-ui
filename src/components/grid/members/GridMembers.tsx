@@ -21,6 +21,18 @@ interface GridMembersProps {
   permissions?: ProposalAccess[];
 }
 
+const PIStar = ({ pi }: { pi: any }) => {
+  if (pi) {
+    return <StarIcon onClick={() => {}} />;
+  }
+};
+
+const PHDThesis = ({ value }: { value: any }) => {
+  if (value) {
+    return <TickIcon onClick={() => {}} />;
+  }
+};
+
 export default function GridMembers({
   action = false,
   actionClicked,
@@ -33,18 +45,6 @@ export default function GridMembers({
   const { isSV } = useOSDAccessors();
 
   const isPI = ({ pi }: { pi: any }) => pi;
-
-  const PIStar = ({ pi }: { pi: any }) => {
-    if (pi) {
-      return <StarIcon onClick={() => {}} />;
-    }
-  };
-
-  const PHDThesis = ({ value }: { value: any }) => {
-    if (value) {
-      return <TickIcon onClick={() => {}} />;
-    }
-  };
 
   const headerDisplay = (inValue: string) => (
     <Typography variant="subtitle1">{t(inValue)}</Typography>

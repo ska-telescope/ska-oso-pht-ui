@@ -190,7 +190,7 @@ export default function GridReviewers({
     ? filterReviewers(selectedData, searchTerm, searchTypeExpertise, searchTypeAffiliation)
     : [];
 
-  const ReviewersSectionTitle = () => (
+  const renderReviewersSectionTitle = () => (
     <Typography
       align="center"
       variant="h6"
@@ -284,7 +284,7 @@ export default function GridReviewers({
     >
       {showTitle && (
         <Grid container size={{ lg: 12 }}>
-          {ReviewersSectionTitle()}
+          {renderReviewersSectionTitle()}
         </Grid>
       )}
 

@@ -62,7 +62,7 @@ export default function SensCalcModalMultiple({
   let i = 0; // Just here so that the key warning is dealt with
   let headerNumber = 0;
 
-  function HeaderLine(str: string) {
+  function renderHeaderLine(str: string) {
     return <Typography key={i++}>{str}</Typography>;
   }
 
@@ -72,7 +72,7 @@ export default function SensCalcModalMultiple({
     return (
       <Stack>
         {arr.map((rec) => {
-          return HeaderLine(rec);
+          return renderHeaderLine(rec);
         })}
       </Stack>
     );

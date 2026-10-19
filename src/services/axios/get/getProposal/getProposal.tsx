@@ -1,24 +1,15 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails.tsx';
-import {
-  ResultsSection,
-  SensCalcResults,
-  ResultsDetailsBackend
-} from '@utils/types/sensCalcResults.tsx';
+import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import Target, {
   PointingPatternParams,
   ReferenceCoordinateGalactic,
-  ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
-  ReferenceCoordinateICRSBackend,
-  ReferenceCoordinateSSO,
-  ReferenceCoordinateSSOBackend,
-  TargetBackend
+  ReferenceCoordinateSSO
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import Supplied, { SuppliedBackend } from '@utils/types/supplied.tsx';
+import Supplied from '@utils/types/supplied.tsx';
 import {
   SKA_OSO_SERVICES_URL,
   DETAILS,
@@ -55,45 +46,56 @@ import {
   TYPE_ZOOM_LONG,
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
-import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
-import {
-  ObservationSetBackend,
-  ObservationTypeDetailsPSTBackend,
-  ObservationTypeDetailsSpectralBackend
-} from '@utils/types/observationSet.tsx';
-import {
-  DataProductSDPNew,
-  DataProductSDPsBackend,
-  DataProductSRC,
-  DataProductSRCNetBackend
-} from '@utils/types/dataProduct.tsx';
+import { DocumentPDF } from '@utils/types/document.tsx';
+import { DataProductSDPNew, DataProductSRC } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
-import {
-  CalibrationStrategy,
-  CalibrationStrategyBackend,
-  Calibrator,
-  FluxCalBackend
-} from '@/utils/types/calibrationStrategy.tsx';
+import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy.tsx';
+import type {
+  CalibrationStrategy as CalibrationStrategyTransport,
+  DataProductSDP as DataProductSDPTransport,
+  DataProductSRC as DataProductSRCTransport,
+  Document as DocumentTransport,
+  FluxCal,
+  GalacticCoordinates,
+  ICRSCoordinates,
+  Integration,
+  LowArray,
+  MidArray,
+  ObservationSets,
+  PointingPatternParameters,
+  PstSetup,
+  Result,
+  Sensitivity,
+  SpecialCoordinates,
+  SpectralLineSetup,
+  Supplied as SuppliedTransport,
+  Target as TargetTransport
+} from '@/generated/models';
 
-export const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
+// The PDM result is a union on supplied_type, but the mapping reads the fields of both variants.
+type ResultsDetailsAnySupplied = Omit<Result, 'result'> & {
+  result?: Partial<Omit<Integration, 'supplied_type'> & Omit<Sensitivity, 'supplied_type'>> | null;
+};
+
+export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefined) => {
   const investigators = [] as Investigator[];
   if (!inValue || inValue.length === 0) {
     return investigators;
   }
   for (let i = 0; i < inValue?.length; i++) {
     investigators.push({
-      id: inValue[i].user_id,
+      id: inValue[i].user_id as string,
       status: inValue[i].status,
-      firstName: inValue[i].given_name,
-      lastName: inValue[i].family_name,
-      email: inValue[i]?.email,
+      firstName: inValue[i].given_name as string,
+      lastName: inValue[i].family_name as string,
+      email: inValue[i]?.email as string,
       affiliation: inValue[i].organization as string,
       phdThesis: inValue[i].for_phd as boolean,
       pi: inValue[i].principal_investigator as boolean,
-      officeLocation: inValue[i].officeLocation,
-      jobTitle: inValue[i].jobTitle
+      officeLocation: inValue[i].officeLocation as string | null,
+      jobTitle: inValue[i].jobTitle as string | null
     });
   }
   return investigators;
@@ -106,7 +108,10 @@ export const getScienceCategory = (scienceCat: string) => {
   return cat === null || cat === undefined ? null : cat;
 };
 
-const getPDF = (documents: DocumentBackend[] | null, documentId: string): DocumentPDF | null => {
+const getPDF = (
+  documents: DocumentTransport[] | null | undefined,
+  documentId: string
+): DocumentPDF | null => {
   if (!documents) return null;
 
   const documentById = documents.find((document) => document.document_id === documentId);
@@ -127,32 +132,29 @@ export const getVelType = (InDefinition: string) => {
 };
 
 export const getReferenceCoordinate = (
-  tar:
-    | ReferenceCoordinateICRSBackend
-    | ReferenceCoordinateGalacticBackend
-    | ReferenceCoordinateSSOBackend
+  tar: ICRSCoordinates | GalacticCoordinates | SpecialCoordinates
 ): ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO => {
   switch (tar.kind) {
     case REFERENCE_COORDINATE_TYPE_ICRS.label:
       return {
         kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-        raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
-        decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
-        pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
-        pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
-        epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
-        parallax: (tar as ReferenceCoordinateICRSBackend).parallax
+        raStr: (tar as ICRSCoordinates).ra_str as string,
+        decStr: (tar as ICRSCoordinates).dec_str as string,
+        pmRa: (tar as ICRSCoordinates).pm_ra as number | undefined,
+        pmDec: (tar as ICRSCoordinates).pm_dec as number | undefined,
+        epoch: (tar as ICRSCoordinates).epoch,
+        parallax: (tar as ICRSCoordinates).parallax as number | undefined
       };
 
     case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
       return {
         kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-        l: (tar as ReferenceCoordinateGalacticBackend).l,
-        b: (tar as ReferenceCoordinateGalacticBackend).b,
-        pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
-        pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
-        epoch: (tar as ReferenceCoordinateGalacticBackend).epoch,
-        parallax: (tar as ReferenceCoordinateGalacticBackend).parallax
+        l: (tar as GalacticCoordinates).l,
+        b: (tar as GalacticCoordinates).b,
+        pmL: (tar as GalacticCoordinates).pm_l,
+        pmB: (tar as GalacticCoordinates).pm_b,
+        epoch: (tar as GalacticCoordinates).epoch,
+        parallax: (tar as GalacticCoordinates).parallax
       };
 
     case REFERENCE_COORDINATE_TYPE_SSO.label:
@@ -181,51 +183,61 @@ const getTargetType = (kind: string): number => {
   }
 };
 
-const getTargets = (inRec: TargetBackend[]): Target[] => {
+const getTargets = (inRec: TargetTransport[] = []): Target[] => {
   const results = [];
   for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
-    const referenceCoordinate = e.reference_coordinate.kind;
+    const referenceCoordinate = e.reference_coordinate!.kind as string;
+    const icrs = e.reference_coordinate as ICRSCoordinates;
+    const radialVelocity = e.radial_velocity as Required<
+      NonNullable<TargetTransport['radial_velocity']>
+    >;
     const target: Partial<Target> = {
       kind: getTargetType(referenceCoordinate),
-      epoch: e?.reference_coordinate?.epoch,
-      parallax: e?.reference_coordinate?.parallax,
-      id: e.target_id,
-      name: e?.name,
+      epoch: icrs?.epoch,
+      parallax: icrs?.parallax as number | undefined,
+      id: e.target_id as string,
+      name: e?.name as string,
       b: undefined,
       l: undefined,
-      redshift: e.radial_velocity.redshift.toString(),
-      raReferenceFrame: e.radial_velocity.reference_frame,
-      raDefinition: e.radial_velocity.definition,
-      velType: getVelType(e.radial_velocity.definition),
-      vel: e.radial_velocity.quantity?.value?.toString(),
+      redshift: radialVelocity.redshift.toString(),
+      raReferenceFrame: radialVelocity.reference_frame,
+      raDefinition: radialVelocity.definition,
+      velType: getVelType(radialVelocity.definition),
+      vel: radialVelocity.quantity?.value?.toString(),
       velUnit: VEL_UNITS.find(
-        (u) => u.label === e.radial_velocity?.quantity?.unit?.split(' ').join('')
+        (u) => u.label === radialVelocity?.quantity?.unit?.split(' ').join('')
       )?.value as number,
       pointingPattern: {
         active: e.pointing_pattern?.active as string,
-        parameters: e.pointing_pattern?.parameters?.map((p) => ({
-          kind: p.kind,
-          offsetXArcsec: p.offset_x_arcsec,
-          offsetYArcsec: p.offset_y_arcsec
-        })) as PointingPatternParams[]
+        parameters: e.pointing_pattern?.parameters?.map((p) => {
+          const params = p as PointingPatternParameters & {
+            offset_x_arcsec: number;
+            offset_y_arcsec: number;
+          };
+          return {
+            kind: params.kind,
+            offsetXArcsec: params.offset_x_arcsec,
+            offsetYArcsec: params.offset_y_arcsec
+          };
+        }) as PointingPatternParams[]
       }
     };
     /*------- reference coordinate properties --------------------- */
 
     switch (referenceCoordinate) {
       case REFERENCE_COORDINATE_TYPE_ICRS.label:
-        target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
-        target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
-        target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
-        target.pmDec = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_dec;
+        target.raStr = icrs.ra_str;
+        target.decStr = icrs.dec_str;
+        target.pmRa = icrs.pm_ra as number | undefined;
+        target.pmDec = icrs.pm_dec as number | undefined;
         break;
 
       case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
-        target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
-        target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
-        target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
-        target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
+        target.l = (e.reference_coordinate as GalacticCoordinates).l;
+        target.b = (e.reference_coordinate as GalacticCoordinates).b;
+        target.pmL = (e.reference_coordinate as GalacticCoordinates).pm_l;
+        target.pmB = (e.reference_coordinate as GalacticCoordinates).pm_b;
         break;
 
       case REFERENCE_COORDINATE_TYPE_SSO.label:
@@ -240,7 +252,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
   return results as Target[];
 };
 
-const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {
+const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => {
   const results: any = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -259,7 +271,9 @@ const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {
   return results;
 };
 
-const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProductSRC[] => {
+const getDataProductSRC = (
+  inValue: DataProductSRCTransport[] | null | undefined
+): DataProductSRC[] => {
   return inValue
     ? inValue.map((dp) => ({
         id: dp?.data_products_src_id,
@@ -293,13 +307,15 @@ const getDataProductType = (el: any) => {
  */
 const markSelectedDataProducts = (
   dataProducts: DataProductSDPNew[],
-  results: ResultsDetailsBackend[] | null | undefined
+  results: Result[] | null | undefined
 ): DataProductSDPNew[] => {
   const linkedIds = new Set((results ?? []).map((result) => result.data_product_ref));
   return dataProducts.map((dp) => (linkedIds.has(dp.id) ? { ...dp, selected: true } : dp));
 };
 
-const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDPNew[] => {
+const getDataProductSDP = (
+  inValue: DataProductSDPTransport[] | null | undefined
+): DataProductSDPNew[] => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
 
@@ -336,8 +352,9 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
           taperValue: 'gaussian_taper' in script ? (Number(script.gaussian_taper) ?? 0) : 0,
           // TODO - we shouldn't need so many conditionals in this function. Fix when we have
           // refactored with better typing
-          timeAveraging: script.time_averaging ?? 1,
-          frequencyAveraging: script.frequency_averaging ?? 1,
+          timeAveraging: 'time_averaging' in script ? (script.time_averaging ?? 1) : 1,
+          frequencyAveraging:
+            'frequency_averaging' in script ? (script.frequency_averaging ?? 1) : 1,
           bitDepth: 'bit_depth' in script ? (Number(script.bit_depth) ?? 1) : 1,
           continuumSubtraction:
             'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false,
@@ -358,7 +375,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
   );
 };
 
-function fluxCalToCalibrator(data: FluxCalBackend, index: number): Calibrator {
+function fluxCalToCalibrator(data: FluxCal, index: number): Calibrator {
   return {
     targetId: '',
     name: data.name,
@@ -371,17 +388,19 @@ function fluxCalToCalibrator(data: FluxCalBackend, index: number): Calibrator {
 }
 
 const getCalibrationStrategy = (
-  inValue: CalibrationStrategyBackend[] | null
+  inValue: CalibrationStrategyTransport[] | null | undefined
 ): CalibrationStrategy[] => {
   return inValue
     ? inValue.map((strategy) => ({
         observatoryDefined: strategy?.observatory_defined,
-        id: strategy?.calibration_id,
-        observationIdRef: strategy?.observation_set_ref,
+        id: strategy?.calibration_id as unknown as string,
+        observationIdRef: strategy?.observation_set_ref as unknown as string,
         calibrators: strategy?.calibrators
-          ? strategy.calibrators.map((calibrator, index) => fluxCalToCalibrator(calibrator, index))
+          ? (strategy.calibrators as unknown as FluxCal[]).map((calibrator, index) =>
+              fluxCalToCalibrator(calibrator, index)
+            )
           : null,
-        notes: strategy.notes
+        notes: strategy.notes as unknown as string | null
       }))
     : [];
 };
@@ -393,7 +412,7 @@ const getWeighting = (inImageWeighting?: string): number | undefined =>
   IMAGE_WEIGHTING?.find((item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase())
     ?.value;
 
-const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
+const getSupplied = (inSupplied: SuppliedTransport | null): Supplied => {
   const suppliedType = OSD_CONSTANTS.Supplied?.find(
     (s) => s.mappingLabel === inSupplied?.supplied_type
   );
@@ -446,7 +465,7 @@ const typeCheck = (inType: string | undefined): any => {
   return inType;
 };
 
-export const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
+export const getObservations = (inValue: ObservationSets[] | null | undefined): Observation[] => {
   const results: Observation[] = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -469,7 +488,7 @@ export const getObservations = (inValue: ObservationSetBackend[] | null): Observ
     // MID array details
     let weather, num15mAntennas, num13mAntennas, numSubBands;
     if (inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING) {
-      const midDetails = inValue[i].array_details as ArrayDetailsMidBackend;
+      const midDetails = inValue[i].array_details as MidArray;
       weather = midDetails.weather;
       num15mAntennas = midDetails.number_15_antennas;
       num13mAntennas = midDetails.number_13_antennas;
@@ -479,7 +498,7 @@ export const getObservations = (inValue: ObservationSetBackend[] | null): Observ
     // LOW array details
     let numStations;
     if (inValue[i]?.array_details?.array === TELESCOPE_LOW_BACKEND_MAPPING) {
-      const lowDetails = inValue[i].array_details as ArrayDetailsLowBackend;
+      const lowDetails = inValue[i].array_details as LowArray;
       numStations = lowDetails.number_of_stations;
     }
 
@@ -505,12 +524,10 @@ export const getObservations = (inValue: ObservationSetBackend[] | null): Observ
           : null,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied ?? null),
       spectralResolution: String(
-        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-          ?.spectral_resolution
+        (inValue[i].observation_type_details as SpectralLineSetup)?.spectral_resolution
       ),
       effectiveResolution: String(
-        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-          ?.effective_resolution
+        (inValue[i].observation_type_details as SpectralLineSetup)?.effective_resolution
       ),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
@@ -526,15 +543,12 @@ export const getObservations = (inValue: ObservationSetBackend[] | null): Observ
       numStations: numStations,
       ...(type === TYPE_ZOOM && {
         zoomChannels: Number(
-          (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-            ?.number_of_channels
+          (inValue[i].observation_type_details as SpectralLineSetup)?.number_of_channels
         )
       }),
       ...(type === TYPE_PST && {
         pstMode: PST_MODES?.find(
-          (mode) =>
-            mode?.mapping ===
-            (inValue[i].observation_type_details as ObservationTypeDetailsPSTBackend)?.pst_mode
+          (mode) => mode?.mapping === (inValue[i].observation_type_details as PstSetup)?.pst_mode
         )?.value
       })
     };
@@ -546,11 +560,11 @@ export const getObservations = (inValue: ObservationSetBackend[] | null): Observ
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
 
 const getResultsSection1 = (
-  inResult: ResultsDetailsBackend,
+  inResult: ResultsDetailsAnySupplied,
   isContinuum: boolean,
   isPST: boolean,
   isSensitivity: boolean,
-  inObservationSets: ObservationSetBackend[],
+  inObservationSets: ObservationSets[],
   inResultObservationRef: string | null
 ): SensCalcResults['section1'] => {
   let section1 = [];
@@ -613,9 +627,9 @@ const getResultsSection1 = (
 };
 
 const getResultsSection2 = (
-  inResult: ResultsDetailsBackend,
+  inResult: ResultsDetailsAnySupplied,
   isSensitivity: boolean,
-  inObservationSets: ObservationSetBackend[],
+  inObservationSets: ObservationSets[],
   inResultObservationRef: string | null
 ): SensCalcResults['section2'] => {
   const section2 = [];
@@ -663,8 +677,8 @@ const getResultsSection2 = (
 
 const getResultsSection3 = (
   inResultObservationRef: string | null,
-  inObservationSets: ObservationSetBackend[],
-  _inResult: ResultsDetailsBackend,
+  inObservationSets: ObservationSets[],
+  _inResult: Result,
   isSensitivity: boolean
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
@@ -678,18 +692,15 @@ const getResultsSection3 = (
   ];
 };
 
-const getResultObsType = (
-  result: ResultsDetailsBackend,
-  inObservationSets: ObservationSetBackend[]
-) => {
+const getResultObsType = (result: Result, inObservationSets: ObservationSets[]) => {
   const obsSetRef = result.observation_set_ref;
   const obs = inObservationSets.find((item) => item.observation_set_id === obsSetRef);
   return obs?.observation_type_details?.observation_type;
 };
 
 const getTargetObservation = (
-  inResults: ResultsDetailsBackend[] | null,
-  inObservationSets: ObservationSetBackend[] | null,
+  inResults: Result[] | null | undefined,
+  inObservationSets: ObservationSets[] | null | undefined,
   // inTargets: TargetBackend[],
   outTargets: Target[]
 ): TargetObservation[] => {
@@ -807,7 +818,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
         : FileUploadStatus.INITIAL,
     dataProductSDP: inRec?.observation_info?.data_product_sdps
       ? markSelectedDataProducts(
-          getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[]),
+          getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPTransport[]),
           inRec.observation_info?.result_details
         )
       : [],

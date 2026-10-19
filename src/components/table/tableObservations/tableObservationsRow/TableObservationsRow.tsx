@@ -65,8 +65,8 @@ export default function TableObservationsRow({
     return obsTelescopeArray?.bandWidth?.find((b) => b.value === inValue);
   };
 
-  let min = 0;
-  let max = 0;
+  let min: number;
+  let max: number;
   if (isMid) {
     const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
       (e) => e.rxId === String(observation?.rec?.observingBand)

@@ -41,7 +41,6 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const [tempValue, setTempValue] = React.useState<ProposalTypeType | undefined>(undefined);
-  const [, setErrorText] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
 
   const [openTitleLatexModal, setOpenTitleLatexModal] = React.useState(false);
@@ -79,8 +78,6 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   }, [validateToggle]);
 
   const getTitle = () => (getProposal() ? getProposal().title : '');
-
-  const setTheErrorText = (str: string) => setErrorText(str ? t(str) : '');
 
   const handleDialogResponse = () => {
     setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: [] });
@@ -136,7 +133,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     return num !== -1 ? 'active' : 'inactive';
   };
 
-  function ProposalTypeCard(id: ProposalTypeType) {
+  function renderProposalTypeCard(id: ProposalTypeType) {
     return (
       <Grid key={id} size={{ md: 4, lg: 3 }}>
         <CardTitle
@@ -155,7 +152,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     );
   }
 
-  function Attributes(id: ProposalSubTypeType) {
+  function renderAttributes(id: ProposalSubTypeType) {
     return (
       <Grid key={id} size={{ md: 6, lg: 3 }}>
         <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
@@ -253,7 +250,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         value={getTitle()}
         required
         setValue={(title: string) =>
-          helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
+          helpers.validate.validateTextEntry(title, setTitle, () => {}, 'TITLE')
         }
         errorText={validateWordCount(getProposal().title)}
         helperText={helperFunction(getProposal().title as string)}
@@ -277,7 +274,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         {/* Science verification is set automatically for SV cycles, so it is never picked here */}
         {Object.values(PROPOSAL_TYPE)
           .filter((type) => type !== PROPOSAL_TYPE.SCIENCE_VERIFICATION)
-          .map((type) => ProposalTypeCard(type))}
+          .map((type) => renderProposalTypeCard(type))}
       </Grid>
     );
   };
@@ -299,7 +296,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         alignItems: 'baseline'
       }}
     >
-      {getSubTypes().map((subType) => Attributes(subType))}
+      {getSubTypes().map((subType) => renderAttributes(subType))}
     </Grid>
   );
 

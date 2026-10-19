@@ -61,8 +61,8 @@ export default function TableDataProductsRow({
   const isLow = observation?.telescope === TELESCOPE_LOW_NUM;
   const isMid = observation?.telescope === TELESCOPE_MID_NUM;
 
-  let min = 0;
-  let max = 0;
+  let min: number;
+  let max: number;
   if (isMid) {
     const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
       (e) => e.rxId === String(observation?.observingBand)

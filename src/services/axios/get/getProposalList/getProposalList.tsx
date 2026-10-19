@@ -21,10 +21,10 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
   }
   for (const item of inc) {
     const investigator = {
-      id: item.user_id,
-      firstName: item.given_name,
-      lastName: item.family_name,
-      email: item.email,
+      id: item.user_id as string,
+      firstName: item.given_name as string,
+      lastName: item.family_name as string,
+      email: item.email as string,
       affiliation: item.organization as string,
       phdThesis: item.for_phd as boolean,
       status: 'unknown',
@@ -48,7 +48,7 @@ const getTheScienceCategory = (tmp: ProposalBackend): string => {
   if (tmp.proposal_info?.science_category === undefined) {
     return '';
   }
-  return getScienceCategory(tmp.proposal_info?.science_category);
+  return getScienceCategory(tmp.proposal_info?.science_category as string);
 };
 
 export function mappingList(inRec: ProposalBackend[]): Proposal[] {
@@ -56,8 +56,8 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
   for (let i = 0; i < inRec.length; i++) {
     const tmp = inRec[i];
     const rec: Proposal = {
-      id: tmp.prsl_id?.toString(),
-      status: tmp.status,
+      id: tmp.prsl_id?.toString() as string,
+      status: tmp.status as string,
       lastUpdated: tmp.metadata?.last_modified_on as string,
       lastUpdatedBy: tmp.metadata?.last_modified_by as string,
       createdOn: tmp.metadata?.created_on as string,

@@ -158,7 +158,7 @@ export default function ObservationPage() {
     );
   };
 
-  const AddTheButton = () => (
+  const renderAddTheButton = () => (
     <Box
       sx={{
         p: GAP,
@@ -202,7 +202,7 @@ export default function ObservationPage() {
   return (
     <Shell page={PAGE} helpDisabled>
       <>
-        {osdCyclePolicy?.maxObservations !== 1 && AddTheButton()}
+        {osdCyclePolicy?.maxObservations !== 1 && renderAddTheButton()}
         {!hasObservations() && noObservations()}
         {osdCyclePolicy?.maxObservations !== 1 && hasObservations() && observationList()}
         {osdCyclePolicy?.maxObservations === 1 && hasObservations() && (

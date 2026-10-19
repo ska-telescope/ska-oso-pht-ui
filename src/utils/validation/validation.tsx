@@ -201,8 +201,8 @@ export const useIsFrequencyOutOfRange = () => {
     isLow: boolean,
     observingBand: string
   ): boolean => {
-    let minHz = 0;
-    let maxHz = 0;
+    let minHz: number;
+    let maxHz: number;
 
     if (isLow) {
       minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;

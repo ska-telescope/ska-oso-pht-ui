@@ -38,6 +38,7 @@ export default function EdgeSlider() {
     }
   }
 
+  // TODO: hoist these styled components to module scope; recreating them each render remounts the panel
   const Container = styled(Box)({
     position: 'fixed',
     top: CONTAINER_SPACER_TOP,
@@ -123,13 +124,8 @@ export default function EdgeSlider() {
             }}
           >
             <Stack spacing={GAP}>
-              <Typography align="left">
-                {theHelp.split('\n').map((line, index) => (
-                  <React.Fragment key={index}>
-                    {line.trim()}
-                    <br />
-                  </React.Fragment>
-                ))}
+              <Typography align="left" sx={{ whiteSpace: 'pre-line' }}>
+                {theHelp}
               </Typography>
               {hasLink && (
                 <Typography align="left">

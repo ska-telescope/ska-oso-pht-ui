@@ -279,7 +279,7 @@ export default function GridProposals({
     ? filterProposals(selectedData, searchTerm, searchScienceCategory, searchProposalType)
     : [];
 
-  const ProposalsSectionTitle = () => (
+  const renderProposalsSectionTitle = () => (
     <Typography
       align="center"
       variant="h6"
@@ -444,7 +444,7 @@ export default function GridProposals({
     >
       {showTitle && (
         <Grid container size={{ lg: 12 }}>
-          {ProposalsSectionTitle()}
+          {renderProposalsSectionTitle()}
         </Grid>
       )}
 
