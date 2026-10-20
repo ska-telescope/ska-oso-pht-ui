@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
-appVersion: 11.0.1
+appVersion: 11.1.0
 description: A Helm chart to deploy the oso proposal handling tool
 home: https://gitlab.com/ska-telescope/oso/ska-oso-pht
 name: ska-oso-pht-ui
-version: 11.0.1
+version: 11.1.0
