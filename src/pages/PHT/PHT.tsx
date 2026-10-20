@@ -61,6 +61,8 @@ import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
+import { useProposalForm } from '@/models/proposals/useProposalForm';
+import { FormProvider } from 'react-hook-form';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -139,6 +141,8 @@ export default function PHT({
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
+
+  const formMethods = useProposalForm(getProposal());
 
   // A target can end up linked with no matching targetObservation entry (e.g. an older
   // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
@@ -369,15 +373,17 @@ export default function PHT({
               minHeight: '100vh'
             }}
           >
-            {REQUIRED_WIDTH ? (
-              <Routes>
-                {ROUTES.map((ROUTE) => (
-                  <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
-                ))}
-              </Routes>
-            ) : (
-              mediaSizeNotSupported()
-            )}
+            <FormProvider {...formMethods}>
+              {REQUIRED_WIDTH ? (
+                <Routes>
+                  {ROUTES.map((ROUTE) => (
+                    <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
+                  ))}
+                </Routes>
+              ) : (
+                mediaSizeNotSupported()
+              )}
+            </FormProvider>
           </Paper>
         }
         selectTelescope={false}

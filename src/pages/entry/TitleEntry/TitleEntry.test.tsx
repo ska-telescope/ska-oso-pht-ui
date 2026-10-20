@@ -1,9 +1,11 @@
 import { describe, test, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import TitleEntry from './TitleEntry';
 import { PROPOSAL_TYPE } from '@/utils/constants';
+import { FormProvider, useForm } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ isSV: false })
@@ -16,7 +18,7 @@ const mockStore = vi.hoisted(() => ({
     content2: { title: 'A title', proposalType: undefined, proposalSubType: [] }
   },
   updateAppContent1: () => {},
-  updateAppContent2: () => {}
+  updateAppContent2: vi.fn()
 }));
 
 vi.mock('@utils/storage/store', () => ({
@@ -27,7 +29,17 @@ vi.mock('@utils/storage/store', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(<StoreProvider>{component}</StoreProvider>);
+  const FormWrapper = () => {
+    const methods = useForm<ProposalType>({
+      defaultValues: { title: 'A title' }
+    });
+    return (
+      <StoreProvider>
+        <FormProvider {...methods}>{component}</FormProvider>
+      </StoreProvider>
+    );
+  };
+  return render(<FormWrapper />);
 };
 
 describe('<TitleEntry />', () => {
@@ -43,6 +55,18 @@ describe('<TitleEntry />', () => {
     expect(
       container.querySelector(`#ProposalType-${PROPOSAL_TYPE.SCIENCE_VERIFICATION}`)
     ).not.toBeInTheDocument();
+  });
+
+  test('saves title changes from the RHF field to the proposal', () => {
+    wrapper(<TitleEntry page={0} />);
+    const titleInput = screen.getByTestId('titleId');
+
+    expect(titleInput.tagName).toBe('INPUT');
+    fireEvent.change(titleInput, { target: { value: 'Updated title' } });
+
+    expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Updated title' })
+    );
   });
 });
 
@@ -84,7 +108,7 @@ describe('Title helperFunction', () => {
   test('appends word limit exceeded message when word count exceeds max', () => {
     countWords.mockReturnValue(12);
     const { container } = wrapper(
-      helperFunction('This title has a word count that goes well beyond the maximum limit')
+      <>{helperFunction('This title has a word count that goes well beyond the maximum limit')}</>
     );
     expect(container.textContent).toContain('Current: 12, Max: 10');
     expect(container.textContent).toContain('(WORD LIMIT EXCEEDED)');

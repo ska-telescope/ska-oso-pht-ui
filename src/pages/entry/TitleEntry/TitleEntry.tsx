@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Avatar,
+  Box,
   Card,
   CardActionArea,
   CardHeader,
@@ -11,14 +12,15 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@utils/storage/store';
-import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
+import { BorderedSection } from '@ska-telescope/ska-gui-components';
 import {
   PROPOSAL_TYPE,
   PROPOSAL_TYPE_SUBTYPES,
   ProposalSubTypeType,
-  ProposalTypeType
+  ProposalTypeType,
+  STATUS_ERROR
 } from '@utils/constants.ts';
-import { countWords, helpers } from '@utils/helpers.ts';
+import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateTitlePage } from '@utils/validation/validation.tsx';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -27,6 +29,9 @@ import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useFormState, useWatch } from 'react-hook-form';
+import { ControlledTextField } from '@ska-telescope/ska-gui-components/controlled';
+import { ProposalType } from '@/models/proposals/proposal';
 
 interface TitleEntryProps {
   page: number;
@@ -37,8 +42,8 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const theme = useTheme();
   const { isSV } = useOSDAccessors();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-
-  const [validateToggle, setValidateToggle] = React.useState(false);
+  const title = useWatch<ProposalType, 'title'>({ name: 'title' }) ?? '';
+  const { errors } = useFormState<ProposalType>();
 
   const [tempValue, setTempValue] = React.useState<ProposalTypeType | undefined>(undefined);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -50,34 +55,41 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const MAX_CHAR = Number(t('title.maxChar'));
   const MAX_WORD = Number(t('title.maxWord'));
 
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, []);
+  const getProposal = React.useCallback(
+    () => application.content2 as Proposal,
+    [application.content2]
+  );
+  const setProposal = React.useCallback(
+    (proposal: Proposal) => updateAppContent2(proposal),
+    [updateAppContent2]
+  );
+
+  const getProposalState = React.useCallback(
+    () => application.content1 as number[],
+    [application.content1]
+  );
+  const setTheProposalState = React.useCallback(
+    (value: number) => {
+      const theState = getProposalState();
+      if (theState?.[page] === value) return;
+      const temp = [...(theState ?? [])];
+      while (temp.length <= page) temp.push(STATUS_ERROR);
+      temp[page] = value;
+      updateAppContent1(temp);
+    },
+    [getProposalState, page, updateAppContent1]
+  );
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, [application.content2]);
-
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
-    const temp: number[] = [];
-    const theState = getProposalState();
-    if (theState) {
-      for (let i = 0; i < theState?.length; i++) {
-        temp.push(page === i ? value : getProposalState()[i]);
-      }
+    if ((getProposal()?.title ?? '') !== title) {
+      setProposal({ ...getProposal(), title });
     }
-    updateAppContent1(temp);
-  };
+  }, [getProposal, setProposal, title]);
 
   React.useEffect(() => {
-    setTheProposalState(validateTitlePage(getProposal()));
-  }, [validateToggle]);
-
-  const getTitle = () => (getProposal() ? getProposal().title : '');
+    const status = errors.title ? STATUS_ERROR : validateTitlePage({ ...getProposal(), title });
+    setTheProposalState(status);
+  }, [errors.title, getProposal, setTheProposalState, title]);
 
   const handleDialogResponse = () => {
     setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: [] });
@@ -214,19 +226,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     );
   };
 
-  function validateWordCount(title: string) {
-    if (!title || title?.length === 0) {
-      return `${t('title.empty')}`;
-    } else if (countWords(title) > MAX_WORD) {
-      return `${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
-    }
-  }
-
   const titleField = (ipad: boolean = false) => {
-    const setTitle = (e: string) => {
-      setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
-    };
-
     const helperFunction = (title: string) => {
       const color = theme.palette.error.dark;
 
@@ -244,18 +244,21 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     };
 
     return (
-      <TextEntry
-        label={t('title.label')}
-        testId={ipad ? 'titleIdIpad' : 'titleId'}
-        value={getTitle()}
-        required
-        setValue={(title: string) =>
-          helpers.validate.validateTextEntry(title, setTitle, () => {}, 'TITLE')
-        }
-        errorText={validateWordCount(getProposal().title)}
-        helperText={helperFunction(getProposal().title as string)}
-        suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
-      />
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <ControlledTextField
+          name="title"
+          label={t('title.label')}
+          required
+          slotProps={{
+            htmlInput: {
+              maxLength: MAX_CHAR,
+              'data-testid': ipad ? 'titleIdIpad' : 'titleId'
+            }
+          }}
+          helperText={helperFunction(title)}
+        />
+        <ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />
+      </Box>
     );
   };
 
@@ -395,7 +398,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         </>
       )}
       <LatexPreviewModal
-        value={getTitle()}
+        value={title}
         open={openTitleLatexModal}
         onClose={handleCloseTitleLatexModal}
         title={t('title.label')}

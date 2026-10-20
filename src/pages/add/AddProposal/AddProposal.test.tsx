@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { FormProvider, useForm } from 'react-hook-form';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
@@ -8,10 +9,17 @@ import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { countWords } from '@utils/helpers.ts';
 import phtTranslations from '../../../../public/locales/en/pht.json';
 
+const FormWrapper = ({ children }: { children: React.ReactNode }) => {
+  const methods = useForm({ defaultValues: { title: '' } });
+  return <FormProvider {...methods}>{children}</FormProvider>;
+};
+
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <ThemeA11yProvider>
+        <FormWrapper>{component}</FormWrapper>
+      </ThemeA11yProvider>
     </StoreProvider>
   );
 };
