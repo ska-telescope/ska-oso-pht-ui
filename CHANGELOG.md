@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Only reset DP Parameters if values on the Observaion page change.
 
 11.0.0
 ----------

@@ -9,6 +9,8 @@ import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
+  DETECTED_FILTER_BANK_VALUE,
+  DP_TYPE_IMAGES,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
   ZOOM_CHANNELS_DEFAULT_LOW
 } from '@utils/constants';
@@ -18,7 +20,9 @@ import ObservationEntry from './ObservationEntry';
 
 const mockState = vi.hoisted(() => ({
   proposalType: undefined as string | undefined,
-  observationTypes: ['spectral']
+  observationTypes: ['spectral'],
+  observations: [] as any[],
+  dataProductSDP: [] as any[]
 }));
 
 // Setting `state=null` ensures that we can define some non "edit mode" tests.
@@ -86,8 +90,8 @@ vi.mock('@utils/storage/store', () => ({
       application: {
         content2: {
           proposalType: mockState.proposalType,
-          observations: [],
-          dataProductSDP: [],
+          observations: mockState.observations,
+          dataProductSDP: mockState.dataProductSDP,
           targetObservation: []
         }
       },
@@ -317,6 +321,86 @@ describe('<ObservationEntry />', () => {
       });
       expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
       expect(screen.queryByTestId('subBands')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('revisiting the observation page', () => {
+    const savedDataProduct = (id: string) =>
+      mockUpdateAppContent2.mock.calls
+        .at(-1)?.[0]
+        ?.dataProductSDP?.find((dp: { id: string }) => dp.id === id);
+
+    const renderWithDataProduct = async (observation: any, dataProduct: any) => {
+      mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
+      mockState.observationTypes = [observation.type];
+      mockState.observations = [observation];
+      mockState.dataProductSDP = [dataProduct];
+      await act(async () => {
+        wrapper(<ObservationEntry data={observation} />);
+      });
+    };
+
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+      mockState.proposalType = undefined;
+      mockState.observationTypes = ['spectral'];
+      mockState.observations = [];
+      mockState.dataProductSDP = [];
+    });
+
+    it('keeps the user-entered image size and pixel size of a continuum data product', async () => {
+      await renderWithDataProduct(DEFAULT_CONTINUUM_OBSERVATION_LOW, {
+        id: 'SDP-IMAGES',
+        observationId: DEFAULT_CONTINUUM_OBSERVATION_LOW.id,
+        data: {
+          dataProductType: DP_TYPE_IMAGES,
+          imageSizeValue: 12.3,
+          imageSizeUnits: 0,
+          pixelSizeValue: 4.5,
+          pixelSizeUnits: 2
+        }
+      });
+
+      expect(mockUpdateAppContent2).toHaveBeenCalled();
+      expect(savedDataProduct('SDP-IMAGES')?.data).toEqual(
+        expect.objectContaining({
+          imageSizeValue: 12.3,
+          imageSizeUnits: 0,
+          pixelSizeValue: 4.5,
+          pixelSizeUnits: 2
+        })
+      );
+    });
+
+    it('keeps the user-entered values of a PST detected filterbank data product', async () => {
+      const observation = { ...DEFAULT_PST_OBSERVATION_LOW, pstMode: DETECTED_FILTER_BANK_VALUE };
+      await renderWithDataProduct(observation, {
+        id: 'SDP-PST',
+        observationId: observation.id,
+        data: {
+          dataProductType: DETECTED_FILTER_BANK_VALUE,
+          polarisations: ['I'],
+          outputFrequencyResolution: 3,
+          outputSamplingInterval: 5,
+          bitDepth: 4,
+          dispersionMeasure: 12,
+          rotationMeasure: 7
+        }
+      });
+
+      expect(mockUpdateAppContent2).toHaveBeenCalled();
+      expect(savedDataProduct('SDP-PST')?.data).toEqual(
+        expect.objectContaining({
+          outputFrequencyResolution: 3,
+          outputSamplingInterval: 5,
+          bitDepth: 4,
+          dispersionMeasure: 12,
+          rotationMeasure: 7
+        })
+      );
     });
   });
 });

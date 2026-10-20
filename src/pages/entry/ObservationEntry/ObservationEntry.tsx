@@ -367,11 +367,23 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       (dp) => dp.id === linkedDataProductId
     );
 
+    // Only reset data products when a field they are derived from has changed, otherwise
+    // revisiting this page would overwrite the user's data product values
+    const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
+    const dataProductInputsChanged =
+      !oldObservation ||
+      oldObservation.type !== newObservation.type ||
+      (newObservation.type === TYPE_PST && oldObservation.pstMode !== newObservation.pstMode) ||
+      oldObservation.centralFrequency !== newObservation.centralFrequency ||
+      oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits;
+
     const oldTO = proposal?.targetObservation ?? [];
     const tmp = {
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: updateDataProductsOnObservationChange(oldDataProducts, newObservation),
+      dataProductSDP: dataProductInputsChanged
+        ? updateDataProductsOnObservationChange(oldDataProducts, newObservation)
+        : oldDataProducts,
       targetObservation: dataProductSDP ? oldTO : updateSensCalcPartial(oldTO, newObservation)
     };
     persistProposal(tmp);
