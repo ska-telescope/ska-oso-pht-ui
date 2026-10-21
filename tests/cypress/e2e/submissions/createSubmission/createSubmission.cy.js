@@ -1,0 +1,179 @@
+import {
+  clickHome,
+  verifyOnLandingPage,
+  verifyOnLandingPageFilterIsVisible,
+  verifyMockedProposalOnLandingPageIsVisible,
+  clearLocalStorage,
+  verifyOsdDataCycleID,
+  verifyOsdDataCycleDescription,
+  verifyOsdDataProposalOpen,
+  verifyOsdDataProposalClose,
+  addM2TargetAndAutoLink,
+  spyOnResolveTargetAPI,
+  verifyMockedScienceIdeaOnLandingPageIsVisible,
+  mockValidateSVIdeaAPI,
+  beginScienceIdeaSession,
+  selectScienceVerificationCycle,
+  completeScienceIdeaCreation,
+  createScienceIdeaSession,
+  createStandardProposalSession,
+  uploadTestFile,
+  verifyTestFileUploaded,
+  clickFileUpload,
+  clickStatusIconNav,
+  pageConfirmed,
+  clickToSubmitProposal,
+  verifyAlertFooter,
+  clickToConfirmProposalSubmission,
+  verifyData
+} from '../../../support/common.js';
+import { standardUser } from '../../../support/users.js';
+
+describe('Creating Proposal', () => {
+  beforeEach(() => {
+    spyOnResolveTargetAPI();
+  });
+
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
+  it('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
+    // This is the one flow that needs to assert on the raw OSD content mid-creation, so it uses
+    // the finer-grained pieces instead of createScienceIdeaSession.
+    beginScienceIdeaSession(standardUser);
+    verifyOsdDataCycleID('TEST_SKAO_2027_1_ID');
+    verifyOsdDataCycleDescription('TEST Low AA2 Science Verification');
+    verifyOsdDataProposalOpen('2026-03-27T12:00:00.000Z');
+    verifyOsdDataProposalClose('2027-04-01T15:00:00.000Z');
+    selectScienceVerificationCycle();
+    completeScienceIdeaCreation();
+    addM2TargetAndAutoLink('Continuum');
+    clickHome();
+    verifyOnLandingPage();
+    verifyOnLandingPageFilterIsVisible();
+    verifyMockedScienceIdeaOnLandingPageIsVisible();
+  });
+
+  // The PDF upload step below needs real AWS S3 credentials, sourced from Vault in a proper
+  // deployment - our local minikube deploy of ska-oso-services runs with vault.enabled=false (see
+  // its Makefile), which injects a dummy AWS key/secret instead, so any live upload fails. Skip
+  // until that's addressed - this isn't a test-code fix - and remove this skip (and verify it) at
+  // that point rather than rewriting it from scratch.
+  //
+  // Skipped via it.skip() (not this.skip()) - see reviewScience.cy.js's comment: a
+  // function(){...this.skip()} test sharing a spec with cy.intercept().as() elsewhere (here, the
+  // SV Flow test above and spyOnResolveTargetAPI in this describe's beforeEach) reliably corrupts
+  // Cypress's command tracking. it.skip() never invokes the callback at all, so it sidesteps that
+  // entirely.
+  it.skip(
+    'SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96352' },
+    () => {
+      createScienceIdeaSession(standardUser);
+      mockValidateSVIdeaAPI();
+      addM2TargetAndAutoLink('Continuum', 'This is a summary of the science idea.');
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      verifyAlertFooter('Science Justification PDF successfully uploaded');
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      verifyData('dataProductType', 'Images');
+      //Verify sens calc results
+      verifyData('field-targetName', 'M2');
+      verifyData('field-continuumSensitivityWeighted', '193.43 μJy/beam');
+      verifyData('field-continuumConfusionNoise', '1.57 μJy/beam');
+      verifyData('field-continuumTotalSensitivity', '193.44 μJy/beam');
+      verifyData('field-continuumSynthBeamSize', '5.51 x 2.87 arcsec²');
+      verifyData('field-continuumSurfaceBrightnessSensitivity', '375.92 K');
+      verifyData('field-spectralSensitivityWeighted', '42.38 mJy/beam');
+      verifyData('field-spectralConfusionNoise', '2.67 μJy/beam');
+      verifyData('field-spectralTotalSensitivity', '42.38 mJy/beam');
+      verifyData('field-spectralSynthBeamSize', '5.93 x 3.97 arcsec²');
+      verifyData('field-spectralSurfaceBrightnessSensitivity', '5.5e+4 K');
+      verifyData('field-integrationTime', '1.00 h');
+      clickToSubmitProposal();
+      cy.wait('@mockValidateSVIdea');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      verifyAlertFooter('Submission was successful');
+    }
+  );
+
+  // Same PDF/S3/Vault blocker as the Continuum scenario above - see that test's comment. Skipped
+  // via it.skip() for the same command-tracking-corruption reason.
+  it.skip(
+    'SV Flow: Create science verification idea, Observing mode Spectral, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96345' },
+    () => {
+      createScienceIdeaSession(standardUser);
+      mockValidateSVIdeaAPI();
+      addM2TargetAndAutoLink('Spectral', 'This is a summary of the science idea.');
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      verifyAlertFooter('Science Justification PDF successfully uploaded');
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      //Verify sens calc results
+      verifyData('field-targetName', 'M2');
+      verifyData('field-spectralSensitivityWeighted', '73.23 mJy/beam');
+      verifyData('field-spectralConfusionNoise', '2.65 μJy/beam');
+      verifyData('field-spectralTotalSensitivity', '73.23 mJy/beam');
+      verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
+      verifyData('field-spectralSurfaceBrightnessSensitivity', '9.5e+4 K');
+      verifyData('field-integrationTime', '1.00 h');
+      clickToSubmitProposal();
+      cy.wait('@mockValidateSVIdea');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      verifyAlertFooter('Submission was successful');
+    }
+  );
+
+  // Same PDF/S3/Vault blocker as the Continuum scenario above - see that test's comment. Skipped
+  // via it.skip() for the same command-tracking-corruption reason.
+  it.skip(
+    'SV Flow: Create science verification idea, Observing mode PST, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96353' },
+    () => {
+      createScienceIdeaSession(standardUser);
+      mockValidateSVIdeaAPI();
+      addM2TargetAndAutoLink('PST', 'This is a summary of the science idea.');
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      verifyAlertFooter('Science Justification PDF successfully uploaded');
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      //Verify sens calc results - Not currently available fr PST
+      verifyData(
+        'borderedSection-content',
+        'PST mode is not currently supported within the Sensitivity Calculator application.'
+      );
+      clickToSubmitProposal();
+      cy.wait('@mockValidateSVIdea');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      verifyAlertFooter('Submission was successful');
+    }
+  );
+
+  // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification one
+  // is seeded) - stub-only until one is, this isn't a test-code fix. Skipped via it.skip() for the
+  // same command-tracking-corruption reason as the tests above.
+  it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+    createStandardProposalSession(standardUser);
+    clickHome();
+    verifyOnLandingPage();
+    verifyOnLandingPageFilterIsVisible();
+    verifyMockedProposalOnLandingPageIsVisible();
+  });
+});

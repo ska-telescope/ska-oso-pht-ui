@@ -4,7 +4,7 @@ import { useMsal } from '@azure/msal-react';
 
 /**
  * Exists only for Cypress. Exposes MSAL's own official loadExternalTokens() "bring your own
- * tokens" cache-seeding API on window (see tests/cypress/e2e/common/auth.js's
+ * tokens" cache-seeding API on window (see tests/cypress/support/auth.js's
  * hydrateIndigoSession), so specs can seed a real MSAL session instantly from a genuine
  * Indigo-issued token instead of driving the full interactive loginRedirect() -> Indigo ->
  * PKCE-redirect-back flow for every test. Doesn't fake or special-case any auth logic itself -
@@ -28,7 +28,7 @@ export default function CypressMsalHydrationBridge(): null {
   const { instance } = useMsal();
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.Cypress) {
+    if (typeof window === 'undefined' || !(window as unknown as { Cypress?: unknown }).Cypress) {
       return;
     }
     (window as unknown as { __msalLoadExternalTokens?: unknown }).__msalLoadExternalTokens = (

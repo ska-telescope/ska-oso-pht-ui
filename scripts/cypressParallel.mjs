@@ -35,7 +35,7 @@ import { dirname, join } from 'node:path';
 // Only used to count specs (to cap worker count - see workerCount below); cypress-split does the
 // actual per-worker selection from Cypress's own resolved spec list, so this must be kept in sync
 // with cypress.config.mjs's e2e.specPattern.
-const SPEC_PATTERN = 'tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}';
+const SPEC_PATTERN = 'tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}';
 // Matches JS_BUILD_TESTS_DIRECTORY's own default in .make/js.mk, and respects it when CI
 // overrides it - CI's own report-merging step (jsMergeReports, see js-do-e2e-test in
 // .make/js.mk) globs `$(JS_BUILD_TESTS_DIRECTORY)/e2e*.xml` non-recursively, so worker output

@@ -28,6 +28,8 @@ js-pre-format:
 	$(JS_COMMAND_RUNNER) prettier:fix
 typecheck:
 	$(JS_COMMAND_RUNNER) typecheck
+cypress-typecheck:
+	$(JS_COMMAND_RUNNER) typecheck:cypress
 
 AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
 ifeq ($(AWK),)

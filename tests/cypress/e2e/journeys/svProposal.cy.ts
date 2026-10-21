@@ -1,0 +1,36 @@
+import { clearLocalStorage } from '../../support/common';
+import { standardUser } from '../../support/users';
+import { buildSvContinuumProposal } from '../../support/editor/data/sv';
+import { SV_CYCLE } from '../../support/editor/cycles';
+import {
+  createProposal,
+  fillPages,
+  reopenFromBackend,
+  saveAndExit,
+  step,
+  stubDocumentUpload,
+  validateAndSubmit,
+  verifyPages
+} from '../../support/editor/editorActions';
+// One test for the whole journey. Retries are off because a retry would repeat the journey from
+// the start and create another proposal.
+describe('SV proposal journey', { retries: 0 }, () => {
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
+  it('creates an SV proposal, keeps its values through navigation and reload, and submits it', () => {
+    const proposal = buildSvContinuumProposal();
+    stubDocumentUpload();
+
+    step('Create', () => createProposal(standardUser, SV_CYCLE, proposal));
+    fillPages(SV_CYCLE.pages, proposal);
+    verifyPages(SV_CYCLE.pages, proposal, 'after navigation');
+
+    saveAndExit();
+    reopenFromBackend(SV_CYCLE);
+    verifyPages(SV_CYCLE.pages, proposal, 'after reload');
+
+    step('Submit', () => validateAndSubmit(SV_CYCLE, proposal));
+  });
+});
