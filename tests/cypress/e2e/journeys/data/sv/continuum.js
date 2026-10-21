@@ -13,19 +13,19 @@ export const buildSvContinuumProposal = () => ({
   target: PKS_1830_211,
 
   observation: {
-    centralFrequency: '199.609375', // MHz
-    bandwidth: '150', // MHz
-    integrationTime: '1' // h
+    centralFrequency: '194.921875', // MHz
+    bandwidth: '118.75', // MHz
+    integrationTime: '1.45' // h
   },
 
   // For continuum, images and visibilities are alternatives, and the journey configures images
   dataProducts: {
     image: {
       imageSize: { value: '4.5', unit: 'degree' },
-      pixelSize: { value: '1.3', unit: 'arcsec' },
+      pixelSize: { value: '1.4', unit: 'arcsec' },
       weighting: 'Briggs',
       robust: '1.3456',
-      polarisations: ['I'],
+      polarisations: ['Q', 'U'],
       channelsOut: '13'
     }
   },

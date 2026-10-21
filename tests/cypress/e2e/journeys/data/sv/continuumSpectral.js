@@ -36,6 +36,8 @@ export const buildSvContinuumSpectralProposal = () => ({
 
   calibration: {
     calibrator: 'Hercules A',
-    comment: ''
+    comment:
+      'Could a second bandpass scan be added after the target? The 125–275 MHz band goes ' +
+      'beyond the range where bandpass tests have been done so far.'
   }
 });

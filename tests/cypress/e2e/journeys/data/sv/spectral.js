@@ -47,6 +47,8 @@ export const buildSvSpectralProposal = () => ({
 
   calibration: {
     calibrator: 'Centaurus A',
-    comment: ''
+    comment:
+      'Please keep the bandpass solutions at full channel resolution. Smoothing them across ' +
+      'channels could hide narrow absorption features.'
   }
 });

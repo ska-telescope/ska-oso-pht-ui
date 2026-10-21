@@ -5,7 +5,8 @@ export const DESCRIPTION = {
   document: 'testFile.pdf'
 };
 
-// Targets are entered by hand rather than resolved, so the tests don't depend on SIMBAD/NED
+// Targets are resolved by name through the backend. The RA and Dec are
+// the values the resolver is expected to fill in, not typed by the test.
 export const PKS_1830_211 = {
   name: 'PKS 1830-211',
   coordinateType: 'ICRS',

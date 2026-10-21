@@ -6,8 +6,14 @@ export const targetPage = {
   fill: ({ target }) => {
     select('referenceCoordinatesType', target.coordinateType);
     enter(cy.findByRole('textbox', { name: 'Name' }), target.name);
-    enter(cy.findByRole('textbox', { name: 'Right Ascension' }), target.ra);
-    enter(cy.findByRole('textbox', { name: 'Declination' }), target.dec);
+    cy.findByRole('button', { name: 'Resolve' }).click();
+    // The resolver queries external services, so give it as long as adding the target
+    cy.findByRole('textbox', { name: 'Right Ascension' }, { timeout: 30000 }).should(
+      'have.value',
+      target.ra
+    );
+    cy.findByRole('textbox', { name: 'Declination' }).should('have.value', target.dec);
+    // Resolving also fills in the velocity, which the fixture's values then replace
     select('velocityType', target.velocityType);
     if (target.velocityType === 'Redshift') {
       enter(cy.findByRole('textbox', { name: 'Redshift' }), target.redshift);
