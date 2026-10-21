@@ -111,14 +111,15 @@ export const updateImagesDataProductSizes = (
   const imageSizeDeg = (180 / Math.PI) * (centralWavelengthM / AA2_LOW_STATION_DIAMETER_M);
   const pixelSizeDeg =
     (3600 * (180 / Math.PI) * (centralWavelengthM / AA2_LOW_LONGEST_BASELINE_M)) / 3;
-  const decimalPlaces = 1;
+  // Significant figures rather than decimal places, so high frequencies don't round to zero
+  const significantFigures = 2;
   return {
     ...imagesDataProduct,
     data: {
       ...imagesDataProduct?.data,
-      imageSizeValue: Math.round(imageSizeDeg * 10 ** decimalPlaces) / 10 ** decimalPlaces,
+      imageSizeValue: Number(imageSizeDeg.toPrecision(significantFigures)),
       imageSizeUnits: 0,
-      pixelSizeValue: Math.round(pixelSizeDeg * 10 ** decimalPlaces) / 10 ** decimalPlaces,
+      pixelSizeValue: Number(pixelSizeDeg.toPrecision(significantFigures)),
       pixelSizeUnits: 2
     }
   };
