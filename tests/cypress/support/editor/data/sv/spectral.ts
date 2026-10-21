@@ -36,13 +36,9 @@ export const buildSvSpectralProposal = (): ProposalFixture => ({
       weighting: 'Briggs',
       robust: '0',
       polarisations: ['I'],
-      channelsOut: '10',
+      // Shown from the observation's number of channels
+      channelsOut: '2000',
       continuumSubtraction: true
-    },
-    visibilities: {
-      // Shown in seconds and kHz: multipliers of 4 and 1
-      timeAveraging: '3.397',
-      frequencyAveraging: '5.43'
     }
   },
 

@@ -8,8 +8,8 @@ export const targetPage: PageObject = {
     select('referenceCoordinatesType', target.coordinateType);
     enter(cy.findByRole('textbox', { name: 'Name' }), target.name);
     cy.findByRole('button', { name: 'Resolve' }).click();
-    // The resolver queries external services, so give it as long as adding the target
-    cy.findByRole('textbox', { name: 'Right Ascension', timeout: 30000 }).should(
+    // The resolver queries external services and can sometimes take a long time (usually on first query)
+    cy.findByRole('textbox', { name: 'Right Ascension', timeout: 40000 }).should(
       'have.value',
       target.ra
     );

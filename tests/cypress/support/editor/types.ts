@@ -3,6 +3,9 @@
 // Values are written as the editor shows them (labels, display units), not as they are stored
 // in the backend, so they are mostly strings.
 
+// As labelled in the Details page's dropdown
+export type ObservingMode = 'Continuum' | 'Continuum-Spectral' | 'Spectral' | 'PST';
+
 type TargetVelocity =
   | { velocityType: 'Redshift'; redshift: string }
   | { velocityType: 'Velocity'; velocity: { value: string; unit: string } };
@@ -14,7 +17,8 @@ export type Target = {
   dec: string;
 } & TargetVelocity;
 
-// Which fields an observation has depends on the observing mode
+// Which fields an observation has depends on the observing mode: spectral has a number of
+// channels and a spectral resolution instead of a bandwidth, and PST also has a PST mode
 export interface Observation {
   centralFrequency: string;
   integrationTime: string;
@@ -31,13 +35,10 @@ export interface ImageDataProduct {
   // Only for Briggs weighting
   robust?: string;
   polarisations: string[];
+  // For spectral, this shows the observation's number of channels and can't be edited
   channelsOut: string;
+  // Only for spectral
   continuumSubtraction?: boolean;
-}
-
-export interface VisibilitiesDataProduct {
-  timeAveraging: string;
-  frequencyAveraging: string;
 }
 
 export interface PstDataProduct {
@@ -49,13 +50,13 @@ export interface PstDataProduct {
   rotationMeasure: string;
 }
 
-// PST has a single data product; the other modes have images and, optionally, visibilities
-export type DataProducts =
-  { image: ImageDataProduct; visibilities?: VisibilitiesDataProduct } | { pst: PstDataProduct };
+// PST has its own data product; the other modes have images. (Continuum can have visibilities
+// instead, but the journeys don't cover that.)
+export type DataProducts = { image: ImageDataProduct } | { pst: PstDataProduct };
 
 export interface ProposalFixture {
   title: string;
-  details: { observingMode: string; abstract: string };
+  details: { observingMode: ObservingMode; abstract: string };
   description: { document: string };
   target: Target;
   observation: Observation;

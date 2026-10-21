@@ -27,11 +27,6 @@ export const buildSvContinuumSpectralProposal = (): ProposalFixture => ({
       robust: '0',
       polarisations: ['I'],
       channelsOut: '2'
-    },
-    visibilities: {
-      // Shown in seconds and kHz: multipliers of 4 and 1
-      timeAveraging: '3.397',
-      frequencyAveraging: '5.43'
     }
   },
 
