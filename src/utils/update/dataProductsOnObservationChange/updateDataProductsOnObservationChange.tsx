@@ -10,11 +10,13 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
+  FREQUENCY_MHZ,
   PULSAR_TIMING_VALUE,
   SPEED_OF_LIGHT,
   TYPE_PST
 } from '@/utils/constants';
 import Observation from '@/utils/types/observation';
+import { frequencyConversion } from '@/utils/helpers';
 
 export const PSTData = (
   observation: Observation
@@ -67,8 +69,8 @@ export const updateDataProductsOnObservationChange = (
     );
     if (pstDataProductIndex != -1) {
       newDataProducts[pstDataProductIndex] = {
-        ...dataProductForPstMode,
-        id: newDataProducts[pstDataProductIndex].id
+        ...newDataProducts[pstDataProductIndex],
+        data: dataProductForPstMode.data
       };
     }
   } else {
@@ -83,7 +85,11 @@ export const updateDataProductsOnObservationChange = (
 
       const newImagesDataProduct = updateImagesDataProductSizes(
         imagesDataProduct,
-        observation.centralFrequency
+        frequencyConversion(
+          observation.centralFrequency,
+          observation.centralFrequencyUnits ?? FREQUENCY_MHZ,
+          FREQUENCY_MHZ
+        )
       );
 
       newDataProducts[imagesDataProductIndex] = newImagesDataProduct;
