@@ -647,8 +647,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       // We just need to do this one more time as some fields could not be updated until observingBand has changed.
       observationIn(once);
       setOnce(null);
-      setDefaultCentralFrequency(observingBand);
-      setDefaultContinuumBandwidth(observingBand);
+      // Only fall back to the band defaults when the saved observation has no value
+      if (!once.centralFrequency) {
+        setDefaultCentralFrequency(observingBand);
+      }
+      if (!once.continuumBandwidth) {
+        setDefaultContinuumBandwidth(observingBand);
+      }
     }
     calculateSubarray();
     setAfterChange();

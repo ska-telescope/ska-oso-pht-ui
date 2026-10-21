@@ -6,11 +6,14 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import {
   PROPOSAL_TYPE,
+  BAND_1_STR,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  FREQUENCY_GHZ,
+  TELESCOPE_MID_NUM,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
   ZOOM_CHANNELS_DEFAULT_LOW
 } from '@utils/constants';
@@ -372,6 +375,42 @@ describe('<ObservationEntry />', () => {
           pixelSizeValue: 4.5,
           pixelSizeUnits: 2
         })
+      );
+    });
+
+    it('keeps the saved central frequency and image sizes of a MID continuum observation', async () => {
+      const observation = {
+        ...DEFAULT_CONTINUUM_OBSERVATION_LOW,
+        telescope: TELESCOPE_MID_NUM,
+        observingBand: BAND_1_STR,
+        centralFrequency: 0.85,
+        centralFrequencyUnits: FREQUENCY_GHZ,
+        continuumBandwidth: 0.4,
+        continuumBandwidthUnits: FREQUENCY_GHZ
+      };
+      await renderWithDataProduct(observation, {
+        id: 'SDP-IMAGES',
+        observationId: observation.id,
+        data: {
+          dataProductType: DP_TYPE_IMAGES,
+          imageSizeValue: 12.3,
+          imageSizeUnits: 0,
+          pixelSizeValue: 4.5,
+          pixelSizeUnits: 2
+        }
+      });
+
+      const savedProposal = mockUpdateAppContent2.mock.calls.at(-1)?.[0];
+      expect(savedProposal.observations[0]).toEqual(
+        expect.objectContaining({
+          centralFrequency: 0.85,
+          centralFrequencyUnits: FREQUENCY_GHZ,
+          continuumBandwidth: 0.4,
+          continuumBandwidthUnits: FREQUENCY_GHZ
+        })
+      );
+      expect(savedDataProduct('SDP-IMAGES')?.data).toEqual(
+        expect.objectContaining({ imageSizeValue: 12.3, pixelSizeValue: 4.5 })
       );
     });
 
