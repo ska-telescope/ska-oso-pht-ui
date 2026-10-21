@@ -7,11 +7,13 @@ import { targetPage } from './pages/targetPage';
 import { teamPage } from './pages/teamPage';
 import { titlePage } from './pages/titlePage';
 
-// What differs between cycles: how the cycle is picked when creating a proposal, the message
-// shown once it has been created, where the editor lands, and the pages a journey goes through.
+// What differs between cycles: how the cycle is picked when creating a proposal, the messages
+// shown once it has been created and validated, where the editor lands, and the pages a journey
+// goes through.
 export const SV_CYCLE = {
   option: /Science Verification/,
   createdMessage: /Science Verification Idea added with unique identifier/,
+  validMessage: 'Science Verification Idea is Valid',
   pageAfterCreate: teamPage,
   pageAfterOpen: titlePage,
   pages: [

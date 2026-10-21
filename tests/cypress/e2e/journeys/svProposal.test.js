@@ -9,6 +9,7 @@ import {
   saveAndExit,
   step,
   stubDocumentUpload,
+  validateAndSubmit,
   verifyPages
 } from './editorActions';
 // One test for the whole journey. Retries are off because a retry would repeat the journey from
@@ -18,7 +19,7 @@ describe('SV proposal journey', { retries: 0 }, () => {
     clearLocalStorage();
   });
 
-  it('creates an SV proposal and keeps its values through navigation and reload', () => {
+  it('creates an SV proposal, keeps its values through navigation and reload, and submits it', () => {
     const proposal = buildSvContinuumProposal();
     stubDocumentUpload();
 
@@ -30,6 +31,6 @@ describe('SV proposal journey', { retries: 0 }, () => {
     reopenFromBackend(SV_CYCLE);
     verifyPages(SV_CYCLE.pages, proposal, 'after reload');
 
-    // TODO: validate and submit
+    step('Submit', () => validateAndSubmit(SV_CYCLE, proposal));
   });
 });

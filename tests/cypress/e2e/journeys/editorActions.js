@@ -80,6 +80,22 @@ export const saveAndExit = () => {
   verifyOnLandingPage();
 };
 
+// Validates and submits the proposal, then checks the landing page lists it as submitted.
+export const validateAndSubmit = (cycle, proposal) => {
+  cy.findByRole('button', { name: 'Validate / Submit' }).click();
+  // Validation and submission run on the backend, so allow longer than the default
+  cy.findByText(cycle.validMessage, { timeout: 30000 });
+  cy.findByRole('button', { name: 'Confirm Submission' }).click();
+  cy.findByText('Submission was successful', { timeout: 30000 });
+  verifyOnLandingPage();
+  cy.get('@proposalId').then((id) => {
+    cy.findByRole('textbox', { name: 'Search' }).type(id);
+  });
+  cy.findByRole('grid')
+    .findByRole('row', { name: new RegExp(proposal.title) })
+    .findByText('Submitted');
+};
+
 // Reloads the app and reopens the proposal from the landing page, so everything shown
 // afterwards comes from the backend rather than from the app's in-memory state.
 export const reopenFromBackend = (cycle) => {
