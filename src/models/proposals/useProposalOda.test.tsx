@@ -66,6 +66,50 @@ describe('useProposalOda', () => {
     expect(form.current.getValues('title')).toBe('Unsaved title');
   });
 
+  test('Load from ODA returns mapping errors without resetting form values or errors', async () => {
+    const malformed = {
+      ...pdm,
+      observation_info: {
+        ...pdm.observation_info,
+        targets: pdm.observation_info?.targets?.map((target) => ({
+          ...target,
+          radial_velocity: undefined
+        }))
+      }
+    };
+    expect(() => mapping(malformed)).toThrow();
+    mockGet.mockResolvedValue({ data: malformed });
+    const { form, oda } = renderWithForm('Unsaved title');
+    act(() => {
+      form.current.setError('title', { type: 'manual', message: 'Existing error' });
+    });
+
+    let loaded;
+    await act(async () => {
+      loaded = await oda.current.loadFromOda('prsl-1');
+    });
+
+    expect(loaded).toEqual(expect.any(String));
+    expect(loaded).not.toBe('');
+    expect(form.current.getValues('title')).toBe('Unsaved title');
+    expect(form.current.getFieldState('title').error?.message).toBe('Existing error');
+  });
+
+  test('Load from ODA returns the standard error for non-Error mapping failures', async () => {
+    mockGet.mockResolvedValue({
+      data: {
+        ...pdm,
+        get observation_info() {
+          throw 'Mapping failed';
+        }
+      }
+    });
+    const { form, oda } = renderWithForm('Unsaved title');
+
+    await expect(oda.current.loadFromOda('prsl-1')).resolves.toBe('error.API_UNKNOWN_ERROR');
+    expect(form.current.getValues('title')).toBe('Unsaved title');
+  });
+
   test('Save to ODA sends the RHF title together with the legacy proposal in one request', async () => {
     mockPut.mockResolvedValue({ data: pdm });
     const { oda } = renderWithForm('Edited title');

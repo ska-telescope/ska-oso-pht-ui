@@ -23,8 +23,16 @@ export function useProposalOda() {
       if (typeof pdm === 'string') {
         return pdm;
       }
-      form?.reset(mapPdmToForm(pdm));
-      return mapping(pdm);
+      let proposal: Proposal;
+      let values: ProposalType;
+      try {
+        proposal = mapping(pdm);
+        values = mapPdmToForm(pdm);
+      } catch (error) {
+        return error instanceof Error ? error.message : 'error.API_UNKNOWN_ERROR';
+      }
+      form?.reset(values);
+      return proposal;
     },
     [authClient, form]
   );

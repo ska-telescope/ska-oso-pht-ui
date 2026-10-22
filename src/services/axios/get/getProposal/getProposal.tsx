@@ -853,7 +853,14 @@ async function GetProposal(
   id: string
 ): Promise<Proposal | string> {
   const response = await GetProposalPdm(authAxiosClient, id);
-  return typeof response === 'string' ? response : mapping(response);
+  if (typeof response === 'string') {
+    return response;
+  }
+  try {
+    return mapping(response);
+  } catch (error) {
+    return error instanceof Error ? error.message : 'error.API_UNKNOWN_ERROR';
+  }
 }
 
 export default GetProposal;
