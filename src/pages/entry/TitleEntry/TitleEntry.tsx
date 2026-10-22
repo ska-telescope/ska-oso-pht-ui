@@ -255,7 +255,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
               'data-testid': ipad ? 'titleIdIpad' : 'titleId'
             }
           }}
-          helperText={errors.title?.message ?? helperFunction(title)}
+          helperText={helperFunction(title)}
         />
         <ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />
       </Box>
