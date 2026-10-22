@@ -1,4 +1,4 @@
-// The SV proposals the journeys create, one per observing mode, each in its own file. Each page
+// The SV proposals the flows create, one per observing mode, each in its own file. Each page
 // object's fill() enters these values and its verify() checks them, so these files are the single
 // place the expected proposals are described.
 //

@@ -19,7 +19,7 @@ export const buildSvContinuumProposal = (): ProposalFixture => ({
     integrationTime: '1.45' // h
   },
 
-  // For continuum, images and visibilities are alternatives, and the journey configures images
+  // For continuum, images and visibilities are alternatives, and the flow configures images
   dataProducts: {
     image: {
       imageSize: { value: '4.5', unit: 'degree' },

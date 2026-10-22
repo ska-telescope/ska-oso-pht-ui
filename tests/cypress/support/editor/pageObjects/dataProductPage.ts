@@ -30,7 +30,7 @@ const verifyPolarisations = (options: string[], selected: string[]) =>
   options.forEach((p) => verifyChecked(`polarisations${p}`, selected.includes(p)));
 
 // For continuum, the user chooses between an images and a visibilities data product; choosing
-// one resets the other to its defaults. The journeys configure the images data product. The
+// one resets the other to its defaults. The flows configure the images data product. The
 // other image modes have no choice to make.
 const fillImage = (mode: ObservingMode, image: ImageDataProduct) => {
   if (mode === 'Continuum') {
@@ -72,7 +72,7 @@ const verifyImage = (mode: ObservingMode, image: ImageDataProduct) => {
   verifyPolarisations(IMAGE_POLARISATIONS, image.polarisations);
 };
 
-// The fields shown for PST depend on the observation's PST mode. The journeys use the detected
+// The fields shown for PST depend on the observation's PST mode. The flows use the detected
 // filterbank, which has the most fields.
 const fillPst = (pst: PstDataProduct) => {
   enter(outputFrequencyResolutionField(), pst.outputFrequencyResolution);

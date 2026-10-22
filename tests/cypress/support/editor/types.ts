@@ -51,7 +51,7 @@ export interface PstDataProduct {
 }
 
 // PST has its own data product; the other modes have images. (Continuum can have visibilities
-// instead, but the journeys don't cover that.)
+// instead, but the flows don't cover that.)
 export type DataProducts = { image: ImageDataProduct } | { pst: PstDataProduct };
 
 export interface ProposalFixture {
@@ -73,7 +73,7 @@ export interface PageObject {
 }
 
 // What differs between cycles: how the cycle is picked when creating a proposal, the messages
-// shown once it has been created and validated, where the editor lands, and the pages a journey
+// shown once it has been created and validated, where the editor lands, and the pages a flow
 // goes through.
 export interface Cycle {
   option: RegExp;

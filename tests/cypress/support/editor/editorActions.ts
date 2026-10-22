@@ -2,7 +2,7 @@ import { visitWithAuth } from '../common';
 import { standardUser } from '../users';
 import type { Cycle, PageObject, ProposalFixture } from './types';
 
-// Marks a step in the Cypress log, so a failure in a long journey shows which page it was on.
+// Marks a step in the Cypress log, so a failure in a long flow shows which page it was on.
 export const step = (name: string, body: () => void) => {
   cy.log(`**${name}**`);
   body();

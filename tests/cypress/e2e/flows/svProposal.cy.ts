@@ -13,9 +13,9 @@ import {
   verifyPages
 } from '../../support/editor/editorActions';
 
-// One test per observing mode, each covering the whole journey. Retries are off because a retry
-// would repeat the journey from the start and create another proposal.
-describe('SV proposal journey', { retries: 0 }, () => {
+// One test per observing mode, each covering the whole flow. Retries are off because a retry
+// would repeat the flow from the start and create another proposal.
+describe('SV proposal flow', { retries: 0 }, () => {
   afterEach(() => {
     clearLocalStorage();
   });
