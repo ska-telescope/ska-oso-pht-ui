@@ -1,7 +1,7 @@
-import { clearLocalStorage } from '../../support/common';
-import { standardUser } from '../../support/users';
-import { SV_PROPOSALS } from '../../support/editor/data/sv';
-import { SV_CYCLE } from '../../support/editor/cycles';
+import { clearLocalStorage } from '../../../support/common';
+import { standardUser } from '../../../support/users';
+import { SV_PROPOSALS } from '../../../support/editor/data/sv';
+import { SV_CYCLE } from '../../../support/editor/cycles';
 import {
   createProposal,
   fillPages,
@@ -11,7 +11,7 @@ import {
   stubDocumentUpload,
   validateAndSubmit,
   verifyPages
-} from '../../support/editor/editorActions';
+} from '../../../support/editor/editorActions';
 
 // One test per observing mode, each covering the whole flow. Retries are off because a retry
 // would repeat the flow from the start and create another proposal.
