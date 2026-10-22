@@ -6,15 +6,7 @@ import {
   verifyExists,
   verifyVisible
 } from '../fixtures/utils/cypress';
-import {
-  fetchLiveOpsToken,
-  liveMemberEmail,
-  liveMemberFirstName,
-  loginAsUser,
-  stubMsalForceRefresh
-} from './auth';
-
-export { liveMemberEmail, liveMemberFirstName };
+import { fetchLiveOpsToken, loginAsUser, stubMsalForceRefresh } from './auth';
 
 // visitWithAuth logs in via a real MSAL session (see auth.js's loginAsUser) and then
 // does its own cy.visit() on top of that restored session - login itself no longer happens here.
@@ -84,14 +76,6 @@ export const mockValidateSVIdeaAPI = () => {
   cy.intercept('POST', '**/pht/prsls/validate').as('mockValidateSVIdea');
 };
 
-export const mockGetUserByEmailAPI = () => {
-  cy.intercept('GET', `**/pht/prsls/member/${liveMemberEmail()}`).as('mockGetUserByEmailAPI');
-};
-
-export const mockCreateProposalAccessAPI = () => {
-  cy.intercept('POST', '**/pht/proposal-access/create').as('mockCreateProposalAccessAPI');
-};
-
 /*----------------------------------------------------------------------*/
 
 export const verify = (testId) => {
@@ -114,24 +98,11 @@ export const clickResolveButton = () => clickButton('resolveButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
-export const clickUserSearch = () => clickButton('userSearchButton');
-export const clickSubmitRights = () => clickButton('submitCheckbox');
 export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
-export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickFileUpload = () => clickButton('fileUploadUploadButton');
-export const clickEditUserRightsIconForRow = (tableTestId, text) => {
-  cy.get(`[data-testid="${tableTestId}"]`)
-    .find('[role="row"]')
-    .filter(`:contains("${text}")`)
-    .click()
-    .first()
-    .within(() => {
-      cy.get('[data-testid="lockIcon"]').should('be.visible').click();
-    });
-};
 export const clickToSubmitProposal = () => {
   cy.get('[data-testid="submitBtnTestId"]').should('exist');
   cy.get('[data-testid="submitBtnTestId"]').click();
@@ -194,12 +165,6 @@ export const verifyTestFileUploaded = (fileName) => {
 export const verifyAlertFooter = (text) => {
   verifyContent('timeAlertFooter', text);
 };
-export const verifyUserFoundAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'User was successfully found.');
-export const verifyUserInvitedAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Email invite has been sent.');
-export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
-  verifyContent('timeAlertFooter', "Team member's access has been updated.", 30000);
 // Selects by the cycle's rendered description text rather than its exact ID - CycleSelection.tsx
 // doesn't render the OSD `type` field, so description text (which every real SV cycle includes
 // "Science Verification" in) is the next best generic discriminator - matching how the
