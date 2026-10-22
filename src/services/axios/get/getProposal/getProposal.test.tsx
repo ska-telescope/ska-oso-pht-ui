@@ -8,6 +8,7 @@ import {
   PROPOSAL_TYPE
 } from '@utils/constants.ts';
 import GetProposal, {
+  GetProposalPdm,
   mapping,
   getInvestigators,
   getScienceCategory,
@@ -100,6 +101,12 @@ describe('GetProposal Service', () => {
       MockProposalBackend.prsl_id as string
     )) as Proposal;
     expect(result).to.deep.equal(MockProposalFrontend);
+  });
+
+  test('GetProposalPdm returns the unmapped PDM from the API', async () => {
+    mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackend });
+    const result = await GetProposalPdm(mockedAuthClient, MockProposalBackend.prsl_id as string);
+    expect(result).toEqual(MockProposalBackend);
   });
 
   test('returns error message on API failure', async () => {

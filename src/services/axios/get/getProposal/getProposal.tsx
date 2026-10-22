@@ -828,23 +828,32 @@ export function mapping(inRec: ProposalBackend): Proposal {
   return convertedProposal as Proposal;
 }
 
-async function GetProposal(
+// Unmapped version: fetch proposal from the ODA in its PDM (backend) shape, without mapping it.
+export async function GetProposalPdm(
   authAxiosClient: AxiosAuthClient,
   id: string
-): Promise<Proposal | string> {
+): Promise<ProposalBackend | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
     if (!result || !result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
-    return mapping(result.data);
+    return result.data;
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
     }
     return 'error.API_UNKNOWN_ERROR';
   }
+}
+
+async function GetProposal(
+  authAxiosClient: AxiosAuthClient,
+  id: string
+): Promise<Proposal | string> {
+  const response = await GetProposalPdm(authAxiosClient, id);
+  return typeof response === 'string' ? response : mapping(response);
 }
 
 export default GetProposal;

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { countWords } from '@/utils/helpers';
 import { TEXT_ENTRY_PARAMS } from '@/utils/constants';
+import type { ProposalInfo } from '@/generated/models/proposal-info';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
 const REQUIRED_MESSAGE = phtTranslations.title.empty;
@@ -25,3 +26,8 @@ export function getTitleSchema() {
 export const getTitleValues = (proposal?: { title?: string }): TitleType => proposal?.title ?? '';
 
 export type TitleType = z.infer<ReturnType<typeof getTitleSchema>>;
+
+export const titleFromPdm = (proposalInfo?: Partial<ProposalInfo>): TitleType =>
+  proposalInfo?.title ?? '';
+
+export const titleToPdm = (title: TitleType): Pick<ProposalInfo, 'title'> => ({ title });

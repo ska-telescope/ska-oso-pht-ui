@@ -23,6 +23,7 @@ export function useProposalForm(proposal?: ProposalSeed) {
     latestProposal.current = proposal;
   });
 
+  // Update the form whenever the proposal ID changes, ensuring the latest title is reflected.
   React.useEffect(() => {
     reset({ title: getTitleValues(latestProposal.current) });
   }, [proposalId, reset]);

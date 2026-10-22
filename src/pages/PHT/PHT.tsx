@@ -143,6 +143,7 @@ export default function PHT({
   const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
 
   const formMethods = useProposalForm(getProposal());
+  const { getValues } = formMethods;
 
   // A target can end up linked with no matching targetObservation entry (e.g. an older
   // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
@@ -186,7 +187,12 @@ export default function PHT({
 
     if (canAutoSave) {
       void (async () => {
-        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
+        const response = await PutProposal(
+          authClient,
+          proposal,
+          PROPOSAL_STATUS.DRAFT,
+          getValues()
+        );
         if ('error' in response) {
           notifyError(response.error);
         }
@@ -194,7 +200,7 @@ export default function PHT({
     }
 
     previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, loggedIn, authClient, notifyError]);
+  }, [location.pathname, application.content2, loggedIn, authClient, notifyError, getValues]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
@@ -373,6 +379,8 @@ export default function PHT({
               minHeight: '100vh'
             }}
           >
+            {/* TODO: REMOVE  */}
+            {/* Global form provider for proposal form management */}
             <FormProvider {...formMethods}>
               {REQUIRED_WIDTH ? (
                 <Routes>

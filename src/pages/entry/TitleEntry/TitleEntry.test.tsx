@@ -5,7 +5,9 @@ import { StoreProvider } from '@utils/storage/store';
 import TitleEntry from './TitleEntry';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import { FormProvider, useForm } from 'react-hook-form';
-import { ProposalType } from '@/models/proposals/proposal';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import phtTranslations from '../../../../public/locales/en/pht.json';
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ isSV: false })
@@ -28,10 +30,12 @@ vi.mock('@utils/storage/store', () => ({
   StoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
-const wrapper = (component: React.ReactElement) => {
+const wrapper = (component: React.ReactElement, { validate = false } = {}) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: { title: 'A title' }
+      mode: 'all',
+      defaultValues: { title: 'A title' },
+      resolver: validate ? zodResolver(getProposalSchema()) : undefined
     });
     return (
       <StoreProvider>
@@ -67,6 +71,26 @@ describe('<TitleEntry />', () => {
     expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'Updated title' })
     );
+  });
+});
+
+describe('<TitleEntry /> validation', () => {
+  test('shows the zod error when the title is cleared', async () => {
+    wrapper(<TitleEntry page={0} />, { validate: true });
+
+    fireEvent.change(screen.getByTestId('titleId'), { target: { value: '' } });
+
+    expect((await screen.findAllByText(phtTranslations.title.empty))[0]).toBeInTheDocument();
+  });
+
+  test('shows the zod error for unsupported characters', async () => {
+    wrapper(<TitleEntry page={0} />, { validate: true });
+
+    fireEvent.change(screen.getByTestId('titleId'), { target: { value: 'A title with @' } });
+
+    expect(
+      (await screen.findAllByText(phtTranslations.specialCharacters.invalid))[0]
+    ).toBeInTheDocument();
   });
 });
 
