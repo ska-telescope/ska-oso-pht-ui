@@ -22,6 +22,7 @@ import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { getTitleSchema } from '@/models/proposals/title';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -55,6 +56,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   }, [currPageNo, pages]);
 
   const createProposal = React.useCallback(async () => {
+    const titleValidation = getTitleSchema().safeParse(proposal?.title);
+    if (!titleValidation.success) {
+      notifyError(titleValidation.error.issues.map((issue) => issue.message).join('\n'));
+      return;
+    }
+
     notifyWarning(t('addProposal.warning'));
 
     const response = await PostProposal(

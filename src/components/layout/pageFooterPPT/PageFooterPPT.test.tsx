@@ -9,11 +9,13 @@ import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { NAV, PAGE_OBSERVATION, PAGE_TARGET } from '@/utils/constants';
+import phtTranslations from '../../../../public/locales/en/pht.json';
 
 // --- Additional mocks ---
+const mockNotifyError = vi.hoisted(() => vi.fn());
 vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: () => ({
-    notifyError: vi.fn(),
+    notifyError: mockNotifyError,
     notifySuccess: vi.fn(),
     notifyWarning: vi.fn()
   })
@@ -141,6 +143,25 @@ describe('PageFooterPPT', () => {
         'draft'
       );
     });
+  });
+
+  it('rejects invalid title characters before POST even if Create is enabled', () => {
+    const store = storageObject.useStore();
+    storageObject.useStore = () => ({
+      ...store,
+      application: {
+        ...store.application,
+        content2: { id: null, title: 'Invalid @ title', proposalType: 'standard' }
+      }
+    });
+
+    wrapper(<PageFooterPPT pageNo={-1} />);
+    expect(screen.getByTestId('nextButtonTestId')).toBeEnabled();
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    expect(PostProposal).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockNotifyError).toHaveBeenCalledWith(phtTranslations.specialCharacters.invalid);
   });
 
   it('navigates to next page when next button clicked', async () => {

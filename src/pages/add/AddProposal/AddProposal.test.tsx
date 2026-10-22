@@ -1,12 +1,11 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, renderHook, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { countWords } from '@utils/helpers.ts';
 import phtTranslations from '../../../../public/locales/en/pht.json';
 
 const FormWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -25,6 +24,10 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 const mockOSD = vi.hoisted(() => ({ isSV: false }));
+
+vi.mock('@ska-telescope/ska-login-page', () => ({
+  isLoggedIn: () => true
+}));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
@@ -50,26 +53,48 @@ describe('<AddProposal />', () => {
 describe('contentValid (Create button gate)', () => {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
 
-  const titleValid = (title: string) => title?.length > 0 && countWords(title) <= maxTitleWords;
-
-  test('is invalid when title is empty', () => {
-    expect(titleValid('')).toBe(false);
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  test('is valid when title is within the word limit', () => {
-    expect(titleValid('A short valid title')).toBe(true);
-  });
+  test.each([
+    { title: '', valid: false },
+    { title: 'A title with @', valid: false },
+    { title: 'A short valid title', valid: true },
+    { title: Array(maxTitleWords).fill('word').join(' '), valid: true },
+    {
+      title: Array(maxTitleWords + 1)
+        .fill('word')
+        .join(' '),
+      valid: false
+    }
+  ])('Create enabled=$valid for "$title" with a selected type', ({ title, valid }) => {
+    const { result, unmount } = renderHook(() => storageObject.useStore(), {
+      wrapper: StoreProvider
+    });
+    const store = result.current;
+    unmount();
+    vi.spyOn(storageObject, 'useStore').mockReturnValue({
+      ...store,
+      application: {
+        ...store.application,
+        content1: [],
+        content2: {
+          id: null,
+          title,
+          proposalType: PROPOSAL_TYPE.STANDARD,
+          proposalSubType: []
+        }
+      }
+    });
 
-  test('is valid when title is exactly at the word limit', () => {
-    const atLimit = Array(maxTitleWords).fill('word').join(' ');
-    expect(titleValid(atLimit)).toBe(true);
-  });
+    wrapper(<AddProposal />);
 
-  test('is invalid when title exceeds the word limit', () => {
-    const overLimit = Array(maxTitleWords + 1)
-      .fill('word')
-      .join(' ');
-    expect(titleValid(overLimit)).toBe(false);
+    if (valid) {
+      expect(screen.getByTestId('nextButtonTestId')).toBeEnabled();
+    } else {
+      expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
+    }
   });
 });
 

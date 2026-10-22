@@ -7,8 +7,7 @@ import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { newDataProductsForMode, newObservationForMode } from '@/utils/autoLinking/AutoLinking';
-import { countWords } from '@utils/helpers.ts';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import { getTitleSchema } from '@/models/proposals/title';
 
 const PAGE = PAGE_TITLE_ADD;
 const PAGE_INNER = 0;
@@ -38,9 +37,7 @@ export default function AddProposal() {
     });
   }, []);
 
-  const maxTitleWords = Number(phtTranslations.title.maxWord);
-  const titleValid = () =>
-    getProposal()?.title?.length > 0 && countWords(getProposal()?.title) <= maxTitleWords;
+  const titleValid = () => getTitleSchema().safeParse(getProposal()?.title).success;
   const typeValid = () => !!getProposal()?.proposalType;
   const contentValid = () => titleValid() && typeValid();
 
