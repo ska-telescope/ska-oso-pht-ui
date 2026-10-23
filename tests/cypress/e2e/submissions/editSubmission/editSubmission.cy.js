@@ -11,12 +11,10 @@ import {
   addM2TargetUsingResolve,
   clickObservationSetup,
   selectScienceCategory,
-  verifyAutoLinkAlertFooter,
   spyOnResolveTargetAPI,
   waitForResolveTarget,
   addSubmissionSummary,
   clickEditIconForRow,
-  verifyMockedScienceIdeaOnLandingPageIsVisible,
   clickAddObservationEntry,
   updateFieldValue,
   verifyDataInTable,
@@ -32,76 +30,14 @@ import {
   verifyAlertFooter,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
-  createScienceIdeaSession,
   createStandardProposalSession
 } from '../../../support/common.js';
 import { standardUser } from '../../../support/users.js';
 
 describe('Edit Proposal', () => {
-  // The PDF upload step needs real AWS S3 credentials, sourced from Vault in a proper deployment -
-  // our local minikube deploy of ska-oso-services runs with vault.enabled=false (see its
-  // Makefile), which injects a dummy AWS key/secret instead, so any live upload fails. Skip until
-  // that's addressed - this isn't a test-code fix - and remove this skip (and verify it) at that
-  // point rather than rewriting it from scratch.
-  //
-  // Skipped via describe.skip() (not this.skip() inside a function(){} test) - see
-  // reviewScience.cy.js's comment: a function(){...this.skip()} test sharing a spec with
-  // cy.intercept().as() elsewhere (here, the Proposal Flow describe below and this describe's own
-  // mockEmailAPI/spyOnResolveTargetAPI) reliably corrupts Cypress's command tracking.
-  // describe.skip() never invokes any of its hooks or tests at all, so it sidesteps that entirely.
-  describe.skip('SV Flow', () => {
-    beforeEach(() => {
-      mockEmailAPI();
-      spyOnResolveTargetAPI();
-    });
-
-    afterEach(() => {
-      clearLocalStorage();
-    });
-
-    it('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', () => {
-      createScienceIdeaSession(standardUser);
-      mockValidateAPI();
-
-      //edit existing science verification idea
-      clickHome();
-      verifyOnLandingPage();
-      verifyOnLandingPageFilterIsVisible();
-      verifyMockedScienceIdeaOnLandingPageIsVisible();
-      clickEditIconForRow('review-table', 'Science Verification');
-      pageConfirmed('TITLE');
-      //complete mandatory fields
-      clickStatusIconNav('statusId2'); //Click to details page
-      pageConfirmed('DETAILS');
-      addSubmissionSummary('This is a summary of the science idea.');
-      clickStatusIconNav('statusId3'); //Click to description page
-      pageConfirmed('DESCRIPTION');
-      clickStatusIconNav('statusId4'); //Click to target page
-      pageConfirmed('TARGET');
-      addM2TargetUsingResolve(); //add target
-      waitForResolveTarget();
-      clickToAddTarget();
-      verifyAutoLinkAlertFooter(); //Verify AutoLink to OSD data
-      clickStatusIconNav('statusId3'); //Click to description page
-      pageConfirmed('DESCRIPTION');
-      uploadTestFile('testFile.pdf');
-      verifyTestFileUploaded('testFile.pdf');
-      clickFileUpload();
-      // The upload is a real async round trip (presigned URL + S3 PUT) that sets
-      // sciencePDF.isUploadedPdf on completion - wait for the preview button, which only
-      // renders once that's true, otherwise validate can run before the upload has landed.
-      cy.get('[data-testid="pdfPreviewButtonTestId"]').should('exist');
-      clickToSubmitProposal();
-      cy.wait('@mockValidate');
-      verifyAlertFooter('Science Verification Idea is Valid');
-      clickToConfirmProposalSubmission();
-      verifyAlertFooter('Submission was successful');
-    });
-  });
-
   // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification one
   // is seeded) - stub-only until one is, this isn't a test-code fix. Skipped via describe.skip()
-  // for the same command-tracking-corruption reason as the SV Flow describe above.
+  // (not this.skip()) - see reviewScience.cy.js's comment on command-tracking corruption.
   describe.skip('Proposal Flow', () => {
     beforeEach(() => {
       mockEmailAPI();

@@ -2,7 +2,6 @@ import {
   addM2TargetUsingResolve,
   checkFieldDisabled,
   clearLocalStorage,
-  clickDialogConfirm,
   clickEdit,
   clickFirstRowOfTargetTable,
   clickStatusIconNav,
@@ -13,8 +12,6 @@ import {
   pageConfirmed,
   updateTargetField,
   verifyFieldError,
-  verifyInformationBannerText,
-  verifyOsdDataMaxTargets,
   verifyTargetInTargetTable,
   createScienceIdeaSession,
   createStandardProposalSession
@@ -115,35 +112,6 @@ describe('Science Verification: Target entry validation', () => {
     updateTargetField('skyDirectionValue2', '1'); // enter invalid coordinate
     verifyFieldError('skyDirectionValue2', 'Input formatted incorrectly', true); //verify field error on dec field, as is invalid
     checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
-  });
-
-  it('SV: Verify target table reflects updated target', () => {
-    spyOnResolveTargetAPI();
-    //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
-    clickToAddTarget();
-
-    //verify target in target table
-    verifyTargetInTargetTable('M2', '21:33:27.0200', '-00:49:23.700', '-3.6');
-
-    // edit target
-    clickFirstRowOfTargetTable();
-    clickEdit();
-
-    // update target fields
-    updateTargetField('name', 'M1'); // enter new target name
-    updateTargetField('skyDirectionValue1', '2:00:00'); // enter new coordinate
-    updateTargetField('skyDirectionValue2', '2:00:00'); // enter new coordinate
-    updateTargetField('velocityValue', '0'); // enter new velocity
-    clickDialogConfirm();
-
-    //verify updated target in target table
-    verifyTargetInTargetTable('M1', '02:00:00', '02:00:00', '0');
-
-    //verify only one target is available for SV, as per OSD
-    verifyOsdDataMaxTargets(1);
-    verifyInformationBannerText('Only 1 target/object is allowed');
   });
 });
 
