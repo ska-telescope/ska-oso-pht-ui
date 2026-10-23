@@ -1,11 +1,4 @@
-import {
-  click,
-  entry,
-  selectId,
-  verifyContent,
-  verifyExists,
-  verifyVisible
-} from '../fixtures/utils/cypress';
+import { click, entry, selectId, verifyContent, verifyExists, verifyVisible } from './cypress';
 import { fetchLiveOpsToken, loginAsUser, stubMsalForceRefresh } from './auth';
 
 // visitWithAuth logs in via a real MSAL session (see auth.js's loginAsUser) and then
