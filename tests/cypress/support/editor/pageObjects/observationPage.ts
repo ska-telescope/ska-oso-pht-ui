@@ -20,13 +20,13 @@ export const observationPage: PageObject = {
       enter(bandwidthField(), observation.bandwidth);
     }
     if (observation.spectralResolution) {
-      select('spectralResolution', observation.spectralResolution);
+      select('Spectral Resolution', observation.spectralResolution);
     }
     if (observation.numberOfChannels) {
       enter(numberOfChannelsField(), observation.numberOfChannels);
     }
     if (observation.pstMode) {
-      select('pstMode', observation.pstMode);
+      select('PST Mode', observation.pstMode);
     }
   },
   verify: ({ observation }) => {
@@ -36,13 +36,13 @@ export const observationPage: PageObject = {
       bandwidthField().should('have.value', observation.bandwidth);
     }
     if (observation.spectralResolution) {
-      verifySelected('spectralResolution', observation.spectralResolution);
+      verifySelected('Spectral Resolution', observation.spectralResolution);
     }
     if (observation.numberOfChannels) {
       numberOfChannelsField().should('have.value', observation.numberOfChannels);
     }
     if (observation.pstMode) {
-      verifySelected('pstMode', observation.pstMode);
+      verifySelected('PST Mode', observation.pstMode);
     }
   }
 };

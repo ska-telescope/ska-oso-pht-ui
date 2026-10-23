@@ -13,6 +13,8 @@ import { buildSvContinuumSpectralProposal } from './continuumSpectral';
 import { buildSvSpectralProposal } from './spectral';
 import { buildSvPstProposal } from './pst';
 
+export { SV_DEFAULTS } from './defaults';
+
 export {
   buildSvContinuumProposal,
   buildSvContinuumSpectralProposal,

@@ -8,11 +8,11 @@ export const detailsPage: PageObject = {
   name: 'Details',
   heading: 'DETAILS',
   fill: ({ details }) => {
-    select('observationType', details.observingMode);
+    select('Observing Mode', details.observingMode);
     enter(abstractField(), details.abstract);
   },
   verify: ({ details }) => {
-    verifySelected('observationType', details.observingMode);
+    verifySelected('Observing Mode', details.observingMode);
     abstractField().should('have.value', details.abstract);
   }
 };

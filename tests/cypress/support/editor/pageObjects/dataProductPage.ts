@@ -1,4 +1,12 @@
-import { enter, select, setChecked, verifyChecked, verifySelected } from '../fields';
+import {
+  enter,
+  select,
+  selectUnit,
+  setChecked,
+  verifyChecked,
+  verifySelected,
+  verifySelectedUnit
+} from '../fields';
 import type {
   ImageDataProduct,
   ObservingMode,
@@ -24,29 +32,29 @@ const dispersionMeasureField = () => cy.findByRole('textbox', { name: 'Dispersio
 const rotationMeasureField = () => cy.findByRole('textbox', { name: 'Rotation Measure' });
 
 const setPolarisations = (options: string[], selected: string[]) =>
-  options.forEach((p) => setChecked(`polarisations${p}`, selected.includes(p)));
+  options.forEach((p) => setChecked(p, selected.includes(p)));
 
 const verifyPolarisations = (options: string[], selected: string[]) =>
-  options.forEach((p) => verifyChecked(`polarisations${p}`, selected.includes(p)));
+  options.forEach((p) => verifyChecked(p, selected.includes(p)));
 
 // For continuum, the user chooses between an images and a visibilities data product; choosing
 // one resets the other to its defaults. The flows configure the images data product. The
 // other image modes have no choice to make.
 const fillImage = (mode: ObservingMode, image: ImageDataProduct) => {
   if (mode === 'Continuum') {
-    select('dataProductType', 'Images');
+    select('Product type', 'Images');
   }
   enter(imageSizeField(), image.imageSize.value);
-  select('imageSizeUnits', image.imageSize.unit);
+  selectUnit('Image Size', image.imageSize.unit);
   enter(pixelSizeField(), image.pixelSize.value);
-  select('pixelSizeUnits', image.pixelSize.unit);
-  select('imageWeighting', image.weighting);
+  selectUnit('Pixel Size', image.pixelSize.unit);
+  select('Image Weighting', image.weighting);
   if (image.weighting === 'Briggs') {
     enter(robustField(), image.robust ?? '');
   }
   // For spectral, the channels out follow from the observation and can't be edited
   if (mode === 'Spectral') {
-    setChecked('continuumSubtraction', image.continuumSubtraction ?? false);
+    setChecked('Apply continuum subtraction?', image.continuumSubtraction ?? false);
   } else {
     enter(channelsOutField(), image.channelsOut);
   }
@@ -55,19 +63,19 @@ const fillImage = (mode: ObservingMode, image: ImageDataProduct) => {
 
 const verifyImage = (mode: ObservingMode, image: ImageDataProduct) => {
   if (mode === 'Continuum') {
-    verifySelected('dataProductType', 'Images');
+    verifySelected('Product type', 'Images');
   }
   imageSizeField().should('have.value', image.imageSize.value);
-  verifySelected('imageSizeUnits', image.imageSize.unit);
+  verifySelectedUnit('Image Size', image.imageSize.unit);
   pixelSizeField().should('have.value', image.pixelSize.value);
-  verifySelected('pixelSizeUnits', image.pixelSize.unit);
-  verifySelected('imageWeighting', image.weighting);
+  verifySelectedUnit('Pixel Size', image.pixelSize.unit);
+  verifySelected('Image Weighting', image.weighting);
   if (image.weighting === 'Briggs') {
     robustField().should('have.value', image.robust);
   }
   channelsOutField().should('have.value', image.channelsOut);
   if (mode === 'Spectral') {
-    verifyChecked('continuumSubtraction', image.continuumSubtraction ?? false);
+    verifyChecked('Apply continuum subtraction?', image.continuumSubtraction ?? false);
   }
   verifyPolarisations(IMAGE_POLARISATIONS, image.polarisations);
 };
@@ -77,7 +85,7 @@ const verifyImage = (mode: ObservingMode, image: ImageDataProduct) => {
 const fillPst = (pst: PstDataProduct) => {
   enter(outputFrequencyResolutionField(), pst.outputFrequencyResolution);
   enter(outputSamplingIntervalField(), pst.outputSamplingInterval);
-  select('bitDepth', pst.bitDepth);
+  select('Bit Depth', pst.bitDepth);
   enter(dispersionMeasureField(), pst.dispersionMeasure);
   enter(rotationMeasureField(), pst.rotationMeasure);
   setPolarisations(PST_POLARISATIONS, pst.polarisations);
@@ -86,7 +94,7 @@ const fillPst = (pst: PstDataProduct) => {
 const verifyPst = (pst: PstDataProduct) => {
   outputFrequencyResolutionField().should('have.value', pst.outputFrequencyResolution);
   outputSamplingIntervalField().should('have.value', pst.outputSamplingInterval);
-  verifySelected('bitDepth', pst.bitDepth);
+  verifySelected('Bit Depth', pst.bitDepth);
   dispersionMeasureField().should('have.value', pst.dispersionMeasure);
   rotationMeasureField().should('have.value', pst.rotationMeasure);
   verifyPolarisations(PST_POLARISATIONS, pst.polarisations);
