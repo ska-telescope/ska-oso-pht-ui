@@ -20,6 +20,7 @@ describe('SV proposal flow', { retries: 0 }, () => {
     clearLocalStorage();
   });
 
+  // Continuum: XTP-96352, Spectral: XTP-96345, PST: XTP-96353
   SV_PROPOSALS.map((buildProposal) => buildProposal()).forEach((proposal) => {
     it(`${proposal.details.observingMode}: creates an SV proposal, keeps its values through navigation and reload, and submits it`, () => {
       stubDocumentUpload();
