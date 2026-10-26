@@ -68,6 +68,7 @@ export interface ProposalFixture {
 export interface PageObject {
   name: string;
   heading: string;
+  pageValidationError: string;
   fill: (proposal: ProposalFixture) => void;
   verify: (proposal: ProposalFixture) => void;
 }

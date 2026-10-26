@@ -13,6 +13,7 @@ export const chooseDocument = (file: string | Cypress.FileReferenceObject) =>
 export const descriptionPage: PageObject = {
   name: 'Description',
   heading: 'DESCRIPTION',
+  pageValidationError: 'The DESCRIPTION page is not complete',
   fill: ({ description }) => {
     chooseDocument(description.document);
     cy.findByRole('button', { name: 'Upload' }).click();

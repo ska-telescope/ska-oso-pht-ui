@@ -103,6 +103,7 @@ const verifyPst = (pst: PstDataProduct) => {
 export const dataProductPage: PageObject = {
   name: 'Data Product',
   heading: 'OBSERVATORY DATA PRODUCT',
+  pageValidationError: 'The DATA PRODUCTS page is not complete',
   fill: ({ details, dataProducts }: ProposalFixture) =>
     'pst' in dataProducts
       ? fillPst(dataProducts.pst)

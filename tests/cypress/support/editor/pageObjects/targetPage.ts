@@ -12,6 +12,7 @@ export const deleteTarget = (name: string) => {
 export const targetPage: PageObject = {
   name: 'Target',
   heading: 'TARGET',
+  pageValidationError: 'The TARGET page is not complete',
   fill: ({ target }) => {
     select('Coordinate Type', target.coordinateType);
     enter(cy.findByRole('textbox', { name: 'Name' }), target.name);

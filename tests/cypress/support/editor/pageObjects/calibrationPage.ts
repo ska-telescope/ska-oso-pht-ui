@@ -8,6 +8,7 @@ const commentField = () => section('Comments on this strategy').findByRole('text
 export const calibrationPage: PageObject = {
   name: 'Calibration',
   heading: 'CALIBRATION',
+  pageValidationError: 'The CALIBRATION STRATEGY page is not complete',
   fill: ({ calibration }) => {
     if (calibration.comment) {
       enter(commentField(), calibration.comment);

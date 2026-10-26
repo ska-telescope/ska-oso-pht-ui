@@ -3,6 +3,7 @@ import type { PageObject } from '../types';
 export const teamPage: PageObject = {
   name: 'Team',
   heading: 'TEAM',
+  pageValidationError: 'The TEAM page is not complete',
   // Inviting a member will not be part of these tests (at least not yet) as how and where
   // to test the User Portal intivation/acceptance flow is still unclear
   fill: () => {},

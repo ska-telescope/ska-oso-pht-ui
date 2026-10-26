@@ -7,6 +7,7 @@ const abstractField = () => cy.findByRole('textbox', { name: 'Idea Summary' });
 export const detailsPage: PageObject = {
   name: 'Details',
   heading: 'DETAILS',
+  pageValidationError: 'The DETAILS page is not complete',
   fill: ({ details }) => {
     select('Observing Mode', details.observingMode);
     enter(abstractField(), details.abstract);

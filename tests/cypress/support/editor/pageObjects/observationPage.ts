@@ -13,6 +13,7 @@ const numberOfChannelsField = () => cy.findByRole('spinbutton', { name: 'Number 
 export const observationPage: PageObject = {
   name: 'Observation',
   heading: 'OBSERVATION',
+  pageValidationError: 'The OBSERVATION page is not complete',
   fill: ({ observation }) => {
     enter(integrationTimeField(), observation.integrationTime);
     enter(centralFrequencyField(), observation.centralFrequency);
