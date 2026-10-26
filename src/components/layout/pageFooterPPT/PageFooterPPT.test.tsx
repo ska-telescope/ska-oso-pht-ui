@@ -172,7 +172,10 @@ describe('PageFooterPPT', () => {
 
     wrapper(<PageFooterPPT pageNo={-1} />, 'Invalid @ title');
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
     expect(PostProposal).not.toHaveBeenCalled();
+    expect(mockNotifyError).not.toHaveBeenCalled();
   });
 
   it('navigates to next page when next button clicked', async () => {
