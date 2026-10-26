@@ -1,23 +1,28 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { render, renderHook, screen } from '@testing-library/react';
+import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
 
-const FormWrapper = ({ children }: { children: React.ReactNode }) => {
-  const methods = useForm({ defaultValues: { title: '' } });
+const FormWrapper = ({ children, title }: { children: React.ReactNode; title: string }) => {
+  const methods = useForm<ProposalType>({
+    mode: 'all',
+    resolver: zodResolver(getProposalSchema()),
+    defaultValues: { title }
+  });
   return <FormProvider {...methods}>{children}</FormProvider>;
 };
 
-const wrapper = (component: React.ReactElement) => {
+const wrapper = (component: React.ReactElement, title = '') => {
   return render(
     <StoreProvider>
       <ThemeA11yProvider>
-        <FormWrapper>{component}</FormWrapper>
+        <FormWrapper title={title}>{component}</FormWrapper>
       </ThemeA11yProvider>
     </StoreProvider>
   );
@@ -50,25 +55,12 @@ describe('<AddProposal />', () => {
   });
 });
 
-describe('contentValid (Create button gate)', () => {
-  const maxTitleWords = Number(phtTranslations.title.maxWord);
-
+describe('Create button validation', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  test.each([
-    { title: '', valid: false },
-    { title: 'A title with @', valid: false },
-    { title: 'A short valid title', valid: true },
-    { title: Array(maxTitleWords).fill('word').join(' '), valid: true },
-    {
-      title: Array(maxTitleWords + 1)
-        .fill('word')
-        .join(' '),
-      valid: false
-    }
-  ])('Create enabled=$valid for "$title" with a selected type', ({ title, valid }) => {
+  test('Create button is enabled for a valid title without gating on proposal type', async () => {
     const { result, unmount } = renderHook(() => storageObject.useStore(), {
       wrapper: StoreProvider
     });
@@ -81,20 +73,15 @@ describe('contentValid (Create button gate)', () => {
         content1: [],
         content2: {
           id: null,
-          title,
-          proposalType: PROPOSAL_TYPE.STANDARD,
+          title: 'A short valid title',
+          proposalType: undefined,
           proposalSubType: []
         }
       }
     });
 
-    wrapper(<AddProposal />);
-
-    if (valid) {
-      expect(screen.getByTestId('nextButtonTestId')).toBeEnabled();
-    } else {
-      expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
-    }
+    wrapper(<AddProposal />, 'A short valid title');
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
   });
 });
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useFormContext, useFormState } from 'react-hook-form';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router';
 import { Grid, Paper } from '@mui/material';
@@ -23,6 +24,7 @@ import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUt
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getTitleSchema } from '@/models/proposals/title';
+import { ProposalType } from '@/models/proposals/proposal';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -37,6 +39,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdCycleId } = useOSDAccessors();
+  const { trigger } = useFormContext<ProposalType>();
+  const { isValid } = useFormState<ProposalType>();
 
   const proposal = application.content2 as Proposal;
 
@@ -46,6 +50,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   );
 
   const currPageNo = proposal?.id == null ? -1 : pageNo;
+
+  React.useEffect(() => {
+    if (currPageNo === -1) {
+      void trigger('title');
+    }
+  }, [currPageNo, trigger]);
 
   const { prevPageNo, nextPageNo } = React.useMemo(() => {
     const idx = pages.findIndex((p) => p === currPageNo);
@@ -194,7 +204,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         <Grid sx={{ pointerEvents: 'auto' }}>
           {showNextNav() && (
             <NextPageButton
-              disabled={buttonDisabled}
+              disabled={buttonDisabled || (currPageNo === -1 && !isValid)}
               testId="nextButtonTestId"
               title={nextLabel()}
               page={currPageNo}

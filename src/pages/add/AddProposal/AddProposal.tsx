@@ -7,16 +7,14 @@ import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { newDataProductsForMode, newObservationForMode } from '@/utils/autoLinking/AutoLinking';
-import { getTitleSchema } from '@/models/proposals/title';
 
 const PAGE = PAGE_TITLE_ADD;
 const PAGE_INNER = 0;
 const PAGE_FOOTER = -1;
 
 export default function AddProposal() {
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const { isSV } = useOSDAccessors();
-  const getProposal = () => application.content2 as Proposal;
 
   // SV proposals have a single observation whose type is the observing mode, so they start with
   // one in the default mode, which the user can change on the Details page.
@@ -37,17 +35,13 @@ export default function AddProposal() {
     });
   }, []);
 
-  const titleValid = () => getTitleSchema().safeParse(getProposal()?.title).success;
-  const typeValid = () => !!getProposal()?.proposalType;
-  const contentValid = () => titleValid() && typeValid();
-
   return (
     <Box
       sx={{
         pt: 2
       }}
     >
-      <Shell page={PAGE} footerPage={PAGE_FOOTER} buttonDisabled={!contentValid()} helpDisabled>
+      <Shell page={PAGE} footerPage={PAGE_FOOTER} helpDisabled>
         <TitleEntry page={PAGE_INNER} />
       </Shell>
     </Box>

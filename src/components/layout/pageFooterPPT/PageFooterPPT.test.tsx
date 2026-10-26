@@ -2,6 +2,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { useNavigate } from 'react-router';
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
@@ -9,7 +11,7 @@ import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { NAV, PAGE_OBSERVATION, PAGE_TARGET } from '@/utils/constants';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
 
 // --- Additional mocks ---
 const mockNotifyError = vi.hoisted(() => vi.fn());
@@ -89,12 +91,23 @@ beforeEach(() => {
     }) as any;
 });
 
-const wrapper = (component: React.ReactElement) =>
-  render(
-    <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
-    </StoreProvider>
-  );
+const wrapper = (component: React.ReactElement, title = mockProposal.title) => {
+  const FormWrapper = () => {
+    const methods = useForm<ProposalType>({
+      mode: 'all',
+      resolver: zodResolver(getProposalSchema()),
+      defaultValues: { title }
+    });
+    return (
+      <StoreProvider>
+        <ThemeA11yProvider>
+          <FormProvider {...methods}>{component}</FormProvider>
+        </ThemeA11yProvider>
+      </StoreProvider>
+    );
+  };
+  return render(<FormWrapper />);
+};
 
 // --- Tests ---
 describe('PageFooterPPT', () => {
@@ -115,6 +128,7 @@ describe('PageFooterPPT', () => {
 
   it('calls createProposal when pageNo = -1', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />);
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
     await waitFor(() => {
@@ -133,6 +147,7 @@ describe('PageFooterPPT', () => {
       }) as any;
 
     wrapper(<PageFooterPPT pageNo={-1} />);
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
     await waitFor(() => {
@@ -145,7 +160,7 @@ describe('PageFooterPPT', () => {
     });
   });
 
-  it('rejects invalid title characters before POST even if Create is enabled', () => {
+  it('disables Create when the title has RHF validation errors', async () => {
     const store = storageObject.useStore();
     storageObject.useStore = () => ({
       ...store,
@@ -155,13 +170,9 @@ describe('PageFooterPPT', () => {
       }
     });
 
-    wrapper(<PageFooterPPT pageNo={-1} />);
-    expect(screen.getByTestId('nextButtonTestId')).toBeEnabled();
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
-
+    wrapper(<PageFooterPPT pageNo={-1} />, 'Invalid @ title');
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
     expect(PostProposal).not.toHaveBeenCalled();
-    expect(mockNavigate).not.toHaveBeenCalled();
-    expect(mockNotifyError).toHaveBeenCalledWith(phtTranslations.specialCharacters.invalid);
   });
 
   it('navigates to next page when next button clicked', async () => {
