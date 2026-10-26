@@ -2,6 +2,21 @@
 # using Helm.  If this does not already exist it will be created
 KUBE_NAMESPACE ?= ska-oso-pht-ui
 K8S_CHART ?= ska-oso-pht-ui-umbrella
+# Not every CI runner provides KUBE_HOST (e.g. the STFC techops runners), so fall back to the
+# STFC/AWS ingress load balancer rather than the local default.
+# The load balancer is used in Cypress tests since cluster authentication is not accepting Indigo
+# tokens yet. We should be able to remove this once STS-3234 has been resolved.
+ifneq ($(CI),)
+ifeq ($(origin KUBE_HOST),undefined)
+ifneq ($(findstring aws,$(CI_RUNNER_TAGS)),)
+# AWS runner
+KUBE_HOST := https://ingress-nginx-controller-default.ingress-nginx
+else
+# STFC runner
+KUBE_HOST := https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
+endif
+endif
+endif
 KUBE_HOST ?= http://localhost
 
 K8S_WAIT_LABEL_FILTER_ARGS = -l release=$(HELM_RELEASE)
