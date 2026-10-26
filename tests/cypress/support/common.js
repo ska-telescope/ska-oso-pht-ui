@@ -65,10 +65,6 @@ export const mockValidateAPI = () => {
   cy.intercept('POST', '**/pht/prsls/validate').as('mockValidate');
 };
 
-export const mockValidateSVIdeaAPI = () => {
-  cy.intercept('POST', '**/pht/prsls/validate').as('mockValidateSVIdea');
-};
-
 /*----------------------------------------------------------------------*/
 
 export const verify = (testId) => {
@@ -84,7 +80,6 @@ export const clickButton = (testId) => {
 export const clickAddSubmission = () => clickButton('addSubmissionButton');
 export const clickCreateSubmission = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
-export const clickDialogConfirm = () => clickButton('dialogConfirmationButton');
 export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickResolveButton = () => clickButton('resolveButton');
@@ -142,9 +137,6 @@ export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
   cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
-};
-export const verifyData = (testId, text) => {
-  cy.get(`[data-testid="${testId}"]`).should('contain', text);
 };
 export const verifyDataInTable = (tableTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`).find('[role="row"]').filter(`:contains("${text}")`);
@@ -337,12 +329,6 @@ export const verifyOsdDataProposalClose = (data) => {
   );
 };
 
-export const verifyOsdDataMaxTargets = (data) => {
-  getOsdData().then((osdData) => {
-    expect(osdData[0]?.observatory_policy?.cycle_policies?.max_targets).to.equal(data);
-  });
-};
-
 // 30000ms (not the verifyContent default of 10000ms) since this now waits on the real backend
 // creating the idea (see common.js's "spies on the real backend" note above) rather than an
 // instant stub reply - CI has been seen still showing the "please wait" placeholder at 10s.
@@ -353,10 +339,6 @@ export const verifyScienceIdeaCreatedAlertFooter = () =>
 // on the real auto-link generation call, not a stub.
 export const verifyAutoLinkAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Target added and auto-linked successfully', 30000);
-
-export const verifyInformationBannerText = (text) => {
-  cy.get('[id="standardAlertId"]').contains(text);
-};
 
 export const clickEdit = () => {
   cy.get('[data-testId="editIcon"]').should('be.visible');
