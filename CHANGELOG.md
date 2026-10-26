@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 
+* Bugfix: Keep the automatic-save timer running when page renders update its callback
+
 11.1.0
 ----------
 
