@@ -36,7 +36,6 @@ export const buildSvContinuumProposal = (): ProposalFixture => ({
     calibrator: 'Hercules A',
     comment:
       'Hercules A transits roughly 2 h before PKS 1830-211, so a calibrator scan after the ' +
-      'target would also help. PKS 1830-211 is bright and compact, so we plan phase-only ' +
-      'self-calibration after transferring the bandpass.'
+      'target would also help.'
   }
 });

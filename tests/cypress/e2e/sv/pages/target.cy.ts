@@ -4,7 +4,7 @@ import { buildSvContinuumProposal } from '../../../support/editor/data/sv';
 import { SV_CYCLE } from '../../../support/editor/cycles';
 import { createProposal, goToPage } from '../../../support/editor/editorActions';
 import { enter } from '../../../support/editor/fields';
-import { targetPage } from '../../../support/editor/pageObjects/targetPage';
+import { deleteTarget, targetPage } from '../../../support/editor/pageObjects/targetPage';
 
 const addTargetButton = () => cy.findByRole('button', { name: 'Add Target' });
 
@@ -59,8 +59,7 @@ describe('SV Target page', () => {
   it('removes the target and allows adding another when the target is deleted', () => {
     targetPage.fill(proposal);
 
-    targetRow(target.name).findByRole('button', { name: 'Delete the target' }).click();
-    cy.findByRole('dialog').findByRole('button', { name: 'Confirm' }).click();
+    deleteTarget(target.name);
 
     targetRow(target.name).should('not.exist');
     cy.findByText(LIMIT_REACHED).should('not.exist');

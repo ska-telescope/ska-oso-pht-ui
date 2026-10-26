@@ -5,7 +5,7 @@ import { SV_CYCLE } from '../../../support/editor/cycles';
 import { createProposal, goToPage } from '../../../support/editor/editorActions';
 import { select } from '../../../support/editor/fields';
 import { detailsPage } from '../../../support/editor/pageObjects/detailsPage';
-import { targetPage } from '../../../support/editor/pageObjects/targetPage';
+import { deleteTarget, targetPage } from '../../../support/editor/pageObjects/targetPage';
 import type { ObservationInfo } from '../../../../../src/generated/models/observation-info';
 
 let saves = 0;
@@ -58,10 +58,7 @@ describe('SV auto-linking', () => {
   });
 
   it('removes the link when the target is deleted', () => {
-    cy.findByRole('row', { name: new RegExp(proposal.target.name) })
-      .findByRole('button', { name: 'Delete the target' })
-      .click();
-    cy.findByRole('dialog').findByRole('button', { name: 'Confirm' }).click();
+    deleteTarget(proposal.target.name);
 
     saveProposal().then((info) => {
       expect(info.targets ?? []).to.have.length(0);

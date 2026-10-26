@@ -43,7 +43,6 @@ export const buildSvPstProposal = (): ProposalFixture => ({
   calibration: {
     calibrator: 'Pictor A',
     comment:
-      'Flux calibration is not critical for pulsar timing; a phase-up on a bright nearby ' +
-      'source is sufficient.'
+      'Flux calibration is not critical for pulsar timing.'
   }
 });

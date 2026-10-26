@@ -1,6 +1,14 @@
 import { enter, section, select, selectUnit } from '../fields';
 import type { PageObject } from '../types';
 
+// Deletes the target with the given name from the target list, confirming the deletion
+export const deleteTarget = (name: string) => {
+  cy.findByRole('row', { name: new RegExp(name) })
+    .findByRole('button', { name: 'Delete the target' })
+    .click();
+  cy.findByRole('dialog').findByRole('button', { name: 'Confirm' }).click();
+};
+
 export const targetPage: PageObject = {
   name: 'Target',
   heading: 'TARGET',
