@@ -10,7 +10,7 @@ import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposa
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { NAV, PAGE_OBSERVATION, PAGE_TARGET } from '@/utils/constants';
+import { NAV, PAGE_OBSERVATION, PAGE_TARGET, PROPOSAL_TYPE } from '@/utils/constants';
 import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
 
 // --- Additional mocks ---
@@ -57,7 +57,11 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 const mockNavigate = vi.fn();
 (useNavigate as unknown as Mock).mockReturnValue(mockNavigate);
 
-const mockProposal = { id: 123, title: 'Test Proposal' };
+const mockProposal = {
+  id: 123,
+  title: 'Test Proposal',
+  proposalType: PROPOSAL_TYPE.STANDARD
+};
 const mockAccess = [NEW_PROPOSAL_ACCESS];
 
 const mockNotification = {
@@ -91,12 +95,21 @@ beforeEach(() => {
     }) as any;
 });
 
-const wrapper = (component: React.ReactElement, title = mockProposal.title) => {
+const wrapper = (
+  component: React.ReactElement,
+  title = mockProposal.title,
+  formValues: Partial<ProposalType> = {}
+) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
       mode: 'all',
       resolver: zodResolver(getProposalSchema()),
-      defaultValues: { title }
+      defaultValues: {
+        title,
+        proposalType: (storageObject.useStore().application.content2 as Partial<ProposalType>)
+          .proposalType,
+        ...formValues
+      }
     });
     return (
       <StoreProvider>
@@ -146,7 +159,7 @@ describe('PageFooterPPT', () => {
         application: { ...store.application, content2: newProposal }
       }) as any;
 
-    wrapper(<PageFooterPPT pageNo={-1} />);
+    wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title);
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
@@ -166,7 +179,7 @@ describe('PageFooterPPT', () => {
       ...store,
       application: {
         ...store.application,
-        content2: { id: null, title: 'Invalid @ title', proposalType: 'standard' }
+        content2: { id: null, title: 'Invalid @ title', proposalType: PROPOSAL_TYPE.STANDARD }
       }
     });
 
@@ -176,6 +189,34 @@ describe('PageFooterPPT', () => {
 
     expect(PostProposal).not.toHaveBeenCalled();
     expect(mockNotifyError).not.toHaveBeenCalled();
+  });
+
+  it('creates with the latest form title and type rather than stale store values', async () => {
+    wrapper(<PageFooterPPT pageNo={-1} />, 'Edited title', {
+      proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+    });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    await waitFor(() =>
+      expect(PostProposal).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.objectContaining({
+          title: 'Edited title',
+          proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+        }),
+        'draft'
+      )
+    );
+  });
+
+  it('disables Create when the form has no proposal type', async () => {
+    wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, { proposalType: undefined });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    expect(PostProposal).not.toHaveBeenCalled();
   });
 
   it('navigates to next page when next button clicked', async () => {

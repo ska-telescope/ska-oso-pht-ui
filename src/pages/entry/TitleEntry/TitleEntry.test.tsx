@@ -1,5 +1,5 @@
-import { describe, test, expect, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { beforeEach, describe, test, expect, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import TitleEntry from './TitleEntry';
@@ -30,16 +30,29 @@ vi.mock('@utils/storage/store', () => ({
   StoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
-const wrapper = (component: React.ReactElement, { validate = false } = {}) => {
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+const wrapper = (
+  component: React.ReactElement,
+  {
+    validate = false,
+    proposalType
+  }: { validate?: boolean; proposalType?: ProposalType['proposalType'] } = {}
+) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
       mode: 'all',
-      defaultValues: { title: 'A title' },
+      defaultValues: { title: 'A title', proposalType },
       resolver: validate ? zodResolver(getProposalSchema()) : undefined
     });
     return (
       <StoreProvider>
-        <FormProvider {...methods}>{component}</FormProvider>
+        <FormProvider {...methods}>
+          {component}
+          <output data-testid="formProposalType">{methods.watch('proposalType')}</output>
+        </FormProvider>
       </StoreProvider>
     );
   };
@@ -70,6 +83,51 @@ describe('<TitleEntry />', () => {
 
     expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
       expect.objectContaining({ title: 'Updated title' })
+    );
+  });
+
+  test('saves a selected type to the form and the proposal', async () => {
+    const { container } = wrapper(<TitleEntry page={0} />, { validate: true });
+    fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
+
+    await waitFor(() =>
+      expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
+    );
+    expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
+      expect.objectContaining({ proposalType: PROPOSAL_TYPE.KEY_SCIENCE })
+    );
+    expect(screen.queryByTestId('dialogConfirmationButton')).not.toBeInTheDocument();
+  });
+
+  test('only changes the form type and clears subtypes after confirmation', async () => {
+    const { container } = wrapper(<TitleEntry page={0} />, {
+      proposalType: PROPOSAL_TYPE.STANDARD
+    });
+    fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
+    expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.STANDARD);
+
+    fireEvent.click(screen.getByTestId('dialogConfirmationButton'));
+    await waitFor(() =>
+      expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
+    );
+    expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
+      expect.objectContaining({
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        proposalSubType: []
+      })
+    );
+  });
+
+  test('keeps the selected form type when a change is cancelled', () => {
+    const { container } = wrapper(<TitleEntry page={0} />, {
+      proposalType: PROPOSAL_TYPE.STANDARD
+    });
+    fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
+    fireEvent.click(screen.getByTestId('dialogCancelButton'));
+
+    expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.STANDARD);
+    expect(mockStore.updateAppContent2).not.toHaveBeenCalledWith(
+      expect.objectContaining({ proposalType: PROPOSAL_TYPE.KEY_SCIENCE })
     );
   });
 });

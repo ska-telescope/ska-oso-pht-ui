@@ -130,12 +130,20 @@ describe('PutProposal Service', () => {
       const base = MappingPutProposal(MockProposalFrontend, status);
 
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
-        title: 'Title from RHF'
+        title: 'Title from RHF',
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE
       });
 
       expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
         ...base,
-        proposal_info: { ...base.proposal_info, title: 'Title from RHF' }
+        proposal_info: {
+          ...base.proposal_info,
+          title: 'Title from RHF',
+          proposal_type: {
+            ...base.proposal_info.proposal_type,
+            main_type: PROPOSAL_TYPE.KEY_SCIENCE
+          }
+        }
       });
       expect(MockProposalFrontend.title).not.toBe('Title from RHF');
     }
@@ -145,7 +153,8 @@ describe('PutProposal Service', () => {
     mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
 
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
-      title: ''
+      title: '',
+      proposalType: PROPOSAL_TYPE.STANDARD
     });
 
     expect(mockedAuthClient.put).toHaveBeenCalledWith(

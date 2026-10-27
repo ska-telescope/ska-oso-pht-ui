@@ -1,31 +1,30 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { render, renderHook, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { FormProvider } from 'react-hook-form';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import { useProposalForm } from '@/models/proposals/useProposalForm';
+import Proposal from '@/utils/types/proposal';
 
-const FormWrapper = ({ children, title }: { children: React.ReactNode; title: string }) => {
-  const methods = useForm<ProposalType>({
-    mode: 'all',
-    resolver: zodResolver(getProposalSchema()),
-    defaultValues: { title }
-  });
+const FormWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { application } = storageObject.useStore();
+  const methods = useProposalForm(application.content2 as Proposal);
   return <FormProvider {...methods}>{children}</FormProvider>;
 };
 
-const wrapper = (component: React.ReactElement, title = '') => {
-  return render(
-    <StoreProvider>
-      <ThemeA11yProvider>
-        <FormWrapper title={title}>{component}</FormWrapper>
-      </ThemeA11yProvider>
-    </StoreProvider>
-  );
+const wrapper = (component: React.ReactElement) => {
+  return render(component, {
+    wrapper: ({ children }) => (
+      <StoreProvider>
+        <ThemeA11yProvider>
+          <FormWrapper>{children}</FormWrapper>
+        </ThemeA11yProvider>
+      </StoreProvider>
+    )
+  });
 };
 
 const mockOSD = vi.hoisted(() => ({ isSV: false }));
@@ -58,29 +57,56 @@ describe('<AddProposal />', () => {
 describe('Create button validation', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    mockOSD.isSV = false;
   });
 
-  test('Create button is enabled for a valid title without gating on proposal type', async () => {
-    const { result, unmount } = renderHook(() => storageObject.useStore(), {
-      wrapper: StoreProvider
-    });
-    const store = result.current;
-    unmount();
-    vi.spyOn(storageObject, 'useStore').mockReturnValue({
-      ...store,
-      application: {
-        ...store.application,
-        content1: [],
-        content2: {
-          id: null,
-          title: 'A short valid title',
-          proposalType: undefined,
-          proposalSubType: []
-        }
-      }
-    });
+  test.each([PROPOSAL_TYPE.STANDARD, PROPOSAL_TYPE.KEY_SCIENCE, PROPOSAL_TYPE.DIRECTOR_TIME])(
+    'requires a valid title and a selected type (%s) for a normal cycle',
+    async (type) => {
+      const { container } = wrapper(<AddProposal />);
+      fireEvent.change(screen.getByTestId('titleId'), {
+        target: { value: 'A short valid title' }
+      });
+      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
 
-    wrapper(<AddProposal />, 'A short valid title');
+      fireEvent.click(container.querySelector(`#ProposalType-${type}`)!);
+      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+
+      fireEvent.change(screen.getByTestId('titleId'), { target: { value: '' } });
+      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+    }
+  );
+
+  test('uses the SV default without requiring a type selection', async () => {
+    mockOSD.isSV = true;
+    const { container } = wrapper(<AddProposal />);
+    expect(container.querySelector('[id^="ProposalType-"]')).not.toBeInTheDocument();
+    expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
+
+    fireEvent.change(screen.getByTestId('titleId'), {
+      target: { value: 'A valid SV title' }
+    });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+  });
+
+  test('clears an earlier SV type when starting a new proposal in a normal cycle', async () => {
+    mockOSD.isSV = true;
+    const { rerender, container } = wrapper(<AddProposal />);
+    fireEvent.change(screen.getByTestId('titleId'), {
+      target: { value: 'An SV title' }
+    });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+
+    rerender(<></>);
+    mockOSD.isSV = false;
+    rerender(<AddProposal />);
+    expect(screen.getByTestId('titleId')).toHaveValue('');
+
+    fireEvent.change(screen.getByTestId('titleId'), {
+      target: { value: 'A normal proposal title' }
+    });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+    fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.STANDARD}`)!);
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
   });
 });

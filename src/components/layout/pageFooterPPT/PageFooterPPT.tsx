@@ -38,7 +38,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdCycleId } = useOSDAccessors();
-  const { trigger } = useFormContext<ProposalType>();
+  const { trigger, getValues } = useFormContext<ProposalType>();
   const { isValid } = useFormState<ProposalType>();
 
   const proposal = application.content2 as Proposal;
@@ -52,7 +52,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   React.useEffect(() => {
     if (currPageNo === -1) {
-      void trigger('title');
+      void trigger();
     }
   }, [currPageNo, trigger]);
 
@@ -67,10 +67,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
+    const { proposalType, ...formValues } = getValues();
     const response = await PostProposal(
       authClient,
       refreshAuthToken,
-      { ...proposal, cycle: osdCycleId ?? null },
+      {
+        ...proposal,
+        ...formValues,
+        proposalType: proposalType ?? undefined,
+        cycle: osdCycleId ?? null
+      },
       PROPOSAL_STATUS.DRAFT
     );
 
@@ -95,6 +101,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     }
   }, [
     proposal,
+    getValues,
     osdCycleId,
     authClient,
     refreshAuthToken,

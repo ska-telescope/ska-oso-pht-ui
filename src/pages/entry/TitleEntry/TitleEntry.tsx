@@ -29,7 +29,7 @@ import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { useFormState, useWatch } from 'react-hook-form';
+import { useController, useFormState, useWatch } from 'react-hook-form';
 import { ControlledTextField } from '@ska-telescope/ska-gui-components/controlled';
 import { ProposalType } from '@/models/proposals/proposal';
 
@@ -43,6 +43,10 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const { isSV } = useOSDAccessors();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const title = useWatch<ProposalType, 'title'>({ name: 'title' }) ?? '';
+  const {
+    field: { value: selectedProposalType, onChange: onProposalTypeChange }
+  } = useController<ProposalType, 'proposalType'>({ name: 'proposalType' });
+  const proposalType = selectedProposalType ?? undefined;
   const { errors } = useFormState<ProposalType>();
 
   const [tempValue, setTempValue] = React.useState<ProposalTypeType | undefined>(undefined);
@@ -81,17 +85,21 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   );
 
   React.useEffect(() => {
-    if ((getProposal()?.title ?? '') !== title) {
-      setProposal({ ...getProposal(), title });
+    if ((getProposal()?.title ?? '') !== title || getProposal()?.proposalType !== proposalType) {
+      setProposal({ ...getProposal(), title, proposalType });
     }
-  }, [getProposal, setProposal, title]);
+  }, [getProposal, setProposal, title, proposalType]);
 
   React.useEffect(() => {
-    const status = errors.title ? STATUS_ERROR : validateTitlePage({ ...getProposal(), title });
+    const status =
+      errors.title || errors.proposalType
+        ? STATUS_ERROR
+        : validateTitlePage({ ...getProposal(), title, proposalType });
     setTheProposalState(status);
-  }, [errors.title, getProposal, setTheProposalState, title]);
+  }, [errors.title, errors.proposalType, getProposal, setTheProposalState, title, proposalType]);
 
   const handleDialogResponse = () => {
+    onProposalTypeChange(tempValue);
     setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: [] });
     setOpenDialog(false);
   };
@@ -102,9 +110,9 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   };
 
   function clickProposal(type: ProposalTypeType) {
-    if (!getProposal().proposalType) {
-      setProposal({ ...getProposal(), proposalType: type });
-    } else if (getProposal().proposalType !== type) {
+    if (!proposalType) {
+      onProposalTypeChange(type);
+    } else if (proposalType !== type) {
       confirmChange(type);
     }
   }
@@ -149,12 +157,12 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     return (
       <Grid key={id} size={{ md: 4, lg: 3 }}>
         <CardTitle
-          className={setCardClassName(getProposal().proposalType, id)}
+          className={setCardClassName(proposalType, id)}
           code={t('proposalType.code.' + id)}
-          colorAvatarBG={setCardFG(getProposal().proposalType, id)}
-          colorAvatarFG={setCardBG(getProposal().proposalType, id)}
-          colorCardBG={setCardBG(getProposal().proposalType, id)}
-          colorCardFG={setCardFG(getProposal().proposalType, id)}
+          colorAvatarBG={setCardFG(proposalType, id)}
+          colorAvatarFG={setCardBG(proposalType, id)}
+          colorCardBG={setCardBG(proposalType, id)}
+          colorCardFG={setCardFG(proposalType, id)}
           id={`ProposalType-${id}`}
           onClick={() => clickProposal(id)}
           title={t('proposalType.title.' + id)}
@@ -283,7 +291,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   };
 
   const getSubTypes = (): ProposalSubTypeType[] => {
-    const type = getProposal().proposalType;
+    const type = proposalType;
     return type ? (PROPOSAL_TYPE_SUBTYPES[type] ?? []) : [];
   };
 
@@ -394,7 +402,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         <>
           {row1()}
           {!isSV && row2()}
-          {!isSV && !!getProposal().proposalType && row3()}
+          {!isSV && !!proposalType && row3()}
         </>
       )}
       <LatexPreviewModal

@@ -2,7 +2,7 @@ import React from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { OSO_SERVICES_PROPOSAL_PATH, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { OSO_SERVICES_PROPOSAL_PATH, PROPOSAL_STATUS, PROPOSAL_TYPE } from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
@@ -20,8 +20,10 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 
 const pdm = MockProposalBackend as ProposalBackend;
 
-const renderWithForm = (title = '') => {
-  const { result: form } = renderHook(() => useForm<ProposalType>({ defaultValues: { title } }));
+const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) => {
+  const { result: form } = renderHook(() =>
+    useForm<ProposalType>({ defaultValues: { title, proposalType } })
+  );
   const { result: oda } = renderHook(() => useProposalOda(), {
     wrapper: ({ children }: { children: React.ReactNode }) => (
       <FormProvider {...form.current}>{children}</FormProvider>
@@ -50,6 +52,7 @@ describe('useProposalOda', () => {
     });
 
     expect(form.current.getValues('title')).toBe(pdm.proposal_info.title);
+    expect(form.current.getValues('proposalType')).toBe(pdm.proposal_info.proposal_type.main_type);
     expect(loaded).toEqual(mapping(pdm));
   });
 
@@ -110,7 +113,7 @@ describe('useProposalOda', () => {
     expect(form.current.getValues('title')).toBe('Unsaved title');
   });
 
-  test('Save to ODA sends the RHF title together with the legacy proposal in one request', async () => {
+  test('Save to ODA sends the RHF title and type with the legacy proposal in one request', async () => {
     mockPut.mockResolvedValue({ data: pdm });
     const { oda } = renderWithForm('Edited title');
     const legacy = mapping(pdm);
@@ -122,7 +125,14 @@ describe('useProposalOda', () => {
       expect.stringContaining(`${OSO_SERVICES_PROPOSAL_PATH}/${legacy.id}`),
       {
         ...expected,
-        proposal_info: { ...expected.proposal_info, title: 'Edited title' }
+        proposal_info: {
+          ...expected.proposal_info,
+          title: 'Edited title',
+          proposal_type: {
+            ...expected.proposal_info.proposal_type,
+            main_type: PROPOSAL_TYPE.KEY_SCIENCE
+          }
+        }
       }
     );
     expect(saved).toEqual(pdm);
