@@ -8,7 +8,7 @@ UNRELEASED
 ----------
 * Bugfix: Only reset DP Parameters if values on the Observaion page change.
 
-11.0.0
+11.1.0
 ----------
 
 * Changed: The backend proposal types are now the PDM types generated from the ska-oso-services OpenAPI specification (`make models`, output in `src/generated`), using the same generator as the ODT UI (BTN-3588)

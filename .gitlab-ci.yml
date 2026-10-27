@@ -71,16 +71,8 @@ CHANGELOG:
     - if: $CI_COMMIT_TAG
       when: manual
     
-js-e2e-deploy:
-  variables: # use the loadbalancer as there is no authentication for back-end calls during tests
-    KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
-
-
 js-e2e-test:
-  variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
-    KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
-
-
+  variables:
     JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
     CYPRESS_PARALLEL_WORKERS: "3"
 
