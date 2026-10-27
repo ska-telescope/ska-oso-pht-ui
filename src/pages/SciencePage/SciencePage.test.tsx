@@ -3,6 +3,8 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import SciencePage from './SciencePage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import { FormProvider, useForm } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -138,7 +140,17 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(<ThemeA11yProvider>{component}</ThemeA11yProvider>);
+  const FormWrapper = () => {
+    const methods = useForm<ProposalType>({
+      defaultValues: { title: '', proposalType: null }
+    });
+    return (
+      <FormProvider {...methods}>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </FormProvider>
+    );
+  };
+  return render(<FormWrapper />);
 };
 
 const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
