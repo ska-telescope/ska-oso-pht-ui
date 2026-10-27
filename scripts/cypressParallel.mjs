@@ -30,7 +30,7 @@
 import { globSync, readFileSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 
 // Only used to count specs (to cap worker count - see workerCount below); cypress-split does the
 // actual per-worker selection from Cypress's own resolved spec list, so this must be kept in sync
@@ -57,9 +57,10 @@ const CYPRESS_SPLIT_MERGE_BIN = join(BIN_DIR, 'cypress-split-merge');
 // Where cypress-split's per-worker duration data lives (see runWorker/mergeSplitTimings below).
 // The per-worker files are build output, but the merged timings are committed next to this
 // script so CI can split by duration too. Every run rewrites them, so commit the new file when
-// specs are added, removed or change a lot in duration.
+// specs are added, removed or change a lot in duration. Relative, because cypress-split joins
+// SPLIT_FILE onto the working directory even when it's absolute.
 const SPLIT_DIR = join(REPORT_DIR, 'cypress-split');
-const MERGED_TIMINGS_FILE = join(SCRIPT_DIR, 'cypress-timings.json');
+const MERGED_TIMINGS_FILE = relative(process.cwd(), join(SCRIPT_DIR, 'cypress-timings.json'));
 
 // If the caller supplied its own --reporter-options (as CI's shared JS_E2E_TEST_DEFAULT_SWITCHES
 // always does - see this script's own top-of-file comment), every worker still receives that
