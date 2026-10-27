@@ -11,6 +11,8 @@ import {
   TYPE_PST
 } from '@/utils/constants';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
+import { FormProvider, useForm } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 
 // ---- Module mocks ----
 
@@ -56,11 +58,19 @@ vi.mock('@/utils/autoLinking/AutoLinking', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
-    </StoreProvider>
-  );
+  const FormWrapper = () => {
+    const methods = useForm<ProposalType>({
+      defaultValues: { title: '', proposalType: null }
+    });
+    return (
+      <StoreProvider>
+        <FormProvider {...methods}>
+          <ThemeA11yProvider>{component}</ThemeA11yProvider>
+        </FormProvider>
+      </StoreProvider>
+    );
+  };
+  return render(<FormWrapper />);
 };
 
 describe('<DetailsPage />', () => {
@@ -154,7 +164,7 @@ const svProposal = (extra: Record<string, unknown> = {}) => ({
 
 const renderPage = async () => {
   await act(async () => {
-    render(<DetailsPage />);
+    wrapper(<DetailsPage />);
   });
 };
 

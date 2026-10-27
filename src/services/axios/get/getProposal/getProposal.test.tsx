@@ -8,6 +8,7 @@ import {
   PROPOSAL_TYPE
 } from '@utils/constants.ts';
 import GetProposal, {
+  GetProposalPdm,
   mapping,
   getInvestigators,
   getScienceCategory,
@@ -100,6 +101,45 @@ describe('GetProposal Service', () => {
       MockProposalBackend.prsl_id as string
     )) as Proposal;
     expect(result).to.deep.equal(MockProposalFrontend);
+  });
+
+  test('GetProposalPdm returns the unmapped PDM from the API', async () => {
+    mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackend });
+    const result = await GetProposalPdm(mockedAuthClient, MockProposalBackend.prsl_id as string);
+    expect(result).toEqual(MockProposalBackend);
+  });
+
+  test('returns an error string when a target cannot be mapped', async () => {
+    const malformed = {
+      ...MockProposalBackend,
+      observation_info: {
+        ...MockProposalBackend.observation_info,
+        targets: MockProposalBackend.observation_info?.targets?.map((target) => ({
+          ...target,
+          radial_velocity: undefined
+        }))
+      }
+    };
+    expect(() => mapping(malformed)).toThrow();
+    mockedAuthClient.get.mockResolvedValue({ data: malformed });
+
+    const result = await GetProposal(mockedAuthClient, 'prsl-1');
+
+    expect(result).toEqual(expect.any(String));
+    expect(result).not.toBe('');
+  });
+
+  test('returns the standard error for non-Error mapping failures', async () => {
+    mockedAuthClient.get.mockResolvedValue({
+      data: {
+        ...MockProposalBackend,
+        get observation_info() {
+          throw 'Mapping failed';
+        }
+      }
+    });
+
+    await expect(GetProposal(mockedAuthClient, 'prsl-1')).resolves.toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error message on API failure', async () => {

@@ -5,7 +5,6 @@ import { StoreProvider, storageObject } from '@utils/storage/store';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import LandingPage from './LandingPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import GetProposal from '@services/axios/get/getProposal/getProposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
@@ -42,8 +41,9 @@ vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   };
 });
 
-vi.mock('@services/axios/get/getProposal/getProposal', () => ({
-  default: vi.fn()
+const mockLoadFromOda = vi.hoisted(() => vi.fn());
+vi.mock('@/models/proposals/useProposalOda', () => ({
+  useProposalOda: () => ({ loadFromOda: mockLoadFromOda, saveToOda: vi.fn() })
 }));
 
 vi.mock('@/services/axios/get/getProposalList/getProposalList', () => ({
@@ -228,7 +228,7 @@ describe('clone proposal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (isLoggedIn as Mock).mockReturnValue(true);
-    (GetProposal as Mock).mockResolvedValue(mockRichOriginalProposal);
+    mockLoadFromOda.mockResolvedValue(mockRichOriginalProposal);
     (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal]);
     (GetProposalAccessForUser as Mock).mockResolvedValue(mockAccessList);
     (PostProposal as Mock).mockResolvedValue(mockPostProposalSkeleton);
