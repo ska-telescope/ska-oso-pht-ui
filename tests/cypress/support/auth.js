@@ -117,6 +117,27 @@ const hydrateIndigoSession = (tokenResponse) => {
   cy.get('[data-testid="usernameMenu"]', { timeout: 15000 }).should('exist');
 };
 
+// Log in again if the cached access token expires within this time
+const TOKEN_EXPIRY_MARGIN_SECONDS = 5 * 60;
+
+// The saved session is only worth reusing while its access token is valid. MSAL keeps its cache
+// unencrypted in session storage, with expiresOn in seconds, so this reads it without loading the app
+const hasUnexpiredAccessToken = (storageByOrigin) => {
+  const expiryTimes = Object.values(storageByOrigin)
+    .flatMap((storage) => Object.values(storage))
+    .map((value) => {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return null;
+      }
+    })
+    .filter((entry) => entry?.credentialType === 'AccessToken')
+    .map((entry) => Number(entry.expiresOn));
+  const now = Math.floor(Date.now() / 1000);
+  return expiryTimes.some((expiresOn) => expiresOn - now > TOKEN_EXPIRY_MARGIN_SECONDS);
+};
+
 // cy.session() snapshots the resulting localStorage/sessionStorage (where MSAL's own token cache
 // lives) keyed by username and reuses it - including across spec files within the same
 // `cypress run`/worker process (cacheAcrossSpecs) - so only the first login of a given account
@@ -130,8 +151,7 @@ const loginWithHydratedMsal = (username, fetchTokenResponse) => {
     {
       cacheAcrossSpecs: true,
       validate() {
-        cy.visit('/?use_indigo=true');
-        cy.get('[data-testid="usernameMenu"]', { timeout: 15000 }).should('exist');
+        cy.getAllSessionStorage({ log: false }).then(hasUnexpiredAccessToken);
       }
     }
   );
@@ -170,18 +190,21 @@ export const loginAsUser = (username) => {
   });
 };
 
+// The app only exposes its MSAL instance once it has mounted (see CypressMsalHydrationBridge), so
+// wait for it rather than skip the stub when it isn't there yet
 export const stubMsalForceRefresh = () => {
-  cy.window({ log: false }).then((win) => {
-    const instance = win.__msalInstance;
-    if (!instance || instance.acquireTokenSilent.__isStubbedForceRefresh) {
-      return;
-    }
-    const realAcquireTokenSilent = instance.acquireTokenSilent.bind(instance);
-    const stubbed = (request) =>
-      request?.forceRefresh
-        ? Promise.resolve({ accessToken: 'stubbed-force-refresh-token' })
-        : realAcquireTokenSilent(request);
-    stubbed.__isStubbedForceRefresh = true;
-    instance.acquireTokenSilent = stubbed;
-  });
+  cy.window({ log: false })
+    .its('__msalInstance', { log: false })
+    .then((instance) => {
+      if (instance.acquireTokenSilent.__isStubbedForceRefresh) {
+        return;
+      }
+      const realAcquireTokenSilent = instance.acquireTokenSilent.bind(instance);
+      const stubbed = (request) =>
+        request?.forceRefresh
+          ? Promise.resolve({ accessToken: 'stubbed-force-refresh-token' })
+          : realAcquireTokenSilent(request);
+      stubbed.__isStubbedForceRefresh = true;
+      instance.acquireTokenSilent = stubbed;
+    });
 };

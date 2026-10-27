@@ -50,15 +50,16 @@ const MERGED_REPORT_NAME = 'parallel-report-merged.xml';
 // Call the local binaries directly rather than going through npx/npm - this repo is a Yarn
 // project with no npm workflow, and shelling through npx here just adds npm's own config-noise
 // (env warnings etc.) to every one of the N concurrent workers for no benefit.
-const BIN_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'node_modules', '.bin');
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const BIN_DIR = join(SCRIPT_DIR, '..', 'node_modules', '.bin');
 const CYPRESS_BIN = join(BIN_DIR, 'cypress');
 const CYPRESS_SPLIT_MERGE_BIN = join(BIN_DIR, 'cypress-split-merge');
 // Where cypress-split's per-worker duration data lives (see runWorker/mergeSplitTimings below).
-// Lives under REPORT_DIR so it's wiped along with the rest of the build output rather than
-// tracked in git - the first run on a fresh checkout just falls back to an even split until this
-// has been populated by a prior run.
+// The per-worker files are build output, but the merged timings are committed next to this
+// script so CI can split by duration too. Every run rewrites them, so commit the new file when
+// specs are added, removed or change a lot in duration.
 const SPLIT_DIR = join(REPORT_DIR, 'cypress-split');
-const MERGED_TIMINGS_FILE = join(SPLIT_DIR, 'merged-timings.json');
+const MERGED_TIMINGS_FILE = join(SCRIPT_DIR, 'cypress-timings.json');
 
 // If the caller supplied its own --reporter-options (as CI's shared JS_E2E_TEST_DEFAULT_SWITCHES
 // always does - see this script's own top-of-file comment), every worker still receives that

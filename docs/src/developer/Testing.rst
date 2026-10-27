@@ -100,6 +100,13 @@ To run the whole suite headless across several workers, as CI does:
 
     yarn test:e2e:parallel --browser chromium
 
+On Linux, this needs ``xvfb-run`` to give each worker its own virtual display. On Ubuntu or
+Debian, install it with ``sudo apt-get install xvfb``.
+
+Specs are shared between the workers by how long each took last time, from
+``scripts/cypress-timings.json``. Each run rewrites that file, so commit it when specs have been
+added or removed, or their durations have changed a lot.
+
 CI runs it through ``make js-e2e-test`` against a fresh deployment with an empty database.
 Failing tests are retried twice in headless runs.
 
