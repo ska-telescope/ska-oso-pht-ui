@@ -28,7 +28,20 @@ import {
   TYPE_ZOOM
 } from '../constants';
 import { timeConversion } from '../helpers';
-import { validateDetailsPage, validateObservationPage, validateSDPPage } from './validation';
+import {
+  validateDetailsPage,
+  validateObservationPage,
+  validateSDPPage,
+  validateTitlePage
+} from './validation';
+
+describe('validateTitlePage', () => {
+  it('returns STATUS_ERROR for titles with unsupported characters', () => {
+    expect(
+      validateTitlePage({ title: 'A proposal with @', proposalType: PROPOSAL_TYPE.STANDARD })
+    ).toBe(STATUS_ERROR);
+  });
+});
 
 describe('validateSDPPage robust rules', () => {
   const makeProposalWithDataProduct = (data: any) =>

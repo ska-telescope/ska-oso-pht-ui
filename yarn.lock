@@ -982,6 +982,90 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@hookform/resolvers@npm:6.0.0"
+  dependencies:
+    "@standard-schema/utils": "npm:^0.3.0"
+  peerDependencies:
+    "@sinclair/typebox": ">=0.25.24"
+    "@standard-schema/spec": ^1.0.0
+    "@typeschema/main": ">=0.13.7"
+    "@vinejs/vine": ^2.0.0 || ^3.0.0 || ^4.0.0
+    ajv: ^8.12.0
+    ajv-errors: ^3.0.0
+    ajv-formats: ^2.1.1
+    arktype: ^2.0.0
+    ata-validator: ^1.23.0
+    class-transformer: ">=0.4.0"
+    class-validator: ">=0.12.0"
+    computed-types: ^1.0.0
+    effect: ^4.0.0
+    fluentvalidation-ts: ^3.0.0
+    fp-ts: ^2.7.0
+    io-ts: ^2.0.0
+    joi: ^17.0.0 || ^18.0.0
+    nope-validator: ">=0.12.0"
+    react-hook-form: ^7.55.0
+    superstruct: ">=0.12.0"
+    typanion: ^3.3.2
+    valibot: ">=0.31.0 || ^1.0.0-beta.4 || ^1.0.0-rc"
+    vest: ">=6.0.0"
+    yup: ^1.0.0
+    zod: ^3.25.0 || ^4.0.0
+  peerDependenciesMeta:
+    "@sinclair/typebox":
+      optional: true
+    "@standard-schema/spec":
+      optional: true
+    "@typeschema/main":
+      optional: true
+    "@vinejs/vine":
+      optional: true
+    ajv:
+      optional: true
+    ajv-errors:
+      optional: true
+    ajv-formats:
+      optional: true
+    arktype:
+      optional: true
+    ata-validator:
+      optional: true
+    class-transformer:
+      optional: true
+    class-validator:
+      optional: true
+    computed-types:
+      optional: true
+    effect:
+      optional: true
+    fluentvalidation-ts:
+      optional: true
+    fp-ts:
+      optional: true
+    io-ts:
+      optional: true
+    joi:
+      optional: true
+    nope-validator:
+      optional: true
+    superstruct:
+      optional: true
+    typanion:
+      optional: true
+    valibot:
+      optional: true
+    vest:
+      optional: true
+    yup:
+      optional: true
+    zod:
+      optional: true
+  checksum: 10c0/97ca7f437ae6ab810f9fa5189de3291a1a9542e5be5d89731a95db0a26a98554857f892c450065cbc033ee0b9327da61a044343dad9f135c405dbbd6e50b6543
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.2":
   version: 0.19.2
   resolution: "@humanfs/core@npm:0.19.2"
@@ -1687,9 +1771,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ska-telescope/ska-gui-components@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@ska-telescope/ska-gui-components@npm:3.0.0"
+"@ska-telescope/ska-gui-components@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@ska-telescope/ska-gui-components@npm:3.1.0"
   dependencies:
     "@base-ui/react": "npm:^1.8.0"
     "@mui/x-data-grid": "npm:^7.28.0"
@@ -1703,7 +1787,7 @@ __metadata:
   peerDependenciesMeta:
     react-hook-form:
       optional: true
-  checksum: 10c0/a964c34946301cc89b3291c2b84c2e74177ec94079c17759b6a1c860e030e221bc4a4f3ced07942d6747b97b7ad206908fbe42c96b0a573869be66443a8020a4
+  checksum: 10c0/7db92a73506a46b61d62725f1e50fe1b7f82ac454482964cfdb67c7dcdeddf9331ce86f45ddea1634a09134e7c53201584630bd628c7974f8b35282f70c15efd
   languageName: node
   linkType: hard
 
@@ -6845,6 +6929,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:^7.90.0":
+  version: 7.90.0
+  resolution: "react-hook-form@npm:7.90.0"
+  peerDependencies:
+    "@types/react": "*"
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 10c0/4278859ea6d1ed9288eade929255a21129a726e097121a9b6b290fc33e296d539e3cb290e3d07de37f3f5cc9b84722c1acf23d8657570729a6264230318b792a
+  languageName: node
+  linkType: hard
+
 "react-i18next@npm:^17.0.16":
   version: 17.0.16
   resolution: "react-i18next@npm:17.0.16"
@@ -7412,12 +7509,13 @@ __metadata:
     "@emotion/styled": "npm:^11.14.1"
     "@eslint-react/eslint-plugin": "npm:^5.24.8"
     "@eslint/js": "npm:^10.0.1"
+    "@hookform/resolvers": "npm:^6.0.0"
     "@mui/icons-material": "npm:^7.3.11"
     "@mui/material": "patch:@mui/material@npm%3A7.3.11#~/.yarn/patches/@mui-material-npm-7.3.11-4fadb3e7fe.patch"
     "@mui/system": "npm:^7.3.11"
     "@mui/x-data-grid": "npm:^7.29.13"
     "@reduxjs/toolkit": "npm:^2.13.0"
-    "@ska-telescope/ska-gui-components": "npm:^3.0.0"
+    "@ska-telescope/ska-gui-components": "npm:^3.1.0"
     "@ska-telescope/ska-login-page": "npm:^2.0.0"
     "@ska-telescope/skuid": "npm:^3.0.0"
     "@testing-library/dom": "npm:^10.4.2"
@@ -7460,6 +7558,7 @@ __metadata:
     prettier: "npm:^3.9.9"
     react: "npm:^19.3.0"
     react-dom: "npm:^19.3.0"
+    react-hook-form: "npm:^7.90.0"
     react-i18next: "npm:^17.0.16"
     react-pdf: "npm:^11.0.0"
     react-redux: "npm:^9.3.0"

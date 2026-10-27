@@ -94,6 +94,10 @@ describe('Helper Functions', () => {
 
 describe('PutProposal Service', () => {
   let mockedAuthClient: any;
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   beforeEach(() => {
     vi.resetAllMocks();
     mockedAuthClient = {
@@ -112,6 +116,53 @@ describe('PutProposal Service', () => {
     mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
     const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).to.deep.equal(MockProposalBackend);
+    expect(mockedAuthClient.put).toHaveBeenCalledWith(
+      expect.any(String),
+      MappingPutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT)
+    );
+  });
+
+  test.each([PROPOSAL_STATUS.DRAFT, PROPOSAL_STATUS.SUBMITTED])(
+    'sends RHF values over the legacy payload for %s without losing other fields',
+    async (status) => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
+      const base = MappingPutProposal(MockProposalFrontend, status);
+
+      await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
+        title: 'Title from RHF',
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+      });
+
+      expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
+        ...base,
+        proposal_info: {
+          ...base.proposal_info,
+          title: 'Title from RHF',
+          proposal_type: {
+            ...base.proposal_info.proposal_type,
+            main_type: PROPOSAL_TYPE.KEY_SCIENCE
+          }
+        }
+      });
+      expect(MockProposalFrontend.title).not.toBe('Title from RHF');
+    }
+  );
+
+  test('does not replace an empty RHF title with the legacy title', async () => {
+    mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
+
+    await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
+      title: '',
+      proposalType: PROPOSAL_TYPE.STANDARD
+    });
+
+    expect(mockedAuthClient.put).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        proposal_info: expect.objectContaining({ title: '' })
+      })
+    );
   });
 
   test('returns error message on API failure', async () => {

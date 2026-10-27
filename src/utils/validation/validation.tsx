@@ -56,6 +56,7 @@ import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasu
 import { rotationMeasureSchema } from '../../components/fields/rotationMeasure/rotationMeasure';
 import { outputFrequencyResolutionSchema } from '../../components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import { outputSamplingIntervalSchema } from '../../components/fields/outputSamplingInterval/outputSamplingInterval';
+import { getTitleSchema } from '../../models/proposals/title';
 import {
   channelsToBandwidthHz,
   getZoomResolutionHz,
@@ -113,9 +114,8 @@ export const suppliedValueSchema = z.union([suppliedIntegrationSchema, suppliedS
 export const isSuppliedValueValid = (supplied: SuppliedValueInput): boolean =>
   suppliedValueSchema.safeParse(supplied).success;
 
-export const validateTitlePage = (proposal: Proposal) => {
-  const maxTitleWords = Number(phtTranslations.title.maxWord);
-  if (countWords(proposal?.title ?? '') > maxTitleWords) {
+export const validateTitlePage = (proposal: Pick<Proposal, 'title' | 'proposalType'>) => {
+  if (!getTitleSchema().safeParse(proposal?.title ?? '').success) {
     return STATUS_ERROR;
   }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
