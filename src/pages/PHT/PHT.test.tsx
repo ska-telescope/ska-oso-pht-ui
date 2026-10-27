@@ -196,7 +196,8 @@ describe('<PHT />', () => {
 
     await waitFor(() => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
-        title: ''
+        title: '',
+        proposalType: null
       });
     });
   });
@@ -212,7 +213,8 @@ describe('<PHT />', () => {
 
     await waitFor(() => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
-        title: ''
+        title: '',
+        proposalType: null
       });
     });
   });
