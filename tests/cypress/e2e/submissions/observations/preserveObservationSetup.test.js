@@ -2,7 +2,6 @@ import {
   clearLocalStorage,
   pageConfirmed,
   clickStatusIconNav,
-  spyOnResolveTargetAPI,
   updateFieldValue,
   addSubmissionSummary,
   addM2TargetAndAutoLink,
@@ -12,7 +11,6 @@ import { standardUser } from '../../users/users.js';
 
 describe('SV Flow: Observation setup is preserved when details page fields change', () => {
   beforeEach(() => {
-    spyOnResolveTargetAPI();
     createScienceIdeaSession(standardUser);
     addM2TargetAndAutoLink('Continuum');
   });

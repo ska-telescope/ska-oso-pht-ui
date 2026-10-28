@@ -1,4 +1,5 @@
 import {
+  addM2Target,
   addM2TargetUsingResolve,
   checkFieldDisabled,
   clearLocalStorage,
@@ -54,12 +55,22 @@ describe('Science Verification: Target entry validation', () => {
     checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target name field is invalid
   });
 
-  it('SV: Verify submitting an edited target is disabled when name is invalid', () => {
+  // The only test that resolves a target name live, so the only one that depends on the external
+  // name resolvers (SIMBAD/NED/VizieR) - every other spec enters M2 manually via addM2Target.
+  // Disabled until SIMBAD is available again.
+  it.skip('SV: Verify resolving a target name populates the target fields', () => {
     spyOnResolveTargetAPI();
 
-    //add target
     addM2TargetUsingResolve();
     waitForResolveTarget();
+    clickToAddTarget();
+
+    verifyTargetInTargetTable('M2', '21:33:27.0200', '-00:49:23.700', '-3.6');
+  });
+
+  it('SV: Verify submitting an edited target is disabled when name is invalid', () => {
+    //add target
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -76,11 +87,8 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify submitting an edited target is disabled when ra is invalid', () => {
-    spyOnResolveTargetAPI();
-
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -97,11 +105,8 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
-    spyOnResolveTargetAPI();
-
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -118,10 +123,8 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify target table reflects updated target', () => {
-    spyOnResolveTargetAPI();
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -152,9 +155,9 @@ describe('Science Verification: Target entry validation', () => {
 //
 // Skipped via describe.skip() (not this.skip() inside a function(){} beforeEach) - see
 // reviewScience.test.js's comment: a function(){...this.skip()} test/hook sharing a spec with
-// cy.intercept().as() elsewhere (here, spyOnResolveTargetAPI/createScienceIdeaSession in the SV
-// describe above) reliably corrupts Cypress's command tracking. describe.skip() never invokes any
-// of its hooks or tests at all, so it sidesteps that entirely.
+// cy.intercept().as() elsewhere (here, createScienceIdeaSession in the SV describe above) reliably
+// corrupts Cypress's command tracking. describe.skip() never invokes any of its hooks or tests at
+// all, so it sidesteps that entirely.
 describe.skip('Proposal Flow: Target entry validation', () => {
   beforeEach(() => {
     createStandardProposalSession(standardUser);
@@ -164,11 +167,8 @@ describe.skip('Proposal Flow: Target entry validation', () => {
   });
 
   it('Proposal: Verify name field error when target is duplicated', () => {
-    spyOnResolveTargetAPI();
-
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //attempt to add target with the same name

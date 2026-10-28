@@ -10,7 +10,6 @@ import {
   verifyUserMenuReviews,
   verifyUserMenuDecisions,
   mockOSDAPI,
-  spyOnResolveTargetAPI,
   beginScienceIdeaSession,
   selectScienceVerificationCycle,
   completeScienceIdeaCreation,
@@ -52,11 +51,6 @@ describe('Reviewer ( Science )', () => {
   });
 
   describe('Perform a review', () => {
-    // Matches createSubmission.test.js's pattern (its beforeEach does the same thing).
-    beforeEach(() => {
-      spyOnResolveTargetAPI();
-    });
-
     afterEach(() => {
       clearLocalStorage();
     });

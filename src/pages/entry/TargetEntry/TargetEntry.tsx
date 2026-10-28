@@ -3,7 +3,9 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
-import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
+import GetCoordinates, {
+  RESOLVE_ERROR_UNKNOWN
+} from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
 import { generateTargetId, leadZero, trailingZeros } from '@utils/helpers.ts';
@@ -482,7 +484,7 @@ export default function TargetEntry({
 
         setNameFieldError('');
       } else {
-        setNameFieldError(t('resolve.error.' + response.error));
+        setNameFieldError(t('resolve.error.' + (response?.error ?? RESOLVE_ERROR_UNKNOWN)));
       }
     };
 
@@ -501,7 +503,7 @@ export default function TargetEntry({
         processCoordinatesResults(response, requestRevision);
       } catch {
         if (resolveRevisionRef.current === requestRevision) {
-          setNameFieldError(t('resolve.error'));
+          setNameFieldError(t('resolve.error.' + RESOLVE_ERROR_UNKNOWN));
         }
       } finally {
         if (resolveRevisionRef.current === requestRevision) {
