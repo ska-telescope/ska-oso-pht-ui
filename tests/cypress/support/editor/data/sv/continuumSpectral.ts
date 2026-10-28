@@ -32,7 +32,6 @@ export const buildSvContinuumSpectralProposal = (): ProposalFixture => ({
 
   calibration: {
     calibrator: 'Hercules A',
-    comment:
-      'Could a second bandpass scan be added after the target?'
+    comment: 'Could a second bandpass scan be added after the target?'
   }
 });
