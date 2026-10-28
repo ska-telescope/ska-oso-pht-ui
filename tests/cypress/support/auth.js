@@ -25,6 +25,8 @@ const DEFAULT_CLIENT_SECRET =
   'AOzHcqR2tz5sfZSOPmuQ4CU6VDQmUSSJCHZLEpMUHhRADvhh4og_XD8SNDGVI4uYA4QN_QVS4nS9AB_tT9IQd-0';
 const DEFAULT_USERNAME = 'astronomer1';
 const DEFAULT_PASSWORD = 'test';
+// Each parallel worker logs in as its own test user
+const WORKER_USERNAMES = [DEFAULT_USERNAME, 'astronomer2', 'astronomer3'];
 // Matches this app's own INDIGO_AUDIENCE/INDIGO_SCOPE (see authConfig.ts / Makefile's dev-start).
 const DEFAULT_AUDIENCE = 'test:pht';
 const DEFAULT_SCOPE = 'openid profile pht:read pht:readwrite';
@@ -43,7 +45,9 @@ const ENV_KEYS = [
   'INDIGO_TEST_SCOPE',
   'INDIGO_TEST_AUDIENCE',
   'INDIGO_OPS_USERNAME',
-  'INDIGO_OPS_PASSWORD'
+  'INDIGO_OPS_PASSWORD',
+  // Set per worker by scripts/cypressParallel.mjs
+  'WORKER_INDEX'
 ];
 
 const withEnv = (callback) =>
@@ -182,7 +186,11 @@ export const loginAsUser = (username) => {
     );
   }
   return withEnv((envOr) => {
-    const resolvedUsername = envOr(account.usernameEnvKey, username);
+    const workerUsername =
+      username === DEFAULT_USERNAME
+        ? WORKER_USERNAMES[Number(envOr('WORKER_INDEX', '0')) % WORKER_USERNAMES.length]
+        : username;
+    const resolvedUsername = envOr(account.usernameEnvKey, workerUsername);
     const password = envOr(account.passwordEnvKey, account.defaultPassword);
     return loginWithHydratedMsal(resolvedUsername, () =>
       fetchLiveIndigoTokenResponse({ username: resolvedUsername, password })

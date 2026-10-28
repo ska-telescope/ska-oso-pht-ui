@@ -215,6 +215,7 @@ async function main() {
           ...process.env,
           SPLIT: String(workerCount),
           SPLIT_INDEX: String(index),
+          CYPRESS_WORKER_INDEX: String(index),
           SPLIT_FILE: MERGED_TIMINGS_FILE,
           SPLIT_OUTPUT_FILE: join(workerSplitDir, 'timings.json')
         }

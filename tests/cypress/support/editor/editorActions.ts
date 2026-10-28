@@ -17,6 +17,8 @@ export const stubDocumentUpload = () => {
 
 const verifyOnLandingPage = () => cy.findByRole('button', { name: 'Submission' });
 
+const PROPOSAL_LIST_TIMEOUT = 30000;
+
 const verifyOnPage = (page: PageObject) => cy.findByRole('heading', { name: page.heading });
 
 // Creates a proposal in the given cycle with the fixture's title through the UI, and stores its
@@ -94,7 +96,9 @@ export const validateAndSubmit = (cycle: Cycle, proposal: ProposalFixture) => {
   cy.get<string>('@proposalId').then((id) => {
     cy.findByRole('textbox', { name: 'Search' }).type(id);
   });
-  cy.findByRole('table').findByRole('row', { name: new RegExp(proposal.title) });
+  cy.findByRole('table', { timeout: PROPOSAL_LIST_TIMEOUT }).findByRole('row', {
+    name: new RegExp(proposal.title)
+  });
   // TODO: Enable once the submission logic is revised (around BTN-3270), as the landing page
   //  doesn't currently show the submitted status
   // .findByText(/^submitted$/i);
@@ -110,6 +114,6 @@ export const reopenFromBackend = (cycle: Cycle) => {
   });
   // Proposal IDs are unique, so exactly one proposal is left to edit. The button reads
   // "Edit proposal" or "Edit Science Verification Idea" depending on the landing page's cycle.
-  cy.findByRole('button', { name: /^Edit / }).click();
+  cy.findByRole('button', { name: /^Edit /, timeout: PROPOSAL_LIST_TIMEOUT }).click();
   verifyOnPage(cycle.pageAfterOpen);
 };
