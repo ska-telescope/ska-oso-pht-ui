@@ -17,7 +17,6 @@ import {
   STATUS_PARTIAL
 } from '@utils/constants.ts';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
-import PutProposal from '@services/axios/put/putProposal/putProposal';
 import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
@@ -32,6 +31,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useValidateProposal } from '@/utils/validation/validation';
 import { countWords } from '@utils/helpers.ts';
+import { useProposalOda } from '@/models/proposals/useProposalOda';
 import phtTranslations from '../../../../public/locales/en/pht.json';
 
 interface PageBannerPPTProps {
@@ -63,6 +63,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const { axiosClient: authClient } = useAxiosAuthClient();
+  const { saveToOda } = useProposalOda();
   const { notifyError, notifySuccess } = useNotify();
 
   const loggedIn = isLoggedIn();
@@ -130,7 +131,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const updateProposal = async (proposal: Proposal) => {
     if (!isDisableEndpoints()) {
-      const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
+      const response = await saveToOda(proposal, PROPOSAL_STATUS.DRAFT);
       updateProposalResponse(response);
     }
   };
@@ -141,11 +142,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const submitConfirmed = async () => {
-    const response = await PutProposal(
-      authClient,
-      application.content2 as Proposal,
-      PROPOSAL_STATUS.SUBMITTED
-    );
+    const response = await saveToOda(application.content2 as Proposal, PROPOSAL_STATUS.SUBMITTED);
     if (response && !('error' in response)) {
       notifySuccess(t('submitBtn.success'));
       setOpenProposalDisplay(false);
@@ -182,9 +179,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     </Typography>
   );
 
-  const handleSave = React.useCallback(() => {
-    updateProposal(application.content2 as Proposal);
-  }, [application.content2]);
+  const handleSave = () => {
+    void updateProposal(application.content2 as Proposal);
+  };
 
   const buttonsLeft = () => (
     <Grid

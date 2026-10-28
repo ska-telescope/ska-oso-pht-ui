@@ -1,22 +1,37 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { FormProvider } from 'react-hook-form';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { countWords } from '@utils/helpers.ts';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import { useProposalForm } from '@/models/proposals/useProposalForm';
+import Proposal from '@/utils/types/proposal';
+
+const FormWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { application } = storageObject.useStore();
+  const methods = useProposalForm(application.content2 as Proposal);
+  return <FormProvider {...methods}>{children}</FormProvider>;
+};
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
-    </StoreProvider>
-  );
+  return render(component, {
+    wrapper: ({ children }) => (
+      <StoreProvider>
+        <ThemeA11yProvider>
+          <FormWrapper>{children}</FormWrapper>
+        </ThemeA11yProvider>
+      </StoreProvider>
+    )
+  });
 };
 
 const mockOSD = vi.hoisted(() => ({ isSV: false }));
+
+vi.mock('@ska-telescope/ska-login-page', () => ({
+  isLoggedIn: () => true
+}));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
@@ -39,29 +54,60 @@ describe('<AddProposal />', () => {
   });
 });
 
-describe('contentValid (Create button gate)', () => {
-  const maxTitleWords = Number(phtTranslations.title.maxWord);
-
-  const titleValid = (title: string) => title?.length > 0 && countWords(title) <= maxTitleWords;
-
-  test('is invalid when title is empty', () => {
-    expect(titleValid('')).toBe(false);
+describe('Create button validation', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    mockOSD.isSV = false;
   });
 
-  test('is valid when title is within the word limit', () => {
-    expect(titleValid('A short valid title')).toBe(true);
+  test.each([PROPOSAL_TYPE.STANDARD, PROPOSAL_TYPE.KEY_SCIENCE, PROPOSAL_TYPE.DIRECTOR_TIME])(
+    'requires a valid title and a selected type (%s) for a normal cycle',
+    async (type) => {
+      const { container } = wrapper(<AddProposal />);
+      fireEvent.change(screen.getByTestId('titleId'), {
+        target: { value: 'A short valid title' }
+      });
+      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+
+      fireEvent.click(container.querySelector(`#ProposalType-${type}`)!);
+      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+
+      fireEvent.change(screen.getByTestId('titleId'), { target: { value: '' } });
+      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+    }
+  );
+
+  test('uses the SV default without requiring a type selection', async () => {
+    mockOSD.isSV = true;
+    const { container } = wrapper(<AddProposal />);
+    expect(container.querySelector('[id^="ProposalType-"]')).not.toBeInTheDocument();
+    expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
+
+    fireEvent.change(screen.getByTestId('titleId'), {
+      target: { value: 'A valid SV title' }
+    });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
   });
 
-  test('is valid when title is exactly at the word limit', () => {
-    const atLimit = Array(maxTitleWords).fill('word').join(' ');
-    expect(titleValid(atLimit)).toBe(true);
-  });
+  test('clears an earlier SV type when starting a new proposal in a normal cycle', async () => {
+    mockOSD.isSV = true;
+    const { rerender, container } = wrapper(<AddProposal />);
+    fireEvent.change(screen.getByTestId('titleId'), {
+      target: { value: 'An SV title' }
+    });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
 
-  test('is invalid when title exceeds the word limit', () => {
-    const overLimit = Array(maxTitleWords + 1)
-      .fill('word')
-      .join(' ');
-    expect(titleValid(overLimit)).toBe(false);
+    rerender(<></>);
+    mockOSD.isSV = false;
+    rerender(<AddProposal />);
+    expect(screen.getByTestId('titleId')).toHaveValue('');
+
+    fireEvent.change(screen.getByTestId('titleId'), {
+      target: { value: 'A normal proposal title' }
+    });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+    fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.STANDARD}`)!);
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
   });
 });
 

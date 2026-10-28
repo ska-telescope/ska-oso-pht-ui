@@ -4,13 +4,23 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import TitlePage from './TitlePage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import { FormProvider, useForm } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
-    </StoreProvider>
-  );
+  const FormWrapper = () => {
+    const methods = useForm<ProposalType>({
+      defaultValues: { title: '' }
+    });
+    return (
+      <StoreProvider>
+        <FormProvider {...methods}>
+          <ThemeA11yProvider>{component}</ThemeA11yProvider>
+        </FormProvider>
+      </StoreProvider>
+    );
+  };
+  return render(<FormWrapper />);
 };
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({

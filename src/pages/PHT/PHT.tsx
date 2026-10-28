@@ -61,6 +61,8 @@ import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
+import { useProposalForm } from '@/models/proposals/useProposalForm';
+import { FormProvider } from 'react-hook-form';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -140,6 +142,9 @@ export default function PHT({
 
   const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
 
+  const formMethods = useProposalForm(getProposal());
+  const { getValues } = formMethods;
+
   // A target can end up linked with no matching targetObservation entry (e.g. an older
   // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
   // "no observation" with no way to recover. Runs once per loaded proposal, regardless of which
@@ -182,7 +187,12 @@ export default function PHT({
 
     if (canAutoSave) {
       void (async () => {
-        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
+        const response = await PutProposal(
+          authClient,
+          proposal,
+          PROPOSAL_STATUS.DRAFT,
+          getValues()
+        );
         if ('error' in response) {
           notifyError(response.error);
         }
@@ -190,7 +200,7 @@ export default function PHT({
     }
 
     previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, loggedIn, authClient, notifyError]);
+  }, [location.pathname, application.content2, loggedIn, authClient, notifyError, getValues]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
@@ -369,15 +379,19 @@ export default function PHT({
               minHeight: '100vh'
             }}
           >
-            {REQUIRED_WIDTH ? (
-              <Routes>
-                {ROUTES.map((ROUTE) => (
-                  <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
-                ))}
-              </Routes>
-            ) : (
-              mediaSizeNotSupported()
-            )}
+            {/* TODO: REMOVE  */}
+            {/* Global form provider for proposal form management */}
+            <FormProvider {...formMethods}>
+              {REQUIRED_WIDTH ? (
+                <Routes>
+                  {ROUTES.map((ROUTE) => (
+                    <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
+                  ))}
+                </Routes>
+              ) : (
+                mediaSizeNotSupported()
+              )}
+            </FormProvider>
           </Paper>
         }
         selectTelescope={false}

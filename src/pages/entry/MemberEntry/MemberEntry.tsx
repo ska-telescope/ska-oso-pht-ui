@@ -3,7 +3,7 @@ import { Box, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
-import PutProposal from '@services/axios/put/putProposal/putProposal';
+import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
 import { generateId, helpers } from '@utils/helpers.ts';
 import {
@@ -40,6 +40,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
+  const { saveToOda } = useProposalOda();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
   const { isSV } = useOSDAccessors();
 
@@ -164,7 +165,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   const updateProposal = async (rec: Proposal) => {
-    const response = await PutProposal(authClient, rec, PROPOSAL_STATUS.DRAFT);
+    const response = await saveToOda(rec, PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 

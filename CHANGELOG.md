@@ -8,6 +8,8 @@ UNRELEASED
 ----------
 * Bugfix: Only reset DP Parameters if values on the Observaion page change.
 
+* Bugfix: Keep the automatic-save timer running when page renders update its callback
+
 11.1.0
 ----------
 

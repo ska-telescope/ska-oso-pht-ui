@@ -13,10 +13,10 @@ import {
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
-import GetProposal from '@services/axios/get/getProposal/getProposal';
 import AddButton from '@/components/button/Add/Add';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
+import { useProposalOda } from '@/models/proposals/useProposalOda';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
@@ -80,6 +80,7 @@ export default function LandingPage() {
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
+  const { loadFromOda } = useProposalOda();
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -126,7 +127,7 @@ export default function LandingPage() {
     setHelp('');
     updateAppContent5({});
 
-    const response = await GetProposal(authClient, id);
+    const response = await loadFromOda(id);
     if (typeof response === 'string') {
       updateAppContent1({});
       updateAppContent2({});
