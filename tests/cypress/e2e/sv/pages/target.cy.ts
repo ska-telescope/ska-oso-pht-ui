@@ -92,8 +92,8 @@ describe('SV Target page', () => {
     targetRow('Cypress unknown object').should('not.exist');
   });
 
-  // TODO: Enable once fixed as part of BTN-3634. OSO services doesn't show
-  //  this message yet when target lookup service is down.
+  // TODO: Enable once fixed as part of BTN-3593 where we should change
+  //  the app to show the backend error message instead of our own one.
   it.skip('shows an error when the resolver is unavailable', () => {
     // Stubbed, so the outage happens on every run
     cy.intercept('GET', '**/coordinates/**', { statusCode: 500 });

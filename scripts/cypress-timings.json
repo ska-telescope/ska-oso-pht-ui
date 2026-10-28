@@ -2,19 +2,19 @@
   "durations": [
     {
       "spec": "tests/cypress/e2e/submissions/createSubmission/createSubmission.cy.js",
-      "duration": 39206
+      "duration": 31980
     },
     {
       "spec": "tests/cypress/e2e/submissions/dataProducts/dataProductsValidation.cy.js",
-      "duration": 48900
+      "duration": 41443
     },
     {
       "spec": "tests/cypress/e2e/submissions/editSubmission/editSubmission.cy.js",
-      "duration": 28
+      "duration": 30
     },
     {
       "spec": "tests/cypress/e2e/submissions/observations/preserveObservationSetup.cy.js",
-      "duration": 46373
+      "duration": 43644
     },
     {
       "spec": "tests/cypress/e2e/submissions/observations/SensitivityCalculator.cy.js",
@@ -22,79 +22,79 @@
     },
     {
       "spec": "tests/cypress/e2e/submissions/observations/validateObservationFields.cy.js",
-      "duration": 64712
+      "duration": 61320
     },
     {
       "spec": "tests/cypress/e2e/submissions/save/save.cy.js",
-      "duration": 24551
+      "duration": 15544
     },
     {
       "spec": "tests/cypress/e2e/submissions/targets/targetEntryValidation.cy.js",
-      "duration": 107302
+      "duration": 84520
     },
     {
       "spec": "tests/cypress/e2e/sv/features/autoLinking.cy.ts",
-      "duration": 64645
+      "duration": 58112
     },
     {
       "spec": "tests/cypress/e2e/sv/features/sensitivityResults.cy.ts",
-      "duration": 104262
+      "duration": 111536
     },
     {
       "spec": "tests/cypress/e2e/sv/features/validation.cy.ts",
-      "duration": 55026
+      "duration": 53898
     },
     {
       "spec": "tests/cypress/e2e/sv/flows/proposal.cy.ts",
-      "duration": 234699
+      "duration": 249506
     },
     {
       "spec": "tests/cypress/e2e/sv/pages/calibration.cy.ts",
-      "duration": 35078
+      "duration": 28125
     },
     {
       "spec": "tests/cypress/e2e/sv/pages/description.cy.ts",
-      "duration": 86148
+      "duration": 70131
     },
     {
       "spec": "tests/cypress/e2e/sv/pages/details.cy.ts",
-      "duration": 120385
+      "duration": 123996
     },
     {
       "spec": "tests/cypress/e2e/sv/pages/observation.cy.ts",
-      "duration": 22320
+      "duration": 20219
     },
     {
       "spec": "tests/cypress/e2e/sv/pages/target.cy.ts",
-      "duration": 73052
+      "duration": 64630
     },
     {
       "spec": "tests/cypress/e2e/sv/pages/team.cy.ts",
-      "duration": 16236
+      "duration": 12358
     },
     {
       "spec": "tests/cypress/e2e/users/guest.cy.js",
-      "duration": 8528
+      "duration": 7599
     },
     {
       "spec": "tests/cypress/e2e/users/reviewAdministrator.cy.js",
-      "duration": 30018
+      "duration": 22162
     },
     {
       "spec": "tests/cypress/e2e/users/reviewPanelChairman.cy.js",
-      "duration": 35
+      "duration": 36
     },
     {
       "spec": "tests/cypress/e2e/users/reviewScience.cy.js",
-      "duration": 55
+      "duration": 52
     },
     {
       "spec": "tests/cypress/e2e/users/reviewTechnical.cy.js",
-      "duration": 8741
+      "duration": 7470
     },
     {
       "spec": "tests/cypress/e2e/users/standard.cy.js",
-      "duration": 13882
+      "duration": 10674
     }
   ]
 }
