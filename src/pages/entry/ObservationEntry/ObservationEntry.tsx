@@ -363,7 +363,20 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       (to) => to.observationId === newObservation.id
     )?.dataProductsSDPId;
 
-    const dataProductSDP: DataProductSDPNew | undefined = proposal.dataProductSDP?.find(
+    // Only reset data products when a field they are derived from has changed, otherwise
+    // revisiting this page would overwrite the user's data product values
+    const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
+    const dataProductInputsChanged =
+      !oldObservation ||
+      oldObservation.type !== newObservation.type ||
+      (newObservation.type === TYPE_PST && oldObservation.pstMode !== newObservation.pstMode) ||
+      oldObservation.centralFrequency !== newObservation.centralFrequency ||
+      oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits;
+
+    const newDataProducts = dataProductInputsChanged
+      ? updateDataProductsOnObservationChange(oldDataProducts, newObservation)
+      : oldDataProducts;
+    const dataProductSDP: DataProductSDPNew | undefined = newDataProducts.find(
       (dp) => dp.id === linkedDataProductId
     );
 
@@ -371,7 +384,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const tmp = {
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: updateDataProductsOnObservationChange(oldDataProducts, newObservation),
+      dataProductSDP: newDataProducts,
       targetObservation: dataProductSDP ? oldTO : updateSensCalcPartial(oldTO, newObservation)
     };
     persistProposal(tmp);
@@ -635,8 +648,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       // We just need to do this one more time as some fields could not be updated until observingBand has changed.
       observationIn(once);
       setOnce(null);
-      setDefaultCentralFrequency(observingBand);
-      setDefaultContinuumBandwidth(observingBand);
+      // Only fall back to the band defaults when the saved observation has no value
+      if (!once.centralFrequency) {
+        setDefaultCentralFrequency(observingBand);
+      }
+      if (!once.continuumBandwidth) {
+        setDefaultContinuumBandwidth(observingBand);
+      }
     }
     calculateSubarray();
     setAfterChange();

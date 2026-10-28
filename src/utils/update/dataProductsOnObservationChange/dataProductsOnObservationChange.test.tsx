@@ -5,7 +5,9 @@ import updateDataProductsOnObservationChange, {
 
 import {
   DETECTED_FILTER_BANK_VALUE,
+  DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
+  FREQUENCY_GHZ,
   PULSAR_TIMING_VALUE,
   TYPE_CONTINUUM,
   TYPE_PST
@@ -127,6 +129,24 @@ describe('dataProductsOnObservationChange', () => {
     const result = updateDataProductsOnObservationChange(oldRecs, obsNonPST);
 
     expect(result).toEqual(oldRecs);
+  });
+
+  it('keeps image and pixel sizes positive for a high-frequency MID observation', () => {
+    const imagesDataProduct = {
+      id: 'SDP-IMAGES',
+      observationId: 'obs2',
+      data: { dataProductType: DP_TYPE_IMAGES }
+    } as DataProductSDPNew;
+    const obsMid = {
+      ...obsNonPST,
+      centralFrequency: 6,
+      centralFrequencyUnits: FREQUENCY_GHZ
+    } as Observation;
+
+    const data = updateDataProductsOnObservationChange([imagesDataProduct], obsMid)[0].data as any;
+
+    expect(data.imageSizeValue).toBe(0.073);
+    expect(data.pixelSizeValue).toBe(0.043);
   });
 
   it('returns empty array when non-PST and oldRecs is undefined', () => {

@@ -4,7 +4,6 @@ import {
   clickStatusIconNav,
   updateFieldValue,
   checkFieldDisabled,
-  spyOnResolveTargetAPI,
   addM2TargetAndAutoLink,
   verifyOsdDataCycleID,
   verifyOsdDataCycleDescription,
@@ -18,8 +17,6 @@ import { standardUser } from '../../users/users.js';
 
 describe('SV Flow: Validate Observation Fields', () => {
   beforeEach(() => {
-    spyOnResolveTargetAPI();
-
     //Create autoLink submission
     beginScienceIdeaSession(standardUser);
     verifyOsdDataCycleID('TEST_SKAO_2027_1_ID');
