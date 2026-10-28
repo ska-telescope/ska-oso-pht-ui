@@ -8,12 +8,10 @@ import {
   clearLocalStorage,
   clickStatusIconNav,
   clickToAddTarget,
-  addM2TargetUsingResolve,
+  addM2Target,
   clickObservationSetup,
   selectScienceCategory,
   verifyAutoLinkAlertFooter,
-  spyOnResolveTargetAPI,
-  waitForResolveTarget,
   addSubmissionSummary,
   clickEditIconForRow,
   verifyMockedScienceIdeaOnLandingPageIsVisible,
@@ -47,12 +45,11 @@ describe('Edit Proposal', () => {
   // Skipped via describe.skip() (not this.skip() inside a function(){} test) - see
   // reviewScience.test.js's comment: a function(){...this.skip()} test sharing a spec with
   // cy.intercept().as() elsewhere (here, the Proposal Flow describe below and this describe's own
-  // mockEmailAPI/spyOnResolveTargetAPI) reliably corrupts Cypress's command tracking.
+  // mockEmailAPI) reliably corrupts Cypress's command tracking.
   // describe.skip() never invokes any of its hooks or tests at all, so it sidesteps that entirely.
   describe.skip('SV Flow', () => {
     beforeEach(() => {
       mockEmailAPI();
-      spyOnResolveTargetAPI();
     });
 
     afterEach(() => {
@@ -78,8 +75,7 @@ describe('Edit Proposal', () => {
       pageConfirmed('DESCRIPTION');
       clickStatusIconNav('statusId4'); //Click to target page
       pageConfirmed('TARGET');
-      addM2TargetUsingResolve(); //add target
-      waitForResolveTarget();
+      addM2Target(); //add target
       clickToAddTarget();
       verifyAutoLinkAlertFooter(); //Verify AutoLink to OSD data
       clickStatusIconNav('statusId3'); //Click to description page
@@ -105,7 +101,6 @@ describe('Edit Proposal', () => {
   describe.skip('Proposal Flow', () => {
     beforeEach(() => {
       mockEmailAPI();
-      spyOnResolveTargetAPI();
     });
 
     afterEach(() => {
@@ -135,8 +130,7 @@ describe('Edit Proposal', () => {
         clickStatusIconNav('statusId4'); //Click to target page
         pageConfirmed('TARGET');
         //add target
-        addM2TargetUsingResolve();
-        waitForResolveTarget();
+        addM2Target();
         clickToAddTarget();
         clickStatusIconNav('statusId5'); //Click to observation page
         pageConfirmed('OBSERVATION');
