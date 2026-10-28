@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { AxiosError, AxiosResponse } from 'axios';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import axiosClient from '../../axiosClient/axiosClient';
 
@@ -66,11 +67,51 @@ describe('GetCoordinates Service', () => {
     expect(result).toEqual({ error: 'API_UNKNOWN_ERROR' });
   });
 
-  test('returns error message if axiosClient throws an Error', async () => {
+  const axiosErrorWithStatus = (status?: number) =>
+    new AxiosError(
+      'Request failed',
+      undefined,
+      undefined,
+      undefined,
+      status === undefined ? undefined : ({ status } as AxiosResponse)
+    );
+
+  test('returns notFound if the resolver responds with 404', async () => {
+    vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(404));
+
+    const result = await GetCoordinates('M1', 0);
+    expect(result).toEqual({ error: 'notFound' });
+  });
+
+  test.each([500, 502, 503, 504])(
+    'returns unavailable if the resolver responds with %i',
+    async (status) => {
+      vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(status));
+
+      const result = await GetCoordinates('M1', 0);
+      expect(result).toEqual({ error: 'unavailable' });
+    }
+  );
+
+  test('returns unavailable if the request gets no response', async () => {
+    vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus());
+
+    const result = await GetCoordinates('M1', 0);
+    expect(result).toEqual({ error: 'unavailable' });
+  });
+
+  test('returns generic error for any other status', async () => {
+    vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(400));
+
+    const result = await GetCoordinates('M1', 0);
+    expect(result).toEqual({ error: 'API_UNKNOWN_ERROR' });
+  });
+
+  test('returns generic error if axiosClient throws a non-axios Error', async () => {
     vi.mocked(axiosClient.get).mockRejectedValueOnce(new Error('Network failure'));
 
     const result = await GetCoordinates('M1', 0);
-    expect(result).toEqual({ error: 'Network failure' });
+    expect(result).toEqual({ error: 'API_UNKNOWN_ERROR' });
   });
 
   test('returns generic error if axiosClient throws a non-Error', async () => {
