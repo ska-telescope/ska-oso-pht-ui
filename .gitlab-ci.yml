@@ -82,7 +82,7 @@ CHANGELOG:
 js-e2e-test:
   variables:
     JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
-    CYPRESS_PARALLEL_WORKERS: "4"
+    CYPRESS_PARALLEL_WORKERS: "3"
 
 info-dev-environment:
   <<: *dev_env
