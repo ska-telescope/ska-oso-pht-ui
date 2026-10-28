@@ -7,8 +7,8 @@ export const DESCRIPTION: ProposalFixture['description'] = {
   document: 'testFile.pdf'
 };
 
-// Targets are resolved by name through the backend. The RA and Dec are
-// the values the resolver is expected to fill in, not typed by the test.
+// Targets have their RA and Dec typed in. They're also the values the resolver is expected to fill
+// in when the Target page spec resolves the target by name.
 export const PKS_1830_211: Target = {
   name: 'PKS 1830-211',
   coordinateType: 'ICRS',

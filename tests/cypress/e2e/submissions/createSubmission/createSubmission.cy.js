@@ -9,7 +9,6 @@ import {
   verifyOsdDataProposalOpen,
   verifyOsdDataProposalClose,
   addM2TargetAndAutoLink,
-  spyOnResolveTargetAPI,
   verifyMockedScienceIdeaOnLandingPageIsVisible,
   beginScienceIdeaSession,
   selectScienceVerificationCycle,
@@ -19,10 +18,6 @@ import {
 import { standardUser } from '../../../support/users.js';
 
 describe('Creating Proposal', () => {
-  beforeEach(() => {
-    spyOnResolveTargetAPI();
-  });
-
   afterEach(() => {
     clearLocalStorage();
   });
@@ -49,9 +44,8 @@ describe('Creating Proposal', () => {
   //
   // Skipped via it.skip() (not this.skip()) - see reviewScience.cy.js's comment: a
   // function(){...this.skip()} test sharing a spec with cy.intercept().as() elsewhere (here, the
-  // SV Flow test above and spyOnResolveTargetAPI in this describe's beforeEach) reliably corrupts
-  // Cypress's command tracking. it.skip() never invokes the callback at all, so it sidesteps that
-  // entirely.
+  // SV Flow test above) reliably corrupts Cypress's command tracking. it.skip() never invokes the
+  // callback at all, so it sidesteps that entirely.
   it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     createStandardProposalSession(standardUser);
     clickHome();

@@ -4,7 +4,11 @@ import { buildSvContinuumProposal } from '../../../support/editor/data/sv';
 import { SV_CYCLE } from '../../../support/editor/cycles';
 import { createProposal, goToPage } from '../../../support/editor/editorActions';
 import { enter } from '../../../support/editor/fields';
-import { deleteTarget, targetPage } from '../../../support/editor/pageObjects/targetPage';
+import {
+  addTargetByResolving,
+  deleteTarget,
+  targetPage
+} from '../../../support/editor/pageObjects/targetPage';
 
 const addTargetButton = () => cy.findByRole('button', { name: 'Add Target' });
 
@@ -68,13 +72,38 @@ describe('SV Target page', () => {
     targetPage.verify(proposal);
   });
 
-  it('shows an error when the target name cannot be resolved', () => {
+  // This spec is the only one that resolves, because the resolver depends on external services
+  // that are sometimes down. The other specs type the coordinates in.
+  // TODO: Enable once the target lookup service the resolver uses is back up
+  it.skip('adds a target with the coordinates found by resolving its name', () => {
+    addTargetByResolving(target);
+    targetPage.verify(proposal);
+  });
+
+  // TODO: This should be changed in BTN-3593 to look for the error pop-up rather than
+  //  error attached to the target name field
+  // TODO: Enable once the target lookup service the resolver uses is back up
+  it.skip('shows an error when the target name cannot be resolved', () => {
     enter(cy.findByRole('textbox', { name: 'Name' }), 'Cypress unknown object');
     cy.findByRole('button', { name: 'Resolve' }).click();
 
     // Resolving goes to external services, which can be slow
     cy.findByText('Object not found in SIMBAD, NED or VizieR', { timeout: 40000 });
     targetRow('Cypress unknown object').should('not.exist');
+  });
+
+  // TODO: Enable once fixed as part of BTN-3634. OSO services doesn't show
+  //  this message yet when target lookup service is down.
+  it.skip('shows an error when the resolver is unavailable', () => {
+    // Stubbed, so the outage happens on every run
+    cy.intercept('GET', '**/coordinates/**', { statusCode: 500 });
+    enter(cy.findByRole('textbox', { name: 'Name' }), target.name);
+    cy.findByRole('button', { name: 'Resolve' }).click();
+
+    cy.findByText(
+      'Error occurred while resolving target. Please try again or manually input target details.'
+    );
+    targetRow(target.name).should('not.exist');
   });
 
   // Galactic coordinates aren't implemented yet

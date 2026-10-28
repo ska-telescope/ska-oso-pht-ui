@@ -8,11 +8,9 @@ import {
   clearLocalStorage,
   clickStatusIconNav,
   clickToAddTarget,
-  addM2TargetUsingResolve,
+  addM2Target,
   clickObservationSetup,
   selectScienceCategory,
-  spyOnResolveTargetAPI,
-  waitForResolveTarget,
   addSubmissionSummary,
   clickEditIconForRow,
   clickAddObservationEntry,
@@ -41,7 +39,6 @@ describe('Edit Proposal', () => {
   describe.skip('Proposal Flow', () => {
     beforeEach(() => {
       mockEmailAPI();
-      spyOnResolveTargetAPI();
     });
 
     afterEach(() => {
@@ -71,8 +68,7 @@ describe('Edit Proposal', () => {
         clickStatusIconNav('statusId4'); //Click to target page
         pageConfirmed('TARGET');
         //add target
-        addM2TargetUsingResolve();
-        waitForResolveTarget();
+        addM2Target();
         clickToAddTarget();
         clickStatusIconNav('statusId5'); //Click to observation page
         pageConfirmed('OBSERVATION');

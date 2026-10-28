@@ -37,15 +37,6 @@ export const mockEmailAPI = () => {
   cy.intercept('POST', '**/pht/prsls/send-email/').as('mockInviteUserByEmail');
 };
 
-export const spyOnResolveTargetAPI = () => {
-  cy.intercept('GET', '**/coordinates/M2/equatorial').as('resolveTarget');
-};
-
-// Target lookups hit an external resolver, so wait for double the configured defaults
-// (requestTimeout 10000 / responseTimeout 60000 in cypress.config.mjs).
-export const waitForResolveTarget = () =>
-  cy.wait('@resolveTarget', { requestTimeout: 20000, responseTimeout: 120000 });
-
 export const mockOSDAPI = () => {
   cy.intercept('GET', '**/osd/cycles').as('mockOSDData');
   // GetOSDCycles also fetches ODT configuration alongside OSD cycles (see BTN-3416) - without
@@ -82,7 +73,6 @@ export const clickCreateSubmission = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
-export const clickResolveButton = () => clickButton('resolveButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
@@ -487,7 +477,7 @@ export const createStandardProposalSession = (user) => {
   completeStandardProposalCreation();
 };
 
-// The "select observing mode, add the M2 target via resolve, confirm auto-link" sub-flow that
+// The "select observing mode, add the M2 target, confirm auto-link" sub-flow that
 // most SV specs need once a session exists. summary is optional since callers add it at different
 // points (or not at all).
 export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = null) => {
@@ -504,8 +494,7 @@ export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = nu
   }
   clickStatusIconNav('statusId4'); // Target page
   pageConfirmed('TARGET');
-  addM2TargetUsingResolve();
-  waitForResolveTarget();
+  addM2Target();
   clickToAddTarget();
   verifyAutoLinkAlertFooter();
 };
@@ -515,10 +504,13 @@ export const addSubmissionSummary = (value) => {
   cy.get('[data-testid="abstractId"]').type(value);
 };
 
-export const addM2TargetUsingResolve = () => {
-  cy.get('[data-testid="name"]').should('exist');
-  cy.get('[data-testid="name"]').type('M2');
-  clickResolveButton();
+// Types in the values the resolver gives M2, so the tests don't depend on the resolver's external
+// services (only tests/cypress/e2e/sv/pages/target.cy.ts resolves)
+export const addM2Target = () => {
+  enterTargetField('name', 'M2');
+  enterTargetField('skyDirectionValue1', '21:33:27.0200');
+  enterTargetField('skyDirectionValue2', '-00:49:23.700');
+  enterTargetField('velocityValue', '-3.6');
 };
 
 export const updateDataProductField = (testId, value) => {

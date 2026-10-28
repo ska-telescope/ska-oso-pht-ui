@@ -4,14 +4,12 @@ import {
   pageConfirmed,
   updateFieldValue,
   addM2TargetAndAutoLink,
-  spyOnResolveTargetAPI,
   mockEmailAPI,
   createScienceIdeaSession
 } from '../../../support/common.js';
 import { standardUser } from '../../../support/users.js';
 beforeEach(() => {
   mockEmailAPI();
-  spyOnResolveTargetAPI();
 });
 
 afterEach(() => {

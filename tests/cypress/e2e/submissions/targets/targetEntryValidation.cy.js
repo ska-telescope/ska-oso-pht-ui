@@ -1,5 +1,5 @@
 import {
-  addM2TargetUsingResolve,
+  addM2Target,
   checkFieldDisabled,
   clearLocalStorage,
   clickEdit,
@@ -7,8 +7,6 @@ import {
   clickStatusIconNav,
   clickToAddTarget,
   enterTargetField,
-  spyOnResolveTargetAPI,
-  waitForResolveTarget,
   pageConfirmed,
   updateTargetField,
   verifyFieldError,
@@ -52,11 +50,8 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify submitting an edited target is disabled when name is invalid', () => {
-    spyOnResolveTargetAPI();
-
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -73,11 +68,8 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify submitting an edited target is disabled when ra is invalid', () => {
-    spyOnResolveTargetAPI();
-
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -94,11 +86,8 @@ describe('Science Verification: Target entry validation', () => {
   });
 
   it('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
-    spyOnResolveTargetAPI();
-
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -120,9 +109,9 @@ describe('Science Verification: Target entry validation', () => {
 //
 // Skipped via describe.skip() (not this.skip() inside a function(){} beforeEach) - see
 // reviewScience.cy.js's comment: a function(){...this.skip()} test/hook sharing a spec with
-// cy.intercept().as() elsewhere (here, spyOnResolveTargetAPI/createScienceIdeaSession in the SV
-// describe above) reliably corrupts Cypress's command tracking. describe.skip() never invokes any
-// of its hooks or tests at all, so it sidesteps that entirely.
+// cy.intercept().as() elsewhere (here, createScienceIdeaSession in the SV describe above) reliably
+// corrupts Cypress's command tracking. describe.skip() never invokes any of its hooks or tests at
+// all, so it sidesteps that entirely.
 describe.skip('Proposal Flow: Target entry validation', () => {
   beforeEach(() => {
     createStandardProposalSession(standardUser);
@@ -132,11 +121,8 @@ describe.skip('Proposal Flow: Target entry validation', () => {
   });
 
   it('Proposal: Verify name field error when target is duplicated', () => {
-    spyOnResolveTargetAPI();
-
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //attempt to add target with the same name
