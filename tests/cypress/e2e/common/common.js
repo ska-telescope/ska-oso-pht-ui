@@ -59,6 +59,16 @@ export const mockEmailAPI = () => {
   cy.intercept('POST', '**/pht/prsls/send-email/').as('mockInviteUserByEmail');
 };
 
+// Only needed for tests that resolve M2 live - see addM2Target for everything else.
+export const spyOnResolveTargetAPI = () => {
+  cy.intercept('GET', '**/coordinates/M2/equatorial').as('resolveTarget');
+};
+
+// Target lookups hit an external resolver, so wait for double the configured defaults
+// (requestTimeout 10000 / responseTimeout 60000 in cypress.config.mjs).
+export const waitForResolveTarget = () =>
+  cy.wait('@resolveTarget', { requestTimeout: 20000, responseTimeout: 120000 });
+
 export const mockOSDAPI = () => {
   cy.intercept('GET', '**/osd/cycles').as('mockOSDData');
   // GetOSDCycles also fetches ODT configuration alongside OSD cycles (see BTN-3416) - without
@@ -108,6 +118,7 @@ export const clickHome = () => clickButton('homeButtonTestId');
 export const clickDialogConfirm = () => clickButton('dialogConfirmationButton');
 export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
+export const clickResolveButton = () => clickButton('resolveButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
@@ -566,13 +577,19 @@ export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = nu
   verifyAutoLinkAlertFooter();
 };
 
+export const addM2TargetUsingResolve = () => {
+  cy.get('[data-testid="name"]').should('exist');
+  cy.get('[data-testid="name"]').type('M2');
+  clickResolveButton();
+};
+
 export const addSubmissionSummary = (value) => {
   cy.get('[data-testid="abstractId"]').should('exist');
   cy.get('[data-testid="abstractId"]').type(value);
 };
 
 // Types in the values the resolver gives M2, so the tests don't depend on the resolver's external
-// services (only tests/cypress/e2e/sv/pages/target.cy.ts resolves)
+// services (only the skipped live-resolve test in targetEntryValidation.test.js resolves)
 export const addM2Target = () => {
   enterTargetField('name', 'M2');
   enterTargetField('skyDirectionValue1', '21:33:27.0200');

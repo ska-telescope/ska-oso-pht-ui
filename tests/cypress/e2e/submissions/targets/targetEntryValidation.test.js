@@ -1,5 +1,6 @@
 import {
   addM2Target,
+  addM2TargetUsingResolve,
   checkFieldDisabled,
   clearLocalStorage,
   clickDialogConfirm,
@@ -8,6 +9,8 @@ import {
   clickStatusIconNav,
   clickToAddTarget,
   enterTargetField,
+  spyOnResolveTargetAPI,
+  waitForResolveTarget,
   pageConfirmed,
   updateTargetField,
   verifyFieldError,
@@ -50,6 +53,19 @@ describe('Science Verification: Target entry validation', () => {
     verifyFieldError('name', 'A value is required', true); //verify field error on name field, as is empty
 
     checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target name field is invalid
+  });
+
+  // The only test that resolves a target name live, so the only one that depends on the external
+  // name resolvers (SIMBAD/NED/VizieR) - every other spec enters M2 manually via addM2Target.
+  // Disabled until SIMBAD is available again.
+  it.skip('SV: Verify resolving a target name populates the target fields', () => {
+    spyOnResolveTargetAPI();
+
+    addM2TargetUsingResolve();
+    waitForResolveTarget();
+    clickToAddTarget();
+
+    verifyTargetInTargetTable('M2', '21:33:27.0200', '-00:49:23.700', '-3.6');
   });
 
   it('SV: Verify submitting an edited target is disabled when name is invalid', () => {
