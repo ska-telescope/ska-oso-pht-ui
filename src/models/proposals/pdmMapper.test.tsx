@@ -10,12 +10,23 @@ describe('mapPdmToForm', () => {
   test('maps the PDM into form values', () => {
     expect(mapPdmToForm(pdm)).toEqual({
       title: pdm.proposal_info.title,
-      proposalType: pdm.proposal_info.proposal_type.main_type
+      proposalType: pdm.proposal_info.proposal_type.main_type,
+      sciencePDF: null,
+      scienceLoadStatus: null,
+      technicalPDF: null,
+      technicalLoadStatus: null
     });
   });
 
   test('returns empty form values when there is no PDM', () => {
-    expect(mapPdmToForm(undefined)).toEqual({ title: '', proposalType: null });
+    expect(mapPdmToForm(undefined)).toEqual({
+      title: '',
+      proposalType: null,
+      sciencePDF: null,
+      scienceLoadStatus: null,
+      technicalPDF: null,
+      technicalLoadStatus: null
+    });
   });
 });
 
