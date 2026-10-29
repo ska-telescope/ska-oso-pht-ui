@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Bugfix: Only reset DP Parameters if values on the Observaion page change.
+* Bugfix: Only reset DP Parameters if the data product type changes.
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
 * Bugfix: Show a meaningful message when target name resolution fails, including when the external resolvers are unavailable
 

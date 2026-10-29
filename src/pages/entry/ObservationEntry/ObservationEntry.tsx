@@ -364,14 +364,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     )?.dataProductsSDPId;
 
     // Only reset data products when a field they are derived from has changed, otherwise
-    // revisiting this page would overwrite the user's data product values
+    // revisiting this page would overwrite the user's data product values.
+    // PST data products depend only on the PST mode; images depend on the central frequency
     const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
     const dataProductInputsChanged =
       !oldObservation ||
       oldObservation.type !== newObservation.type ||
-      (newObservation.type === TYPE_PST && oldObservation.pstMode !== newObservation.pstMode) ||
-      oldObservation.centralFrequency !== newObservation.centralFrequency ||
-      oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits;
+      (newObservation.type === TYPE_PST
+        ? oldObservation.pstMode !== newObservation.pstMode
+        : oldObservation.centralFrequency !== newObservation.centralFrequency ||
+          oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
 
     const newDataProducts = dataProductInputsChanged
       ? updateDataProductsOnObservationChange(oldDataProducts, newObservation)

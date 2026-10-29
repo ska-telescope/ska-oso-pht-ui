@@ -92,7 +92,7 @@ describe('dataProductsOnObservationChange', () => {
     );
   });
 
-  it('normalizes existing record when TYPE_PST and pstMode is the same', () => {
+  it('keeps existing values when TYPE_PST and pstMode is the same', () => {
     const oldRecs: DataProductSDPNew[] = [
       {
         ...baseDataProduct,
@@ -111,12 +111,7 @@ describe('dataProductsOnObservationChange', () => {
 
     const result = updateDataProductsOnObservationChange(oldRecs, obsSameMode);
 
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual({
-      id: 'SDP-0000000',
-      observationId: 'obs1',
-      data: PSTData(obsSameMode)
-    });
+    expect(result).toEqual(oldRecs);
   });
 
   it('returns empty array when TYPE_PST and oldRecs is empty', () => {

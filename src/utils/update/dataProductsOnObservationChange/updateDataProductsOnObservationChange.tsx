@@ -67,7 +67,13 @@ export const updateDataProductsOnObservationChange = (
     const pstDataProductIndex = newDataProducts.findIndex(
       (dataProduct) => dataProduct.observationId === observation.id
     );
-    if (pstDataProductIndex != -1) {
+    // Keep the user's values unless the PST mode (and so the data product type) has changed
+    const existingData = newDataProducts[pstDataProductIndex]?.data;
+    const pstModeChanged =
+      !existingData ||
+      !('dataProductType' in existingData) ||
+      existingData.dataProductType !== PSTData(observation).dataProductType;
+    if (pstDataProductIndex != -1 && pstModeChanged) {
       newDataProducts[pstDataProductIndex] = {
         ...newDataProducts[pstDataProductIndex],
         data: dataProductForPstMode.data
