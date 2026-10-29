@@ -6,6 +6,7 @@ import updateDataProductsOnObservationChange, {
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FREQUENCY_GHZ,
   PULSAR_TIMING_VALUE,
@@ -109,10 +110,32 @@ describe('dataProductsOnObservationChange', () => {
       pstMode: DETECTED_FILTER_BANK_VALUE
     };
 
-    const result = updateDataProductsOnObservationChange(oldRecs, obsSameMode);
+    const result = updateDataProductsOnObservationChange(oldRecs, obsSameMode, obsPST);
 
     expect(result).toEqual(oldRecs);
   });
+
+  // Imaging and PST data product types share numeric values, so these must still be rebuilt
+  it.each([
+    ['visibilities', DP_TYPE_VISIBLE, PULSAR_TIMING_VALUE],
+    ['images', DP_TYPE_IMAGES, DETECTED_FILTER_BANK_VALUE]
+  ])(
+    'rebuilds a %s data product when the observation switches to PST',
+    (_, dataProductType, pstMode) => {
+      const oldRecs: DataProductSDPNew[] = [
+        {
+          ...baseDataProduct,
+          data: { dataProductType, imageSizeValue: 5 } as unknown as SDPTimingPSTData
+        }
+      ];
+      const obsSwitched = { ...obsPST, pstMode } as Observation;
+      const previousObs = { ...obsPST, type: TYPE_CONTINUUM } as Observation;
+
+      const result = updateDataProductsOnObservationChange(oldRecs, obsSwitched, previousObs);
+
+      expect(result[0].data).toEqual(PSTData(obsSwitched));
+    }
+  );
 
   it('returns empty array when TYPE_PST and oldRecs is empty', () => {
     const result = updateDataProductsOnObservationChange([], obsPST);

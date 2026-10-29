@@ -376,7 +376,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
 
     const newDataProducts = dataProductInputsChanged
-      ? updateDataProductsOnObservationChange(oldDataProducts, newObservation)
+      ? updateDataProductsOnObservationChange(oldDataProducts, newObservation, oldObservation)
       : oldDataProducts;
     const dataProductSDP: DataProductSDPNew | undefined = newDataProducts.find(
       (dp) => dp.id === linkedDataProductId

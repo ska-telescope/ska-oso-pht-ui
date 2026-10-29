@@ -47,7 +47,8 @@ export const PSTData = (
 
 export const updateDataProductsOnObservationChange = (
   currentDataProducts: DataProductSDPNew[],
-  observation: Observation
+  observation: Observation,
+  previousObservation?: Observation
 ) => {
   // This function handles updates to the data products based on changes to the observation.
   // It currently handles two cases:
@@ -67,12 +68,10 @@ export const updateDataProductsOnObservationChange = (
     const pstDataProductIndex = newDataProducts.findIndex(
       (dataProduct) => dataProduct.observationId === observation.id
     );
-    // Keep the user's values unless the PST mode (and so the data product type) has changed
-    const existingData = newDataProducts[pstDataProductIndex]?.data;
+    // Keep the user's values unless the observation has just become PST or its PST mode has changed.
+    // This can't be decided from dataProductType, as PST and imaging types share the same numbers
     const pstModeChanged =
-      !existingData ||
-      !('dataProductType' in existingData) ||
-      existingData.dataProductType !== PSTData(observation).dataProductType;
+      previousObservation?.type !== TYPE_PST || previousObservation.pstMode !== observation.pstMode;
     if (pstDataProductIndex != -1 && pstModeChanged) {
       newDataProducts[pstDataProductIndex] = {
         ...newDataProducts[pstDataProductIndex],
