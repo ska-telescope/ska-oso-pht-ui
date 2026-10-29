@@ -16,10 +16,7 @@ import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { ProposalType } from '@/models/proposals/proposal';
-import {
-  getDocumentPageStatus,
-  isSameDocumentRef
-} from '@/models/proposals/documents';
+import { getDocumentPageStatus, isSameDocumentRef } from '@/models/proposals/documents';
 import {
   PAGE_DESCRIPTION,
   SCIENCE_PDF_MAX_PAGES,
