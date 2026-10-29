@@ -180,6 +180,27 @@ If the UI fails to load data:
 - Confirm Minikube IP
 - Ensure API versions (`v13`, `v11`) match deployed services
 
+# Testing
+
+```bash
+# Unit tests (Vitest), with coverage
+yarn test:unit
+
+# End-to-end tests (Cypress), with the app running at http://localhost:6101
+yarn test:e2e:ui                               # interactive
+yarn test:e2e:parallel --browser chromium      # whole suite, headless
+
+# Type checks
+yarn typecheck           # the application
+yarn typecheck:cypress   # the Cypress tests
+```
+
+> **Warning:** only run the Cypress tests against a local Minikube deployment or a dev deployment
+> from a branch. The tests create proposals that can't be deleted, so running them against the
+> integration deployment will unnecessarily fill the integration database.
+
+See [Testing](docs/src/developer/Testing.rst) for more detail.
+
 # Code Generation
 
 The API for ska-oso-services is defined in an OpenAPI specification.

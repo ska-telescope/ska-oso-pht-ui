@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    // The Cypress code that is still JavaScript can be imported, but isn't type checked
+    "allowJs": true,
+    "checkJs": false,
+    // Cypress's own globals, without Vitest's, whose expect() would clash with Cypress's
+    "types": ["cypress", "node", "cypress-real-events", "@testing-library/cypress"]
+  },
+  "include": ["**/*.ts"]
+}
