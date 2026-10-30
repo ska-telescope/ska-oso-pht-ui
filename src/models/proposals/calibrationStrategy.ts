@@ -34,6 +34,10 @@ export function getCalibrationStrategySchema() {
 
 export type CalibrationStrategyType = z.input<ReturnType<typeof getCalibrationStrategySchema>>;
 
+export const getCalibrationStrategyValues = (proposal?: {
+  calibrationStrategy?: CalibrationStrategyType;
+}): CalibrationStrategyType => proposal?.calibrationStrategy ?? [];
+
 /*********************************************************** PDM mapping *********************************************************/
 
 /**************************** PDM → form *****************************/

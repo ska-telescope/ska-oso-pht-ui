@@ -7,6 +7,8 @@ import { getProposalSchema } from './proposal';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
+// The form always holds these slices; they are not laid over the PDM yet
+const emptySlices = { targets: [], targetObservation: [], calibrationStrategy: [] };
 
 describe('mapPdmToForm', () => {
   test('maps the PDM into form values', () => {
@@ -38,7 +40,7 @@ describe('mapPdmToForm', () => {
 describe('mapFormToPdm', () => {
   test('lays the form values over the rest of the PDM', () => {
     const result = mapFormToPdm(
-      { title: 'Edited title', proposalType: PROPOSAL_TYPE.KEY_SCIENCE },
+      { title: 'Edited title', proposalType: PROPOSAL_TYPE.KEY_SCIENCE, ...emptySlices },
       pdm
     );
 
@@ -53,7 +55,10 @@ describe('mapFormToPdm', () => {
 
   test('does not modify the base PDM', () => {
     const originalTitle = pdm.proposal_info.title;
-    mapFormToPdm({ title: 'Edited title', proposalType: PROPOSAL_TYPE.STANDARD }, pdm);
+    mapFormToPdm(
+      { title: 'Edited title', proposalType: PROPOSAL_TYPE.STANDARD, ...emptySlices },
+      pdm
+    );
     expect(pdm.proposal_info.title).toBe(originalTitle);
   });
 
@@ -63,10 +68,7 @@ describe('mapFormToPdm', () => {
 
   // Their writers still update the legacy store, so the base PDM must win until they move
   test('keeps targets, links and calibration from the base PDM', () => {
-    const result = mapFormToPdm(
-      { ...mapPdmToForm(pdm), targets: [], targetObservation: [], calibrationStrategy: [] },
-      pdm
-    );
+    const result = mapFormToPdm({ ...mapPdmToForm(pdm), ...emptySlices }, pdm);
     expect(result.observation_info).toEqual(pdm.observation_info);
   });
 

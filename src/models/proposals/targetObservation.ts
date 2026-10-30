@@ -48,6 +48,10 @@ export function getTargetObservationSchema() {
 
 export type TargetObservationType = z.input<ReturnType<typeof getTargetObservationSchema>>;
 
+export const getTargetObservationValues = (proposal?: {
+  targetObservation?: TargetObservationType;
+}): TargetObservationType => proposal?.targetObservation ?? [];
+
 /*********************************************************** PDM mapping *********************************************************/
 
 // The PDM result is a union on supplied_type, but the mapping reads the fields of both variants.

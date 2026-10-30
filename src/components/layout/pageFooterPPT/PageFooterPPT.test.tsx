@@ -105,6 +105,9 @@ const wrapper = (
       mode: 'all',
       resolver: zodResolver(getProposalSchema()),
       defaultValues: {
+        targets: [],
+        targetObservation: [],
+        calibrationStrategy: [],
         title,
         proposalType: (storageObject.useStore().application.content2 as Partial<ProposalType>)
           .proposalType,

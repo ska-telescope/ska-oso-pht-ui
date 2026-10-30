@@ -67,6 +67,9 @@ export function getTargetsSchema() {
 
 export type TargetsType = z.input<ReturnType<typeof getTargetsSchema>>;
 
+export const getTargetsValues = (proposal?: { targets?: TargetsType }): TargetsType =>
+  proposal?.targets ?? [];
+
 /*********************************************************** PDM mapping *********************************************************/
 
 /**************************** PDM → form *****************************/

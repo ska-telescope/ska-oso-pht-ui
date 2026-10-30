@@ -42,6 +42,9 @@ import MappingPutProposal, {
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
 
+// The form always holds these slices; they are not laid over the PDM yet
+const emptySlices = { targets: [], targetObservation: [], calibrationStrategy: [] };
+
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
     const result = mockPutProposal();
@@ -131,7 +134,8 @@ describe('PutProposal Service', () => {
 
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
         title: 'Title from RHF',
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        ...emptySlices
       });
 
       expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
@@ -154,7 +158,8 @@ describe('PutProposal Service', () => {
 
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
       title: '',
-      proposalType: PROPOSAL_TYPE.STANDARD
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      ...emptySlices
     });
 
     expect(mockedAuthClient.put).toHaveBeenCalledWith(

@@ -19,10 +19,9 @@ export function getProposalSchema() {
     // These slices check structure only. Proposals loaded through the legacy mapper can contain
     // invalid or missing data. The validation of that data against the rules for content is done
     // in the submit validation.
-    // Optional until they are mapped from the PDM and seeded in useProposalForm.
-    targets: getTargetsSchema().optional(),
-    targetObservation: getTargetObservationSchema().optional(),
-    calibrationStrategy: getCalibrationStrategySchema().optional()
+    targets: getTargetsSchema(),
+    targetObservation: getTargetObservationSchema(),
+    calibrationStrategy: getCalibrationStrategySchema()
   });
 }
 
