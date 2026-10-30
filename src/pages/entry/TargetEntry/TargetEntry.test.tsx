@@ -14,16 +14,19 @@ import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 
 // Exposes the global form, which holds the entry and the targets
 let formProbe: UseFormReturn<ProposalType>;
-const FormProbe = () => {
-  formProbe = useFormContext<ProposalType>();
+const FormProbe = ({ onForm }: { onForm: (form: UseFormReturn<ProposalType>) => void }) => {
+  onForm(useFormContext<ProposalType>());
   return null;
+};
+const keepForm = (form: UseFormReturn<ProposalType>) => {
+  formProbe = form;
 };
 
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
       <ProposalFormProvider>
-        <FormProbe />
+        <FormProbe onForm={keepForm} />
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </ProposalFormProvider>
     </StoreProvider>
