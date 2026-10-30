@@ -4,9 +4,21 @@ import {
   MockProposalBackend,
   MockProposalBackendZoom
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
+import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy';
-import { CalibrationStrategyType, getCalibrationStrategySchema } from './calibrationStrategy';
+import { PROPOSAL_STATUS } from '@utils/constants.ts';
+import {
+  CalibrationStrategyType,
+  calibrationStrategyFromPdm,
+  calibrationStrategyToPdm,
+  getCalibrationStrategySchema
+} from './calibrationStrategy';
+
+const mockPdms = [
+  ['MockProposalBackend', MockProposalBackend as unknown as ProposalBackend],
+  ['MockProposalBackendZoom', MockProposalBackendZoom as unknown as ProposalBackend]
+] as const;
 
 const strategy = {
   observatoryDefined: true,
@@ -53,5 +65,26 @@ describe('calibration strategy schema', () => {
 
   test('legacy calibration can seed the form', () => {
     expectTypeOf<CalibrationStrategy[]>().toExtend<CalibrationStrategyType>();
+  });
+});
+
+describe('calibration strategy PDM mapping', () => {
+  test.each(mockPdms)('maps %s the same as the legacy mappers', (_, pdm) => {
+    const legacy = mapping(pdm);
+    const calibration = calibrationStrategyFromPdm(pdm.observation_info?.calibration_strategy);
+
+    expect(calibration).toEqual(legacy.calibrationStrategy);
+    expect(calibrationStrategyToPdm(calibration)).toEqual(
+      MappingPutProposal(legacy, PROPOSAL_STATUS.DRAFT).observation_info.calibration_strategy
+    );
+  });
+
+  test.each(mockPdms)('round-trips %s through the form unchanged', (_, pdm) => {
+    const strategies = pdm.observation_info?.calibration_strategy;
+    expect(calibrationStrategyToPdm(calibrationStrategyFromPdm(strategies))).toEqual(strategies);
+  });
+
+  test('reads missing calibration as an empty list', () => {
+    expect(calibrationStrategyFromPdm(null)).toEqual([]);
   });
 });

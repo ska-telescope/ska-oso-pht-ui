@@ -1,8 +1,3 @@
-import Target, {
-  ReferenceCoordinateGalactic,
-  ReferenceCoordinateICRS,
-  ReferenceCoordinateSSO
-} from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
 import GroupObservation from '@utils/types/groupObservation.tsx';
 import { ValueUnitPair } from '@utils/types/valueUnitPair.tsx';
@@ -18,8 +13,6 @@ import {
   PROPOSAL_STATUS,
   PST_MODES,
   PULSAR_TIMING_VALUE,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
-  REFERENCE_COORDINATE_TYPE_ICRS,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
@@ -28,12 +21,8 @@ import {
   TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_PST,
   TYPE_ZOOM,
-  VEL_UNITS,
-  VELOCITY_TYPE,
   TYPE_ZOOM_LONG,
-  SA_AA4,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  STATUS_OK
+  SA_AA4
 } from '@utils/constants.ts';
 import {
   DataProductSDPNew,
@@ -49,88 +38,36 @@ import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
-import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
+import { referenceCoordinateToPdm, targetsToPdm } from '@/models/proposals/targets';
+import {
+  getSuppliedFieldsIntegrationTime,
+  targetObservationToPdm
+} from '@/models/proposals/targetObservation';
+import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
 import type {
-  CalibrationStrategy as CalibrationStrategyTransport,
   ContinuumVisibilities,
   DataProductSDP as DataProductSDPTransport,
   DataProductSRC as DataProductSRCTransport,
   Document as DocumentTransport,
-  FluxCal,
-  GalacticCoordinates,
-  ICRSCoordinates,
   LowArray,
   MidArray,
   ObservationSets,
   Polarisation,
-  Result,
   ScriptParameters,
-  SpecialCoordinates,
   Supplied as SuppliedTransport,
-  Target as TargetTransport,
   Weighting
 } from '@/generated/models';
 
 const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
 const isPST = (type: string) => type === TYPE_PST;
+
+// The slice mappers now hold these; the names stay for existing callers
+export const getReferenceCoordinate = referenceCoordinateToPdm;
+export const getTargets = targetsToPdm;
+export const mapCalibrationStrategyToBackend = calibrationStrategyToPdm;
+export { getSuppliedFieldsIntegrationTime };
+
 // const isZoom = (type: number) => type === TYPE_ZOOM;
-const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
-const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
-
-export const getReferenceCoordinate = (
-  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO
-): ICRSCoordinates | GalacticCoordinates | SpecialCoordinates => {
-  switch (tar.kind) {
-    case REFERENCE_COORDINATE_TYPE_ICRS.value:
-      return {
-        kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-        ra_str: (tar as Target).raStr,
-        dec_str: (tar as Target).decStr,
-        pm_ra: (tar as Target).pmRa,
-        pm_dec: (tar as Target).pmDec,
-        epoch: (tar as Target).epoch,
-        parallax: (tar as Target).parallax
-      } as ICRSCoordinates;
-
-    case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
-      return {
-        kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-        l: (tar as Target).l,
-        b: (tar as Target).b,
-        pm_l: (tar as Target).pmL,
-        pm_b: (tar as Target).pmB,
-        epoch: (tar as Target).epoch,
-        parallax: (tar as Target).parallax
-      } as GalacticCoordinates;
-
-    case REFERENCE_COORDINATE_TYPE_SSO.value:
-      return {
-        kind: REFERENCE_COORDINATE_TYPE_SSO.label,
-        name: (tar as Target).name
-      } as SpecialCoordinates;
-    default:
-      throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
-  }
-};
-
-export const getTargets = (targets: Target[]): TargetTransport[] => {
-  const mappedTargets = targets.map((tar) => ({
-    name: tar.name,
-    target_id: tar.id,
-    reference_coordinate: getReferenceCoordinate(tar) as TargetTransport['reference_coordinate'],
-    radial_velocity: {
-      quantity: {
-        value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
-        unit: VEL_UNITS.find((u) => u.value === Number(tar.velUnit))?.label ?? ''
-      },
-      definition: 'RADIO',
-      reference_frame: tar.raReferenceFrame ?? 'LSRK',
-      redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
-    } as TargetTransport['radial_velocity']
-  }));
-  return mappedTargets;
-};
-
 const getDocuments = (
   sciencePDF: DocumentPDF | null,
   technicalPDF: DocumentPDF | null
@@ -149,28 +86,6 @@ const getDocuments = (
     });
   }
   return documents;
-};
-
-function calibratorToFluxCal(calibrator: Calibrator): FluxCal {
-  return {
-    kind: 'flux',
-    name: calibrator.name
-  };
-}
-
-export const mapCalibrationStrategyToBackend = (
-  calibrationStrategies: CalibrationStrategy[]
-): CalibrationStrategyTransport[] => {
-  return calibrationStrategies?.map(
-    (strategy) =>
-      ({
-        observatory_defined: strategy?.observatoryDefined,
-        calibration_id: strategy?.id,
-        observation_set_ref: strategy?.observationIdRef,
-        calibrators: strategy?.calibrators ? strategy.calibrators.map(calibratorToFluxCal) : null,
-        notes: strategy?.notes
-      }) as CalibrationStrategyTransport
-  );
 };
 
 /**
@@ -433,218 +348,11 @@ const getObservationsSets = (
   return outObservationsSets;
 };
 
-/*********************************************************** sensitivity calculator results mapping *********************************************************/
-/**************************** supplied fields *****************************/
-
-interface SuppliedRelatedFields {
-  supplied_type: string;
-  /* sensitivity fields */
-  weighted_continuum_sensitivity?: ValueUnitPair;
-  weighted_spectral_sensitivity?: ValueUnitPair;
-  total_continuum_sensitivity?: ValueUnitPair;
-  total_spectral_sensitivity?: ValueUnitPair;
-  surface_brightness_sensitivity?: { continuum: number; spectral: number; unit: string };
-  /* integration_time fields */
-  continuum?: ValueUnitPair;
-  spectral?: ValueUnitPair;
-}
-
-// Add an index signature to SensCalcResults type to allow string indexing
-// (Place this in the appropriate type definition file, e.g., @utils/types/sensCalcResults.tsx)
-/*
-export interface SensCalcResults {
-  section1?: SensCalcSection[];
-  section2?: SensCalcSection[];
-  section3?: SensCalcSection[];
-  [key: string]: SensCalcSection[] | undefined; // <-- Add this line
-}
-*/
-
-const getSuppliedFieldsSensitivity = (
-  suppliedType: string,
-  obsType: string,
-  tarObs: TargetObservation,
-  spectralSection: string
-) => {
-  if (!tarObs?.sensCalc) {
-    return null;
-  }
-
-  const params: SuppliedRelatedFields = {
-    supplied_type: suppliedType
-  };
-  params.weighted_continuum_sensitivity = {
-    value:
-      isContinuum(obsType) || isPST(obsType)
-        ? Number(
-            tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumSensitivityWeighted')
-              ?.value
-          )
-        : 0,
-    unit:
-      isContinuum(obsType) || isPST(obsType)
-        ? (tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumSensitivityWeighted')
-            ?.units as string)
-        : ''
-  };
-  params.total_continuum_sensitivity = {
-    value:
-      isContinuum(obsType) || isPST(obsType)
-        ? Number(
-            tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumTotalSensitivity')?.value
-          )
-        : 0,
-    unit:
-      isContinuum(obsType) || isPST(obsType)
-        ? (tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumTotalSensitivity')
-            ?.units as string)
-        : ''
-  };
-
-  params.weighted_spectral_sensitivity = {
-    value: Number(
-      tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSensitivityWeighted')
-        ?.value
-    ),
-    unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSensitivityWeighted')
-      ?.units
-  };
-  params.total_spectral_sensitivity = {
-    value: Number(
-      tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralTotalSensitivity')?.value
-    ),
-    unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralTotalSensitivity')
-      ?.units
-  };
-  params.surface_brightness_sensitivity = {
-    continuum:
-      isContinuum(obsType) || isPST(obsType)
-        ? Number(
-            tarObs.sensCalc.section1?.find(
-              (o) => o.field === 'continuumSurfaceBrightnessSensitivity'
-            )?.value
-          )
-        : 0,
-    spectral: Number(
-      tarObs.sensCalc[spectralSection]?.find(
-        (o) => o.field === 'spectralSurfaceBrightnessSensitivity'
-      )?.value
-    ),
-    unit: tarObs.sensCalc[spectralSection]?.find(
-      (o) => o.field === 'spectralSurfaceBrightnessSensitivity'
-    )?.units
-  };
-  return params;
-};
-
-export const getSuppliedFieldsIntegrationTime = (
-  suppliedType: string,
-  obsType: string,
-  tarObs: TargetObservation
-) => {
-  if (!tarObs?.sensCalc) {
-    return null;
-  }
-
-  const params: SuppliedRelatedFields = {
-    supplied_type: suppliedType
-  };
-  params.continuum = {
-    value:
-      isContinuum(obsType) || isPST(obsType) ? Number(tarObs.sensCalc.section3?.[0]?.value) : 0,
-    unit: isContinuum(obsType) || isPST(obsType) ? (tarObs.sensCalc.section3?.[0]?.units ?? '') : ''
-  };
-
-  params.spectral = {
-    value: Number(tarObs.sensCalc.section3?.[0]?.value),
-    unit: tarObs.sensCalc.section3?.[0]?.units ?? ''
-  };
-  return params;
-};
-/***********************************************************/
-
-const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): string => {
-  const obs = incObs.find((item) => item?.id === incTarObs.observationId);
-  return obs?.type ?? TYPE_CONTINUUM;
-};
-
-const getSpectralSection = (obsType: string) =>
-  isContinuum(obsType) || isPST(obsType) ? 'section2' : 'section1';
-
-const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
-  const resultsArr = [];
-  for (const tarObs of incTargetObservations) {
-    // refs always populate; result/noise blocks are null when there's no sensCalc (SSO, PST)
-    const result: Result = {
-      observation_set_ref: tarObs.observationId,
-      data_product_ref: tarObs.dataProductsSDPId,
-      target_ref: tarObs.targetId,
-      result: null,
-      continuum_confusion_noise: null,
-      spectral_confusion_noise: null,
-      synthesized_beam_size: null
-    };
-
-    const hasSensCalc = tarObs.sensCalc != undefined && tarObs.sensCalc.statusGUI == STATUS_OK;
-
-    if (hasSensCalc) {
-      const obsType = getObsType(tarObs, incObs);
-      const spectralSection = getSpectralSection(obsType);
-      const suppliedType =
-        tarObs.sensCalc!.section3?.[0]?.field === 'sensitivity'
-          ? 'sensitivity'
-          : 'integration_time';
-
-      const suppliedRelatedFields =
-        suppliedType === 'sensitivity'
-          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
-          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
-
-      result.result = {
-        supplied_type: suppliedType,
-        ...suppliedRelatedFields
-      } as unknown as Result['result'];
-
-      result.continuum_confusion_noise = {
-        value:
-          isContinuum(obsType) || isPST(obsType)
-            ? Number(
-                tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.value
-              )
-            : 0,
-        unit:
-          isContinuum(obsType) || isPST(obsType)
-            ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
-            : ''
-      };
-
-      result.synthesized_beam_size = {
-        spectral: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
-          ?.value,
-        continuum:
-          isContinuum(obsType) || isPST(obsType)
-            ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
-            : '',
-        unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
-          ?.units
-      } as Result['synthesized_beam_size'];
-
-      result.spectral_confusion_noise = {
-        value: Number(
-          tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')?.value
-        ),
-        unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
-          ?.units
-      };
-    }
-    resultsArr.push(result);
-  }
-  return resultsArr;
-};
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
   const userId = getUserId();
+  const observationSets = getObservationsSets(proposal.observations, proposal.groupObservations);
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
@@ -683,12 +391,12 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         : (null as unknown as undefined) // still sent as null; the PDM type has no null here
     },
     observation_info: {
-      targets: getTargets(proposal?.targets ? proposal.targets : []),
+      targets: targetsToPdm(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
-      observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
+      observation_sets: observationSets,
       calibration_strategy:
         proposal.calibrationStrategy && proposal.calibrationStrategy.length > 0
-          ? mapCalibrationStrategyToBackend(proposal.calibrationStrategy)
+          ? calibrationStrategyToPdm(proposal.calibrationStrategy)
           : [],
       data_product_sdps:
         proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0
@@ -701,9 +409,9 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0
           ? getDataProductSRC(proposal.dataProductSRC as DataProductSRC[])
           : [],
-      result_details: getResults(
+      result_details: targetObservationToPdm(
         proposal.targetObservation as TargetObservation[],
-        proposal.observations as Observation[]
+        observationSets
       )
     }
   };

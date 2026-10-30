@@ -1,21 +1,37 @@
 import { describe, expect, test } from 'vitest';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
+import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
+import { getProposalSchema } from './proposal';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
 
 describe('mapPdmToForm', () => {
   test('maps the PDM into form values', () => {
+    const legacy = mapping(pdm);
     expect(mapPdmToForm(pdm)).toEqual({
       title: pdm.proposal_info.title,
-      proposalType: pdm.proposal_info.proposal_type.main_type
+      proposalType: pdm.proposal_info.proposal_type.main_type,
+      targets: legacy.targets,
+      targetObservation: legacy.targetObservation,
+      calibrationStrategy: legacy.calibrationStrategy
     });
   });
 
   test('returns empty form values when there is no PDM', () => {
-    expect(mapPdmToForm(undefined)).toEqual({ title: '', proposalType: null });
+    expect(mapPdmToForm(undefined)).toEqual({
+      title: '',
+      proposalType: null,
+      targets: [],
+      targetObservation: [],
+      calibrationStrategy: []
+    });
+  });
+
+  test('maps form values the schema accepts', () => {
+    expect(getProposalSchema().safeParse(mapPdmToForm(pdm)).error).toBeUndefined();
   });
 });
 
@@ -43,6 +59,15 @@ describe('mapFormToPdm', () => {
 
   test('round-trips through the form unchanged', () => {
     expect(mapFormToPdm(mapPdmToForm(pdm), pdm)).toEqual(pdm);
+  });
+
+  // Their writers still update the legacy store, so the base PDM must win until they move
+  test('keeps targets, links and calibration from the base PDM', () => {
+    const result = mapFormToPdm(
+      { ...mapPdmToForm(pdm), targets: [], targetObservation: [], calibrationStrategy: [] },
+      pdm
+    );
+    expect(result.observation_info).toEqual(pdm.observation_info);
   });
 
   test('rejects an unsupported proposal type from the PDM', () => {
