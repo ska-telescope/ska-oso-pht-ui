@@ -219,6 +219,8 @@ export default function DataProduct({ data }: DataProductProps) {
       units: ob?.supplied?.units
     }) && isDataProductRobustValid(dp);
 
+  // TODO(BTN-3595): Replace this per-page sensitivity update with the shared sensitivity service,
+  //  as in ObservationEntry. It writes the results to the form's targetObservation (BTN-3593).
   const scheduleLocalSensCalcUpdate = (
     ob: Observation,
     dp: DataProductSDPNew,

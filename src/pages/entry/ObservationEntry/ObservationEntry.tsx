@@ -4,6 +4,11 @@ import { Box, Grid, Paper, Typography, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { useFormContext } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
+import {
+  buildCalibrationStrategy,
+  calibrationNotesFor,
+  withCalibrationFor
+} from '@/models/proposals/calibrationOperations';
 import Target from '@/utils/types/target';
 import TargetObservation from '@/utils/types/targetObservation';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
@@ -54,12 +59,10 @@ import {
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   INTEGRATION_TIME_UNITS,
-  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
-  REFERENCE_COORDINATE_TYPE_SSO
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
-  generateCalibrationId,
   generateObsSetId,
   getBandwidthZoom,
   timeConversion
@@ -108,8 +111,7 @@ import {
   useIsFrequencyOutOfRange
 } from '@/utils/validation/validation';
 import QuantityField from '@/components/fields/quantity/quantity';
-import { CalibrationStrategy, Calibrator } from '@utils/types/calibrationStrategy.tsx';
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
+import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 
 const GAP = 5;
@@ -210,6 +212,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       units: ob?.supplied?.units
     }) && isDataProductRobustValid(dp);
 
+  // TODO(BTN-3595): Replace this per-page sensitivity update (debounce, request counter and the
+  //  link patching) with the shared sensitivity service. It writes the results to the form's
+  //  targetObservation (BTN-3593), so the service only needs to patch sensCalc there.
   const scheduleLocalSensCalcUpdate = (
     ob: Observation,
     dp: DataProductSDPNew,
@@ -238,36 +243,29 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         targetObservation.some((to) => to.observationId === ob.id && to.targetId === t.id)
       );
 
-      let calibrationStrategy = (form.getValues('calibrationStrategy') ??
-        []) as CalibrationStrategy[];
-      if (linkedTarget) {
-        let calibrators: Calibrator[] | null = null;
-        if (linkedTarget.kind !== REFERENCE_COORDINATE_TYPE_SSO.value) {
-          const response = await GetCalibratorList(authAxiosClient, ob, linkedTarget);
-          if (typeof response !== 'string') {
-            calibrators = response;
-          }
-        }
+      const getCalibration = () =>
+        (form.getValues('calibrationStrategy') ?? []) as CalibrationStrategy[];
+      // TODO(BTN-3595): Take the calibrator refresh out of the sensitivity callback, and call
+      //  buildCalibrationStrategy (calibrationOperations.ts) from the observation-change trigger
+      //  instead. It is kept here only because this callback refreshes the calibrators today.
+      const updatedStrategy = linkedTarget
+        ? await buildCalibrationStrategy(authAxiosClient, {
+            observationId: ob.id,
+            observation: ob,
+            target: linkedTarget,
+            notes: calibrationNotesFor(getCalibration(), ob.id)
+          })
+        : undefined;
 
-        const existingNotes =
-          calibrationStrategy.find((cal) => cal.observationIdRef === ob.id)?.notes ?? null;
-
-        const updatedStrategy: CalibrationStrategy = {
-          observatoryDefined: true,
-          id: generateCalibrationId(),
-          observationIdRef: ob.id,
-          calibrators,
-          notes: existingNotes
-        };
-
-        calibrationStrategy = [
-          ...calibrationStrategy.filter((cal) => cal.observationIdRef !== ob.id),
-          updatedStrategy
-        ];
+      // The calibrator lookup takes time too, so a newer request may have started meanwhile
+      if (requestId !== latestSensCalcRequestIdRef.current) {
+        return;
       }
 
       form.setValue('targetObservation', targetObservation);
-      form.setValue('calibrationStrategy', calibrationStrategy);
+      if (updatedStrategy) {
+        form.setValue('calibrationStrategy', withCalibrationFor(getCalibration(), updatedStrategy));
+      }
     };
 
     if (delay > 0 && areSensCalcInputsValid(ob, dp)) {

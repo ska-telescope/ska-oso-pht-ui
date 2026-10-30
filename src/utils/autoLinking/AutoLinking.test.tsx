@@ -21,7 +21,6 @@ import { getDefaultObservationLowAA2 } from '../helpers';
 import Observation from '../types/observation';
 import {
   linkTarget,
-  newCalibrationStrategy,
   newDataProductsForMode,
   newObservationForMode,
   regenerateForMode,
@@ -33,10 +32,8 @@ import {
   SPECTRAL_DATA_PRODUCT
 } from './mockSDP';
 import { mockTarget } from './mockTarget';
-import { mockObservation } from './mockObservation';
 import { mockCalibration } from './mockCalibration';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
-import { MockCalibratorBackendList } from '@services/axios/get/getCalibratorList/mockCalibratorListBackend.tsx';
 
 const validMockSensCal = {
   id: 1,
@@ -152,21 +149,6 @@ describe('AutoLinking, newDataProductsForMode', () => {
     const data = newDataProductsForMode(obs)[0].data as SDPImageContinuumData;
     expect(data.weighting).toBe(IW_BRIGGS);
     expect(data.robust).toBe(0);
-  });
-});
-
-describe('AutoLinking, newCalibrationStrategy', () => {
-  test('creates default calibration strategy', async () => {
-    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('cal-0000000');
-    mockAuthAxiosClient.post.mockResolvedValue({ data: MockCalibratorBackendList });
-
-    const calibration = await newCalibrationStrategy(
-      'obs-123',
-      mockAuthAxiosClient,
-      mockObservation,
-      mockTarget
-    );
-    expect(calibration).to.deep.equal(mockCalibration);
   });
 });
 

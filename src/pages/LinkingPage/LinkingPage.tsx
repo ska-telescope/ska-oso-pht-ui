@@ -4,6 +4,10 @@ import { GridRowSelectionModel } from '@mui/x-data-grid';
 import { storageObject } from '@utils/storage/store';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
+import {
+  buildCalibrationStrategy,
+  calibrationNotesFor
+} from '@/models/proposals/calibrationOperations';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import {
   AlertColorTypes,
@@ -26,8 +30,7 @@ import {
   STATUS_OK,
   STATUS_PARTIAL,
   SUPPLIED_TYPE_INTEGRATION,
-  NOTIFICATION_DELAY_IN_SECONDS,
-  REFERENCE_COORDINATE_TYPE_SSO
+  NOTIFICATION_DELAY_IN_SECONDS
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
@@ -42,13 +45,11 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
-import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
-import { generateCalibrationId } from '@/utils/helpers';
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 
 export const isNonGaussianSensitivityCase = ({
   subarray,
@@ -179,26 +180,12 @@ export default function LinkingPage() {
     );
     base?.push(temp);
 
-    const observation = getProposal().observations?.find((o) => o.id === observationId);
-
-    let calibrators: Calibrator[] | null = null;
-    if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value && observation) {
-      const response = await GetCalibratorList(authAxiosClient, observation, target);
-      if (typeof response !== 'string') {
-        calibrators = response;
-      }
-    }
-
-    const existingNotes =
-      getCalibration()?.find((cal) => cal.observationIdRef === observationId)?.notes ?? null;
-
-    const calibration: CalibrationStrategy = {
-      observatoryDefined: true,
-      id: generateCalibrationId(),
-      observationIdRef: observationId,
-      calibrators,
-      notes: existingNotes
-    };
+    const calibration = await buildCalibrationStrategy(authAxiosClient, {
+      observationId,
+      observation: getProposal().observations?.find((o) => o.id === observationId),
+      target,
+      notes: calibrationNotesFor(getCalibration(), observationId)
+    });
 
     setTargetObservationAndCalibrationStorage(base ?? [], [calibration]);
   };
@@ -250,6 +237,9 @@ export default function LinkingPage() {
     };
   };
 
+  // TODO(BTN-3595): Move these sensitivity requests (getSensCalcData and checkPartials) onto the
+  //  shared sensitivity service. They have no protection against stale responses today. The
+  //  calibration they write already comes from buildCalibrationStrategy (BTN-3593).
   const getSensCalcData = async (
     observation: Observation,
     target: Target,
@@ -298,23 +288,11 @@ export default function LinkingPage() {
       }
     };
 
-    const observation = getProposal().observations?.find((o) => o.id === currRec.id2);
-
-    let calibrators: Calibrator[] | null = null;
-    if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value && observation) {
-      const response = await GetCalibratorList(authAxiosClient, observation, target);
-      if (typeof response !== 'string') {
-        calibrators = response;
-      }
-    }
-
-    const calibration: CalibrationStrategy = {
-      observatoryDefined: true,
-      id: generateCalibrationId(),
-      observationIdRef: currRec.id2,
-      calibrators,
-      notes: null
-    };
+    const calibration = await buildCalibrationStrategy(authAxiosClient, {
+      observationId: currRec.id2,
+      observation: getProposal().observations?.find((o) => o.id === currRec.id2),
+      target
+    });
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 

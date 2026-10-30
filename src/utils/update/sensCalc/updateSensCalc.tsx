@@ -50,6 +50,8 @@ const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
  *
  * Returns minimal sensitivity patches keyed by target-observation identity
  */
+// TODO(BTN-3595): This, applySensCalcPatches and the debounce in ObservationEntry and DataProduct
+//  duplicate one another; the shared sensitivity service replaces them.
 export const fetchSensCalcPatches = async (
   proposal: Proposal,
   ob: Observation,
