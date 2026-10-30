@@ -80,23 +80,30 @@ describe('SV Target page', () => {
     targetPage.verify(proposal);
   });
 
-  // TODO: This should be changed in BTN-3593 to look for the error pop-up rather than
-  //  error attached to the target name field
   // TODO: Enable once the target lookup service the resolver uses is back up
   it.skip('shows an error when the target name cannot be resolved', () => {
     enter(cy.findByRole('textbox', { name: 'Name' }), 'Cypress unknown object');
     cy.findByRole('button', { name: 'Resolve' }).click();
 
-    // Resolving goes to external services, which can be slow
-    cy.findByText('Object not found in SIMBAD, NED or VizieR', { timeout: 40000 });
+    // The pop-up shows the backend's message. Resolving goes to external services, which can be
+    // slow.
+    cy.findByText(
+      'Object Cypress unknown object not found in SIMBAD, NED or VizieR. ' +
+        'Please try again or manually input target details.',
+      { timeout: 40000 }
+    );
     targetRow('Cypress unknown object').should('not.exist');
   });
 
-  // TODO: Enable once fixed as part of BTN-3593 where we should change
-  //  the app to show the backend error message instead of our own one.
-  it.skip('shows an error when the resolver is unavailable', () => {
-    // Stubbed, so the outage happens on every run
-    cy.intercept('GET', '**/coordinates/**', { statusCode: 500 });
+  it('shows an error when the resolver is unavailable', () => {
+    // Stubbed with the backend's response to an outage, so it happens on every run
+    cy.intercept('GET', '**/coordinates/**', {
+      statusCode: 500,
+      body: {
+        detail:
+          'Error occurred while resolving target. Please try again or manually input target details.'
+      }
+    });
     enter(cy.findByRole('textbox', { name: 'Name' }), target.name);
     cy.findByRole('button', { name: 'Resolve' }).click();
 

@@ -5,7 +5,8 @@ import { useFormContext, UseFormReturn, useWatch } from 'react-hook-form';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates, {
-  RESOLVE_ERROR_UNKNOWN
+  RESOLVE_ERROR_UNKNOWN,
+  ResolveError
 } from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
@@ -388,6 +389,17 @@ export default function TargetEntry({
 
   const resolveButton = () => {
     /**
+     * Shows why the name could not be resolved in an error pop-up: the backend's message when it
+     * sent one, otherwise our own for the kind of failure.
+     */
+    const showResolveError = (response?: ResolveError) => {
+      notifyError(
+        response?.message ?? t('resolve.error.' + (response?.error ?? RESOLVE_ERROR_UNKNOWN)),
+        NOTIFICATION_DELAY_IN_SECONDS
+      );
+    };
+
+    /**
      * Applies a coordinate-resolve response to the form, unless it's been superseded.
      */
     const processCoordinatesResults = (response: any, requestRevision: number) => {
@@ -419,7 +431,7 @@ export default function TargetEntry({
 
         setNameFieldError('');
       } else {
-        setNameFieldError(t('resolve.error.' + (response?.error ?? RESOLVE_ERROR_UNKNOWN)));
+        showResolveError(response);
       }
     };
 
@@ -438,7 +450,7 @@ export default function TargetEntry({
         processCoordinatesResults(response, requestRevision);
       } catch {
         if (resolveRevisionRef.current === requestRevision) {
-          setNameFieldError(t('resolve.error.' + RESOLVE_ERROR_UNKNOWN));
+          showResolveError(undefined);
         }
       } finally {
         if (resolveRevisionRef.current === requestRevision) {

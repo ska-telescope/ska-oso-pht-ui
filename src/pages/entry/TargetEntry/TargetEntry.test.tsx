@@ -49,7 +49,13 @@ vi.mock('@/utils/autoLinking/AutoLinking', () => ({
 }));
 
 vi.mock('@services/axios/get/getCoordinates/getCoordinates', () => ({
-  default: vi.fn()
+  default: vi.fn(),
+  RESOLVE_ERROR_UNKNOWN: 'API_UNKNOWN_ERROR'
+}));
+
+const mockNotifyError = vi.hoisted(() => vi.fn());
+vi.mock('@/utils/notify/useNotify', () => ({
+  useNotify: () => ({ notifyError: mockNotifyError, notifySuccess: vi.fn() })
 }));
 
 vi.mock('@utils/storage/store', () => ({
@@ -307,5 +313,56 @@ describe('<TargetEntry /> auto-linking route', () => {
     unmount();
     wrapper(<TargetEntry />);
     expect(screen.getByTestId('name').querySelector('input')).toHaveValue('');
+  }, 15000);
+});
+
+describe('<TargetEntry /> resolve errors', () => {
+  const resolveFails = async (response: unknown) => {
+    vi.mocked(GetCoordinates).mockResolvedValue(response as never);
+    const user = userEvent.setup();
+    wrapper(<TargetEntry />);
+    await user.type(screen.getByTestId('name').querySelector('input')!, 'Unknown object');
+    await user.click(screen.getByTestId('resolveButton'));
+  };
+
+  beforeEach(() => {
+    mockNotifyError.mockClear();
+  });
+
+  it('shows the backend error in a pop-up rather than on the name field', async () => {
+    const message = 'Object Unknown object not found in SIMBAD, NED or VizieR.';
+    await resolveFails({ error: 'notFound', message });
+
+    await waitFor(() => {
+      expect(mockNotifyError).toHaveBeenCalledWith(message, expect.any(Number));
+    });
+    expect(screen.queryByText(message)).not.toBeInTheDocument();
+    expect(screen.getByTestId('name').querySelector('input')).not.toHaveAttribute(
+      'aria-invalid',
+      'true'
+    );
+  }, 15000);
+
+  it('falls back to our own message when the backend sends none', async () => {
+    await resolveFails({ error: 'unavailable' });
+
+    await waitFor(() => {
+      expect(mockNotifyError).toHaveBeenCalledWith('resolve.error.unavailable', expect.any(Number));
+    });
+  }, 15000);
+
+  it('shows a generic error when the lookup throws', async () => {
+    vi.mocked(GetCoordinates).mockRejectedValue(new Error('boom'));
+    const user = userEvent.setup();
+    wrapper(<TargetEntry />);
+    await user.type(screen.getByTestId('name').querySelector('input')!, 'Unknown object');
+    await user.click(screen.getByTestId('resolveButton'));
+
+    await waitFor(() => {
+      expect(mockNotifyError).toHaveBeenCalledWith(
+        'resolve.error.API_UNKNOWN_ERROR',
+        expect.any(Number)
+      );
+    });
   }, 15000);
 });
