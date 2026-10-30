@@ -67,13 +67,14 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
-    const { proposalType, ...formValues } = getValues();
+    // Only the slices a new proposal takes from the form; the rest come from the legacy defaults
+    const { title, proposalType } = getValues();
     const response = await PostProposal(
       authClient,
       refreshAuthToken,
       {
         ...proposal,
-        ...formValues,
+        title,
         proposalType: proposalType ?? undefined,
         cycle: osdCycleId ?? null
       },
