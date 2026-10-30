@@ -39,10 +39,19 @@ export const SUBMIT_PAGE_SLICES = {
 
 export type SubmitPage = keyof typeof SUBMIT_PAGE_SLICES;
 
-/** The status of each of those pages: an error when the submit schema reports an issue in it. */
+/**
+ * The status of each of those pages: an error when a submit rule fails for its slice.
+ *
+ * Only the submit rules count, which are reported at the slice itself. Problems inside an entry
+ * (the structure checks) are reported deeper and are left out, so the status follows the page
+ * checks it replaced and nothing more.
+ */
 export const getSubmitPageStatuses = (values: ProposalType): Record<SubmitPage, number> => {
   const issues = getProposalSubmitSchema().safeParse(values).error?.issues ?? [];
-  const hasIssue = (slice: string) => issues.some((issue) => issue.path[0] === slice);
+  const hasIssue = (slice: string) =>
+    issues.some(
+      (issue) => issue.code === 'too_small' && issue.path.length === 1 && issue.path[0] === slice
+    );
   return {
     target: hasIssue(SUBMIT_PAGE_SLICES.target) ? STATUS_ERROR : STATUS_OK,
     linking: hasIssue(SUBMIT_PAGE_SLICES.linking) ? STATUS_ERROR : STATUS_OK,

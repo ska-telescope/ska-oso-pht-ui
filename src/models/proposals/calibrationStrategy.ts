@@ -24,7 +24,8 @@ export function getCalibrationStrategyEntrySchema() {
     id: z.string(),
     observationIdRef: z.string(),
     calibrators: z.array(calibratorSchema).nullable(),
-    notes: z.string().nullable()
+    // The backend leaves out empty notes, so a loaded strategy can have none
+    notes: z.string().nullish()
   });
 }
 

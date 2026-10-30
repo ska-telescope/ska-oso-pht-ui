@@ -82,6 +82,26 @@ describe('getSubmitPageStatuses', () => {
   });
 });
 
+test.each([
+  ['target', { targets: [{ ...target, kind: 'not a number' }] }],
+  ['linking', { targetObservation: [{ ...link, sensCalc: { statusGUI: 99 } }] }],
+  ['calibration', { calibrationStrategy: [{ ...strategy, calibrators: 'not a list' }] }]
+] as const)(
+  'does not check anything the page checks did not, such as a malformed %s entry',
+  (page, slices) => {
+    expect(getSubmitPageStatuses(values(slices as unknown as Partial<ProposalType>))[page]).toBe(
+      STATUS_OK
+    );
+  }
+);
+
+test('passes the Calibration page for a strategy saved without notes', () => {
+  const strategySavedWithoutNotes = { ...strategy, notes: undefined };
+  expect(
+    getSubmitPageStatuses(values({ calibrationStrategy: [strategySavedWithoutNotes] })).calibration
+  ).toBe(STATUS_OK);
+});
+
 describe('getProposalSubmitSchema', () => {
   test('reports a missing target, link or calibration at its slice', () => {
     const issues =

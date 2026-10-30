@@ -71,6 +71,18 @@ describe('calibration strategy PDM mapping', () => {
     expect(calibrationStrategyToPdm(calibrationStrategyFromPdm(strategies))).toEqual(strategies);
   });
 
+  test('loads a strategy saved without notes or calibrators, as the backend stores it', () => {
+    const loaded = calibrationStrategyFromPdm([
+      {
+        calibration_id: 'calibration-1',
+        observation_set_ref: 'obs-set-1',
+        observatory_defined: true
+      } as never
+    ]);
+
+    expect(getCalibrationStrategySchema().safeParse(loaded).error).toBeUndefined();
+  });
+
   test('reads missing calibration as an empty list', () => {
     expect(calibrationStrategyFromPdm(null)).toEqual([]);
   });
