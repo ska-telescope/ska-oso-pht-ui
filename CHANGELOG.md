@@ -9,6 +9,8 @@ UNRELEASED
 * Bugfix: Only reset DP Parameters if values on the Observaion page change.
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
 * Bugfix: Show a meaningful message when target name resolution fails, including when the external resolvers are unavailable
+* Changed: Targets, target links and calibration are now all edited through the proposal form 
+* target name resolution errors show the backend's message as a pop up
 
 11.1.0
 ----------
