@@ -1,3 +1,5 @@
+import { getSubmitPageStatuses } from '@/models/proposals/submit';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import {
   DataProductSDPNew,
   SDPFilterbankPSTData,
@@ -162,9 +164,6 @@ export const validateSciencePage = (proposal: Proposal) => {
   count += count && proposal?.sciencePDF?.isUploadedPdf ? 1 : 0;
   return result[count];
 };
-
-export const validateTargetPage = (proposal: Proposal) =>
-  proposal?.targets?.length ? STATUS_OK : STATUS_ERROR;
 
 const hasValidSuppliedValue = (observation: Observation): boolean => {
   const supplied = observation?.supplied;
@@ -482,19 +481,6 @@ export const validateSDPPage = (proposal: Proposal, autoLink = false) => {
 
 export const validateSRCPage = () => STATUS_OK;
 
-export const validateCalibrationPage = (proposal: Proposal) => {
-  const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  const count = proposal?.calibrationStrategy?.length > 0 ? 2 : 0;
-  return result[count];
-};
-
-export const validateLinkingPage = (proposal: Proposal) => {
-  const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
-  const count = hasTargetObservations() ? 2 : 0;
-  return result[count];
-};
-
 export const useValidateProposal = () => {
   const { autoLink } = useOSDAccessors();
   const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
@@ -504,17 +490,20 @@ export const useValidateProposal = () => {
     const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
       isObservationFrequencyOutOfRange(obs)
     );
+    // The Target, Linking and Calibration pages are checked by the submit schema, over the same
+    // values the form holds for them
+    const submitStatuses = getSubmitPageStatuses(getProposalFormValues(proposal));
     return [
       validateTitlePage(proposal),
       validateTeamPage(proposal),
       validateDetailsPage(proposal),
       validateSciencePage(proposal),
-      validateTargetPage(proposal),
+      submitStatuses.target,
       obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
       validateTechnicalPage(proposal),
       validateSDPPage(proposal, autoLink),
-      validateLinkingPage(proposal),
-      validateCalibrationPage(proposal)
+      submitStatuses.linking,
+      submitStatuses.calibration
       /* See SRCNet INACTIVE - validateSRCPage() */
     ];
   };

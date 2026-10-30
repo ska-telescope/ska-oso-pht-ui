@@ -19,7 +19,7 @@ import { getColors } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import Observation from '../../utils/types/observation';
-import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
+import { getSubmitPageStatuses } from '@/models/proposals/submit';
 import {
   SA_CUSTOM,
   PAGE_CALIBRATION,
@@ -344,7 +344,8 @@ export default function LinkingPage() {
   }, [getProposal(), ...watchedSlices]);
 
   React.useEffect(() => {
-    setTheProposalState(validateLinkingPage(getProposal()), validateCalibrationPage(getProposal()));
+    const statuses = getSubmitPageStatuses(form.getValues());
+    setTheProposalState(statuses.linking, statuses.calibration);
   }, [validateToggle]);
 
   // NOTE : We used to have Groups in the list, so keep this until we are sure we don't need it.
