@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { useFormContext } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -42,6 +44,7 @@ export default function ObservationPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const form = useFormContext<ProposalType>();
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number, valueLinking: number, valueCalibration: number) => {
@@ -92,21 +95,24 @@ export default function ObservationPage() {
 
   const deleteConfirmed = () => {
     const obs1 = (getProposal().observations ?? []).filter((e) => e.id !== currObs?.id);
-    const obs2 = (getProposal().targetObservation ?? []).filter(
-      (e) => e.observationId !== currObs?.id
-    );
     const obs3 = (getProposal().groupObservations ?? []).filter(
       (e) => e.observationId !== currObs?.id
     );
-    const obs4 = getProposal().calibrationStrategy?.filter(
-      (e) => e.observationIdRef !== currObs?.id
+    // The links and calibration for the observation go too; the form owns them
+    form.setValue(
+      'targetObservation',
+      (form.getValues('targetObservation') ?? []).filter((e) => e.observationId !== currObs?.id)
+    );
+    form.setValue(
+      'calibrationStrategy',
+      (form.getValues('calibrationStrategy') ?? []).filter(
+        (e) => e.observationIdRef !== currObs?.id
+      )
     );
     setProposal({
       ...getProposal(),
       observations: obs1,
-      targetObservation: obs2,
-      groupObservations: obs3,
-      calibrationStrategy: obs4
+      groupObservations: obs3
     });
     setElementsO(elementsO.filter((e) => e.id !== currObs?.id));
     setCurrObs(null);

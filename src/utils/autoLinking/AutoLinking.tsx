@@ -1,3 +1,4 @@
+import type { ProposalFormAccess } from '@/models/proposals/proposal';
 import {
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX_COMBINED,
@@ -220,7 +221,7 @@ const buildTargetLink = async (
   target: Target,
   observation: Observation,
   mainDataProduct: DataProductSDPNew,
-  getProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient
 ): Promise<
   | {
@@ -243,7 +244,7 @@ const buildTargetLink = async (
     sensCalc: sensCalcResult
   };
 
-  const existingNotes = getProposal()?.calibrationStrategy?.[0]?.notes ?? null;
+  const existingNotes = form.getValues('calibrationStrategy')?.[0]?.notes ?? null;
 
   const calibrationStrategy = await newCalibrationStrategy(
     observation.id,
@@ -257,6 +258,19 @@ const buildTargetLink = async (
 };
 
 /**
+ * Writes a target link to the form, which owns the targets, links and calibration.
+ */
+const setTargetLink = (
+  form: ProposalFormAccess,
+  target: Target,
+  link: { targetObservation: TargetObservation; calibrationStrategy: CalibrationStrategy }
+) => {
+  form.setValue('targets', [target]);
+  form.setValue('targetObservation', [link.targetObservation]);
+  form.setValue('calibrationStrategy', [link.calibrationStrategy]);
+};
+
+/**
  * Replaces the observation and data products of a proposal based on given mode,
  * and links them to the target with new sensitivity results and calibration.
  * Used when the observing mode changes.
@@ -265,6 +279,7 @@ export async function regenerateForMode(
   target: Target,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient,
   observationMode?: string,
   maxZoomChannels?: number
@@ -276,7 +291,7 @@ export async function regenerateForMode(
     target,
     newObservation,
     newDataProducts[0],
-    getProposal,
+    form,
     authAxiosClient
   );
 
@@ -284,13 +299,11 @@ export async function regenerateForMode(
     return { success: false, error: link.error };
   }
 
+  setTargetLink(form, target, link);
   setProposal({
     ...getProposal(),
-    targets: [target],
     observations: [newObservation],
-    dataProductSDP: newDataProducts,
-    targetObservation: [link.targetObservation],
-    calibrationStrategy: [link.calibrationStrategy]
+    dataProductSDP: newDataProducts
   });
 
   return { success: true };
@@ -305,6 +318,7 @@ export async function linkTarget(
   target: Target,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient
 ): Promise<DefaultsResults> {
   const proposal: Proposal = getProposal();
@@ -316,25 +330,17 @@ export async function linkTarget(
   const mainDataProduct =
     existingDataProducts.find((dp) => dp.selected) ?? existingDataProducts[0] ?? newDataProducts[0];
 
-  const link = await buildTargetLink(
-    target,
-    observation,
-    mainDataProduct,
-    getProposal,
-    authAxiosClient
-  );
+  const link = await buildTargetLink(target, observation, mainDataProduct, form, authAxiosClient);
 
   if (!link.success) {
     return { success: false, error: link.error };
   }
 
+  setTargetLink(form, target, link);
   setProposal({
     ...getProposal(),
-    targets: [target],
     observations: [observation],
-    dataProductSDP: [...(getProposal().dataProductSDP ?? []), ...newDataProducts],
-    targetObservation: [link.targetObservation],
-    calibrationStrategy: [link.calibrationStrategy]
+    dataProductSDP: [...(getProposal().dataProductSDP ?? []), ...newDataProducts]
   });
 
   return { success: true };
@@ -352,15 +358,17 @@ export async function setObservingMode(
   observationMode: string,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient,
   maxZoomChannels?: number
 ): Promise<DefaultsResults> {
-  const target = getProposal().targets?.[0];
+  const target = form.getValues('targets')?.[0] as Target | undefined;
   if (target) {
     return regenerateForMode(
       target,
       getProposal,
       setProposal,
+      form,
       authAxiosClient,
       observationMode,
       maxZoomChannels

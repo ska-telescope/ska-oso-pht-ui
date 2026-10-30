@@ -2,6 +2,9 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import Target from '@/utils/types/target';
 import { BorderedSection, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
@@ -198,6 +201,17 @@ export default function DataProduct({ data }: DataProductProps) {
     setProposal(proposal);
   };
 
+  // The form owns the targets and links; observations and data products stay in the store
+  const form = useFormContext<ProposalType>();
+  const links = (useWatch({ control: form.control, name: 'targetObservation' }) ??
+    []) as TargetObservation[];
+  const getLinks = () => (form.getValues('targetObservation') ?? []) as TargetObservation[];
+  const withFormSlices = (proposal: Proposal): Proposal => ({
+    ...proposal,
+    targets: form.getValues('targets') as Target[],
+    targetObservation: getLinks()
+  });
+
   const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
     isSuppliedValueValid({
       type: ob?.supplied?.type,
@@ -217,18 +231,17 @@ export default function DataProduct({ data }: DataProductProps) {
 
     const applyUpdate = async () => {
       sensCalcDebounceTimerRef.current = null;
-      const sensCalcPatches = await fetchSensCalcPatches(latestProposalRef.current, ob, dp);
+      const sensCalcPatches = await fetchSensCalcPatches(
+        withFormSlices(latestProposalRef.current),
+        ob,
+        dp
+      );
 
       if (requestId !== latestSensCalcRequestIdRef.current) {
         return;
       }
 
-      const targetObservation = applySensCalcPatches(
-        latestProposalRef.current.targetObservation,
-        sensCalcPatches
-      );
-      const mergedProposal = { ...latestProposalRef.current, targetObservation };
-      persistProposal(mergedProposal);
+      form.setValue('targetObservation', applySensCalcPatches(getLinks(), sensCalcPatches) ?? []);
     };
 
     if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
@@ -259,12 +272,10 @@ export default function DataProduct({ data }: DataProductProps) {
     (getProposal()?.dataProductSDP ?? []).filter((dp) => dp.observationId === obsId);
 
   const getObservationTargetObservations = (obsId: string) =>
-    (getProposal()?.targetObservation ?? []).filter((rec) => rec.observationId === obsId);
+    getLinks().filter((rec) => rec.observationId === obsId);
 
-  const hasSensCalcResults = (proposal: Proposal, obsId: string) => {
-    const sensCalc = proposal.targetObservation?.find(
-      (rec) => rec.observationId === obsId
-    )?.sensCalc;
+  const hasSensCalcResults = (obsId: string) => {
+    const sensCalc = getLinks().find((rec) => rec.observationId === obsId)?.sensCalc;
     return Boolean(
       sensCalc?.section1?.length || sensCalc?.section2?.length || sensCalc?.section3?.length
     );
@@ -519,7 +530,7 @@ export default function DataProduct({ data }: DataProductProps) {
       loaded.observationId === newDataProduct.observationId &&
       existingDataProduct
     ) {
-      if (!hasSensCalcResults(proposal, newDataProduct.observationId)) {
+      if (!hasSensCalcResults(newDataProduct.observationId)) {
         scheduleLocalSensCalcUpdate(observation!, newDataProduct, 0);
       }
       return;
@@ -609,17 +620,14 @@ export default function DataProduct({ data }: DataProductProps) {
         ? { ...dp, selected: dp.id === nextLinkedDataProduct.id }
         : dp
     );
-    const linkedTargetObservations = updateLinkedDataProductId(
-      proposal.targetObservation ?? [],
-      observation.id,
-      nextLinkedDataProduct.id
+    form.setValue(
+      'targetObservation',
+      updateLinkedDataProductId(getLinks(), observation.id, nextLinkedDataProduct.id)
     );
-    const proposalForSensCalc: Proposal = {
+    persistProposal({
       ...proposal,
-      dataProductSDP: dataProductsAfterReset,
-      targetObservation: linkedTargetObservations
-    };
-    persistProposal(proposalForSensCalc);
+      dataProductSDP: dataProductsAfterReset
+    });
     dataProductIn(nextLinkedDataProduct);
     scheduleLocalSensCalcUpdate(observation, nextLinkedDataProduct);
   };
@@ -1013,8 +1021,8 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   // TODO These only works for the SV call as it assumes there is only one targetObservation for this observation
-  const targetObservation = (): TargetObservation =>
-    getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId);
+  const targetObservation = (): TargetObservation | undefined =>
+    links.find((rec) => rec.observationId === observationId);
 
   const isNatural = () => {
     if (!(isSpectral() || isContinuumSpectral() || (isContinuum() && isDataTypeOne()))) {

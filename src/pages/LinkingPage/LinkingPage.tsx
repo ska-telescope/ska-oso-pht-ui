@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid';
 import { storageObject } from '@utils/storage/store';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import {
   AlertColorTypes,
@@ -86,6 +88,17 @@ export default function LinkingPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
+  // The form owns the targets, links and calibration; watching them re-renders the page on change
+  const form = useFormContext<ProposalType>();
+  const watchedSlices = useWatch({
+    control: form.control,
+    name: ['targets', 'targetObservation', 'calibrationStrategy']
+  });
+  const getTargets = () => (form.getValues('targets') ?? []) as Target[];
+  const getLinks = () => (form.getValues('targetObservation') ?? []) as TargetObservation[];
+  const getCalibration = () =>
+    (form.getValues('calibrationStrategy') ?? []) as CalibrationStrategy[];
+
   const { notifyError } = useNotify();
 
   const getProposalState = () => application.content1 as number[];
@@ -138,25 +151,15 @@ export default function LinkingPage() {
     targetObservations: TargetObservation[],
     calibration: CalibrationStrategy[]
   ) => {
-    const proposal = getProposal();
-
-    const update = {
-      ...proposal,
-      targetObservation: targetObservations,
-      calibrationStrategy: [...calibration]
-    };
-
-    setProposal(update);
+    form.setValue('targetObservation', targetObservations);
+    form.setValue('calibrationStrategy', [...calibration]);
   };
 
   const addTargetObservationAndCalibrationStorage = (
     targetObs: TargetObservation,
     calibration: CalibrationStrategy
   ) => {
-    setTargetObservationAndCalibrationStorage(
-      [...(getProposal().targetObservation ?? []), targetObs],
-      [calibration]
-    );
+    setTargetObservationAndCalibrationStorage([...(getLinks() ?? []), targetObs], [calibration]);
   };
 
   const updateTargetObservationStorage = async (
@@ -171,7 +174,7 @@ export default function LinkingPage() {
       targetId: target.id,
       sensCalc: results
     };
-    const base = getProposal().targetObservation?.filter(
+    const base = getLinks()?.filter(
       (e) => !(e.targetId === target.id && e.observationId === observationId)
     );
     base?.push(temp);
@@ -187,8 +190,7 @@ export default function LinkingPage() {
     }
 
     const existingNotes =
-      getProposal().calibrationStrategy?.find((cal) => cal.observationIdRef === observationId)
-        ?.notes ?? null;
+      getCalibration()?.find((cal) => cal.observationIdRef === observationId)?.notes ?? null;
 
     const calibration: CalibrationStrategy = {
       observatoryDefined: true,
@@ -203,14 +205,12 @@ export default function LinkingPage() {
 
   const deleteObservationTargetAndCalibration = (row: any) => {
     function filterRecords(id: string) {
-      return getProposal().targetObservation?.filter(
+      return getLinks()?.filter(
         (item) => !(item.observationId === currRec?.id2 && item.targetId === id)
       );
     }
     function filterRecordsCalibration(id: number) {
-      return getProposal().calibrationStrategy?.filter(
-        (item) => item.observationIdRef === id.toString()
-      );
+      return getCalibration()?.filter((item) => item.observationIdRef === id.toString());
     }
     setTargetObservationAndCalibrationStorage(
       filterRecords(row.id) ?? [],
@@ -270,14 +270,15 @@ export default function LinkingPage() {
 
   const deleteConfirmed = () => {
     const obs1 = getProposal().observations?.filter((e) => e.id !== currRec?.id2) ?? [];
-    const obs2 =
-      getProposal().targetObservation?.filter((e) => e.observationId !== currRec?.id2) ?? [];
     const obs3 =
       getProposal().groupObservations?.filter((e) => e.observationId !== currRec?.id2) ?? [];
+    form.setValue(
+      'targetObservation',
+      getLinks().filter((e) => e.observationId !== currRec?.id2)
+    );
     setProposal({
       ...getProposal(),
       observations: obs1,
-      targetObservation: obs2,
       groupObservations: obs3
     });
     setElementsO(elementsO.filter((e) => e.id !== currRec?.id));
@@ -318,7 +319,7 @@ export default function LinkingPage() {
   };
 
   const isTargetSelected = (targetId: string) =>
-    (getProposal().targetObservation ?? []).filter(
+    (getLinks() ?? []).filter(
       (entry) => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
     ).length > 0;
 
@@ -332,11 +333,9 @@ export default function LinkingPage() {
 
   const checkPartials = () => {
     const proposal = getProposal();
-    const results = proposal?.targetObservation?.find(
-      (p) => p.sensCalc?.statusGUI === STATUS_PARTIAL
-    );
+    const results = getLinks().find((p) => p.sensCalc?.statusGUI === STATUS_PARTIAL);
     if (results) {
-      const target = proposal.targets?.find((e) => e.id === results.targetId);
+      const target = getTargets().find((e) => e.id === results.targetId);
       const observation = proposal.observations?.find((e) => e.id === results.observationId);
       const dataProductSDP = proposal.dataProductSDP?.find(
         (d) => d.id === results.dataProductsSDPId
@@ -358,13 +357,13 @@ export default function LinkingPage() {
         }) ?? []
       ).filter((item): item is ReturnType<typeof popElementO> => item !== null)
     );
-    setElementsT(proposal.targets?.map((rec) => popElementT(rec)) ?? []);
+    setElementsT(getTargets().map((rec) => popElementT(rec)));
   }, []);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
     checkPartials();
-  }, [getProposal()]);
+  }, [getProposal(), ...watchedSlices]);
 
   React.useEffect(() => {
     setTheProposalState(validateLinkingPage(getProposal()), validateCalibrationPage(getProposal()));
@@ -388,9 +387,7 @@ export default function LinkingPage() {
   const hasObservations = () => elementsO?.length > 0;
 
   const getTargetObservationForTargetGrid = (targetId: string): TargetObservation | undefined =>
-    getProposal()?.targetObservation?.find(
-      (p) => p.observationId === currRec?.id2 && p.targetId === targetId
-    );
+    getLinks()?.find((p) => p.observationId === currRec?.id2 && p.targetId === targetId);
 
   const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
   const isNatural = () => {
@@ -663,7 +660,7 @@ export default function LinkingPage() {
 
   const filteredByDataProduct = (id: string) => {
     const results: SensCalcResults[] = [];
-    getProposal()?.targetObservation?.forEach((rec) => {
+    getLinks()?.forEach((rec) => {
       if (rec.dataProductsSDPId === id && rec.sensCalc != undefined) {
         results.push(rec.sensCalc);
       }

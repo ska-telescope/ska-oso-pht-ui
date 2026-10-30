@@ -1,13 +1,15 @@
 import React from 'react';
 import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { Proposal } from '@utils/types/proposal.tsx';
+import { ProposalType } from '@/models/proposals/proposal';
 import {
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  VELOCITY_TYPE
-} from '@utils/constants.ts';
+  applyTargetEdit,
+  targetEntryFromTarget,
+  TargetEntryType,
+  useTargetEntryForm
+} from '@/models/proposals/targetEntry';
+import { REFERENCE_COORDINATE_TYPE_ICRS, REFERENCE_COORDINATE_TYPE_SSO } from '@utils/constants.ts';
 import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
@@ -26,7 +28,12 @@ const GAP = 4;
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
   const theme = useTheme();
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const form = useFormContext<ProposalType>();
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  // The edit dialog's entry is a local form, so it is not saved; editStartRef holds the entry as the
+  // dialog opened with it, so only the fields the user changes are applied
+  const editEntryForm = useTargetEntryForm();
+  const editStartRef = React.useRef<TargetEntryType | null>(null);
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [rowTarget, setRowTarget] = React.useState<Target | null>(null);
@@ -35,8 +42,6 @@ export default function TargetListSection() {
   const [nameError, setNameError] = React.useState('');
   const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const maxTargets = osdCyclePolicy?.maxTargets ?? null;
 
   const deleteIconClicked = (e: Target) => {
@@ -50,54 +55,51 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
-    const targets = getProposal().targets?.filter((e) => e.id !== rowTarget?.id);
-    const targetObservations = getProposal().targetObservation?.filter(
-      (e) => e.targetId !== rowTarget?.id
-    );
-    const obsId = getProposal().targetObservation?.find(
-      (e) => e.targetId === rowTarget?.id
-    )?.observationId;
-    const calibrationStrategies =
-      getProposal().calibrationStrategy?.[0] !== undefined
-        ? getProposal().calibrationStrategy.filter((e) => e.observationIdRef !== obsId)
-        : undefined;
-
     if (autoLink) {
-      deleteAutoLinking(rowTarget as Target, getProposal, setProposal);
+      deleteAutoLinking(rowTarget as Target, form);
     } else {
-      setProposal({
-        ...getProposal(),
-        targets: targets,
-        targetObservation: targetObservations,
-        calibrationStrategy: calibrationStrategies ?? []
-      });
+      const targetObservation = form.getValues('targetObservation') ?? [];
+      const obsId = targetObservation.find((e) => e.targetId === rowTarget?.id)?.observationId;
+      form.setValue(
+        'targets',
+        targets.filter((e) => e.id !== rowTarget?.id)
+      );
+      form.setValue(
+        'targetObservation',
+        targetObservation.filter((e) => e.targetId !== rowTarget?.id)
+      );
+      form.setValue(
+        'calibrationStrategy',
+        (form.getValues('calibrationStrategy') ?? []).filter((e) => e.observationIdRef !== obsId)
+      );
     }
     setRowTarget(null);
     closeDialog();
   };
 
   const editIconClicked = (e: Target) => {
+    const entry = targetEntryFromTarget(e);
+    editStartRef.current = entry;
+    editEntryForm.reset(entry);
     setRowTarget(e);
     setOpenEditDialog(true);
   };
 
   const editConfirmed = () => {
-    if (rowTarget && rowTarget.velType === VELOCITY_TYPE.VELOCITY) {
-      rowTarget.redshift = '';
-    } else if (rowTarget) {
-      rowTarget.vel = '';
+    if (rowTarget && editStartRef.current) {
+      const edited = applyTargetEdit(rowTarget, editStartRef.current, editEntryForm.getValues());
+      form.setValue(
+        'targets',
+        targets.map((rec) => (rec.id === edited.id ? edited : rec))
+      );
     }
-    const obs1 = getProposal().targets?.map((rec) => {
-      return rec.id === rowTarget?.id ? rowTarget : rec;
-    });
-    setProposal({ ...getProposal(), targets: obs1 });
     setRowTarget(null);
     closeDialog();
   };
 
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal()?.targets?.find((p) => p.id === rowTarget?.id);
+    const rec = targets.find((p) => p.id === rowTarget?.id);
     const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     const isSSO = rec?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
     return (
@@ -158,7 +160,7 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
-  const rows = getProposal().targets.map((t) => {
+  const rows = targets.map((t) => {
     const isICRS = t.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     return {
       ...t,
@@ -168,7 +170,7 @@ export default function TargetListSection() {
   });
 
   const displayRow1 = () => {
-    const target = getProposal()?.targets?.[0];
+    const target = targets[0];
     const isSSO = target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
 
     return (
@@ -205,12 +207,7 @@ export default function TargetListSection() {
                 rows={rows}
               />
             </Box>
-            {!isSSO && (
-              <Visualization
-                target={getProposal()?.targets?.[0] ?? undefined}
-                show={maxTargets === 1}
-              />
-            )}
+            {!isSSO && <Visualization target={targets[0] ?? undefined} show={maxTargets === 1} />}
           </Stack>
         </Grid>
         <Grid
@@ -251,7 +248,7 @@ export default function TargetListSection() {
 
   return (
     <Box>
-      {maxTargets !== null && (getProposal()?.targets?.length ?? 0) > maxTargets - 1 && (
+      {maxTargets !== null && targets.length > maxTargets - 1 && (
         <Box
           sx={{
             pb: GAP,
@@ -289,7 +286,7 @@ export default function TargetListSection() {
           title="editTarget.label"
         >
           <TargetEntry
-            setTarget={setRowTarget}
+            entryForm={editEntryForm}
             target={rowTarget ? rowTarget : undefined}
             onCoord1FieldErrorChange={setSkyDirection1Error} // Pass callback
             onCoord2FieldErrorChange={setSkyDirection2Error} // Pass callback

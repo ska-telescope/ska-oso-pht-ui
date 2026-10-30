@@ -1,4 +1,5 @@
 // DataProduct.test.tsx
+import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -17,7 +18,7 @@ const { mockFetchSensCalcPatches } = vi.hoisted(() => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(component);
+  return render(<ProposalFormProvider>{component}</ProposalFormProvider>);
 };
 
 // --- Mocks ---

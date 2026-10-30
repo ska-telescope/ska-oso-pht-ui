@@ -1,9 +1,9 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
+import { useFormContext } from 'react-hook-form';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
-import { Proposal } from '../../../../utils/types/proposal';
+import { ProposalType } from '@/models/proposals/proposal';
 import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
@@ -24,11 +24,9 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
   const { t } = useScopedTranslation();
   const { notifyError, notifySuccess } = useNotify();
 
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const form = useFormContext<ProposalType>();
   const { setHelp } = useHelp();
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState(null);
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     setHelp('targetImport.help');
@@ -128,10 +126,10 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
                 []
               );
             }
-            setProposal({
-              ...getProposal(),
-              targets: [...(getProposal()?.targets ?? []), ...targets]
-            });
+            form.setValue('targets', [
+              ...(form.getValues('targets') ?? []),
+              ...(targets as unknown as Target[])
+            ]);
             if (errorInRows) throw t('uploadCsvBtn.uploadErrorPartialMsg');
             setUploadButtonStatus(FileUploadStatus.OK);
             notifySuccess(t('uploadCsvBtn.uploadSuccessMsg'), NOTIFICATION_DELAY_IN_SECONDS);

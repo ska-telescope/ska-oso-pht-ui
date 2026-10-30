@@ -15,6 +15,7 @@ import {
 } from '../constants';
 import * as helpers from '../helpers';
 import Proposal from '../types/proposal';
+import type { ProposalFormAccess } from '@/models/proposals/proposal';
 import { SDPImageContinuumData, SDPSpectralData } from '../types/dataProduct';
 import { getDefaultObservationLowAA2 } from '../helpers';
 import Observation from '../types/observation';
@@ -43,6 +44,14 @@ const validMockSensCal = {
   statusGUI: STATUS_OK,
   section1: [{ field: 'continuumSensitivityWeighted', value: '130.33', units: 'uJy / beam' }]
 };
+
+// The tests keep one proposal object as the store; this form reads and writes its slices on that
+// same object, so each test can check every slice in one place
+const formOver = (get: () => Partial<Proposal>, set: (proposal: Partial<Proposal>) => void) =>
+  ({
+    getValues: (name?: keyof Proposal) => (name ? get()[name] : get()),
+    setValue: (name: keyof Proposal, value: unknown) => set({ ...get(), [name]: value })
+  }) as unknown as ProposalFormAccess;
 
 const mockAuthAxiosClient = {
   put: vi.fn(),
@@ -172,6 +181,7 @@ describe('regenerateForMode()', () => {
   let proposal: Partial<Proposal>;
   let getProposal: ReturnType<typeof vi.fn>;
   let setProposal: ReturnType<typeof vi.fn>;
+  let form: ProposalFormAccess;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -203,6 +213,12 @@ describe('regenerateForMode()', () => {
     setProposal = vi.fn((p: Proposal) => {
       proposal = p; // update the proposal "store"
     });
+    form = formOver(
+      () => proposal,
+      (p) => {
+        proposal = p;
+      }
+    );
   });
 
   it('returns success and updates proposal when getSensCalc succeeds', async () => {
@@ -212,6 +228,7 @@ describe('regenerateForMode()', () => {
       mockTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient,
       TYPE_CONTINUUM
     );
@@ -244,6 +261,7 @@ describe('regenerateForMode()', () => {
       mockTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient,
       TYPE_CONTINUUM
     );
@@ -276,6 +294,7 @@ describe('regenerateForMode()', () => {
       mockTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient,
       TYPE_PST
     );
@@ -323,6 +342,7 @@ describe('regenerateForMode()', () => {
       mockTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient,
       TYPE_ZOOM
     );
@@ -395,6 +415,7 @@ describe('regenerateForMode()', () => {
       mockTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient,
       TYPE_CONTINUUM
     );
@@ -442,6 +463,7 @@ describe('regenerateForMode()', () => {
       mockTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient,
       TYPE_CONTINUUM
     );
@@ -465,6 +487,7 @@ describe('regenerateForMode()', () => {
       mockTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient
     );
 
@@ -482,6 +505,7 @@ describe('regenerateForMode()', () => {
       mockTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient,
       TYPE_CONTINUUM
     );
@@ -506,6 +530,7 @@ describe('regenerateForMode()', () => {
       ssoTarget,
       getProposal,
       setProposal,
+      form,
       mockAuthAxiosClient,
       TYPE_CONTINUUM
     );
@@ -529,6 +554,7 @@ describe('setObservingMode()', () => {
   let proposal: Partial<Proposal>;
   let getProposal: ReturnType<typeof vi.fn>;
   let setProposal: ReturnType<typeof vi.fn>;
+  let form: ProposalFormAccess;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -552,10 +578,22 @@ describe('setObservingMode()', () => {
     setProposal = vi.fn((p: Proposal) => {
       proposal = p;
     });
+    form = formOver(
+      () => proposal,
+      (p) => {
+        proposal = p;
+      }
+    );
   });
 
   it('replaces only the observation and data products when there is no target', async () => {
-    const result = await setObservingMode(TYPE_PST, getProposal, setProposal, mockAuthAxiosClient);
+    const result = await setObservingMode(
+      TYPE_PST,
+      getProposal,
+      setProposal,
+      form,
+      mockAuthAxiosClient
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
@@ -574,7 +612,7 @@ describe('setObservingMode()', () => {
   });
 
   it('applies the zoom channel cap to a spectral observation when there is no target', async () => {
-    await setObservingMode(TYPE_ZOOM, getProposal, setProposal, mockAuthAxiosClient, 1234);
+    await setObservingMode(TYPE_ZOOM, getProposal, setProposal, form, mockAuthAxiosClient, 1234);
 
     expect(proposal.observations?.[0].type).toBe(TYPE_ZOOM);
     expect(proposal.observations?.[0].zoomChannels).toBe(1234);
@@ -583,7 +621,13 @@ describe('setObservingMode()', () => {
   it('regenerates everything when there is a target', async () => {
     proposal = { ...proposal, targets: [mockTarget] };
 
-    const result = await setObservingMode(TYPE_ZOOM, getProposal, setProposal, mockAuthAxiosClient);
+    const result = await setObservingMode(
+      TYPE_ZOOM,
+      getProposal,
+      setProposal,
+      form,
+      mockAuthAxiosClient
+    );
 
     expect(result).toEqual({ success: true });
     expect(getSensCalc).toHaveBeenCalledTimes(1);
@@ -599,7 +643,13 @@ describe('setObservingMode()', () => {
     proposal = { ...proposal, targets: [mockTarget] };
     vi.mocked(getSensCalc as any).mockResolvedValue({ statusGUI: STATUS_ERROR, error: 'bad' });
 
-    const result = await setObservingMode(TYPE_ZOOM, getProposal, setProposal, mockAuthAxiosClient);
+    const result = await setObservingMode(
+      TYPE_ZOOM,
+      getProposal,
+      setProposal,
+      form,
+      mockAuthAxiosClient
+    );
 
     expect(result).toEqual({ success: false, error: 'bad' });
     expect(setProposal).not.toHaveBeenCalled();
@@ -610,6 +660,7 @@ describe('linkTarget()', () => {
   let proposal: Partial<Proposal>;
   let getProposal: ReturnType<typeof vi.fn>;
   let setProposal: ReturnType<typeof vi.fn>;
+  let form: ProposalFormAccess;
 
   const editedObservation: Observation = {
     ...DEFAULT_ZOOM_OBSERVATION_LOW,
@@ -653,10 +704,22 @@ describe('linkTarget()', () => {
     setProposal = vi.fn((p: Proposal) => {
       proposal = p;
     });
+    form = formOver(
+      () => proposal,
+      (p) => {
+        proposal = p;
+      }
+    );
   });
 
   it('keeps the existing observation and data products and links the target to them', async () => {
-    const result = await linkTarget(mockTarget, getProposal, setProposal, mockAuthAxiosClient);
+    const result = await linkTarget(
+      mockTarget,
+      getProposal,
+      setProposal,
+      form,
+      mockAuthAxiosClient
+    );
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
@@ -698,7 +761,7 @@ describe('linkTarget()', () => {
       ]
     };
 
-    await linkTarget(mockTarget, getProposal, setProposal, mockAuthAxiosClient);
+    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
     expect(getSensCalc).toHaveBeenCalledWith(
       editedObservation,
@@ -709,7 +772,7 @@ describe('linkTarget()', () => {
   });
 
   it('creates a calibration strategy for the existing observation, keeping existing notes', async () => {
-    await linkTarget(mockTarget, getProposal, setProposal, mockAuthAxiosClient);
+    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.calibrationStrategy?.[0].observationIdRef).toBe('existing-obs');
@@ -719,7 +782,13 @@ describe('linkTarget()', () => {
   it('creates a default continuum observation and data products when there is no observation', async () => {
     proposal = { ...proposal, observations: [], dataProductSDP: [] };
 
-    const result = await linkTarget(mockTarget, getProposal, setProposal, mockAuthAxiosClient);
+    const result = await linkTarget(
+      mockTarget,
+      getProposal,
+      setProposal,
+      form,
+      mockAuthAxiosClient
+    );
 
     expect(result).toEqual({ success: true });
     expect(proposal.observations).toHaveLength(1);
@@ -734,7 +803,7 @@ describe('linkTarget()', () => {
   it('creates default data products when the observation has none', async () => {
     proposal = { ...proposal, dataProductSDP: [] };
 
-    await linkTarget(mockTarget, getProposal, setProposal, mockAuthAxiosClient);
+    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
     expect(proposal.observations).toEqual([editedObservation]);
     expect(proposal.dataProductSDP?.length).toBeGreaterThan(0);
@@ -745,7 +814,13 @@ describe('linkTarget()', () => {
   it('returns the sensitivity calculator error and leaves the proposal unchanged', async () => {
     vi.mocked(getSensCalc as any).mockResolvedValue({ statusGUI: STATUS_ERROR, error: 'bad' });
 
-    const result = await linkTarget(mockTarget, getProposal, setProposal, mockAuthAxiosClient);
+    const result = await linkTarget(
+      mockTarget,
+      getProposal,
+      setProposal,
+      form,
+      mockAuthAxiosClient
+    );
 
     expect(result).toEqual({ success: false, error: 'bad' });
     expect(setProposal).not.toHaveBeenCalled();

@@ -9,6 +9,7 @@ import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposa
 import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
 import { ProposalType } from './proposal';
 import { useProposalOda } from './useProposalOda';
+import { getProposalFormValues } from './useProposalForm';
 
 const { mockGet, mockPut } = vi.hoisted(() => ({
   mockGet: vi.fn(),
@@ -22,7 +23,10 @@ const pdm = MockProposalBackend as ProposalBackend;
 
 const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) => {
   const { result: form } = renderHook(() =>
-    useForm<ProposalType>({ defaultValues: { title, proposalType } })
+    useForm<ProposalType>({
+      // The other slices match the proposal being saved, as they do when seeded from the store
+      defaultValues: { ...getProposalFormValues(mapping(pdm)), title, proposalType }
+    })
   );
   const { result: oda } = renderHook(() => useProposalOda(), {
     wrapper: ({ children }: { children: React.ReactNode }) => (

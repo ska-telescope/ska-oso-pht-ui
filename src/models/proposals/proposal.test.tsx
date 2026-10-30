@@ -2,7 +2,11 @@ import { describe, expect, test } from 'vitest';
 import { getProposalSchema } from './proposal';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 
-const emptySlices = { targets: [], targetObservation: [], calibrationStrategy: [] };
+const emptySlices = {
+  targets: [],
+  targetObservation: [],
+  calibrationStrategy: []
+};
 
 describe('proposal schema', () => {
   test.each(Object.values(PROPOSAL_TYPE))('accepts a valid title and type %s', (proposalType) => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
@@ -129,7 +130,11 @@ vi.mock('@/components/fields/bandwidthFields/bandwidth/bandwidth', () => ({
 // ---- Helpers ----
 
 const wrapper = (component: React.ReactElement) =>
-  render(<StoreProvider>{component}</StoreProvider>);
+  render(
+    <StoreProvider>
+      <ProposalFormProvider>{component}</ProposalFormProvider>
+    </StoreProvider>
+  );
 
 // ---- Tests ----
 

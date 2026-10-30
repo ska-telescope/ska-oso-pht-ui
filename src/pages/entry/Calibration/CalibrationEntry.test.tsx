@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CalibrationEntry from './CalibrationEntry';
@@ -66,7 +67,9 @@ const wrapper = (component: React.ReactElement) => {
   return render(
     <MemoryRouter>
       <ThemeA11yProvider>
-        <ThemeProvider theme={theme}>{component}</ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <ProposalFormProvider>{component}</ProposalFormProvider>
+        </ThemeProvider>
       </ThemeA11yProvider>
     </MemoryRouter>
   );

@@ -1,4 +1,7 @@
 // TargetFileImport.test.tsx
+import { FormProvider, UseFormReturn } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as papaModule from 'papaparse';
@@ -55,6 +58,20 @@ vi.mock('papaparse', () => {
 });
 const getParseMock = () => (papaModule as any).__parseMock as ReturnType<typeof vi.fn>;
 
+// The imported targets go to the global form, which owns them
+let form: UseFormReturn<ProposalType>;
+const renderImport = (referenceCoordinateType: number) => {
+  const Wrapper = () => {
+    form = useProposalForm({ id: 'p1', targets: [] });
+    return (
+      <FormProvider {...form}>
+        <TargetFileImport referenceCoordinateType={referenceCoordinateType} />
+      </FormProvider>
+    );
+  };
+  render(<Wrapper />);
+};
+
 describe('TargetFileImport', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -68,11 +85,11 @@ describe('TargetFileImport', () => {
       });
     });
 
-    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />);
+    renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
     screen.getByTestId('csvUpload').click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
-    expect(updateAppContent2Mock).toHaveBeenCalled();
+    expect(form.getValues('targets')).toHaveLength(1);
   });
 
   it('Galactic success path', () => {
@@ -83,11 +100,11 @@ describe('TargetFileImport', () => {
       });
     });
 
-    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_GALACTIC.value} />);
+    renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
     screen.getByTestId('csvUpload').click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
-    expect(updateAppContent2Mock).toHaveBeenCalled();
+    expect(form.getValues('targets')).toHaveLength(1);
   });
 
   it('ICRS invalid header', () => {
@@ -95,7 +112,7 @@ describe('TargetFileImport', () => {
       opts.complete({ meta: { fields: ['wrong', 'header'] }, data: [] });
     });
 
-    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />);
+    renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -106,7 +123,7 @@ describe('TargetFileImport', () => {
       opts.complete({ meta: { fields: ['bad', 'header'] }, data: [] });
     });
 
-    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_GALACTIC.value} />);
+    renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -120,7 +137,7 @@ describe('TargetFileImport', () => {
       });
     });
 
-    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />);
+    renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -131,7 +148,7 @@ describe('TargetFileImport', () => {
       opts.error('Parser failed');
     });
 
-    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />);
+    renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();

@@ -1,77 +1,58 @@
 import { expect } from 'vitest';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
-import { DataProductSDPNew } from '@utils/types/dataProduct.tsx';
-import Observation from '@utils/types/observation.tsx';
 import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
+import type { ProposalFormAccess } from '@/models/proposals/proposal';
 import Target from '../types/target';
 
 describe('deleteAutoLinking', () => {
   const target: Target = { id: 't1' } as Target;
-  const proposal = {
-    targets: [{ id: 't1' }, { id: 't2' }],
-    targetObservation: [
-      { targetId: 't1', observationId: 'o1' },
-      { targetId: 't2', observationId: 'o2' }
-    ] as TargetObservation[],
-    calibrationStrategy: [
-      { observationIdRef: 'o1' },
-      { observationIdRef: 'o2' }
-    ] as CalibrationStrategy[],
-    dataProductSDP: [{ observationId: 'o1' }, { observationId: 'o2' }] as DataProductSDPNew[],
-    observations: [{ id: 'o1' }, { id: 'o2' }] as Observation[]
-  };
-
-  let getProposal: () => typeof proposal;
-  let setProposal: ReturnType<typeof vi.fn>;
+  let values: Record<string, unknown>;
+  let form: ProposalFormAccess;
 
   beforeEach(() => {
-    getProposal = () => ({ ...proposal });
-    setProposal = vi.fn();
-  });
-
-  it('removes the target with its results and calibration, keeping the observation and data products', async () => {
-    await deleteAutoLinking(target, getProposal, setProposal);
-
-    expect(setProposal).toHaveBeenCalledWith({
-      ...proposal,
-      targets: [{ id: 't2' }],
-      targetObservation: [{ targetId: 't2', observationId: 'o2' }],
-      calibrationStrategy: [{ observationIdRef: 'o2' }],
-      dataProductSDP: [{ observationId: 'o1' }, { observationId: 'o2' }],
-      observations: [{ id: 'o1' }, { id: 'o2' }]
-    });
-  });
-
-  it('does nothing if target is not found', async () => {
-    const missingTarget = { id: 'notfound' } as Target;
-    await deleteAutoLinking(missingTarget, getProposal, setProposal);
-
-    expect(setProposal).toHaveBeenCalledWith({
-      ...proposal,
+    values = {
       targets: [{ id: 't1' }, { id: 't2' }],
       targetObservation: [
         { targetId: 't1', observationId: 'o1' },
         { targetId: 't2', observationId: 'o2' }
-      ],
-      calibrationStrategy: [{ observationIdRef: 'o1' }, { observationIdRef: 'o2' }],
-      dataProductSDP: [{ observationId: 'o1' }, { observationId: 'o2' }],
-      observations: [{ id: 'o1' }, { id: 'o2' }]
+      ] as TargetObservation[],
+      calibrationStrategy: [
+        { observationIdRef: 'o1' },
+        { observationIdRef: 'o2' }
+      ] as CalibrationStrategy[]
+    };
+    form = {
+      getValues: vi.fn((name: string) => values[name]),
+      setValue: vi.fn((name: string, value: unknown) => {
+        values[name] = value;
+      })
+    } as unknown as ProposalFormAccess;
+  });
+
+  it('removes the target with its results and calibration from the form', () => {
+    deleteAutoLinking(target, form);
+
+    expect(values).toEqual({
+      targets: [{ id: 't2' }],
+      targetObservation: [{ targetId: 't2', observationId: 'o2' }],
+      calibrationStrategy: [{ observationIdRef: 'o2' }]
     });
   });
 
-  it('handles missing calibrationStrategy gracefully', async () => {
-    getProposal = () => ({
-      ...proposal,
-      calibrationStrategy: undefined
-    });
-    await deleteAutoLinking(target, getProposal, setProposal);
+  it('leaves the form unchanged if the target is not found', () => {
+    const before = structuredClone(values);
+    deleteAutoLinking({ id: 'notfound' } as Target, form);
 
-    expect(setProposal).toHaveBeenCalledWith({
-      ...proposal,
-      calibrationStrategy: undefined,
-      targets: [{ id: 't2' }],
-      targetObservation: [{ targetId: 't2', observationId: 'o2' }]
-    });
+    expect(values).toEqual(before);
+  });
+
+  it('handles a proposal without calibration', () => {
+    values.calibrationStrategy = [];
+    deleteAutoLinking(target, form);
+
+    expect(values.targets).toEqual([{ id: 't2' }]);
+    expect(values.targetObservation).toEqual([{ targetId: 't2', observationId: 'o2' }]);
+    expect(values.calibrationStrategy).toEqual([]);
   });
 });

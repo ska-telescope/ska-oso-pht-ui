@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
@@ -8,7 +9,9 @@ import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <ProposalFormProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </ProposalFormProvider>
     </StoreProvider>
   );
 };

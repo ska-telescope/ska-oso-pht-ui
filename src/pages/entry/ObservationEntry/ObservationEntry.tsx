@@ -2,6 +2,10 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Box, Grid, Paper, Typography, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
+import { useFormContext } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import Target from '@/utils/types/target';
+import TargetObservation from '@/utils/types/targetObservation';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -190,6 +194,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setProposal(proposal);
   };
 
+  // The form owns the targets, links and calibration; observations stay in the store
+  const form = useFormContext<ProposalType>();
+  const getLinks = () => (form.getValues('targetObservation') ?? []) as TargetObservation[];
+  const withFormSlices = (proposal: Proposal): Proposal => ({
+    ...proposal,
+    targets: form.getValues('targets') as Target[],
+    targetObservation: getLinks()
+  });
+
   const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
     isSuppliedValueValid({
       type: ob?.supplied?.type,
@@ -209,22 +222,24 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
     const applyUpdate = async () => {
       sensCalcDebounceTimerRef.current = null;
-      const sensCalcPatches = await fetchSensCalcPatches(latestProposalRef.current, ob, dp);
+      const sensCalcPatches = await fetchSensCalcPatches(
+        withFormSlices(latestProposalRef.current),
+        ob,
+        dp
+      );
 
       if (requestId !== latestSensCalcRequestIdRef.current) {
         return;
       }
 
-      const targetObservation = applySensCalcPatches(
-        latestProposalRef.current.targetObservation,
-        sensCalcPatches
-      );
+      const targetObservation = applySensCalcPatches(getLinks(), sensCalcPatches) ?? [];
 
-      const linkedTarget = latestProposalRef.current.targets?.find((t) =>
+      const linkedTarget = (form.getValues('targets') as Target[]).find((t) =>
         targetObservation.some((to) => to.observationId === ob.id && to.targetId === t.id)
       );
 
-      let calibrationStrategy = latestProposalRef.current.calibrationStrategy ?? [];
+      let calibrationStrategy = (form.getValues('calibrationStrategy') ??
+        []) as CalibrationStrategy[];
       if (linkedTarget) {
         let calibrators: Calibrator[] | null = null;
         if (linkedTarget.kind !== REFERENCE_COORDINATE_TYPE_SSO.value) {
@@ -251,12 +266,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         ];
       }
 
-      const mergedProposal = {
-        ...latestProposalRef.current,
-        targetObservation,
-        calibrationStrategy
-      };
-      persistProposal(mergedProposal);
+      form.setValue('targetObservation', targetObservation);
+      form.setValue('calibrationStrategy', calibrationStrategy);
     };
 
     if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
@@ -359,7 +370,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
-    const linkedDataProductId = proposal.targetObservation?.find(
+    const linkedDataProductId = getLinks().find(
       (to) => to.observationId === newObservation.id
     )?.dataProductsSDPId;
 
@@ -380,14 +391,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       (dp) => dp.id === linkedDataProductId
     );
 
-    const oldTO = proposal?.targetObservation ?? [];
-    const tmp = {
+    if (!dataProductSDP) {
+      form.setValue('targetObservation', updateSensCalcPartial(getLinks(), newObservation));
+    }
+    persistProposal({
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: newDataProducts,
-      targetObservation: dataProductSDP ? oldTO : updateSensCalcPartial(oldTO, newObservation)
-    };
-    persistProposal(tmp);
+      dataProductSDP: newDataProducts
+    });
 
     if (!dataProductSDP) {
       return;

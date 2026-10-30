@@ -13,6 +13,7 @@ import {
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
 // ---- Module mocks ----
 
@@ -60,7 +61,8 @@ vi.mock('@/utils/autoLinking/AutoLinking', () => ({
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: { title: '', proposalType: null }
+      // Seeded from the store, as useProposalForm seeds the global form
+      defaultValues: getProposalFormValues(mockState.proposal)
     });
     return (
       <StoreProvider>
@@ -223,6 +225,7 @@ describe('<DetailsPage /> observing mode', () => {
       TYPE_PST,
       expect.any(Function),
       expect.any(Function),
+      expect.objectContaining({ getValues: expect.any(Function) }),
       {},
       42
     );

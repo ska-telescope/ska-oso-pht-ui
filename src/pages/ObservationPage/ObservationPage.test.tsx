@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
+import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@utils/storage/store';
@@ -10,7 +11,9 @@ import completeMockStore from '@/utils/MockStore';
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <ProposalFormProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </ProposalFormProvider>
     </StoreProvider>
   );
 };

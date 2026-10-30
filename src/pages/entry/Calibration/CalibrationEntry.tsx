@@ -2,6 +2,8 @@ import React from 'react';
 import { useLocation } from 'react-router';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import {
@@ -58,133 +60,57 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const loggedIn = isLoggedIn();
   const { observatoryConstants, osdCyclePolicy } = useOSDAccessors();
 
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application } = storageObject.useStore();
   const { setHelp } = useHelp();
   const theme = useTheme();
+  const form = useFormContext<ProposalType>();
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const isEdit = () => {
-    const proposal = getProposal();
-    return (
-      locationProperties.state !== null ||
-      data !== undefined ||
-      (proposal?.calibrationStrategy && proposal.calibrationStrategy.length > 0)
-    );
-  };
+  // The form owns the calibration and the links; observations still come from the store
+  const strategies = (useWatch({ control: form.control, name: 'calibrationStrategy' }) ??
+    []) as CalibrationStrategy[];
+  const links = (useWatch({ control: form.control, name: 'targetObservation' }) ??
+    []) as TargetObservation[];
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+
+  // A strategy handed to the page is shown until the proposal has one of its own
+  const strategy: CalibrationStrategy = strategies[0] ??
+    data ??
+    locationProperties.state ?? {
+      observatoryDefined: true,
+      id: '',
+      observationIdRef: '',
+      calibrators: null,
+      notes: ''
+    };
+
+  const isEdit = () =>
+    locationProperties.state !== null || data !== undefined || strategies.length > 0;
 
   const PAGE = isEdit() ? PAGE_CALIBRATION_UPDATE : PAGE_CALIBRATION_ADD;
 
-  const [target, setTarget] = React.useState<Target>();
-  const [observation, setObservation] = React.useState<Observation>();
+  const calibrators = calibratorArrayToSet(strategy.calibrators as Calibrator[]);
+  const notes = strategy.notes ?? '';
 
-  const [observatoryDefined, setObservatoryDefined] = React.useState(true);
-  const [id, setId] = React.useState('');
-  const [observationIdRef, setObservationIdRef] = React.useState('');
-  const [calibrators, setCalibrators] = React.useState<CalibratorSet>({
-    beforeEachScan: null,
-    afterEachScan: null
-  });
-  const [notes, setNotes] = React.useState('');
-
-  const calibrationIn = (inRec: CalibrationStrategy) => {
-    setObservatoryDefined(inRec.observatoryDefined);
-    setId(inRec.id);
-    setObservationIdRef(inRec.observationIdRef);
-    setCalibrators(calibratorArrayToSet(inRec.calibrators));
-    setNotes(inRec.notes ? inRec.notes : '');
+  const setNotes = (value: string) => {
+    form.setValue('calibrationStrategy', [{ ...strategy, notes: value }]);
   };
 
-  const calibrationOut = (): CalibrationStrategy => {
-    return {
-      observatoryDefined: observatoryDefined,
-      id: id,
-      observationIdRef: observationIdRef,
-      calibrators: calibratorSetToCalibratorList(calibrators),
-      notes: notes
-    };
-  };
-
-  function calibratorSetToCalibratorList(calibrators: CalibratorSet): Calibrator[] | null {
-    if (!calibrators.beforeEachScan || !calibrators.afterEachScan) {
-      return null;
-    }
-    return [calibrators.beforeEachScan, calibrators.afterEachScan];
-  }
   /**************************************************************/
 
-  const getTargetObservation = (): TargetObservation | undefined => {
-    const proposal = getProposal();
-    if (!proposal?.targetObservation || proposal.targetObservation.length === 0) {
-      return undefined;
-    }
-    return proposal.targetObservation.find((to) => to.observationId === observationIdRef);
-  };
-
-  const getTargetFromProposal = (targetObservation: TargetObservation): Target | undefined => {
-    const proposal = getProposal();
-    return proposal?.targets?.find((t) => t.id === targetObservation.targetId);
-  };
-
-  const getObservationFromProposal = (
-    targetObservation: TargetObservation
-  ): Observation | undefined => {
-    const proposal = getProposal();
-    return proposal?.observations?.find((o) => o.id === targetObservation.observationId);
-  };
+  // Extend for Proposals when there will be more than one proposal and target as an option
+  const targetObservation = links.find((to) => to.observationId === strategy.observationIdRef);
+  const target = targetObservation
+    ? targets.find((t) => t.id === targetObservation.targetId)
+    : undefined;
+  const observation: Observation | undefined = targetObservation
+    ? getProposal()?.observations?.find((o) => o.id === targetObservation.observationId)
+    : undefined;
 
   React.useEffect(() => {
     setHelp('calibrator.comment.help');
-    if (isEdit()) {
-      const existing = data ?? locationProperties.state ?? getProposal()?.calibrationStrategy?.[0];
-      calibrationIn(existing);
-    } else {
-    }
   }, []);
-
-  const isFirstRenderRef = React.useRef(true);
-
-  React.useEffect(() => {
-    if (isFirstRenderRef.current) {
-      isFirstRenderRef.current = false;
-      return;
-    }
-    updateStorageProposal();
-  }, [notes, calibrators]);
-
-  // Extend for Proposals when there will be more than one proposal and target as an option
-  React.useEffect(() => {
-    const targetObservation = getTargetObservation();
-    if (!targetObservation) {
-      setTarget(undefined);
-      setObservation(undefined);
-      return;
-    }
-
-    const target = getTargetFromProposal(targetObservation);
-    const observation = getObservationFromProposal(targetObservation);
-
-    setTarget(target);
-    setObservation(observation);
-  }, [observationIdRef]);
-  /**************************************************************/
-
-  function updateCalibrationOnProposal() {
-    try {
-      const record = {
-        ...getProposal(),
-        calibrationStrategy: [calibrationOut()]
-      };
-      setProposal(record);
-    } catch {
-      return;
-    }
-  }
-
-  const updateStorageProposal = () => {
-    updateCalibrationOnProposal();
-  };
 
   /**************************************************************/
 

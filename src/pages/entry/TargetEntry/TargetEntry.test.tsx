@@ -1,4 +1,5 @@
 import React from 'react';
+import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -6,13 +7,25 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TargetEntry from './TargetEntry';
+import { useFormContext, UseFormReturn } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
+
+// Exposes the global form, which holds the entry and the targets
+let formProbe: UseFormReturn<ProposalType>;
+const FormProbe = () => {
+  formProbe = useFormContext<ProposalType>();
+  return null;
+};
 
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <ProposalFormProvider>
+        <FormProbe />
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </ProposalFormProvider>
     </StoreProvider>
   );
 };
@@ -276,5 +289,23 @@ describe('<TargetEntry /> auto-linking route', () => {
     await addTarget();
 
     expect(linkTarget).not.toHaveBeenCalled();
+    expect(formProbe.getValues('targets')).toEqual([
+      expect.objectContaining({ name: 'My Target', raStr: '12:34:56.000' })
+    ]);
+    expect(screen.getByTestId('name').querySelector('input')).toHaveValue('');
+  }, 15000);
+
+  it('keeps the target being entered out of the proposal, and drops it when closed', async () => {
+    const user = userEvent.setup();
+    const { unmount } = wrapper(<TargetEntry />);
+
+    await user.type(screen.getByTestId('name').querySelector('input')!, 'Half typed');
+
+    expect(formProbe.getValues()).not.toHaveProperty('editor');
+    expect(formProbe.getValues('targets')).toEqual([]);
+
+    unmount();
+    wrapper(<TargetEntry />);
+    expect(screen.getByTestId('name').querySelector('input')).toHaveValue('');
   }, 15000);
 });

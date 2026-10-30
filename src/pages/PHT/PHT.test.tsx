@@ -247,6 +247,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
       mockProposal.targets[0],
       expect.any(Function),
       expect.any(Function),
+      expect.objectContaining({ getValues: expect.any(Function) }),
       {}
     );
   });

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
+import { useFormContext, UseFormReturn, useWatch } from 'react-hook-form';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates, {
@@ -22,7 +23,6 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
   VELOCITY_TYPE,
-  FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
   NOTIFICATION_DELAY_IN_SECONDS
 } from '@/utils/constants';
@@ -32,8 +32,17 @@ import { useHelp } from '@/utils/help/useHelp';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import VelocityTypeField from '@/components/fields/velocityType/VelocityType';
+import { ProposalType } from '@/models/proposals/proposal';
+import {
+  TARGET_ENTRY_DEFAULTS,
+  TargetEntryType,
+  useTargetEntryForm
+} from '@/models/proposals/targetEntry';
 interface TargetEntryProps {
-  setTarget?: Function;
+  // The local form holding the entry, when the parent needs its values (the edit dialog);
+  // otherwise the entry keeps its own
+  entryForm?: UseFormReturn<TargetEntryType>;
+  // The target being edited; leave out when adding a new one
   target?: Target;
   textAlign?: string;
   onCoord1FieldErrorChange?: (error: string) => void;
@@ -42,12 +51,12 @@ interface TargetEntryProps {
 }
 
 const GAP = 2;
-const DEFAULT_VELOCITY_TYPE = VELOCITY_TYPE.VELOCITY;
-const DEFAULT_VELOCITY_UNIT = 0;
-const DEFAULT_REFERENCE_COORDINATES = REFERENCE_COORDINATE_TYPE_ICRS.value;
+const DEFAULT_VELOCITY_TYPE = TARGET_ENTRY_DEFAULTS.velType;
+const DEFAULT_VELOCITY_UNIT = TARGET_ENTRY_DEFAULTS.velUnit;
+const DEFAULT_REFERENCE_COORDINATES = TARGET_ENTRY_DEFAULTS.referenceCoordinates;
 
 export default function TargetEntry({
-  setTarget = undefined,
+  entryForm = undefined,
   target = undefined,
   onCoord1FieldErrorChange,
   onCoord2FieldErrorChange,
@@ -59,6 +68,7 @@ export default function TargetEntry({
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent2 } = storageObject.useStore();
+  const form = useFormContext<ProposalType>();
   const [nameFieldError, setNameFieldError] = React.useState('');
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
@@ -68,18 +78,20 @@ export default function TargetEntry({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [id, setId] = React.useState('');
-  const [name, setName] = React.useState('');
-  const [coord1, setCoord1] = React.useState('');
-  const [coord2, setCoord2] = React.useState('');
-  const [velType, setVelType] = React.useState(DEFAULT_VELOCITY_TYPE);
-  const [vel, setVel] = React.useState('');
-  const [velUnit, setVelUnit] = React.useState(DEFAULT_VELOCITY_UNIT);
-  const [redshift, setRedshift] = React.useState('');
-  const [referenceCoordinates, setReferenceCoordinates] = React.useState(
-    DEFAULT_REFERENCE_COORDINATES
-  );
-  const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
+  // The entry is held in a small local form, so it is not saved and goes when the entry closes;
+  // the targets it adds go to the global form. Errors and loading state stay with the page.
+  const ownEntryForm = useTargetEntryForm();
+  const entryValues = entryForm ?? ownEntryForm;
+  const entry = useWatch({ control: entryValues.control }) as TargetEntryType;
+  const { name, coord1, coord2, velType, vel, velUnit, redshift, fieldPattern } = entry;
+  const referenceCoordinates = entry.referenceCoordinates;
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+
+  const updateEntry = (changes: Partial<TargetEntryType>) =>
+    (Object.keys(changes) as (keyof TargetEntryType)[]).forEach((key) =>
+      entryValues.setValue(key, changes[key] as never)
+    );
+
   const [resolutionLoading, setResolutionLoading] = React.useState(false);
   const resolveRevisionRef = React.useRef(0);
 
@@ -120,163 +132,94 @@ export default function TargetEntry({
 
   const setTheName = (inValue: string) => {
     invalidatePendingResolve();
-    setName(inValue);
+    updateEntry({ name: inValue });
     if (!inValue.trim()) {
       setNameFieldError(t('addTarget.valueError'));
     } else {
       setNameFieldError('');
     }
-    if (setTarget) {
-      setTarget({ ...target, name: inValue });
-    }
   };
-
-  const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
 
   const isSSO = referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const setTheCoord1 = (value: string) => {
     invalidatePendingResolve();
-    setCoord1(value);
-
-    if (!setTarget) return;
-
-    if (isICRS) {
-      setTarget({
-        ...target,
-        raStr: leadZero(value).toString()
-      });
-    } else {
-      setTarget({
-        ...target,
-        l: parseFloat(value)
-      });
-    }
+    updateEntry({ coord1: value });
   };
   const setTheCoord2 = (value: string) => {
     invalidatePendingResolve();
-    setCoord2(value);
-
-    if (!setTarget) return;
-
-    if (isICRS) {
-      setTarget({
-        ...target,
-        decStr: leadZero(value).toString()
-      });
-    } else {
-      setTarget({
-        ...target,
-        b: parseFloat(value)
-      });
-    }
+    updateEntry({ coord2: value });
   };
 
   const setTheReferenceCoordinates = (newKind: number) => {
     invalidatePendingResolve();
 
     if (newKind !== referenceCoordinates) {
-      setName('');
-      setCoord1('');
-      setCoord2('');
-      setVel('');
-      setRedshift('');
+      updateEntry({
+        referenceCoordinates: newKind,
+        name: '',
+        coord1: '',
+        coord2: '',
+        vel: '',
+        redshift: ''
+      });
 
       setSkyDirection1Error('');
       setSkyDirection2Error('');
       setRmFieldError('');
       setNameFieldError('');
-    }
-
-    setReferenceCoordinates(newKind);
-
-    if (setTarget) {
-      setTarget({
-        ...target,
-        kind: newKind
-      });
+    } else {
+      updateEntry({ referenceCoordinates: newKind });
     }
   };
 
   const setTheRedshift = (inValue: string) => {
     invalidatePendingResolve();
-    setRedshift(inValue);
-    if (setTarget) {
-      setTarget({ ...target, redshift: inValue });
-    }
+    updateEntry({ redshift: inValue });
   };
 
   const setTheVel = (inValue: string) => {
     invalidatePendingResolve();
-    setVel(inValue);
-    if (setTarget) {
-      setTarget({ ...target, vel: inValue });
-    }
+    updateEntry({ vel: inValue });
   };
 
   const setTheVelType = (inValue: number) => {
     invalidatePendingResolve();
-    setVelType(inValue);
-    if (setTarget) {
-      setTarget({ ...target, velType: inValue });
-    }
+    updateEntry({ velType: inValue });
   };
 
   const setTheVelUnit = (inValue: number) => {
     invalidatePendingResolve();
-    setVelUnit(inValue);
-    if (setTarget) {
-      setTarget({ ...target, velUnit: inValue });
-    }
-  };
-
-  const targetIn = (target: Target) => {
-    const incomingKind = target?.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value;
-    const incomingIsICRS = incomingKind === REFERENCE_COORDINATE_TYPE_ICRS.value;
-    setReferenceCoordinates(incomingKind);
-    setId(target.id);
-    setName(target?.name ?? '');
-    setCoord1(incomingIsICRS ? (target.raStr ?? '') : target.l != null ? String(target.l) : '');
-    setCoord2(incomingIsICRS ? (target.decStr ?? '') : target.b != null ? String(target.b) : '');
-    setVelType(target?.velType ?? DEFAULT_VELOCITY_TYPE);
-    setVel(target?.vel ?? '');
-    setVelUnit(target?.velUnit ?? DEFAULT_VELOCITY_UNIT);
-    setRedshift(target?.redshift ?? '');
+    updateEntry({ velUnit: inValue });
   };
 
   const blurCoord1 = () => {
-    setCoord1(trailingZeros(leadZero(coord1.trimEnd()).toString()));
+    updateEntry({ coord1: trailingZeros(leadZero(coord1.trimEnd()).toString()) });
   };
 
   const blurCoord2 = () => {
-    setCoord2(trailingZeros(leadZero(coord2.trimEnd()).toString()));
+    updateEntry({ coord2: trailingZeros(leadZero(coord2.trimEnd()).toString()) });
   };
 
   const blurName = () => {
-    const formatted = name.trimEnd();
-    setName(formatted);
-    if (setTarget) setTarget({ ...target, name: formatted });
+    updateEntry({ name: name.trimEnd() });
   };
 
   const blurVel = () => {
-    setVel(vel.trimEnd());
+    updateEntry({ vel: vel.trimEnd() });
   };
 
   const blurRedshift = () => {
-    setRedshift(redshift.trimEnd());
+    updateEntry({ redshift: redshift.trimEnd() });
   };
 
   React.useEffect(() => {
     setHelp('name.help');
-    if (target) {
-      targetIn(target);
-    }
   }, []);
 
   function formValidation() {
     let valid = true;
-    const targets = getProposal()?.targets;
-    targets?.forEach((rec) => {
+    form.getValues('targets')?.forEach((rec) => {
       if (rec.name.toLowerCase() === name.toLowerCase()) {
         valid = false;
         setNameFieldError(t('addTarget.error'));
@@ -287,15 +230,7 @@ export default function TargetEntry({
 
   const clearForm = () => {
     invalidatePendingResolve();
-    setName('');
-    setCoord1('');
-    setCoord2('');
-    setVel('');
-    setRedshift('');
-    setVelType(DEFAULT_VELOCITY_TYPE);
-    setVelUnit(DEFAULT_VELOCITY_UNIT);
-    setReferenceCoordinates(DEFAULT_REFERENCE_COORDINATES);
-    setFieldPattern(FIELD_PATTERN_POINTING_CENTRES);
+    entryValues.reset({ ...TARGET_ENTRY_DEFAULTS });
     setNameFieldError('');
     setSkyDirection1Error('');
     setSkyDirection2Error('');
@@ -359,7 +294,13 @@ export default function TargetEntry({
       const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
-        const defaults = await linkTarget(newTarget, getProposal, setProposal, authAxiosClient);
+        const defaults = await linkTarget(
+          newTarget,
+          getProposal,
+          setProposal,
+          form,
+          authAxiosClient
+        );
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
           clearForm();
@@ -373,11 +314,7 @@ export default function TargetEntry({
           generateAutoLinkData();
           return;
         }
-        const updatedProposal = {
-          ...getProposal(),
-          targets: [...(getProposal().targets ?? []), newTarget]
-        };
-        setProposal(updatedProposal);
+        form.setValue('targets', [...(form.getValues('targets') ?? []), newTarget]);
         notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
         clearForm();
       };
@@ -397,7 +334,7 @@ export default function TargetEntry({
 
     const targetLengthCheck = () => {
       const maxTargets = osdCyclePolicy?.maxTargets;
-      return maxTargets == null || (getProposal()?.targets?.length ?? 0) < maxTargets;
+      return maxTargets == null || targets.length < maxTargets;
     };
 
     const hasAnyFieldEntered = () => {
@@ -471,15 +408,13 @@ export default function TargetEntry({
         const redshift = response.radial_velocity?.redshift;
 
         if (redshift && redshift !== 0) {
-          setVelType(VELOCITY_TYPE.REDSHIFT);
-
-          setRedshift(String(redshift));
-          setVel('');
+          updateEntry({ velType: VELOCITY_TYPE.REDSHIFT, redshift: String(redshift), vel: '' });
         } else {
-          setVelType(VELOCITY_TYPE.VELOCITY);
-
-          setVel(velocity != null ? String(velocity) : '');
-          setRedshift('');
+          updateEntry({
+            velType: VELOCITY_TYPE.VELOCITY,
+            vel: velocity != null ? String(velocity) : '',
+            redshift: ''
+          });
         }
 
         setNameFieldError('');
@@ -581,7 +516,7 @@ export default function TargetEntry({
           onFocus={() => setHelp('fieldPattern.help')}
           testId="fieldPatternId"
           value={fieldPattern}
-          setValue={setFieldPattern}
+          setValue={(value: string) => updateEntry({ fieldPattern: value })}
           toolTip={t('fieldPattern.toolTip')}
         />
       </Box>
@@ -760,7 +695,7 @@ export default function TargetEntry({
           </Box>
         </Grid>
       )}
-      {!id && (
+      {!isEditMode && (
         <Grid
           sx={{
             pl: 10

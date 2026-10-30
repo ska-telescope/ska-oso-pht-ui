@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import '@testing-library/jest-dom';
 import {
   PROPOSAL_STATUS,
@@ -42,8 +43,8 @@ import MappingPutProposal, {
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
 
-// The form always holds these slices; they are not laid over the PDM yet
-const emptySlices = { targets: [], targetObservation: [], calibrationStrategy: [] };
+// The form's other slices match the proposal being saved, as they do when seeded from the store
+const formSlices = getProposalFormValues(MockProposalFrontend);
 
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
@@ -133,9 +134,9 @@ describe('PutProposal Service', () => {
       const base = MappingPutProposal(MockProposalFrontend, status);
 
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
+        ...formSlices,
         title: 'Title from RHF',
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
-        ...emptySlices
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE
       });
 
       expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
@@ -157,9 +158,9 @@ describe('PutProposal Service', () => {
     mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
 
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
+      ...formSlices,
       title: '',
-      proposalType: PROPOSAL_TYPE.STANDARD,
-      ...emptySlices
+      proposalType: PROPOSAL_TYPE.STANDARD
     });
 
     expect(mockedAuthClient.put).toHaveBeenCalledWith(

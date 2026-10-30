@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { UseFormReturn } from 'react-hook-form';
 import { getTitleSchema } from './title';
 import { getTargetsSchema } from './targets';
 import { getTargetObservationSchema } from './targetObservation';
@@ -26,3 +27,9 @@ export function getProposalSchema() {
 }
 
 export type ProposalType = z.input<ReturnType<typeof getProposalSchema>>;
+
+/** What helpers outside React need from the global form to read and write its slices. */
+export type ProposalFormAccess = Pick<UseFormReturn<ProposalType>, 'getValues' | 'setValue'>;
+
+/** The slices the form owns that the legacy store still holds a copy of for its readers. */
+export const STORE_COPIED_SLICES = ['targets', 'targetObservation', 'calibrationStrategy'] as const;
