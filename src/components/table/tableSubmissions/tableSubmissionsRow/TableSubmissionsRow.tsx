@@ -1,4 +1,4 @@
-import { TableRow, TableCell, Box, Typography } from '@mui/material';
+import { Box, TableCell, TableRow, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@utils/storage/store';
 import { getColors } from '@ska-telescope/ska-gui-components';
@@ -6,8 +6,7 @@ import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
-import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
-import { accessUpdate } from '@/utils/aaa/aaaUtils';
+import { accessUpdate, useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
 import { NOT_SPECIFIED, PROPOSAL_STATUS } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -53,14 +52,13 @@ export default function TableSubmissionsRow({
     item.status === PROPOSAL_STATUS.DRAFT || item.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const getStatusColor = (status: string) => {
-    const colors = getColors({
+    return getColors({
       type: 'proposalStatus',
       colors: status,
       asArray: true,
       paletteIndex: Number(localStorage.getItem('skao_accessibility_mode')),
       dim: 1
     });
-    return colors;
   };
 
   const nonTitleTextCellSx = {

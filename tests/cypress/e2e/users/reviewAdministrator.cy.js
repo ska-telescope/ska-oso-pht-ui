@@ -1,0 +1,59 @@
+import {
+  clickUserMenu,
+  clickUserMenuPanels,
+  clickUserMenuProposals,
+  visitWithAuth,
+  clearLocalStorage,
+  clickUserMenuOverview,
+  verifyUserMenuOverview,
+  verifyUserMenuProposals,
+  verifyUserMenuPanels,
+  verifyUserMenuReviews,
+  verifyUserMenuDecisions
+} from '../../support/common';
+import { reviewerAdmin } from '../../support/users.js';
+
+describe('Review Administrator', () => {
+  beforeEach(() => {
+    visitWithAuth(reviewerAdmin);
+  });
+
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
+  // TODO Provision an 'Administrator' test user and then reenable (see users.js).
+  it.skip('Validate menu options', () => {
+    clickUserMenu();
+    verifyUserMenuOverview(true);
+    verifyUserMenuProposals(true);
+    verifyUserMenuPanels(true);
+    verifyUserMenuReviews(true);
+    verifyUserMenuDecisions(true);
+  });
+
+  it.skip('Navigate using the dropdown menu', () => {
+    clickUserMenuOverview();
+    clickUserMenuPanels();
+    clickUserMenuProposals();
+  });
+
+  // The following all still assert on MockPanelBackendList's specific fixture content ("The
+  // Milky Way View", "Aisha") - not yet converted to handle a real backend's panel/reviewer data,
+  // so skip until they are; this isn't a test-code fix for the fixture text itself.
+  it('Display a list of proposals', function () {
+    this.skip();
+  });
+
+  it('Display a list of reviewers', function () {
+    this.skip();
+  });
+
+  it('Add a reviewer to a panel', function () {
+    this.skip();
+  });
+
+  it('Add a proposal to a panel', function () {
+    this.skip();
+  });
+});

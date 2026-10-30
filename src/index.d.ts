@@ -3,6 +3,10 @@ declare module '@ska-telescope/ska-gui-components';
 declare module 'd3-textwrap';
 declare module '*.css';
 declare module '*.png';
+declare module '*?url' {
+  const url: string;
+  export default url;
+}
 declare module '@/env' {
   export const env: {
     production: boolean;

@@ -1,0 +1,146 @@
+import {
+  addM2Target,
+  checkFieldDisabled,
+  clearLocalStorage,
+  clickEdit,
+  clickFirstRowOfTargetTable,
+  clickStatusIconNav,
+  clickToAddTarget,
+  enterTargetField,
+  pageConfirmed,
+  updateTargetField,
+  verifyFieldError,
+  verifyTargetInTargetTable,
+  createScienceIdeaSession,
+  createStandardProposalSession
+} from '../../../support/common.js';
+import { standardUser } from '../../../support/users.js';
+
+afterEach(() => {
+  clearLocalStorage();
+});
+
+describe('Science Verification: Target entry validation', () => {
+  beforeEach(() => {
+    createScienceIdeaSession(standardUser);
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
+  });
+
+  it('SV: Verify add target button is disabled when target coordinate fields are invalid', () => {
+    enterTargetField('name', 'M2'); // enter valid target name
+
+    enterTargetField('skyDirectionValue1', '1:0:0'); // enter invalid coordinate
+    verifyFieldError('skyDirectionValue1', 'Input formatted incorrectly', true); //verify field error on coordinate field
+
+    enterTargetField('skyDirectionValue2', '1:0:0'); // enter invalid coordinate
+    verifyFieldError('skyDirectionValue2', 'Input formatted incorrectly', true); //verify field error on coordinate field
+
+    checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target coordinate fields are invalid
+  });
+
+  it('SV: Verify add target button is disabled when target name field is invalid', () => {
+    enterTargetField('skyDirectionValue1', '1:00:00'); // enter valid coordinate
+    enterTargetField('skyDirectionValue2', '1:00:00'); // enter valid coordinate
+
+    verifyFieldError('name', 'A value is required', true); //verify field error on name field, as is empty
+
+    checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target name field is invalid
+  });
+
+  it('SV: Verify submitting an edited target is disabled when name is invalid', () => {
+    //add target
+    addM2Target();
+    clickToAddTarget();
+
+    //verify target in target table
+    verifyTargetInTargetTable('M2', '21:33:27.0200', '-00:49:23.700', '-3.6');
+
+    // edit target
+    clickFirstRowOfTargetTable();
+    clickEdit();
+
+    // update target name to invalid value
+    updateTargetField('name', '  '); // enter invalid target name
+    verifyFieldError('name', 'Please provide a target name', true); //verify field error on name field, as is invalid
+    checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled when target name field is invalid
+  });
+
+  it('SV: Verify submitting an edited target is disabled when ra is invalid', () => {
+    //add target
+    addM2Target();
+    clickToAddTarget();
+
+    //verify target in target table
+    verifyTargetInTargetTable('M2', '21:33:27.0200', '-00:49:23.700', '-3.6');
+
+    // edit target
+    clickFirstRowOfTargetTable();
+    clickEdit();
+
+    // update target ra to invalid value
+    updateTargetField('skyDirectionValue1', '1'); // enter invalid coordinate
+    verifyFieldError('skyDirectionValue1', 'Input formatted incorrectly', true); //verify field error on ra field, as is invalid
+    checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
+  });
+
+  it('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
+    //add target
+    addM2Target();
+    clickToAddTarget();
+
+    //verify target in target table
+    verifyTargetInTargetTable('M2', '21:33:27.0200', '-00:49:23.700', '-3.6');
+
+    // edit target
+    clickFirstRowOfTargetTable();
+    clickEdit();
+
+    // update target dec to invalid value
+    updateTargetField('skyDirectionValue2', '1'); // enter invalid coordinate
+    verifyFieldError('skyDirectionValue2', 'Input formatted incorrectly', true); //verify field error on dec field, as is invalid
+    checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
+  });
+});
+
+// No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification one
+// is seeded) - stub-only until one is, this isn't a test-code fix.
+//
+// Skipped via describe.skip() (not this.skip() inside a function(){} beforeEach) - see
+// reviewScience.cy.js's comment: a function(){...this.skip()} test/hook sharing a spec with
+// cy.intercept().as() elsewhere (here, createScienceIdeaSession in the SV describe above) reliably
+// corrupts Cypress's command tracking. describe.skip() never invokes any of its hooks or tests at
+// all, so it sidesteps that entirely.
+describe.skip('Proposal Flow: Target entry validation', () => {
+  beforeEach(() => {
+    createStandardProposalSession(standardUser);
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
+  });
+
+  it('Proposal: Verify name field error when target is duplicated', () => {
+    //add target
+    addM2Target();
+    clickToAddTarget();
+
+    //attempt to add target with the same name
+    enterTargetField('name', 'M2'); // enter valid target name
+    enterTargetField('skyDirectionValue1', '1:00:00'); // enter valid coordinate
+    enterTargetField('skyDirectionValue2', '1:00:00'); // enter valid coordinate
+    clickToAddTarget();
+
+    //verify field error is present
+    verifyFieldError('name', 'Failed to add target - check for duplicate', true); //verify field error on name field, as is empty
+    checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target name field is invalid
+
+    //update target name which is not a duplicate
+    enterTargetField('name', 'M1-update'); // enter valid target name
+
+    //verify field error is present
+    verifyFieldError('name', 'Failed to add target - check for duplicate', false); //verify field error on name field, as is empty
+
+    checkFieldDisabled('addTargetButton', false); // verify add target button is now enabled
+  });
+});
