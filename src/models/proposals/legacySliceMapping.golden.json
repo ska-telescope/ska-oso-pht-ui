@@ -1,0 +1,1029 @@
+{
+  "MockSlicesPdm": {
+    "form": {
+      "targets": [
+        {
+          "kind": 0,
+          "epoch": 2000,
+          "parallax": 0.1,
+          "id": "target-icrs",
+          "name": "M2",
+          "redshift": "0",
+          "raReferenceFrame": "LSRK",
+          "raDefinition": "RADIO",
+          "velType": 1,
+          "vel": "25",
+          "velUnit": 0,
+          "pointingPattern": {
+            "active": "SinglePointParameters",
+            "parameters": [
+              {
+                "kind": "SinglePointParameters",
+                "offsetXArcsec": 0.5,
+                "offsetYArcsec": 0.5
+              }
+            ]
+          },
+          "raStr": "21:33:27.0200",
+          "decStr": "-00:49:23.700",
+          "pmRa": 1.5,
+          "pmDec": -2.5
+        },
+        {
+          "kind": 1,
+          "epoch": 2000,
+          "id": "target-galactic",
+          "name": "Galactic source",
+          "b": -3.25,
+          "l": 12.5,
+          "redshift": "0.5",
+          "raReferenceFrame": "BARYCENTRIC",
+          "raDefinition": "OPTICAL",
+          "velType": 1,
+          "vel": "0",
+          "velUnit": 1,
+          "pointingPattern": {},
+          "pmL": 0.5,
+          "pmB": 0.25
+        },
+        {
+          "kind": 2,
+          "id": "target-sso",
+          "name": "Jupiter",
+          "redshift": "0",
+          "raReferenceFrame": "LSRK",
+          "raDefinition": "RADIO",
+          "velType": 1,
+          "vel": "0",
+          "velUnit": 0,
+          "pointingPattern": {}
+        }
+      ],
+      "targetObservation": [
+        {
+          "targetId": "target-icrs",
+          "observationId": "obs-continuum",
+          "dataProductsSDPId": "SDP-continuum",
+          "sensCalc": {
+            "statusGUI": 0,
+            "error": "",
+            "section1": [
+              {
+                "field": "continuumSensitivityWeighted",
+                "value": "107.5",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumConfusionNoise",
+                "value": "1.02",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumTotalSensitivity",
+                "value": "107.6",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumSynthBeamSize",
+                "value": "3.85 x 3.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "continuumSurfaceBrightnessSensitivity",
+                "value": "282.7",
+                "units": "K"
+              }
+            ],
+            "section2": [
+              {
+                "field": "spectralSensitivityWeighted",
+                "value": "18.7",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralConfusionNoise",
+                "value": "3.53",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "spectralTotalSensitivity",
+                "value": "18.8",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralSynthBeamSize",
+                "value": "5.84 x 5.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "spectralSurfaceBrightnessSensitivity",
+                "value": "19489.2",
+                "units": "K"
+              }
+            ],
+            "section3": [
+              {
+                "field": "integrationTime",
+                "value": "1",
+                "units": "h"
+              }
+            ]
+          }
+        },
+        {
+          "targetId": "target-galactic",
+          "observationId": "obs-continuum-spectral",
+          "dataProductsSDPId": "SDP-continuum-spectral",
+          "sensCalc": {
+            "statusGUI": 0,
+            "error": "",
+            "section1": [
+              {
+                "field": "continuumConfusionNoise",
+                "value": "1.02",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumSynthBeamSize",
+                "value": "3.85 x 3.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "continuumIntegrationTime",
+                "value": "10",
+                "units": "uJy/beam"
+              }
+            ],
+            "section2": [
+              {
+                "field": "spectralConfusionNoise",
+                "value": "3.53",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "spectralSynthBeamSize",
+                "value": "5.84 x 5.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "spectralIntegrationTime",
+                "value": "10",
+                "units": "uJy/beam"
+              }
+            ],
+            "section3": [
+              {
+                "field": "sensitivity",
+                "value": "10",
+                "units": "uJy/beam"
+              }
+            ]
+          }
+        },
+        {
+          "targetId": "target-sso",
+          "observationId": "obs-spectral",
+          "dataProductsSDPId": "SDP-spectral",
+          "sensCalc": {
+            "statusGUI": 0,
+            "error": "",
+            "section1": [
+              {
+                "field": "spectralSensitivityWeighted",
+                "value": "18.7",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralConfusionNoise",
+                "value": "3.53",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "spectralTotalSensitivity",
+                "value": "18.8",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralSynthBeamSize",
+                "value": "5.84 x 5.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "spectralSurfaceBrightnessSensitivity",
+                "value": "19489.2",
+                "units": "K"
+              }
+            ],
+            "section2": [],
+            "section3": [
+              {
+                "field": "integrationTime",
+                "value": "1",
+                "units": "h"
+              }
+            ]
+          }
+        },
+        {
+          "targetId": "target-icrs",
+          "observationId": "obs-pst",
+          "dataProductsSDPId": "SDP-pst",
+          "sensCalc": {
+            "statusGUI": 0,
+            "error": "",
+            "section1": [
+              {
+                "field": "continuumSensitivityWeighted",
+                "value": "107.5",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumConfusionNoise",
+                "value": "1.02",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumTotalSensitivity",
+                "value": "107.6",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumSynthBeamSize",
+                "value": "3.85 x 3.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "continuumSurfaceBrightnessSensitivity",
+                "value": "282.7",
+                "units": "K"
+              }
+            ],
+            "section2": [
+              {
+                "field": "spectralSensitivityWeighted",
+                "value": "18.7",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralConfusionNoise",
+                "value": "3.53",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "spectralTotalSensitivity",
+                "value": "18.8",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralSynthBeamSize",
+                "value": "5.84 x 5.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "spectralSurfaceBrightnessSensitivity",
+                "value": "19489.2",
+                "units": "K"
+              }
+            ],
+            "section3": [
+              {
+                "field": "integrationTime",
+                "value": "1",
+                "units": "h"
+              }
+            ]
+          }
+        },
+        {
+          "targetId": "target-galactic",
+          "observationId": "obs-continuum",
+          "dataProductsSDPId": "SDP-continuum"
+        }
+      ],
+      "calibrationStrategy": [
+        {
+          "observatoryDefined": true,
+          "id": "cal-with-calibrators",
+          "observationIdRef": "obs-continuum",
+          "calibrators": [
+            {
+              "targetId": "",
+              "name": "3C286",
+              "calibrationIntent": "flux",
+              "durationSeconds": 600,
+              "selectionStrategy": "highest_elevation",
+              "relativeToScan": "before_each_scan",
+              "notes": null
+            },
+            {
+              "targetId": "",
+              "name": "3C48",
+              "calibrationIntent": "flux",
+              "durationSeconds": 600,
+              "selectionStrategy": "highest_elevation",
+              "relativeToScan": "after_each_scan",
+              "notes": null
+            }
+          ],
+          "notes": null
+        },
+        {
+          "observatoryDefined": false,
+          "id": "cal-without-calibrators",
+          "observationIdRef": "obs-pst",
+          "calibrators": null,
+          "notes": "User defined calibration."
+        }
+      ]
+    },
+    "pdm": {
+      "targets": [
+        {
+          "name": "M2",
+          "target_id": "target-icrs",
+          "reference_coordinate": {
+            "kind": "icrs",
+            "ra_str": "21:33:27.0200",
+            "dec_str": "-00:49:23.700",
+            "pm_ra": 1.5,
+            "pm_dec": -2.5,
+            "epoch": 2000,
+            "parallax": 0.1
+          },
+          "radial_velocity": {
+            "quantity": {
+              "value": 0,
+              "unit": "km/s"
+            },
+            "definition": "RADIO",
+            "reference_frame": "LSRK",
+            "redshift": 0
+          }
+        },
+        {
+          "name": "Galactic source",
+          "target_id": "target-galactic",
+          "reference_coordinate": {
+            "kind": "galactic",
+            "l": 12.5,
+            "b": -3.25,
+            "pm_l": 0.5,
+            "pm_b": 0.25,
+            "epoch": 2000
+          },
+          "radial_velocity": {
+            "quantity": {
+              "value": 0,
+              "unit": "m/s"
+            },
+            "definition": "RADIO",
+            "reference_frame": "BARYCENTRIC",
+            "redshift": 0.5
+          }
+        },
+        {
+          "name": "Jupiter",
+          "target_id": "target-sso",
+          "reference_coordinate": {
+            "kind": "special",
+            "name": "Jupiter"
+          },
+          "radial_velocity": {
+            "quantity": {
+              "value": 0,
+              "unit": "km/s"
+            },
+            "definition": "RADIO",
+            "reference_frame": "LSRK",
+            "redshift": 0
+          }
+        }
+      ],
+      "result_details": [
+        {
+          "observation_set_ref": "obs-continuum",
+          "data_product_ref": "SDP-continuum",
+          "target_ref": "target-icrs",
+          "result": {
+            "supplied_type": "integration_time",
+            "weighted_continuum_sensitivity": {
+              "value": 107.5,
+              "unit": "μJy/beam"
+            },
+            "total_continuum_sensitivity": {
+              "value": 107.6,
+              "unit": "μJy/beam"
+            },
+            "weighted_spectral_sensitivity": {
+              "value": 18.7,
+              "unit": "mJy/beam"
+            },
+            "total_spectral_sensitivity": {
+              "value": 18.8,
+              "unit": "mJy/beam"
+            },
+            "surface_brightness_sensitivity": {
+              "continuum": 282.7,
+              "spectral": 19489.2,
+              "unit": "K"
+            }
+          },
+          "continuum_confusion_noise": {
+            "value": 1.02,
+            "unit": "μJy/beam"
+          },
+          "spectral_confusion_noise": {
+            "value": 3.53,
+            "unit": "μJy/beam"
+          },
+          "synthesized_beam_size": {
+            "spectral": "5.84 x 5.02",
+            "continuum": "3.85 x 3.02",
+            "unit": "arcsec²"
+          }
+        },
+        {
+          "observation_set_ref": "obs-continuum-spectral",
+          "data_product_ref": "SDP-continuum-spectral",
+          "target_ref": "target-galactic",
+          "result": {
+            "supplied_type": "sensitivity",
+            "continuum": {
+              "value": 10,
+              "unit": "uJy/beam"
+            },
+            "spectral": {
+              "value": 10,
+              "unit": "uJy/beam"
+            }
+          },
+          "continuum_confusion_noise": {
+            "value": 1.02,
+            "unit": "μJy/beam"
+          },
+          "spectral_confusion_noise": {
+            "value": 3.53,
+            "unit": "μJy/beam"
+          },
+          "synthesized_beam_size": {
+            "spectral": "5.84 x 5.02",
+            "continuum": "3.85 x 3.02",
+            "unit": "arcsec²"
+          }
+        },
+        {
+          "observation_set_ref": "obs-spectral",
+          "data_product_ref": "SDP-spectral",
+          "target_ref": "target-sso",
+          "result": {
+            "supplied_type": "integration_time",
+            "weighted_continuum_sensitivity": {
+              "value": 0,
+              "unit": ""
+            },
+            "total_continuum_sensitivity": {
+              "value": 0,
+              "unit": ""
+            },
+            "weighted_spectral_sensitivity": {
+              "value": 18.7,
+              "unit": "mJy/beam"
+            },
+            "total_spectral_sensitivity": {
+              "value": 18.8,
+              "unit": "mJy/beam"
+            },
+            "surface_brightness_sensitivity": {
+              "continuum": 0,
+              "spectral": 19489.2,
+              "unit": "K"
+            }
+          },
+          "continuum_confusion_noise": {
+            "value": 0,
+            "unit": ""
+          },
+          "spectral_confusion_noise": {
+            "value": 3.53,
+            "unit": "μJy/beam"
+          },
+          "synthesized_beam_size": {
+            "spectral": "5.84 x 5.02",
+            "continuum": "",
+            "unit": "arcsec²"
+          }
+        },
+        {
+          "observation_set_ref": "obs-pst",
+          "data_product_ref": "SDP-pst",
+          "target_ref": "target-icrs",
+          "result": {
+            "supplied_type": "integration_time",
+            "weighted_continuum_sensitivity": {
+              "value": 107.5,
+              "unit": "μJy/beam"
+            },
+            "total_continuum_sensitivity": {
+              "value": 107.6,
+              "unit": "μJy/beam"
+            },
+            "weighted_spectral_sensitivity": {
+              "value": 18.7,
+              "unit": "mJy/beam"
+            },
+            "total_spectral_sensitivity": {
+              "value": 18.8,
+              "unit": "mJy/beam"
+            },
+            "surface_brightness_sensitivity": {
+              "continuum": 282.7,
+              "spectral": 19489.2,
+              "unit": "K"
+            }
+          },
+          "continuum_confusion_noise": {
+            "value": 1.02,
+            "unit": "μJy/beam"
+          },
+          "spectral_confusion_noise": {
+            "value": 3.53,
+            "unit": "μJy/beam"
+          },
+          "synthesized_beam_size": {
+            "spectral": "5.84 x 5.02",
+            "continuum": "3.85 x 3.02",
+            "unit": "arcsec²"
+          }
+        },
+        {
+          "observation_set_ref": "obs-continuum",
+          "data_product_ref": "SDP-continuum",
+          "target_ref": "target-galactic",
+          "result": null,
+          "continuum_confusion_noise": null,
+          "spectral_confusion_noise": null,
+          "synthesized_beam_size": null
+        }
+      ],
+      "calibration_strategy": [
+        {
+          "observatory_defined": true,
+          "calibration_id": "cal-with-calibrators",
+          "observation_set_ref": "obs-continuum",
+          "calibrators": [
+            {
+              "kind": "flux",
+              "name": "3C286"
+            },
+            {
+              "kind": "flux",
+              "name": "3C48"
+            }
+          ],
+          "notes": null
+        },
+        {
+          "observatory_defined": false,
+          "calibration_id": "cal-without-calibrators",
+          "observation_set_ref": "obs-pst",
+          "calibrators": null,
+          "notes": "User defined calibration."
+        }
+      ]
+    }
+  },
+  "MockProposalBackend": {
+    "form": {
+      "targets": [
+        {
+          "kind": 0,
+          "epoch": 2000,
+          "id": "target-123",
+          "name": "target",
+          "redshift": "0",
+          "raReferenceFrame": "LSRK",
+          "raDefinition": "RADIO",
+          "velType": 1,
+          "vel": "0",
+          "velUnit": 0,
+          "pointingPattern": {
+            "active": "SinglePointParameters",
+            "parameters": [
+              {
+                "kind": "SinglePointParameters",
+                "offsetXArcsec": 0.5,
+                "offsetYArcsec": 0.5
+              }
+            ]
+          },
+          "raStr": "00:00:00.0",
+          "decStr": "00:00:00.0"
+        },
+        {
+          "kind": 0,
+          "epoch": 2000,
+          "id": "target-456",
+          "name": "target2",
+          "redshift": "0",
+          "raReferenceFrame": "LSRK",
+          "raDefinition": "RADIO",
+          "velType": 1,
+          "vel": "0",
+          "velUnit": 0,
+          "pointingPattern": {
+            "active": "SinglePointParameters",
+            "parameters": [
+              {
+                "kind": "SinglePointParameters",
+                "offsetXArcsec": 0.5,
+                "offsetYArcsec": 0.5
+              }
+            ]
+          },
+          "raStr": "05:34:30.900",
+          "decStr": "+22:00:53.000"
+        },
+        {
+          "kind": 0,
+          "epoch": 2000,
+          "id": "target-789",
+          "name": "M2",
+          "redshift": "0",
+          "raReferenceFrame": "LSRK",
+          "raDefinition": "RADIO",
+          "velType": 1,
+          "vel": "0",
+          "velUnit": 0,
+          "pointingPattern": {
+            "active": "SinglePointParameters",
+            "parameters": [
+              {
+                "kind": "SinglePointParameters",
+                "offsetXArcsec": 0.5,
+                "offsetYArcsec": 0.5
+              }
+            ]
+          },
+          "raStr": "21:33:27.0200",
+          "decStr": "-00:49:23.700"
+        }
+      ],
+      "targetObservation": [
+        {
+          "targetId": "target-789",
+          "observationId": "obs-obR1Ej",
+          "dataProductsSDPId": "SDP-2",
+          "sensCalc": {
+            "statusGUI": 0,
+            "error": "",
+            "section1": [
+              {
+                "field": "continuumSensitivityWeighted",
+                "value": "107.53904853211655",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumConfusionNoise",
+                "value": "1.0183425082744668",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumTotalSensitivity",
+                "value": "107.54387002826836",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "continuumSynthBeamSize",
+                "value": "3.85 x 3.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "continuumSurfaceBrightnessSensitivity",
+                "value": "282.72036408677496",
+                "units": "K"
+              }
+            ],
+            "section2": [
+              {
+                "field": "spectralSensitivityWeighted",
+                "value": "18.72201668513227",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralConfusionNoise",
+                "value": "3.52582756374021",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "spectralTotalSensitivity",
+                "value": "18.72201701713336",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralSynthBeamSize",
+                "value": "5.84 x 5.02",
+                "units": "arcsec²"
+              },
+              {
+                "field": "spectralSurfaceBrightnessSensitivity",
+                "value": "19489.22259007647",
+                "units": "K"
+              }
+            ],
+            "section3": [
+              {
+                "field": "integrationTime",
+                "value": "1",
+                "units": "h"
+              }
+            ]
+          }
+        }
+      ],
+      "calibrationStrategy": [
+        {
+          "observatoryDefined": true,
+          "id": "cal-001",
+          "observationIdRef": "obs-obR1Ej",
+          "calibrators": null,
+          "notes": "This is an observatory defined calibration strategy."
+        }
+      ]
+    },
+    "pdm": {
+      "targets": [
+        {
+          "name": "target",
+          "target_id": "target-123",
+          "reference_coordinate": {
+            "kind": "icrs",
+            "ra_str": "00:00:00.0",
+            "dec_str": "00:00:00.0",
+            "epoch": 2000
+          },
+          "radial_velocity": {
+            "quantity": {
+              "value": 0,
+              "unit": "km/s"
+            },
+            "definition": "RADIO",
+            "reference_frame": "LSRK",
+            "redshift": 0
+          }
+        },
+        {
+          "name": "target2",
+          "target_id": "target-456",
+          "reference_coordinate": {
+            "kind": "icrs",
+            "ra_str": "05:34:30.900",
+            "dec_str": "+22:00:53.000",
+            "epoch": 2000
+          },
+          "radial_velocity": {
+            "quantity": {
+              "value": 0,
+              "unit": "km/s"
+            },
+            "definition": "RADIO",
+            "reference_frame": "LSRK",
+            "redshift": 0
+          }
+        },
+        {
+          "name": "M2",
+          "target_id": "target-789",
+          "reference_coordinate": {
+            "kind": "icrs",
+            "ra_str": "21:33:27.0200",
+            "dec_str": "-00:49:23.700",
+            "epoch": 2000
+          },
+          "radial_velocity": {
+            "quantity": {
+              "value": 0,
+              "unit": "km/s"
+            },
+            "definition": "RADIO",
+            "reference_frame": "LSRK",
+            "redshift": 0
+          }
+        }
+      ],
+      "result_details": [
+        {
+          "observation_set_ref": "obs-obR1Ej",
+          "data_product_ref": "SDP-2",
+          "target_ref": "target-789",
+          "result": {
+            "supplied_type": "integration_time",
+            "weighted_continuum_sensitivity": {
+              "value": 107.53904853211655,
+              "unit": "μJy/beam"
+            },
+            "total_continuum_sensitivity": {
+              "value": 107.54387002826836,
+              "unit": "μJy/beam"
+            },
+            "weighted_spectral_sensitivity": {
+              "value": 18.72201668513227,
+              "unit": "mJy/beam"
+            },
+            "total_spectral_sensitivity": {
+              "value": 18.72201701713336,
+              "unit": "mJy/beam"
+            },
+            "surface_brightness_sensitivity": {
+              "continuum": 282.72036408677496,
+              "spectral": 19489.22259007647,
+              "unit": "K"
+            }
+          },
+          "continuum_confusion_noise": {
+            "value": 1.0183425082744668,
+            "unit": "μJy/beam"
+          },
+          "spectral_confusion_noise": {
+            "value": 3.52582756374021,
+            "unit": "μJy/beam"
+          },
+          "synthesized_beam_size": {
+            "spectral": "5.84 x 5.02",
+            "continuum": "3.85 x 3.02",
+            "unit": "arcsec²"
+          }
+        }
+      ],
+      "calibration_strategy": [
+        {
+          "observatory_defined": true,
+          "calibration_id": "cal-001",
+          "observation_set_ref": "obs-obR1Ej",
+          "calibrators": null,
+          "notes": "This is an observatory defined calibration strategy."
+        }
+      ]
+    }
+  },
+  "MockProposalBackendZoom": {
+    "form": {
+      "targets": [
+        {
+          "kind": 0,
+          "epoch": 2000,
+          "id": "target-123",
+          "name": "target",
+          "redshift": "0",
+          "raReferenceFrame": "LSRK",
+          "raDefinition": "RADIO",
+          "velType": 1,
+          "vel": "-3.6",
+          "velUnit": 0,
+          "pointingPattern": {
+            "active": "SinglePointParameters",
+            "parameters": [
+              {
+                "kind": "SinglePointParameters",
+                "offsetXArcsec": 0.5,
+                "offsetYArcsec": 0.5
+              }
+            ]
+          },
+          "raStr": "21:33:27.0200",
+          "decStr": "-00:49:23.700"
+        }
+      ],
+      "targetObservation": [
+        {
+          "targetId": "target-789",
+          "observationId": "obs-arMIoY",
+          "dataProductsSDPId": "SDP-1",
+          "sensCalc": {
+            "statusGUI": 0,
+            "error": "",
+            "section1": [
+              {
+                "field": "spectralSensitivityWeighted",
+                "value": "29.69626339640881",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralConfusionNoise",
+                "value": "22.18293905542935",
+                "units": "μJy/beam"
+              },
+              {
+                "field": "spectralTotalSensitivity",
+                "value": "29.696271681672012",
+                "units": "mJy/beam"
+              },
+              {
+                "field": "spectralSynthBeamSize",
+                "value": "13.47 x 11.10",
+                "units": "arcsec²"
+              },
+              {
+                "field": "spectralSurfaceBrightnessSensitivity",
+                "value": "6071.553983562558",
+                "units": "K"
+              }
+            ],
+            "section2": [],
+            "section3": [
+              {
+                "field": "integrationTime",
+                "value": "1",
+                "units": "h"
+              }
+            ]
+          }
+        }
+      ],
+      "calibrationStrategy": [
+        {
+          "observatoryDefined": true,
+          "id": "cal-002",
+          "observationIdRef": "obs-arMIoY",
+          "calibrators": null,
+          "notes": "This is an other observatory defined calibration strategy."
+        }
+      ]
+    },
+    "pdm": {
+      "targets": [
+        {
+          "name": "target",
+          "target_id": "target-123",
+          "reference_coordinate": {
+            "kind": "icrs",
+            "ra_str": "21:33:27.0200",
+            "dec_str": "-00:49:23.700",
+            "epoch": 2000
+          },
+          "radial_velocity": {
+            "quantity": {
+              "value": 0,
+              "unit": "km/s"
+            },
+            "definition": "RADIO",
+            "reference_frame": "LSRK",
+            "redshift": 0
+          }
+        }
+      ],
+      "result_details": [
+        {
+          "observation_set_ref": "obs-arMIoY",
+          "data_product_ref": "SDP-1",
+          "target_ref": "target-789",
+          "result": {
+            "supplied_type": "integration_time",
+            "weighted_continuum_sensitivity": {
+              "value": 0,
+              "unit": ""
+            },
+            "total_continuum_sensitivity": {
+              "value": 0,
+              "unit": ""
+            },
+            "weighted_spectral_sensitivity": {
+              "value": 29.69626339640881,
+              "unit": "mJy/beam"
+            },
+            "total_spectral_sensitivity": {
+              "value": 29.696271681672012,
+              "unit": "mJy/beam"
+            },
+            "surface_brightness_sensitivity": {
+              "continuum": 0,
+              "spectral": 6071.553983562558,
+              "unit": "K"
+            }
+          },
+          "continuum_confusion_noise": {
+            "value": 0,
+            "unit": ""
+          },
+          "spectral_confusion_noise": {
+            "value": 22.18293905542935,
+            "unit": "μJy/beam"
+          },
+          "synthesized_beam_size": {
+            "spectral": "13.47 x 11.10",
+            "continuum": "",
+            "unit": "arcsec²"
+          }
+        }
+      ],
+      "calibration_strategy": [
+        {
+          "observatory_defined": true,
+          "calibration_id": "cal-002",
+          "observation_set_ref": "obs-arMIoY",
+          "calibrators": null,
+          "notes": "This is an other observatory defined calibration strategy."
+        }
+      ]
+    }
+  }
+}

@@ -51,10 +51,11 @@ export function getTargetSchema() {
     pmDec: z.number().optional(),
     parallax: z.number().optional(),
     epoch: z.number().optional(),
+    // Loaded with both fields undefined when the PDM target has no pointing pattern
     pointingPattern: z
       .object({
-        active: z.string(),
-        parameters: z.array(pointingPatternParamsSchema)
+        active: z.string().optional(),
+        parameters: z.array(pointingPatternParamsSchema).optional()
       })
       .optional()
   });

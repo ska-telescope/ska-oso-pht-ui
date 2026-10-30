@@ -5,6 +5,7 @@ import {
   STATUS_OK,
   STATUS_PARTIAL,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_PST
 } from '@/utils/constants';
@@ -263,9 +264,24 @@ export const targetObservationFromPdm = (
 type Link = TargetObservationType[number];
 type SpectralSection = 'section1' | 'section2';
 
-// Observation types as they appear in the PDM observation sets
+/** Observation type by observation ID, which decides how each link's results are laid out. */
+export type ObservationTypes = Record<string, string>;
+
+export const observationTypesFromPdm = (
+  observationSets: ObservationSets[] = []
+): ObservationTypes =>
+  Object.fromEntries(
+    observationSets.map((obs) => [
+      obs.observation_set_id,
+      obs.observation_type_details?.observation_type as string
+    ])
+  );
+
+// Accepts the legacy store's spelling (continuumSpectral) and the PDM's (continuum and spectral line)
 const isContinuum = (type: string) =>
-  type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL_LONG;
+  type === TYPE_CONTINUUM ||
+  type === TYPE_CONTINUUM_SPECTRAL ||
+  type === TYPE_CONTINUUM_SPECTRAL_LONG;
 const isPST = (type: string) => type === TYPE_PST;
 
 interface SuppliedRelatedFields {
@@ -383,18 +399,15 @@ export const getSuppliedFieldsIntegrationTime = (
   return params;
 };
 
-const getObsType = (incTarObs: Link, observationSets: ObservationSets[]): string => {
-  const obs = observationSets.find((item) => item?.observation_set_id === incTarObs.observationId);
-  return obs?.observation_type_details?.observation_type ?? TYPE_CONTINUUM;
-};
+const getObsType = (incTarObs: Link, observationTypes: ObservationTypes): string =>
+  observationTypes[incTarObs.observationId] ?? TYPE_CONTINUUM;
 
 const getSpectralSection = (obsType: string): SpectralSection =>
   isContinuum(obsType) || isPST(obsType) ? 'section2' : 'section1';
 
-// Takes the PDM observation sets, as the result layout depends on each linked observation's type
 export const targetObservationToPdm = (
   incTargetObservations: TargetObservationType,
-  observationSets: ObservationSets[] = []
+  observationTypes: ObservationTypes = {}
 ): Result[] => {
   const resultsArr = [];
   for (const tarObs of incTargetObservations) {
@@ -412,7 +425,7 @@ export const targetObservationToPdm = (
     const sensCalc = tarObs.sensCalc;
 
     if (sensCalc != undefined && sensCalc.statusGUI == STATUS_OK) {
-      const obsType = getObsType(tarObs, observationSets);
+      const obsType = getObsType(tarObs, observationTypes);
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
         sensCalc.section3?.[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';

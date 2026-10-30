@@ -352,7 +352,6 @@ const getObservationsSets = (
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
   const userId = getUserId();
-  const observationSets = getObservationsSets(proposal.observations, proposal.groupObservations);
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
@@ -393,7 +392,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     observation_info: {
       targets: targetsToPdm(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
-      observation_sets: observationSets,
+      observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
       calibration_strategy:
         proposal.calibrationStrategy && proposal.calibrationStrategy.length > 0
           ? calibrationStrategyToPdm(proposal.calibrationStrategy)
@@ -411,7 +410,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
           : [],
       result_details: targetObservationToPdm(
         proposal.targetObservation as TargetObservation[],
-        observationSets
+        Object.fromEntries((proposal.observations ?? []).map((obs) => [obs.id, obs.type]))
       )
     }
   };
