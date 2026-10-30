@@ -73,7 +73,8 @@ import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
-import fetchSensCalcPatches, { applySensCalcPatches } from '@/utils/update/sensCalc/updateSensCalc';
+import fetchSensCalcPatches from '@/utils/update/sensCalc/updateSensCalc';
+import { patchSensCalcResults } from '@/models/proposals/targetObservationOperations';
 import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
@@ -220,7 +221,7 @@ export default function DataProduct({ data }: DataProductProps) {
     }) && isDataProductRobustValid(dp);
 
   // TODO(BTN-3595): Replace this per-page sensitivity update with the shared sensitivity service,
-  //  as in ObservationEntry. It writes the results to the form's targetObservation (BTN-3593).
+  //  as in ObservationEntry, writing its results through patchSensCalcResults.
   const scheduleLocalSensCalcUpdate = (
     ob: Observation,
     dp: DataProductSDPNew,
@@ -243,7 +244,7 @@ export default function DataProduct({ data }: DataProductProps) {
         return;
       }
 
-      form.setValue('targetObservation', applySensCalcPatches(getLinks(), sensCalcPatches) ?? []);
+      patchSensCalcResults(form, sensCalcPatches);
     };
 
     if (delay > 0 && areSensCalcInputsValid(ob, dp)) {

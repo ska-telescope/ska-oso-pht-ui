@@ -101,7 +101,8 @@ import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
-import fetchSensCalcPatches, { applySensCalcPatches } from '@/utils/update/sensCalc/updateSensCalc';
+import fetchSensCalcPatches from '@/utils/update/sensCalc/updateSensCalc';
+import { patchSensCalcResults } from '@/models/proposals/targetObservationOperations';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
@@ -212,9 +213,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       units: ob?.supplied?.units
     }) && isDataProductRobustValid(dp);
 
-  // TODO(BTN-3595): Replace this per-page sensitivity update (debounce, request counter and the
-  //  link patching) with the shared sensitivity service. It writes the results to the form's
-  //  targetObservation (BTN-3593), so the service only needs to patch sensCalc there.
+  // TODO(BTN-3595): Replace this per-page sensitivity update (debounce and request counter) with
+  //  the shared sensitivity service, writing its results through patchSensCalcResults
+  //  (targetObservationOperations.ts) as this does.
   const scheduleLocalSensCalcUpdate = (
     ob: Observation,
     dp: DataProductSDPNew,
@@ -237,10 +238,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         return;
       }
 
-      const targetObservation = applySensCalcPatches(getLinks(), sensCalcPatches) ?? [];
-
       const linkedTarget = (form.getValues('targets') as Target[]).find((t) =>
-        targetObservation.some((to) => to.observationId === ob.id && to.targetId === t.id)
+        getLinks().some((to) => to.observationId === ob.id && to.targetId === t.id)
       );
 
       const getCalibration = () =>
@@ -262,7 +261,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         return;
       }
 
-      form.setValue('targetObservation', targetObservation);
+      patchSensCalcResults(form, sensCalcPatches);
       if (updatedStrategy) {
         form.setValue('calibrationStrategy', withCalibrationFor(getCalibration(), updatedStrategy));
       }
