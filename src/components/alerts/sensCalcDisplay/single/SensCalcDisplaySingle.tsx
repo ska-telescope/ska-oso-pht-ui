@@ -5,9 +5,10 @@ import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
 import { STATUS_OK, TYPE_ZOOM, TYPE_CONTINUUM, STATUS_ERROR } from '../../../../utils/constants';
 import TargetObservation from '@utils/types/targetObservation.tsx';
+import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 
-const VALUE = 'value';
-const UNITS = 'units';
+const VALUE: keyof ResultsSection = 'value';
+const UNITS: keyof ResultsSection = 'units';
 
 interface SensCalcDisplaySingleProps {
   targetObservation?: TargetObservation;
@@ -30,13 +31,13 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
-  const ariaStatusMessage = (sensCalc?: { statusGUI: string; error: string }) => {
+  const ariaStatusMessage = (sensCalc?: SensCalcResults) => {
     const status = t('statusLoading.' + sensCalc?.statusGUI);
-    const error = sensCalc?.error?.length ? t(presentSensCalcError(sensCalc?.error)) : '';
+    const error = sensCalc?.error ? t(presentSensCalcError(sensCalc.error)) : '';
     return t('sensitivityCalculatorResults.status', { status: status, error: error });
   };
 
-  const FieldFetch: any = (type: string, field: string) => {
+  const FieldFetch: any = (type: keyof ResultsSection, field: string) => {
     const observationTypeLabel: string =
       (targetObservation?.sensCalc?.section2?.length ?? 0) > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
     if (targetObservation?.sensCalc?.section1) {

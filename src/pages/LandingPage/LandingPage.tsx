@@ -178,10 +178,12 @@ export default function LandingPage() {
   // observations carry over), but not the calculated sensCalc results attached to them - those
   // are stale for the new proposal. Reset each link to the same "linked, not yet calculated"
   // shape LinkingPage.tsx uses for a brand new link, rather than dropping the links entirely.
-  const resetTargetObservationResults = (targetObservation?: TargetObservation[]) =>
+  const resetTargetObservationResults = (
+    targetObservation?: TargetObservation[]
+  ): TargetObservation[] =>
     targetObservation?.map((rec) => ({
       ...rec,
-      sensCalc: { id: rec.targetId, title: '', statusGUI: STATUS_PARTIAL, error: '' }
+      sensCalc: { statusGUI: STATUS_PARTIAL, error: '' }
     })) ?? [];
 
   const createProposal = async () => {

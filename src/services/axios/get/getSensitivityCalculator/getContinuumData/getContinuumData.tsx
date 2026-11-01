@@ -406,7 +406,14 @@ export function getSpectralAveragingFactor(
   const channelsOut =
     observation.type == TYPE_CONTINUUM && dataProduct.data.dataProductType == DP_TYPE_VISIBLE
       ? CHANNELS_OUT_DEFAULT
-      : dataProduct.data.channelsOut;
+      : 'channelsOut' in dataProduct.data
+        ? dataProduct.data.channelsOut
+        : undefined;
+
+  // Data products without a channelsOut (e.g. PST) have nothing to average
+  if (channelsOut === undefined) {
+    return undefined;
+  }
 
   // Spectral results ignored for channelsOut = 1.
   // Sending a dummy value as the Sensitivity Calculator backend requires it.
