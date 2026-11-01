@@ -48,7 +48,7 @@ describe('TableReviewDecisionRow', () => {
     updateDecisionItem: vi.fn(),
     getReviews: (reviews: any[], type: string) => reviews.filter((r) => r.reviewType.kind === type),
     getReviewsReviewed: (reviews: any[]) => reviews.filter((r) => r.status === 'Reviewed'),
-    calculateScore: (_details: any[]) => 3.5,
+    calculateScore: (_details: any[]) => '3.5',
     trimText: (text: string, maxLength: number) => text.slice(0, maxLength),
     tableLength: 1,
     t: (key: string) => key // simple mock translation

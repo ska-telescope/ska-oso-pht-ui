@@ -125,7 +125,8 @@ export function getSensCalcContinuumParams(
       value: observation?.centralFrequency,
       unit: observation?.centralFrequencyUnits?.toString()
     },
-    spectralAveragingFactor: getSpectralAveragingFactor(observation, dataProductSDP),
+    // The backend requires a value, so send the same dummy 1 used when there is no averaging
+    spectralAveragingFactor: getSpectralAveragingFactor(observation, dataProductSDP) ?? 1,
     numberOfSubBands: observation?.numSubBands ?? 0,
     imageWeighting: (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IW_UNIFORM,
     robust: (dataProductSDP?.data as SDPImageContinuumData)?.robust ?? ROBUST_DEFAULT,
@@ -389,7 +390,12 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
 export function getSpectralAveragingFactor(
   observation: Observation,
   dataProduct: DataProductSDPNew
-) {
+): number | undefined {
+  // Without a bandwidth and its units there is nothing to average over
+  if (observation.continuumBandwidth == null || observation.continuumBandwidthUnits == null) {
+    return undefined;
+  }
+
   const totalChannels =
     frequencyConversion(
       observation.continuumBandwidth,

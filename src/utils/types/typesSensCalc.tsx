@@ -121,7 +121,7 @@ export const NEW_ADVANCED_DATA = {
 };
 
 export type ZoomData = {
-  dataType: number;
+  dataType: string;
   bandwidth: ValueUnitPair;
   suppliedType: number;
   supplied_0: ValueUnitPair;

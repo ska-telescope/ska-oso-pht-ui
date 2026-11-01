@@ -158,15 +158,20 @@ export default function ContinuumBandwidthField({
     observingBand
   ]);
 
-  const minChannelWidthMHz = frequencyConversion(
+  const coarseChannelWidthHz = osdLOW?.basicCapabilities.coarseChannelWidthHz;
+  const minChannelWidthHz =
     telescope === TELESCOPE_LOW_NUM
-      ? osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+      ? // Without the OSD channel width the step/min constraints are skipped
+        coarseChannelWidthHz === undefined
+        ? undefined
+        : coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
       : // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
         //  and until AA2 bandwidth has to be multiple of 20 channels.
-        Math.round(20 * 13440 * 1e12) / 1e12,
-    FREQUENCY_HZ,
-    FREQUENCY_MHZ
-  );
+        Math.round(20 * 13440 * 1e12) / 1e12;
+  const minChannelWidthMHz =
+    minChannelWidthHz === undefined
+      ? undefined
+      : frequencyConversion(minChannelWidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
 
   return (
     <TextField

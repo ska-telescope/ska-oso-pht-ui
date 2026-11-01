@@ -582,7 +582,7 @@ export const PDF_NAME_PREFIXES = {
 export const DEFAULT_TARGETS: Target = {
   kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
   decStr: '123',
-  id: 1,
+  id: '1',
   b: 123,
   l: 123,
   name: 'DUMMY',

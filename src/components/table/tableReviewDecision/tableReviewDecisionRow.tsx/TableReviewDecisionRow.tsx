@@ -25,7 +25,7 @@ interface TableReviewDecisionRowProps {
   updateDecisionItem: (item: any) => void;
   getReviews: (reviews: any[], reviewType: string) => any[];
   getReviewsReviewed: (reviews: any[]) => any[];
-  calculateScore: (details: any[]) => number;
+  calculateScore: (details: any[]) => string;
   tableLength: number;
   trimText: (text: string, maxLength: number) => string;
   t: any;

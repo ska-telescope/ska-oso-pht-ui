@@ -2,7 +2,7 @@ import React from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/Help';
-import { Button, Grid, Box, Typography, Paper } from '@mui/material';
+import { Button, Grid, Box, Typography, Paper, SvgIconProps } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { FEASIBLE_MAYBE, FEASIBLE_NO, FEASIBLE_YES } from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -10,7 +10,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface ChoiceOption {
   value: string;
   label: string;
-  icon: React.ComponentType;
+  icon: React.ComponentType<SvgIconProps>;
   color: string;
   hoverColor: string;
   styledIcon?: boolean;

@@ -101,7 +101,9 @@ export default function SensCalcContent({
               ? elementValue
               : observation?.subarray === SA_CUSTOM || isNatural
                 ? PresentCustomResultValue(elementValue, elementId)
-                : presentValue(elementValue)}{' '}
+                : elementValue === undefined
+                  ? ''
+                  : presentValue(elementValue)}{' '}
             {!elementUnits || observation?.subarray === SA_CUSTOM || isNatural
               ? ''
               : presentUnits(elementUnits)}
@@ -184,27 +186,41 @@ export default function SensCalcContent({
     );
   }
 
-  const spectralResolution = observation
-    ? convertFrequencyToDisplayUnits(
-        [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
-          observation?.type
-        )
-          ? getSpectralAveragingFactor(observation, dataProduct) *
-              LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
-          : getSpectralResolutionHz(observation) * 1e-3,
-        FREQUENCY_STR_KHZ
-      )
-    : undefined;
-  const bandwidth = [
-    TYPE_CONTINUUM,
-    TYPE_CONTINUUM_SPECTRAL,
-    TYPE_CONTINUUM_SPECTRAL_LONG
-  ].includes(observation?.type)
-    ? {
-        value: observation?.continuumBandwidth,
-        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits - 1]?.label
-      }
-    : getBandwidthZoom(observation);
+  // A missing units value means there is no label to show, rather than indexing with NaN
+  const frequencyUnitLabel = (units?: number | null) =>
+    units == null ? undefined : FREQUENCY_UNITS[units - 1]?.label;
+
+  const isContinuum =
+    !!observation &&
+    [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
+      observation.type
+    );
+
+  // Continuum resolution depends on the data product, so it is skipped when there isn't one
+  const averagingFactor =
+    isContinuum && dataProduct ? getSpectralAveragingFactor(observation, dataProduct) : undefined;
+
+  const spectralResolutionKHz = !observation
+    ? undefined
+    : isContinuum
+      ? averagingFactor === undefined
+        ? undefined
+        : averagingFactor * LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
+      : getSpectralResolutionHz(observation) * 1e-3;
+
+  const spectralResolution =
+    spectralResolutionKHz === undefined
+      ? undefined
+      : convertFrequencyToDisplayUnits(spectralResolutionKHz, FREQUENCY_STR_KHZ);
+
+  const bandwidth = !observation
+    ? undefined
+    : isContinuum
+      ? {
+          value: observation.continuumBandwidth ?? undefined,
+          unit: frequencyUnitLabel(observation.continuumBandwidthUnits)
+        }
+      : getBandwidthZoom(observation);
 
   return (
     <>
@@ -212,9 +228,9 @@ export default function SensCalcContent({
       {displayElement(
         'centralFrequency',
         observation?.centralFrequency,
-        FREQUENCY_UNITS[observation?.centralFrequencyUnits - 1]?.label
+        frequencyUnitLabel(observation?.centralFrequencyUnits)
       )}
-      {displayElement('bandwidth', bandwidth.value, bandwidth.unit)}
+      {displayElement('bandwidth', bandwidth?.value, bandwidth?.unit)}
       {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
       {displayElement('integrationTime', observation?.supplied.value, 'h')}
 

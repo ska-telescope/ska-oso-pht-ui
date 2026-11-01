@@ -23,10 +23,10 @@ export default function TableDataProducts({
 
   const getProposal = () => application.content2 as Proposal;
 
-  const expandButtonsRef = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
-  const [expandedRows, setExpandedRows] = React.useState(() => new Set<number>());
+  const expandButtonsRef = React.useRef<{ [key: string]: HTMLButtonElement | null }>({});
+  const [expandedRows, setExpandedRows] = React.useState(() => new Set<string>());
 
-  const toggleRow = (id: number) => {
+  const toggleRow = (id: string) => {
     const newExpandedRows = new Set(expandedRows);
     newExpandedRows.has(id) ? newExpandedRows.delete(id) : newExpandedRows.add(id);
     setExpandedRows(newExpandedRows);

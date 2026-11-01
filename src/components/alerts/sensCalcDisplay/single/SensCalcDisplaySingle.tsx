@@ -38,7 +38,7 @@ export default function SensCalcDisplaySingle({
 
   const FieldFetch: any = (type: string, field: string) => {
     const observationTypeLabel: string =
-      targetObservation?.sensCalc?.section2?.length > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
+      (targetObservation?.sensCalc?.section2?.length ?? 0) > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
     if (targetObservation?.sensCalc?.section1) {
       const result = targetObservation?.sensCalc?.section1.find(
         (item: { field: string }) => item.field === `${observationTypeLabel}${field}`
