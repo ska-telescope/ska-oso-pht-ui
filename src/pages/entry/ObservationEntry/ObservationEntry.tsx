@@ -677,8 +677,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   // TODO: Min channel width for Mid hardcoded for now since I'm not sure if it's correct
+  // Without the OSD channel width the minimum-width constraint is skipped; the bandwidth fields
+  // treat 0 as "no constraint"
+  const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz;
   const minimumChannelWidthHz = isLow()
-    ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+    ? coarseChannelWidthHz === undefined
+      ? 0
+      : coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
     : 13.44e3;
 
   // LOW-zoom channel resolution (Hz) for the selected `bandwidth` index, and the total zoom

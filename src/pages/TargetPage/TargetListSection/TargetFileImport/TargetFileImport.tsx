@@ -138,10 +138,10 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
             setUploadButtonStatus(FileUploadStatus.ERROR);
           }
         },
-        error: (message: string) => {
+        error: (error: Error) => {
           setUploadButtonStatus(FileUploadStatus.ERROR);
           notifyError(
-            t('uploadCsvBtn.uploadErrorUnknownParserMsg') + message,
+            t('uploadCsvBtn.uploadErrorUnknownParserMsg') + error,
             NOTIFICATION_DELAY_IN_SECONDS
           );
         }

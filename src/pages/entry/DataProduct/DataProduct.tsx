@@ -604,6 +604,11 @@ export default function DataProduct({ data }: DataProductProps) {
     const currentLinkedDataProduct = getLinkedDataProduct(observation.id, id) ?? dataProductOut();
     const currentDataProduct =
       currentLinkedDataProduct.id === id ? dataProductOut() : currentLinkedDataProduct;
+
+    if (!currentDataProduct) {
+      return;
+    }
+
     const nextLinkedDataProduct = getSiblingContinuumDataProduct(
       observation.id,
       currentDataProduct.id,
@@ -863,8 +868,13 @@ export default function DataProduct({ data }: DataProductProps) {
       />
     );
 
-  const channelsOutField = () =>
-    fieldWrapper(
+  const channelsOutField = () => {
+    // Spectral mirrors the observation's zoom channels, so there is nothing to show without them
+    const zoomChannels = getObservation()?.zoomChannels;
+    if (isSpectral() && zoomChannels === undefined) {
+      return undefined;
+    }
+    return fieldWrapper(
       <ChannelsOutField
         disabled={isSpectral()}
         maxValue={channelsOutMax()}
@@ -872,9 +882,10 @@ export default function DataProduct({ data }: DataProductProps) {
         onFocus={() => setHelp('channelsOut', { min: channelsOutMin(), max: channelsOutMax() })}
         required
         setValue={setChannelsOut}
-        value={isSpectral() ? getObservation()?.zoomChannels : channelsOut}
+        value={isSpectral() ? (zoomChannels as number) : channelsOut}
       />
     );
+  };
 
   const continuumSubtractionField = () =>
     fieldWrapper(
