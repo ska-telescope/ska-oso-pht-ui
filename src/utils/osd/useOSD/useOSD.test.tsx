@@ -59,22 +59,24 @@ vi.mock('@utils/storage/store', () => ({
               }
             }
           },
-          observatoryPolicy: {
-            cycleNumber: 42,
-            cycleDescription: 'Cycle 42',
-            cycleInformation: {
-              cycleId: 'CYCLE-ID-2025',
-              proposalOpen: '2025-09-01T08:00:00',
-              proposalClose: '2025-09-30T12:00:00'
-            },
-            cyclePolicies: {
-              normalMaxHours: 100
-            },
-            telescopeCapabilities: {
-              mid: 'MID Telescope Description',
-              low: 'LOW Telescope Description'
+          policies: [
+            {
+              cycleNumber: 42,
+              cycleDescription: 'Cycle 42',
+              cycleInformation: {
+                cycleId: 'CYCLE-ID-2025',
+                proposalOpen: '2025-09-01T08:00:00',
+                proposalClose: '2025-09-30T12:00:00'
+              },
+              cyclePolicies: {
+                normalMaxHours: 100
+              },
+              telescopeCapabilities: {
+                mid: 'MID Telescope Description',
+                low: 'LOW Telescope Description'
+              }
             }
-          }
+          ]
         }
       }
     })
@@ -86,9 +88,9 @@ describe('useOSD hook', () => {
     const { result } = renderHook(() => useOSD());
     const osd = result.current;
 
-    expect(osd.capabilities.low.basicCapabilities.minFrequencyHz).toBe(50);
-    expect(osd.capabilities.mid.basicCapabilities.receiverInformation[0].rxId).toBe('B1');
-    expect(osd.observatoryPolicy.cycleNumber).toBe(42);
-    expect(osd.observatoryPolicy.cycleInformation.cycleId).toBe('CYCLE-ID-2025');
+    expect(osd.capabilities.low?.basicCapabilities.minFrequencyHz).toBe(50);
+    expect(osd.capabilities.mid?.basicCapabilities.receiverInformation[0].rxId).toBe('B1');
+    expect(osd.policies[0].cycleNumber).toBe(42);
+    expect(osd.policies[0].cycleInformation.cycleId).toBe('CYCLE-ID-2025');
   });
 });

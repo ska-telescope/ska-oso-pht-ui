@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { Telescope } from '@utils/types/typesSensCalc';
 import { AxiosAuthClient } from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { SKA_SENSITIVITY_CALCULATOR_API_URL, STATUS_ERROR } from '@/utils/constants';
@@ -15,7 +16,8 @@ const Fetch = async (
     const result = await authAxiosClient.get(finalURL, { params: properties });
     return result.data;
   } catch (e) {
-    const errMsg = e?.response?.data?.detail || e?.message || e?.toString();
+    const err = e as AxiosError<{ detail?: string }>;
+    const errMsg = err?.response?.data?.detail || err?.message || err?.toString();
 
     return {
       statusGUI: STATUS_ERROR,

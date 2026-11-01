@@ -1,4 +1,4 @@
-import { describe, test, expect, vi, it, beforeEach } from 'vitest';
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import getSensCalc from './getSensitivityCalculatorAPIData';
 import {

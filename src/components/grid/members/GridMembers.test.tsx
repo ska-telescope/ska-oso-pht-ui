@@ -21,11 +21,12 @@ describe('<GridMembers />', () => {
             firstName: '',
             lastName: '',
             email: '',
-            country: '',
             affiliation: '',
             phdThesis: true,
             status: '',
-            pi: true
+            pi: true,
+            officeLocation: null,
+            jobTitle: null
           }
         ]}
       />
@@ -41,11 +42,12 @@ describe('<GridMembers />', () => {
             firstName: '',
             lastName: '',
             email: '',
-            country: '',
             affiliation: '',
             phdThesis: true,
             status: '',
-            pi: true
+            pi: true,
+            officeLocation: null,
+            jobTitle: null
           }
         ]}
       />

@@ -19,7 +19,7 @@ describe('GetCalibratorList Service', () => {
   let mockedAuthClient: any;
 
   const mockTarget: Target = {
-    id: 1,
+    id: '1',
     name: 'M89',
     kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
     raStr: '12:35:39.8073',
@@ -30,7 +30,7 @@ describe('GetCalibratorList Service', () => {
   } as Target;
 
   const mockSSOTarget: Target = {
-    id: 1,
+    id: '1',
     name: 'Venus',
     kind: REFERENCE_COORDINATE_TYPE_SSO.value
   };

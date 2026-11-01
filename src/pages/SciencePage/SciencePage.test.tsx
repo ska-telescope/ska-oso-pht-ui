@@ -5,6 +5,7 @@ import SciencePage from './SciencePage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
+import { DocumentPDF } from '@/utils/types/document';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -31,7 +32,7 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 // Mock storage
 const mockProposal = {
   id: '123',
-  sciencePDF: { documentId: 'science-doc-123', isUploadedPdf: true },
+  sciencePDF: { documentId: 'science-doc-123', isUploadedPdf: true } as DocumentPDF | null,
   scienceLoadStatus: FileUploadStatus.INITIAL
 };
 const mockStore = {

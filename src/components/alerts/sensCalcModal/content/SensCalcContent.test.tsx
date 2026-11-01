@@ -11,6 +11,8 @@ vi.mock('i18next', () => ({
   t: (key: string) => key
 }));
 
+const ids = { targetId: 'target-1', observationId: 'obs-1', dataProductsSDPId: 'dp-1' };
+
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
@@ -27,7 +29,7 @@ describe('<SensCalcModalSingle />', () => {
   });
 
   test('renders the no-data state when results have not been calculated', () => {
-    wrapper(<SensCalcContent targetObservation={{}} />);
+    wrapper(<SensCalcContent targetObservation={{ ...ids }} />);
 
     expect(screen.getByText('sensitivityCalculatorResults.noData')).toBeInTheDocument();
   });
@@ -36,6 +38,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
+          ...ids,
           sensCalc: {
             statusGUI: STATUS_INITIAL,
             error: undefined,
@@ -51,6 +54,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
+          ...ids,
           sensCalc: {
             statusGUI: 0,
             error: undefined,
@@ -95,6 +99,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
+          ...ids,
           sensCalc: {
             statusGUI: 0,
             error: undefined,
@@ -127,6 +132,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
+          ...ids,
           sensCalc: {
             statusGUI: 0,
             error: undefined,
@@ -168,6 +174,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
+          ...ids,
           sensCalc: {
             statusGUI: STATUS_ERROR,
             error: 'SOME ERROR',

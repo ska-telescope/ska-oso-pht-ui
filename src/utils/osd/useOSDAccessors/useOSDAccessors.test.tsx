@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useOSDAccessors } from './useOSDAccessors';
 
@@ -33,7 +33,7 @@ describe('useOSDAccessors', () => {
     vi.useFakeTimers();
     vi.setSystemTime(FIXED_NOW);
 
-    (useOSD as vi.Mock).mockReturnValue({
+    (useOSD as Mock).mockReturnValue({
       capabilities: {
         low: { basicCapabilities: { lowValue: 1 } },
         mid: {
@@ -61,7 +61,7 @@ describe('useOSDAccessors', () => {
       ]
     });
 
-    (storageObject.useStore as vi.Mock).mockReturnValue({
+    (storageObject.useStore as Mock).mockReturnValue({
       application: {
         content8: [
           {
@@ -137,7 +137,7 @@ describe('useOSDAccessors', () => {
   });
 
   it('uses countdownUrgent format when the time is <= the URGENT THRESHOLD', () => {
-    (useOSD as vi.Mock).mockReturnValue({
+    (useOSD as Mock).mockReturnValue({
       capabilities: {
         low: { basicCapabilities: { lowValue: 1 } },
         mid: {
@@ -165,7 +165,7 @@ describe('useOSDAccessors', () => {
       ]
     });
 
-    (storageObject.useStore as vi.Mock).mockReturnValue({
+    (storageObject.useStore as Mock).mockReturnValue({
       application: {
         content8: [
           {
@@ -258,12 +258,12 @@ describe('useOSDAccessors', () => {
   it('auto-selects active cycle when no selectedPolicy exists', () => {
     const updateMock = vi.fn();
 
-    (storageObject.useStore as vi.Mock).mockReturnValue({
+    (storageObject.useStore as Mock).mockReturnValue({
       application: { content8: null }, // <-- key fix
       updateAppContent8: updateMock
     });
 
-    (useOSD as vi.Mock).mockReturnValue({
+    (useOSD as Mock).mockReturnValue({
       capabilities: {},
       policies: [
         {

@@ -5,7 +5,6 @@ import { SensCalcResults } from '../../../../../utils/types/sensCalcResults';
 import {
   REFERENCE_COORDINATE_TYPE_SSO,
   STATUS_ERROR,
-  TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
@@ -15,7 +14,7 @@ import {
 } from '../../../../../utils/constants';
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
-import { DataProductSDPNew, SDPSpectralData } from '@/utils/types/dataProduct';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { getTelescope } from '@utils/helpers.ts';
 
 async function getSensCalc(

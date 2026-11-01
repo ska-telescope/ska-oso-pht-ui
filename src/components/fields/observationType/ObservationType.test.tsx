@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import ObservationType from './ObservationType';
+import { TYPE_CONTINUUM } from '@/utils/constants';
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
@@ -10,9 +11,9 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<ObservationType />', () => {
   test('renders correctly', () => {
-    wrapper(<ObservationType value={1} />);
+    wrapper(<ObservationType value={TYPE_CONTINUUM} />);
   });
-  test('renders correctly ( isContinuumOnly )', () => {
-    wrapper(<ObservationType suffix={'#'} value={1} isContinuumOnly />);
+  test('renders correctly ( suffix )', () => {
+    wrapper(<ObservationType suffix={'#'} value={TYPE_CONTINUUM} />);
   });
 });

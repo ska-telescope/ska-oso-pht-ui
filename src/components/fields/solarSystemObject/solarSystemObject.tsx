@@ -1,7 +1,6 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import React from 'react';
 import { SSO_OPTIONS } from '@utils/constants.ts';
 
 interface SolarSystemObjectFieldProps {

@@ -17,7 +17,7 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
 
 describe('Visualization', () => {
   const mockTarget = {
-    id: 1,
+    id: '1',
     name: 'Test Target',
     raStr: '12:34:56',
     decStr: '-45:67:89',

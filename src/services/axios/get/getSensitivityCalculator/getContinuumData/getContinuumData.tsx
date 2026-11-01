@@ -18,7 +18,6 @@ import {
   IW_BRIGGS,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
   CHANNELS_OUT_DEFAULT,
-  DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE
 } from '@utils/constants';
 import {

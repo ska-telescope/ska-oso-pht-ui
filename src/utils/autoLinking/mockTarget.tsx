@@ -3,7 +3,7 @@ import Target from '../types/target';
 export const mockTarget: Target = {
   kind: 0,
   decStr: '-00:49:23.700',
-  id: 1,
+  id: '1',
   name: 'm2',
   b: 0,
   l: 0,

@@ -1,7 +1,6 @@
 import { TextField, InputAdornment } from '@mui/material';
 import {
   FREQUENCY_HZ,
-  FREQUENCY_KHZ,
   FREQUENCY_MHZ,
   LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
   TELESCOPE_LOW_NUM

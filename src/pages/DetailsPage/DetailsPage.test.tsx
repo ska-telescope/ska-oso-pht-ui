@@ -144,7 +144,9 @@ describe('Abstract helperFunction', () => {
   test('appends word limit exceeded message when word count exceeds max', () => {
     countWords.mockReturnValue(11);
     const { container } = wrapper(
-      helperFunction('This abstract has a word count that exceeds the ten word limit here')
+      helperFunction(
+        'This abstract has a word count that exceeds the ten word limit here'
+      ) as React.ReactElement
     );
     expect(container.textContent).toContain('Current: 11, Max: 10');
     expect(container.textContent).toContain('(WORD LIMIT EXCEEDED)');

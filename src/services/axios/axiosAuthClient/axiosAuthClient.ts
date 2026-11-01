@@ -52,11 +52,10 @@ export const mapAxiosError = (error: AxiosError): Error => {
     return new Error('Connection timed out. Please check your internet connection and try again.');
   }
 
-  if (error.response?.data?.detail) {
+  const data = error.response?.data as { title?: string; detail?: string } | undefined;
+  if (data?.detail) {
     // This is one of the ska-oso-services errors
-    return new Error(
-      `${error.response?.data?.title || 'Server responded with an error'}: ${error.response?.data?.detail}`
-    );
+    return new Error(`${data.title || 'Server responded with an error'}: ${data.detail}`);
   }
 
   if (error.response?.status) {

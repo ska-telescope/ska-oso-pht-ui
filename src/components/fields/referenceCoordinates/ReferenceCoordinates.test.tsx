@@ -10,6 +10,6 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<ReferenceCoordinates />', () => {
   test('renders correctly', () => {
-    wrapper(<ReferenceCoordinates value={'0'} />);
+    wrapper(<ReferenceCoordinates value={0} />);
   });
 });

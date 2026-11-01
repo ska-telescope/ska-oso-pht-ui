@@ -1,4 +1,6 @@
-export const mockCalibration = {
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
+
+export const mockCalibration: CalibrationStrategy = {
   observatoryDefined: true,
   id: 'cal-0000000',
   observationIdRef: 'obs-123',

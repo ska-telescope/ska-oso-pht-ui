@@ -28,7 +28,7 @@ describe('TableSubmissions', () => {
       { id: 2, name: 'Product B' }
     ];
 
-    render(<TableSubmissions data={mockData} updateFunction={vi.fn()} deleteFunction={vi.fn()} />);
+    render(<TableSubmissions data={mockData} deleteFunction={vi.fn()} />);
 
     const rows = screen.getAllByTestId('row');
     expect(rows).toHaveLength(2);
@@ -39,13 +39,13 @@ describe('TableSubmissions', () => {
   it('renders inside TableContainer', () => {
     const mockData = [{ id: 1, name: 'Product A' }];
 
-    render(<TableSubmissions data={mockData} updateFunction={vi.fn()} />);
+    render(<TableSubmissions data={mockData} />);
 
     expect(screen.getByTestId('table-container')).toBeInTheDocument();
   });
 
   it('handles empty data gracefully', () => {
-    render(<TableSubmissions data={[]} updateFunction={vi.fn()} />);
+    render(<TableSubmissions data={[]} />);
     expect(screen.queryByTestId('row')).toBeNull();
   });
 

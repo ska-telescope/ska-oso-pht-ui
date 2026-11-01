@@ -181,7 +181,7 @@ describe('getInvestigators', () => {
   test('maps InvestigatorBackend objects to Investigator objects correctly', () => {
     const input = [
       {
-        user_id: 1,
+        user_id: '1',
         status: 'active',
         given_name: 'John',
         family_name: 'Doe',
@@ -193,7 +193,7 @@ describe('getInvestigators', () => {
         jobTitle: 'Researcher'
       },
       {
-        user_id: 2,
+        user_id: '2',
         status: 'inactive',
         given_name: 'Jane',
         family_name: 'Smith',
@@ -208,7 +208,7 @@ describe('getInvestigators', () => {
 
     const expected = [
       {
-        id: 1,
+        id: '1',
         status: 'active',
         firstName: 'John',
         lastName: 'Doe',
@@ -220,7 +220,7 @@ describe('getInvestigators', () => {
         jobTitle: 'Researcher'
       },
       {
-        id: 2,
+        id: '2',
         status: 'inactive',
         firstName: 'Jane',
         lastName: 'Smith',

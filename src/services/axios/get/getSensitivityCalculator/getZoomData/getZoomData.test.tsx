@@ -1,5 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { getFinalIndividualResultsForZoom, getFinalResults } from './getZoomData';
+import Observation from '@utils/types/observation';
+import { SUPPLIED_TYPE_INTEGRATION, SUPPLIED_TYPE_SENSITIVITY } from '@utils/constants';
 
 describe('getFinalIndividualResultsForZoom', () => {
   const mockObservation = {
@@ -83,8 +85,8 @@ describe('getFinalIndividualResultsForZoom', () => {
 
 describe('getFinalResults', () => {
   const mockObservation = {
-    supplied: { type: 'SENSITIVITY', value: 42, units: 'Jy' }
-  };
+    supplied: { type: SUPPLIED_TYPE_SENSITIVITY, value: 42, units: 1 }
+  } as Observation;
   const mockResults = {
     transformed_result: [
       {
@@ -115,24 +117,24 @@ describe('getFinalResults', () => {
     expect(result.section1).toBeInstanceOf(Array);
     expect(result.section3).toBeInstanceOf(Array);
     // For supplied sensitivity, section1 should have 3 items
-    expect(result.section1.length).toBe(5);
-    expect(result.section3.length).toBe(1);
+    expect(result.section1?.length).toBe(3);
+    expect(result.section3?.length).toBe(1);
   });
 
   test('should return correct structure for non-supplied sensitivity', () => {
     const obs = {
-      supplied: { type: 'NOT_SENSITIVITY', value: 42, units: 'Jy' }
-    };
+      supplied: { type: SUPPLIED_TYPE_INTEGRATION, value: 42, units: 1 }
+    } as Observation;
     const result = getFinalResults(mockResults, obs);
     // For non-supplied sensitivity, section1 should have 5 items
-    expect(result.section1.length).toBe(5);
-    expect(result.section3.length).toBe(1);
+    expect(result.section1?.length).toBe(5);
+    expect(result.section3?.length).toBe(1);
   });
 
   test('should handle missing optional fields gracefully', () => {
     const incompleteResults = { transformed_result: [{}] };
     const result = getFinalResults(incompleteResults, mockObservation);
-    expect(result.section1.length).toBe(5);
-    expect(result.section3.length).toBe(1);
+    expect(result.section1?.length).toBe(3);
+    expect(result.section3?.length).toBe(1);
   });
 });

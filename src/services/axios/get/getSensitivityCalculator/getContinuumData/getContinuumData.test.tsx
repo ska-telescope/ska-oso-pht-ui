@@ -1,12 +1,19 @@
 import { describe, test, expect } from 'vitest';
-import { SUPPLIED_TYPE_SENSITIVITY, STATUS_OK, TYPE_CONTINUUM } from '@utils/constants.ts';
+import {
+  SUPPLIED_TYPE_INTEGRATION,
+  SUPPLIED_TYPE_SENSITIVITY,
+  STATUS_OK,
+  TYPE_CONTINUUM,
+  TYPE_ZOOM
+} from '@utils/constants.ts';
+import Observation from '@utils/types/observation';
 import { getFinalResults, getFinalIndividualResultsForContinuum } from './getContinuumData';
 
 describe('getFinalIndividualResultsForContinuum', () => {
   const baseObservation = {
-    supplied: { type: 0, value: { toString: () => '42' }, units: 1 },
-    type: 0
-  };
+    supplied: { type: 0, value: 42, units: 1 },
+    type: ''
+  } as Observation;
 
   const baseResults = {
     transformed_result: {
@@ -52,12 +59,10 @@ describe('getFinalIndividualResultsForContinuum', () => {
 });
 
 describe('getFinalResults', () => {
-  const target = { id: 'target1', name: 'Target 1' };
-
   const observationBase = {
     type: TYPE_CONTINUUM,
-    supplied: { type: 0, value: { toString: () => '42' }, units: 1 }
-  };
+    supplied: { type: 0, value: 42, units: 1 }
+  } as Observation;
 
   const resultsBase = {
     transformed_result: {
@@ -83,7 +88,10 @@ describe('getFinalResults', () => {
   };
 
   test('should return correct structure for continuum, not supplied sensitivity', () => {
-    const obs = { ...observationBase, supplied: { ...observationBase.supplied, type: 999 } };
+    const obs = {
+      ...observationBase,
+      supplied: { ...observationBase.supplied, type: SUPPLIED_TYPE_INTEGRATION }
+    };
     const result = getFinalResults(resultsBase, obs);
 
     expect(result.statusGUI).toBe(STATUS_OK);
@@ -113,7 +121,7 @@ describe('getFinalResults', () => {
   });
 
   test('should not include section2 if not continuum', () => {
-    const obs = { ...observationBase, type: 1234 };
+    const obs = { ...observationBase, type: TYPE_ZOOM };
     const result = getFinalResults(resultsBase, obs);
 
     expect(result.section2).toBeUndefined();

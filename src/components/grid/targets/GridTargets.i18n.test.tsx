@@ -50,7 +50,7 @@ describe('<GridTargets /> localization', () => {
         rows={[
           {
             kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-            id: 1,
+            id: '1',
             decStr: '-45:00:00.0',
             name: 'ICRS target',
             raStr: '12:30:00.0',

@@ -1,14 +1,14 @@
 // updateObservations.test.ts
 import { describe, it, expect } from 'vitest';
 import Observation from '../../types/observation';
-import { BAND_LOW_STR, OB_SUBARRAY_AA2, TELESCOPE_LOW_NUM, TYPE_CONTINUUM } from '../../constants';
+import { BAND_LOW_STR, SA_AA2, TELESCOPE_LOW_NUM, TYPE_CONTINUUM } from '../../constants';
 import updateObservations from './updateObservations';
 
 describe('updateObservations', () => {
   const obs1: Observation = {
     id: '1',
     telescope: TELESCOPE_LOW_NUM,
-    subarray: OB_SUBARRAY_AA2,
+    subarray: SA_AA2,
     type: TYPE_CONTINUUM,
     observingBand: BAND_LOW_STR,
     elevation: 0,
@@ -29,7 +29,7 @@ describe('updateObservations', () => {
   const obs2: Observation = {
     id: '2',
     telescope: TELESCOPE_LOW_NUM,
-    subarray: OB_SUBARRAY_AA2,
+    subarray: SA_AA2,
     type: TYPE_CONTINUUM,
     observingBand: BAND_LOW_STR,
     elevation: 0,
@@ -60,7 +60,7 @@ describe('updateObservations', () => {
     const newRec: Observation = {
       id: '99',
       telescope: TELESCOPE_LOW_NUM,
-      subarray: OB_SUBARRAY_AA2,
+      subarray: SA_AA2,
       type: TYPE_CONTINUUM,
       observingBand: BAND_LOW_STR,
       elevation: 0,
@@ -83,7 +83,7 @@ describe('updateObservations', () => {
     const newRec: Observation = {
       id: '100',
       telescope: TELESCOPE_LOW_NUM,
-      subarray: OB_SUBARRAY_AA2,
+      subarray: SA_AA2,
       type: TYPE_CONTINUUM,
       observingBand: BAND_LOW_STR,
       elevation: 0,
@@ -107,7 +107,7 @@ describe('updateObservations', () => {
     const newRec: Observation = {
       id: '99',
       telescope: TELESCOPE_LOW_NUM,
-      subarray: OB_SUBARRAY_AA2,
+      subarray: SA_AA2,
       type: TYPE_CONTINUUM,
       observingBand: BAND_LOW_STR,
       elevation: 0,

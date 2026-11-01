@@ -27,12 +27,10 @@ import type {
   DataProductSRC as DataProductSRCTransport,
   PstDetectedFilterbank
 } from '@/generated/models';
-import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
-  getDataProductRef,
   getDataProductScriptParameters,
   getDataProductSRC,
   getObservationTypeDetails,
@@ -268,6 +266,8 @@ describe('mapCalibrationStrategyToBackend', () => {
   });
 });
 
+type ReferenceCoordinateInput = Parameters<typeof getReferenceCoordinate>[0];
+
 describe('getReferenceCoordinate', () => {
   test('should map galactic coordinates correctly', () => {
     const galactic = {
@@ -278,7 +278,7 @@ describe('getReferenceCoordinate', () => {
       pmB: 2.2,
       epoch: 'J2000',
       parallax: 0.5
-    };
+    } as unknown as ReferenceCoordinateInput;
     const result = getReferenceCoordinate(galactic);
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
@@ -300,7 +300,7 @@ describe('getReferenceCoordinate', () => {
       pmDec: 0.2,
       epoch: 'J2000',
       parallax: 0.3
-    };
+    } as unknown as ReferenceCoordinateInput;
     const result = getReferenceCoordinate(icrs);
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
@@ -517,7 +517,7 @@ describe('getDataProductSRC', () => {
       { data_products_src_id: '2' },
       { data_products_src_id: '3' }
     ];
-    expect(getDataProductSRC(input)).toEqual(expected);
+    expect(getDataProductSRC(input as DataProductSRC[])).toEqual(expected);
   });
 
   test('should return an empty array if input is empty', () => {
@@ -603,7 +603,7 @@ describe('getSuppliedFieldsIntegrationTime', () => {
   });
 
   test('should return 0 and empty string for non-continuum type', () => {
-    const result = getSuppliedFieldsIntegrationTime('integration_time', 999, mockTarObs);
+    const result = getSuppliedFieldsIntegrationTime('integration_time', 'unknown', mockTarObs);
     expect(result).toEqual({
       supplied_type: 'integration_time',
       continuum: { value: 0, unit: '' },

@@ -634,7 +634,7 @@ describe('DataProduct component', () => {
 
     await waitFor(() => {
       expect(updateAppContent2).toHaveBeenCalled();
-      const savedProposal = updateAppContent2.mock.calls.at(-1)[0];
+      const savedProposal = updateAppContent2.mock.calls.at(-1)?.[0];
       const savedDataProduct = savedProposal.dataProductSDP.at(-1);
       expect(savedDataProduct.data.bitDepth).toBe(Number(legacyBitDepth));
     });

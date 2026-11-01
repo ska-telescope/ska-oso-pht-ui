@@ -7,7 +7,7 @@ import NumStationsField from './NumStations';
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
-      const map = {
+      const map: Record<string, string> = {
         'numStations.label': 'Number of Stations',
         'numStations.help': 'Help text for number of stations'
       };

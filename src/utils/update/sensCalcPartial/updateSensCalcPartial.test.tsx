@@ -43,8 +43,8 @@ describe('updateSensCalcPartial', () => {
     expect(result).toHaveLength(1);
     expect(result[0].observationId).toBe('obs1');
     expect(result[0].targetId).toBe('target-1');
-    expect(result[0].sensCalc.statusGUI).toBe(STATUS_PARTIAL);
-    expect(result[0].sensCalc.error).toBe('');
+    expect(result[0].sensCalc?.statusGUI).toBe(STATUS_PARTIAL);
+    expect(result[0].sensCalc?.error).toBe('');
     expect(result[0].dataProductsSDPId).toBe('');
   });
 
@@ -59,7 +59,7 @@ describe('updateSensCalcPartial', () => {
     const result = updateSensCalcPartial([baseTargetObs, otherTargetObs], matchingObservation);
 
     expect(result).toHaveLength(2);
-    expect(result[0].sensCalc.statusGUI).toBe(STATUS_PARTIAL);
+    expect(result[0].sensCalc?.statusGUI).toBe(STATUS_PARTIAL);
     expect(result[1]).toEqual(otherTargetObs);
   });
 

@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
-import { PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
+import { PanelDecision, PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
 import PostPanelDecision, { mappingPanelDecisionFrontendToBackend } from './postPanelDecision.tsx';
 import { MockPanelDecisionFrontend } from './mockPanelDecisionFrontend.tsx';
 import { MockPanelDecisionBackend } from './mockPanelDecisionBackend.tsx';
@@ -21,7 +21,10 @@ describe('Helper Functions', () => {
   });
 
   test('mappingPanelDecisionFrontendToBackend generates cycle when not provided', () => {
-    const myPanelDecision = { ...MockPanelDecisionFrontend, cycle: undefined };
+    const myPanelDecision = {
+      ...MockPanelDecisionFrontend,
+      cycle: undefined
+    } as unknown as PanelDecision;
     const panelBackEnd: PanelDecisionBackend = mappingPanelDecisionFrontendToBackend(
       myPanelDecision,
       cycleId

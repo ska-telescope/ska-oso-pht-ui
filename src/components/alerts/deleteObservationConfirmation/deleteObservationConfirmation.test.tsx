@@ -5,6 +5,7 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import DeleteObservationConfirmation from './deleteObservationConfirmation';
 import { BAND_LOW_STR } from '@/utils/constants';
+import Observation from '@/utils/types/observation';
 
 // Mock AlertDialog to expose the onClose handler
 vi.mock('../alertDialog/AlertDialog', () => ({
@@ -24,10 +25,21 @@ const wrapper = (component: React.ReactElement) => {
 describe('<DeleteObservationConfirmation />', () => {
   const mockSetOpen = vi.fn();
   const mockAction = vi.fn();
-  const mockObservation = {
-    telescope: 'testTelescope',
+  const mockObservation: Observation = {
+    id: 'obs-1',
+    telescope: 0,
     subarray: 'testSubArray',
-    type: 'testType'
+    type: 'testType',
+    observingBand: BAND_LOW_STR,
+    elevation: 0,
+    centralFrequency: 0,
+    centralFrequencyUnits: 0,
+    bandwidth: 0,
+    continuumBandwidth: 0,
+    continuumBandwidthUnits: 0,
+    supplied: { type: 0, value: 0, units: 0 },
+    spectralResolution: '',
+    effectiveResolution: ''
   };
 
   beforeEach(() => {
@@ -42,7 +54,7 @@ describe('<DeleteObservationConfirmation />', () => {
           id: '',
           telescope: 0,
           subarray: '',
-          type: 0,
+          type: '',
           observingBand: BAND_LOW_STR,
           weather: undefined,
           elevation: 0,

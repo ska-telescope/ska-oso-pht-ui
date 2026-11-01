@@ -6,12 +6,12 @@ import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
 import { BAND_LOW_STR, TYPE_PST } from '@/utils/constants';
 import Observation from '@/utils/types/observation';
 
-const TYPE_UNKNOWN = 9;
+const TYPE_UNKNOWN = 'unknown';
 
 describe('ObservationInfo', () => {
   const baseObservation: Observation = {
     id: 'obs1',
-    type: 0,
+    type: '',
     telescope: 0,
     subarray: '',
 
