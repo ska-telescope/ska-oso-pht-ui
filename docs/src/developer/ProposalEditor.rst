@@ -6,24 +6,17 @@ Proposal Editor Architecture
    The migration to this architecture is still in progress. Parts of the app still use the
    legacy proposal store and mappers. This note is removed when the migration is complete.
 
-   .. TODO: Two or three sentences on the bridge, without naming migrated pages: migrated
-      subgroups live in the form and unmigrated ones in the legacy store; on save, the form's
-      subgroups are laid over the PDM built by the legacy mappers.
+The proposal editor keeps all editable proposal data in one proposal-wide form, built with
+`React Hook Form <https://react-hook-form.com/>`_ (RHF). Every page reads and writes its fields
+in that form, so moving between pages does not lose or reload anything.
 
-.. TODO: One-paragraph summary: one proposal-wide React Hook Form (RHF) instance, Zod schemas
-   composed from one module per subgroup, generated PDM types used only at the API boundary, and
-   a local backup of the form state.
+`Zod <https://zod.dev/>`_ schemas define what the form data may look like. RHF runs them
+through ``@hookform/resolvers`` to show field errors, and the editor runs them before saving
+and submitting.
 
-Overview
-========
-
-.. TODO: Brief list of the libraries and what each is used for:
-   - React Hook Form: one proposal-wide form holding all editable proposal data.
-   - Zod (with @hookform/resolvers): schemas for validation and conversion.
-   - Generated PDM types (OpenAPI Generator, from the ska-oso-services OpenAPI spec, see
-     ``make models``): the API contract.
-   - @ska-telescope/ska-gui-components controlled fields: bind SKA components to the form.
-   - Browser local storage: backup of the form state.
+Mappers convert between the form data and the PDM, the proposal type that the backend
+accepts. The PDM types are generated from the ska-oso-services OpenAPI spec
+(``make models``) and are used only at this boundary, never inside the form.
 
 
 Data flow
@@ -60,125 +53,94 @@ the unsaved changes still overwrite it.
 Schemas
 =======
 
-Subgroups
----------
+The form state has the type ``ProposalFormInput``. Two Zod schemas validate it. The draft
+schema (``ProposalDraftSchema``) checks only the shape of the data and converts it, so an
+incomplete proposal can still be saved. The submit schema (``ProposalSubmitSchema``) is the
+draft schema plus the rules a finished proposal must meet: required fields, formats, minimum
+counts and rules that span several pages. The draft schema runs before every save, and the
+submit schema runs while the user types (to show field errors) and again when they submit.
 
-``ProposalFormInput`` is a representation of the form data divided into subgroups roughly
-based on the page the form fields are presented in. These route level groups are Details,
-Team, Documents, Targets, Observations, Data products, Links (see `Target-observation links`_)
-and Calibration. Additionally at the root level includes the proposal type, title, ID and cycle ID.
+Both schemas produce the same output, ``ProposalDraftValues``, so one mapper, ``toPdm``,
+turns it into the backend PDM type for both saving and submitting. ``fromPdm`` goes the other
+way when a proposal is created or loaded.
 
-Every subgroup follows the same pattern. ``title.ts`` is the smallest example: a schema,
-the type of its values, and the mappers.
+The schemas and mappers are built from one module per subgroup of the form, roughly one per
+page. The Details subgroup is a good example:
 
 .. code-block:: typescript
 
-   // title.ts
-   export function getTitleSchema() {
-     return z.string().trim(); // shape and conversion only: '' is allowed in a draft
+   // details.ts
+   export function getDetailsSchema() {
+     return z.object({
+       abstract: z.string(), // shape only: '' and too many words are allowed in a draft
+       scienceCategory: z.string().nullable(), // standard proposals only, null until chosen
+     });
    }
 
-   export type TitleValues = z.infer<ReturnType<typeof getTitleSchema>>;
+   export type DetailsValues = z.infer<ReturnType<typeof getDetailsSchema>>;
 
-   export const titleFromPdm = (info: Pick<ProposalInfo, 'title'>): TitleValues => info.title;
+   // Both fields are optional in the PDM, so fromPdm gives them form defaults
+   export const detailsFromPdm = (info: ProposalInfo): DetailsValues => ({
+     abstract: info.abstract ?? '',
+     scienceCategory: info.science_category ?? null,
+   });
 
-   export const titleToPdm = (title: TitleValues): Pick<ProposalInfo, 'title'> => ({ title });
+   export const detailsToPdm = (
+     details: DetailsValues,
+   ): Pick<ProposalInfo, 'abstract' | 'science_category'> => ({
+     abstract: details.abstract,
+     science_category: details.scienceCategory,
+   });
 
-The subgroup is then registered in the proposal schemas and in the mappers:
+Each module is then registered in the proposal schemas and mappers. Rules that only a
+finished proposal must meet, or that span subgroups, go in the submit schema:
 
 .. code-block:: typescript
 
    const ProposalDraftSchema = z.object({
-     title: getTitleSchema(),
+     details: getDetailsSchema(),
+     observations: z.array(getObservationSchema()),
      // ...other subgroups and root fields
    });
 
    const ProposalSubmitSchema = ProposalDraftSchema.superRefine((values, ctx) => {
-     // the title is required, has a format and a word limit: these rules go here,
-     // not in the draft, so that a draft with an empty title can still be saved
+     const require = (value: unknown, path: (string | number)[]) =>
+       value || ctx.addIssue({ code: 'custom', path, message: REQUIRED_MESSAGE });
+
+     require(values.details.abstract, ['details', 'abstract']); // plus the word limit
+
+     // An SV proposal has no science category. Its Details page shows the observing mode
+     // instead, which belongs to the observations subgroup.
+     if (values.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION) {
+       require(values.observations[0]?.type, ['observations', 0, 'type']);
+     } else {
+       require(values.details.scienceCategory, ['details', 'scienceCategory']);
+     }
    });
 
    function fromPdm(pdm: ProposalPdm): ProposalFormInput {
-     return { title: titleFromPdm(pdm.proposal_info) /* , ...other subgroups */ };
+     return { details: detailsFromPdm(pdm.proposal_info) /* , ...other subgroups */ };
    }
 
    function toPdm(values: ProposalDraftValues): ProposalPdm {
-     return { proposal_info: { ...titleToPdm(values.title) /* , ...other subgroups */ } };
+     return { proposal_info: { ...detailsToPdm(values.details) /* , ...other subgroups */ } };
    }
 
-Validation messages come from the PHT translations. A subgroup schema can also be used on its
-own, outside the proposal form.
-
-Draft and submit schemas
-------------------------
-
-The proposal has two schemas, both built from the same subgroup schemas. The draft schema
-checks only the shape of the data and converts it, so an incomplete proposal can still be
-saved. The submit schema is the draft schema plus the rules a finished proposal must meet:
-required fields, formats, minimum counts and rules that span several pages. As the data flow
-diagram shows, the draft schema runs before every save, and the submit schema runs while the
-user types (to show field errors) and again when they submit.
-
-Both schemas take the same input, ``ProposalFormInput`` (the raw form state), and produce the
-same output, ``ProposalDraftValues``. So one pair of mappers serves both saving and
-submitting.
-
-Schema rules
-------------
-
-.. TODO: Conversions turn bad input into null; generated PDM sets the floor; array entries
-   are committed whole; page status from submit issues; submit rules match legacy validation;
-   controlled fields use null (not undefined) for "no value" so reset clears them.
-   What is and isn't form data: sensitivity results are form data (saved, validated, written
-   only by the sensitivity operations); dialogs, timers, request IDs and file payloads are not.
-
-Mappers
--------
-
-.. TODO: fromPdm / toPdm composed from subgroup mappers; single mapper for draft
-   and submit; round-trip tests.
-
-Target-observation links
-========================
-
-.. TODO diagram: entity-relationship diagram of targets, observations and data products, the
-   link entries joining them (target ID, observation ID, data product ID, sensitivity
-   results), and how each link maps to a PDM result_details entry (target_ref,
-   observation_set_ref, data_product_ref). Optionally a second panel for SV: one observation,
-   one data product, every target linked automatically.
-   .. figure:: ../images/developer/proposalEditorLinks.png
-
-.. TODO: Record the chosen representation (current shape: one entry per target + observation +
-   data product with results on the entry, vs separate links and results) and why.
+Validation messages come from the PHT translations.
 
 Science Verification and standard proposals
 ===========================================
 
-.. TODO: Short intro: the proposal type (form field proposalType) decides which pages and
-   rules apply.
+.. figure:: ../images/developer/proposalEditorSvVsStandard.png
 
-.. TODO diagram: side-by-side page sets / flows for SV and non-SV.
-   .. figure:: ../images/developer/proposalEditorSvVsStandard.png
+   The pages of a standard and an SV proposal. Highlighted pages differ between the two.
 
-Page sets
----------
+Science Verification (SV) and standard proposals share one form and one set of schemas. The
+root field ``proposalType`` decides which pages are shown and which submit rules apply. As
+the figure shows, an SV proposal differs from a standard one in three places:
 
-.. TODO: Which pages each proposal type has.
-
-Details and documents
----------------------
-
-.. TODO: SV observing mode (observations[0].type) vs science category; SV Description page vs
-   Science and Technical pages.
-
-Observations and data products
-------------------------------
-
-.. TODO: SV has exactly one observation and data product created with the proposal, edit only.
-   Non-SV can add and delete.
-
-Linking
--------
-
-.. TODO: SV autolinking (adding a target links it; changing observing mode regenerates) vs
-   the non-SV Linking page.
+- The Science and Technical pages are combined into one Description page.
+- The Details page asks for the observing mode instead of the science category. SV proposals
+  have no science category.
+- There is no Linking page. An SV proposal has exactly one target, one observation and one
+  data product, and they are linked automatically in the background.
