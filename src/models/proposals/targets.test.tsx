@@ -43,6 +43,32 @@ describe('targets PDM mapping', () => {
     expect(targetsToPdm(targetsFromPdm(saved))).toEqual(saved);
   });
 
+  // Saving does not give back every field that was loaded: the pointing pattern is not kept, and
+  // some radial velocities are not saved as they were read
+  const savedFrom = (pdm: ProposalBackend) =>
+    structuredClone(pdm.observation_info.targets ?? []).map(
+      ({ pointing_pattern: _, ...target }) => target
+    ) as any[];
+
+  test('saves the targets of MockSlicesPdm', () => {
+    const expected = savedFrom(MockSlicesPdm);
+    expected[0].radial_velocity.quantity.value = 0;
+    expected[1].radial_velocity.definition = 'RADIO';
+    expect(targetsToPdm(targetsFromPdm(MockSlicesPdm.observation_info.targets))).toEqual(expected);
+  });
+
+  test('saves the targets of MockProposalBackend', () => {
+    const pdm = MockProposalBackend as unknown as ProposalBackend;
+    expect(targetsToPdm(targetsFromPdm(pdm.observation_info.targets))).toEqual(savedFrom(pdm));
+  });
+
+  test('saves the targets of MockProposalBackendZoom', () => {
+    const pdm = MockProposalBackendZoom as unknown as ProposalBackend;
+    const expected = savedFrom(pdm);
+    expected[0].radial_velocity.quantity.value = 0;
+    expect(targetsToPdm(targetsFromPdm(pdm.observation_info.targets))).toEqual(expected);
+  });
+
   test('reads missing targets as an empty list', () => {
     expect(targetsFromPdm(undefined)).toEqual([]);
   });

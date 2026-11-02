@@ -61,6 +61,44 @@ describe('target observation PDM mapping', () => {
     expect(targetObservationToPdm(targetObservationFromPdm(saved, sets), types)).toEqual(saved);
   });
 
+  const save = (pdm: ProposalBackend) => {
+    const sets = pdm.observation_info.observation_sets ?? [];
+    return targetObservationToPdm(
+      targetObservationFromPdm(pdm.observation_info.result_details, sets),
+      observationTypesFromPdm(sets)
+    );
+  };
+
+  test('saves the results of MockSlicesPdm', () => {
+    // Cloned one by one, as the fixture's results share their objects
+    const expected = (MockSlicesPdm.observation_info.result_details ?? []).map((r) =>
+      structuredClone(r)
+    ) as any[];
+    // Results supplied as sensitivity are saved from the observation's supplied sensitivity
+    expected[1].result.continuum = { value: 10, unit: 'uJy/beam' };
+    expected[1].result.spectral = { value: 10, unit: 'uJy/beam' };
+    // A spectral line observation saves no continuum values
+    expected[2].result.weighted_continuum_sensitivity = { value: 0, unit: '' };
+    expected[2].result.total_continuum_sensitivity = { value: 0, unit: '' };
+    expected[2].result.surface_brightness_sensitivity.continuum = 0;
+    expected[2].continuum_confusion_noise = { value: 0, unit: '' };
+    expected[2].synthesized_beam_size.continuum = '';
+    expect(save(MockSlicesPdm)).toEqual(expected);
+  });
+
+  test('saves the results of MockProposalBackend', () => {
+    const pdm = MockProposalBackend as unknown as ProposalBackend;
+    expect(save(pdm)).toEqual(pdm.observation_info.result_details);
+  });
+
+  test('saves the results of MockProposalBackendZoom', () => {
+    const pdm = MockProposalBackendZoom as unknown as ProposalBackend;
+    const expected = structuredClone(pdm.observation_info.result_details) as any[];
+    // A zoom observation saves no continuum beam size
+    expected[0].synthesized_beam_size.continuum = '';
+    expect(save(pdm)).toEqual(expected);
+  });
+
   test('reads results without observation sets as no links', () => {
     expect(
       targetObservationFromPdm(MockProposalBackend.observation_info.result_details as never, [])
