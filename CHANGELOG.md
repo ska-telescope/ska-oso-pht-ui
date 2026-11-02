@@ -9,6 +9,7 @@ UNRELEASED
 * Bugfix: Only reset DP Parameters if values on the Observaion page change.
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
 * Bugfix: Show a meaningful message when target name resolution fails, including when the external resolvers are unavailable
+* Changed: Updated description pages to use RHF and ZOD validation
 
 11.1.0
 ----------
