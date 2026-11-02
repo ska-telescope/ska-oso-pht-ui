@@ -23,6 +23,7 @@ import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
+  VELOCITY_DEFINITION,
   VELOCITY_TYPE,
   VelocityType,
   WRAPPER_HEIGHT,
@@ -255,7 +256,8 @@ export default function TargetEntry({
         kind: referenceCoordinates,
         id: generateTargetId(),
         name: name ?? '',
-        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT
+        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT,
+        velocityDefinition: VELOCITY_DEFINITION.RADIO
       };
 
       const buildTarget = (): Target => {

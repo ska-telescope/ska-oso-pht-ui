@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { useProposalForm } from './useProposalForm';
-import { PROPOSAL_TYPE } from '@/utils/constants';
+import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
 import Target from '@/utils/types/target';
 import TargetObservation from '@/utils/types/targetObservation';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
@@ -16,7 +16,14 @@ type Props = {
 };
 
 const slicesFor = (id: string) => ({
-  targets: [{ id: `target-${id}`, name: `Target ${id}`, kind: 0 }],
+  targets: [
+    {
+      id: `target-${id}`,
+      name: `Target ${id}`,
+      kind: 0,
+      velocityDefinition: VELOCITY_DEFINITION.RADIO
+    }
+  ],
   targetObservation: [
     { targetId: `target-${id}`, observationId: `obs-${id}`, dataProductsSDPId: `sdp-${id}` }
   ],

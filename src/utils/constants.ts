@@ -563,6 +563,15 @@ export const VELOCITY_TYPE = {
 
 export type VelocityType = (typeof VELOCITY_TYPE)[keyof typeof VELOCITY_TYPE];
 
+/** The convention a target's radial velocity is given in. New targets use RADIO, the PDM default. */
+export const VELOCITY_DEFINITION = {
+  RADIO: 'RADIO',
+  OPTICAL: 'OPTICAL',
+  RELATIVISTIC: 'RELATIVISTIC'
+} as const;
+
+export type VelocityDefinition = (typeof VELOCITY_DEFINITION)[keyof typeof VELOCITY_DEFINITION];
+
 export const VELOCITY_UNITS = [
   { label: 'm/s', value: 0, convert: 1 },
   { label: 'km/s', value: 1, convert: 1000 }

@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
+  VELOCITY_DEFINITION,
   VELOCITY_TYPE
 } from '@/utils/constants';
 import Target from '@/utils/types/target';
@@ -21,6 +22,7 @@ const icrsTarget: Target = {
   velType: VELOCITY_TYPE.VELOCITY,
   vel: '10',
   velUnit: 0,
+  velocityDefinition: VELOCITY_DEFINITION.RADIO,
   redshift: ''
 };
 
@@ -47,7 +49,8 @@ describe('targetEntryFromTarget', () => {
       name: 'Galactic',
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
       l: 12.5,
-      b: -3.25
+      b: -3.25,
+      velocityDefinition: VELOCITY_DEFINITION.RADIO
     });
     expect(entry.referenceCoordinates).toBe(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
     expect(entry.coord1).toBe('12.5');

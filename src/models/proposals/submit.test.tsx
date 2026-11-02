@@ -4,14 +4,14 @@ import {
   MockProposalBackend,
   MockProposalBackendZoom
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import { STATUS_ERROR, STATUS_OK, PROPOSAL_TYPE } from '@/utils/constants';
+import { STATUS_ERROR, STATUS_OK, PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
 import { ProposalBackend } from '@/utils/types/proposal';
 import { MockSlicesPdm } from './mockSlicesPdm';
 import { getProposalSchema, ProposalType } from './proposal';
 import { getProposalSubmitSchema, getSubmitPageStatuses } from './submit';
 import { getProposalFormValues } from './useProposalForm';
 
-const target = { id: 't1', name: 'M2', kind: 0 };
+const target = { id: 't1', name: 'M2', kind: 0, velocityDefinition: VELOCITY_DEFINITION.RADIO };
 const link = { targetId: 't1', observationId: 'o1', dataProductsSDPId: 'sdp1' };
 const strategy = {
   observatoryDefined: true,

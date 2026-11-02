@@ -4,10 +4,16 @@ import { act, renderHook } from '@testing-library/react';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import Target from '@utils/types/target';
+import { VELOCITY_DEFINITION } from '@/utils/constants';
 import { useProposalForm } from './useProposalForm';
 import { useCopySlicesToStore } from './useCopySlicesToStore';
 
-const target = (id: string): Target => ({ id, name: `Target ${id}`, kind: 0 });
+const target = (id: string): Target => ({
+  id,
+  name: `Target ${id}`,
+  kind: 0,
+  velocityDefinition: VELOCITY_DEFINITION.RADIO
+});
 
 // The global form seeded from the store with the copy back to it, as PHT.tsx sets them up
 const useHarness = () => {

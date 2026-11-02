@@ -4,7 +4,9 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
   VEL_UNITS,
+  VELOCITY_DEFINITION,
   VELOCITY_TYPE,
+  VelocityDefinition,
   VelocityType
 } from '@/utils/constants';
 import type Target from '@/utils/types/target';
@@ -37,7 +39,7 @@ export function getTargetSchema() {
     name: z.string(),
     redshift: z.string().optional(),
     referenceFrame: z.string().optional(),
-    velocityDefinition: z.enum(RadialVelocityDefinition).optional(),
+    velocityDefinition: z.enum(VELOCITY_DEFINITION),
     velType: z.literal([VELOCITY_TYPE.VELOCITY, VELOCITY_TYPE.REDSHIFT]).optional(),
     vel: z.string().optional(),
     velUnit: z.number().optional(),
@@ -80,6 +82,12 @@ export const getTargetsValues = (proposal?: { targets?: TargetsType }): TargetsT
 const getVelType = (redshift?: number): VelocityType =>
   redshift ? VELOCITY_TYPE.REDSHIFT : VELOCITY_TYPE.VELOCITY;
 
+const velocityDefinitionFromPdm: Record<RadialVelocityDefinition, VelocityDefinition> = {
+  [RadialVelocityDefinition.Radio]: VELOCITY_DEFINITION.RADIO,
+  [RadialVelocityDefinition.Optical]: VELOCITY_DEFINITION.OPTICAL,
+  [RadialVelocityDefinition.Relativistic]: VELOCITY_DEFINITION.RELATIVISTIC
+};
+
 const getTargetType = (kind: string): number => {
   switch (kind) {
     case REFERENCE_COORDINATE_TYPE_ICRS.label:
@@ -115,7 +123,9 @@ export const targetsFromPdm = (inRec: TargetTransport[] = []): Target[] => {
       l: undefined,
       redshift: radialVelocity.redshift.toString(),
       referenceFrame: radialVelocity.reference_frame,
-      velocityDefinition: radialVelocity.definition,
+      // Optional in the PDM, so a target without one gets the PDM default
+      velocityDefinition:
+        velocityDefinitionFromPdm[radialVelocity.definition ?? RadialVelocityDefinition.Radio],
       velType: getVelType(radialVelocity.redshift),
       vel: radialVelocity.quantity?.value?.toString(),
       velUnit: VEL_UNITS.find(
@@ -170,6 +180,12 @@ export const targetsFromPdm = (inRec: TargetTransport[] = []): Target[] => {
 const isVelocity = (type?: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type?: number) => type === VELOCITY_TYPE.REDSHIFT;
 
+const velocityDefinitionToPdm: Record<VelocityDefinition, RadialVelocityDefinition> = {
+  [VELOCITY_DEFINITION.RADIO]: RadialVelocityDefinition.Radio,
+  [VELOCITY_DEFINITION.OPTICAL]: RadialVelocityDefinition.Optical,
+  [VELOCITY_DEFINITION.RELATIVISTIC]: RadialVelocityDefinition.Relativistic
+};
+
 export const referenceCoordinateToPdm = (
   tar:
     | TargetsType[number]
@@ -220,7 +236,7 @@ export const targetsToPdm = (targets: TargetsType): TargetTransport[] => {
         value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
         unit: VEL_UNITS.find((u) => u.value === Number(tar.velUnit))?.label ?? ''
       },
-      definition: tar.velocityDefinition ?? RadialVelocityDefinition.Radio,
+      definition: velocityDefinitionToPdm[tar.velocityDefinition],
       reference_frame: tar.referenceFrame ?? 'LSRK',
       redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
     } as TargetTransport['radial_velocity']

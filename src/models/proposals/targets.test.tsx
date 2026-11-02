@@ -7,8 +7,7 @@ import {
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockSlicesPdm } from './mockSlicesPdm';
 import Target from '@utils/types/target';
-import { VELOCITY_TYPE } from '@/utils/constants';
-import { RadialVelocityDefinition } from '@/generated/models';
+import { VELOCITY_DEFINITION, VELOCITY_TYPE } from '@/utils/constants';
 import { getTargetsSchema, TargetsType, targetsFromPdm, targetsToPdm } from './targets';
 
 const mockPdms = [
@@ -61,10 +60,11 @@ describe('targets PDM mapping', () => {
     expect(redshift.velType).toBe(VELOCITY_TYPE.REDSHIFT);
   });
 
-  test('saves a target without a velocity definition with the PDM default', () => {
-    const [target] = targetsFromPdm(MockSlicesPdm.observation_info.targets);
-    const [saved] = targetsToPdm([{ ...target, velocityDefinition: undefined }]);
-    expect(saved.radial_velocity?.definition).toBe(RadialVelocityDefinition.Radio);
+  test('loads a target without a velocity definition with the PDM default', () => {
+    const [pdmTarget] = MockSlicesPdm.observation_info.targets ?? [];
+    const { definition: _, ...noDefinition } = pdmTarget.radial_velocity ?? {};
+    const [target] = targetsFromPdm([{ ...pdmTarget, radial_velocity: noDefinition }]);
+    expect(target.velocityDefinition).toBe(VELOCITY_DEFINITION.RADIO);
   });
 
   test('reads missing targets as an empty list', () => {

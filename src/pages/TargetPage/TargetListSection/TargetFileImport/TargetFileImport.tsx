@@ -9,6 +9,7 @@ import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   UPLOAD_MAX_WIDTH_CSV,
   NOTIFICATION_DELAY_IN_SECONDS,
+  VELOCITY_DEFINITION,
   VELOCITY_TYPE
 } from '../../../../utils/constants';
 import Target from '@/utils/types/target';
@@ -43,7 +44,8 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
       l: Number(longitude),
       redshift: null,
       vel: '',
-      velUnit: '0'
+      velUnit: '0',
+      velocityDefinition: VELOCITY_DEFINITION.RADIO
     };
 
     return newTarget;
@@ -60,7 +62,8 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
       redshift: '',
       velType: VELOCITY_TYPE.VELOCITY,
       vel: '',
-      velUnit: 0
+      velUnit: 0,
+      velocityDefinition: VELOCITY_DEFINITION.RADIO
     };
 
     return newTarget;
