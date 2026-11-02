@@ -329,8 +329,8 @@ export const isDataProductPolarisationsValid = (
       // hidden companion HiddenSDPData silently creates alongside a Zoom/combined spectral
       // product for auto-linking/sens-calc (see DataProduct.tsx's ensureHiddenDataProduct) -
       // never carries polarisations and must not be validated as the displayed data product.
-      // SDPSpectralData has no dataProductType field at all, so it falls back to DP_TYPE_IMAGES
-      // here (same fallback isDataProductRobustValid uses) and is always checked.
+      // Spectral products are always DP_TYPE_IMAGES, so they are always checked; the fallback
+      // only covers data without a type (same fallback isDataProductRobustValid uses).
       const dataProductType = Number(
         (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData | undefined)
           ?.dataProductType ?? DP_TYPE_IMAGES

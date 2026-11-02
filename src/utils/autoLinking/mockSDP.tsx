@@ -48,6 +48,7 @@ export const SPECTRAL_DATA_PRODUCT: DataProductSDPNew = {
   id: 'SDP-0000000',
   observationId: 'obs-123',
   data: {
+    dataProductType: DP_TYPE_IMAGES,
     imageSizeValue: IMAGE_SIZE_DEFAULT,
     imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
     pixelSizeValue: PIXEL_SIZE_DEFAULT,
@@ -58,5 +59,5 @@ export const SPECTRAL_DATA_PRODUCT: DataProductSDPNew = {
     robust: ROBUST_DEFAULT,
     taperValue: TAPER_DEFAULT,
     continuumSubtraction: true
-  } as SDPSpectralData
+  } satisfies SDPSpectralData
 };

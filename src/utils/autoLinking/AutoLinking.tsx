@@ -135,12 +135,16 @@ export const SDPData = (
         dataProductType: PULSAR_TIMING_VALUE
       } as SDPFlowthroughPSTData;
     case TYPE_ZOOM:
-      return { ...DEFAULT_IMAGING_DATA } as SDPSpectralData;
+      return {
+        ...DEFAULT_IMAGING_DATA,
+        dataProductType: DP_TYPE_IMAGES
+      } satisfies SDPSpectralData;
     case TYPE_CONTINUUM_SPECTRAL:
       return {
         ...DEFAULT_IMAGING_DATA,
+        dataProductType: DP_TYPE_IMAGES,
         channelsOut: CHANNELS_OUT_MAX_COMBINED
-      } as SDPSpectralData;
+      } satisfies SDPSpectralData;
     default:
       return {
         ...DEFAULT_IMAGING_DATA,
