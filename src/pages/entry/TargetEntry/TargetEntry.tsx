@@ -24,6 +24,7 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
   VELOCITY_TYPE,
+  VelocityType,
   WRAPPER_HEIGHT,
   NOTIFICATION_DELAY_IN_SECONDS
 } from '@/utils/constants';
@@ -184,7 +185,7 @@ export default function TargetEntry({
     updateEntry({ vel: inValue });
   };
 
-  const setTheVelType = (inValue: number) => {
+  const setTheVelType = (inValue: VelocityType) => {
     invalidatePendingResolve();
     updateEntry({ velType: inValue });
   };

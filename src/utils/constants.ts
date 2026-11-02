@@ -474,11 +474,6 @@ export const UPLOAD_MAX_WIDTH_PDF = 25;
 export const SCIENCE_PDF_MAX_PAGES = 4;
 export const SCIENCE_PDF_MAX_SIZE_MB = 100;
 
-export const VEL_TYPES = [
-  { label: 'Velocity', value: 0 },
-  { label: 'Redshift', value: 1 }
-];
-
 export const VEL_UNITS = [
   { label: 'km/s', value: 0 },
   { label: 'm/s', value: 1 }
@@ -560,10 +555,13 @@ export const TEXT_ENTRY_PARAMS = {
   }
 };
 
+/** Whether a target's radial motion is entered as a velocity or a redshift (PHT only, not a PDM field) */
 export const VELOCITY_TYPE = {
   VELOCITY: 0,
   REDSHIFT: 1
-};
+} as const;
+
+export type VelocityType = (typeof VELOCITY_TYPE)[keyof typeof VELOCITY_TYPE];
 
 export const VELOCITY_UNITS = [
   { label: 'm/s', value: 0, convert: 1 },

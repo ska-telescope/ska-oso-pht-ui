@@ -8,7 +8,8 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   UPLOAD_MAX_WIDTH_CSV,
-  NOTIFICATION_DELAY_IN_SECONDS
+  NOTIFICATION_DELAY_IN_SECONDS,
+  VELOCITY_TYPE
 } from '../../../../utils/constants';
 import Target from '@/utils/types/target';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -57,7 +58,7 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
       name,
       raStr: ra,
       redshift: '',
-      velType: 0,
+      velType: VELOCITY_TYPE.VELOCITY,
       vel: '',
       velUnit: 0
     };

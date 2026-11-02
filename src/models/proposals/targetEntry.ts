@@ -18,7 +18,7 @@ export function getTargetEntrySchema() {
     name: z.string(),
     coord1: z.string(),
     coord2: z.string(),
-    velType: z.number(),
+    velType: z.literal([VELOCITY_TYPE.VELOCITY, VELOCITY_TYPE.REDSHIFT]),
     vel: z.string(),
     velUnit: z.number(),
     redshift: z.string(),

@@ -7,6 +7,8 @@ import {
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockSlicesPdm } from './mockSlicesPdm';
 import Target from '@utils/types/target';
+import { VELOCITY_TYPE } from '@/utils/constants';
+import { RadialVelocityDefinition } from '@/generated/models';
 import { getTargetsSchema, TargetsType, targetsFromPdm, targetsToPdm } from './targets';
 
 const mockPdms = [
@@ -43,30 +45,26 @@ describe('targets PDM mapping', () => {
     expect(targetsToPdm(targetsFromPdm(saved))).toEqual(saved);
   });
 
-  // Saving does not give back every field that was loaded: the pointing pattern is not kept, and
-  // some radial velocities are not saved as they were read
+  // Saving gives back every field that was loaded except the pointing pattern, which is not kept
   const savedFrom = (pdm: ProposalBackend) =>
     structuredClone(pdm.observation_info.targets ?? []).map(
       ({ pointing_pattern: _, ...target }) => target
-    ) as any[];
+    );
 
-  test('saves the targets of MockSlicesPdm', () => {
-    const expected = savedFrom(MockSlicesPdm);
-    expected[0].radial_velocity.quantity.value = 0;
-    expected[1].radial_velocity.definition = 'RADIO';
-    expect(targetsToPdm(targetsFromPdm(MockSlicesPdm.observation_info.targets))).toEqual(expected);
-  });
-
-  test('saves the targets of MockProposalBackend', () => {
-    const pdm = MockProposalBackend as unknown as ProposalBackend;
+  test.each(mockPdms)('saves the targets of %s', (_, pdm) => {
     expect(targetsToPdm(targetsFromPdm(pdm.observation_info.targets))).toEqual(savedFrom(pdm));
   });
 
-  test('saves the targets of MockProposalBackendZoom', () => {
-    const pdm = MockProposalBackendZoom as unknown as ProposalBackend;
-    const expected = savedFrom(pdm);
-    expected[0].radial_velocity.quantity.value = 0;
-    expect(targetsToPdm(targetsFromPdm(pdm.observation_info.targets))).toEqual(expected);
+  test('loads a target with a redshift as a redshift, and any other as a velocity', () => {
+    const [velocity, redshift] = targetsFromPdm(MockSlicesPdm.observation_info.targets);
+    expect(velocity.velType).toBe(VELOCITY_TYPE.VELOCITY);
+    expect(redshift.velType).toBe(VELOCITY_TYPE.REDSHIFT);
+  });
+
+  test('saves a target without a velocity definition with the PDM default', () => {
+    const [target] = targetsFromPdm(MockSlicesPdm.observation_info.targets);
+    const [saved] = targetsToPdm([{ ...target, velocityDefinition: undefined }]);
+    expect(saved.radial_velocity?.definition).toBe(RadialVelocityDefinition.Radio);
   });
 
   test('reads missing targets as an empty list', () => {

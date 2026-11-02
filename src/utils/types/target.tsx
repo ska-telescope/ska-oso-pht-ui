@@ -1,3 +1,6 @@
+import type { RadialVelocityDefinition } from '@/generated/models';
+import type { VelocityType } from '@/utils/constants';
+
 /*
 export type TargetBackend = {
   declination: string;
@@ -66,9 +69,9 @@ export type Target = {
   id: string;
   name: string;
   redshift?: string;
-  raReferenceFrame?: string; // NOT USED
-  raDefinition?: string; // NOT USED
-  velType?: number;
+  referenceFrame?: string;
+  velocityDefinition?: RadialVelocityDefinition;
+  velType?: VelocityType;
   vel?: string;
   velUnit?: number;
   /*------- reference coordinate properties --------------------- */
