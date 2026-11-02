@@ -58,6 +58,8 @@ export default function SciencePage() {
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
+  const activeProposalIdRef = React.useRef(getProposal()?.id);
+  activeProposalIdRef.current = getProposal()?.id;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getSciencePdfDisplayFilename = () => sciencePDF?.documentId + t('fileType.pdf');
@@ -267,16 +269,17 @@ export default function SciencePage() {
       return;
     }
     setPdfError(null);
+    const proposal = getProposal();
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
       notifyWarning(t('pdfUpload.science.warning'));
-      const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
+      if (activeProposalIdRef.current !== proposal.id) return;
 
       if (uploadResult.error) {
         setUploadStatus(FileUploadStatus.ERROR);
@@ -293,6 +296,7 @@ export default function SciencePage() {
 
       notifySuccess(t('pdfUpload.science.success'));
     } catch (e) {
+      if (activeProposalIdRef.current !== proposal.id) return;
       setFile('');
       setUploadStatus(FileUploadStatus.ERROR);
     }
@@ -320,6 +324,7 @@ export default function SciencePage() {
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
       const deleteResult = await DeletePDF(signedUrl);
+      if (activeProposalIdRef.current !== proposal.id) return;
 
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to Delete Science PDF');

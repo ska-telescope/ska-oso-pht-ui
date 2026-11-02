@@ -51,6 +51,8 @@ export default function TechnicalPage() {
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
+  const activeProposalIdRef = React.useRef(getProposal()?.id);
+  activeProposalIdRef.current = getProposal()?.id;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
 
@@ -75,17 +77,18 @@ export default function TechnicalPage() {
   };
 
   const uploadPdftoSignedUrl = async (theFile: File) => {
+    const proposal = getProposal();
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
       notifyWarning(t('pdfUpload.technical.warning'));
-      const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-technical.pdf`);
       if (typeof signedUrl != 'string') {
         setUploadStatus(FileUploadStatus.ERROR);
         new Error('Not able to Get Technical PDF Upload URL');
       }
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
+      if (activeProposalIdRef.current !== proposal.id) return;
       if (uploadResult.error) {
         setUploadStatus(FileUploadStatus.ERROR);
         notifyError(t('pdfUpload.technical.error'));
@@ -101,6 +104,7 @@ export default function TechnicalPage() {
       onTechnicalLoadStatusChange(FileUploadStatus.OK);
       notifySuccess(t('pdfUpload.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
+      if (activeProposalIdRef.current !== proposal.id) return;
       setFile('');
       setUploadStatus(FileUploadStatus.ERROR);
     }
@@ -128,6 +132,7 @@ export default function TechnicalPage() {
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
 
       const deleteResult = await DeletePDF(signedUrl);
+      if (activeProposalIdRef.current !== proposal.id) return;
 
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to delete Technical PDF');
