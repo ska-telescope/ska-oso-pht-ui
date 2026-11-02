@@ -1,9 +1,30 @@
+import { z } from 'zod';
 import { STATUS_ERROR, STATUS_OK } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import { getProposalSchema, ProposalType } from './proposal';
 import { getTargetsSchema } from './targets';
 import { getTargetObservationSchema } from './targetObservation';
 import { getCalibrationStrategySchema } from './calibrationStrategy';
+
+/** The pages whose status comes from the submit schema. */
+export type SubmitPage = 'target' | 'linking' | 'calibration';
+
+type SubmitTag = { page: SubmitPage };
+
+/**
+ * Tags a submit rule's issue with the page whose status it sets, so the status comes from which
+ * rule failed rather than from where or how Zod reports it.
+ */
+const submitRule = (page: SubmitPage, message: string) => ({
+  message,
+  params: { page } satisfies SubmitTag
+});
+
+/** Whether one of the issues comes from a submit rule for the page. */
+const hasSubmitBlocker = (issues: z.core.$ZodIssue[], page: SubmitPage) =>
+  issues.some(
+    (issue) => issue.code === 'custom' && (issue.params as SubmitTag | undefined)?.page === page
+  );
 
 // The submit schema: the proposal form schema plus the rules a proposal must meet before it can
 // be submitted. They are kept out of the form's own schema, which validates as the user types, so
@@ -18,43 +39,33 @@ import { getCalibrationStrategySchema } from './calibrationStrategy';
 // to the form.
 export function getProposalSubmitSchema() {
   return getProposalSchema().extend({
-    targets: getTargetsSchema().min(1, phtTranslations.targets.empty),
-    targetObservation: getTargetObservationSchema().min(
-      1,
-      phtTranslations.error.noCalibrationsLinking
+    targets: getTargetsSchema().refine(
+      (targets) => targets.length > 0,
+      submitRule('target', phtTranslations.targets.empty)
     ),
-    calibrationStrategy: getCalibrationStrategySchema().min(
-      1,
-      phtTranslations.error.noCalibrationsLoggedOut
+    targetObservation: getTargetObservationSchema().refine(
+      (links) => links.length > 0,
+      submitRule('linking', phtTranslations.error.noCalibrationsLinking)
+    ),
+    calibrationStrategy: getCalibrationStrategySchema().refine(
+      (strategies) => strategies.length > 0,
+      submitRule('calibration', phtTranslations.error.noCalibrationsLoggedOut)
     )
   });
 }
 
-/** The pages whose status comes from the submit schema, by the form slice each one edits. */
-export const SUBMIT_PAGE_SLICES = {
-  target: 'targets',
-  linking: 'targetObservation',
-  calibration: 'calibrationStrategy'
-} as const;
-
-export type SubmitPage = keyof typeof SUBMIT_PAGE_SLICES;
-
 /**
- * The status of each of those pages: an error when a submit rule fails for its slice.
+ * The status of each of those pages: an error when one of its submit rules fails.
  *
- * Only the submit rules count, which are reported at the slice itself. Problems inside an entry
- * (the structure checks) are reported deeper and are left out, so the status follows the page
- * checks it replaced and nothing more.
+ * Only the issues tagged by submitRule count. Problems inside an entry (the structure checks) are
+ * left out, so the status follows the page checks it replaced and nothing more.
  */
 export const getSubmitPageStatuses = (values: ProposalType): Record<SubmitPage, number> => {
   const issues = getProposalSubmitSchema().safeParse(values).error?.issues ?? [];
-  const hasIssue = (slice: string) =>
-    issues.some(
-      (issue) => issue.code === 'too_small' && issue.path.length === 1 && issue.path[0] === slice
-    );
+  const status = (page: SubmitPage) => (hasSubmitBlocker(issues, page) ? STATUS_ERROR : STATUS_OK);
   return {
-    target: hasIssue(SUBMIT_PAGE_SLICES.target) ? STATUS_ERROR : STATUS_OK,
-    linking: hasIssue(SUBMIT_PAGE_SLICES.linking) ? STATUS_ERROR : STATUS_OK,
-    calibration: hasIssue(SUBMIT_PAGE_SLICES.calibration) ? STATUS_ERROR : STATUS_OK
+    target: status('target'),
+    linking: status('linking'),
+    calibration: status('calibration')
   };
 };
