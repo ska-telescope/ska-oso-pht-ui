@@ -13,15 +13,19 @@
  */
 
 
-// May contain unused imports in some cases
-// @ts-ignore
-import type { PanelAssignResponse } from './panel-assign-response';
 
 /**
  * 
  * @export
- * @interface ResponseAutoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost
+ * @enum {string}
  */
-export interface ResponseAutoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost {
-}
+
+export const CalibrationWhen = {
+    BeforeEachScan: 'before_each_scan',
+    AfterEachScan: 'after_each_scan'
+} as const;
+
+export type CalibrationWhen = typeof CalibrationWhen[keyof typeof CalibrationWhen];
+
+
 

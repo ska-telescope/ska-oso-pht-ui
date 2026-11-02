@@ -45,10 +45,10 @@ export const PPTAPIProposalAccessManagementApiAxiosParamCreator = function (conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet: async (prslId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet: async (prslId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'prslId' is not null or undefined
-            assertParamExists('getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet', 'prslId', prslId)
-            const localVarPath = `/oso/api/v16/pht/proposal-access/{prsl_id}`
+            assertParamExists('getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet', 'prslId', prslId)
+            const localVarPath = `/oso/api/v17/pht/proposal-access/{prsl_id}`
                 .replace(`{${"prsl_id"}}`, encodeURIComponent(String(prslId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -86,8 +86,8 @@ export const PPTAPIProposalAccessManagementApiAxiosParamCreator = function (conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessForUserOsoApiV16PhtProposalAccessUserGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/proposal-access/user`;
+        getAccessForUserOsoApiV17PhtProposalAccessUserGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/proposal-access/user`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -125,10 +125,10 @@ export const PPTAPIProposalAccessManagementApiAxiosParamCreator = function (conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postCreateAccessOsoApiV16PhtProposalAccessCreatePost: async (proposalAccessCreate: ProposalAccessCreate, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        postCreateAccessOsoApiV17PhtProposalAccessCreatePost: async (proposalAccessCreate: ProposalAccessCreate, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'proposalAccessCreate' is not null or undefined
-            assertParamExists('postCreateAccessOsoApiV16PhtProposalAccessCreatePost', 'proposalAccessCreate', proposalAccessCreate)
-            const localVarPath = `/oso/api/v16/pht/proposal-access/create`;
+            assertParamExists('postCreateAccessOsoApiV17PhtProposalAccessCreatePost', 'proposalAccessCreate', proposalAccessCreate)
+            const localVarPath = `/oso/api/v17/pht/proposal-access/create`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -170,12 +170,12 @@ export const PPTAPIProposalAccessManagementApiAxiosParamCreator = function (conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut: async (accessId: string, proposalAccess: ProposalAccess, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut: async (accessId: string, proposalAccess: ProposalAccess, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'accessId' is not null or undefined
-            assertParamExists('updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut', 'accessId', accessId)
+            assertParamExists('updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut', 'accessId', accessId)
             // verify required parameter 'proposalAccess' is not null or undefined
-            assertParamExists('updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut', 'proposalAccess', proposalAccess)
-            const localVarPath = `/oso/api/v16/pht/proposal-access/user/{access_id}`
+            assertParamExists('updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut', 'proposalAccess', proposalAccess)
+            const localVarPath = `/oso/api/v17/pht/proposal-access/user/{access_id}`
                 .replace(`{${"access_id"}}`, encodeURIComponent(String(accessId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -227,10 +227,10 @@ export const PPTAPIProposalAccessManagementApiFp = function(configuration?: Conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProposalAccessByProposalResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet(prslId, xRequestID, options);
+        async getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProposalAccessByProposalResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet(prslId, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalAccessManagementApi.getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalAccessManagementApi.getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -240,10 +240,10 @@ export const PPTAPIProposalAccessManagementApiFp = function(configuration?: Conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAccessForUserOsoApiV16PhtProposalAccessUserGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProposalAccessResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessForUserOsoApiV16PhtProposalAccessUserGet(xRequestID, options);
+        async getAccessForUserOsoApiV17PhtProposalAccessUserGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProposalAccessResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAccessForUserOsoApiV17PhtProposalAccessUserGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalAccessManagementApi.getAccessForUserOsoApiV16PhtProposalAccessUserGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalAccessManagementApi.getAccessForUserOsoApiV17PhtProposalAccessUserGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -254,10 +254,10 @@ export const PPTAPIProposalAccessManagementApiFp = function(configuration?: Conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postCreateAccessOsoApiV16PhtProposalAccessCreatePost(proposalAccessCreate: ProposalAccessCreate, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postCreateAccessOsoApiV16PhtProposalAccessCreatePost(proposalAccessCreate, xRequestID, options);
+        async postCreateAccessOsoApiV17PhtProposalAccessCreatePost(proposalAccessCreate: ProposalAccessCreate, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postCreateAccessOsoApiV17PhtProposalAccessCreatePost(proposalAccessCreate, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalAccessManagementApi.postCreateAccessOsoApiV16PhtProposalAccessCreatePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalAccessManagementApi.postCreateAccessOsoApiV17PhtProposalAccessCreatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -269,10 +269,10 @@ export const PPTAPIProposalAccessManagementApiFp = function(configuration?: Conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut(accessId: string, proposalAccess: ProposalAccess, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProposalAccess>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut(accessId, proposalAccess, xRequestID, options);
+        async updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut(accessId: string, proposalAccess: ProposalAccess, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ProposalAccess>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut(accessId, proposalAccess, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalAccessManagementApi.updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalAccessManagementApi.updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -293,8 +293,8 @@ export const PPTAPIProposalAccessManagementApiFactory = function (configuration?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProposalAccessByProposalResponse>> {
-            return localVarFp.getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet(prslId, xRequestID, options).then((request) => request(axios, basePath));
+        getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProposalAccessByProposalResponse>> {
+            return localVarFp.getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet(prslId, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -303,8 +303,8 @@ export const PPTAPIProposalAccessManagementApiFactory = function (configuration?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAccessForUserOsoApiV16PhtProposalAccessUserGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProposalAccessResponse>> {
-            return localVarFp.getAccessForUserOsoApiV16PhtProposalAccessUserGet(xRequestID, options).then((request) => request(axios, basePath));
+        getAccessForUserOsoApiV17PhtProposalAccessUserGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProposalAccessResponse>> {
+            return localVarFp.getAccessForUserOsoApiV17PhtProposalAccessUserGet(xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * This endpoint will be removed in the future, use the PUT endpoint instead. as there will be no creation of a new proposal access, only updates.
@@ -314,8 +314,8 @@ export const PPTAPIProposalAccessManagementApiFactory = function (configuration?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postCreateAccessOsoApiV16PhtProposalAccessCreatePost(proposalAccessCreate: ProposalAccessCreate, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.postCreateAccessOsoApiV16PhtProposalAccessCreatePost(proposalAccessCreate, xRequestID, options).then((request) => request(axios, basePath));
+        postCreateAccessOsoApiV17PhtProposalAccessCreatePost(proposalAccessCreate: ProposalAccessCreate, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.postCreateAccessOsoApiV17PhtProposalAccessCreatePost(proposalAccessCreate, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -326,8 +326,8 @@ export const PPTAPIProposalAccessManagementApiFactory = function (configuration?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut(accessId: string, proposalAccess: ProposalAccess, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<ProposalAccess> {
-            return localVarFp.updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut(accessId, proposalAccess, xRequestID, options).then((request) => request(axios, basePath));
+        updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut(accessId: string, proposalAccess: ProposalAccess, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<ProposalAccess> {
+            return localVarFp.updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut(accessId, proposalAccess, xRequestID, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -348,8 +348,8 @@ export class PPTAPIProposalAccessManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalAccessManagementApi
      */
-    public getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalAccessManagementApiFp(this.configuration).getAccessByPrslIdOsoApiV16PhtProposalAccessPrslIdGet(prslId, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalAccessManagementApiFp(this.configuration).getAccessByPrslIdOsoApiV17PhtProposalAccessPrslIdGet(prslId, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -360,8 +360,8 @@ export class PPTAPIProposalAccessManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalAccessManagementApi
      */
-    public getAccessForUserOsoApiV16PhtProposalAccessUserGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalAccessManagementApiFp(this.configuration).getAccessForUserOsoApiV16PhtProposalAccessUserGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getAccessForUserOsoApiV17PhtProposalAccessUserGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalAccessManagementApiFp(this.configuration).getAccessForUserOsoApiV17PhtProposalAccessUserGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -373,8 +373,8 @@ export class PPTAPIProposalAccessManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalAccessManagementApi
      */
-    public postCreateAccessOsoApiV16PhtProposalAccessCreatePost(proposalAccessCreate: ProposalAccessCreate, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalAccessManagementApiFp(this.configuration).postCreateAccessOsoApiV16PhtProposalAccessCreatePost(proposalAccessCreate, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public postCreateAccessOsoApiV17PhtProposalAccessCreatePost(proposalAccessCreate: ProposalAccessCreate, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalAccessManagementApiFp(this.configuration).postCreateAccessOsoApiV17PhtProposalAccessCreatePost(proposalAccessCreate, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -387,8 +387,8 @@ export class PPTAPIProposalAccessManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalAccessManagementApi
      */
-    public updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut(accessId: string, proposalAccess: ProposalAccess, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalAccessManagementApiFp(this.configuration).updateAccessOsoApiV16PhtProposalAccessUserAccessIdPut(accessId, proposalAccess, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut(accessId: string, proposalAccess: ProposalAccess, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalAccessManagementApiFp(this.configuration).updateAccessOsoApiV17PhtProposalAccessUserAccessIdPut(accessId, proposalAccess, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
