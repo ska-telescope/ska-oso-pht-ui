@@ -309,17 +309,25 @@ export default function LinkingPage() {
     }
   };
 
-  const checkPartials = () => {
+  // The partial link whose request is running. The effect below runs again when the form changes
+  // and again when that change is copied into the store, so skip a link that is already requested.
+  const pendingPartial = React.useRef<string | null>(null);
+
+  const checkPartials = async () => {
     const proposal = getProposal();
     const results = getLinks().find((p) => p.sensCalc?.statusGUI === STATUS_PARTIAL);
-    if (results) {
-      const target = getTargets().find((e) => e.id === results.targetId);
-      const observation = proposal.observations?.find((e) => e.id === results.observationId);
-      const dataProductSDP = proposal.dataProductSDP?.find(
-        (d) => d.id === results.dataProductsSDPId
-      );
-      if (observation && target && dataProductSDP) {
-        getSensCalcData(observation, target, dataProductSDP);
+    if (!results) return;
+    const key = `${results.targetId}|${results.observationId}|${results.dataProductsSDPId}`;
+    if (pendingPartial.current === key) return;
+    const target = getTargets().find((e) => e.id === results.targetId);
+    const observation = proposal.observations?.find((e) => e.id === results.observationId);
+    const dataProductSDP = proposal.dataProductSDP?.find((d) => d.id === results.dataProductsSDPId);
+    if (observation && target && dataProductSDP) {
+      pendingPartial.current = key;
+      try {
+        await getSensCalcData(observation, target, dataProductSDP);
+      } finally {
+        pendingPartial.current = null;
       }
     }
   };

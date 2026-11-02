@@ -1,5 +1,5 @@
 import { afterEach, describe, test, expect, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import LinkingPage, { isNonGaussianSensitivityCase } from './LinkingPage';
@@ -9,6 +9,7 @@ import { ProposalType } from '@/models/proposals/proposal';
 import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import completeMockStore from '@/utils/MockStore';
 import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE, STATUS_OK } from '@/utils/constants';
+import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
 vi.mock(
@@ -134,6 +135,32 @@ describe('<LinkingPage /> manual linking', () => {
       expect(formProbe.getValues('targetObservation')).toEqual([]);
     });
     expect(formProbe.getValues('calibrationStrategy')).toEqual([]);
+  });
+
+  test('requests the sensitivity of a new link once while the page re-renders', async () => {
+    let resolveSensCalc: (value: Awaited<ReturnType<typeof getSensCalc>>) => void = () => {};
+    vi.mocked(getSensCalc).mockImplementationOnce(
+      () => new Promise((resolve) => (resolveSensCalc = resolve))
+    );
+    renderLinking();
+
+    await selectObservationAndTickTarget();
+    await waitFor(() => expect(getSensCalc).toHaveBeenCalledTimes(1));
+
+    // Another change to the watched slices re-runs the effect while the request is pending
+    act(() =>
+      formProbe.setValue(
+        'calibrationStrategy',
+        formProbe.getValues('calibrationStrategy').map((c) => ({ ...c, notes: 'edited' }))
+      )
+    );
+    expect(getSensCalc).toHaveBeenCalledTimes(1);
+
+    await act(async () => resolveSensCalc({ statusGUI: STATUS_OK, error: '' }));
+    await waitFor(() => {
+      expect(formProbe.getValues('targetObservation')[0].sensCalc?.statusGUI).toBe(STATUS_OK);
+    });
+    expect(getSensCalc).toHaveBeenCalledTimes(1);
   });
 
   test('keeps the link after leaving the page and coming back', async () => {
