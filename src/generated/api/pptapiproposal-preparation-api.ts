@@ -22,11 +22,13 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '../base';
 // @ts-ignore
-import type { BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost } from '../models';
+import type { BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost } from '../models';
 // @ts-ignore
 import type { CalibratorChoice } from '../models';
 // @ts-ignore
 import type { EmailRequest } from '../models';
+// @ts-ignore
+import type { GetCalibratorsOsoApiV17PhtCalibratorsPost200ResponseInner } from '../models';
 // @ts-ignore
 import type { HTTPValidationError } from '../models';
 // @ts-ignore
@@ -53,10 +55,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost: async (filename: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost: async (filename: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'filename' is not null or undefined
-            assertParamExists('createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost', 'filename', filename)
-            const localVarPath = `/oso/api/v16/pht/prsls/signed-url/delete/{filename}`
+            assertParamExists('createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost', 'filename', filename)
+            const localVarPath = `/oso/api/v17/pht/prsls/signed-url/delete/{filename}`
                 .replace(`{${"filename"}}`, encodeURIComponent(String(filename)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -95,10 +97,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost: async (filename: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost: async (filename: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'filename' is not null or undefined
-            assertParamExists('createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost', 'filename', filename)
-            const localVarPath = `/oso/api/v16/pht/prsls/signed-url/download/{filename}`
+            assertParamExists('createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost', 'filename', filename)
+            const localVarPath = `/oso/api/v17/pht/prsls/signed-url/download/{filename}`
                 .replace(`{${"filename"}}`, encodeURIComponent(String(filename)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -137,10 +139,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createProposalOsoApiV16PhtPrslsCreatePost: async (proposal: Proposal, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createProposalOsoApiV17PhtPrslsCreatePost: async (proposal: Proposal, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'proposal' is not null or undefined
-            assertParamExists('createProposalOsoApiV16PhtPrslsCreatePost', 'proposal', proposal)
-            const localVarPath = `/oso/api/v16/pht/prsls/create`;
+            assertParamExists('createProposalOsoApiV17PhtPrslsCreatePost', 'proposal', proposal)
+            const localVarPath = `/oso/api/v17/pht/prsls/create`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -181,10 +183,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost: async (filename: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost: async (filename: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'filename' is not null or undefined
-            assertParamExists('createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost', 'filename', filename)
-            const localVarPath = `/oso/api/v16/pht/prsls/signed-url/upload/{filename}`
+            assertParamExists('createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost', 'filename', filename)
+            const localVarPath = `/oso/api/v17/pht/prsls/signed-url/upload/{filename}`
                 .replace(`{${"filename"}}`, encodeURIComponent(String(filename)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -221,8 +223,8 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllOsdCyclesOsoApiV16PhtPrslsOsdCyclesGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/prsls/osd/cycles`;
+        getAllOsdCyclesOsoApiV17PhtPrslsOsdCyclesGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/prsls/osd/cycles`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -256,14 +258,14 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCalibratorsOsoApiV16PhtCalibratorsPost: async (telescope: TelescopeType, scanDurationMs: number, target: Target, strategy?: CalibratorChoice, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getCalibratorsOsoApiV17PhtCalibratorsPost: async (telescope: TelescopeType, scanDurationMs: number, target: Target, strategy?: CalibratorChoice, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'telescope' is not null or undefined
-            assertParamExists('getCalibratorsOsoApiV16PhtCalibratorsPost', 'telescope', telescope)
+            assertParamExists('getCalibratorsOsoApiV17PhtCalibratorsPost', 'telescope', telescope)
             // verify required parameter 'scanDurationMs' is not null or undefined
-            assertParamExists('getCalibratorsOsoApiV16PhtCalibratorsPost', 'scanDurationMs', scanDurationMs)
+            assertParamExists('getCalibratorsOsoApiV17PhtCalibratorsPost', 'scanDurationMs', scanDurationMs)
             // verify required parameter 'target' is not null or undefined
-            assertParamExists('getCalibratorsOsoApiV16PhtCalibratorsPost', 'target', target)
-            const localVarPath = `/oso/api/v16/pht/calibrators`;
+            assertParamExists('getCalibratorsOsoApiV17PhtCalibratorsPost', 'target', target)
+            const localVarPath = `/oso/api/v17/pht/calibrators`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -315,10 +317,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet: async (cycle: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet: async (cycle: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'cycle' is not null or undefined
-            assertParamExists('getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet', 'cycle', cycle)
-            const localVarPath = `/oso/api/v16/pht/prsls/osd/{cycle}`
+            assertParamExists('getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet', 'cycle', cycle)
+            const localVarPath = `/oso/api/v17/pht/prsls/osd/{cycle}`
                 .replace(`{${"cycle"}}`, encodeURIComponent(String(cycle)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -350,10 +352,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProposalOsoApiV16PhtPrslsPrslIdGet: async (prslId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getProposalOsoApiV17PhtPrslsPrslIdGet: async (prslId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'prslId' is not null or undefined
-            assertParamExists('getProposalOsoApiV16PhtPrslsPrslIdGet', 'prslId', prslId)
-            const localVarPath = `/oso/api/v16/pht/prsls/{prsl_id}`
+            assertParamExists('getProposalOsoApiV17PhtPrslsPrslIdGet', 'prslId', prslId)
+            const localVarPath = `/oso/api/v17/pht/prsls/{prsl_id}`
                 .replace(`{${"prsl_id"}}`, encodeURIComponent(String(prslId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -387,15 +389,15 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
         /**
          * Batch retrieves proposals by accepting a list of proposal ids and returning the proposals for those ids.
          * @summary Retrieve multiple proposals in batch
-         * @param {BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost} bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost 
+         * @param {BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost} bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost 
          * @param {string | null} [xRequestID] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProposalsBatchOsoApiV16PhtPrslsBatchPost: async (bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost: BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost' is not null or undefined
-            assertParamExists('getProposalsBatchOsoApiV16PhtPrslsBatchPost', 'bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost', bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost)
-            const localVarPath = `/oso/api/v16/pht/prsls/batch`;
+        getProposalsBatchOsoApiV17PhtPrslsBatchPost: async (bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost: BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost' is not null or undefined
+            assertParamExists('getProposalsBatchOsoApiV17PhtPrslsBatchPost', 'bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost', bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost)
+            const localVarPath = `/oso/api/v17/pht/prsls/batch`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -421,7 +423,7 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -435,8 +437,8 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProposalsByStatusOsoApiV16PhtPrslsReviewableGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/prsls/reviewable`;
+        getProposalsByStatusOsoApiV17PhtPrslsReviewableGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/prsls/reviewable`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -473,8 +475,8 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProposalsForUserOsoApiV16PhtPrslsMineGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/prsls/mine`;
+        getProposalsForUserOsoApiV17PhtPrslsMineGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/prsls/mine`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -512,10 +514,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet: async (prslId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet: async (prslId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'prslId' is not null or undefined
-            assertParamExists('getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet', 'prslId', prslId)
-            const localVarPath = `/oso/api/v16/pht/prsls/reviews/{prsl_id}`
+            assertParamExists('getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet', 'prslId', prslId)
+            const localVarPath = `/oso/api/v17/pht/prsls/reviews/{prsl_id}`
                 .replace(`{${"prsl_id"}}`, encodeURIComponent(String(prslId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -554,10 +556,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserByEmailOsoApiV16PhtPrslsMemberEmailGet: async (email: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserByEmailOsoApiV17PhtPrslsMemberEmailGet: async (email: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'email' is not null or undefined
-            assertParamExists('getUserByEmailOsoApiV16PhtPrslsMemberEmailGet', 'email', email)
-            const localVarPath = `/oso/api/v16/pht/prsls/member/{email}`
+            assertParamExists('getUserByEmailOsoApiV17PhtPrslsMemberEmailGet', 'email', email)
+            const localVarPath = `/oso/api/v17/pht/prsls/member/{email}`
                 .replace(`{${"email"}}`, encodeURIComponent(String(email)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -596,10 +598,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sendEmailOsoApiV16PhtPrslsSendEmailPost: async (emailRequest: EmailRequest, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        sendEmailOsoApiV17PhtPrslsSendEmailPost: async (emailRequest: EmailRequest, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'emailRequest' is not null or undefined
-            assertParamExists('sendEmailOsoApiV16PhtPrslsSendEmailPost', 'emailRequest', emailRequest)
-            const localVarPath = `/oso/api/v16/pht/prsls/send-email/`;
+            assertParamExists('sendEmailOsoApiV17PhtPrslsSendEmailPost', 'emailRequest', emailRequest)
+            const localVarPath = `/oso/api/v17/pht/prsls/send-email/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -641,12 +643,12 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateProposalOsoApiV16PhtPrslsPrslIdPut: async (prslId: string, proposal: Proposal, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateProposalOsoApiV17PhtPrslsPrslIdPut: async (prslId: string, proposal: Proposal, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'prslId' is not null or undefined
-            assertParamExists('updateProposalOsoApiV16PhtPrslsPrslIdPut', 'prslId', prslId)
+            assertParamExists('updateProposalOsoApiV17PhtPrslsPrslIdPut', 'prslId', prslId)
             // verify required parameter 'proposal' is not null or undefined
-            assertParamExists('updateProposalOsoApiV16PhtPrslsPrslIdPut', 'proposal', proposal)
-            const localVarPath = `/oso/api/v16/pht/prsls/{prsl_id}`
+            assertParamExists('updateProposalOsoApiV17PhtPrslsPrslIdPut', 'proposal', proposal)
+            const localVarPath = `/oso/api/v17/pht/prsls/{prsl_id}`
                 .replace(`{${"prsl_id"}}`, encodeURIComponent(String(prslId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -688,10 +690,10 @@ export const PPTAPIProposalPreparationApiAxiosParamCreator = function (configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        validateProposalOsoApiV16PhtPrslsValidatePost: async (proposal: Proposal, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        validateProposalOsoApiV17PhtPrslsValidatePost: async (proposal: Proposal, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'proposal' is not null or undefined
-            assertParamExists('validateProposalOsoApiV16PhtPrslsValidatePost', 'proposal', proposal)
-            const localVarPath = `/oso/api/v16/pht/prsls/validate`;
+            assertParamExists('validateProposalOsoApiV17PhtPrslsValidatePost', 'proposal', proposal)
+            const localVarPath = `/oso/api/v17/pht/prsls/validate`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -742,10 +744,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost(filename, xRequestID, options);
+        async createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost(filename, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -756,10 +758,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost(filename, xRequestID, options);
+        async createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost(filename, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -770,10 +772,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createProposalOsoApiV16PhtPrslsCreatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Proposal>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createProposalOsoApiV16PhtPrslsCreatePost(proposal, xRequestID, options);
+        async createProposalOsoApiV17PhtPrslsCreatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Proposal>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createProposalOsoApiV17PhtPrslsCreatePost(proposal, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.createProposalOsoApiV16PhtPrslsCreatePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.createProposalOsoApiV17PhtPrslsCreatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -784,10 +786,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost(filename, xRequestID, options);
+        async createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost(filename, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -796,10 +798,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllOsdCyclesOsoApiV16PhtPrslsOsdCyclesGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OsdDataModel>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllOsdCyclesOsoApiV16PhtPrslsOsdCyclesGet(options);
+        async getAllOsdCyclesOsoApiV17PhtPrslsOsdCyclesGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OsdDataModel>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllOsdCyclesOsoApiV17PhtPrslsOsdCyclesGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getAllOsdCyclesOsoApiV16PhtPrslsOsdCyclesGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getAllOsdCyclesOsoApiV17PhtPrslsOsdCyclesGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -813,10 +815,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCalibratorsOsoApiV16PhtCalibratorsPost(telescope: TelescopeType, scanDurationMs: number, target: Target, strategy?: CalibratorChoice, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<any>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getCalibratorsOsoApiV16PhtCalibratorsPost(telescope, scanDurationMs, target, strategy, xRequestID, options);
+        async getCalibratorsOsoApiV17PhtCalibratorsPost(telescope: TelescopeType, scanDurationMs: number, target: Target, strategy?: CalibratorChoice, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetCalibratorsOsoApiV17PhtCalibratorsPost200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCalibratorsOsoApiV17PhtCalibratorsPost(telescope, scanDurationMs, target, strategy, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getCalibratorsOsoApiV16PhtCalibratorsPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getCalibratorsOsoApiV17PhtCalibratorsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -826,10 +828,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet(cycle: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OsdDataModel>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet(cycle, options);
+        async getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet(cycle: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OsdDataModel>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet(cycle, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -840,24 +842,24 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getProposalOsoApiV16PhtPrslsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Proposal>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getProposalOsoApiV16PhtPrslsPrslIdGet(prslId, xRequestID, options);
+        async getProposalOsoApiV17PhtPrslsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Proposal>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProposalOsoApiV17PhtPrslsPrslIdGet(prslId, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getProposalOsoApiV16PhtPrslsPrslIdGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getProposalOsoApiV17PhtPrslsPrslIdGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * Batch retrieves proposals by accepting a list of proposal ids and returning the proposals for those ids.
          * @summary Retrieve multiple proposals in batch
-         * @param {BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost} bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost 
+         * @param {BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost} bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost 
          * @param {string | null} [xRequestID] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getProposalsBatchOsoApiV16PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost: BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Proposal>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getProposalsBatchOsoApiV16PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost, xRequestID, options);
+        async getProposalsBatchOsoApiV17PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost: BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Proposal>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProposalsBatchOsoApiV17PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getProposalsBatchOsoApiV16PhtPrslsBatchPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getProposalsBatchOsoApiV17PhtPrslsBatchPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -867,10 +869,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getProposalsByStatusOsoApiV16PhtPrslsReviewableGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Proposal>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getProposalsByStatusOsoApiV16PhtPrslsReviewableGet(xRequestID, options);
+        async getProposalsByStatusOsoApiV17PhtPrslsReviewableGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Proposal>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProposalsByStatusOsoApiV17PhtPrslsReviewableGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getProposalsByStatusOsoApiV16PhtPrslsReviewableGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getProposalsByStatusOsoApiV17PhtPrslsReviewableGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -880,10 +882,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getProposalsForUserOsoApiV16PhtPrslsMineGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Proposal>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getProposalsForUserOsoApiV16PhtPrslsMineGet(xRequestID, options);
+        async getProposalsForUserOsoApiV17PhtPrslsMineGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Proposal>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProposalsForUserOsoApiV17PhtPrslsMineGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getProposalsForUserOsoApiV16PhtPrslsMineGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getProposalsForUserOsoApiV17PhtPrslsMineGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -894,10 +896,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PanelReview>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet(prslId, xRequestID, options);
+        async getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PanelReview>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet(prslId, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -908,10 +910,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserByEmailOsoApiV16PhtPrslsMemberEmailGet(email: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserByEmailOsoApiV16PhtPrslsMemberEmailGet(email, xRequestID, options);
+        async getUserByEmailOsoApiV17PhtPrslsMemberEmailGet(email: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserByEmailOsoApiV17PhtPrslsMemberEmailGet(email, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getUserByEmailOsoApiV16PhtPrslsMemberEmailGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.getUserByEmailOsoApiV17PhtPrslsMemberEmailGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -922,10 +924,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async sendEmailOsoApiV16PhtPrslsSendEmailPost(emailRequest: EmailRequest, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.sendEmailOsoApiV16PhtPrslsSendEmailPost(emailRequest, xRequestID, options);
+        async sendEmailOsoApiV17PhtPrslsSendEmailPost(emailRequest: EmailRequest, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sendEmailOsoApiV17PhtPrslsSendEmailPost(emailRequest, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.sendEmailOsoApiV16PhtPrslsSendEmailPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.sendEmailOsoApiV17PhtPrslsSendEmailPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -937,10 +939,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateProposalOsoApiV16PhtPrslsPrslIdPut(prslId: string, proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Proposal>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProposalOsoApiV16PhtPrslsPrslIdPut(prslId, proposal, xRequestID, options);
+        async updateProposalOsoApiV17PhtPrslsPrslIdPut(prslId: string, proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Proposal>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProposalOsoApiV17PhtPrslsPrslIdPut(prslId, proposal, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.updateProposalOsoApiV16PhtPrslsPrslIdPut']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.updateProposalOsoApiV17PhtPrslsPrslIdPut']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -951,10 +953,10 @@ export const PPTAPIProposalPreparationApiFp = function(configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async validateProposalOsoApiV16PhtPrslsValidatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.validateProposalOsoApiV16PhtPrslsValidatePost(proposal, xRequestID, options);
+        async validateProposalOsoApiV17PhtPrslsValidatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.validateProposalOsoApiV17PhtPrslsValidatePost(proposal, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.validateProposalOsoApiV16PhtPrslsValidatePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PPTAPIProposalPreparationApi.validateProposalOsoApiV17PhtPrslsValidatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -975,8 +977,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost(filename, xRequestID, options).then((request) => request(axios, basePath));
+        createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost(filename, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Generate a presigned S3 download URL for the given filename.
@@ -986,8 +988,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost(filename, xRequestID, options).then((request) => request(axios, basePath));
+        createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost(filename, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Creates a new proposal in the ODA.
@@ -997,8 +999,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createProposalOsoApiV16PhtPrslsCreatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Proposal> {
-            return localVarFp.createProposalOsoApiV16PhtPrslsCreatePost(proposal, xRequestID, options).then((request) => request(axios, basePath));
+        createProposalOsoApiV17PhtPrslsCreatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Proposal> {
+            return localVarFp.createProposalOsoApiV17PhtPrslsCreatePost(proposal, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Generate a presigned S3 upload URL for the given filename.
@@ -1008,8 +1010,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost(filename, xRequestID, options).then((request) => request(axios, basePath));
+        createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost(filename, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * This queries the OSD data for all available cycles.  This data is made available for the PHT UI.  Returns:     list[OsdDataModel]: a list of the OSD data for all cycles.
@@ -1017,8 +1019,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllOsdCyclesOsoApiV16PhtPrslsOsdCyclesGet(options?: RawAxiosRequestConfig): AxiosPromise<Array<OsdDataModel>> {
-            return localVarFp.getAllOsdCyclesOsoApiV16PhtPrslsOsdCyclesGet(options).then((request) => request(axios, basePath));
+        getAllOsdCyclesOsoApiV17PhtPrslsOsdCyclesGet(options?: RawAxiosRequestConfig): AxiosPromise<Array<OsdDataModel>> {
+            return localVarFp.getAllOsdCyclesOsoApiV17PhtPrslsOsdCyclesGet(options).then((request) => request(axios, basePath));
         },
         /**
          * returns a list of Calibrator objects from a
@@ -1031,8 +1033,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCalibratorsOsoApiV16PhtCalibratorsPost(telescope: TelescopeType, scanDurationMs: number, target: Target, strategy?: CalibratorChoice, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<any>> {
-            return localVarFp.getCalibratorsOsoApiV16PhtCalibratorsPost(telescope, scanDurationMs, target, strategy, xRequestID, options).then((request) => request(axios, basePath));
+        getCalibratorsOsoApiV17PhtCalibratorsPost(telescope: TelescopeType, scanDurationMs: number, target: Target, strategy?: CalibratorChoice, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<GetCalibratorsOsoApiV17PhtCalibratorsPost200ResponseInner>> {
+            return localVarFp.getCalibratorsOsoApiV17PhtCalibratorsPost(telescope, scanDurationMs, target, strategy, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * This queries the OSD data by cycle id.  This data is made available for the PHT UI.  Returns:     OsdDataModel: The OSD data validated against the defined schema.
@@ -1041,8 +1043,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet(cycle: number, options?: RawAxiosRequestConfig): AxiosPromise<OsdDataModel> {
-            return localVarFp.getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet(cycle, options).then((request) => request(axios, basePath));
+        getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet(cycle: number, options?: RawAxiosRequestConfig): AxiosPromise<OsdDataModel> {
+            return localVarFp.getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet(cycle, options).then((request) => request(axios, basePath));
         },
         /**
          * Retrieves the latest proposal by prsl_id. 1.) Check that the authenticated user has the permission to access the proposal.  Returns:     Proposal: Returns the latest version of the proposal for the supplied prsl_id,             including the metadata.
@@ -1052,19 +1054,19 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProposalOsoApiV16PhtPrslsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Proposal> {
-            return localVarFp.getProposalOsoApiV16PhtPrslsPrslIdGet(prslId, xRequestID, options).then((request) => request(axios, basePath));
+        getProposalOsoApiV17PhtPrslsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Proposal> {
+            return localVarFp.getProposalOsoApiV17PhtPrslsPrslIdGet(prslId, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Batch retrieves proposals by accepting a list of proposal ids and returning the proposals for those ids.
          * @summary Retrieve multiple proposals in batch
-         * @param {BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost} bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost 
+         * @param {BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost} bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost 
          * @param {string | null} [xRequestID] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProposalsBatchOsoApiV16PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost: BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<Proposal>> {
-            return localVarFp.getProposalsBatchOsoApiV16PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost, xRequestID, options).then((request) => request(axios, basePath));
+        getProposalsBatchOsoApiV17PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost: BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<Proposal>> {
+            return localVarFp.getProposalsBatchOsoApiV17PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Function that requests to GET /prsls/reviewable are mapped to.  Retrieves the Proposals from the underlying data store based on the role/group, if available Return proposals, preferring UNDER_REVIEW over SUBMITTED. One latest proposal per prsl_id.  Returns:     list[Proposal]
@@ -1073,8 +1075,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProposalsByStatusOsoApiV16PhtPrslsReviewableGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<Proposal>> {
-            return localVarFp.getProposalsByStatusOsoApiV16PhtPrslsReviewableGet(xRequestID, options).then((request) => request(axios, basePath));
+        getProposalsByStatusOsoApiV17PhtPrslsReviewableGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<Proposal>> {
+            return localVarFp.getProposalsByStatusOsoApiV17PhtPrslsReviewableGet(xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * List all proposals accessible to the authenticated user.  The proposals are determined from the underlying data store by: 1.) Resolving accessible proposal IDs via, list_accessible_proposal_ids:     - This queries the proposal_acces table to see if there is a proposal     associated with the user_id.     Note: Once a proposal is created, an access is created and once Co-Is are added,     access is created as well. 2.) Fetching each proposal by ID and 3.) Returning the proposals as a list (empty if none are found).  Returns:     list[Proposal]: Proposals accessible to the current user.
@@ -1083,8 +1085,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getProposalsForUserOsoApiV16PhtPrslsMineGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<Proposal>> {
-            return localVarFp.getProposalsForUserOsoApiV16PhtPrslsMineGet(xRequestID, options).then((request) => request(axios, basePath));
+        getProposalsForUserOsoApiV17PhtPrslsMineGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<Proposal>> {
+            return localVarFp.getProposalsForUserOsoApiV17PhtPrslsMineGet(xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Function that requests to GET /reviews/{prsl_id} are mapped to.  Get reviews for a given proposal ID from the underlying data store, if available.  Returns:     list[PanelReview]
@@ -1094,8 +1096,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<PanelReview>> {
-            return localVarFp.getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet(prslId, xRequestID, options).then((request) => request(axios, basePath));
+        getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<PanelReview>> {
+            return localVarFp.getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet(prslId, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Returns an MS Entra user by email from MS Graph.  Returns:     dict
@@ -1105,8 +1107,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserByEmailOsoApiV16PhtPrslsMemberEmailGet(email: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
-            return localVarFp.getUserByEmailOsoApiV16PhtPrslsMemberEmailGet(email, xRequestID, options).then((request) => request(axios, basePath));
+        getUserByEmailOsoApiV17PhtPrslsMemberEmailGet(email: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
+            return localVarFp.getUserByEmailOsoApiV17PhtPrslsMemberEmailGet(email, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Endpoint to send SKAO email asynchronously via SMTP.
@@ -1116,8 +1118,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sendEmailOsoApiV16PhtPrslsSendEmailPost(emailRequest: EmailRequest, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.sendEmailOsoApiV16PhtPrslsSendEmailPost(emailRequest, xRequestID, options).then((request) => request(axios, basePath));
+        sendEmailOsoApiV17PhtPrslsSendEmailPost(emailRequest: EmailRequest, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<any> {
+            return localVarFp.sendEmailOsoApiV17PhtPrslsSendEmailPost(emailRequest, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Updates a proposal in the underlying data store.
@@ -1128,8 +1130,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateProposalOsoApiV16PhtPrslsPrslIdPut(prslId: string, proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Proposal> {
-            return localVarFp.updateProposalOsoApiV16PhtPrslsPrslIdPut(prslId, proposal, xRequestID, options).then((request) => request(axios, basePath));
+        updateProposalOsoApiV17PhtPrslsPrslIdPut(prslId: string, proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Proposal> {
+            return localVarFp.updateProposalOsoApiV17PhtPrslsPrslIdPut(prslId, proposal, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Validates a submitted proposal via POST.  Returns:     dict: {         \"result\": bool,         \"validation_errors\": list[str]}.
@@ -1139,8 +1141,8 @@ export const PPTAPIProposalPreparationApiFactory = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        validateProposalOsoApiV16PhtPrslsValidatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
-            return localVarFp.validateProposalOsoApiV16PhtPrslsValidatePost(proposal, xRequestID, options).then((request) => request(axios, basePath));
+        validateProposalOsoApiV17PhtPrslsValidatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
+            return localVarFp.validateProposalOsoApiV17PhtPrslsValidatePost(proposal, xRequestID, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1161,8 +1163,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).createDeletePdfUrlOsoApiV16PhtPrslsSignedUrlDeleteFilenamePost(filename, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).createDeletePdfUrlOsoApiV17PhtPrslsSignedUrlDeleteFilenamePost(filename, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1174,8 +1176,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).createDownloadPdfUrlOsoApiV16PhtPrslsSignedUrlDownloadFilenamePost(filename, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).createDownloadPdfUrlOsoApiV17PhtPrslsSignedUrlDownloadFilenamePost(filename, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1187,8 +1189,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public createProposalOsoApiV16PhtPrslsCreatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).createProposalOsoApiV16PhtPrslsCreatePost(proposal, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public createProposalOsoApiV17PhtPrslsCreatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).createProposalOsoApiV17PhtPrslsCreatePost(proposal, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1200,8 +1202,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).createUploadPdfUrlOsoApiV16PhtPrslsSignedUrlUploadFilenamePost(filename, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost(filename: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).createUploadPdfUrlOsoApiV17PhtPrslsSignedUrlUploadFilenamePost(filename, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1211,8 +1213,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getAllOsdCyclesOsoApiV16PhtPrslsOsdCyclesGet(options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getAllOsdCyclesOsoApiV16PhtPrslsOsdCyclesGet(options).then((request) => request(this.axios, this.basePath));
+    public getAllOsdCyclesOsoApiV17PhtPrslsOsdCyclesGet(options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getAllOsdCyclesOsoApiV17PhtPrslsOsdCyclesGet(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1227,8 +1229,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getCalibratorsOsoApiV16PhtCalibratorsPost(telescope: TelescopeType, scanDurationMs: number, target: Target, strategy?: CalibratorChoice, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getCalibratorsOsoApiV16PhtCalibratorsPost(telescope, scanDurationMs, target, strategy, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getCalibratorsOsoApiV17PhtCalibratorsPost(telescope: TelescopeType, scanDurationMs: number, target: Target, strategy?: CalibratorChoice, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getCalibratorsOsoApiV17PhtCalibratorsPost(telescope, scanDurationMs, target, strategy, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1239,8 +1241,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet(cycle: number, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getOsdByCycleOsoApiV16PhtPrslsOsdCycleGet(cycle, options).then((request) => request(this.axios, this.basePath));
+    public getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet(cycle: number, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getOsdByCycleOsoApiV17PhtPrslsOsdCycleGet(cycle, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1252,21 +1254,21 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getProposalOsoApiV16PhtPrslsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getProposalOsoApiV16PhtPrslsPrslIdGet(prslId, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getProposalOsoApiV17PhtPrslsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getProposalOsoApiV17PhtPrslsPrslIdGet(prslId, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * Batch retrieves proposals by accepting a list of proposal ids and returning the proposals for those ids.
      * @summary Retrieve multiple proposals in batch
-     * @param {BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost} bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost 
+     * @param {BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost} bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost 
      * @param {string | null} [xRequestID] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getProposalsBatchOsoApiV16PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost: BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getProposalsBatchOsoApiV16PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getProposalsBatchOsoApiV17PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost: BodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getProposalsBatchOsoApiV17PhtPrslsBatchPost(bodyGetProposalsBatchOsoApiV17PhtPrslsBatchPost, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1277,8 +1279,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getProposalsByStatusOsoApiV16PhtPrslsReviewableGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getProposalsByStatusOsoApiV16PhtPrslsReviewableGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getProposalsByStatusOsoApiV17PhtPrslsReviewableGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getProposalsByStatusOsoApiV17PhtPrslsReviewableGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1289,8 +1291,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getProposalsForUserOsoApiV16PhtPrslsMineGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getProposalsForUserOsoApiV16PhtPrslsMineGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getProposalsForUserOsoApiV17PhtPrslsMineGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getProposalsForUserOsoApiV17PhtPrslsMineGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1302,8 +1304,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getReviewsForProposalOsoApiV16PhtPrslsReviewsPrslIdGet(prslId, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet(prslId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getReviewsForProposalOsoApiV17PhtPrslsReviewsPrslIdGet(prslId, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1315,8 +1317,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public getUserByEmailOsoApiV16PhtPrslsMemberEmailGet(email: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).getUserByEmailOsoApiV16PhtPrslsMemberEmailGet(email, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getUserByEmailOsoApiV17PhtPrslsMemberEmailGet(email: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).getUserByEmailOsoApiV17PhtPrslsMemberEmailGet(email, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1328,8 +1330,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public sendEmailOsoApiV16PhtPrslsSendEmailPost(emailRequest: EmailRequest, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).sendEmailOsoApiV16PhtPrslsSendEmailPost(emailRequest, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public sendEmailOsoApiV17PhtPrslsSendEmailPost(emailRequest: EmailRequest, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).sendEmailOsoApiV17PhtPrslsSendEmailPost(emailRequest, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1342,8 +1344,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public updateProposalOsoApiV16PhtPrslsPrslIdPut(prslId: string, proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).updateProposalOsoApiV16PhtPrslsPrslIdPut(prslId, proposal, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public updateProposalOsoApiV17PhtPrslsPrslIdPut(prslId: string, proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).updateProposalOsoApiV17PhtPrslsPrslIdPut(prslId, proposal, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1355,8 +1357,8 @@ export class PPTAPIProposalPreparationApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PPTAPIProposalPreparationApi
      */
-    public validateProposalOsoApiV16PhtPrslsValidatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PPTAPIProposalPreparationApiFp(this.configuration).validateProposalOsoApiV16PhtPrslsValidatePost(proposal, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public validateProposalOsoApiV17PhtPrslsValidatePost(proposal: Proposal, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PPTAPIProposalPreparationApiFp(this.configuration).validateProposalOsoApiV17PhtPrslsValidatePost(proposal, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

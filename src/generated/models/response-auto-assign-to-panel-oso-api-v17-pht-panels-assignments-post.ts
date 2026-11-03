@@ -13,18 +13,15 @@
  */
 
 
+// May contain unused imports in some cases
+// @ts-ignore
+import type { PanelAssignResponse } from './panel-assign-response';
 
 /**
  * 
  * @export
- * @interface BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost
+ * @interface ResponseAutoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost
  */
-export interface BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost {
-    /**
-     * List of proposal IDs
-     * @type {Array<string>}
-     * @memberof BodyGetProposalsBatchOsoApiV16PhtPrslsBatchPost
-     */
-    'prsl_ids': Array<string>;
+export interface ResponseAutoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost {
 }
 

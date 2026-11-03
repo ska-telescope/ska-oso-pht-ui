@@ -15,7 +15,7 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { CSPSPFRxConfiguration } from './cspspfrx-configuration';
+import type { CSPSPFRx } from './cspspfrx';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { TargetSPFRx } from './target-spfrx';
@@ -34,9 +34,9 @@ export interface SPFRxParameters {
     'target_spfrx': TargetSPFRx;
     /**
      * 
-     * @type {CSPSPFRxConfiguration}
+     * @type {CSPSPFRx}
      * @memberof SPFRxParameters
      */
-    'csp_spfrx': CSPSPFRxConfiguration;
+    'csp_spfrx': CSPSPFRx;
 }
 
