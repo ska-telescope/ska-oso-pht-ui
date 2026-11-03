@@ -34,7 +34,7 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
     setHelp('targetImport.help');
   }, []);
 
-  const AddTheTargetGalactic = (name: string, latitude: string, longitude: string) => {
+  const AddTheTargetGalactic = (name: string, latitude: string, longitude: string): Target => {
     const newTarget = {
       //Default values from AddTarget.tsx
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
@@ -42,9 +42,10 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
       name,
       b: Number(latitude),
       l: Number(longitude),
-      redshift: null,
+      redshift: '',
+      velType: VELOCITY_TYPE.VELOCITY,
       vel: '',
-      velUnit: '0',
+      velUnit: 0,
       velocityDefinition: VELOCITY_DEFINITION.RADIO
     };
 
@@ -85,7 +86,7 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
           setUploadButtonStatus(FileUploadStatus.PENDING);
           try {
             let errorInRows = false;
-            let targets;
+            let targets: Target[];
             if (referenceCoordinateType === REFERENCE_COORDINATE_TYPE_ICRS.value) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
@@ -105,17 +106,7 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
                 throw t('uploadCsvBtn.uploadErrorGalacticNotValidMsg');
               targets = result.data.reduce(
                 (
-                  result: {
-                    //Default values from AddTarget.tsx
-                    kind: number;
-                    id: string;
-                    name: string;
-                    b: number;
-                    l: number;
-                    redshift: null;
-                    vel: string;
-                    velUnit: string;
-                  }[],
+                  result: Target[],
                   target: { name: string; latitude: string; longitude: string }
                 ) => {
                   if (target.name && target.latitude && target.longitude) {
@@ -130,10 +121,7 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
                 []
               );
             }
-            form.setValue('targets', [
-              ...(form.getValues('targets') ?? []),
-              ...(targets as unknown as Target[])
-            ]);
+            form.setValue('targets', [...(form.getValues('targets') ?? []), ...targets]);
             if (errorInRows) throw t('uploadCsvBtn.uploadErrorPartialMsg');
             setUploadButtonStatus(FileUploadStatus.OK);
             notifySuccess(t('uploadCsvBtn.uploadSuccessMsg'), NOTIFICATION_DELAY_IN_SECONDS);

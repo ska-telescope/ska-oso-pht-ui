@@ -8,8 +8,10 @@ import * as papaModule from 'papaparse';
 import TargetFileImport from './TargetFileImport';
 import {
   REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  VELOCITY_TYPE
 } from '@/utils/constants';
+import { getTargetsSchema } from '@/models/proposals/targets';
 
 // Helper to get the exposed mock
 
@@ -104,7 +106,30 @@ describe('TargetFileImport', () => {
     screen.getByTestId('csvUpload').click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
-    expect(form.getValues('targets')).toHaveLength(1);
+    const targets = form.getValues('targets');
+    expect(targets).toHaveLength(1);
+    expect(targets[0]).toMatchObject({
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
+      l: 20,
+      b: 10,
+      redshift: '',
+      velType: VELOCITY_TYPE.VELOCITY,
+      velUnit: 0
+    });
+  });
+
+  it('imports targets the targets schema accepts', () => {
+    getParseMock().mockImplementation((_file, opts: any) => {
+      opts.complete({
+        meta: { fields: ['name', 'longitude', 'latitude'] },
+        data: [{ name: 'TargetGal', longitude: '20', latitude: '10' }]
+      });
+    });
+
+    renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
+    screen.getByTestId('csvUpload').click();
+
+    expect(getTargetsSchema().safeParse(form.getValues('targets')).error).toBeUndefined();
   });
 
   it('ICRS invalid header', () => {
