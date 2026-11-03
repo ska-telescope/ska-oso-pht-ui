@@ -79,6 +79,19 @@ describe('targets PDM mapping', () => {
     expect(target.velocityDefinition).toBe(VELOCITY_DEFINITION.RADIO);
   });
 
+  test('loads a target without a reference frame with the PDM default', () => {
+    const [pdmTarget] = MockSlicesPdm.observation_info.targets ?? [];
+    const { reference_frame: _, ...noFrame } = pdmTarget.radial_velocity ?? {};
+    const [target] = targetsFromPdm([{ ...pdmTarget, radial_velocity: noFrame }]);
+    expect(target.referenceFrame).toBe('LSRK');
+  });
+
+  test('leaves the reference frame to the PDM for a target entered without one', () => {
+    const [target] = targetsFromPdm(MockSlicesPdm.observation_info.targets);
+    const [saved] = targetsToPdm([{ ...target, referenceFrame: undefined }]);
+    expect(saved.radial_velocity?.reference_frame).toBeUndefined();
+  });
+
   test('reads missing targets as an empty list', () => {
     expect(targetsFromPdm(undefined)).toEqual([]);
   });

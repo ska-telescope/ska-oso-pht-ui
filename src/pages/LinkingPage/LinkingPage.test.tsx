@@ -278,6 +278,51 @@ describe('<LinkingPage /> manual linking', () => {
     );
   });
 
+  test('keeps calibration notes edited while the calibrators are looked up on unlinking', async () => {
+    renderLinking();
+    await selectObservationAndTickTarget();
+    await waitFor(() => expect(formProbe.getValues('calibrationStrategy')).toHaveLength(1));
+
+    // A second target stays linked, so unlinking M2 looks the calibrators up again
+    const secondTarget = { ...formProbe.getValues('targets')[0], id: 't2', name: 'M3' };
+    const secondLink = { observationId: 'obs-1', targetId: 't2', dataProductsSDPId: 'sdp-1' };
+    act(() => {
+      formProbe.setValue('targets', [...formProbe.getValues('targets'), secondTarget]);
+      formProbe.setValue('targetObservation', [
+        ...formProbe.getValues('targetObservation'),
+        secondLink
+      ]);
+      formProbe.setValue(
+        'calibrationStrategy',
+        formProbe.getValues('calibrationStrategy').map((c) => ({ ...c, notes: 'old notes' }))
+      );
+    });
+    let resolveCalibrators: (
+      value: Awaited<ReturnType<typeof GetCalibratorList>>
+    ) => void = () => {};
+    vi.mocked(GetCalibratorList).mockImplementationOnce(
+      () => new Promise((resolve) => (resolveCalibrators = resolve))
+    );
+    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    await waitFor(() => expect(formProbe.getValues('targetObservation')).toEqual([secondLink]));
+
+    // The notes are edited while the lookup runs
+    act(() =>
+      formProbe.setValue(
+        'calibrationStrategy',
+        formProbe.getValues('calibrationStrategy').map((c) => ({ ...c, notes: 'new notes' }))
+      )
+    );
+    const calibratorsForM3 = [{ name: 'calibrator for M3' }];
+    await act(async () => resolveCalibrators(calibratorsForM3 as never));
+
+    await waitFor(() => {
+      expect(formProbe.getValues('calibrationStrategy')).toEqual([
+        expect.objectContaining({ calibrators: calibratorsForM3, notes: 'new notes' })
+      ]);
+    });
+  });
+
   test('keeps the link after leaving the page and coming back', async () => {
     const { rerender } = renderLinking();
     await selectObservationAndTickTarget();

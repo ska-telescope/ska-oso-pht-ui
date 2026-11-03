@@ -19,6 +19,7 @@ import {
   type GalacticCoordinates,
   type ICRSCoordinates,
   RadialVelocityDefinition,
+  RadialVelocityReferenceFrame,
   type SpecialCoordinates,
   type Target as TargetTransport
 } from '@/generated/models';
@@ -113,7 +114,8 @@ const targetFromPdm = (e: TargetTransport): Target => {
     b: undefined,
     l: undefined,
     redshift: radialVelocity.redshift.toString(),
-    referenceFrame: radialVelocity.reference_frame,
+    // Optional in the PDM, so a target without one gets the PDM default
+    referenceFrame: radialVelocity.reference_frame ?? RadialVelocityReferenceFrame.Lsrk,
     // Optional in the PDM, so a target without one gets the PDM default
     velocityDefinition:
       velocityDefinitionFromPdm[radialVelocity.definition ?? RadialVelocityDefinition.Radio],
@@ -184,7 +186,8 @@ export const targetsToPdm = (targets: TargetsType): TargetTransport[] => {
         unit: VEL_UNITS.find((u) => u.value === Number(tar.velUnit))?.label ?? ''
       },
       definition: velocityDefinitionToPdm[tar.velocityDefinition],
-      reference_frame: tar.referenceFrame ?? 'LSRK',
+      // A target entered in the PHT has none, so the PDM applies its default
+      reference_frame: tar.referenceFrame,
       redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
     } as TargetTransport['radial_velocity']
   }));

@@ -52,14 +52,21 @@ export const buildCalibrationStrategy = async (
   notes
 });
 
-/** The strategies with the one for the given strategy's observation replaced by it. */
+/**
+ * The strategies with the one for the given strategy's observation replaced by it. The notes
+ * already there are kept: a strategy is built before its calibrator lookup, so the author may have
+ * edited the notes while it ran.
+ */
 export const withCalibrationFor = (
   strategies: CalibrationStrategy[],
   strategy: CalibrationStrategy
-): CalibrationStrategy[] => [
-  ...strategies.filter((cal) => cal.observationIdRef !== strategy.observationIdRef),
-  strategy
-];
+): CalibrationStrategy[] => {
+  const current = strategies.find((cal) => cal.observationIdRef === strategy.observationIdRef);
+  return [
+    ...strategies.filter((cal) => cal.observationIdRef !== strategy.observationIdRef),
+    current ? { ...strategy, notes: current.notes } : strategy
+  ];
+};
 
 /** The notes already given for an observation's calibration, so a new strategy keeps them. */
 export const calibrationNotesFor = (strategies: CalibrationStrategy[], observationId: string) =>

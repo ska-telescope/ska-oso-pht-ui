@@ -10,7 +10,7 @@ import {
   useTargetEntryForm
 } from '@/models/proposals/targetEntry';
 import { REFERENCE_COORDINATE_TYPE_ICRS, REFERENCE_COORDINATE_TYPE_SSO } from '@utils/constants.ts';
-import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
+import { removeTarget } from '@/models/proposals/targetOperations';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -38,7 +38,7 @@ export default function TargetListSection() {
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [rowTarget, setRowTarget] = React.useState<Target | null>(null);
-  const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
+  const { isSV, osdCyclePolicy } = useOSDAccessors();
 
   const maxTargets = osdCyclePolicy?.maxTargets ?? null;
 
@@ -53,23 +53,8 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
-    if (autoLink) {
-      deleteAutoLinking(rowTarget as Target, form);
-    } else {
-      const targetObservation = form.getValues('targetObservation') ?? [];
-      const obsId = targetObservation.find((e) => e.targetId === rowTarget?.id)?.observationId;
-      form.setValue(
-        'targets',
-        targets.filter((e) => e.id !== rowTarget?.id)
-      );
-      form.setValue(
-        'targetObservation',
-        targetObservation.filter((e) => e.targetId !== rowTarget?.id)
-      );
-      form.setValue(
-        'calibrationStrategy',
-        (form.getValues('calibrationStrategy') ?? []).filter((e) => e.observationIdRef !== obsId)
-      );
+    if (rowTarget) {
+      removeTarget(form, rowTarget);
     }
     setRowTarget(null);
     closeDialog();

@@ -4,6 +4,7 @@ import { GridRowSelectionModel } from '@mui/x-data-grid';
 import { storageObject } from '@utils/storage/store';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
+import { getFormCalibration, getFormLinks, getFormTargets } from '@/models/proposals/formSlices';
 import {
   buildCalibrationStrategy,
   calibrationNotesFor,
@@ -96,10 +97,9 @@ export default function LinkingPage() {
     control: form.control,
     name: ['targets', 'targetObservation', 'calibrationStrategy']
   });
-  const getTargets = () => (form.getValues('targets') ?? []) as Target[];
-  const getLinks = () => (form.getValues('targetObservation') ?? []) as TargetObservation[];
-  const getCalibration = () =>
-    (form.getValues('calibrationStrategy') ?? []) as CalibrationStrategy[];
+  const getTargets = () => getFormTargets(form);
+  const getLinks = () => getFormLinks(form);
+  const getCalibration = () => getFormCalibration(form);
 
   const { notifyError } = useNotify();
 

@@ -51,7 +51,7 @@ function fluxCalToCalibrator(data: FluxCal, index: number): Calibrator {
     name: data.name,
     calibrationIntent: 'flux',
     durationSeconds: 600,
-    selectionStrategy: 'highest_elevation',
+    selectionStrategy: CalibratorChoice.HighestElevation,
     relativeToScan: index === 0 ? CalibrationWhen.BeforeEachScan : CalibrationWhen.AfterEachScan,
     notes: null
   };

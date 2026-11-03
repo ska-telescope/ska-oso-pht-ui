@@ -1,11 +1,11 @@
 import { expect } from 'vitest';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
-import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
-import type { ProposalFormAccess } from '@/models/proposals/proposal';
-import Target from '../types/target';
+import Target from '@utils/types/target';
+import type { ProposalFormAccess } from './proposal';
+import { removeTarget } from './targetOperations';
 
-describe('deleteAutoLinking', () => {
+describe('removeTarget', () => {
   const target: Target = { id: 't1' } as Target;
   let values: Record<string, unknown>;
   let form: ProposalFormAccess;
@@ -31,7 +31,7 @@ describe('deleteAutoLinking', () => {
   });
 
   it('removes the target with its results and calibration from the form', () => {
-    deleteAutoLinking(target, form);
+    removeTarget(form, target);
 
     expect(values).toEqual({
       targets: [{ id: 't2' }],
@@ -42,14 +42,14 @@ describe('deleteAutoLinking', () => {
 
   it('leaves the form unchanged if the target is not found', () => {
     const before = structuredClone(values);
-    deleteAutoLinking({ id: 'notfound' } as Target, form);
+    removeTarget(form, { id: 'notfound' } as Target);
 
     expect(values).toEqual(before);
   });
 
   it('handles a proposal without calibration', () => {
     values.calibrationStrategy = [];
-    deleteAutoLinking(target, form);
+    removeTarget(form, target);
 
     expect(values.targets).toEqual([{ id: 't2' }]);
     expect(values.targetObservation).toEqual([{ targetId: 't2', observationId: 'o2' }]);

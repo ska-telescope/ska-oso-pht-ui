@@ -4,7 +4,7 @@ import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import Target from '@/utils/types/target';
+import { getFormLinks, withFormSlices } from '@/models/proposals/formSlices';
 import { BorderedSection, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
@@ -206,12 +206,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const form = useFormContext<ProposalType>();
   const links = (useWatch({ control: form.control, name: 'targetObservation' }) ??
     []) as TargetObservation[];
-  const getLinks = () => (form.getValues('targetObservation') ?? []) as TargetObservation[];
-  const withFormSlices = (proposal: Proposal): Proposal => ({
-    ...proposal,
-    targets: form.getValues('targets') as Target[],
-    targetObservation: getLinks()
-  });
+  const getLinks = () => getFormLinks(form);
 
   const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
     isSuppliedValueValid({
@@ -235,7 +230,7 @@ export default function DataProduct({ data }: DataProductProps) {
     const applyUpdate = async () => {
       sensCalcDebounceTimerRef.current = null;
       const sensCalcPatches = await fetchSensCalcPatches(
-        withFormSlices(latestProposalRef.current),
+        withFormSlices(latestProposalRef.current, form),
         ob,
         dp
       );

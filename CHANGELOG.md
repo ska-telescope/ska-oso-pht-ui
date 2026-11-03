@@ -20,6 +20,7 @@ UNRELEASED
 * Bugfix: Links made while a new link's calibrators are being looked up are kept
 * Bugfix: Linking or unlinking a target changes only that observation's calibration. While another target is still linked to it, its calibrators are looked up again for that target
 * Bugfix: Editing calibration notes keeps the calibrators already chosen
+* Bugfix: Calibration notes edited while calibrators are being looked up are kept
 * Bugfix: The Linking page requests a link's sensitivity once, and does not request it again while that request is pending
 
 11.1.0

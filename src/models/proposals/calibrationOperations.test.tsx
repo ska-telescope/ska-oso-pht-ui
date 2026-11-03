@@ -106,6 +106,14 @@ describe('withCalibrationFor', () => {
       strategy('obs-2')
     ]);
   });
+
+  test('keeps the notes edited while the new strategy was being built', () => {
+    const built = { ...strategy('obs-1', 'Notes when the lookup started'), id: 'cal-new' };
+
+    expect(withCalibrationFor([strategy('obs-1', 'Notes edited since')], built)).toEqual([
+      { ...built, notes: 'Notes edited since' }
+    ]);
+  });
 });
 
 describe('calibrationNotesFor', () => {

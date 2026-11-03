@@ -5,12 +5,16 @@ import { storageObject } from '@utils/storage/store';
 import { useFormContext } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import {
+  getFormLinks,
+  getFormTargets,
+  getFormCalibration,
+  withFormSlices
+} from '@/models/proposals/formSlices';
+import {
   buildCalibrationStrategy,
   calibrationNotesFor,
   withCalibrationFor
 } from '@/models/proposals/calibrationOperations';
-import Target from '@/utils/types/target';
-import TargetObservation from '@/utils/types/targetObservation';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -112,7 +116,6 @@ import {
   useIsFrequencyOutOfRange
 } from '@/utils/validation/validation';
 import QuantityField from '@/components/fields/quantity/quantity';
-import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 
 const GAP = 5;
@@ -199,12 +202,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   // The form owns the targets, links and calibration; observations stay in the store
   const form = useFormContext<ProposalType>();
-  const getLinks = () => (form.getValues('targetObservation') ?? []) as TargetObservation[];
-  const withFormSlices = (proposal: Proposal): Proposal => ({
-    ...proposal,
-    targets: form.getValues('targets') as Target[],
-    targetObservation: getLinks()
-  });
+  const getLinks = () => getFormLinks(form);
 
   const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
     isSuppliedValueValid({
@@ -229,7 +227,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const applyUpdate = async () => {
       sensCalcDebounceTimerRef.current = null;
       const sensCalcPatches = await fetchSensCalcPatches(
-        withFormSlices(latestProposalRef.current),
+        withFormSlices(latestProposalRef.current, form),
         ob,
         dp
       );
@@ -238,12 +236,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         return;
       }
 
-      const linkedTarget = (form.getValues('targets') as Target[]).find((t) =>
+      const linkedTarget = getFormTargets(form).find((t) =>
         getLinks().some((to) => to.observationId === ob.id && to.targetId === t.id)
       );
 
-      const getCalibration = () =>
-        (form.getValues('calibrationStrategy') ?? []) as CalibrationStrategy[];
+      const getCalibration = () => getFormCalibration(form);
       // TODO(BTN-3595): Take the calibrator refresh out of the sensitivity callback, and call
       //  buildCalibrationStrategy (calibrationOperations.ts) from the observation-change trigger
       //  instead. It is kept here only because this callback refreshes the calibrators today.

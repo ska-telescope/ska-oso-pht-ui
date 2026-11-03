@@ -1,5 +1,5 @@
 import { applySensCalcPatches, SensCalcPatch } from '@/utils/update/sensCalc/updateSensCalc';
-import TargetObservation from '@/utils/types/targetObservation';
+import { getFormLinks } from './formSlices';
 import type { ProposalFormAccess } from './proposal';
 
 // Operations on the target-observation links. Kept apart from the targetObservation slice so its
@@ -14,7 +14,7 @@ import type { ProposalFormAccess } from './proposal';
  * (BTN-3595) is meant to write through it too.
  */
 export const patchSensCalcResults = (form: ProposalFormAccess, patches: SensCalcPatch[]) => {
-  const links = (form.getValues('targetObservation') ?? []) as TargetObservation[];
+  const links = getFormLinks(form);
   const patched = applySensCalcPatches(links, patches) ?? links;
   if (patched.some((link, index) => link !== links[index])) {
     form.setValue('targetObservation', patched);
