@@ -46,14 +46,8 @@ export function getTargetSchema() {
     kind: z.number(),
     l: z.number().optional(),
     b: z.number().optional(),
-    pmL: z.number().optional(),
-    pmB: z.number().optional(),
     raStr: z.string().optional(),
     decStr: z.string().optional(),
-    pmRa: z.number().optional(),
-    pmDec: z.number().optional(),
-    parallax: z.number().optional(),
-    epoch: z.number().optional(),
     // Loaded with both fields undefined when the PDM target has no pointing pattern
     pointingPattern: z
       .object({
@@ -111,16 +105,11 @@ const coordinateFieldsFromPdm = (
   switch (coord!.kind) {
     case REFERENCE_COORDINATE_TYPE_ICRS.label: {
       const icrs = coord as ICRSCoordinates;
-      return {
-        raStr: icrs.ra_str,
-        decStr: icrs.dec_str,
-        pmRa: icrs.pm_ra as number | undefined,
-        pmDec: icrs.pm_dec as number | undefined
-      };
+      return { raStr: icrs.ra_str, decStr: icrs.dec_str };
     }
     case REFERENCE_COORDINATE_TYPE_GALACTIC.label: {
       const galactic = coord as GalacticCoordinates;
-      return { l: galactic.l, b: galactic.b, pmL: galactic.pm_l, pmB: galactic.pm_b };
+      return { l: galactic.l, b: galactic.b };
     }
     default:
       return {};
@@ -128,14 +117,11 @@ const coordinateFieldsFromPdm = (
 };
 
 const targetFromPdm = (e: TargetTransport): Target => {
-  const icrs = e.reference_coordinate as ICRSCoordinates;
   const radialVelocity = e.radial_velocity as Required<
     NonNullable<TargetTransport['radial_velocity']>
   >;
   return {
     kind: getCoordinateType(e.reference_coordinate!.kind as string),
-    epoch: icrs?.epoch,
-    parallax: icrs?.parallax as number | undefined,
     id: e.target_id as string,
     name: e.name as string,
     // Galactic coordinates are optional in the PDM, so a target without them gets undefined - want to preserve the shape of the Target type, so explicitly set them to undefined (more elegant ideas welcome)
@@ -172,6 +158,12 @@ export const targetsFromPdm = (inRec: TargetTransport[] = []): Target[] => inRec
 
 /**************************** form → PDM *****************************/
 
+// Not used by the PHT yet, so not held in the form and always saved with these defaults:
+// pmRa/pmDec (ICRS), pmL/pmB (Galactic), parallax and epoch
+const UNUSED_PROPER_MOTION = 0;
+const UNUSED_PARALLAX = 0;
+const UNUSED_EPOCH = 2000;
+
 const isVelocity = (type?: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type?: number) => type === VELOCITY_TYPE.REDSHIFT;
 
@@ -194,10 +186,10 @@ export const referenceCoordinateToPdm = (
         kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
         ra_str: (tar as TargetsType[number]).raStr,
         dec_str: (tar as TargetsType[number]).decStr,
-        pm_ra: (tar as TargetsType[number]).pmRa,
-        pm_dec: (tar as TargetsType[number]).pmDec,
-        epoch: (tar as TargetsType[number]).epoch,
-        parallax: (tar as TargetsType[number]).parallax
+        pm_ra: UNUSED_PROPER_MOTION,
+        pm_dec: UNUSED_PROPER_MOTION,
+        epoch: UNUSED_EPOCH,
+        parallax: UNUSED_PARALLAX
       } as ICRSCoordinates;
 
     case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
@@ -205,10 +197,10 @@ export const referenceCoordinateToPdm = (
         kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
         l: (tar as TargetsType[number]).l,
         b: (tar as TargetsType[number]).b,
-        pm_l: (tar as TargetsType[number]).pmL,
-        pm_b: (tar as TargetsType[number]).pmB,
-        epoch: (tar as TargetsType[number]).epoch,
-        parallax: (tar as TargetsType[number]).parallax
+        pm_l: UNUSED_PROPER_MOTION,
+        pm_b: UNUSED_PROPER_MOTION,
+        epoch: UNUSED_EPOCH,
+        parallax: UNUSED_PARALLAX
       } as GalacticCoordinates;
 
     case REFERENCE_COORDINATE_TYPE_SSO.value:

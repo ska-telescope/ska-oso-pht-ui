@@ -34,9 +34,9 @@ export const MockProposalBackend = {
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
           epoch: 2000,
-          parallax: undefined,
-          pm_ra: undefined,
-          pm_dec: undefined
+          parallax: 0,
+          pm_ra: 0,
+          pm_dec: 0
         },
         radial_velocity: {
           quantity: {
@@ -56,9 +56,9 @@ export const MockProposalBackend = {
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
           epoch: 2000,
-          parallax: undefined,
-          pm_ra: undefined,
-          pm_dec: undefined
+          parallax: 0,
+          pm_ra: 0,
+          pm_dec: 0
         },
         radial_velocity: {
           quantity: {
@@ -78,9 +78,9 @@ export const MockProposalBackend = {
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
           epoch: 2000,
-          parallax: undefined,
-          pm_ra: undefined,
-          pm_dec: undefined
+          parallax: 0,
+          pm_ra: 0,
+          pm_dec: 0
         },
         radial_velocity: {
           quantity: {
@@ -236,9 +236,9 @@ export const MockProposalBackendZoom = {
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
           epoch: 2000,
-          parallax: undefined,
-          pm_ra: undefined,
-          pm_dec: undefined
+          parallax: 0,
+          pm_ra: 0,
+          pm_dec: 0
         },
         radial_velocity: {
           quantity: {

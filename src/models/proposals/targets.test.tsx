@@ -44,10 +44,23 @@ describe('targets PDM mapping', () => {
     expect(targetsToPdm(targetsFromPdm(saved))).toEqual(saved);
   });
 
-  // Saving gives back every field that was loaded except the pointing pattern, which is not kept
+  // Proper motion, parallax and epoch are not used by the PHT, so they are saved as defaults
+  const UNUSED_DEFAULTS = {
+    icrs: { pm_ra: 0, pm_dec: 0, parallax: 0, epoch: 2000 },
+    galactic: { pm_l: 0, pm_b: 0, parallax: 0, epoch: 2000 }
+  } as Record<string, object>;
+
+  // Saving gives back every field that was loaded except the pointing pattern, which is not kept,
+  // and the unused coordinate fields above
   const savedFrom = (pdm: ProposalBackend) =>
     structuredClone(pdm.observation_info.targets ?? []).map(
-      ({ pointing_pattern: _, ...target }) => target
+      ({ pointing_pattern: _, ...target }) => ({
+        ...target,
+        reference_coordinate: {
+          ...target.reference_coordinate,
+          ...UNUSED_DEFAULTS[target.reference_coordinate?.kind as string]
+        }
+      })
     );
 
   test.each(mockPdms)('saves the targets of %s', (_, pdm) => {
