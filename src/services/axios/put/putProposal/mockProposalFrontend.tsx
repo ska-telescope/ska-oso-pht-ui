@@ -52,17 +52,7 @@ export const MockProposalFrontend: Proposal = {
       velocityDefinition: 'RADIO',
       velType: 1,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     },
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
@@ -78,17 +68,7 @@ export const MockProposalFrontend: Proposal = {
       velocityDefinition: 'RADIO',
       velType: 1,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     },
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
@@ -104,17 +84,7 @@ export const MockProposalFrontend: Proposal = {
       velocityDefinition: 'RADIO',
       velType: 1,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     }
   ],
   observations: [
@@ -293,17 +263,7 @@ export const MockProposalFrontendZoom: Proposal = {
       velocityDefinition: 'RADIO',
       velType: 1,
       vel: '-3.6',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     }
   ],
   observations: [

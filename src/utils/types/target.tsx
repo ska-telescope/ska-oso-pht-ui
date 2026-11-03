@@ -33,13 +33,6 @@ export type TargetBackend = {
 
 // NOT USED : Note that the fields marked as NOT USED should be removed until such time as they are actually needed
 
-// NOT USED
-export type PointingPatternParams = {
-  kind: string;
-  offsetXArcsec: number;
-  offsetYArcsec: number;
-};
-
 export type ReferenceCoordinateGalactic = {
   kind: string;
   l: number; // replaces Galactic longitude
@@ -86,11 +79,6 @@ export type Target = {
   parallax?: number; // NOT USED YET // for both Galactic & ICRS
   epoch?: number; // NOT USED YET // for both Galactic & ICRS
   /*------- end of reference coordinate properties --------------------- */
-  pointingPattern?: {
-    // NOT USED
-    active: string; // NOT USED
-    parameters: PointingPatternParams[]; // NOT USED
-  }; // NOT USED
 };
 
 export default Target;

@@ -11,7 +11,6 @@ import {
 } from '@/utils/constants';
 import type Target from '@/utils/types/target';
 import type {
-  PointingPatternParams,
   ReferenceCoordinateGalactic,
   ReferenceCoordinateICRS,
   ReferenceCoordinateSSO
@@ -19,19 +18,12 @@ import type {
 import {
   type GalacticCoordinates,
   type ICRSCoordinates,
-  type PointingPatternParameters,
   RadialVelocityDefinition,
   type SpecialCoordinates,
   type Target as TargetTransport
 } from '@/generated/models';
 
 // Schema for the proposal's targets. Structure only: see getProposalSchema.
-
-const pointingPatternParamsSchema = z.object({
-  kind: z.string(),
-  offsetXArcsec: z.number(),
-  offsetYArcsec: z.number()
-});
 
 export function getTargetSchema() {
   return z.object({
@@ -47,14 +39,7 @@ export function getTargetSchema() {
     l: z.number().optional(),
     b: z.number().optional(),
     raStr: z.string().optional(),
-    decStr: z.string().optional(),
-    // Loaded with both fields undefined when the PDM target has no pointing pattern
-    pointingPattern: z
-      .object({
-        active: z.string().optional(),
-        parameters: z.array(pointingPatternParamsSchema).optional()
-      })
-      .optional()
+    decStr: z.string().optional()
   });
 }
 
@@ -136,20 +121,6 @@ const targetFromPdm = (e: TargetTransport): Target => {
     vel: radialVelocity.quantity?.value?.toString(),
     velUnit: VEL_UNITS.find((u) => u.label === radialVelocity?.quantity?.unit?.split(' ').join(''))
       ?.value as number,
-    pointingPattern: {
-      active: e.pointing_pattern?.active as string,
-      parameters: e.pointing_pattern?.parameters?.map((p) => {
-        const params = p as PointingPatternParameters & {
-          offset_x_arcsec: number;
-          offset_y_arcsec: number;
-        };
-        return {
-          kind: params.kind,
-          offsetXArcsec: params.offset_x_arcsec,
-          offsetYArcsec: params.offset_y_arcsec
-        };
-      }) as PointingPatternParams[]
-    },
     ...coordinateFieldsFromPdm(e.reference_coordinate)
   } as Target;
 };
@@ -159,7 +130,7 @@ export const targetsFromPdm = (inRec: TargetTransport[] = []): Target[] => inRec
 /**************************** form → PDM *****************************/
 
 // Not used by the PHT yet, so not held in the form or sent; the PDM fills in its defaults:
-// pmRa/pmDec (ICRS), pmL/pmB (Galactic), parallax and epoch
+// pmRa/pmDec (ICRS), pmL/pmB (Galactic), parallax, epoch and the target's pointing pattern
 
 const isVelocity = (type?: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type?: number) => type === VELOCITY_TYPE.REDSHIFT;
