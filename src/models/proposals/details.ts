@@ -69,11 +69,10 @@ export const detailsFromPdm = (
 export const detailsToPdm = (
   details: DetailsType
 ): Pick<ProposalInfo, 'abstract' | 'science_category'> => {
-  const parsedDetails = getDetailsSchema().parse(details);
   return {
-    abstract: parsedDetails.abstract,
+    abstract: details.abstract,
     science_category: DETAILS.ScienceCategory.find(
-      (category) => category.value === parsedDetails.scienceCategory
+      (category) => category.value === details.scienceCategory
     )?.label
   };
 };

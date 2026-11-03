@@ -10,6 +10,8 @@ import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUse
 import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
 import { ProposalType } from './proposal';
 import { useProposalOda } from './useProposalOda';
+import { getDetailsSchema } from './details';
+import phtTranslations from '../../../public/locales/en/pht.json';
 
 const { mockGet, mockPut } = vi.hoisted(() => ({
   mockGet: vi.fn(),
@@ -166,6 +168,42 @@ describe('useProposalOda', () => {
     expect(mockPut).toHaveBeenCalledWith(
       expect.any(String),
       MappingPutProposal(legacy, PROPOSAL_STATUS.DRAFT)
+    );
+  });
+
+  test('saves an over-limit abstract as a draft and still saves subsequent edits', async () => {
+    const wordLimit = Number(phtTranslations.abstract.maxWord);
+    const abstract = Array(wordLimit + 1)
+      .fill('a')
+      .join(' ');
+    expect(abstract.length).toBeLessThan(Number(phtTranslations.abstract.maxChar));
+    mockPut.mockResolvedValue({ data: pdm });
+    const { form, oda } = renderWithForm('Draft title');
+    const legacy = mapping(pdm);
+    act(() => {
+      form.current.setValue('abstract', abstract);
+    });
+
+    expect(getDetailsSchema().safeParse(form.current.getValues()).success).toBe(false);
+    await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
+    expect(mockPut).toHaveBeenLastCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        status: PROPOSAL_STATUS.DRAFT,
+        proposal_info: expect.objectContaining({ abstract })
+      })
+    );
+
+    act(() => {
+      form.current.setValue('title', 'Edited on another page');
+    });
+    await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
+    expect(mockPut).toHaveBeenCalledTimes(2);
+    expect(mockPut).toHaveBeenLastCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        proposal_info: expect.objectContaining({ abstract, title: 'Edited on another page' })
+      })
     );
   });
 
