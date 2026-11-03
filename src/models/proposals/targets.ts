@@ -88,7 +88,7 @@ const velocityDefinitionFromPdm: Record<RadialVelocityDefinition, VelocityDefini
   [RadialVelocityDefinition.Relativistic]: VELOCITY_DEFINITION.RELATIVISTIC
 };
 
-const getTargetType = (kind: string): number => {
+const getCoordinateType = (kind: string): number => {
   switch (kind) {
     case REFERENCE_COORDINATE_TYPE_ICRS.label:
       return REFERENCE_COORDINATE_TYPE_ICRS.value;
@@ -104,76 +104,71 @@ const getTargetType = (kind: string): number => {
   }
 };
 
-export const targetsFromPdm = (inRec: TargetTransport[] = []): Target[] => {
-  const results = [];
-  for (let i = 0; i < inRec?.length; i++) {
-    const e = inRec[i];
-    const referenceCoordinate = e.reference_coordinate!.kind as string;
-    const icrs = e.reference_coordinate as ICRSCoordinates;
-    const radialVelocity = e.radial_velocity as Required<
-      NonNullable<TargetTransport['radial_velocity']>
-    >;
-    const target: Partial<Target> = {
-      kind: getTargetType(referenceCoordinate),
-      epoch: icrs?.epoch,
-      parallax: icrs?.parallax as number | undefined,
-      id: e.target_id as string,
-      name: e?.name as string,
-      b: undefined,
-      l: undefined,
-      redshift: radialVelocity.redshift.toString(),
-      referenceFrame: radialVelocity.reference_frame,
-      // Optional in the PDM, so a target without one gets the PDM default
-      velocityDefinition:
-        velocityDefinitionFromPdm[radialVelocity.definition ?? RadialVelocityDefinition.Radio],
-      velType: getVelType(radialVelocity.redshift),
-      vel: radialVelocity.quantity?.value?.toString(),
-      velUnit: VEL_UNITS.find(
-        (u) => u.label === radialVelocity?.quantity?.unit?.split(' ').join('')
-      )?.value as number,
-      pointingPattern: {
-        active: e.pointing_pattern?.active as string,
-        parameters: e.pointing_pattern?.parameters?.map((p) => {
-          const params = p as PointingPatternParameters & {
-            offset_x_arcsec: number;
-            offset_y_arcsec: number;
-          };
-          return {
-            kind: params.kind,
-            offsetXArcsec: params.offset_x_arcsec,
-            offsetYArcsec: params.offset_y_arcsec
-          };
-        }) as PointingPatternParams[]
-      }
-    };
-    /*------- reference coordinate properties --------------------- */
-
-    switch (referenceCoordinate) {
-      case REFERENCE_COORDINATE_TYPE_ICRS.label:
-        target.raStr = icrs.ra_str;
-        target.decStr = icrs.dec_str;
-        target.pmRa = icrs.pm_ra as number | undefined;
-        target.pmDec = icrs.pm_dec as number | undefined;
-        break;
-
-      case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
-        target.l = (e.reference_coordinate as GalacticCoordinates).l;
-        target.b = (e.reference_coordinate as GalacticCoordinates).b;
-        target.pmL = (e.reference_coordinate as GalacticCoordinates).pm_l;
-        target.pmB = (e.reference_coordinate as GalacticCoordinates).pm_b;
-        break;
-
-      case REFERENCE_COORDINATE_TYPE_SSO.label:
-        break;
-
-      default:
-        throw new Error(`Unsupported coordinate type ${referenceCoordinate}`);
+// Unsupported kinds have already been rejected by getCoordinateType, so anything else (SSO) adds nothing
+const coordinateFieldsFromPdm = (
+  coord: TargetTransport['reference_coordinate']
+): Partial<Target> => {
+  switch (coord!.kind) {
+    case REFERENCE_COORDINATE_TYPE_ICRS.label: {
+      const icrs = coord as ICRSCoordinates;
+      return {
+        raStr: icrs.ra_str,
+        decStr: icrs.dec_str,
+        pmRa: icrs.pm_ra as number | undefined,
+        pmDec: icrs.pm_dec as number | undefined
+      };
     }
-    /*------- end of reference coordinate properties --------------------- */
-    results.push(target);
+    case REFERENCE_COORDINATE_TYPE_GALACTIC.label: {
+      const galactic = coord as GalacticCoordinates;
+      return { l: galactic.l, b: galactic.b, pmL: galactic.pm_l, pmB: galactic.pm_b };
+    }
+    default:
+      return {};
   }
-  return results as Target[];
 };
+
+const targetFromPdm = (e: TargetTransport): Target => {
+  const icrs = e.reference_coordinate as ICRSCoordinates;
+  const radialVelocity = e.radial_velocity as Required<
+    NonNullable<TargetTransport['radial_velocity']>
+  >;
+  return {
+    kind: getCoordinateType(e.reference_coordinate!.kind as string),
+    epoch: icrs?.epoch,
+    parallax: icrs?.parallax as number | undefined,
+    id: e.target_id as string,
+    name: e.name as string,
+    // Galactic coordinates are optional in the PDM, so a target without them gets undefined - want to preserve the shape of the Target type, so explicitly set them to undefined (more elegant ideas welcome)
+    b: undefined,
+    l: undefined,
+    redshift: radialVelocity.redshift.toString(),
+    referenceFrame: radialVelocity.reference_frame,
+    // Optional in the PDM, so a target without one gets the PDM default
+    velocityDefinition:
+      velocityDefinitionFromPdm[radialVelocity.definition ?? RadialVelocityDefinition.Radio],
+    velType: getVelType(radialVelocity.redshift),
+    vel: radialVelocity.quantity?.value?.toString(),
+    velUnit: VEL_UNITS.find((u) => u.label === radialVelocity?.quantity?.unit?.split(' ').join(''))
+      ?.value as number,
+    pointingPattern: {
+      active: e.pointing_pattern?.active as string,
+      parameters: e.pointing_pattern?.parameters?.map((p) => {
+        const params = p as PointingPatternParameters & {
+          offset_x_arcsec: number;
+          offset_y_arcsec: number;
+        };
+        return {
+          kind: params.kind,
+          offsetXArcsec: params.offset_x_arcsec,
+          offsetYArcsec: params.offset_y_arcsec
+        };
+      }) as PointingPatternParams[]
+    },
+    ...coordinateFieldsFromPdm(e.reference_coordinate)
+  } as Target;
+};
+
+export const targetsFromPdm = (inRec: TargetTransport[] = []): Target[] => inRec.map(targetFromPdm);
 
 /**************************** form → PDM *****************************/
 
