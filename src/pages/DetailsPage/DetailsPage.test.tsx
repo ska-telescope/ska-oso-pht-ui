@@ -320,6 +320,26 @@ describe('<DetailsPage /> observing mode', () => {
     expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
   });
 
+  it('displays a required error on blur and clears it when an abstract is entered', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    const abstractInput = screen.getByTestId('abstractId');
+    fireEvent.blur(abstractInput);
+
+    expect(await screen.findByText(phtTranslations.abstract.empty)).toBeInTheDocument();
+    expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
+
+    fireEvent.change(abstractInput, { target: { value: 'A scientific summary' } });
+    await waitFor(() => {
+      expect(screen.queryByText(phtTranslations.abstract.empty)).not.toBeInTheDocument();
+      expect(abstractInput).toHaveAttribute('aria-invalid', 'false');
+    });
+
+    fireEvent.change(abstractInput, { target: { value: '' } });
+    expect(await screen.findByText(phtTranslations.abstract.empty)).toBeInTheDocument();
+  });
+
   it('previews the current abstract as LaTeX', async () => {
     mockState.proposal = svProposal();
     await renderPage();

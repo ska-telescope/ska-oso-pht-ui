@@ -142,7 +142,7 @@ describe('PageFooterPPT', () => {
     expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
   });
 
-  it('calls createProposal when pageNo = -1', async () => {
+  it('allows creating a proposal from Title before the required abstract is filled', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />);
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));

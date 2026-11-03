@@ -34,7 +34,7 @@ describe('proposal schema', () => {
         title: 'A valid title',
         proposalType,
         observingMode: null,
-        abstract: '',
+        abstract: 'A valid abstract',
         scienceCategory: null,
         investigators: []
       }).success
@@ -48,7 +48,7 @@ describe('proposal schema', () => {
         title: 'A valid title',
         proposalType,
         observingMode: null,
-        abstract: '',
+        abstract: 'A valid abstract',
         scienceCategory: null,
         investigators: []
       });

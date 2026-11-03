@@ -9,6 +9,7 @@
   "none": "None",
   "abstract": {
     "label": "Abstract",
+    "empty": "A value is required",
     "help": "The proposal abstract should be a maximum of 250 words.",
     "helper": "Please enter the abstract of your proposal. This field allows latex syntax. - Word count {{current}} / {{max}}",
     "maxChar": "2300",

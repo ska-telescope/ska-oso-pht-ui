@@ -171,41 +171,41 @@ describe('useProposalOda', () => {
     );
   });
 
-  test('saves an over-limit abstract as a draft and still saves subsequent edits', async () => {
-    const wordLimit = Number(phtTranslations.abstract.maxWord);
-    const abstract = Array(wordLimit + 1)
-      .fill('a')
-      .join(' ');
-    expect(abstract.length).toBeLessThan(Number(phtTranslations.abstract.maxChar));
-    mockPut.mockResolvedValue({ data: pdm });
-    const { form, oda } = renderWithForm('Draft title');
-    const legacy = mapping(pdm);
-    act(() => {
-      form.current.setValue('abstract', abstract);
-    });
+  test.each([0, Number(phtTranslations.abstract.maxWord) + 1])(
+    'saves a %s-word abstract as a draft and still saves subsequent edits',
+    async (wordCount) => {
+      const abstract = Array(wordCount).fill('a').join(' ');
+      expect(abstract.length).toBeLessThan(Number(phtTranslations.abstract.maxChar));
+      mockPut.mockResolvedValue({ data: pdm });
+      const { form, oda } = renderWithForm('Draft title');
+      const legacy = mapping(pdm);
+      act(() => {
+        form.current.setValue('abstract', abstract);
+      });
 
-    expect(getDetailsSchema().safeParse(form.current.getValues()).success).toBe(false);
-    await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
-    expect(mockPut).toHaveBeenLastCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        status: PROPOSAL_STATUS.DRAFT,
-        proposal_info: expect.objectContaining({ abstract })
-      })
-    );
+      expect(getDetailsSchema().safeParse(form.current.getValues()).success).toBe(false);
+      await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
+      expect(mockPut).toHaveBeenLastCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          status: PROPOSAL_STATUS.DRAFT,
+          proposal_info: expect.objectContaining({ abstract })
+        })
+      );
 
-    act(() => {
-      form.current.setValue('title', 'Edited on another page');
-    });
-    await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
-    expect(mockPut).toHaveBeenCalledTimes(2);
-    expect(mockPut).toHaveBeenLastCalledWith(
-      expect.any(String),
-      expect.objectContaining({
-        proposal_info: expect.objectContaining({ abstract, title: 'Edited on another page' })
-      })
-    );
-  });
+      act(() => {
+        form.current.setValue('title', 'Edited on another page');
+      });
+      await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
+      expect(mockPut).toHaveBeenCalledTimes(2);
+      expect(mockPut).toHaveBeenLastCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          proposal_info: expect.objectContaining({ abstract, title: 'Edited on another page' })
+        })
+      );
+    }
+  );
 
   test.each([undefined, null, '', 'Analytical Engines'])(
     'saves edited details when an investigator organization is %s',

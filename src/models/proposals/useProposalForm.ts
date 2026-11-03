@@ -33,6 +33,7 @@ export function useProposalForm(proposal?: ProposalSeed) {
   const { reset } = formMethods;
   const latestProposal = React.useRef(proposal);
   const proposalId = proposal?.id;
+  const seededProposalId = React.useRef(proposalId);
 
   React.useEffect(() => {
     latestProposal.current = proposal;
@@ -40,6 +41,8 @@ export function useProposalForm(proposal?: ProposalSeed) {
 
   // Re-seed migrated fields when loading or switching proposals, not on store synchronization.
   React.useEffect(() => {
+    if (proposalId === seededProposalId.current) return;
+    seededProposalId.current = proposalId;
     reset({
       title: getTitleValues(latestProposal.current),
       proposalType: latestProposal.current?.proposalType ?? null,

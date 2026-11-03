@@ -9,15 +9,18 @@ const MAX_ABSTRACT_WORDS = Number(phtTranslations.abstract.maxWord);
 export function getDetailsSchema() {
   return z.object({
     observingMode: z.string().nullable(),
-    abstract: z.string().superRefine((value, ctx) => {
-      const wordCount = countWords(value);
-      if (wordCount > MAX_ABSTRACT_WORDS) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `${phtTranslations.specialCharacters.numWord} ${wordCount} / ${MAX_ABSTRACT_WORDS}`
-        });
-      }
-    }),
+    abstract: z
+      .string()
+      .min(1, phtTranslations.abstract.empty)
+      .superRefine((value, ctx) => {
+        const wordCount = countWords(value);
+        if (wordCount > MAX_ABSTRACT_WORDS) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `${phtTranslations.specialCharacters.numWord} ${wordCount} / ${MAX_ABSTRACT_WORDS}`
+          });
+        }
+      }),
     scienceCategory: z
       .number()
       .refine((value) => DETAILS.ScienceCategory.some((category) => category.value === value))
