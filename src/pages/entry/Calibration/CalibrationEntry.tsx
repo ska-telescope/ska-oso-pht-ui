@@ -25,6 +25,7 @@ import Observation from '@/utils/types/observation';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { useTheme } from '@mui/material/styles';
+import { CalibrationWhen } from '@/generated/models';
 
 const GAP = 4;
 const BACK_PAGE = PAGE_CALIBRATION;
@@ -49,8 +50,8 @@ function calibratorArrayToSet(list: Calibrator[]): CalibratorSet {
     return { beforeEachScan: null, afterEachScan: null };
   }
   return {
-    beforeEachScan: list.find((c) => c.relativeToScan === 'before_each_scan') ?? null,
-    afterEachScan: list.find((c) => c.relativeToScan === 'after_each_scan') ?? null
+    beforeEachScan: list.find((c) => c.relativeToScan === CalibrationWhen.BeforeEachScan) ?? null,
+    afterEachScan: list.find((c) => c.relativeToScan === CalibrationWhen.AfterEachScan) ?? null
   };
 }
 

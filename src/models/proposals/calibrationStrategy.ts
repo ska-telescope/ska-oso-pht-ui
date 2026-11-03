@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import {
+  CalibrationWhen,
   CalibratorChoice,
   type CalibrationStrategy as CalibrationStrategyTransport,
   type FluxCal
@@ -15,8 +16,7 @@ const calibratorSchema = z.object({
   calibrationIntent: z.literal('flux'),
   durationSeconds: z.number(),
   selectionStrategy: z.enum(CalibratorChoice),
-  // TODO: z.enum(CalibrationWhen) once !1197 is merged
-  relativeToScan: z.enum(['before_each_scan', 'after_each_scan']),
+  relativeToScan: z.enum(CalibrationWhen),
   notes: z.string().nullable()
 });
 
@@ -52,7 +52,7 @@ function fluxCalToCalibrator(data: FluxCal, index: number): Calibrator {
     calibrationIntent: 'flux',
     durationSeconds: 600,
     selectionStrategy: 'highest_elevation',
-    relativeToScan: index === 0 ? 'before_each_scan' : 'after_each_scan',
+    relativeToScan: index === 0 ? CalibrationWhen.BeforeEachScan : CalibrationWhen.AfterEachScan,
     notes: null
   };
 }
