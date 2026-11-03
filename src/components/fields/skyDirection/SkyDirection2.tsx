@@ -1,10 +1,5 @@
 import { NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
-import {
-  validateSkyDirection2Number,
-  validateSkyDirection2Text
-} from '@utils/validation/validation.tsx';
-import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SkyDirection2FieldProps {
@@ -15,7 +10,8 @@ interface SkyDirection2FieldProps {
   valueFocus?: Function;
   valueTypeFocus?: Function;
   valueBlur?: Function;
-  setErrorText?: (error: string) => void;
+  // Already translated; the entry form's schema does the checking
+  errorText?: string;
 }
 
 export default function SkyDirection2Field({
@@ -25,27 +21,10 @@ export default function SkyDirection2Field({
   value,
   valueFocus,
   valueBlur,
-  setErrorText
+  errorText = ''
 }: SkyDirection2FieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';
-
-  const parseResultText = validateSkyDirection2Text(value);
-  const errorText = !required || !parseResultText ? '' : t(FIELD + `.error.2.${parseResultText}`);
-
-  const parseResultNumber = validateSkyDirection2Number(value);
-  const errorNumber =
-    !required || !parseResultNumber ? '' : t(FIELD + `.error.2.${parseResultNumber}`);
-
-  React.useEffect(() => {
-    if (setErrorText) {
-      if (skyUnits.toString() === '0') {
-        setErrorText(errorText); // Pass the errorText back to TargetEntry
-      } else if (skyUnits.toString() === '1') {
-        setErrorText(errorNumber); // Pass the errorText back to TargetEntry
-      }
-    }
-  }, [errorText, errorNumber]);
 
   const renderSkyDirectionValueText = () => {
     return (
@@ -66,7 +45,7 @@ export default function SkyDirection2Field({
   const renderSkyDirectionValueNumber = () => {
     return (
       <NumberEntry
-        errorText={errorNumber}
+        errorText={errorText}
         label={t(FIELD + '.label.2.' + skyUnits.toString())}
         suffix={t(FIELD + '.units.2.' + skyUnits.toString())}
         testId={FIELD + 'Value'}

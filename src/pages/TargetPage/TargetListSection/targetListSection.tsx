@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { ProposalType } from '@/models/proposals/proposal';
 import {
@@ -33,13 +33,11 @@ export default function TargetListSection() {
   // The edit dialog's entry is a local form, so it is not saved; editStartRef holds the entry as the
   // dialog opened with it, so only the fields the user changes are applied
   const editEntryForm = useTargetEntryForm();
+  const { errors: editErrors } = useFormState({ control: editEntryForm.control });
   const editStartRef = React.useRef<TargetEntryType | null>(null);
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [rowTarget, setRowTarget] = React.useState<Target | null>(null);
-  const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
-  const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
-  const [nameError, setNameError] = React.useState('');
   const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
 
   const maxTargets = osdCyclePolicy?.maxTargets ?? null;
@@ -282,16 +280,10 @@ export default function TargetListSection() {
           open={openEditDialog}
           onClose={closeDialog}
           onDialogResponse={editConfirmed}
-          disabled={!!skyDirection1Error || !!skyDirection2Error || !!nameError}
+          disabled={Object.keys(editErrors).length > 0}
           title="editTarget.label"
         >
-          <TargetEntry
-            entryForm={editEntryForm}
-            target={rowTarget ? rowTarget : undefined}
-            onCoord1FieldErrorChange={setSkyDirection1Error} // Pass callback
-            onCoord2FieldErrorChange={setSkyDirection2Error} // Pass callback
-            onNameFieldErrorChange={setNameError} // Pass callback
-          />
+          <TargetEntry entryForm={editEntryForm} target={rowTarget ? rowTarget : undefined} />
         </AlertDialog>
       )}
     </Box>

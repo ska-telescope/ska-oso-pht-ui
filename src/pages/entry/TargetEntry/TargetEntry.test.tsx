@@ -111,6 +111,39 @@ describe('<TargetEntry /> target limit', () => {
   }, 15000);
 });
 
+describe('<TargetEntry /> name validation', () => {
+  it('flags a name already in the proposal as it is typed', async () => {
+    const user = userEvent.setup();
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+    act(() => {
+      formProbe.setValue('targets', [
+        { id: 'target-1', name: 'M2', kind: 0, velocityDefinition: 'RADIO' }
+      ]);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'm2');
+    await waitFor(() => expect(screen.getByText('addTarget.error')).toBeInTheDocument());
+
+    await user.type(nameInput, '-new');
+    await waitFor(() => expect(screen.queryByText('addTarget.error')).not.toBeInTheDocument());
+  }, 15000);
+
+  it('asks for a name when it is cleared', async () => {
+    const user = userEvent.setup();
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'M2');
+    await user.clear(nameInput);
+    await waitFor(() => expect(screen.getByText('addTarget.valueError')).toBeInTheDocument());
+  }, 15000);
+});
+
 describe('<TargetEntry /> form preservation on auto-linking error', { timeout: 10000 }, () => {
   beforeEach(() => {
     vi.clearAllMocks();

@@ -32,11 +32,7 @@ export const MockProposalBackend = {
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
-          dec_str: '00:00:00.0',
-          epoch: 2000,
-          parallax: 0,
-          pm_ra: 0,
-          pm_dec: 0
+          dec_str: '00:00:00.0'
         },
         radial_velocity: {
           quantity: {
@@ -54,11 +50,7 @@ export const MockProposalBackend = {
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
-          dec_str: '+22:00:53.000',
-          epoch: 2000,
-          parallax: 0,
-          pm_ra: 0,
-          pm_dec: 0
+          dec_str: '+22:00:53.000'
         },
         radial_velocity: {
           quantity: {
@@ -76,11 +68,7 @@ export const MockProposalBackend = {
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
-          dec_str: '-00:49:23.700',
-          epoch: 2000,
-          parallax: 0,
-          pm_ra: 0,
-          pm_dec: 0
+          dec_str: '-00:49:23.700'
         },
         radial_velocity: {
           quantity: {
@@ -234,11 +222,7 @@ export const MockProposalBackendZoom = {
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
-          dec_str: '-00:49:23.700',
-          epoch: 2000,
-          parallax: 0,
-          pm_ra: 0,
-          pm_dec: 0
+          dec_str: '-00:49:23.700'
         },
         radial_velocity: {
           quantity: {

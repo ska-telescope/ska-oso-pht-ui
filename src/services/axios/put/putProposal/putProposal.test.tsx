@@ -275,7 +275,7 @@ describe('mapCalibrationStrategyToBackend', () => {
 });
 
 describe('getReferenceCoordinate', () => {
-  test('maps galactic coordinates, saving the unused fields as defaults', () => {
+  test('maps galactic coordinates, leaving the unused fields to the PDM', () => {
     const galactic = {
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
       l: 123.4,
@@ -289,15 +289,11 @@ describe('getReferenceCoordinate', () => {
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: 123.4,
-      b: 56.7,
-      pm_l: 0,
-      pm_b: 0,
-      epoch: 2000,
-      parallax: 0
+      b: 56.7
     });
   });
 
-  test('maps ICRS coordinates, saving the unused fields as defaults', () => {
+  test('maps ICRS coordinates, leaving the unused fields to the PDM', () => {
     const icrs = {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       raStr: '12:34:56.7',
@@ -311,11 +307,7 @@ describe('getReferenceCoordinate', () => {
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       ra_str: '12:34:56.7',
-      dec_str: '-12:34:56.7',
-      pm_ra: 0,
-      pm_dec: 0,
-      epoch: 2000,
-      parallax: 0
+      dec_str: '-12:34:56.7'
     });
   });
 });

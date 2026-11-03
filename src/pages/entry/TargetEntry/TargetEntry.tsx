@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
-import { useFormContext, UseFormReturn, useWatch } from 'react-hook-form';
+import { useFormContext, useFormState, UseFormReturn, useWatch } from 'react-hook-form';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates, {
@@ -48,22 +48,18 @@ interface TargetEntryProps {
   // The target being edited; leave out when adding a new one
   target?: Target;
   textAlign?: string;
-  onCoord1FieldErrorChange?: (error: string) => void;
-  onCoord2FieldErrorChange?: (error: string) => void;
-  onNameFieldErrorChange?: (error: string) => void;
 }
 
 const GAP = 2;
 const DEFAULT_VELOCITY_TYPE = TARGET_ENTRY_DEFAULTS.velType;
 const DEFAULT_VELOCITY_UNIT = TARGET_ENTRY_DEFAULTS.velUnit;
-const DEFAULT_REFERENCE_COORDINATES = TARGET_ENTRY_DEFAULTS.referenceCoordinates;
+const DEFAULT_KIND = TARGET_ENTRY_DEFAULTS.kind;
+// Their checks depend on the other fields, so they are re-checked whenever the entry changes
+const DEPENDENT_FIELDS: (keyof TargetEntryType)[] = ['coord1', 'coord2', 'vel', 'redshift'];
 
 export default function TargetEntry({
   entryForm = undefined,
-  target = undefined,
-  onCoord1FieldErrorChange,
-  onCoord2FieldErrorChange,
-  onNameFieldErrorChange
+  target = undefined
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
@@ -72,28 +68,36 @@ export default function TargetEntry({
 
   const { application, updateAppContent2 } = storageObject.useStore();
   const form = useFormContext<ProposalType>();
-  const [nameFieldError, setNameFieldError] = React.useState('');
-  const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
-  const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
-  const [rmFieldError, setRmFieldError] = React.useState('');
   const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   // The entry is held in a small local form, so it is not saved and goes when the entry closes;
-  // the targets it adds go to the global form. Errors and loading state stay with the page.
-  const ownEntryForm = useTargetEntryForm();
+  // the targets it adds go to the global form. Its schema does the checking; loading state stays
+  // with the page. A new target's name can't repeat one already in the proposal.
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const ownEntryForm = useTargetEntryForm(targets.map((rec) => rec.name));
   const entryValues = entryForm ?? ownEntryForm;
   const entry = useWatch({ control: entryValues.control }) as TargetEntryType;
-  const { name, coord1, coord2, velType, vel, velUnit, redshift, fieldPattern } = entry;
-  const referenceCoordinates = entry.referenceCoordinates;
-  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const { name, kind, coord1, coord2, velType, vel, velUnit, redshift, fieldPattern } = entry;
+  const { errors } = useFormState({ control: entryValues.control });
+  const errorText = (field: keyof TargetEntryType) => {
+    const message = errors[field]?.message;
+    return message ? t(message) : '';
+  };
 
-  const updateEntry = (changes: Partial<TargetEntryType>) =>
-    (Object.keys(changes) as (keyof TargetEntryType)[]).forEach((key) =>
-      entryValues.setValue(key, changes[key] as never)
+  // Only the fields that actually change are checked, so leaving an untouched field shows no error
+  const updateEntry = (changes: Partial<TargetEntryType>) => {
+    const changed = (Object.keys(changes) as (keyof TargetEntryType)[]).filter(
+      (key) => entryValues.getValues(key) !== changes[key]
     );
+    if (!changed.length) {
+      return;
+    }
+    changed.forEach((key) => entryValues.setValue(key, changes[key] as never));
+    entryValues.trigger([...new Set([...changed, ...DEPENDENT_FIELDS])]);
+  };
 
   const [resolutionLoading, setResolutionLoading] = React.useState(false);
   const resolveRevisionRef = React.useRef(0);
@@ -107,43 +111,12 @@ export default function TargetEntry({
     setResolutionLoading(false);
   };
 
-  React.useEffect(() => {
-    if (nameFieldError === t('addTarget.error')) {
-      if (formValidation()) {
-        setNameFieldError('');
-      }
-    }
-  }, [name]);
-
-  React.useEffect(() => {
-    if (onCoord1FieldErrorChange) {
-      onCoord1FieldErrorChange(skyDirection1Error); // Notify parent
-    }
-  }, [skyDirection1Error]);
-
-  React.useEffect(() => {
-    if (onCoord2FieldErrorChange) {
-      onCoord2FieldErrorChange(skyDirection2Error); // Notify parent
-    }
-  }, [skyDirection2Error]);
-
-  React.useEffect(() => {
-    if (onNameFieldErrorChange) {
-      onNameFieldErrorChange(nameFieldError); // Notify parent
-    }
-  }, [nameFieldError]);
-
   const setTheName = (inValue: string) => {
     invalidatePendingResolve();
     updateEntry({ name: inValue });
-    if (!inValue.trim()) {
-      setNameFieldError(t('addTarget.valueError'));
-    } else {
-      setNameFieldError('');
-    }
   };
 
-  const isSSO = referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
+  const isSSO = kind === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const setTheCoord1 = (value: string) => {
     invalidatePendingResolve();
@@ -157,22 +130,17 @@ export default function TargetEntry({
   const setTheReferenceCoordinates = (newKind: number) => {
     invalidatePendingResolve();
 
-    if (newKind !== referenceCoordinates) {
-      updateEntry({
-        referenceCoordinates: newKind,
+    // A new coordinate system starts the entry again, without errors
+    if (newKind !== kind) {
+      entryValues.reset({
+        ...entryValues.getValues(),
+        kind: newKind,
         name: '',
         coord1: '',
         coord2: '',
         vel: '',
         redshift: ''
       });
-
-      setSkyDirection1Error('');
-      setSkyDirection2Error('');
-      setRmFieldError('');
-      setNameFieldError('');
-    } else {
-      updateEntry({ referenceCoordinates: newKind });
     }
   };
 
@@ -220,40 +188,22 @@ export default function TargetEntry({
     setHelp('name.help');
   }, []);
 
-  function formValidation() {
-    let valid = true;
-    form.getValues('targets')?.forEach((rec) => {
-      if (rec.name.toLowerCase() === name.toLowerCase()) {
-        valid = false;
-        setNameFieldError(t('addTarget.error'));
-      }
-    });
-    return valid;
-  }
-
   const clearForm = () => {
     invalidatePendingResolve();
     entryValues.reset({ ...TARGET_ENTRY_DEFAULTS });
-    setNameFieldError('');
-    setSkyDirection1Error('');
-    setSkyDirection2Error('');
-    setRmFieldError('');
   };
 
   const addButton = () => {
-    const addButtonAction = () => {
+    const addButtonAction = async () => {
       invalidatePendingResolve();
-
-      if (!formValidation()) {
-        return;
-      } else {
+      if (await entryValues.trigger()) {
         AddTheTarget();
       }
     };
 
     const AddTheTarget = () => {
       const baseTarget = {
-        kind: referenceCoordinates,
+        kind,
         id: generateTargetId(),
         name: name ?? '',
         velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT,
@@ -261,7 +211,7 @@ export default function TargetEntry({
       };
 
       const buildTarget = (): Target => {
-        switch (referenceCoordinates) {
+        switch (kind) {
           case REFERENCE_COORDINATE_TYPE_SSO.value:
             return {
               ...baseTarget,
@@ -291,7 +241,7 @@ export default function TargetEntry({
             };
 
           default:
-            throw new Error(`Unsupported reference coordinate kind: ${referenceCoordinates}`);
+            throw new Error(`Unsupported reference coordinate kind: ${kind}`);
         }
       };
 
@@ -327,11 +277,8 @@ export default function TargetEntry({
 
     const disabled = () => {
       return (
-        referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value ||
-        nameFieldError !== '' ||
-        skyDirection1Error !== '' ||
-        skyDirection2Error !== '' ||
-        rmFieldError !== '' ||
+        kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value ||
+        Object.keys(errors).length > 0 ||
         !(name?.length && (isSSO || (coord1?.length && coord2?.length)) && targetLengthCheck())
       );
     };
@@ -347,9 +294,7 @@ export default function TargetEntry({
       );
       const hasSelectorChange =
         velType !== DEFAULT_VELOCITY_TYPE || velUnit !== DEFAULT_VELOCITY_UNIT;
-      return (
-        hasTextValue || hasSelectorChange || referenceCoordinates !== DEFAULT_REFERENCE_COORDINATES
-      );
+      return hasTextValue || hasSelectorChange || kind !== DEFAULT_KIND;
     };
 
     return (
@@ -370,7 +315,7 @@ export default function TargetEntry({
           testId={'addTargetButton'}
           title="addTarget.label"
           toolTip={
-            referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value
+            kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value
               ? 'addTarget.galacticDisabled'
               : 'addTarget.toolTip'
           }
@@ -431,8 +376,6 @@ export default function TargetEntry({
             redshift: ''
           });
         }
-
-        setNameFieldError('');
       } else {
         showResolveError(response);
       }
@@ -449,7 +392,7 @@ export default function TargetEntry({
       setResolutionLoading(true);
 
       try {
-        const response = await GetCoordinates(requestName, referenceCoordinates);
+        const response = await GetCoordinates(requestName, kind);
         processCoordinatesResults(response, requestRevision);
       } catch {
         if (resolveRevisionRef.current === requestRevision) {
@@ -510,7 +453,7 @@ export default function TargetEntry({
     wrapper(
       <ReferenceCoordinatesField
         setValue={setTheReferenceCoordinates}
-        value={referenceCoordinates}
+        value={kind}
         disabled={isEditMode || resolutionLoading}
       />
     );
@@ -548,7 +491,7 @@ export default function TargetEntry({
         suffix={!isSSO ? resolveButton() : undefined}
         onBlur={blurName}
         onFocus={() => setHelp('name.help')}
-        errorText={nameFieldError}
+        errorText={errorText('name')}
         disabled={resolutionLoading}
       />
     );
@@ -558,11 +501,11 @@ export default function TargetEntry({
       <SkyDirection1
         required={isRequired()}
         setValue={setTheCoord1}
-        skyUnits={referenceCoordinates}
+        skyUnits={kind}
         value={coord1}
         valueBlur={blurCoord1}
         valueFocus={() => setHelp('skyDirection.1')}
-        setErrorText={setSkyDirection1Error} // Pass the callback
+        errorText={errorText('coord1')}
       />
     );
 
@@ -571,11 +514,11 @@ export default function TargetEntry({
       <SkyDirection2
         required={isRequired()}
         setValue={setTheCoord2}
-        skyUnits={referenceCoordinates}
+        skyUnits={kind}
         value={coord2}
         valueFocus={() => setHelp('skyDirection.2')}
         valueBlur={blurCoord2}
-        setErrorText={setSkyDirection2Error} // Pass the callback
+        errorText={errorText('coord2')}
       />
     );
 
@@ -602,7 +545,7 @@ export default function TargetEntry({
         velFocus={() => setHelp('velocity.' + velType)}
         velUnitFocus={() => setHelp('velocity.' + velType)}
         velBlur={blurVel}
-        setErrorText={setRmFieldError}
+        errorText={errorText(velType === VELOCITY_TYPE.VELOCITY ? 'vel' : 'redshift')}
       />
     );
 

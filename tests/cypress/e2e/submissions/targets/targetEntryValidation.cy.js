@@ -125,11 +125,10 @@ describe.skip('Proposal Flow: Target entry validation', () => {
     addM2Target();
     clickToAddTarget();
 
-    //attempt to add target with the same name
+    //enter a target with the same name; it is flagged as it is typed, without clicking add
     enterTargetField('name', 'M2'); // enter valid target name
     enterTargetField('skyDirectionValue1', '1:00:00'); // enter valid coordinate
     enterTargetField('skyDirectionValue2', '1:00:00'); // enter valid coordinate
-    clickToAddTarget();
 
     //verify field error is present
     verifyFieldError('name', 'Failed to add target - check for duplicate', true); //verify field error on name field, as is empty

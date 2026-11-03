@@ -44,11 +44,9 @@ describe('targets PDM mapping', () => {
     expect(targetsToPdm(targetsFromPdm(saved))).toEqual(saved);
   });
 
-  // Proper motion, parallax and epoch are not used by the PHT, so they are saved as defaults
-  const UNUSED_DEFAULTS = {
-    icrs: { pm_ra: 0, pm_dec: 0, parallax: 0, epoch: 2000 },
-    galactic: { pm_l: 0, pm_b: 0, parallax: 0, epoch: 2000 }
-  } as Record<string, object>;
+  // Proper motion, parallax and epoch are not used by the PHT, so they are not sent; the PDM
+  // fills in its defaults
+  const UNUSED_FIELDS = ['pm_ra', 'pm_dec', 'pm_l', 'pm_b', 'parallax', 'epoch'];
 
   // Saving gives back every field that was loaded except the pointing pattern, which is not kept,
   // and the unused coordinate fields above
@@ -56,10 +54,11 @@ describe('targets PDM mapping', () => {
     structuredClone(pdm.observation_info.targets ?? []).map(
       ({ pointing_pattern: _, ...target }) => ({
         ...target,
-        reference_coordinate: {
-          ...target.reference_coordinate,
-          ...UNUSED_DEFAULTS[target.reference_coordinate?.kind as string]
-        }
+        reference_coordinate: Object.fromEntries(
+          Object.entries(target.reference_coordinate ?? {}).filter(
+            ([field]) => !UNUSED_FIELDS.includes(field)
+          )
+        ) as typeof target.reference_coordinate
       })
     );
 

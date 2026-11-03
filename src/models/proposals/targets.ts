@@ -158,11 +158,8 @@ export const targetsFromPdm = (inRec: TargetTransport[] = []): Target[] => inRec
 
 /**************************** form → PDM *****************************/
 
-// Not used by the PHT yet, so not held in the form and always saved with these defaults:
+// Not used by the PHT yet, so not held in the form or sent; the PDM fills in its defaults:
 // pmRa/pmDec (ICRS), pmL/pmB (Galactic), parallax and epoch
-const UNUSED_PROPER_MOTION = 0;
-const UNUSED_PARALLAX = 0;
-const UNUSED_EPOCH = 2000;
 
 const isVelocity = (type?: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type?: number) => type === VELOCITY_TYPE.REDSHIFT;
@@ -185,22 +182,14 @@ export const referenceCoordinateToPdm = (
       return {
         kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
         ra_str: (tar as TargetsType[number]).raStr,
-        dec_str: (tar as TargetsType[number]).decStr,
-        pm_ra: UNUSED_PROPER_MOTION,
-        pm_dec: UNUSED_PROPER_MOTION,
-        epoch: UNUSED_EPOCH,
-        parallax: UNUSED_PARALLAX
+        dec_str: (tar as TargetsType[number]).decStr
       } as ICRSCoordinates;
 
     case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
       return {
         kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
         l: (tar as TargetsType[number]).l,
-        b: (tar as TargetsType[number]).b,
-        pm_l: UNUSED_PROPER_MOTION,
-        pm_b: UNUSED_PROPER_MOTION,
-        epoch: UNUSED_EPOCH,
-        parallax: UNUSED_PARALLAX
+        b: (tar as TargetsType[number]).b
       } as GalacticCoordinates;
 
     case REFERENCE_COORDINATE_TYPE_SSO.value:
