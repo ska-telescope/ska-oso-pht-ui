@@ -199,24 +199,44 @@ export default function LinkingPage() {
     );
   };
 
-  const deleteObservationTargetAndCalibration = (row: any) => {
-    function filterRecords(id: string) {
-      return getLinks()?.filter(
-        (item) => !(item.observationId === currRec?.id2 && item.targetId === id)
-      );
-    }
-    // The observation's calibration goes with its last link; other observations keep theirs
-    function filterRecordsCalibration(remainingLinks: TargetObservation[]) {
-      const stillLinked = remainingLinks.some((link) => link.observationId === currRec?.id2);
-      return stillLinked
-        ? getCalibration()
-        : getCalibration().filter((item) => item.observationIdRef !== currRec?.id2);
-    }
-    const remainingLinks = filterRecords(row.id) ?? [];
-    setTargetObservationAndCalibrationStorage(
-      remainingLinks,
-      filterRecordsCalibration(remainingLinks)
+  /** A target still linked to the observation, if any. */
+  const linkedTargetFor = (observationId: string) =>
+    getTargets().find((target) =>
+      getLinks().some((link) => link.observationId === observationId && link.targetId === target.id)
     );
+
+  // The observation's calibration goes with its last link; other observations keep theirs. While
+  // another target is still linked, the calibrators are looked up again for it, as they may have
+  // been chosen for the target just unlinked.
+  const deleteObservationTargetAndCalibration = async (row: any) => {
+    const observationId = currRec?.id2;
+    if (!observationId) return;
+    form.setValue(
+      'targetObservation',
+      getLinks().filter(
+        (link) => !(link.observationId === observationId && link.targetId === row.id)
+      )
+    );
+
+    const remainingTarget = linkedTargetFor(observationId);
+    if (!remainingTarget) {
+      form.setValue(
+        'calibrationStrategy',
+        getCalibration().filter((item) => item.observationIdRef !== observationId)
+      );
+      return;
+    }
+
+    const calibration = await buildCalibrationStrategy(authAxiosClient, {
+      observationId,
+      observation: getProposal().observations?.find((o) => o.id === observationId),
+      target: remainingTarget,
+      notes: calibrationNotesFor(getCalibration(), observationId)
+    });
+    // The lookup takes time, so the strategy is only replaced if the observation is still linked
+    if (linkedTargetFor(observationId)) {
+      form.setValue('calibrationStrategy', withCalibrationFor(getCalibration(), calibration));
+    }
   };
 
   const popElementO = (dp: DataProductSDPNew, obs: Observation) => {
@@ -317,7 +337,7 @@ export default function LinkingPage() {
 
   const targetSelectedToggle = async (el: ElementT) => {
     if (isTargetSelected(el.id)) {
-      deleteObservationTargetAndCalibration(el.target);
+      await deleteObservationTargetAndCalibration(el.target);
     } else {
       await addObservationTargetAndCalibration(el.target);
     }

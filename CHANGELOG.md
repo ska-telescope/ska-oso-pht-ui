@@ -18,7 +18,7 @@ UNRELEASED
 * Bugfix: A loaded target keeps its velocity type and value when the proposal is saved
 * Bugfix: Galactic targets imported from a CSV file get the same default velocity settings as ICRS targets
 * Bugfix: Links made while a new link's calibrators are being looked up are kept
-* Bugfix: Linking or unlinking a target changes only that observation's calibration. Calibrations are kept while any target is still linked to it
+* Bugfix: Linking or unlinking a target changes only that observation's calibration. While another target is still linked to it, its calibrators are looked up again for that target
 * Bugfix: Editing calibration notes keeps the calibrators already chosen
 * Bugfix: The Linking page requests a link's sensitivity once, and does not request it again while that request is pending
 

@@ -236,26 +236,46 @@ describe('<LinkingPage /> manual linking', () => {
     expect(formProbe.getValues('calibrationStrategy')).toEqual([otherStrategy]);
   });
 
-  test("keeps an observation's calibration while another target is still linked to it", async () => {
+  test("looks up an observation's calibrators again for a target still linked to it", async () => {
     renderLinking();
     await selectObservationAndTickTarget();
     await waitFor(() => expect(formProbe.getValues('calibrationStrategy')).toHaveLength(1));
 
-    // A second target is also linked to the same observation
+    // A second target is also linked to the same observation, and the strategy has notes
+    const secondTarget = { ...formProbe.getValues('targets')[0], id: 't2', name: 'M3' };
     const secondLink = { observationId: 'obs-1', targetId: 't2', dataProductsSDPId: 'sdp-1' };
-    act(() =>
+    act(() => {
+      formProbe.setValue('targets', [...formProbe.getValues('targets'), secondTarget]);
       formProbe.setValue('targetObservation', [
         ...formProbe.getValues('targetObservation'),
         secondLink
-      ])
-    );
-    const strategy = formProbe.getValues('calibrationStrategy')[0];
+      ]);
+      formProbe.setValue(
+        'calibrationStrategy',
+        formProbe.getValues('calibrationStrategy').map((c) => ({ ...c, notes: 'kept' }))
+      );
+    });
+    const calibratorsForM3 = [{ name: 'calibrator for M3' }];
+    vi.mocked(GetCalibratorList).mockClear();
+    vi.mocked(GetCalibratorList).mockResolvedValueOnce(calibratorsForM3 as never);
 
+    // Unlinking M2 leaves M3 linked, so the calibrators are chosen for M3
     fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
     await waitFor(() => {
-      expect(formProbe.getValues('targetObservation')).toEqual([secondLink]);
+      expect(formProbe.getValues('calibrationStrategy')).toEqual([
+        expect.objectContaining({
+          observationIdRef: 'obs-1',
+          calibrators: calibratorsForM3,
+          notes: 'kept'
+        })
+      ]);
     });
-    expect(formProbe.getValues('calibrationStrategy')).toEqual([strategy]);
+    expect(formProbe.getValues('targetObservation')).toEqual([secondLink]);
+    expect(GetCalibratorList).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ id: 'obs-1' }),
+      expect.objectContaining({ id: 't2' })
+    );
   });
 
   test('keeps the link after leaving the page and coming back', async () => {
