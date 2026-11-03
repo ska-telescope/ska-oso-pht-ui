@@ -6,7 +6,8 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import {
   buildCalibrationStrategy,
-  calibrationNotesFor
+  calibrationNotesFor,
+  withCalibrationFor
 } from '@/models/proposals/calibrationOperations';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import {
@@ -156,11 +157,15 @@ export default function LinkingPage() {
     form.setValue('calibrationStrategy', [...calibration]);
   };
 
+  // Other observations keep their calibration; only this observation's strategy is replaced
   const addTargetObservationAndCalibrationStorage = (
     targetObs: TargetObservation,
     calibration: CalibrationStrategy
   ) => {
-    setTargetObservationAndCalibrationStorage([...(getLinks() ?? []), targetObs], [calibration]);
+    setTargetObservationAndCalibrationStorage(
+      [...getLinks(), targetObs],
+      withCalibrationFor(getCalibration(), calibration)
+    );
   };
 
   const updateTargetObservationStorage = async (
@@ -175,10 +180,6 @@ export default function LinkingPage() {
       targetId: target.id,
       sensCalc: results
     };
-    const base = getLinks()?.filter(
-      (e) => !(e.targetId === target.id && e.observationId === observationId)
-    );
-    base?.push(temp);
 
     const calibration = await buildCalibrationStrategy(authAxiosClient, {
       observationId,
@@ -187,7 +188,15 @@ export default function LinkingPage() {
       notes: calibrationNotesFor(getCalibration(), observationId)
     });
 
-    setTargetObservationAndCalibrationStorage(base ?? [], [calibration]);
+    // The calibrator lookup takes time, so the links and strategies are read after it to keep any
+    // made meanwhile; only this observation's strategy is replaced
+    const otherLinks = getLinks().filter(
+      (e) => !(e.targetId === target.id && e.observationId === observationId)
+    );
+    setTargetObservationAndCalibrationStorage(
+      [...otherLinks, temp],
+      withCalibrationFor(getCalibration(), calibration)
+    );
   };
 
   const deleteObservationTargetAndCalibration = (row: any) => {
@@ -196,12 +205,17 @@ export default function LinkingPage() {
         (item) => !(item.observationId === currRec?.id2 && item.targetId === id)
       );
     }
-    function filterRecordsCalibration(id: number) {
-      return getCalibration()?.filter((item) => item.observationIdRef === id.toString());
+    // The observation's calibration goes with its last link; other observations keep theirs
+    function filterRecordsCalibration(remainingLinks: TargetObservation[]) {
+      const stillLinked = remainingLinks.some((link) => link.observationId === currRec?.id2);
+      return stillLinked
+        ? getCalibration()
+        : getCalibration().filter((item) => item.observationIdRef !== currRec?.id2);
     }
+    const remainingLinks = filterRecords(row.id) ?? [];
     setTargetObservationAndCalibrationStorage(
-      filterRecords(row.id) ?? [],
-      filterRecordsCalibration(row.id) ?? []
+      remainingLinks,
+      filterRecordsCalibration(remainingLinks)
     );
   };
 

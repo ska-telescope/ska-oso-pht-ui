@@ -10,6 +10,7 @@ import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import completeMockStore from '@/utils/MockStore';
 import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE, STATUS_OK } from '@/utils/constants';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
 vi.mock(
@@ -162,6 +163,99 @@ describe('<LinkingPage /> manual linking', () => {
       expect(formProbe.getValues('targetObservation')[0].sensCalc?.statusGUI).toBe(STATUS_OK);
     });
     expect(getSensCalc).toHaveBeenCalledTimes(1);
+  });
+
+  test('keeps a link made while the calibrators of a new link are being looked up', async () => {
+    vi.mocked(getSensCalc).mockClear();
+    vi.mocked(GetCalibratorList).mockClear();
+    let resolveSensCalc: (value: Awaited<ReturnType<typeof getSensCalc>>) => void = () => {};
+    vi.mocked(getSensCalc).mockImplementationOnce(
+      () => new Promise((resolve) => (resolveSensCalc = resolve))
+    );
+    renderLinking();
+
+    await selectObservationAndTickTarget();
+    await waitFor(() => expect(getSensCalc).toHaveBeenCalledTimes(1));
+
+    // The calibrator lookup that follows the sensitivity result is held until released below
+    let resolveCalibrators: (
+      value: Awaited<ReturnType<typeof GetCalibratorList>>
+    ) => void = () => {};
+    vi.mocked(GetCalibratorList).mockImplementationOnce(
+      () => new Promise((resolve) => (resolveCalibrators = resolve))
+    );
+    await act(async () => resolveSensCalc({ statusGUI: STATUS_OK, error: '' }));
+    await waitFor(() => expect(GetCalibratorList).toHaveBeenCalledTimes(2));
+
+    // Another link is made while that lookup is pending
+    const otherLink = { observationId: 'obs-2', targetId: 't2', dataProductsSDPId: 'sdp-2' };
+    act(() =>
+      formProbe.setValue('targetObservation', [
+        ...formProbe.getValues('targetObservation'),
+        otherLink
+      ])
+    );
+
+    await act(async () => resolveCalibrators([]));
+    await waitFor(() => {
+      expect(formProbe.getValues('targetObservation')).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            targetId: 't1',
+            sensCalc: expect.objectContaining({ statusGUI: STATUS_OK })
+          }),
+          expect.objectContaining(otherLink)
+        ])
+      );
+    });
+  });
+
+  test('leaves the calibration of other observations alone when linking and unlinking', async () => {
+    renderLinking();
+    const otherStrategy = {
+      observatoryDefined: true,
+      id: 'cal-2',
+      observationIdRef: 'obs-2',
+      calibrators: null,
+      notes: 'kept'
+    };
+    act(() => formProbe.setValue('calibrationStrategy', [otherStrategy]));
+
+    await selectObservationAndTickTarget();
+    await waitFor(() => {
+      expect(formProbe.getValues('calibrationStrategy')).toEqual([
+        otherStrategy,
+        expect.objectContaining({ observationIdRef: 'obs-1' })
+      ]);
+    });
+
+    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    await waitFor(() => {
+      expect(formProbe.getValues('targetObservation')).toEqual([]);
+    });
+    expect(formProbe.getValues('calibrationStrategy')).toEqual([otherStrategy]);
+  });
+
+  test("keeps an observation's calibration while another target is still linked to it", async () => {
+    renderLinking();
+    await selectObservationAndTickTarget();
+    await waitFor(() => expect(formProbe.getValues('calibrationStrategy')).toHaveLength(1));
+
+    // A second target is also linked to the same observation
+    const secondLink = { observationId: 'obs-1', targetId: 't2', dataProductsSDPId: 'sdp-1' };
+    act(() =>
+      formProbe.setValue('targetObservation', [
+        ...formProbe.getValues('targetObservation'),
+        secondLink
+      ])
+    );
+    const strategy = formProbe.getValues('calibrationStrategy')[0];
+
+    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    await waitFor(() => {
+      expect(formProbe.getValues('targetObservation')).toEqual([secondLink]);
+    });
+    expect(formProbe.getValues('calibrationStrategy')).toEqual([strategy]);
   });
 
   test('keeps the link after leaving the page and coming back', async () => {
