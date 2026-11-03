@@ -263,6 +263,82 @@ describe('useProposalOda', () => {
     }
   );
 
+  test.each([undefined, null])(
+    'saves edits outside Team when investigator names and email are %s and flags are omitted',
+    async (value) => {
+      const proposalId = 'prsl-1';
+      const withInvestigator: ProposalBackend = {
+        ...pdm,
+        prsl_id: proposalId,
+        proposal_info: {
+          ...pdm.proposal_info,
+          investigators: [
+            {
+              user_id: investigator.id,
+              status: investigator.status,
+              given_name: value,
+              family_name: value,
+              email: value
+            }
+          ]
+        }
+      };
+      mockGet.mockResolvedValue({ data: withInvestigator });
+      mockPut.mockResolvedValue({ data: withInvestigator });
+      const { form, oda } = renderWithForm();
+
+      await act(async () => {
+        await oda.current.loadFromOda(proposalId);
+      });
+      const expectedInvestigator = {
+        id: investigator.id,
+        status: investigator.status,
+        firstName: '',
+        lastName: '',
+        email: '',
+        affiliation: '',
+        phdThesis: false,
+        pi: false,
+        officeLocation: null,
+        jobTitle: null
+      };
+      expect(mapping(withInvestigator).investigators).toEqual([expectedInvestigator]);
+      expect(form.current.getValues('investigators')).toEqual([expectedInvestigator]);
+      act(() => {
+        form.current.setValue('abstract', 'Edited details');
+        form.current.setValue('title', 'Edited title');
+      });
+
+      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual(
+        withInvestigator
+      );
+      expect(mockPut).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining(`${OSO_SERVICES_PROPOSAL_PATH}/${proposalId}`),
+        expect.objectContaining({
+          investigator_refs: [investigator.id],
+          proposal_info: expect.objectContaining({
+            title: 'Edited title',
+            abstract: 'Edited details',
+            investigators: [
+              {
+                user_id: investigator.id,
+                status: investigator.status,
+                given_name: '',
+                family_name: '',
+                email: '',
+                organization: '',
+                for_phd: false,
+                principal_investigator: false,
+                officeLocation: null,
+                jobTitle: null
+              }
+            ]
+          })
+        })
+      );
+    }
+  );
+
   test('Save to ODA returns API errors', async () => {
     mockPut.mockRejectedValue(new Error('Save failed'));
     const { oda } = renderWithForm('Edited title');
