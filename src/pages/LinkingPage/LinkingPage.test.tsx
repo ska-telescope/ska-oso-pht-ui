@@ -138,6 +138,7 @@ describe('<LinkingPage /> manual linking', () => {
   });
 
   test('requests the sensitivity of a new link once while the page re-renders', async () => {
+    vi.mocked(getSensCalc).mockClear();
     let resolveSensCalc: (value: Awaited<ReturnType<typeof getSensCalc>>) => void = () => {};
     vi.mocked(getSensCalc).mockImplementationOnce(
       () => new Promise((resolve) => (resolveSensCalc = resolve))
