@@ -446,7 +446,9 @@ export default function TargetEntry({
     </Box>
   );
 
-  // this allows for the
+  // Editing an existing target: its coordinate system is fixed, and the dialog
+  // confirms the edit
+  //instead of the Add button
   const isEditMode = !!target;
 
   const referenceCoordinatesField = () =>
@@ -628,7 +630,6 @@ export default function TargetEntry({
                 <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
                 <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
               </Grid>
-              {velType === VELOCITY_TYPE.VELOCITY}
             </BorderedSection>
           </Box>
         </Grid>

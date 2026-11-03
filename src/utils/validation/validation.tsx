@@ -490,8 +490,9 @@ export const useValidateProposal = () => {
     const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
       isObservationFrequencyOutOfRange(obs)
     );
-    // The Target, Linking and Calibration pages are checked by the submit schema, over the same
-    // values the form holds for them
+    // The Target, Linking and Calibration pages are checked by the submit
+    // schema, over the given proposal's values for them (which may not be the
+    // proposal open in the form)
     const submitStatuses = getSubmitPageStatuses(getProposalFormValues(proposal));
     return [
       validateTitlePage(proposal),
