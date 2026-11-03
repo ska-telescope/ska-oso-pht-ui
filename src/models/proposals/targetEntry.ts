@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   FIELD_PATTERN_POINTING_CENTRES,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
   VELOCITY_TYPE
@@ -10,10 +11,10 @@ import {
 import { leadZero } from '@/utils/helpers';
 import {
   validateRadialMotion,
-  validateSkyDirection1Number,
-  validateSkyDirection1Text,
-  validateSkyDirection2Number,
-  validateSkyDirection2Text
+  isValidGalacticLongitude,
+  validateRightAscension,
+  validateGalacticLatitude,
+  validateDeclination
 } from '@/utils/validation/validation';
 import type Target from '@/utils/types/target';
 import { getTargetSchema } from './targets';
@@ -24,38 +25,72 @@ import { getTargetSchema } from './targets';
 
 const isSameName = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
 
-// Checks a coordinate as text for ICRS or as a number for Galactic; returns its error key, if any
-const coordinateError = (axis: 1 | 2, kind: number, value: string): string | null => {
-  const isICRS = kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
-  let code: string | null;
-  if (axis === 1) {
-    code = isICRS
-      ? validateSkyDirection1Text(value)
-      : validateSkyDirection1Number(value)
-        ? null
-        : '0';
-  } else {
-    code = isICRS ? validateSkyDirection2Text(value) : validateSkyDirection2Number(value);
-  }
-  return code === null ? null : `skyDirection.error.${axis}.${code}`;
+// The sky direction validators return  ('0' for a badly formatted value, '1'
+// for one out of range or null when the value is fine
+const FORMAT_ERROR = '0';
+type CoordinateAxis = 1 | 2;
+
+type CoordinateCheck = (value: string) => string | null;
+function coordinateErrorKey(axis: CoordinateAxis, code: string): string {
+  return `skyDirection.error.${axis}.${code}`;
+}
+
+function checkGalacticLongitude(value: string): string | null {
+  return isValidGalacticLongitude(value) ? null : FORMAT_ERROR;
+}
+
+/**
+ * A coordinate field, typed as text, that `check` validates. A failed check becomes an error on
+ * the field, with the translation key for the axis and the error code as its message.
+ */
+function coordinateField(axis: CoordinateAxis, check: CoordinateCheck) {
+  return z.string().superRefine(function reportCoordinateError(value, ctx) {
+    const errorCode = check(value);
+    if (errorCode !== null) {
+      ctx.addIssue({ code: 'custom', message: coordinateErrorKey(axis, errorCode) });
+    }
+  });
+}
+
+// coord1/coord2 mean RA/Dec for ICRS and l/b for Galactic, so each coordinate system checks them
+// its own way; they become raStr/decStr or l/b when the target is added
+const ICRS_COORDINATES = {
+  kind: z.literal(REFERENCE_COORDINATE_TYPE_ICRS.value),
+  coord1: coordinateField(1, validateRightAscension),
+  coord2: coordinateField(2, validateDeclination)
+};
+const GALACTIC_COORDINATES = {
+  kind: z.literal(REFERENCE_COORDINATE_TYPE_GALACTIC.value),
+  coord1: coordinateField(1, checkGalacticLongitude),
+  coord2: coordinateField(2, validateGalacticLatitude)
+};
+// A solar system object is found by name, so it has no coordinates to check
+const SSO_COORDINATES = {
+  kind: z.literal(REFERENCE_COORDINATE_TYPE_SSO.value),
+  coord1: z.string(),
+  coord2: z.string()
 };
 
 /**
- * The fields shared with a saved target come from its schema, all required while entering.
- * Error messages are translation keys. `takenNames` are the names of the targets already in the
- * proposal, so a new target can't repeat one.
+ * The fields shared with a saved target come from its schema, all required while entering; the
+ * coordinates are checked by coordinate system. Error messages are translation keys. `takenNames`
+ * are the names of the targets already in the proposal, so a new target can't repeat one.
  */
 export function getTargetEntrySchema(takenNames: string[] = []) {
-  return getTargetSchema()
-    .pick({ name: true, kind: true, velType: true, vel: true, velUnit: true, redshift: true })
+  const common = getTargetSchema()
+    .pick({ name: true, velType: true, vel: true, velUnit: true, redshift: true })
     .required()
     .extend({
-      // Typed as text for either coordinate system; becomes raStr/decStr or l/b when added
-      coord1: z.string(),
-      coord2: z.string(),
       // Shown in the entry only; not yet saved with the target
       fieldPattern: z.string()
-    })
+    });
+
+  return z
+    .discriminatedUnion('kind', [
+      common.extend(ICRS_COORDINATES),
+      common.extend(GALACTIC_COORDINATES),
+      common.extend(SSO_COORDINATES)
+    ])
     .superRefine((entry, ctx) => {
       const fail = (path: keyof TargetEntryType, message: string) =>
         ctx.addIssue({ code: 'custom', path: [path], message });
@@ -66,19 +101,13 @@ export function getTargetEntrySchema(takenNames: string[] = []) {
         fail('name', 'addTarget.error');
       }
 
-      if (entry.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
-        return;
-      }
-      // Coordinates are only checked once something has been entered
-      if (entry.name !== '' || entry.coord1 !== '' || entry.coord2 !== '') {
-        const error1 = coordinateError(1, entry.kind, entry.coord1);
-        const error2 = coordinateError(2, entry.kind, entry.coord2);
-        if (error1) fail('coord1', error1);
-        if (error2) fail('coord2', error2);
-      }
-
+      // Velocity or redshift, whichever is in use; a solar system object has neither
       const radialMotion = entry.velType === VELOCITY_TYPE.VELOCITY ? 'vel' : 'redshift';
-      if (entry[radialMotion] && validateRadialMotion(entry[radialMotion])) {
+      if (
+        entry.kind !== REFERENCE_COORDINATE_TYPE_SSO.value &&
+        entry[radialMotion] &&
+        validateRadialMotion(entry[radialMotion])
+      ) {
         fail(radialMotion, 'velocity.error');
       }
     });

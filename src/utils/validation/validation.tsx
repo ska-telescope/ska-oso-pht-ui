@@ -509,7 +509,7 @@ export const useValidateProposal = () => {
   };
 };
 
-export function validateSkyDirection1Text(value: string): string | null {
+export function validateRightAscension(value: string): string | null {
   const formatValid = /^\+?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
     return '0';
@@ -533,7 +533,7 @@ export function validateSkyDirection1Text(value: string): string | null {
   return null;
 }
 
-export function validateSkyDirection1Number(value: string): boolean {
+export function isValidGalacticLongitude(value: string): boolean {
   if (!/^[0-9]*\.?[0-9]+$/.test(value)) {
     return false;
   }
@@ -541,7 +541,7 @@ export function validateSkyDirection1Number(value: string): boolean {
   return number >= 0 && number < 360;
 }
 
-export function validateSkyDirection2Text(value: string): string | null {
+export function validateDeclination(value: string): string | null {
   const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
     return '0';
@@ -571,7 +571,7 @@ export function validateSkyDirection2Text(value: string): string | null {
   return null;
 }
 
-export function validateSkyDirection2Number(value: string): string | null {
+export function validateGalacticLatitude(value: string): string | null {
   if (!/^[-+]?[0-9]*\.?[0-9]+$/.test(value)) {
     return '0';
   }

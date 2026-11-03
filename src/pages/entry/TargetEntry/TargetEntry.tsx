@@ -54,8 +54,8 @@ const GAP = 2;
 const DEFAULT_VELOCITY_TYPE = TARGET_ENTRY_DEFAULTS.velType;
 const DEFAULT_VELOCITY_UNIT = TARGET_ENTRY_DEFAULTS.velUnit;
 const DEFAULT_KIND = TARGET_ENTRY_DEFAULTS.kind;
-// Their checks depend on the other fields, so they are re-checked whenever the entry changes
-const DEPENDENT_FIELDS: (keyof TargetEntryType)[] = ['coord1', 'coord2', 'vel', 'redshift'];
+// Which of these is checked depends on the velocity type, so both are re-checked with any change
+const DEPENDENT_FIELDS: (keyof TargetEntryType)[] = ['vel', 'redshift'];
 
 export default function TargetEntry({
   entryForm = undefined,

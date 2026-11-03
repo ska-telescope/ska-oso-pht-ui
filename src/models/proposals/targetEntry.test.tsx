@@ -40,8 +40,12 @@ const errorsFor = (entry: Partial<TargetEntryType>, takenNames?: string[]) =>
 const validIcrs = { name: 'M2', coord1: '21:33:27.02', coord2: '-00:49:23.7' };
 
 describe('target entry', () => {
-  test('starts empty, wanting only a name', () => {
-    expect(errorsFor({})).toEqual({ name: 'addTarget.valueError' });
+  test('starts empty, wanting a name and coordinates', () => {
+    expect(errorsFor({})).toEqual({
+      name: 'addTarget.valueError',
+      coord1: 'skyDirection.error.1.0',
+      coord2: 'skyDirection.error.2.0'
+    });
   });
 
   test('accepts a complete ICRS entry', () => {
@@ -59,8 +63,9 @@ describe('target entry schema', () => {
     expect(errorsFor(validIcrs, ['M1'])).toEqual({});
   });
 
-  test('checks coordinates only once something has been entered', () => {
-    expect(errorsFor({ name: 'M2' })).toEqual({
+  test('reports the name and coordinate errors together', () => {
+    expect(errorsFor({ coord1: '1:0:0' }, ['m2'])).toEqual({
+      name: 'addTarget.valueError',
       coord1: 'skyDirection.error.1.0',
       coord2: 'skyDirection.error.2.0'
     });
