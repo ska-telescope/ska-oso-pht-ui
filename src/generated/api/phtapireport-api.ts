@@ -38,8 +38,8 @@ export const PHTAPIReportApiAxiosParamCreator = function (configuration?: Config
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReportOsoApiV16PhtReportGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/report/`;
+        getReportOsoApiV17PhtReportGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/report/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -86,10 +86,10 @@ export const PHTAPIReportApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getReportOsoApiV16PhtReportGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProposalReportResponse>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getReportOsoApiV16PhtReportGet(xRequestID, options);
+        async getReportOsoApiV17PhtReportGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProposalReportResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReportOsoApiV17PhtReportGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PHTAPIReportApi.getReportOsoApiV16PhtReportGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PHTAPIReportApi.getReportOsoApiV17PhtReportGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -109,8 +109,8 @@ export const PHTAPIReportApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReportOsoApiV16PhtReportGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProposalReportResponse>> {
-            return localVarFp.getReportOsoApiV16PhtReportGet(xRequestID, options).then((request) => request(axios, basePath));
+        getReportOsoApiV17PhtReportGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<ProposalReportResponse>> {
+            return localVarFp.getReportOsoApiV17PhtReportGet(xRequestID, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -130,8 +130,8 @@ export class PHTAPIReportApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PHTAPIReportApi
      */
-    public getReportOsoApiV16PhtReportGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PHTAPIReportApiFp(this.configuration).getReportOsoApiV16PhtReportGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getReportOsoApiV17PhtReportGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PHTAPIReportApiFp(this.configuration).getReportOsoApiV17PhtReportGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

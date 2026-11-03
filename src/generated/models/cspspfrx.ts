@@ -15,25 +15,27 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { PanelBatchCreateResult } from './panel-batch-create-result';
+import type { SyncPPS } from './sync-pps';
 
 /**
  * 
  * @export
- * @interface ResponseAutoCreatePanelOsoApiV16PhtPanelsGeneratePost
+ * @interface CSPSPFRx
  */
-export interface ResponseAutoCreatePanelOsoApiV16PhtPanelsGeneratePost {
+export interface CSPSPFRx {
+    /**
+     * 
+     * @type {SyncPPS}
+     * @memberof CSPSPFRx
+     */
+    'sync_pps': SyncPPS;
     /**
      * 
      * @type {number}
-     * @memberof ResponseAutoCreatePanelOsoApiV16PhtPanelsGeneratePost
+     * @memberof CSPSPFRx
      */
-    'created_count': number;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof ResponseAutoCreatePanelOsoApiV16PhtPanelsGeneratePost
-     */
-    'created_names': Array<string>;
+    'saturation_threshold': number;
 }
+
+
 
