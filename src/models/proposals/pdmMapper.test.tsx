@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
@@ -12,10 +13,23 @@ describe('mapPdmToForm', () => {
       title: pdm.proposal_info.title,
       proposalType: pdm.proposal_info.proposal_type.main_type,
       sciencePDF: null,
-      scienceLoadStatus: null,
+      scienceLoadStatus: FileUploadStatus.INITIAL,
       technicalPDF: null,
-      technicalLoadStatus: null
+      technicalLoadStatus: FileUploadStatus.INITIAL
     });
+  });
+
+  test('loads an uploaded PDF with an OK load status', () => {
+    const withPdf = {
+      ...pdm,
+      observation_info: {
+        ...pdm.observation_info,
+        documents: [{ document_id: 'science-doc-p1', uploaded_pdf: true }]
+      }
+    } as ProposalBackend;
+    const form = mapPdmToForm(withPdf);
+    expect(form.scienceLoadStatus).toBe(FileUploadStatus.OK);
+    expect(form.technicalLoadStatus).toBe(FileUploadStatus.INITIAL);
   });
 
   test('returns empty form values when there is no PDM', () => {
@@ -23,9 +37,9 @@ describe('mapPdmToForm', () => {
       title: '',
       proposalType: null,
       sciencePDF: null,
-      scienceLoadStatus: null,
+      scienceLoadStatus: FileUploadStatus.INITIAL,
       technicalPDF: null,
-      technicalLoadStatus: null
+      technicalLoadStatus: FileUploadStatus.INITIAL
     });
   });
 });

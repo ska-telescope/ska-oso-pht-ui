@@ -1,19 +1,23 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
+import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
 import { documentsFromPdm, documentsToPdm } from './documents';
 
 /** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
 export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
+  const documents = documentsFromPdm(pdm?.observation_info?.documents);
+  const loadStatus = (ref: typeof documents.sciencePDF) =>
+    ref?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL;
   return {
     title: titleFromPdm(pdm?.proposal_info),
     proposalType:
       getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ??
       null,
-    ...documentsFromPdm(pdm?.observation_info?.documents),
-    // Upload status is UI state, not part of the PDM.
-    scienceLoadStatus: null,
-    technicalLoadStatus: null
+    ...documents,
+    // An already uploaded PDF must load as OK, or the page resets it to empty.
+    scienceLoadStatus: loadStatus(documents.sciencePDF),
+    technicalLoadStatus: loadStatus(documents.technicalPDF)
   };
 }
 
@@ -34,7 +38,7 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
     },
     observation_info: {
       ...base.observation_info,
-      documents: documentsToPdm(form, base.observation_info?.documents)
+      documents: documentsToPdm(form)
     }
   };
 }

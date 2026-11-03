@@ -37,19 +37,15 @@ describe('documents slice', () => {
 
   test('maps references back to PDM documents', () => {
     expect(
-      documentsToPdm(
-        {
-          sciencePDF: { documentId: 'science-doc-p1', isUploadedPdf: true },
-          technicalPDF: { documentId: 'technical-doc-p1', isUploadedPdf: false }
-        },
-        []
-      )
+      documentsToPdm({
+        sciencePDF: { documentId: 'science-doc-p1', isUploadedPdf: true },
+        technicalPDF: { documentId: 'technical-doc-p1', isUploadedPdf: false }
+      })
     ).toEqual([science, technical]);
   });
 
-  test('a null reference removes the document and undefined keeps the base one', () => {
-    expect(documentsToPdm({ sciencePDF: null }, [science, technical])).toEqual([technical]);
-    expect(documentsToPdm({}, [science, technical])).toEqual([science, technical]);
+  test('a null reference produces no document', () => {
+    expect(documentsToPdm({ sciencePDF: null, technicalPDF: null })).toEqual([]);
   });
 
   test('page status follows the reference and upload state', () => {
