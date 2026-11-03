@@ -6,11 +6,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Bugfix: Only reset DP Parameters if values on the Observaion page change.
+* Bugfix: Only reset DP Parameters if values on the Observation page change.
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
 * Bugfix: Show a meaningful message when target name resolution fails, including when the external resolvers are unavailable
-* Changed: Targets, target links and calibration are now all edited through the proposal form 
-* target name resolution errors show the backend's message as a pop up
+* Changed: Targets, target links and calibration are edited through the proposal form and checked with Zod validation
+* Changed: Target name resolution errors are shown in a pop-up, using the backend's message when it provides one
+* Changed: A duplicate target name is flagged as it is typed, and Add Target stays disabled until the name is changed
+* Changed: A target coordinate shows its error once it has been edited, or when Add Target is clicked
+* Changed: The edit target dialog cannot be confirmed while the velocity or redshift is invalid
+* Changed: Proper motion, parallax, epoch and pointing pattern are not sent with targets, so the backend applies its defaults
+* Bugfix: A loaded target keeps its velocity type and value when the proposal is saved
+* Bugfix: Galactic targets imported from a CSV file get the same default velocity settings as ICRS targets
+* Bugfix: Links made while a new link's calibrators are being looked up are kept
+* Bugfix: Linking or unlinking a target changes only that observation's calibration. Calibrations are kept while any target is still linked to it
+* Bugfix: Editing calibration notes keeps the calibrators already chosen
+* Bugfix: The Linking page requests a link's sensitivity once, and does not request it again while that request is pending
 
 11.1.0
 ----------
