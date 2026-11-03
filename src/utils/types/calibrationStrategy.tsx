@@ -1,8 +1,9 @@
-import type { Target as TargetTransport } from '@/generated/models';
+import type { CalibratorChoice, Target as TargetTransport } from '@/generated/models';
 
 export type CalibrationIntent = 'flux'; // this will eventually be extended with '| "amplitude" | "phase"' too
+// TODO: CalibrationWhen once !1197 is merged
 export type RelativeToScan = 'before_each_scan' | 'after_each_scan';
-export type SelectionStrategy = 'highest_elevation' | 'closest';
+export type SelectionStrategy = CalibratorChoice;
 
 // this is what is returned by the API call to the calibrator endpoint
 export type CalibratorBackend = {

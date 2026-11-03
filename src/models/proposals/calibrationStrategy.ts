@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import type { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
-import type {
-  CalibrationStrategy as CalibrationStrategyTransport,
-  FluxCal
+import {
+  CalibratorChoice,
+  type CalibrationStrategy as CalibrationStrategyTransport,
+  type FluxCal
 } from '@/generated/models';
 
 // Schema for the proposal's calibration strategies and their calibrators. Structure only: see
@@ -13,7 +14,8 @@ const calibratorSchema = z.object({
   name: z.string(),
   calibrationIntent: z.literal('flux'),
   durationSeconds: z.number(),
-  selectionStrategy: z.enum(['highest_elevation', 'closest']),
+  selectionStrategy: z.enum(CalibratorChoice),
+  // TODO: z.enum(CalibrationWhen) once !1197 is merged
   relativeToScan: z.enum(['before_each_scan', 'after_each_scan']),
   notes: z.string().nullable()
 });
