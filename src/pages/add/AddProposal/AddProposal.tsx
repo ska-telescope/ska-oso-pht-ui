@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import { EMPTY_STATUS, PAGE_TITLE_ADD, PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
-import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
+import { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { newDataProductsForMode, newObservationForMode } from '@/utils/autoLinking/AutoLinking';
 import { ProposalType } from '@/models/proposals/proposal';
@@ -30,7 +30,14 @@ export default function AddProposal() {
   // is always selected on the Landing page before this page opens.
   React.useEffect(() => {
     const proposalType = isSV ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined;
-    reset({ title: NEW_PROPOSAL.title, proposalType: proposalType ?? null });
+    reset({
+      title: NEW_PROPOSAL.title,
+      proposalType: proposalType ?? null,
+      observingMode: proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION ? TYPE_CONTINUUM : null,
+      abstract: NEW_PROPOSAL.abstract,
+      scienceCategory: NEW_PROPOSAL.scienceCategory,
+      investigators: []
+    });
     updateAppContent1(EMPTY_STATUS);
     updateAppContent2({
       ...NEW_PROPOSAL,

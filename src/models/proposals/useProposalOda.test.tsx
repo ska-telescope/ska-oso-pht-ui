@@ -6,6 +6,7 @@ import { OSO_SERVICES_PROPOSAL_PATH, PROPOSAL_STATUS, PROPOSAL_TYPE } from '@uti
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
+import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
 import { ProposalType } from './proposal';
 import { useProposalOda } from './useProposalOda';
@@ -19,10 +20,20 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 }));
 
 const pdm = MockProposalBackend as ProposalBackend;
+const investigator = MockUserFrontendList[0];
 
 const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) => {
   const { result: form } = renderHook(() =>
-    useForm<ProposalType>({ defaultValues: { title, proposalType } })
+    useForm<ProposalType>({
+      defaultValues: {
+        title,
+        proposalType,
+        observingMode: null,
+        abstract: pdm.proposal_info.abstract ?? '',
+        scienceCategory: 1,
+        investigators: []
+      }
+    })
   );
   const { result: oda } = renderHook(() => useProposalOda(), {
     wrapper: ({ children }: { children: React.ReactNode }) => (
@@ -53,6 +64,12 @@ describe('useProposalOda', () => {
 
     expect(form.current.getValues('title')).toBe(pdm.proposal_info.title);
     expect(form.current.getValues('proposalType')).toBe(pdm.proposal_info.proposal_type.main_type);
+    expect(form.current.getValues('observingMode')).toBe(
+      mapping(pdm).observations?.[0]?.type ?? null
+    );
+    expect(form.current.getValues('abstract')).toBe(pdm.proposal_info.abstract);
+    expect(form.current.getValues('scienceCategory')).toBe(1);
+    expect(form.current.getValues('investigators')).toEqual([]);
     expect(loaded).toEqual(mapping(pdm));
   });
 
@@ -128,6 +145,9 @@ describe('useProposalOda', () => {
         proposal_info: {
           ...expected.proposal_info,
           title: 'Edited title',
+          abstract: pdm.proposal_info.abstract,
+          science_category: pdm.proposal_info.science_category,
+          investigators: [],
           proposal_type: {
             ...expected.proposal_info.proposal_type,
             main_type: PROPOSAL_TYPE.KEY_SCIENCE
@@ -148,6 +168,62 @@ describe('useProposalOda', () => {
       MappingPutProposal(legacy, PROPOSAL_STATUS.DRAFT)
     );
   });
+
+  test.each([undefined, null, '', 'Analytical Engines'])(
+    'saves edited details when an investigator organization is %s',
+    async (organization) => {
+      const proposalId = 'prsl-1';
+      const withInvestigator: ProposalBackend = {
+        ...pdm,
+        prsl_id: proposalId,
+        proposal_info: {
+          ...pdm.proposal_info,
+          investigators: [
+            {
+              user_id: investigator.id,
+              given_name: investigator.firstName,
+              family_name: investigator.lastName,
+              email: investigator.email,
+              organization,
+              for_phd: investigator.phdThesis,
+              principal_investigator: investigator.pi,
+              status: investigator.status
+            }
+          ]
+        }
+      };
+      mockGet.mockResolvedValue({ data: withInvestigator });
+      mockPut.mockResolvedValue({ data: withInvestigator });
+      const { form, oda } = renderWithForm();
+
+      await act(async () => {
+        await oda.current.loadFromOda(proposalId);
+      });
+      act(() => {
+        form.current.setValue('abstract', 'Edited details');
+      });
+
+      expect(form.current.getValues('investigators')?.[0].affiliation).toBe(organization ?? '');
+      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual(
+        withInvestigator
+      );
+      expect(mockPut).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining(`${OSO_SERVICES_PROPOSAL_PATH}/${withInvestigator.prsl_id}`),
+        expect.objectContaining({
+          investigator_refs: [investigator.id],
+          proposal_info: expect.objectContaining({
+            abstract: 'Edited details',
+            investigators: [
+              expect.objectContaining({
+                user_id: investigator.id,
+                organization: organization ?? ''
+              })
+            ]
+          })
+        })
+      );
+    }
+  );
 
   test('Save to ODA returns API errors', async () => {
     mockPut.mockRejectedValue(new Error('Save failed'));

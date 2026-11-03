@@ -1,7 +1,11 @@
 import React from 'react';
 import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
-import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown } from '@ska-telescope/ska-gui-components';
+import {
+  ControlledSelect,
+  ControlledTextField
+} from '@ska-telescope/ska-gui-components/controlled';
 import {
   DETAILS,
   ERROR_SECS,
@@ -19,7 +23,6 @@ import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
-import ObservationTypeField from '../../components/fields/observationType/ObservationType';
 import { useObservationTypeOptions } from '../../components/fields/observationType/useObservationTypeOptions';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
@@ -28,6 +31,8 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
+import { useController } from 'react-hook-form';
+import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';
 
 const PAGE = PAGE_DETAILS;
 const LINE_OFFSET = 30;
@@ -41,88 +46,66 @@ export default function DetailsPage() {
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
   const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const [scienceCategoryId, setScienceCategoryId] = React.useState(
-    () => getProposal().scienceCategory ?? ''
-  );
-  const [abstract, setAbstract] = React.useState(() => getProposal().abstract ?? '');
+  const {
+    field: { value: abstract, onChange: setAbstract, onBlur: onAbstractBlur }
+  } = useController<ProposalFormValues, 'abstract'>({ name: 'abstract' });
+  const {
+    field: { value: observingMode, onChange: setObservingModeValue }
+  } = useController<ProposalFormValues, 'observingMode'>({ name: 'observingMode' });
+  const {
+    field: { value: scienceCategory, onChange: setScienceCategory },
+    fieldState: { error: categoryError }
+  } = useController<ProposalFormValues, 'scienceCategory'>({ name: 'scienceCategory' });
   const [initial, setInitial] = React.useState(true);
 
   const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = () => {
-    const status = validateDetailsPage(getProposal());
-    const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
-    updateAppContent1(temp);
-  };
-
-  const saveAbstract = () => {
-    const p = { ...getProposal(), abstract };
+  const saveDetails = () => {
+    const p = {
+      ...getProposal(),
+      abstract,
+      scienceCategory: scienceCategory ?? null,
+      scienceSubCategory: [1]
+    };
     setProposal(p);
     const status = validateDetailsPage(p);
     const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
     updateAppContent1(temp);
   };
 
-  // Avoid a stale copy of the abstract being stored on the debounce by explicitly keeping a ref to it.
-  const saveAbstractRef = React.useRef(saveAbstract);
-  saveAbstractRef.current = saveAbstract;
+  const saveDetailsRef = React.useRef(saveDetails);
+  saveDetailsRef.current = saveDetails;
 
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
   const handleOpenAbstractLatexModal = () => setOpenAbstractLatexModal(true);
   const handleCloseAbstractLatexModal = () => setOpenAbstractLatexModal(false);
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
     setHelp('page.' + PAGE + '.help');
   }, []);
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, [getProposal()]);
-
-  React.useEffect(() => {
-    setTheProposalState();
-  }, [validateToggle]);
-
-  React.useEffect(() => {
     if (!initial) {
-      handleChanges();
+      saveDetails();
     }
     setInitial(false);
-  }, [scienceCategoryId]);
+  }, [scienceCategory]);
 
   // Abstract changes (save without triggering autogeneration)
   React.useEffect(() => {
     if (!initial) {
-      // Debounce to avoid saving on every keystroke; breadcrumb validation is also
-      // updated here (rather than relying on the [getProposal()] chain) to ensure
-      // it reflects the saved abstract without requiring a full re-render cycle.
-      const timer = setTimeout(() => saveAbstractRef.current(), ERROR_SECS);
+      const timer = setTimeout(() => saveDetailsRef.current(), ERROR_SECS);
       return () => clearTimeout(timer);
     }
   }, [abstract]);
-
-  const handleChanges = () => {
-    setProposal({
-      ...getProposal(),
-      scienceCategory: scienceCategoryId,
-      scienceSubCategory: [1],
-      abstract: abstract
-    });
-  };
 
   const abstractField = () => {
     const MAX_CHAR = Number(t('abstract.maxChar'));
     const MAX_WORD = Number(t('abstract.maxWord'));
     const numRows = Number(t('abstract.minDisplayRows'));
-
-    const setValue = (e: string) => {
-      setAbstract(e.substring(0, MAX_CHAR));
-    };
 
     const helperFunction = (abstract: string) => {
       const color = theme.palette.error.dark;
@@ -140,29 +123,36 @@ export default function DetailsPage() {
       );
     };
 
-    function validateWordCount(title: string) {
-      if (countWords(title) > MAX_WORD) {
-        return `${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
-      }
-    }
-
     return (
       <Box sx={{ height: LINE_OFFSET * numRows }}>
-        <TextEntry
+        <ControlledTextField
+          name="abstract"
           label={t('abstract.label')}
-          testId="abstractId"
+          multiline
           rows={numRows}
           required
-          value={abstract}
-          setValue={(e: string) => setValue(e)}
+          slotProps={{
+            htmlInput: { maxLength: MAX_CHAR, 'data-testid': 'abstractId' },
+            input: {
+              endAdornment: (
+                <ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />
+              )
+            }
+          }}
+          onChange={(event) => {
+            if (event.target.value.length > MAX_CHAR) {
+              setAbstract(event.target.value.substring(0, MAX_CHAR));
+            }
+          }}
           onFocus={() => setHelp('abstract.help')}
-          onBlur={saveAbstract}
+          onBlur={() => {
+            onAbstractBlur();
+            saveDetails();
+          }}
           helperText={helperFunction(abstract)}
-          errorText={validateWordCount(abstract)}
-          suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
         />
         <LatexPreviewModal
-          value={getProposal().abstract as string}
+          value={abstract}
           open={openAbstractLatexModal}
           onClose={handleCloseAbstractLatexModal}
           title={t('abstract.latexPreviewTitle')}
@@ -178,7 +168,10 @@ export default function DetailsPage() {
   const observingModeOptions = useObservationTypeOptions(SA_AA2, isLow);
 
   const changeObservingMode = async (mode: string) => {
-    if (mode === observation?.type) return;
+    if (mode === observation?.type) {
+      setObservingModeValue(mode);
+      return;
+    }
     const hasTarget = (getProposal().targets?.length ?? 0) > 0;
     const record = isLow ? osdLOW : osdMID;
     const sArray = (
@@ -193,8 +186,11 @@ export default function DetailsPage() {
     );
     if (!result.success) {
       notifyError(t(result.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
-    } else if (hasTarget) {
-      notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
+    } else {
+      setObservingModeValue(mode);
+      if (hasTarget) {
+        notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
+      }
     }
   };
 
@@ -205,11 +201,19 @@ export default function DetailsPage() {
         maxWidth: 500
       }}
     >
-      <ObservationTypeField
+      <ControlledSelect
+        name="observingMode"
+        label={t('observationType.label')}
         options={observingModeOptions}
+        disabled={observingModeOptions.length < 2}
         required
-        value={observation?.type ?? TYPE_CONTINUUM}
-        setValue={changeObservingMode}
+        data-testid="observationType"
+        value={observingMode ?? observation?.type ?? TYPE_CONTINUUM}
+        withFormUpdate={false}
+        onChange={(event) => {
+          void changeObservingMode(event.target.value);
+        }}
+        onFocus={() => setHelp('observationType.help')}
       />
     </Box>
   );
@@ -225,12 +229,16 @@ export default function DetailsPage() {
       <DropDown
         options={DETAILS.ScienceCategory}
         errorText={
-          typeof getProposal().scienceCategory === 'number' ? '' : t('scienceCategory.error')
+          categoryError
+            ? t('scienceCategory.error')
+            : scienceCategory == null
+              ? t('scienceCategory.error')
+              : ''
         }
         required
         testId="categoryId"
-        value={scienceCategoryId}
-        setValue={setScienceCategoryId}
+        value={scienceCategory ?? ''}
+        setValue={setScienceCategory}
         label={t('scienceCategory.label')}
         onFocus={() => setHelp('scienceCategory.help')}
       />

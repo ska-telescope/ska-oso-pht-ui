@@ -142,7 +142,13 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: { title: '', proposalType: null }
+      defaultValues: {
+        title: '',
+        proposalType: null,
+        observingMode: null,
+        abstract: '',
+        scienceCategory: null
+      }
     });
     return (
       <FormProvider {...methods}>

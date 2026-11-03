@@ -131,7 +131,10 @@ describe('PutProposal Service', () => {
 
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
         title: 'Title from RHF',
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        observingMode: null,
+        abstract: 'Abstract from RHF',
+        scienceCategory: 7
       });
 
       expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
@@ -139,6 +142,8 @@ describe('PutProposal Service', () => {
         proposal_info: {
           ...base.proposal_info,
           title: 'Title from RHF',
+          abstract: 'Abstract from RHF',
+          science_category: 'High Energy Cosmic Particles',
           proposal_type: {
             ...base.proposal_info.proposal_type,
             main_type: PROPOSAL_TYPE.KEY_SCIENCE
@@ -154,7 +159,10 @@ describe('PutProposal Service', () => {
 
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
       title: '',
-      proposalType: PROPOSAL_TYPE.STANDARD
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      observingMode: null,
+      abstract: '',
+      scienceCategory: null
     });
 
     expect(mockedAuthClient.put).toHaveBeenCalledWith(

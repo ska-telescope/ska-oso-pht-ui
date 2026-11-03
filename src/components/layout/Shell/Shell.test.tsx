@@ -13,7 +13,13 @@ const wrapper = (component: React.ReactElement) => {
     const methods = useForm<ProposalType>({
       mode: 'all',
       resolver: zodResolver(getProposalSchema()),
-      defaultValues: { title: '' }
+      defaultValues: {
+        title: '',
+        proposalType: null,
+        observingMode: null,
+        abstract: '',
+        scienceCategory: null
+      }
     });
     return (
       <StoreProvider>

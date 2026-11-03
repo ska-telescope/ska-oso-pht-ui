@@ -108,6 +108,9 @@ const wrapper = (
         title,
         proposalType: (storageObject.useStore().application.content2 as Partial<ProposalType>)
           .proposalType,
+        observingMode: null,
+        abstract: '',
+        scienceCategory: null,
         ...formValues
       }
     });
@@ -159,7 +162,7 @@ describe('PageFooterPPT', () => {
         application: { ...store.application, content2: newProposal }
       }) as any;
 
-    wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title);
+    wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title, { observingMode: null });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
@@ -167,7 +170,7 @@ describe('PageFooterPPT', () => {
       expect(PostProposal).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
-        { ...newProposal, cycle: 'CYCLE-1' },
+        { ...newProposal, abstract: '', scienceCategory: null, cycle: 'CYCLE-1' },
         'draft'
       );
     });
@@ -193,7 +196,8 @@ describe('PageFooterPPT', () => {
 
   it('creates with the latest form title and type rather than stale store values', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />, 'Edited title', {
-      proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+      proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+      observingMode: null
     });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
@@ -212,7 +216,10 @@ describe('PageFooterPPT', () => {
   });
 
   it('disables Create when the form has no proposal type', async () => {
-    wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, { proposalType: undefined });
+    wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, {
+      proposalType: undefined,
+      observingMode: null
+    });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 

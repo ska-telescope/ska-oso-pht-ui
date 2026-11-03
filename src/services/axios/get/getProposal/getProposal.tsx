@@ -91,7 +91,7 @@ export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefin
       firstName: inValue[i].given_name as string,
       lastName: inValue[i].family_name as string,
       email: inValue[i]?.email as string,
-      affiliation: inValue[i].organization as string,
+      affiliation: inValue[i].organization ?? '',
       phdThesis: inValue[i].for_phd as boolean,
       pi: inValue[i].principal_investigator as boolean,
       officeLocation: inValue[i].officeLocation as string | null,

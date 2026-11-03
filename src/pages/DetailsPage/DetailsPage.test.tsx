@@ -1,5 +1,6 @@
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import DetailsPage from './DetailsPage';
@@ -11,12 +12,17 @@ import {
   TYPE_PST
 } from '@/utils/constants';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
-import { FormProvider, useForm } from 'react-hook-form';
-import { ProposalType } from '@/models/proposals/proposal';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import { zodResolver } from '@hookform/resolvers/zod';
+import phtTranslations from '../../../public/locales/en/pht.json';
 
 // ---- Module mocks ----
 
-const mockState = vi.hoisted(() => ({ proposal: {} as Record<string, unknown> }));
+const mockState = vi.hoisted(() => ({
+  proposal: {} as Record<string, unknown>,
+  updateProposal: vi.fn()
+}));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
 
@@ -25,7 +31,7 @@ vi.mock('@utils/storage/store', () => ({
     useStore: () => ({
       application: { content1: [], content2: mockState.proposal },
       updateAppContent1: vi.fn(),
-      updateAppContent2: vi.fn(),
+      updateAppContent2: mockState.updateProposal,
       helpComponent: vi.fn(),
       helpComponentURL: vi.fn()
     })
@@ -57,15 +63,45 @@ vi.mock('@/utils/autoLinking/AutoLinking', () => ({
   setObservingMode: vi.fn()
 }));
 
+vi.mock('@/services/i18n/useScopedTranslation', () => ({
+  useScopedTranslation: () => ({
+    t: (key: string) => {
+      if (key === 'abstract.maxChar') return '2300';
+      if (key === 'abstract.maxWord') return '250';
+      if (key === 'abstract.minDisplayRows') return '10';
+      return key;
+    }
+  })
+}));
+
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
+    const proposal = mockState.proposal as {
+      proposalType?: ProposalType['proposalType'];
+      observations?: { type?: string }[];
+      abstract?: string;
+      scienceCategory?: number | null;
+    };
     const methods = useForm<ProposalType>({
-      defaultValues: { title: '', proposalType: null }
+      mode: 'all',
+      resolver: zodResolver(getProposalSchema()),
+      defaultValues: {
+        title: '',
+        proposalType: proposal.proposalType ?? null,
+        observingMode: proposal.observations?.[0]?.type ?? null,
+        abstract: proposal.abstract ?? '',
+        scienceCategory: proposal.scienceCategory ?? null,
+        investigators: []
+      }
     });
+    const formValues = useWatch({ control: methods.control });
     return (
       <StoreProvider>
         <FormProvider {...methods}>
-          <ThemeA11yProvider>{component}</ThemeA11yProvider>
+          <ThemeA11yProvider>
+            {component}
+            <output data-testid="detailsFormValues">{JSON.stringify(formValues)}</output>
+          </ThemeA11yProvider>
         </FormProvider>
       </StoreProvider>
     );
@@ -74,8 +110,10 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<DetailsPage />', () => {
-  test('renders correctly', () => {
-    wrapper(<DetailsPage />);
+  test('renders correctly', async () => {
+    await act(async () => {
+      wrapper(<DetailsPage />);
+    });
   });
 });
 
@@ -143,8 +181,8 @@ describe('Abstract helperFunction', () => {
 
   test('appends word limit exceeded message when word count exceeds max', () => {
     countWords.mockReturnValue(11);
-    const { container } = wrapper(
-      helperFunction('This abstract has a word count that exceeds the ten word limit here')
+    const { container } = render(
+      <>{helperFunction('This abstract has a word count that exceeds the ten word limit here')}</>
     );
     expect(container.textContent).toContain('Current: 11, Max: 10');
     expect(container.textContent).toContain('(WORD LIMIT EXCEEDED)');
@@ -183,6 +221,7 @@ const selectObservingMode = async (label: string) => {
 describe('<DetailsPage /> observing mode', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockState.updateProposal.mockClear();
     vi.mocked(setObservingMode).mockResolvedValue({ success: true });
   });
 
@@ -196,6 +235,101 @@ describe('<DetailsPage /> observing mode', () => {
 
     expect(screen.getByTestId('categoryId')).toBeInTheDocument();
     expect(screen.queryByTestId('observationType')).not.toBeInTheDocument();
+  });
+
+  it('stores the abstract field in RHF and saves it to the proposal', async () => {
+    mockState.proposal = {
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      scienceCategory: null,
+      abstract: ''
+    };
+    await renderPage();
+
+    const abstractInput = screen.getAllByRole('textbox')[0];
+    await userEvent.clear(abstractInput);
+    await userEvent.type(abstractInput, 'A new scientific summary');
+    await waitFor(() =>
+      expect(JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').abstract).toBe(
+        'A new scientific summary'
+      )
+    );
+
+    fireEvent.blur(abstractInput);
+    expect(mockState.updateProposal).toHaveBeenLastCalledWith(
+      expect.objectContaining({ abstract: 'A new scientific summary' })
+    );
+  });
+
+  it('stores a selected science category in RHF and the proposal', async () => {
+    mockState.proposal = {
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      scienceCategory: null,
+      abstract: ''
+    };
+    await renderPage();
+
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'High Energy Cosmic Particles' }));
+
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').scienceCategory
+    ).toBe(7);
+    expect(mockState.updateProposal).toHaveBeenLastCalledWith(
+      expect.objectContaining({ scienceCategory: 7 })
+    );
+  });
+
+  it('renders a multiline abstract and truncates changes at the character limit', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    const abstractInput = screen.getByTestId('abstractId');
+    expect(abstractInput.tagName).toBe('TEXTAREA');
+    expect(abstractInput).toHaveAttribute('maxlength', '2300');
+    fireEvent.change(abstractInput, { target: { value: 'a'.repeat(2301) } });
+
+    expect(abstractInput).toHaveValue('a'.repeat(2300));
+    expect(JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').abstract).toBe(
+      'a'.repeat(2300)
+    );
+    fireEvent.blur(abstractInput);
+    expect(mockState.updateProposal).toHaveBeenLastCalledWith(
+      expect.objectContaining({ abstract: 'a'.repeat(2300) })
+    );
+  });
+
+  it('displays the abstract validation error from the form', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    const wordLimit = Number(phtTranslations.abstract.maxWord);
+    const abstractInput = screen.getByTestId('abstractId');
+    fireEvent.change(abstractInput, {
+      target: {
+        value: Array(wordLimit + 1)
+          .fill('a')
+          .join(' ')
+      }
+    });
+
+    expect(
+      await screen.findByText(
+        `${phtTranslations.specialCharacters.numWord} ${wordLimit + 1} / ${wordLimit}`
+      )
+    ).toBeInTheDocument();
+    expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('previews the current abstract as LaTeX', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    fireEvent.change(screen.getByTestId('abstractId'), {
+      target: { value: 'Updated scientific summary' }
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'preview latex' }));
+
+    expect(await screen.findByRole('dialog')).toHaveTextContent('Updated scientific summary');
   });
 
   it('shows the observing mode of the observation and no science category for SV proposals', async () => {
@@ -219,6 +353,9 @@ describe('<DetailsPage /> observing mode', () => {
 
     await selectObservingMode('observationType.pst');
 
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').observingMode
+    ).toBe(TYPE_PST);
     expect(setObservingMode).toHaveBeenCalledWith(
       TYPE_PST,
       expect.any(Function),
@@ -242,6 +379,33 @@ describe('<DetailsPage /> observing mode', () => {
     );
   });
 
+  it('only updates the selected mode and form after the observation update succeeds', async () => {
+    let completeUpdate!: (result: { success: true }) => void;
+    vi.mocked(setObservingMode).mockReturnValue(
+      new Promise((resolve) => {
+        completeUpdate = resolve;
+      })
+    );
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    await selectObservingMode('observationType.pst');
+
+    expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').observingMode
+    ).toBe('continuum');
+
+    await act(async () => {
+      completeUpdate({ success: true });
+    });
+
+    expect(observingModeCombobox()).toHaveTextContent('observationType.pst');
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').observingMode
+    ).toBe(TYPE_PST);
+  });
+
   it('notifies of the error when setting the observing mode fails', async () => {
     vi.mocked(setObservingMode).mockResolvedValue({ success: false, error: 'bad' });
     mockState.proposal = svProposal({ targets: [{ id: 1, name: 'M2' }] });
@@ -251,5 +415,9 @@ describe('<DetailsPage /> observing mode', () => {
 
     expect(mockNotifyError).toHaveBeenCalledWith('bad', NOTIFICATION_DELAY_IN_SECONDS);
     expect(mockNotifySuccess).not.toHaveBeenCalled();
+    expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').observingMode
+    ).toBe('continuum');
   });
 });

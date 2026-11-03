@@ -13,7 +13,8 @@ import StarIcon from '../../components/icon/starIcon/starIcon';
 import {
   GRID_MEMBERS_ACTIONS,
   NOTIFICATION_DELAY_IN_SECONDS,
-  PAGE_TEAM
+  PAGE_TEAM,
+  STATUS_ERROR
 } from '../../utils/constants';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberAccess from './MemberAccess/MemberAccess';
@@ -25,6 +26,8 @@ import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess
 import { accessPI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useController, useFormState } from 'react-hook-form';
+import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';
 
 const PAGE = PAGE_TEAM;
 
@@ -45,7 +48,6 @@ export default function TeamPage() {
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
-  const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentMember, setCurrentMember] = React.useState('');
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
@@ -57,21 +59,28 @@ export default function TeamPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const {
+    field: { value: investigators, onChange: setInvestigators }
+  } = useController<ProposalFormValues, 'investigators'>({
+    name: 'investigators',
+    defaultValue: []
+  });
+  const { errors } = useFormState<ProposalFormValues>();
+  const currentInvestigators = investigators ?? [];
 
   const getAccess = () => application.content4 as ProposalAccess[];
 
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
-    const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
-    }
-    updateAppContent1(temp);
-  };
-
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, []);
+  const setTheProposalState = React.useCallback(
+    (value: number) => {
+      const state = Array.isArray(application.content1) ? (application.content1 as number[]) : [];
+      if (state[PAGE] === value) return;
+      const temp = [...state];
+      while (temp.length <= PAGE) temp.push(STATUS_ERROR);
+      temp[PAGE] = value;
+      updateAppContent1(temp);
+    },
+    [application.content1, updateAppContent1]
+  );
 
   React.useEffect(() => {
     const memberPermissions = permissions.find((p) => p.userId === currentMember);
@@ -91,15 +100,15 @@ export default function TeamPage() {
 
   React.useEffect(() => {
     if (actionsAvailable()) fetchProposalAccessData();
-  }, [currentMember, getProposal().investigators]);
+  }, [currentMember, currentInvestigators]);
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, [getProposal()]);
-
-  React.useEffect(() => {
-    setTheProposalState(validateTeamPage(getProposal()));
-  }, [validateToggle]);
+    setTheProposalState(
+      errors.investigators
+        ? STATUS_ERROR
+        : validateTeamPage({ investigators: currentInvestigators })
+    );
+  }, [currentInvestigators, errors.investigators, setTheProposalState]);
 
   const fetchProposalAccessData = async () => {
     const response = await GetProposalAccessForProposal(authClient, getProposal()?.id);
@@ -152,9 +161,10 @@ export default function TeamPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal()?.investigators?.filter((e) => e.id !== currentMember);
+    const updatedInvestigators = currentInvestigators.filter((e) => e.id !== currentMember);
 
-    setProposal({ ...getProposal(), investigators: obs1 });
+    setInvestigators(updatedInvestigators);
+    setProposal({ ...getProposal(), investigators: updatedInvestigators });
     setCurrentMember('');
     closeDeleteDialog();
   };
@@ -173,7 +183,7 @@ export default function TeamPage() {
 
   const displayMemberInfo = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal()?.investigators?.find((p) => p.id === currentMember);
+    const rec = currentInvestigators.find((p) => p.id === currentMember);
     return (
       <Grid
         container
@@ -222,7 +232,7 @@ export default function TeamPage() {
     );
   };
 
-  const getRows = () => getProposal().investigators;
+  const getRows = () => currentInvestigators;
 
   function a11yProps(index: number) {
     return {

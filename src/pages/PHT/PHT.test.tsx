@@ -197,7 +197,11 @@ describe('<PHT />', () => {
     await waitFor(() => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
         title: '',
-        proposalType: null
+        proposalType: null,
+        observingMode: null,
+        abstract: '',
+        scienceCategory: null,
+        investigators: []
       });
     });
   });
@@ -214,7 +218,11 @@ describe('<PHT />', () => {
     await waitFor(() => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
         title: '',
-        proposalType: null
+        proposalType: null,
+        observingMode: null,
+        abstract: '',
+        scienceCategory: null,
+        investigators: []
       });
     });
   });

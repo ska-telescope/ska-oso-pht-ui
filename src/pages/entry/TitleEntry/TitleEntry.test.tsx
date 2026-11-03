@@ -44,7 +44,13 @@ const wrapper = (
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
       mode: 'all',
-      defaultValues: { title: 'A title', proposalType },
+      defaultValues: {
+        title: 'A title',
+        proposalType,
+        observingMode: null,
+        abstract: '',
+        scienceCategory: null
+      },
       resolver: validate ? zodResolver(getProposalSchema()) : undefined
     });
     return (

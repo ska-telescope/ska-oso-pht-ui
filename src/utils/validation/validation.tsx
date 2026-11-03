@@ -129,7 +129,7 @@ export const validateTitlePage = (proposal: Pick<Proposal, 'title' | 'proposalTy
   return result[count];
 };
 
-export const validateTeamPage = (proposal: Proposal) => {
+export const validateTeamPage = (proposal: Pick<Proposal, 'investigators'>) => {
   const result = [STATUS_ERROR, STATUS_OK];
   const count = Array.isArray(proposal.investigators) && proposal.investigators.length > 0 ? 1 : 0;
   return result[count];

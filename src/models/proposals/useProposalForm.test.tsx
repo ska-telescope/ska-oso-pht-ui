@@ -1,12 +1,17 @@
 import { describe, expect, test } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
+import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import { useProposalForm } from './useProposalForm';
 import { PROPOSAL_TYPE } from '@/utils/constants';
+import Investigator from '@/utils/types/investigator';
 
 type Props = {
   id?: string;
   title: string;
   proposalType?: (typeof PROPOSAL_TYPE)[keyof typeof PROPOSAL_TYPE];
+  abstract?: string;
+  scienceCategory?: number | null;
+  investigators?: Investigator[];
 };
 
 describe('useProposalForm', () => {
@@ -14,6 +19,21 @@ describe('useProposalForm', () => {
     const { result } = renderHook(() => useProposalForm({ id: 'p1', title: 'Saved title' }));
     expect(result.current.getValues('title')).toBe('Saved title');
     expect(result.current.getValues('proposalType')).toBeNull();
+    expect(result.current.getValues('abstract')).toBe('');
+    expect(result.current.getValues('scienceCategory')).toBeNull();
+    expect(result.current.getValues('investigators')).toEqual([]);
+  });
+
+  test('seeds and re-seeds the investigators when switching proposals', () => {
+    const first: Investigator[] = [MockUserFrontendList[0]];
+    const second: Investigator[] = [MockUserFrontendList[1]];
+    const { result, rerender } = renderHook((proposal: Props) => useProposalForm(proposal), {
+      initialProps: { id: 'p1', title: '', investigators: first } as Props
+    });
+
+    expect(result.current.getValues('investigators')).toEqual(first);
+    rerender({ id: 'p2', title: '', investigators: second });
+    expect(result.current.getValues('investigators')).toEqual(second);
   });
 
   test('re-seeds the title when a proposal is loaded after mount', () => {

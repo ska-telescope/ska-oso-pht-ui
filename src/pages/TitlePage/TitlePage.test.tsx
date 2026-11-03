@@ -10,7 +10,13 @@ import { ProposalType } from '@/models/proposals/proposal';
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: { title: '' }
+      defaultValues: {
+        title: '',
+        proposalType: null,
+        observingMode: null,
+        abstract: '',
+        scienceCategory: null
+      }
     });
     return (
       <StoreProvider>

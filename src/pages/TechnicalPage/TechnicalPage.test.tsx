@@ -81,7 +81,13 @@ vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: { title: '', proposalType: null }
+      defaultValues: {
+        title: '',
+        proposalType: null,
+        observingMode: null,
+        abstract: '',
+        scienceCategory: null
+      }
     });
     return (
       <FormProvider {...methods}>
