@@ -40,10 +40,10 @@ The Proposal Handling Tool (PHT) allows you to prepare and submit a proposal to 
    :maxdepth: 2
    :caption: Application Internals/Developer Docs
 
+   developer/ProposalEditor
    developer/Installation
    developer/NewRelease
    developer/Services
-   developer/ProposalEditor
    developer/SensCalc
    developer/RunningBuilding
    developer/Testing
