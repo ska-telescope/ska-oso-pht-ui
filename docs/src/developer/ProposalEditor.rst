@@ -47,8 +47,8 @@ or editing, the unsaved changes in the form state would overwrite those on the s
    New proposals start in ``draft`` status. The landing page shows the status that the backend
    returns.
 
-   This is how status handling works for now. It will be reworked in both the backend and the
-   frontend as part of a future feature.
+   The status handling will be revised in feature SP-7676 and this note and above flow diagram
+   should be updated once the feature is complete.
 
 Schemas
 =======
