@@ -199,9 +199,7 @@ describe('<PHT />', () => {
         title: '',
         proposalType: null,
         sciencePDF: null,
-        scienceLoadStatus: null,
-        technicalPDF: null,
-        technicalLoadStatus: null
+        technicalPDF: null
       });
     });
   });
@@ -220,9 +218,7 @@ describe('<PHT />', () => {
         title: '',
         proposalType: null,
         sciencePDF: null,
-        scienceLoadStatus: null,
-        technicalPDF: null,
-        technicalLoadStatus: null
+        technicalPDF: null
       });
     });
   });
