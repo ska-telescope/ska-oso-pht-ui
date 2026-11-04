@@ -15,8 +15,8 @@ through ``@hookform/resolvers`` to show field errors, and the editor runs them b
 and submitting.
 
 Mappers convert between the form data and the PDM, the proposal type that the backend
-accepts. The PDM types are generated from the ska-oso-services OpenAPI spec
-(``make models``) and are used only at this boundary, never inside the form.
+accepts. The Project Data Model (PDM) types are generated from the ska-oso-services
+OpenAPI spec (``make models``) and are used only at this boundary, never inside the form.
 
 
 Data flow
@@ -26,25 +26,25 @@ Data flow
 
    How proposal data moves from the user to the backend.
 
-The form state is the only place where the user edits the proposal. It is converted to PDM
+The form state is the only place where the user edits the proposal. It is converted to the PDM
 only when it is sent to the backend, and rebuilt from PDM only when a proposal is created or
 loaded. A copy of the form state is kept in local storage: after a page refresh, the proposal
 is fetched from the backend and any unsaved changes from that copy are applied on top.
 
-Version conflicts are not handled yet. If the proposal changed on the server in the meantime,
-the unsaved changes still overwrite it.
+Version conflicts are not handled yet. If the proposal were to change on the server during creation
+or editing, the unsaved changes in the form state would overwrite those on the server.
 
 .. admonition:: Status handling
    :class: warning
 
-   The proposal editor does not set or read the proposal status. The backend works out the
+   The proposal editor does not set or read the proposal status. The backend determines the
    status on every PUT:
 
    - **Save** sends the mapped proposal and the backend stores it by default as ``draft``.
    - **Submit** sends the mapped proposal plus ``submitted_by`` (the current user). The
      backend sets ``submitted_on`` and stores it as ``submitted``.
 
-   New proposals start as ``draft``. The landing page shows the status that the backend
+   New proposals start in ``draft`` status. The landing page shows the status that the backend
    returns.
 
    This is how status handling works for now. It will be reworked in both the backend and the
@@ -54,7 +54,7 @@ Schemas
 =======
 
 The form state has the type ``ProposalFormInput``. Two Zod schemas validate it. The draft
-schema (``ProposalDraftSchema``) checks only the shape of the data and converts it, so an
+schema (``ProposalDraftSchema``) checks only the shape of the data and converts it so an
 incomplete proposal can still be saved. The submit schema (``ProposalSubmitSchema``) is the
 draft schema plus the rules a finished proposal must meet: required fields, formats, minimum
 counts and rules that span several pages. The draft schema runs before every save, and the
