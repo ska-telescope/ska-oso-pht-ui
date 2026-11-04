@@ -84,7 +84,7 @@ describe('<TargetListSection />', () => {
 
   it('renders correctly', () => {
     wrapper(<TargetListSection />);
-    expect(screen.getByTestId('addTargetButton')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'addTarget.label' })).toBeInTheDocument();
   });
 
   it('switches tabs correctly', () => {
@@ -153,7 +153,7 @@ describe('<TargetListSection />', () => {
 
       clickIcon('editIcon', 0);
       const dialog = await screen.findByRole('dialog');
-      const nameInput = within(within(dialog).getByTestId('name')).getByRole('textbox');
+      const nameInput = within(dialog).getByRole('textbox', { name: 'name.label' });
       fireEvent.change(nameInput, { target: { value: 'Renamed' } });
       fireEvent.click(within(dialog).getByTestId('dialogConfirmationButton'));
 

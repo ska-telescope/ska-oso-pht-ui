@@ -65,15 +65,14 @@ const GAP = 2;
 type CoordinateFieldDef = {
   name: 'raStr' | 'decStr' | 'l' | 'b';
   axis: SkyDirectionAxis;
-  testId: string;
 };
 const ICRS_FIELDS: CoordinateFieldDef[] = [
-  { name: 'raStr', axis: SKY_DIRECTION_AXIS.LONGITUDE, testId: 'skyDirectionValue1' },
-  { name: 'decStr', axis: SKY_DIRECTION_AXIS.LATITUDE, testId: 'skyDirectionValue2' }
+  { name: 'raStr', axis: SKY_DIRECTION_AXIS.LONGITUDE },
+  { name: 'decStr', axis: SKY_DIRECTION_AXIS.LATITUDE }
 ];
 const GALACTIC_FIELDS: CoordinateFieldDef[] = [
-  { name: 'l', axis: SKY_DIRECTION_AXIS.LONGITUDE, testId: 'skyDirectionValue' },
-  { name: 'b', axis: SKY_DIRECTION_AXIS.LATITUDE, testId: 'skyDirectionValue' }
+  { name: 'l', axis: SKY_DIRECTION_AXIS.LONGITUDE },
+  { name: 'b', axis: SKY_DIRECTION_AXIS.LATITUDE }
 ];
 const DEFAULT_VELOCITY_TYPE = TARGET_ENTRY_DEFAULTS.velType;
 const DEFAULT_VELOCITY_UNIT = TARGET_ENTRY_DEFAULTS.velUnit;
@@ -274,7 +273,6 @@ export default function TargetEntry({
           action={addButtonAction}
           disabled={disabled()}
           primary
-          testId={'addTargetButton'}
           title="addTarget.label"
           toolTip={
             kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value
@@ -288,7 +286,7 @@ export default function TargetEntry({
             action={clearForm}
             disabled={resolutionLoading}
             primary={false}
-            testId={'clearFormButton'}
+            ariaLabel="clearBtn.label"
             title="clearBtn.label"
             toolTip="addTarget.clearToolTip"
           />
@@ -377,11 +375,7 @@ export default function TargetEntry({
         {resolutionLoading ? (
           <Progress size={20} />
         ) : (
-          <ResolveButton
-            action={() => getCoordinates()}
-            disabled={!name || resolutionLoading}
-            testId={'resolveButton'}
-          />
+          <ResolveButton action={() => getCoordinates()} disabled={!name || resolutionLoading} />
         )}
       </>
     );
@@ -461,7 +455,6 @@ export default function TargetEntry({
             options={REFERENCE_COORDINATE_OPTIONS}
             required
             label={t('referenceCoordinates.label')}
-            data-testid="referenceCoordinatesType"
             // A new coordinate system starts the entry again, so it resets the form itself
             withFormUpdate={false}
             onChange={(event) => setTheReferenceCoordinates(Number(event.target.value))}
@@ -480,7 +473,6 @@ export default function TargetEntry({
           options={SSO_OPTIONS}
           required
           label={t('name.label')}
-          data-testid="solarSystemObjectType"
           onChange={invalidatePendingResolve}
         />
       </Box>
@@ -495,7 +487,6 @@ export default function TargetEntry({
             disabled
             label={t('fieldPattern.label')}
             onFocus={() => setHelp('fieldPattern.help')}
-            data-testid="fieldPatternId"
           />
         </Tooltip>
       </Box>
@@ -507,7 +498,6 @@ export default function TargetEntry({
         name="name"
         required={isRequired()}
         label={t('name.label')}
-        data-testid="name"
         slotProps={!isSSO ? endAdornment(resolveButton()) : undefined}
         onChange={invalidatePendingResolve}
         onBlur={tidyOnBlur('name', trimEnd)}
@@ -520,7 +510,7 @@ export default function TargetEntry({
   // solar system object, which is found by name
   const coordinateFields = () => {
     const field = (
-      { name: fieldName, axis, testId }: CoordinateFieldDef,
+      { name: fieldName, axis }: CoordinateFieldDef,
       Entry: typeof ControlledTextField | typeof ControlledNumberField
     ) => (
       <Grid key={fieldName} size={{ md: 12, lg: 6 }}>
@@ -530,7 +520,6 @@ export default function TargetEntry({
             required={isRequired()}
             label={t(`skyDirection.label.${axis}.${kind}`)}
             slotProps={endAdornment(t(`skyDirection.units.${axis}.${kind}`))}
-            data-testid={testId}
             onChange={invalidatePendingResolve}
             onBlur={
               Entry === ControlledTextField
@@ -558,8 +547,8 @@ export default function TargetEntry({
         <ControlledSelect
           name="velType"
           options={VELOCITY_TYPE_OPTIONS}
+          label={t('velocityType.label')}
           required
-          data-testid="velocityType"
           onChange={invalidatePendingResolve}
           onFocus={() => setHelp('velocityType')}
         />
@@ -572,12 +561,10 @@ export default function TargetEntry({
         <ControlledTextField
           name="vel"
           label={t('velocity.' + velType + '.label')}
-          data-testid="velocityValue"
           slotProps={endAdornment(
             <ControlledSelect
               name="velUnit"
               options={VELOCITY_UNIT_OPTIONS}
-              data-testid="velocityUnits"
               variant="standard"
               onChange={invalidatePendingResolve}
               onFocus={() => setHelp('velocity.' + velType)}
@@ -591,7 +578,6 @@ export default function TargetEntry({
         <ControlledTextField
           name="redshift"
           label={t('velocity.' + velType + '.label')}
-          data-testid="redshiftValue"
           onChange={invalidatePendingResolve}
           onBlur={tidyOnBlur('redshift', trimEnd)}
           onFocus={() => setHelp('velocity.' + velType)}
