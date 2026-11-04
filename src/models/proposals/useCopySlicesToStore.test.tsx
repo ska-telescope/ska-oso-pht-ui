@@ -4,7 +4,7 @@ import { act, renderHook } from '@testing-library/react';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import Target from '@utils/types/target';
-import { VELOCITY_DEFINITION } from '@/utils/constants';
+import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
 import { useProposalForm } from './useProposalForm';
 import { useCopySlicesToStore } from './useCopySlicesToStore';
 
@@ -102,6 +102,34 @@ describe('useCopySlicesToStore', () => {
     );
     expect(storedProposal(first.result).targets).toEqual([target('a')]);
     consoleError.mockRestore();
+  });
+
+  test('copies every slice the form owns, the title, type and documents among them', () => {
+    const { result } = renderHarness();
+    open(result, { id: 'p1', title: 'First', targets: [] });
+
+    act(() => {
+      result.current.form.setValue('title', 'Second');
+      result.current.form.setValue('proposalType', PROPOSAL_TYPE.KEY_SCIENCE);
+      result.current.form.setValue('sciencePDF', { documentId: 'science-doc-p1' });
+    });
+
+    expect(storedProposal(result)).toEqual(
+      expect.objectContaining({
+        title: 'Second',
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        sciencePDF: { documentId: 'science-doc-p1' }
+      })
+    );
+  });
+
+  test('copies into a new proposal before it has an ID', () => {
+    const { result } = renderHarness();
+    open(result, { id: null, title: '' });
+
+    act(() => result.current.form.setValue('title', 'A new proposal'));
+
+    expect(storedProposal(result).title).toBe('A new proposal');
   });
 
   test('does nothing while no proposal is open', () => {

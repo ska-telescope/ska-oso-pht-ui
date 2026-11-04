@@ -24,9 +24,6 @@ export const getDocumentValues = (proposal?: Partial<DocumentValues>): DocumentV
   technicalPDF: proposal?.technicalPDF ?? null
 });
 
-export const isSameDocumentRef = (a: DocumentRef, b: DocumentRef): boolean =>
-  !!a === !!b && a?.documentId === b?.documentId && a?.isUploadedPdf === b?.isUploadedPdf;
-
 // Same rule as validateSciencePage / validateTechnicalPage.
 export const getDocumentPageStatus = (ref: DocumentRef): number => {
   if (!ref || typeof ref !== 'object') return STATUS_ERROR;

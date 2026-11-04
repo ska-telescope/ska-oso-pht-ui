@@ -4,16 +4,15 @@ import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import { ProposalType, STORE_COPIED_SLICES } from './proposal';
 
-type CopiedSlices = Pick<ProposalType, (typeof STORE_COPIED_SLICES)[number]>;
-
-const pickSlices = (values: Partial<CopiedSlices>) =>
-  Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])) as CopiedSlices;
+const pickSlices = (values: Partial<ProposalType>) =>
+  Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])) as ProposalType;
 
 /**
- * Keeps the legacy store's copy of the form-owned slices up to date for code that still reads
- * them from there (page status, the observation summary, the sensitivity modal, clone). The copy
- * only goes from the form to the store, and also corrects the store when a legacy write puts an
- * older copy back.
+ * Keeps the legacy store's copy of every form-owned slice up to date for code that still reads
+ * them from there (page status, the observation summary, the sensitivity modal, clone, and the
+ * pages not yet migrated). It is the one place the form's values reach the store: pages write
+ * only to the form. The copy only goes from the form to the store, and also corrects the store
+ * when a legacy write puts an older copy back.
  *
  * Call it straight after useProposalForm, so a re-seed on proposal switch has already happened.
  * Only one form may copy into the store: two would keep overwriting each other. A second one
@@ -47,8 +46,9 @@ export function useCopySlicesToStore(
     if (copyOwner !== ownerId.current) {
       return;
     }
-    // Nothing to copy into until a proposal is open (the store is cleared between proposals)
-    if (!proposal || !('id' in proposal) || !proposal.id) {
+    // Nothing to copy into until a proposal is open (the store is cleared between proposals). A
+    // new proposal is open before it has an ID, while its title and type are being entered.
+    if (!proposal || !('id' in proposal)) {
       return;
     }
     // Read the form now rather than the watched values, which can still be the previous

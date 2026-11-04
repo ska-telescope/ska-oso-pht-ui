@@ -34,5 +34,8 @@ export type ProposalType = z.input<ReturnType<typeof getProposalSchema>>;
 /** What helpers outside React need from the global form to read and write its slices. */
 export type ProposalFormAccess = Pick<UseFormReturn<ProposalType>, 'getValues' | 'setValue'>;
 
-/** The slices the form owns that the legacy store still holds a copy of for its readers. */
-export const STORE_COPIED_SLICES = ['targets', 'targetObservation', 'calibrationStrategy'] as const;
+/**
+ * The slices the form owns, which the legacy store still holds a copy of for its readers. Taken
+ * from the schema, so a newly migrated slice is copied too.
+ */
+export const STORE_COPIED_SLICES = Object.keys(getProposalSchema().shape) as (keyof ProposalType)[];

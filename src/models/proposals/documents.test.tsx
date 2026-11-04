@@ -6,8 +6,7 @@ import {
   documentsFromPdm,
   documentsToPdm,
   getDocumentPageStatus,
-  getDocumentValues,
-  isSameDocumentRef
+  getDocumentValues
 } from './documents';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 
@@ -50,12 +49,6 @@ describe('documents slice', () => {
     expect(getDocumentPageStatus(null)).toBe(STATUS_ERROR);
     expect(getDocumentPageStatus({ documentId: 'x', isUploadedPdf: false })).toBe(STATUS_PARTIAL);
     expect(getDocumentPageStatus({ documentId: 'x', isUploadedPdf: true })).toBe(STATUS_OK);
-  });
-
-  test('compares references by value', () => {
-    expect(isSameDocumentRef(null, undefined)).toBe(true);
-    expect(isSameDocumentRef({ documentId: 'a' }, { documentId: 'a' })).toBe(true);
-    expect(isSameDocumentRef({ documentId: 'a' }, null)).toBe(false);
   });
 
   // Only the documents: targets also go through the form, and are saved without the fields the

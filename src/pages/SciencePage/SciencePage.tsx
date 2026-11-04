@@ -16,7 +16,7 @@ import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getDocumentPageStatus, isSameDocumentRef } from '@/models/proposals/documents';
+import { getDocumentPageStatus } from '@/models/proposals/documents';
 import {
   PAGE_DESCRIPTION,
   SCIENCE_PDF_MAX_PAGES,
@@ -35,7 +35,7 @@ export default function SciencePage() {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const {
     field: { value: sciencePDF, onChange: onSciencePdfChange }
   } = useController<ProposalType, 'sciencePDF'>({ name: 'sciencePDF' });
@@ -61,7 +61,6 @@ export default function SciencePage() {
   const proposalId = getProposal()?.id;
   const activeProposalIdRef = React.useRef(getProposal()?.id);
   activeProposalIdRef.current = getProposal()?.id;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getSciencePdfDisplayFilename = () => sciencePDF?.documentId + t('fileType.pdf');
 
@@ -376,17 +375,6 @@ export default function SciencePage() {
   React.useEffect(() => {
     setUploadStatus(sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL);
   }, [proposalId, sciencePDF]);
-
-  // Bridge: unmigrated consumers and the save path still read the legacy store.
-  React.useEffect(() => {
-    const proposal = getProposal();
-    if (!isSameDocumentRef(proposal?.sciencePDF, sciencePDF)) {
-      setProposal({
-        ...proposal,
-        sciencePDF: sciencePDF ?? null
-      });
-    }
-  }, [sciencePDF]);
 
   React.useEffect(() => {
     setTheProposalState(getDocumentPageStatus(sciencePDF));

@@ -1,26 +1,18 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { FormProvider } from 'react-hook-form';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { useProposalForm } from '@/models/proposals/useProposalForm';
-import Proposal from '@/utils/types/proposal';
-
-const FormWrapper = ({ children }: { children: React.ReactNode }) => {
-  const { application } = storageObject.useStore();
-  const methods = useProposalForm(application.content2 as Proposal);
-  return <FormProvider {...methods}>{children}</FormProvider>;
-};
+import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 
 const wrapper = (component: React.ReactElement) => {
   return render(component, {
     wrapper: ({ children }) => (
       <StoreProvider>
         <ThemeA11yProvider>
-          <FormWrapper>{children}</FormWrapper>
+          <ProposalFormProvider>{children}</ProposalFormProvider>
         </ThemeA11yProvider>
       </StoreProvider>
     )
