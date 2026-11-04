@@ -33,7 +33,8 @@ export default function TargetListSection() {
   // The edit dialog's entry is a local form, so it is not saved; editStartRef holds the entry as the
   // dialog opened with it, so only the fields the user changes are applied
   const editEntryForm = useTargetEntryForm();
-  const { errors: editErrors } = useFormState({ control: editEntryForm.control });
+  // Checks the whole entry, so only the velocity or redshift in use counts
+  const { isValid: editIsValid } = useFormState({ control: editEntryForm.control });
   const editStartRef = React.useRef<TargetEntryType | null>(null);
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -265,7 +266,7 @@ export default function TargetListSection() {
           open={openEditDialog}
           onClose={closeDialog}
           onDialogResponse={editConfirmed}
-          disabled={Object.keys(editErrors).length > 0}
+          disabled={!editIsValid}
           title="editTarget.label"
         >
           <TargetEntry entryForm={editEntryForm} target={rowTarget ? rowTarget : undefined} />

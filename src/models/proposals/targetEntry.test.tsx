@@ -14,6 +14,7 @@ import {
   targetEntryFromTarget,
   TargetEntryType
 } from './targetEntry';
+import phtTranslations from '../../../public/locales/en/pht.json';
 
 const icrsTarget: Target = {
   id: 'target-1',
@@ -28,6 +29,10 @@ const icrsTarget: Target = {
   redshift: ''
 };
 
+// The text shown for a translation key, as the schema gives its messages
+const text = (key: string): string =>
+  key.split('.').reduce((node: any, part) => node[part], phtTranslations);
+
 // The field errors the schema gives an entry, as translation keys
 const errorsFor = (entry: Partial<TargetEntryType>, takenNames?: string[]) =>
   Object.fromEntries(
@@ -37,14 +42,14 @@ const errorsFor = (entry: Partial<TargetEntryType>, takenNames?: string[]) =>
     ).map((issue) => [issue.path[0], issue.message])
   );
 
-const validIcrs = { name: 'M2', coord1: '21:33:27.02', coord2: '-00:49:23.7' };
+const validIcrs = { name: 'M2', raStr: '21:33:27.02', decStr: '-00:49:23.7' };
 
 describe('target entry', () => {
   test('starts empty, wanting a name and coordinates', () => {
     expect(errorsFor({})).toEqual({
-      name: 'addTarget.valueError',
-      coord1: 'skyDirection.error.1.0',
-      coord2: 'skyDirection.error.2.0'
+      name: text('addTarget.valueError'),
+      raStr: text('skyDirection.error.1.0'),
+      decStr: text('skyDirection.error.2.0')
     });
   });
 
@@ -55,35 +60,35 @@ describe('target entry', () => {
 
 describe('target entry schema', () => {
   test('rejects a name of only spaces', () => {
-    expect(errorsFor({ ...validIcrs, name: '  ' })).toEqual({ name: 'addTarget.valueError' });
+    expect(errorsFor({ ...validIcrs, name: '  ' })).toEqual({ name: text('addTarget.valueError') });
   });
 
   test('rejects a name already in the proposal, ignoring case', () => {
-    expect(errorsFor(validIcrs, ['m2'])).toEqual({ name: 'addTarget.error' });
+    expect(errorsFor(validIcrs, ['m2'])).toEqual({ name: text('addTarget.error') });
     expect(errorsFor(validIcrs, ['M1'])).toEqual({});
   });
 
   test('reports the name and coordinate errors together', () => {
-    expect(errorsFor({ coord1: '1:0:0' }, ['m2'])).toEqual({
-      name: 'addTarget.valueError',
-      coord1: 'skyDirection.error.1.0',
-      coord2: 'skyDirection.error.2.0'
+    expect(errorsFor({ raStr: '1:0:0' }, ['m2'])).toEqual({
+      name: text('addTarget.valueError'),
+      raStr: text('skyDirection.error.1.0'),
+      decStr: text('skyDirection.error.2.0')
     });
   });
 
   test('gives the ICRS format and range errors', () => {
-    expect(errorsFor({ ...validIcrs, coord1: '1:0:0', coord2: '91:00:00' })).toEqual({
-      coord1: 'skyDirection.error.1.0',
-      coord2: 'skyDirection.error.2.1'
+    expect(errorsFor({ ...validIcrs, raStr: '1:0:0', decStr: '91:00:00' })).toEqual({
+      raStr: text('skyDirection.error.1.0'),
+      decStr: text('skyDirection.error.2.1')
     });
   });
 
   test('checks Galactic coordinates as numbers', () => {
     const galactic = { ...validIcrs, kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value };
-    expect(errorsFor({ ...galactic, coord1: '12.5', coord2: '-3.25' })).toEqual({});
-    expect(errorsFor({ ...galactic, coord1: '400', coord2: '95' })).toEqual({
-      coord1: 'skyDirection.error.1.0',
-      coord2: 'skyDirection.error.2.1'
+    expect(errorsFor({ ...galactic, l: '12.5', b: '-3.25' })).toEqual({});
+    expect(errorsFor({ ...galactic, l: '400', b: '95' })).toEqual({
+      l: text('skyDirection.error.1.0'),
+      b: text('skyDirection.error.2.1')
     });
   });
 
@@ -94,10 +99,10 @@ describe('target entry schema', () => {
   });
 
   test('checks whichever of velocity and redshift is in use', () => {
-    expect(errorsFor({ ...validIcrs, vel: 'abc' })).toEqual({ vel: 'velocity.error' });
+    expect(errorsFor({ ...validIcrs, vel: 'abc' })).toEqual({ vel: text('velocity.error') });
     expect(errorsFor({ ...validIcrs, redshift: 'abc' })).toEqual({});
     expect(errorsFor({ ...validIcrs, velType: VELOCITY_TYPE.REDSHIFT, redshift: 'abc' })).toEqual({
-      redshift: 'velocity.error'
+      redshift: text('velocity.error')
     });
   });
 });
@@ -107,8 +112,8 @@ describe('targetEntryFromTarget', () => {
     expect(targetEntryFromTarget(icrsTarget)).toEqual({
       ...TARGET_ENTRY_DEFAULTS,
       name: 'M2',
-      coord1: '21:33:27.020',
-      coord2: '-00:49:23.700',
+      raStr: '21:33:27.020',
+      decStr: '-00:49:23.700',
       vel: '10'
     });
   });
@@ -123,8 +128,8 @@ describe('targetEntryFromTarget', () => {
       velocityDefinition: VELOCITY_DEFINITION.RADIO
     });
     expect(entry.kind).toBe(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
-    expect(entry.coord1).toBe('12.5');
-    expect(entry.coord2).toBe('-3.25');
+    expect(entry.l).toBe('12.5');
+    expect(entry.b).toBe('-3.25');
   });
 });
 
@@ -139,9 +144,23 @@ describe('applyTargetEdit', () => {
     const edited = applyTargetEdit(icrsTarget, before, {
       ...before,
       name: 'M2 edited',
-      coord1: '1:00:00.000'
+      raStr: '1:00:00.000'
     });
     expect(edited).toEqual({ ...icrsTarget, name: 'M2 edited', raStr: '01:00:00.000' });
+  });
+
+  test('applies an edited Galactic coordinate as a number', () => {
+    const galacticTarget: Target = {
+      ...icrsTarget,
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
+      raStr: undefined,
+      decStr: undefined,
+      l: 12.5,
+      b: -3.25
+    };
+    const galacticBefore = targetEntryFromTarget(galacticTarget);
+    const edited = applyTargetEdit(galacticTarget, galacticBefore, { ...galacticBefore, b: '4.5' });
+    expect(edited).toEqual({ ...galacticTarget, b: 4.5 });
   });
 
   test('clears the velocity when switching to redshift', () => {

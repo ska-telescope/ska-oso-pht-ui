@@ -510,26 +510,30 @@ export const useValidateProposal = () => {
   };
 };
 
-export function validateRightAscension(value: string): string | null {
+/** The codes the sky direction and radial motion checks return when a value is wrong. */
+export const VALUE_ERROR = { FORMAT: '0', RANGE: '1' } as const;
+export type ValueError = (typeof VALUE_ERROR)[keyof typeof VALUE_ERROR];
+
+export function validateRightAscension(value: string): ValueError | null {
   const formatValid = /^\+?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   const arr = value.split(':');
   if (arr?.length !== 3) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   if (Number(arr[0]) > 24) {
-    return '1';
+    return VALUE_ERROR.RANGE;
   }
   if (Number(arr[1]) > 59) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   if (Number(arr[2]) >= 60) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   if (Number(arr[0]) === 24 && (Number(arr[1]) > 0 || Number(arr[2]) > 0)) {
-    return '1';
+    return VALUE_ERROR.RANGE;
   }
   return null;
 }
@@ -542,15 +546,15 @@ export function isValidGalacticLongitude(value: string): boolean {
   return number >= 0 && number < 360;
 }
 
-export function validateDeclination(value: string): string | null {
+export function validateDeclination(value: string): ValueError | null {
   const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
 
   const arr = value.split(':');
   if (arr.length !== 3) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
 
   const hours = Number(arr[0]);
@@ -558,34 +562,34 @@ export function validateDeclination(value: string): string | null {
   const seconds = Number(arr[2].split('.')[0]);
 
   if (Math.abs(hours) > 90 || (Math.abs(hours) === 90 && (minutes > 0 || seconds > 0))) {
-    return '1';
+    return VALUE_ERROR.RANGE;
   }
 
   // explicitly treat these as a format rather than a range error
   // because they are not valid in the context of sky direction
   if (minutes > 59) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   if (seconds > 59) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   return null;
 }
 
-export function validateGalacticLatitude(value: string): string | null {
+export function validateGalacticLatitude(value: string): ValueError | null {
   if (!/^[-+]?[0-9]*\.?[0-9]+$/.test(value)) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
 
   if (parseFloat(value) < -90 || parseFloat(value) > 90) {
-    return '1';
+    return VALUE_ERROR.RANGE;
   }
   return null;
 }
 
-export function validateRadialMotion(value: string): string | null {
+export function validateRadialMotion(value: string): ValueError | null {
   if (!/^[-+]?[0-9]*\.?[0-9]+$/.test(value)) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
 
   return null;

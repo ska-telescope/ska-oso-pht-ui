@@ -11,7 +11,7 @@ import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
-import { TargetEntryType, useTargetEntryForm } from '@/models/proposals/targetEntry';
+import phtTranslations from '../../../../public/locales/en/pht.json';
 
 // Exposes the global form, which holds the entry and the targets
 let formProbe: UseFormReturn<ProposalType>;
@@ -112,28 +112,51 @@ describe('<TargetEntry /> target limit', () => {
   }, 15000);
 });
 
-describe('<TargetEntry /> velocity type', () => {
-  // A form passed in, as the edit dialog does, so its errors can be read
-  let entryProbe: UseFormReturn<TargetEntryType>;
-  const EntryWithForm = () => {
-    const entryForm = useTargetEntryForm();
-    entryProbe = entryForm;
-    return <TargetEntry entryForm={entryForm} />;
-  };
-
-  it('re-checks velocity and redshift when the velocity type changes', async () => {
+describe('<TargetEntry /> coordinate system', () => {
+  it("shows the chosen coordinate system's inputs", async () => {
     const user = userEvent.setup();
     await act(async () => {
-      wrapper(<EntryWithForm />);
+      wrapper(<TargetEntry />);
+    });
+    expect(screen.getByTestId('skyDirectionValue1')).toBeInTheDocument();
+    expect(screen.getByTestId('skyDirectionValue2')).toBeInTheDocument();
+    await user.type(screen.getByTestId('skyDirectionValue1').querySelector('input')!, '1:00:00');
+
+    fireEvent.mouseDown(
+      within(screen.getByTestId('referenceCoordinatesType')).getByRole('combobox')
+    );
+    fireEvent.click(await screen.findByRole('option', { name: 'Galactic' }));
+
+    // Galactic longitude and latitude replace right ascension and declination
+    await waitFor(() => expect(screen.getAllByTestId('skyDirectionValue')).toHaveLength(2));
+    expect(screen.queryByTestId('skyDirectionValue1')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('skyDirectionValue2')).not.toBeInTheDocument();
+  }, 15000);
+});
+
+describe('<TargetEntry /> velocity type', () => {
+  it('checks only the velocity or redshift in use', async () => {
+    const user = userEvent.setup();
+    await act(async () => {
+      wrapper(<TargetEntry />);
     });
 
+    await user.type(screen.getByTestId('name').querySelector('input')!, 'M2');
+    await user.type(
+      screen.getByTestId('skyDirectionValue1').querySelector('input')!,
+      '21:33:27.02'
+    );
+    await user.type(
+      screen.getByTestId('skyDirectionValue2').querySelector('input')!,
+      '-00:49:23.7'
+    );
     await user.type(screen.getByTestId('velocityValue').querySelector('input')!, 'abc');
-    await waitFor(() => expect(entryProbe.getFieldState('vel').error).toBeDefined());
+    await waitFor(() => expect(screen.getByTestId('addTargetButton')).toBeDisabled());
 
-    // Redshift is in use now, so the velocity is no longer checked
+    // Redshift is in use now, so the invalid velocity no longer stops the target being added
     fireEvent.mouseDown(within(screen.getByTestId('velocityType')).getByRole('combobox'));
     fireEvent.click(await screen.findByRole('option', { name: 'velocity.1.label' }));
-    await waitFor(() => expect(entryProbe.getFieldState('vel').error).toBeUndefined());
+    await waitFor(() => expect(screen.getByTestId('addTargetButton')).toBeEnabled());
   }, 15000);
 });
 
@@ -151,10 +174,14 @@ describe('<TargetEntry /> name validation', () => {
 
     const nameInput = screen.getByTestId('name').querySelector('input')!;
     await user.type(nameInput, 'm2');
-    await waitFor(() => expect(screen.getByText('addTarget.error')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText(phtTranslations.addTarget.error)).toBeInTheDocument()
+    );
 
     await user.type(nameInput, '-new');
-    await waitFor(() => expect(screen.queryByText('addTarget.error')).not.toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.queryByText(phtTranslations.addTarget.error)).not.toBeInTheDocument()
+    );
   }, 15000);
 
   it('asks for a name when it is cleared', async () => {
@@ -166,7 +193,9 @@ describe('<TargetEntry /> name validation', () => {
     const nameInput = screen.getByTestId('name').querySelector('input')!;
     await user.type(nameInput, 'M2');
     await user.clear(nameInput);
-    await waitFor(() => expect(screen.getByText('addTarget.valueError')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText(phtTranslations.addTarget.valueError)).toBeInTheDocument()
+    );
   }, 15000);
 });
 

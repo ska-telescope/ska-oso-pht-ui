@@ -3,7 +3,7 @@ import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
-  VEL_UNITS,
+  VELOCITY_UNITS,
   VELOCITY_DEFINITION,
   VELOCITY_TYPE,
   VelocityDefinition,
@@ -121,8 +121,9 @@ const targetFromPdm = (e: TargetTransport): Target => {
       velocityDefinitionFromPdm[radialVelocity.definition ?? RadialVelocityDefinition.Radio],
     velType: getVelType(radialVelocity.redshift),
     vel: radialVelocity.quantity?.value?.toString(),
-    velUnit: VEL_UNITS.find((u) => u.label === radialVelocity?.quantity?.unit?.split(' ').join(''))
-      ?.value as number,
+    velUnit: VELOCITY_UNITS.find(
+      (u) => u.label === radialVelocity?.quantity?.unit?.split(' ').join('')
+    )?.value as number,
     ...coordinateFieldsFromPdm(e.reference_coordinate)
   } as Target;
 };
@@ -183,7 +184,7 @@ export const targetsToPdm = (targets: TargetsType): TargetTransport[] => {
     radial_velocity: {
       quantity: {
         value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
-        unit: VEL_UNITS.find((u) => u.value === Number(tar.velUnit))?.label ?? ''
+        unit: VELOCITY_UNITS.find((u) => u.value === Number(tar.velUnit))?.label ?? ''
       },
       definition: velocityDefinitionToPdm[tar.velocityDefinition],
       // A target entered in the PHT has none, so the PDM applies its default

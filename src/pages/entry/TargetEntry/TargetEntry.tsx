@@ -1,35 +1,39 @@
 import React from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, InputAdornment, Tooltip } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import {
-  FieldError,
-  useController,
+  FormProvider,
   useFormContext,
   useFormState,
   UseFormReturn,
   useWatch
 } from 'react-hook-form';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
-import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
+import { BorderedSection, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates, {
   RESOLVE_ERROR_UNKNOWN,
   ResolveError
 } from '@services/axios/get/getCoordinates/getCoordinates';
-import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
-import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
 import { generateTargetId, leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import CancelButton from '@/components/button/Cancel/Cancel';
 import ResolveButton from '@/components/button/Resolve/Resolve';
-import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
-import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
-import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
+  ControlledNumberField,
+  ControlledSelect,
+  ControlledTextField
+} from '@ska-telescope/ska-gui-components/controlled';
+import {
+  REFERENCE_COORDINATE_OPTIONS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
+  SKY_DIRECTION_AXIS,
+  SkyDirectionAxis,
+  SSO_OPTIONS,
+  VELOCITY_UNITS,
   VELOCITY_DEFINITION,
   VELOCITY_TYPE,
   WRAPPER_HEIGHT,
@@ -40,7 +44,6 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import VelocityTypeField from '@/components/fields/velocityType/VelocityType';
 import { ProposalType } from '@/models/proposals/proposal';
 import {
   TARGET_ENTRY_DEFAULTS,
@@ -57,6 +60,21 @@ interface TargetEntryProps {
 }
 
 const GAP = 2;
+
+// The coordinate inputs each coordinate system shows, bound to the target's own field names
+type CoordinateFieldDef = {
+  name: 'raStr' | 'decStr' | 'l' | 'b';
+  axis: SkyDirectionAxis;
+  testId: string;
+};
+const ICRS_FIELDS: CoordinateFieldDef[] = [
+  { name: 'raStr', axis: SKY_DIRECTION_AXIS.LONGITUDE, testId: 'skyDirectionValue1' },
+  { name: 'decStr', axis: SKY_DIRECTION_AXIS.LATITUDE, testId: 'skyDirectionValue2' }
+];
+const GALACTIC_FIELDS: CoordinateFieldDef[] = [
+  { name: 'l', axis: SKY_DIRECTION_AXIS.LONGITUDE, testId: 'skyDirectionValue' },
+  { name: 'b', axis: SKY_DIRECTION_AXIS.LATITUDE, testId: 'skyDirectionValue' }
+];
 const DEFAULT_VELOCITY_TYPE = TARGET_ENTRY_DEFAULTS.velType;
 const DEFAULT_VELOCITY_UNIT = TARGET_ENTRY_DEFAULTS.velUnit;
 const DEFAULT_KIND = TARGET_ENTRY_DEFAULTS.kind;
@@ -86,73 +104,22 @@ export default function TargetEntry({
   const entryValues = entryForm ?? ownEntryForm;
   const { control } = entryValues;
   const { isValid } = useFormState({ control });
-
-  const nameInput = useController({ control, name: 'name' });
-  const kindInput = useController({ control, name: 'kind' });
-  const coord1Input = useController({ control, name: 'coord1' });
-  const coord2Input = useController({ control, name: 'coord2' });
-  // Which of velocity and redshift is checked depends on the velocity type
-  const velTypeInput = useController({
-    control,
-    name: 'velType',
-    rules: { deps: ['vel', 'redshift'] }
-  });
-  const velInput = useController({ control, name: 'vel' });
-  const velUnitInput = useController({ control, name: 'velUnit' });
-  const redshiftInput = useController({ control, name: 'redshift' });
-  const fieldPatternInput = useController({ control, name: 'fieldPattern' });
-
-  const name = nameInput.field.value;
-  const kind = kindInput.field.value;
-  const coord1 = coord1Input.field.value;
-  const coord2 = coord2Input.field.value;
-  const velType = velTypeInput.field.value;
-  const vel = velInput.field.value;
-  const velUnit = velUnitInput.field.value;
-  const redshift = redshiftInput.field.value;
-
-  /** The translated error RHF holds for an input, if any. */
-  const errorText = (input: { fieldState: { error?: FieldError } }) => {
-    const message = input.fieldState.error?.message;
-    return message ? t(message) : '';
-  };
+  // The inputs are bound to the entry form themselves; these values only decide what is shown
+  const { name, kind, raStr, decStr, l, b, velType, vel, velUnit, redshift } = useWatch({
+    control
+  }) as TargetEntryType;
 
   const [resolutionLoading, setResolutionLoading] = React.useState(false);
   const resolveRevisionRef = React.useRef(0);
 
   /**
    * Invalidates any pending coordinate-resolution response so it can't overwrite newer edits when
-   * it arrives - the underlying GetCoordinates request itself is not aborted.
+   * it arrives - the underlying GetCoordinates request itself is not aborted. Any edit does this.
    */
   const invalidatePendingResolve = () => {
     resolveRevisionRef.current += 1;
     setResolutionLoading(false);
   };
-
-  /** Sets an input as the user edits it; any edit makes a pending resolve out of date. */
-  const editOf =
-    <T,>(input: { field: { onChange: (value: T) => void } }) =>
-    (value: T) => {
-      invalidatePendingResolve();
-      input.field.onChange(value);
-    };
-
-  /**
-   * Tidies an input's text when it is left. Only a real change is set, so leaving a field the user
-   * has not touched shows no error.
-   */
-  const tidyOnBlur =
-    (
-      input: { field: { value: string; onChange: (value: string) => void; onBlur: () => void } },
-      tidy: (value: string) => string
-    ) =>
-    () => {
-      const tidied = tidy(input.field.value);
-      if (tidied !== input.field.value) {
-        input.field.onChange(tidied);
-      }
-      input.field.onBlur();
-    };
 
   /** Sets values that come from somewhere other than the inputs, checking them as the inputs do. */
   const setEntryValues = (changes: Partial<TargetEntryType>) =>
@@ -171,16 +138,15 @@ export default function TargetEntry({
         ...entryValues.getValues(),
         kind: newKind,
         name: '',
-        coord1: '',
-        coord2: '',
+        raStr: '',
+        decStr: '',
+        l: '',
+        b: '',
         vel: '',
         redshift: ''
       });
     }
   };
-
-  const tidyCoordinate = (value: string) => trailingZeros(leadZero(value.trimEnd()).toString());
-  const trimEnd = (value: string) => value.trimEnd();
 
   React.useEffect(() => {
     setHelp('name.help');
@@ -199,7 +165,7 @@ export default function TargetEntry({
     };
 
     const AddTheTarget = () => {
-      const { name, kind, coord1, coord2, velType, vel, velUnit, redshift } =
+      const { name, kind, raStr, decStr, l, b, velType, vel, velUnit, redshift } =
         entryValues.getValues();
       const baseTarget = {
         kind,
@@ -223,8 +189,8 @@ export default function TargetEntry({
             return {
               ...baseTarget,
               velType: velType ?? DEFAULT_VELOCITY_TYPE,
-              raStr: coord1 ?? '',
-              decStr: coord2 ?? '',
+              raStr,
+              decStr,
               redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
               vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
             };
@@ -233,8 +199,8 @@ export default function TargetEntry({
             return {
               ...baseTarget,
               velType: velType ?? DEFAULT_VELOCITY_TYPE,
-              l: Number(coord1),
-              b: Number(coord2),
+              l: Number(l),
+              b: Number(b),
               redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
               vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
             };
@@ -285,7 +251,7 @@ export default function TargetEntry({
     };
 
     const hasAnyFieldEntered = () => {
-      const hasTextValue = [name, coord1, coord2, vel, redshift].some(
+      const hasTextValue = [name, raStr, decStr, l, b, vel, redshift].some(
         (value) => value.trim().length > 0
       );
       const hasSelectorChange =
@@ -355,13 +321,13 @@ export default function TargetEntry({
         invalidatePendingResolve();
         if (response.reference_coordinate.kind === 'galactic') {
           setEntryValues({
-            coord1: String(response.reference_coordinate.l),
-            coord2: String(response.reference_coordinate.b)
+            l: String(response.reference_coordinate.l),
+            b: String(response.reference_coordinate.b)
           });
         } else {
           setEntryValues({
-            coord1: response.reference_coordinate.ra_str,
-            coord2: response.reference_coordinate.dec_str
+            raStr: response.reference_coordinate.ra_str,
+            decStr: response.reference_coordinate.dec_str
           });
         }
 
@@ -421,7 +387,7 @@ export default function TargetEntry({
     );
   };
 
-  const isRequired = () => name !== '' || coord1 !== '' || coord2 !== '';
+  const isRequired = () => [name, raStr, decStr, l, b].some((value) => value !== '');
 
   const wrapper = (children?: React.JSX.Element) => (
     <Box
@@ -452,108 +418,190 @@ export default function TargetEntry({
   //instead of the Add button
   const isEditMode = !!target;
 
-  const referenceCoordinatesField = () =>
-    wrapper(
-      <ReferenceCoordinatesField
-        setValue={setTheReferenceCoordinates}
-        value={kind}
-        disabled={isEditMode || resolutionLoading}
-      />
+  const VELOCITY_TYPE_OPTIONS = [VELOCITY_TYPE.VELOCITY, VELOCITY_TYPE.REDSHIFT].map((e) => ({
+    label: t('velocity.' + e + '.label'),
+    value: e
+  }));
+  const VELOCITY_UNIT_OPTIONS = VELOCITY_UNITS.map(({ value }) => ({
+    label: t('velocity.units.' + value),
+    value
+  }));
+
+  const trimEnd = (value: string) => value.trimEnd();
+  const tidyCoordinate = (value: string) => trailingZeros(leadZero(value.trimEnd()).toString());
+
+  /**
+   * Tidies an input's text when it is left. Only a real change is set, so leaving a field the user
+   * has not touched shows no error.
+   */
+  const tidyOnBlur =
+    (
+      fieldName: 'name' | 'raStr' | 'decStr' | 'vel' | 'redshift',
+      tidy: (value: string) => string
+    ) =>
+    () => {
+      const value = entryValues.getValues(fieldName);
+      const tidied = tidy(value);
+      if (tidied !== value) {
+        entryValues.setValue(fieldName, tidied, { shouldValidate: true });
+      }
+    };
+
+  const endAdornment = (content: React.ReactNode) => ({
+    input: { endAdornment: <InputAdornment position="end">{content}</InputAdornment> }
+  });
+
+  const referenceCoordinatesField = () => {
+    const disabled = isEditMode || resolutionLoading;
+    return wrapper(
+      <Tooltip title={disabled ? t('referenceCoordinates.tooltip') : ''}>
+        <Box sx={{ pt: 1 }}>
+          <ControlledSelect
+            name="kind"
+            options={REFERENCE_COORDINATE_OPTIONS}
+            required
+            label={t('referenceCoordinates.label')}
+            data-testid="referenceCoordinatesType"
+            // A new coordinate system starts the entry again, so it resets the form itself
+            withFormUpdate={false}
+            onChange={(event) => setTheReferenceCoordinates(Number(event.target.value))}
+            disabled={disabled}
+          />
+        </Box>
+      </Tooltip>
     );
+  };
 
   const solarSystemObjectField = () =>
-    wrapper(<SolarSystemObjectField setValue={editOf(nameInput)} value={name} />);
-
-  const fieldPatternTypeField = () => {
-    return wrapper(
-      <Box
-        sx={{
-          pt: 1
-        }}
-      >
-        <TextEntry
-          disabled={true}
-          label={t('fieldPattern.label')}
-          onFocus={() => setHelp('fieldPattern.help')}
-          testId="fieldPatternId"
-          value={fieldPatternInput.field.value}
-          setValue={fieldPatternInput.field.onChange}
-          toolTip={t('fieldPattern.toolTip')}
+    wrapper(
+      <Box sx={{ pt: 1 }}>
+        <ControlledSelect
+          name="name"
+          options={SSO_OPTIONS}
+          required
+          label={t('name.label')}
+          data-testid="solarSystemObjectType"
+          onChange={invalidatePendingResolve}
         />
       </Box>
     );
-  };
+
+  const fieldPatternTypeField = () =>
+    wrapper(
+      <Box sx={{ pt: 1 }}>
+        <Tooltip title={t('fieldPattern.toolTip')}>
+          <ControlledTextField
+            name="fieldPattern"
+            disabled
+            label={t('fieldPattern.label')}
+            onFocus={() => setHelp('fieldPattern.help')}
+            data-testid="fieldPatternId"
+          />
+        </Tooltip>
+      </Box>
+    );
+
   const nameField = () =>
     wrapper(
-      <TextEntry
+      <ControlledTextField
+        name="name"
         required={isRequired()}
         label={t('name.label')}
-        testId={'name'}
-        value={name}
-        setValue={editOf(nameInput)}
-        suffix={!isSSO ? resolveButton() : undefined}
-        onBlur={tidyOnBlur(nameInput, trimEnd)}
+        data-testid="name"
+        slotProps={!isSSO ? endAdornment(resolveButton()) : undefined}
+        onChange={invalidatePendingResolve}
+        onBlur={tidyOnBlur('name', trimEnd)}
         onFocus={() => setHelp('name.help')}
-        errorText={errorText(nameInput)}
         disabled={resolutionLoading}
       />
     );
 
-  const skyDirection1Field = () =>
-    wrapper(
-      <SkyDirection1
-        required={isRequired()}
-        setValue={editOf(coord1Input)}
-        skyUnits={kind}
-        value={coord1}
-        valueBlur={tidyOnBlur(coord1Input, tidyCoordinate)}
-        valueFocus={() => setHelp('skyDirection.1')}
-        errorText={errorText(coord1Input)}
-      />
+  // The inputs for the chosen coordinate system: text for ICRS, numbers for Galactic, and none for a
+  // solar system object, which is found by name
+  const coordinateFields = () => {
+    const field = (
+      { name: fieldName, axis, testId }: CoordinateFieldDef,
+      Entry: typeof ControlledTextField | typeof ControlledNumberField
+    ) => (
+      <Grid key={fieldName} size={{ md: 12, lg: 6 }}>
+        {wrapper(
+          <Entry
+            name={fieldName}
+            required={isRequired()}
+            label={t(`skyDirection.label.${axis}.${kind}`)}
+            slotProps={endAdornment(t(`skyDirection.units.${axis}.${kind}`))}
+            data-testid={testId}
+            onChange={invalidatePendingResolve}
+            onBlur={
+              Entry === ControlledTextField
+                ? tidyOnBlur(fieldName as 'raStr' | 'decStr', tidyCoordinate)
+                : undefined
+            }
+            onFocus={() => setHelp(`skyDirection.${axis}`)}
+          />
+        )}
+      </Grid>
     );
-
-  const skyDirection2Field = () =>
-    wrapper(
-      <SkyDirection2
-        required={isRequired()}
-        setValue={editOf(coord2Input)}
-        skyUnits={kind}
-        value={coord2}
-        valueFocus={() => setHelp('skyDirection.2')}
-        valueBlur={tidyOnBlur(coord2Input, tidyCoordinate)}
-        errorText={errorText(coord2Input)}
-      />
-    );
+    switch (kind) {
+      case REFERENCE_COORDINATE_TYPE_ICRS.value:
+        return ICRS_FIELDS.map((def) => field(def, ControlledTextField));
+      case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
+        return GALACTIC_FIELDS.map((def) => field(def, ControlledNumberField));
+      default:
+        return null;
+    }
+  };
 
   const velocityTypeField = () =>
     wrapper2(
-      <VelocityTypeField
-        setVelType={editOf(velTypeInput)}
-        velType={velType}
-        velTypeFocus={() => setHelp('velocityType')}
-      />
+      <Box sx={{ pt: 1 }}>
+        <ControlledSelect
+          name="velType"
+          options={VELOCITY_TYPE_OPTIONS}
+          required
+          data-testid="velocityType"
+          onChange={invalidatePendingResolve}
+          onFocus={() => setHelp('velocityType')}
+        />
+      </Box>
     );
 
   const velocityField = () =>
     wrapper(
-      <VelocityField
-        setRedshift={editOf(redshiftInput)}
-        setVel={editOf(velInput)}
-        setVelUnit={editOf(velUnitInput)}
-        redshift={redshift}
-        redshiftBlur={tidyOnBlur(redshiftInput, trimEnd)}
-        vel={vel}
-        velType={velType}
-        velUnit={velUnit}
-        velFocus={() => setHelp('velocity.' + velType)}
-        velUnitFocus={() => setHelp('velocity.' + velType)}
-        velBlur={tidyOnBlur(velInput, trimEnd)}
-        errorText={errorText(velType === VELOCITY_TYPE.VELOCITY ? velInput : redshiftInput)}
-      />
+      velType === VELOCITY_TYPE.VELOCITY ? (
+        <ControlledTextField
+          name="vel"
+          label={t('velocity.' + velType + '.label')}
+          data-testid="velocityValue"
+          slotProps={endAdornment(
+            <ControlledSelect
+              name="velUnit"
+              options={VELOCITY_UNIT_OPTIONS}
+              data-testid="velocityUnits"
+              variant="standard"
+              onChange={invalidatePendingResolve}
+              onFocus={() => setHelp('velocity.' + velType)}
+            />
+          )}
+          onChange={invalidatePendingResolve}
+          onBlur={tidyOnBlur('vel', trimEnd)}
+          onFocus={() => setHelp('velocity.' + velType)}
+        />
+      ) : (
+        <ControlledTextField
+          name="redshift"
+          label={t('velocity.' + velType + '.label')}
+          data-testid="redshiftValue"
+          onChange={invalidatePendingResolve}
+          onBlur={tidyOnBlur('redshift', trimEnd)}
+          onFocus={() => setHelp('velocity.' + velType)}
+        />
+      )
     );
 
+  // The inputs below find the entry form through this provider
   return (
-    <>
+    <FormProvider {...entryValues}>
       <Grid
         sx={{
           pt: 4
@@ -597,8 +645,7 @@ export default function TargetEntry({
                   alignItems: 'center'
                 }}
               >
-                <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
-                <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
+                {coordinateFields()}
               </Grid>
             )}
           </BorderedSection>
@@ -664,6 +711,6 @@ export default function TargetEntry({
           {addButton()}
         </Grid>
       )}
-    </>
+    </FormProvider>
   );
 }

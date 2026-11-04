@@ -105,7 +105,8 @@ const selectObservationAndTickTarget = async () => {
   fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
 };
 
-describe('<LinkingPage /> manual linking', () => {
+// Each test renders the whole page, which is slow under coverage
+describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
