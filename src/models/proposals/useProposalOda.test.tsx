@@ -12,6 +12,7 @@ import { ProposalType } from './proposal';
 import { useProposalOda } from './useProposalOda';
 import { getDetailsSchema } from './details';
 import phtTranslations from '../../../public/locales/en/pht.json';
+import { InvestigatorBackend } from '@/utils/types/investigator';
 
 const { mockGet, mockPut } = vi.hoisted(() => ({
   mockGet: vi.fn(),
@@ -238,7 +239,7 @@ describe('useProposalOda', () => {
         form.current.setValue('abstract', 'Edited details');
       });
 
-      expect(form.current.getValues('investigators')?.[0].affiliation).toBe(organization ?? '');
+      expect(form.current.getValues('investigators')?.[0]).not.toHaveProperty('affiliation');
       await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual(
         withInvestigator
       );
@@ -300,7 +301,17 @@ describe('useProposalOda', () => {
         jobTitle: null
       };
       expect(mapping(withInvestigator).investigators).toEqual([expectedInvestigator]);
-      expect(form.current.getValues('investigators')).toEqual([expectedInvestigator]);
+      expect(form.current.getValues('investigators')).toEqual([
+        {
+          id: investigator.id,
+          status: investigator.status,
+          firstName: '',
+          lastName: '',
+          email: '',
+          phdThesis: false,
+          pi: false
+        }
+      ]);
       act(() => {
         form.current.setValue('abstract', 'Edited details');
         form.current.setValue('title', 'Edited title');
@@ -335,6 +346,71 @@ describe('useProposalOda', () => {
       );
     }
   );
+
+  test('preserves existing metadata when saving team additions, edits, and removals', async () => {
+    const existing: InvestigatorBackend = {
+      user_id: investigator.id,
+      given_name: investigator.firstName,
+      family_name: investigator.lastName,
+      email: investigator.email,
+      status: investigator.status,
+      organization: 'Existing institute',
+      officeLocation: 'Existing office',
+      jobTitle: 'Existing job',
+      for_phd: false,
+      principal_investigator: true
+    };
+    const withTeam: ProposalBackend = {
+      ...pdm,
+      proposal_info: {
+        ...pdm.proposal_info,
+        investigators: [existing, { ...existing, user_id: 'removed' }]
+      }
+    };
+    mockGet.mockResolvedValue({ data: withTeam });
+    mockPut.mockResolvedValue({ data: withTeam });
+    const { form, oda } = renderWithForm();
+    let loaded = mapping(withTeam);
+    await act(async () => {
+      const result = await oda.current.loadFromOda('prsl-1');
+      if (typeof result === 'string') throw new Error(result);
+      loaded = result;
+    });
+    const [member] = form.current.getValues('investigators') ?? [];
+    act(() => {
+      form.current.setValue('investigators', [
+        { ...member, id: 'new-member', pi: false },
+        { ...member, firstName: 'Edited name' }
+      ]);
+    });
+
+    await oda.current.saveToOda(loaded);
+
+    expect(mockPut).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        investigator_refs: ['new-member', investigator.id],
+        proposal_info: expect.objectContaining({
+          investigators: [
+            expect.objectContaining({
+              user_id: 'new-member',
+              organization: '',
+              officeLocation: null,
+              jobTitle: null
+            }),
+            expect.objectContaining({
+              user_id: investigator.id,
+              given_name: 'Edited name',
+              organization: 'Existing institute',
+              officeLocation: 'Existing office',
+              jobTitle: 'Existing job'
+            })
+          ]
+        })
+      })
+    );
+    expect(form.current.getValues('investigators')?.[0]).not.toHaveProperty('affiliation');
+  });
 
   test('Save to ODA returns API errors', async () => {
     mockPut.mockRejectedValue(new Error('Save failed'));

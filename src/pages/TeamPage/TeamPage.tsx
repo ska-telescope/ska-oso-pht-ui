@@ -28,6 +28,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useController, useFormState } from 'react-hook-form';
 import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';
+import { getTeamValues, mergeTeamInvestigators } from '@/models/proposals/team';
 
 const PAGE = PAGE_TEAM;
 
@@ -66,7 +67,11 @@ export default function TeamPage() {
     defaultValue: []
   });
   const { errors } = useFormState<ProposalFormValues>();
-  const currentInvestigators = investigators ?? [];
+  const existingInvestigators = getProposal().investigators;
+  const currentInvestigators = React.useMemo(
+    () => mergeTeamInvestigators(investigators ?? [], existingInvestigators),
+    [investigators, existingInvestigators]
+  );
 
   const getAccess = () => application.content4 as ProposalAccess[];
 
@@ -163,7 +168,7 @@ export default function TeamPage() {
   const deleteConfirmed = () => {
     const updatedInvestigators = currentInvestigators.filter((e) => e.id !== currentMember);
 
-    setInvestigators(updatedInvestigators);
+    setInvestigators(getTeamValues({ investigators: updatedInvestigators }).investigators);
     setProposal({ ...getProposal(), investigators: updatedInvestigators });
     setCurrentMember('');
     closeDeleteDialog();

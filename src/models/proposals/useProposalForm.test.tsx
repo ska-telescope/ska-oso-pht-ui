@@ -4,6 +4,7 @@ import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUse
 import { useProposalForm } from './useProposalForm';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import Investigator from '@/utils/types/investigator';
+import { getTeamValues } from './team';
 
 type Props = {
   id?: string;
@@ -31,9 +32,13 @@ describe('useProposalForm', () => {
       initialProps: { id: 'p1', title: '', investigators: first } as Props
     });
 
-    expect(result.current.getValues('investigators')).toEqual(first);
+    expect(result.current.getValues('investigators')).toEqual(
+      getTeamValues({ investigators: first }).investigators
+    );
     rerender({ id: 'p2', title: '', investigators: second });
-    expect(result.current.getValues('investigators')).toEqual(second);
+    expect(result.current.getValues('investigators')).toEqual(
+      getTeamValues({ investigators: second }).investigators
+    );
   });
 
   test('re-seeds the title when a proposal is loaded after mount', () => {

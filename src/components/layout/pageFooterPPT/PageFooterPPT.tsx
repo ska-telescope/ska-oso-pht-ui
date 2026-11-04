@@ -24,6 +24,7 @@ import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUt
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import { mergeTeamInvestigators } from '@/models/proposals/team';
 
 const createProposalSchema = getProposalSchema().pick({ title: true, proposalType: true });
 
@@ -72,13 +73,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
-    const { proposalType, ...formValues } = getValues();
+    const { proposalType, investigators, ...formValues } = getValues();
     const response = await PostProposal(
       authClient,
       refreshAuthToken,
       {
         ...proposal,
         ...formValues,
+        ...(investigators && {
+          investigators: mergeTeamInvestigators(investigators, proposal.investigators)
+        }),
         proposalType: proposalType ?? undefined,
         cycle: osdCycleId ?? null
       },

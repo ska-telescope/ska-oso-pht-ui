@@ -27,6 +27,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
+import { getTeamValues, mergeTeamInvestigators } from '@/models/proposals/team';
 
 const GAP = 5;
 
@@ -197,7 +198,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       ...getProposal(),
       investigators: [...(currentInvestigators ?? []), newInvestigator]
     };
-    form?.setValue('investigators', record.investigators, {
+    form?.setValue('investigators', getTeamValues(record).investigators, {
       shouldDirty: true,
       shouldValidate: true
     });
@@ -230,7 +231,10 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   async function AddInvestigator() {
-    const currentInvestigators = form?.getValues('investigators') ?? getProposal().investigators;
+    const formInvestigators = form?.getValues('investigators');
+    const currentInvestigators = formInvestigators
+      ? mergeTeamInvestigators(formInvestigators, getProposal().investigators)
+      : getProposal().investigators;
     const newInvestigator: Investigator = getInvestigator(currentInvestigators);
     // ---------------------------------------------------------------------------------------------------
     // ---PATH 1---: found investigator with valid entra id (search path), should be added once rights are created

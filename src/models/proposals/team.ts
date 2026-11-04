@@ -6,12 +6,9 @@ const investigatorSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string(),
-  affiliation: z.string(),
   phdThesis: z.boolean(),
   status: z.string(),
-  pi: z.boolean(),
-  officeLocation: z.string().nullable(),
-  jobTitle: z.string().nullable()
+  pi: z.boolean()
 });
 
 export function getTeamSchema() {
@@ -22,32 +19,47 @@ export function getTeamSchema() {
 
 export const getTeamValues = (proposal?: {
   investigators?: Investigator[] | null;
-}): { investigators: Investigator[] } => ({
-  investigators: (proposal?.investigators ?? []).map((investigator) => ({
-    ...investigator,
-    officeLocation: investigator.officeLocation ?? null,
-    jobTitle: investigator.jobTitle ?? null
-  }))
+}): { investigators: InvestigatorFormValues[] } => ({
+  investigators: (proposal?.investigators ?? []).map((investigator) =>
+    investigatorSchema.parse(investigator)
+  )
 });
 
 export const teamFromProposal = (proposal?: {
   investigators?: Investigator[] | null;
-}): { investigators: Investigator[] } => getTeamValues(proposal);
+}): { investigators: InvestigatorFormValues[] } => getTeamValues(proposal);
 
-export const teamToPdm = (investigators: Investigator[]): InvestigatorBackend[] =>
+export const mergeTeamInvestigators = (
+  investigators: InvestigatorFormValues[],
+  existing: Investigator[] = []
+): Investigator[] =>
+  investigators.map((investigator) => ({
+    affiliation: '',
+    officeLocation: null,
+    jobTitle: null,
+    ...existing.find(({ id }) => id === investigator.id),
+    ...investigatorSchema.parse(investigator)
+  }));
+
+export const teamToPdm = (
+  investigators: InvestigatorFormValues[],
+  existing: InvestigatorBackend[] = []
+): InvestigatorBackend[] =>
   getTeamSchema()
     .parse({ investigators })
     .investigators.map((investigator) => ({
+      organization: '',
+      officeLocation: null,
+      jobTitle: null,
+      ...existing.find(({ user_id }) => user_id === investigator.id),
       user_id: investigator.id,
       status: investigator.status,
       given_name: investigator.firstName,
       family_name: investigator.lastName,
       email: investigator.email,
-      organization: investigator.affiliation,
       for_phd: investigator.phdThesis,
-      principal_investigator: investigator.pi,
-      officeLocation: investigator.officeLocation,
-      jobTitle: investigator.jobTitle
+      principal_investigator: investigator.pi
     }));
 
+export type InvestigatorFormValues = z.input<typeof investigatorSchema>;
 export type TeamType = z.input<ReturnType<typeof getTeamSchema>>;

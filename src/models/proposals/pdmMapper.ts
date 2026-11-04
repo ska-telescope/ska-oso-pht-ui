@@ -30,7 +30,7 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
       ...base.proposal_info,
       ...titleToPdm(form.title),
       ...detailsToPdm(form),
-      investigators: teamToPdm(form.investigators ?? []),
+      investigators: teamToPdm(form.investigators ?? [], base.proposal_info.investigators),
       proposal_type: {
         ...base.proposal_info.proposal_type,
         main_type: getProposalTypeSchema().parse(form.proposalType)

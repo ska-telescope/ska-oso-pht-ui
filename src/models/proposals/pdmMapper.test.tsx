@@ -5,6 +5,7 @@ import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { PROPOSAL_TYPE } from '@/utils/constants';
+import { InvestigatorBackend } from '@/utils/types/investigator';
 
 const pdm = MockProposalBackend as ProposalBackend;
 const investigator = MockUserFrontendList[0];
@@ -53,7 +54,6 @@ describe('mapPdmToForm', () => {
         firstName: investigator.firstName,
         lastName: investigator.lastName,
         email: investigator.email,
-        affiliation: investigator.affiliation,
         phdThesis: investigator.phdThesis,
         status: investigator.status,
         pi: investigator.pi
@@ -110,11 +110,8 @@ describe('mapPdmToForm', () => {
           firstName: '',
           lastName: '',
           email: '',
-          affiliation: '',
           phdThesis: false,
-          pi: false,
-          officeLocation: null,
-          jobTitle: null
+          pi: false
         }
       ]);
     }
@@ -160,6 +157,13 @@ describe('mapFormToPdm', () => {
   });
 
   test('maps investigator form values into PDM fields and references', () => {
+    const existing: InvestigatorBackend = {
+      user_id: investigator.id,
+      status: investigator.status,
+      organization: 'Preserved institute',
+      officeLocation: 'Preserved office',
+      jobTitle: 'Preserved job'
+    };
     const result = mapFormToPdm(
       {
         title: 'Edited title',
@@ -168,7 +172,13 @@ describe('mapFormToPdm', () => {
         scienceCategory: null,
         investigators: [investigator]
       },
-      pdm
+      {
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          investigators: [existing]
+        }
+      }
     );
 
     expect(result.investigator_refs).toEqual([investigator.id]);
@@ -177,7 +187,9 @@ describe('mapFormToPdm', () => {
         user_id: investigator.id,
         given_name: investigator.firstName,
         family_name: investigator.lastName,
-        organization: investigator.affiliation
+        organization: 'Preserved institute',
+        officeLocation: 'Preserved office',
+        jobTitle: 'Preserved job'
       })
     ]);
   });
