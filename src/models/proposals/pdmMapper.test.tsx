@@ -23,10 +23,8 @@ describe('mapPdmToForm', () => {
   test('leaves observing mode on the observation, outside form values', () => {
     const proposal = mapping(pdm);
     expect(proposal.observations?.[0]?.type).toBe('continuum');
-    expect(mapPdmToForm(pdm, proposal)).not.toHaveProperty('observingMode');
-    expect(mapFormToPdm(mapPdmToForm(pdm, proposal), pdm).observation_info).toEqual(
-      pdm.observation_info
-    );
+    expect(mapPdmToForm(pdm)).not.toHaveProperty('observingMode');
+    expect(mapFormToPdm(mapPdmToForm(pdm), pdm).observation_info).toEqual(pdm.observation_info);
   });
 
   test('maps investigators from PDM into the form', () => {
@@ -72,6 +70,55 @@ describe('mapPdmToForm', () => {
       investigators: []
     });
   });
+
+  test.each([undefined, []])(
+    'defaults missing PDM investigators to an empty array: %s',
+    (investigators) => {
+      expect(
+        mapPdmToForm({
+          ...pdm,
+          proposal_info: { ...pdm.proposal_info, investigators }
+        }).investigators
+      ).toEqual([]);
+    }
+  );
+
+  test.each([undefined, null])(
+    'normalizes optional investigator fields directly from PDM: %s',
+    (optionalValue) => {
+      const withInvestigator = {
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          investigators: [
+            {
+              user_id: investigator.id,
+              status: investigator.status,
+              given_name: optionalValue,
+              family_name: optionalValue,
+              email: optionalValue,
+              organization: optionalValue
+            }
+          ]
+        }
+      };
+
+      expect(mapPdmToForm(withInvestigator).investigators).toEqual([
+        {
+          id: investigator.id,
+          status: investigator.status,
+          firstName: '',
+          lastName: '',
+          email: '',
+          affiliation: '',
+          phdThesis: false,
+          pi: false,
+          officeLocation: null,
+          jobTitle: null
+        }
+      ]);
+    }
+  );
 });
 
 describe('mapFormToPdm', () => {

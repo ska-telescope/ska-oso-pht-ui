@@ -27,7 +27,7 @@ export function useProposalOda() {
       let values: ProposalType;
       try {
         proposal = mapping(pdm);
-        values = mapPdmToForm(pdm, proposal);
+        values = mapPdmToForm(pdm);
       } catch (error) {
         return error instanceof Error ? error.message : 'error.API_UNKNOWN_ERROR';
       }
