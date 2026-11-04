@@ -8,8 +8,11 @@ import DetailsPage from './DetailsPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  ERROR_SECS,
   NOTIFICATION_DELAY_IN_SECONDS,
+  PAGE_DETAILS,
   PROPOSAL_TYPE,
+  STATUS_OK,
   TYPE_PST
 } from '@/utils/constants';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
@@ -23,7 +26,8 @@ import { getDetailsValues } from '@/models/proposals/details';
 
 const mockState = vi.hoisted(() => ({
   proposal: {} as Record<string, unknown>,
-  updateProposal: vi.fn()
+  updateProposal: vi.fn(),
+  updatePageStatus: vi.fn()
 }));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
@@ -31,8 +35,8 @@ const mockNotifySuccess = vi.hoisted(() => vi.fn());
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
-      application: { content1: [], content2: mockState.proposal },
-      updateAppContent1: vi.fn(),
+      application: { content1: Array(PAGE_DETAILS + 1).fill(0), content2: mockState.proposal },
+      updateAppContent1: mockState.updatePageStatus,
       updateAppContent2: mockState.updateProposal,
       helpComponent: vi.fn(),
       helpComponentURL: vi.fn()
@@ -289,6 +293,39 @@ describe('<DetailsPage /> observing mode', () => {
     expect(mockState.updateProposal).toHaveBeenLastCalledWith(
       expect.objectContaining({ scienceCategory: 7 })
     );
+  });
+
+  it('keeps abstract edits in RHF until blur, then updates the legacy store and breadcrumb', async () => {
+    mockState.proposal = {
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      scienceCategory: 1,
+      abstract: ''
+    };
+    await renderPage();
+    vi.useFakeTimers();
+    try {
+      const input = screen.getByTestId('abstractId');
+      await act(async () => {
+        fireEvent.change(input, { target: { value: 'A scientific summary' } });
+        await vi.advanceTimersByTimeAsync(ERROR_SECS + 1);
+      });
+
+      expect(JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').abstract).toBe(
+        'A scientific summary'
+      );
+      expect(mockState.updateProposal).not.toHaveBeenCalled();
+      expect(mockState.updatePageStatus).not.toHaveBeenCalled();
+
+      await act(async () => {
+        fireEvent.blur(input);
+      });
+      expect(mockState.updateProposal).toHaveBeenLastCalledWith(
+        expect.objectContaining({ abstract: 'A scientific summary' })
+      );
+      expect(mockState.updatePageStatus.mock.lastCall?.[0][PAGE_DETAILS]).toBe(STATUS_OK);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('renders a multiline abstract and truncates changes at the character limit', async () => {

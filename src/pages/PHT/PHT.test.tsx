@@ -9,6 +9,7 @@ import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
+import * as proposalForm from '@/models/proposals/useProposalForm';
 
 const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
@@ -224,6 +225,36 @@ describe('<PHT />', () => {
       });
     });
   });
+
+  test.each(['Latest summary before blur', '', 'word '.repeat(251).trim()])(
+    'saves current RHF abstract on navigation without a legacy store update: %s',
+    async (abstract) => {
+      const formSpy = vi.spyOn(proposalForm, 'useProposalForm');
+      try {
+        mockApplicationContent2.current = { id: 'prsl-123', abstract: 'Stale store summary' };
+        mockPathname.current = NAV[1];
+        const { rerenderPHT } = renderPHT();
+        const form = formSpy.mock.results[formSpy.mock.results.length - 1].value;
+        act(() => {
+          form.setValue('abstract', abstract);
+        });
+
+        mockPathname.current = NAV[2];
+        rerenderPHT();
+
+        await waitFor(() => {
+          expect(PutProposal).toHaveBeenCalledWith(
+            {},
+            expect.objectContaining({ abstract: 'Stale store summary' }),
+            PROPOSAL_STATUS.DRAFT,
+            expect.objectContaining({ abstract })
+          );
+        });
+      } finally {
+        formSpy.mockRestore();
+      }
+    }
+  );
 });
 
 describe('<PHT /> auto-repair for a linked target with no observation', () => {

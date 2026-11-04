@@ -5,7 +5,6 @@ import { DropDown } from '@ska-telescope/ska-gui-components';
 import { ControlledTextField } from '@ska-telescope/ska-gui-components/controlled';
 import {
   DETAILS,
-  ERROR_SECS,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DETAILS,
   PROPOSAL_TYPE,
@@ -70,9 +69,6 @@ export default function DetailsPage() {
     updateAppContent1(temp);
   };
 
-  const saveDetailsRef = React.useRef(saveDetails);
-  saveDetailsRef.current = saveDetails;
-
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
   const handleOpenAbstractLatexModal = () => setOpenAbstractLatexModal(true);
   const handleCloseAbstractLatexModal = () => setOpenAbstractLatexModal(false);
@@ -87,14 +83,6 @@ export default function DetailsPage() {
     }
     setInitial(false);
   }, [scienceCategory]);
-
-  // Abstract changes (save without triggering autogeneration)
-  React.useEffect(() => {
-    if (!initial) {
-      const timer = setTimeout(() => saveDetailsRef.current(), ERROR_SECS);
-      return () => clearTimeout(timer);
-    }
-  }, [abstract]);
 
   const abstractField = () => {
     const MAX_CHAR = Number(t('abstract.maxChar'));
