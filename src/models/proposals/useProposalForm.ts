@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { getProposalSchema, ProposalType } from './proposal';
 import { getTitleValues } from './title';
+import { DocumentValues, getDocumentValues } from './documents';
 
-type ProposalSeed = {
+type ProposalSeed = Partial<DocumentValues> & {
   id?: string | null;
   title?: string;
   proposalType?: ProposalType['proposalType'];
@@ -17,7 +18,8 @@ export function useProposalForm(proposal?: ProposalSeed) {
     defaultValues: {
       title: getTitleValues(proposal),
       // Controlled fields need null to clear a previous selection on reset.
-      proposalType: proposal?.proposalType ?? null
+      proposalType: proposal?.proposalType ?? null,
+      ...getDocumentValues(proposal)
     }
   });
 
@@ -33,7 +35,8 @@ export function useProposalForm(proposal?: ProposalSeed) {
   React.useEffect(() => {
     reset({
       title: getTitleValues(latestProposal.current),
-      proposalType: latestProposal.current?.proposalType ?? null
+      proposalType: latestProposal.current?.proposalType ?? null,
+      ...getDocumentValues(latestProposal.current)
     });
   }, [proposalId, reset]);
 

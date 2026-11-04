@@ -1,6 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Grid } from '@mui/material';
+import { useController } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
@@ -10,7 +11,8 @@ import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import { validateTechnicalPage } from '../../utils/validation/validation';
+import { getDocumentPageStatus, isSameDocumentRef } from '@/models/proposals/documents';
+import { ProposalType } from '@/models/proposals/proposal';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
@@ -31,7 +33,12 @@ export default function TechnicalPage() {
   const { t } = useScopedTranslation();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
+  const {
+    field: { value: technicalPDF, onChange: onTechnicalPdfChange }
+  } = useController<ProposalType, 'technicalPDF'>({ name: 'technicalPDF' });
+  const [technicalLoadStatus, setTechnicalLoadStatus] = React.useState(
+    technicalPDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL
+  );
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
@@ -44,6 +51,9 @@ export default function TechnicalPage() {
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
+  const proposalId = getProposal()?.id;
+  const activeProposalIdRef = React.useRef(getProposal()?.id);
+  activeProposalIdRef.current = getProposal()?.id;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
 
@@ -57,31 +67,29 @@ export default function TechnicalPage() {
   };
 
   const setUploadStatus = (status: typeof FileUploadStatus) => {
-    setProposal({ ...getProposal(), technicalLoadStatus: status });
+    setTechnicalLoadStatus(status);
   };
 
   const setFile = (theFile: File | '') => {
     if (!(theFile instanceof File)) {
-      setProposal({
-        ...getProposal(),
-        technicalPDF: null
-      });
+      onTechnicalPdfChange(null);
       setCurrentFile(null);
     }
   };
 
   const uploadPdftoSignedUrl = async (theFile: File) => {
+    const proposal = getProposal();
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
       notifyWarning(t('pdfUpload.technical.warning'));
-      const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-technical.pdf`);
       if (typeof signedUrl != 'string') {
         setUploadStatus(FileUploadStatus.ERROR);
         new Error('Not able to Get Technical PDF Upload URL');
       }
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
+      if (activeProposalIdRef.current !== proposal.id) return;
       if (uploadResult.error) {
         setUploadStatus(FileUploadStatus.ERROR);
         notifyError(t('pdfUpload.technical.error'));
@@ -93,13 +101,11 @@ export default function TechnicalPage() {
         isUploadedPdf: true
       };
 
-      setProposal({
-        ...getProposal(),
-        technicalPDF: technicalPDFUploaded,
-        technicalLoadStatus: FileUploadStatus.OK
-      });
+      onTechnicalPdfChange(technicalPDFUploaded);
+      setTechnicalLoadStatus(FileUploadStatus.OK);
       notifySuccess(t('pdfUpload.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
+      if (activeProposalIdRef.current !== proposal.id) return;
       setFile('');
       setUploadStatus(FileUploadStatus.ERROR);
     }
@@ -111,7 +117,7 @@ export default function TechnicalPage() {
       const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
+      if (signedUrl === t('pdfDownload.sampleData') || technicalPDF != null) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
@@ -127,6 +133,7 @@ export default function TechnicalPage() {
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
 
       const deleteResult = await DeletePDF(signedUrl);
+      if (activeProposalIdRef.current !== proposal.id) return;
 
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to delete Technical PDF');
@@ -137,11 +144,8 @@ export default function TechnicalPage() {
         isUploadedPdf: false
       };
 
-      setProposal({
-        ...getProposal(),
-        technicalPDF: technicalPDFDeleted,
-        technicalLoadStatus: FileUploadStatus.INITIAL
-      });
+      onTechnicalPdfChange(technicalPDFDeleted);
+      setTechnicalLoadStatus(FileUploadStatus.INITIAL);
 
       notifySuccess(t('pdfDelete.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
@@ -156,7 +160,7 @@ export default function TechnicalPage() {
       const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
+      if (signedUrl === t('pdfDownload.sampleData') || technicalPDF != null) {
         setCurrentFile(signedUrl);
         setOpenPDFViewer(true);
       }
@@ -166,24 +170,31 @@ export default function TechnicalPage() {
   };
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-    if (getProposal()?.technicalPDF?.documentId) {
-      setCurrentFile(getProposal()?.technicalPDF?.documentId);
-      setOriginalFile(getProposal()?.technicalPDF?.documentId + t('fileType.pdf'));
+    if (technicalPDF?.documentId) {
+      setCurrentFile(technicalPDF.documentId);
+      setOriginalFile(technicalPDF.documentId + t('fileType.pdf'));
     }
     setHelp('page.' + PAGE);
   }, []);
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-    if (getProposal()?.technicalLoadStatus === null) {
-      setUploadStatus(FileUploadStatus.INITIAL);
+    setUploadStatus(technicalPDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL);
+  }, [proposalId, technicalPDF]);
+
+  // Bridge: unmigrated consumers and the save path still read the legacy store.
+  React.useEffect(() => {
+    const proposal = getProposal();
+    if (!isSameDocumentRef(proposal?.technicalPDF, technicalPDF)) {
+      setProposal({
+        ...proposal,
+        technicalPDF: technicalPDF ?? null
+      });
     }
-  }, [getProposal()]);
+  }, [technicalPDF]);
 
   React.useEffect(() => {
-    setTheProposalState(validateTechnicalPage(getProposal()));
-  }, [validateToggle]);
+    setTheProposalState(getDocumentPageStatus(technicalPDF));
+  }, [technicalPDF]);
 
   const renderPDFView = () => (
     <PDFWrapper open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
@@ -201,7 +212,7 @@ export default function TechnicalPage() {
       }}
     >
       <Grid>
-        {getProposal().technicalPDF?.isUploadedPdf && (
+        {technicalPDF?.isUploadedPdf && (
           <PDFPreviewButton
             title="pdfUpload.technical.label.preview"
             toolTip="pdfUpload.technical.tooltip.preview"
@@ -210,7 +221,7 @@ export default function TechnicalPage() {
         )}
       </Grid>
       <Grid>
-        {getProposal().technicalPDF?.isUploadedPdf && (
+        {technicalPDF?.isUploadedPdf && (
           <DownloadButton
             title="pdfUpload.technical.label.download"
             toolTip="pdfUpload.technical.tooltip.download"
@@ -219,7 +230,7 @@ export default function TechnicalPage() {
         )}
       </Grid>
       <Grid>
-        {getProposal().technicalPDF?.isUploadedPdf && (
+        {technicalPDF?.isUploadedPdf && (
           <DeleteButton
             title={'pdfUpload.technical.label.delete'}
             toolTip="pdfUpload.technical.tooltip.delete"
@@ -263,8 +274,8 @@ export default function TechnicalPage() {
               testId="fileUpload"
               uploadFunction={uploadPdftoSignedUrl}
               uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
-              status={getProposal().technicalLoadStatus}
-              suffix={getProposal()?.technicalPDF?.documentId ? uploadSuffix() : <></>}
+              status={technicalLoadStatus ?? undefined}
+              suffix={technicalPDF?.documentId ? uploadSuffix() : <></>}
             />
           )}
         </Grid>

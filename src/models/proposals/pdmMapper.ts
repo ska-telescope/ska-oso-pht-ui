@@ -1,13 +1,17 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
+import { documentsFromPdm, documentsToPdm } from './documents';
 
 /** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
 export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
+  const documents = documentsFromPdm(pdm?.observation_info?.documents);
   return {
     title: titleFromPdm(pdm?.proposal_info),
     proposalType:
-      getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ?? null
+      getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ??
+      null,
+    ...documents
   };
 }
 
@@ -25,6 +29,10 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
         ...base.proposal_info.proposal_type,
         main_type: getProposalTypeSchema().parse(form.proposalType)
       }
+    },
+    observation_info: {
+      ...base.observation_info,
+      documents: documentsToPdm(form)
     }
   };
 }
