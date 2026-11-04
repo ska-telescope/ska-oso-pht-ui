@@ -9,6 +9,7 @@ UNRELEASED
 * Bugfix: Only reset DP Parameters if values on the Observation page change.
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
 * Bugfix: Show a meaningful message when target name resolution fails, including when the external resolvers are unavailable
+* Changed: Migrated description pages to use RHF and ZOD validation
 * Changed: Targets, target links and calibration are edited through the proposal form and checked with Zod validation
 * Changed: Target name resolution errors are shown in a pop-up, using the backend's message when it provides one
 * Changed: A duplicate target name is flagged as it is typed, and Add Target stays disabled until the name is changed

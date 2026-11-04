@@ -22,7 +22,9 @@ describe('mapPdmToForm', () => {
       proposalType: pdm.proposal_info.proposal_type.main_type,
       targets: legacy.targets,
       targetObservation: legacy.targetObservation,
-      calibrationStrategy: legacy.calibrationStrategy
+      calibrationStrategy: legacy.calibrationStrategy,
+      sciencePDF: null,
+      technicalPDF: null
     });
   });
 
@@ -32,7 +34,9 @@ describe('mapPdmToForm', () => {
       proposalType: null,
       targets: [],
       targetObservation: [],
-      calibrationStrategy: []
+      calibrationStrategy: [],
+      sciencePDF: null,
+      technicalPDF: null
     });
   });
 

@@ -4,6 +4,7 @@ import { getTitleSchema } from './title';
 import { getTargetsSchema } from './targets';
 import { getTargetObservationSchema } from './targetObservation';
 import { getCalibrationStrategySchema } from './calibrationStrategy';
+import { getDocumentRefSchema } from './documents';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
@@ -22,7 +23,9 @@ export function getProposalSchema() {
     // in the submit validation.
     targets: getTargetsSchema(),
     targetObservation: getTargetObservationSchema(),
-    calibrationStrategy: getCalibrationStrategySchema()
+    calibrationStrategy: getCalibrationStrategySchema(),
+    sciencePDF: getDocumentRefSchema(),
+    technicalPDF: getDocumentRefSchema()
   });
 }
 

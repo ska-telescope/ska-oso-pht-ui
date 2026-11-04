@@ -200,7 +200,9 @@ describe('<PHT />', () => {
         proposalType: null,
         targets: [],
         targetObservation: [],
-        calibrationStrategy: []
+        calibrationStrategy: [],
+        sciencePDF: null,
+        technicalPDF: null
       });
     });
   });
@@ -220,7 +222,9 @@ describe('<PHT />', () => {
         proposalType: null,
         targets: [],
         targetObservation: [],
-        calibrationStrategy: []
+        calibrationStrategy: [],
+        sciencePDF: null,
+        technicalPDF: null
       });
     });
   });

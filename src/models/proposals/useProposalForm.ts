@@ -6,8 +6,9 @@ import { getTitleValues } from './title';
 import { getTargetsValues } from './targets';
 import { getTargetObservationValues } from './targetObservation';
 import { getCalibrationStrategyValues } from './calibrationStrategy';
+import { DocumentValues, getDocumentValues } from './documents';
 
-type ProposalSeed = {
+type ProposalSeed = Partial<DocumentValues> & {
   id?: string | null;
   title?: string;
   proposalType?: ProposalType['proposalType'];
@@ -23,7 +24,8 @@ export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => 
   proposalType: proposal?.proposalType ?? null,
   targets: getTargetsValues(proposal),
   targetObservation: getTargetObservationValues(proposal),
-  calibrationStrategy: getCalibrationStrategyValues(proposal)
+  calibrationStrategy: getCalibrationStrategyValues(proposal),
+  ...getDocumentValues(proposal)
 });
 
 export function useProposalForm(proposal?: ProposalSeed) {

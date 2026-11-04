@@ -8,9 +8,11 @@ import {
   targetObservationToPdm
 } from './targetObservation';
 import { calibrationStrategyFromPdm, calibrationStrategyToPdm } from './calibrationStrategy';
+import { documentsFromPdm, documentsToPdm } from './documents';
 
 /** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
 export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
+  const documents = documentsFromPdm(pdm?.observation_info?.documents);
   return {
     title: titleFromPdm(pdm?.proposal_info),
     proposalType:
@@ -21,7 +23,8 @@ export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
       pdm?.observation_info?.result_details,
       pdm?.observation_info?.observation_sets
     ),
-    calibrationStrategy: calibrationStrategyFromPdm(pdm?.observation_info?.calibration_strategy)
+    calibrationStrategy: calibrationStrategyFromPdm(pdm?.observation_info?.calibration_strategy),
+    ...documents
   };
 }
 
@@ -48,7 +51,8 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
       result_details: targetObservationToPdm(
         form.targetObservation,
         observationTypesFromPdm(base.observation_info?.observation_sets)
-      )
+      ),
+      documents: documentsToPdm(form)
     }
   };
 }
