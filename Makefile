@@ -60,7 +60,7 @@ BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 
 
 # Major version of the deployed ska-ost-senscalc — keep in sync with charts/ska-oso-pht-ui-umbrella/Chart.yaml
-SENSCALC_API_VERSION ?= v11
+SENSCALC_API_VERSION ?= v12
 
 K8S_CHART_PARAMS += \
   --wait \
@@ -102,7 +102,7 @@ ifneq ($(ENV_CHECK),)
 
 PRODUCTION_URL=sv-ideas.skao.int
 API_DEPLOY_PATH=/api
-SENSCALC_URL=https://sensitivity-calculator.skao.int/api/v11/
+SENSCALC_URL=https://sensitivity-calculator.skao.int/api/$(SENSCALC_API_VERSION)/
 
 # UI config
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
