@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { getTitleSchema } from './title';
-import { getDocumentRefSchema, loadStatusSchema } from './documents';
+import { getDocumentRefSchema } from './documents';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
@@ -15,9 +15,7 @@ export function getProposalSchema() {
       .nullish()
       .refine((value) => value != null, { message: phtTranslations.proposalType.help }),
     sciencePDF: getDocumentRefSchema(),
-    scienceLoadStatus: loadStatusSchema,
-    technicalPDF: getDocumentRefSchema(),
-    technicalLoadStatus: loadStatusSchema
+    technicalPDF: getDocumentRefSchema()
   });
 }
 

@@ -39,9 +39,9 @@ export default function SciencePage() {
   const {
     field: { value: sciencePDF, onChange: onSciencePdfChange }
   } = useController<ProposalType, 'sciencePDF'>({ name: 'sciencePDF' });
-  const {
-    field: { value: scienceLoadStatus, onChange: onScienceLoadStatusChange }
-  } = useController<ProposalType, 'scienceLoadStatus'>({ name: 'scienceLoadStatus' });
+  const [scienceLoadStatus, setScienceLoadStatus] = React.useState(
+    sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL
+  );
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
   const [pdfError, setPdfError] = React.useState<string | null>(null);
@@ -58,6 +58,7 @@ export default function SciencePage() {
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
+  const proposalId = getProposal()?.id;
   const activeProposalIdRef = React.useRef(getProposal()?.id);
   activeProposalIdRef.current = getProposal()?.id;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -148,7 +149,7 @@ export default function SciencePage() {
   };
 
   const setUploadStatus = (status: typeof FileUploadStatus) => {
-    onScienceLoadStatusChange(status);
+    setScienceLoadStatus(status);
   };
 
   const validateSelectedFile = (selectedFile: File) => {
@@ -292,7 +293,7 @@ export default function SciencePage() {
       };
 
       onSciencePdfChange(sciencePDFUploaded);
-      onScienceLoadStatusChange(FileUploadStatus.OK);
+      setScienceLoadStatus(FileUploadStatus.OK);
 
       notifySuccess(t('pdfUpload.science.success'));
     } catch (e) {
@@ -331,7 +332,7 @@ export default function SciencePage() {
       }
 
       onSciencePdfChange(null);
-      onScienceLoadStatusChange(FileUploadStatus.INITIAL);
+      setScienceLoadStatus(FileUploadStatus.INITIAL);
 
       /*
        * FileUpload has no controlled-clear API: its file-prop sync effect ignores falsy values, so
@@ -373,25 +374,21 @@ export default function SciencePage() {
   }, []);
 
   React.useEffect(() => {
-    if (scienceLoadStatus == null) {
-      setUploadStatus(FileUploadStatus.INITIAL);
-    }
-  }, [scienceLoadStatus]);
+    setUploadStatus(
+      sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL
+    );
+  }, [proposalId, sciencePDF]);
 
   // Bridge: unmigrated consumers and the save path still read the legacy store.
   React.useEffect(() => {
     const proposal = getProposal();
-    if (
-      !isSameDocumentRef(proposal?.sciencePDF, sciencePDF) ||
-      (proposal?.scienceLoadStatus ?? null) !== (scienceLoadStatus ?? null)
-    ) {
+    if (!isSameDocumentRef(proposal?.sciencePDF, sciencePDF)) {
       setProposal({
         ...proposal,
-        sciencePDF: sciencePDF ?? null,
-        scienceLoadStatus: scienceLoadStatus ?? undefined
+        sciencePDF: sciencePDF ?? null
       });
     }
-  }, [sciencePDF, scienceLoadStatus]);
+  }, [sciencePDF]);
 
   React.useEffect(() => {
     setTheProposalState(getDocumentPageStatus(sciencePDF));

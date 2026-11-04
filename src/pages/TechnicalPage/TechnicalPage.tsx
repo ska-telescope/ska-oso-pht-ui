@@ -36,9 +36,9 @@ export default function TechnicalPage() {
   const {
     field: { value: technicalPDF, onChange: onTechnicalPdfChange }
   } = useController<ProposalType, 'technicalPDF'>({ name: 'technicalPDF' });
-  const {
-    field: { value: technicalLoadStatus, onChange: onTechnicalLoadStatusChange }
-  } = useController<ProposalType, 'technicalLoadStatus'>({ name: 'technicalLoadStatus' });
+  const [technicalLoadStatus, setTechnicalLoadStatus] = React.useState(
+    technicalPDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL
+  );
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
@@ -51,6 +51,7 @@ export default function TechnicalPage() {
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
+  const proposalId = getProposal()?.id;
   const activeProposalIdRef = React.useRef(getProposal()?.id);
   activeProposalIdRef.current = getProposal()?.id;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -66,7 +67,7 @@ export default function TechnicalPage() {
   };
 
   const setUploadStatus = (status: typeof FileUploadStatus) => {
-    onTechnicalLoadStatusChange(status);
+    setTechnicalLoadStatus(status);
   };
 
   const setFile = (theFile: File | '') => {
@@ -101,7 +102,7 @@ export default function TechnicalPage() {
       };
 
       onTechnicalPdfChange(technicalPDFUploaded);
-      onTechnicalLoadStatusChange(FileUploadStatus.OK);
+      setTechnicalLoadStatus(FileUploadStatus.OK);
       notifySuccess(t('pdfUpload.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
       if (activeProposalIdRef.current !== proposal.id) return;
@@ -144,7 +145,7 @@ export default function TechnicalPage() {
       };
 
       onTechnicalPdfChange(technicalPDFDeleted);
-      onTechnicalLoadStatusChange(FileUploadStatus.INITIAL);
+      setTechnicalLoadStatus(FileUploadStatus.INITIAL);
 
       notifySuccess(t('pdfDelete.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
@@ -177,25 +178,21 @@ export default function TechnicalPage() {
   }, []);
 
   React.useEffect(() => {
-    if (technicalLoadStatus == null) {
-      setUploadStatus(FileUploadStatus.INITIAL);
-    }
-  }, [technicalLoadStatus]);
+    setUploadStatus(
+      technicalPDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL
+    );
+  }, [proposalId, technicalPDF]);
 
   // Bridge: unmigrated consumers and the save path still read the legacy store.
   React.useEffect(() => {
     const proposal = getProposal();
-    if (
-      !isSameDocumentRef(proposal?.technicalPDF, technicalPDF) ||
-      (proposal?.technicalLoadStatus ?? null) !== (technicalLoadStatus ?? null)
-    ) {
+    if (!isSameDocumentRef(proposal?.technicalPDF, technicalPDF)) {
       setProposal({
         ...proposal,
-        technicalPDF: technicalPDF ?? null,
-        technicalLoadStatus: technicalLoadStatus ?? undefined
+        technicalPDF: technicalPDF ?? null
       });
     }
-  }, [technicalPDF, technicalLoadStatus]);
+  }, [technicalPDF]);
 
   React.useEffect(() => {
     setTheProposalState(getDocumentPageStatus(technicalPDF));

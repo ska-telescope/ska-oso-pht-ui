@@ -12,22 +12,16 @@ export function getDocumentRefSchema() {
     .nullish();
 }
 
-export const loadStatusSchema = z.number().nullish();
-
 export type DocumentRef = z.infer<ReturnType<typeof getDocumentRefSchema>>;
 
 export type DocumentValues = {
   sciencePDF: DocumentRef;
-  scienceLoadStatus: number | null;
   technicalPDF: DocumentRef;
-  technicalLoadStatus: number | null;
 };
 
 export const getDocumentValues = (proposal?: Partial<DocumentValues>): DocumentValues => ({
   sciencePDF: proposal?.sciencePDF ?? null,
-  scienceLoadStatus: proposal?.scienceLoadStatus ?? null,
-  technicalPDF: proposal?.technicalPDF ?? null,
-  technicalLoadStatus: proposal?.technicalLoadStatus ?? null
+  technicalPDF: proposal?.technicalPDF ?? null
 });
 
 export const isSameDocumentRef = (a: DocumentRef, b: DocumentRef): boolean =>
@@ -39,6 +33,7 @@ export const getDocumentPageStatus = (ref: DocumentRef): number => {
   return ref.isUploadedPdf ? STATUS_OK : STATUS_PARTIAL;
 };
 
+// Finds a document in the PDM by its filename prefix, returning the first match if any.
 const findDocument = (documents: DocumentTransport[] | null | undefined, prefix: string) =>
   documents?.find((document) => document.document_id?.startsWith(prefix));
 

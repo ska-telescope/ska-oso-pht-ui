@@ -29,9 +29,7 @@ describe('documents slice', () => {
   test('defaults missing values to null', () => {
     expect(getDocumentValues(undefined)).toEqual({
       sciencePDF: null,
-      scienceLoadStatus: null,
-      technicalPDF: null,
-      technicalLoadStatus: null
+      technicalPDF: null
     });
   });
 
