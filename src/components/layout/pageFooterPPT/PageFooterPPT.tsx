@@ -72,7 +72,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
-    const { proposalType, observingMode: _observingMode, ...formValues } = getValues();
+    const { proposalType, ...formValues } = getValues();
     const response = await PostProposal(
       authClient,
       refreshAuthToken,

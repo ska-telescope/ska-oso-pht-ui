@@ -9,14 +9,14 @@ import { getInvestigators } from '@services/axios/get/getProposal/getProposal';
 /** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
 export function mapPdmToForm(
   pdm?: Partial<ProposalBackend>,
-  proposal?: Pick<Proposal, 'observations' | 'investigators'>
+  proposal?: Pick<Proposal, 'investigators'>
 ): ProposalType {
   return {
     title: titleFromPdm(pdm?.proposal_info),
     proposalType:
       getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ??
       null,
-    ...detailsFromPdm(pdm?.proposal_info, proposal?.observations?.[0]?.type ?? null),
+    ...detailsFromPdm(pdm?.proposal_info),
     ...teamFromProposal({
       investigators: proposal?.investigators ?? getInvestigators(pdm?.proposal_info?.investigators)
     })

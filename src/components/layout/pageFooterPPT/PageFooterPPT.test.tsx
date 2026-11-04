@@ -108,7 +108,6 @@ const wrapper = (
         title,
         proposalType: (storageObject.useStore().application.content2 as Partial<ProposalType>)
           .proposalType,
-        observingMode: null,
         abstract: '',
         scienceCategory: null,
         ...formValues
@@ -162,7 +161,7 @@ describe('PageFooterPPT', () => {
         application: { ...store.application, content2: newProposal }
       }) as any;
 
-    wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title, { observingMode: null });
+    wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title);
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
@@ -196,8 +195,7 @@ describe('PageFooterPPT', () => {
 
   it('creates with the latest form title and type rather than stale store values', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />, 'Edited title', {
-      proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
-      observingMode: null
+      proposalType: PROPOSAL_TYPE.KEY_SCIENCE
     });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
@@ -217,8 +215,7 @@ describe('PageFooterPPT', () => {
 
   it('disables Create when the form has no proposal type', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, {
-      proposalType: undefined,
-      observingMode: null
+      proposalType: undefined
     });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));

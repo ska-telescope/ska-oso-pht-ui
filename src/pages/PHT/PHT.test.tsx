@@ -198,7 +198,6 @@ describe('<PHT />', () => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
         title: '',
         proposalType: null,
-        observingMode: null,
         abstract: '',
         scienceCategory: null,
         investigators: []
@@ -219,7 +218,6 @@ describe('<PHT />', () => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
         title: '',
         proposalType: null,
-        observingMode: null,
         abstract: '',
         scienceCategory: null,
         investigators: []

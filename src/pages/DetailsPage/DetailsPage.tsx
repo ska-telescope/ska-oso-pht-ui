@@ -2,10 +2,7 @@ import React from 'react';
 import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import {
-  ControlledSelect,
-  ControlledTextField
-} from '@ska-telescope/ska-gui-components/controlled';
+import { ControlledTextField } from '@ska-telescope/ska-gui-components/controlled';
 import {
   DETAILS,
   ERROR_SECS,
@@ -53,9 +50,6 @@ export default function DetailsPage() {
   const {
     field: { value: abstract, onChange: setAbstract, onBlur: onAbstractBlur }
   } = useController<ProposalFormValues, 'abstract'>({ name: 'abstract' });
-  const {
-    field: { value: observingMode, onChange: setObservingModeValue }
-  } = useController<ProposalFormValues, 'observingMode'>({ name: 'observingMode' });
   const {
     field: { value: scienceCategory, onChange: setScienceCategory },
     fieldState: { error: categoryError }
@@ -168,10 +162,7 @@ export default function DetailsPage() {
   const observingModeOptions = useObservationTypeOptions(SA_AA2, isLow);
 
   const changeObservingMode = async (mode: string) => {
-    if (mode === observation?.type) {
-      setObservingModeValue(mode);
-      return;
-    }
+    if (mode === observation?.type) return;
     const hasTarget = (getProposal().targets?.length ?? 0) > 0;
     const record = isLow ? osdLOW : osdMID;
     const sArray = (
@@ -187,7 +178,6 @@ export default function DetailsPage() {
     if (!result.success) {
       notifyError(t(result.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
     } else {
-      setObservingModeValue(mode);
       if (hasTarget) {
         notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
       }
@@ -201,17 +191,15 @@ export default function DetailsPage() {
         maxWidth: 500
       }}
     >
-      <ControlledSelect
-        name="observingMode"
+      <DropDown
         label={t('observationType.label')}
         options={observingModeOptions}
         disabled={observingModeOptions.length < 2}
         required
-        data-testid="observationType"
-        value={observingMode ?? observation?.type ?? TYPE_CONTINUUM}
-        withFormUpdate={false}
-        onChange={(event) => {
-          void changeObservingMode(event.target.value);
+        testId="observationType"
+        value={observation?.type ?? TYPE_CONTINUUM}
+        setValue={(mode: string) => {
+          void changeObservingMode(mode);
         }}
         onFocus={() => setHelp('observationType.help')}
       />

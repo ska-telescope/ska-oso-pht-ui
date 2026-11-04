@@ -33,7 +33,6 @@ export default function AddProposal() {
     reset({
       title: NEW_PROPOSAL.title,
       proposalType: proposalType ?? null,
-      observingMode: proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION ? TYPE_CONTINUUM : null,
       abstract: NEW_PROPOSAL.abstract,
       scienceCategory: NEW_PROPOSAL.scienceCategory,
       investigators: []

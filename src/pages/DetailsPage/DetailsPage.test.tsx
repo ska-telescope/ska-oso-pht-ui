@@ -1,4 +1,5 @@
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
+import { cloneElement, useReducer } from 'react';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
@@ -16,6 +17,7 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
 import { zodResolver } from '@hookform/resolvers/zod';
 import phtTranslations from '../../../public/locales/en/pht.json';
+import { getDetailsValues } from '@/models/proposals/details';
 
 // ---- Module mocks ----
 
@@ -76,6 +78,11 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
 
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
+    const [, rerender] = useReducer((count: number) => count + 1, 0);
+    mockState.updateProposal.mockImplementation((proposal) => {
+      mockState.proposal = proposal;
+      rerender();
+    });
     const proposal = mockState.proposal as {
       proposalType?: ProposalType['proposalType'];
       observations?: { type?: string }[];
@@ -88,9 +95,7 @@ const wrapper = (component: React.ReactElement) => {
       defaultValues: {
         title: '',
         proposalType: proposal.proposalType ?? null,
-        observingMode: proposal.observations?.[0]?.type ?? null,
-        abstract: proposal.abstract ?? '',
-        scienceCategory: proposal.scienceCategory ?? null,
+        ...getDetailsValues(proposal),
         investigators: []
       }
     });
@@ -99,7 +104,7 @@ const wrapper = (component: React.ReactElement) => {
       <StoreProvider>
         <FormProvider {...methods}>
           <ThemeA11yProvider>
-            {component}
+            {cloneElement(component)}
             <output data-testid="detailsFormValues">{JSON.stringify(formValues)}</output>
           </ThemeA11yProvider>
         </FormProvider>
@@ -222,7 +227,14 @@ describe('<DetailsPage /> observing mode', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockState.updateProposal.mockClear();
-    vi.mocked(setObservingMode).mockResolvedValue({ success: true });
+    vi.mocked(setObservingMode).mockImplementation(async (mode, getProposal, setProposal) => {
+      const proposal = getProposal();
+      setProposal({
+        ...proposal,
+        observations: [{ ...proposal.observations[0], type: mode }]
+      });
+      return { success: true };
+    });
   });
 
   it('shows the science category and no observing mode for standard proposals', async () => {
@@ -367,15 +379,40 @@ describe('<DetailsPage /> observing mode', () => {
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
   });
 
+  it('reflects observation changes without storing the mode in RHF', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    act(() => {
+      mockState.updateProposal(
+        svProposal({
+          observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1', type: TYPE_PST }]
+        })
+      );
+    });
+
+    expect(observingModeCombobox()).toHaveTextContent('observationType.pst');
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '')
+    ).not.toHaveProperty('observingMode');
+    expect(setObservingMode).not.toHaveBeenCalled();
+  });
+
   it('sets the observing mode on the observation when changed, without a notification if there is no target', async () => {
     mockState.proposal = svProposal();
     await renderPage();
 
     await selectObservingMode('observationType.pst');
 
+    expect(observingModeCombobox()).toHaveTextContent('observationType.pst');
+    expect(mockState.updateProposal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        observations: [expect.objectContaining({ type: TYPE_PST })]
+      })
+    );
     expect(
-      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').observingMode
-    ).toBe(TYPE_PST);
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '')
+    ).not.toHaveProperty('observingMode');
     expect(setObservingMode).toHaveBeenCalledWith(
       TYPE_PST,
       expect.any(Function),
@@ -399,12 +436,20 @@ describe('<DetailsPage /> observing mode', () => {
     );
   });
 
-  it('only updates the selected mode and form after the observation update succeeds', async () => {
-    let completeUpdate!: (result: { success: true }) => void;
-    vi.mocked(setObservingMode).mockReturnValue(
-      new Promise((resolve) => {
-        completeUpdate = resolve;
-      })
+  it('only updates the selected mode after the observation update succeeds', async () => {
+    let completeUpdate!: () => void;
+    vi.mocked(setObservingMode).mockImplementation(
+      (mode, getProposal, setProposal) =>
+        new Promise((resolve) => {
+          completeUpdate = () => {
+            const proposal = getProposal();
+            setProposal({
+              ...proposal,
+              observations: [{ ...proposal.observations[0], type: mode }]
+            });
+            resolve({ success: true });
+          };
+        })
     );
     mockState.proposal = svProposal();
     await renderPage();
@@ -412,18 +457,16 @@ describe('<DetailsPage /> observing mode', () => {
     await selectObservingMode('observationType.pst');
 
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
-    expect(
-      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').observingMode
-    ).toBe('continuum');
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
 
     await act(async () => {
-      completeUpdate({ success: true });
+      completeUpdate();
     });
 
     expect(observingModeCombobox()).toHaveTextContent('observationType.pst');
     expect(
-      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').observingMode
-    ).toBe(TYPE_PST);
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '')
+    ).not.toHaveProperty('observingMode');
   });
 
   it('notifies of the error when setting the observing mode fails', async () => {
@@ -436,8 +479,6 @@ describe('<DetailsPage /> observing mode', () => {
     expect(mockNotifyError).toHaveBeenCalledWith('bad', NOTIFICATION_DELAY_IN_SECONDS);
     expect(mockNotifySuccess).not.toHaveBeenCalled();
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
-    expect(
-      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').observingMode
-    ).toBe('continuum');
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
   });
 });

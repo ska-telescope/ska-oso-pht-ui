@@ -30,7 +30,6 @@ const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) =>
       defaultValues: {
         title,
         proposalType,
-        observingMode: null,
         abstract: pdm.proposal_info.abstract ?? '',
         scienceCategory: 1,
         investigators: []
@@ -66,9 +65,7 @@ describe('useProposalOda', () => {
 
     expect(form.current.getValues('title')).toBe(pdm.proposal_info.title);
     expect(form.current.getValues('proposalType')).toBe(pdm.proposal_info.proposal_type.main_type);
-    expect(form.current.getValues('observingMode')).toBe(
-      mapping(pdm).observations?.[0]?.type ?? null
-    );
+    expect(form.current.getValues()).not.toHaveProperty('observingMode');
     expect(form.current.getValues('abstract')).toBe(pdm.proposal_info.abstract);
     expect(form.current.getValues('scienceCategory')).toBe(1);
     expect(form.current.getValues('investigators')).toEqual([]);

@@ -9,7 +9,6 @@ describe('proposal schema', () => {
     const result = getProposalSchema().safeParse({
       title: 'A valid title',
       proposalType: PROPOSAL_TYPE.STANDARD,
-      observingMode: null,
       abstract: Array(wordLimit + extraWords)
         .fill('a')
         .join(' '),
@@ -33,7 +32,6 @@ describe('proposal schema', () => {
       getProposalSchema().safeParse({
         title: 'A valid title',
         proposalType,
-        observingMode: null,
         abstract: 'A valid abstract',
         scienceCategory: null,
         investigators: []
@@ -47,7 +45,6 @@ describe('proposal schema', () => {
       const result = getProposalSchema().safeParse({
         title: 'A valid title',
         proposalType,
-        observingMode: null,
         abstract: 'A valid abstract',
         scienceCategory: null,
         investigators: []

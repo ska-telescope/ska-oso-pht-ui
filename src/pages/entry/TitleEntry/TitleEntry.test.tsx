@@ -47,7 +47,6 @@ const wrapper = (
       defaultValues: {
         title: 'A title',
         proposalType,
-        observingMode: null,
         abstract: '',
         scienceCategory: null
       },

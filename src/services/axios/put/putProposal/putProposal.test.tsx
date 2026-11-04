@@ -132,7 +132,6 @@ describe('PutProposal Service', () => {
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
         title: 'Title from RHF',
         proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
-        observingMode: null,
         abstract: 'Abstract from RHF',
         scienceCategory: 7
       });
@@ -160,7 +159,6 @@ describe('PutProposal Service', () => {
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
       title: '',
       proposalType: PROPOSAL_TYPE.STANDARD,
-      observingMode: null,
       abstract: '',
       scienceCategory: null
     });

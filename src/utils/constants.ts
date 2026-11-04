@@ -109,38 +109,94 @@ export const TYPE_CONTINUUM_SPECTRAL = 'continuumSpectral';
 export const TYPE_CONTINUUM_SPECTRAL_LONG = 'continuum and spectral line';
 export const TYPE_PST = 'pst';
 
+export const SCIENCE_CATEGORY = {
+  COSMOLOGY: 1,
+  CRADLE_OF_LIFE: 2,
+  EPOCH_OF_REIONIZATION: 3,
+  EXTRAGALACTIC_CONTINUUM: 4,
+  EXTRAGALACTIC_SPECTRAL_LINE: 5,
+  GRAVITATIONAL_WAVES: 6,
+  HIGH_ENERGY_COSMIC_PARTICLES: 7,
+  HI_GALAXY_SCIENCE: 8,
+  MAGNETISM: 9,
+  OUR_GALAXY: 10,
+  PULSARS: 11,
+  SOLAR_HELIOSPHERIC_AND_IONOSPHERIC_PHYSICS: 12,
+  TRANSIENTS: 13,
+  VLBI: 14
+} as const;
+
 export const DETAILS = {
   ScienceCategory: [
-    { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
-    { label: 'Cradle of Life', subCategory: [{ label: 'Not specified', value: 1 }], value: 2 },
+    {
+      label: 'Cosmology',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.COSMOLOGY
+    },
+    {
+      label: 'Cradle of Life',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.CRADLE_OF_LIFE
+    },
     {
       label: 'Epoch of Re-ionization',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 3
+      value: SCIENCE_CATEGORY.EPOCH_OF_REIONIZATION
     },
     {
       label: 'Extragalactic continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 4
+      value: SCIENCE_CATEGORY.EXTRAGALACTIC_CONTINUUM
     },
     {
       label: 'Extragalactic Spectral line',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 5
+      value: SCIENCE_CATEGORY.EXTRAGALACTIC_SPECTRAL_LINE
     },
-    { label: 'Gravitational Waves', subCategory: [{ label: 'Not specified', value: 1 }], value: 6 },
+    {
+      label: 'Gravitational Waves',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.GRAVITATIONAL_WAVES
+    },
     {
       label: 'High Energy Cosmic Particles',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 7
+      value: SCIENCE_CATEGORY.HIGH_ENERGY_COSMIC_PARTICLES
     },
-    { label: 'HI Galaxy science', subCategory: [{ label: 'Not specified', value: 1 }], value: 8 },
-    { label: 'Magnetism', subCategory: [{ label: 'Not specified', value: 1 }], value: 9 },
-    { label: 'Our Galaxy', subCategory: [{ label: 'Not specified', value: 1 }], value: 10 },
-    { label: 'Pulsars', subCategory: [{ label: 'Not specified', value: 1 }], value: 11 },
-    { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
-    { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
-    { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
+    {
+      label: 'HI Galaxy science',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.HI_GALAXY_SCIENCE
+    },
+    {
+      label: 'Magnetism',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.MAGNETISM
+    },
+    {
+      label: 'Our Galaxy',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.OUR_GALAXY
+    },
+    {
+      label: 'Pulsars',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.PULSARS
+    },
+    {
+      label: 'Solar, Heliospheric and Ionospheric Physics',
+      value: SCIENCE_CATEGORY.SOLAR_HELIOSPHERIC_AND_IONOSPHERIC_PHYSICS
+    },
+    {
+      label: 'Transients',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.TRANSIENTS
+    },
+    {
+      label: 'VLBI',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.VLBI
+    }
   ]
 };
 

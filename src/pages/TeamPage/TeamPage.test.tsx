@@ -18,7 +18,6 @@ const wrapper = (component: React.ReactElement, investigators: Investigator[] = 
       defaultValues: {
         title: '',
         proposalType: null,
-        observingMode: null,
         abstract: '',
         scienceCategory: null,
         investigators

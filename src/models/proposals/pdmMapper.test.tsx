@@ -14,15 +14,19 @@ describe('mapPdmToForm', () => {
     expect(mapPdmToForm(pdm)).toEqual({
       title: pdm.proposal_info.title,
       proposalType: pdm.proposal_info.proposal_type.main_type,
-      observingMode: null,
       abstract: pdm.proposal_info.abstract,
       scienceCategory: 1,
       investigators: []
     });
   });
 
-  test('includes the observing mode from the mapped proposal', () => {
-    expect(mapPdmToForm(pdm, mapping(pdm)).observingMode).toBe('continuum');
+  test('leaves observing mode on the observation, outside form values', () => {
+    const proposal = mapping(pdm);
+    expect(proposal.observations?.[0]?.type).toBe('continuum');
+    expect(mapPdmToForm(pdm, proposal)).not.toHaveProperty('observingMode');
+    expect(mapFormToPdm(mapPdmToForm(pdm, proposal), pdm).observation_info).toEqual(
+      pdm.observation_info
+    );
   });
 
   test('maps investigators from PDM into the form', () => {
@@ -63,7 +67,6 @@ describe('mapPdmToForm', () => {
     expect(mapPdmToForm(undefined)).toEqual({
       title: '',
       proposalType: null,
-      observingMode: null,
       abstract: '',
       scienceCategory: null,
       investigators: []
@@ -77,7 +80,6 @@ describe('mapFormToPdm', () => {
       {
         title: 'Edited title',
         proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
-        observingMode: null,
         abstract: 'Edited abstract',
         scienceCategory: 7,
         investigators: []
@@ -101,7 +103,6 @@ describe('mapFormToPdm', () => {
       {
         title: 'Edited title',
         proposalType: PROPOSAL_TYPE.STANDARD,
-        observingMode: null,
         abstract: '',
         scienceCategory: null,
         investigators: []
@@ -116,7 +117,6 @@ describe('mapFormToPdm', () => {
       {
         title: 'Edited title',
         proposalType: PROPOSAL_TYPE.STANDARD,
-        observingMode: null,
         abstract: '',
         scienceCategory: null,
         investigators: [investigator]

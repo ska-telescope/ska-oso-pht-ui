@@ -145,7 +145,6 @@ const wrapper = (component: React.ReactElement) => {
       defaultValues: {
         title: '',
         proposalType: null,
-        observingMode: null,
         abstract: '',
         scienceCategory: null
       }
