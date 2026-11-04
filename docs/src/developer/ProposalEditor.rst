@@ -142,5 +142,5 @@ the figure shows, an SV proposal differs from a standard one in three places:
 - The Science and Technical pages are combined into one Description page.
 - The Details page asks for the observing mode instead of the science category. SV proposals
   have no science category.
-- There is no Linking page. An SV proposal has exactly one target, one observation and one
-  data product, and they are linked automatically in the background.
+- There is no Linking page. An SV proposal has exactly one target, one observation and the
+  default data products, and they are linked automatically in the background.
