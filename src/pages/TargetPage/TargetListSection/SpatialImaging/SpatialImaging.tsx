@@ -20,11 +20,7 @@ export default function SpatialImaging() {
           p: 10
         }}
       >
-        <Alert
-          color={AlertColorTypes.Info}
-          text="This functionality is not currently available"
-          testId="helpPanelId"
-        />
+        <Alert color={AlertColorTypes.Info} text="This functionality is not currently available" />
       </Grid>
     </Grid>
   );

@@ -66,13 +66,12 @@ export default function SensCalcDisplaySingle({
           disabled={isDisabled()}
           text={''}
           onClick={isDisabled() ? undefined : IconClicked}
-          testId="statusId"
           toolTip={ariaStatusMessage(targetObservation?.sensCalc)}
           level={targetObservation?.sensCalc?.statusGUI ?? STATUS_ERROR}
         />
       )}
       {show && field !== 'icon' && (
-        <div data-testid={`field-${field}`}>
+        <div>
           {(isNatural || isCustom) && field === 'SynthBeamSize'
             ? PresentCustomResultValue()
             : presentValue(FieldFetch(VALUE, field)) + ' ' + presentUnits(FieldFetch(UNITS, field))}

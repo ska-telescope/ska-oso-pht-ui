@@ -13,11 +13,15 @@ vi.mock('@utils/storage/store', () => ({
 
 // Stub child components so we can assert they’re called
 vi.mock('./tableObservationsRow/TableObservationsRow', () => ({
-  default: ({ item }: any) => <div data-testid="row">Row for {item.name}</div>
+  default: ({ item }: any) => (
+    <tr>
+      <td>Row for {item.name}</td>
+    </tr>
+  )
 }));
 
 vi.mock('../tableContainer/TableContainer', () => ({
-  default: ({ children }: any) => <div data-testid="table-container">{children}</div>
+  default: ({ children }: any) => <section aria-label="table container">{children}</section>
 }));
 
 // --- Tests ---
@@ -30,7 +34,7 @@ describe('TableObservations', () => {
 
     render(<TableObservations data={mockData} updateFunction={vi.fn()} deleteFunction={vi.fn()} />);
 
-    const rows = screen.getAllByTestId('row');
+    const rows = screen.getAllByText(/^Row for/);
     expect(rows).toHaveLength(2);
     expect(rows[0]).toHaveTextContent('Row for Product A');
     expect(rows[1]).toHaveTextContent('Row for Product B');
@@ -41,11 +45,11 @@ describe('TableObservations', () => {
 
     render(<TableObservations data={mockData} updateFunction={vi.fn()} />);
 
-    expect(screen.getByTestId('table-container')).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'table container' })).toBeInTheDocument();
   });
 
   it('handles empty data gracefully', () => {
     render(<TableObservations data={[]} updateFunction={vi.fn()} />);
-    expect(screen.queryByTestId('row')).toBeNull();
+    expect(screen.queryByText(/^Row for/)).toBeNull();
   });
 });

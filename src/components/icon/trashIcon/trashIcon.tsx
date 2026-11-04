@@ -8,13 +8,5 @@ interface TrashIconProps {
 }
 
 export default function TrashIcon({ disabled = false, onClick, toolTip = '' }: TrashIconProps) {
-  return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<DeleteIcon />}
-      testId="trashIcon"
-      toolTip={toolTip}
-    />
-  );
+  return <Icon disabled={disabled} onClick={onClick} icon={<DeleteIcon />} toolTip={toolTip} />;
 }

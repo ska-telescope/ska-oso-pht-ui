@@ -31,8 +31,9 @@ const tree = (component: React.ReactElement | null) => (
 const wrapper = (component: React.ReactElement) => render(tree(component));
 
 // The icon's test ID is on a wrapper around its button
-const clickIcon = (testId: string, index: number) =>
-  fireEvent.click(within(screen.getAllByTestId(testId)[index]).getByRole('button'));
+// The edit and delete icons are buttons named by their tool tips
+const clickIcon = (toolTip: 'editTarget.toolTip' | 'deleteTarget.toolTip', index: number) =>
+  fireEvent.click(screen.getAllByRole('button', { name: toolTip })[index]);
 
 // Mock proposal data
 const mockProposal = {
@@ -136,8 +137,8 @@ describe('<TargetListSection />', () => {
     it('removes a deleted target with its links and calibration', async () => {
       wrapper(<TargetListSection />);
 
-      clickIcon('trashIcon', 0);
-      fireEvent.click(await screen.findByTestId('dialogConfirmationButton'));
+      clickIcon('deleteTarget.toolTip', 0);
+      fireEvent.click(await screen.findByRole('button', { name: 'confirmBtn.label' }));
 
       await waitFor(() => {
         expect(formProbe.getValues('targets').map((t) => t.id)).toEqual(['2']);
@@ -151,11 +152,11 @@ describe('<TargetListSection />', () => {
     it('applies only the fields changed in the edit dialog', async () => {
       wrapper(<TargetListSection />);
 
-      clickIcon('editIcon', 0);
+      clickIcon('editTarget.toolTip', 0);
       const dialog = await screen.findByRole('dialog');
       const nameInput = within(dialog).getByRole('textbox', { name: 'name.label' });
       fireEvent.change(nameInput, { target: { value: 'Renamed' } });
-      fireEvent.click(within(dialog).getByTestId('dialogConfirmationButton'));
+      fireEvent.click(within(dialog).getByRole('button', { name: 'confirmBtn.label' }));
 
       await waitFor(() => {
         expect(formProbe.getValues('targets')[0].name).toBe('Renamed');
@@ -175,8 +176,8 @@ describe('<TargetListSection />', () => {
     it('keeps the changes after leaving the page and coming back', async () => {
       const { rerender } = wrapper(<TargetListSection />);
 
-      clickIcon('trashIcon', 1);
-      fireEvent.click(await screen.findByTestId('dialogConfirmationButton'));
+      clickIcon('deleteTarget.toolTip', 1);
+      fireEvent.click(await screen.findByRole('button', { name: 'confirmBtn.label' }));
       await waitFor(() => expect(screen.queryByText('Target2')).not.toBeInTheDocument());
 
       rerender(tree(null));

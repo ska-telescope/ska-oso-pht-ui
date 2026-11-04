@@ -70,7 +70,6 @@ export default function SubArrayField({
           <DropDown
             disabled={disabled || options.length < 2}
             options={options ?? []}
-            testId={FIELD}
             value={value ?? ''}
             setValue={setValue}
             label={t(`${FIELD}.label`)}

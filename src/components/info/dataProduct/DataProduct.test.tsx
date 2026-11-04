@@ -22,57 +22,58 @@ import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 // --- Mock all field components with simple test ids ---
 vi.mock('@/components/fields/imageSize/imageSize', () => ({
-  default: () => <div data-testid="ImageSizeField" />
+  default: () => <div>ImageSizeField</div>
 }));
 vi.mock('@/components/fields/pixelSize/pixelSize', () => ({
-  default: () => <div data-testid="PixelSizeField" />
+  default: () => <div>PixelSizeField</div>
 }));
 vi.mock('@/components/fields/imageWeighting/imageWeighting', () => ({
-  default: () => <div data-testid="ImageWeightingField" />
+  default: () => <div>ImageWeightingField</div>
 }));
 vi.mock('@/components/fields/robust/Robust', () => ({
-  default: () => <div data-testid="RobustField" />
+  default: () => <div>RobustField</div>
 }));
 vi.mock('@/components/fields/dataProductType/dataProductType', () => ({
-  default: () => <div data-testid="DataProductTypeField" />
+  default: () => <div>DataProductTypeField</div>
 }));
 vi.mock('@/components/fields/taper/taper', () => ({
-  default: () => <div data-testid="TaperField" />
+  default: () => <div>TaperField</div>
 }));
 vi.mock('@/components/fields/polarisations/polarisations', () => ({
-  default: () => <div data-testid="PolarisationsField" />
+  default: () => <div>PolarisationsField</div>
 }));
 vi.mock('@/components/fields/channelsOut/channelsOut', () => ({
-  default: () => <div data-testid="ChannelsOutField" />
+  default: () => <div>ChannelsOutField</div>
 }));
 vi.mock('@/components/fields/timeAveraging/timeAveraging', () => ({
-  default: () => <div data-testid="TimeAveragingField" />
+  default: () => <div>TimeAveragingField</div>
 }));
 vi.mock('@/components/fields/frequencyAveraging/frequencyAveraging', () => ({
-  default: () => <div data-testid="FrequencyAveragingField" />
+  default: () => <div>FrequencyAveragingField</div>
 }));
 vi.mock('@/components/fields/continuumSubtraction/continuumSubtraction', () => ({
-  default: () => <div data-testid="ContinuumSubtractionField" />
+  default: () => <div>ContinuumSubtractionField</div>
 }));
 vi.mock('@/components/fields/outputFrequencyResolution/outputFrequencyResolution', () => ({
-  default: () => <div data-testid="outputFrequencyResolution" />
+  default: () => <div>outputFrequencyResolution</div>
 }));
 vi.mock('@/components/fields/outputSamplingInterval/outputSamplingInterval', () => ({
-  default: () => <div data-testid="outputSamplingInterval" />
+  default: () => <div>outputSamplingInterval</div>
 }));
 vi.mock('@/components/fields/dispersionMeasure/dispersionMeasure', () => ({
-  default: () => <div data-testid="dispersionMeasure" />
+  default: () => <div>dispersionMeasure</div>
 }));
 vi.mock('@/components/fields/rotationMeasure/rotationMeasure', () => ({
-  default: () => <div data-testid="rotationMeasure" />
+  default: () => <div>rotationMeasure</div>
 }));
 vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
   default: ({ value, options }: any) => (
     <div
-      data-testid="BitDepthField"
       data-value={value ?? ''}
       data-options={JSON.stringify(options?.map((opt: any) => opt.value) ?? [])}
-    />
+    >
+      BitDepthField
+    </div>
   )
 }));
 
@@ -139,13 +140,13 @@ describe('DataProduct', () => {
         observation={baseObservation}
       />
     );
-    expect(screen.getByTestId('DataProductTypeField')).toBeInTheDocument();
-    expect(screen.getByTestId('ImageSizeField')).toBeInTheDocument();
-    expect(screen.getByTestId('PixelSizeField')).toBeInTheDocument();
-    expect(screen.getByTestId('ImageWeightingField')).toBeInTheDocument();
-    expect(screen.getByTestId('TaperField')).toBeInTheDocument();
-    expect(screen.getByTestId('ChannelsOutField')).toBeInTheDocument();
-    expect(screen.getByTestId('PolarisationsField')).toBeInTheDocument();
+    expect(screen.getByText('DataProductTypeField')).toBeInTheDocument();
+    expect(screen.getByText('ImageSizeField')).toBeInTheDocument();
+    expect(screen.getByText('PixelSizeField')).toBeInTheDocument();
+    expect(screen.getByText('ImageWeightingField')).toBeInTheDocument();
+    expect(screen.getByText('TaperField')).toBeInTheDocument();
+    expect(screen.getByText('ChannelsOutField')).toBeInTheDocument();
+    expect(screen.getByText('PolarisationsField')).toBeInTheDocument();
   });
 
   it('renders visibility fields when dataProductType!=DP_TYPE_IMAGES', () => {
@@ -156,8 +157,8 @@ describe('DataProduct', () => {
         observation={baseObservation}
       />
     );
-    expect(screen.getByTestId('TimeAveragingField')).toBeInTheDocument();
-    expect(screen.getByTestId('FrequencyAveragingField')).toBeInTheDocument();
+    expect(screen.getByText('TimeAveragingField')).toBeInTheDocument();
+    expect(screen.getByText('FrequencyAveragingField')).toBeInTheDocument();
   });
 
   it('renders spectral fields', () => {
@@ -168,11 +169,11 @@ describe('DataProduct', () => {
         observation={{ ...baseObservation, type: TYPE_ZOOM }}
       />
     );
-    expect(screen.getByTestId('ImageSizeField')).toBeInTheDocument();
-    expect(screen.getByTestId('PixelSizeField')).toBeInTheDocument();
-    expect(screen.getByTestId('ImageWeightingField')).toBeInTheDocument();
-    expect(screen.getByTestId('RobustField')).toBeInTheDocument(); // only when IW_BRIGGS
-    expect(screen.getByTestId('ContinuumSubtractionField')).toBeInTheDocument();
+    expect(screen.getByText('ImageSizeField')).toBeInTheDocument();
+    expect(screen.getByText('PixelSizeField')).toBeInTheDocument();
+    expect(screen.getByText('ImageWeightingField')).toBeInTheDocument();
+    expect(screen.getByText('RobustField')).toBeInTheDocument(); // only when IW_BRIGGS
+    expect(screen.getByText('ContinuumSubtractionField')).toBeInTheDocument();
   });
 
   it('renders PST fields : DETECTED_FILTER_BANK_VALUE', () => {
@@ -187,10 +188,10 @@ describe('DataProduct', () => {
         }}
       />
     );
-    expect(screen.getByTestId('outputFrequencyResolution')).toBeInTheDocument();
-    expect(screen.getByTestId('outputSamplingInterval')).toBeInTheDocument();
-    expect(screen.getByTestId('dispersionMeasure')).toBeInTheDocument();
-    expect(screen.getByTestId('rotationMeasure')).toBeInTheDocument();
+    expect(screen.getByText('outputFrequencyResolution')).toBeInTheDocument();
+    expect(screen.getByText('outputSamplingInterval')).toBeInTheDocument();
+    expect(screen.getByText('dispersionMeasure')).toBeInTheDocument();
+    expect(screen.getByText('rotationMeasure')).toBeInTheDocument();
   });
 
   it('renders PST fields : PULSAR_TIMING_VALUE', () => {
@@ -205,7 +206,7 @@ describe('DataProduct', () => {
         }}
       />
     );
-    expect(screen.getByTestId('pulsarTimingValue')).toBeInTheDocument();
+    expect(screen.getByText('page.7.group.pst.2')).toBeInTheDocument();
   });
 
   it('uses the PST-specific bit depth option lists in info display', () => {
@@ -220,7 +221,7 @@ describe('DataProduct', () => {
         }}
       />
     );
-    expect(screen.getByTestId('BitDepthField')).toHaveAttribute('data-options', '[1,2,4,8,16]');
+    expect(screen.getByText('BitDepthField')).toHaveAttribute('data-options', '[1,2,4,8,16]');
 
     rerender(
       <DataProduct
@@ -233,6 +234,6 @@ describe('DataProduct', () => {
         }}
       />
     );
-    expect(screen.getByTestId('BitDepthField')).toHaveAttribute('data-options', '[1,2,4,8]');
+    expect(screen.getByText('BitDepthField')).toHaveAttribute('data-options', '[1,2,4,8]');
   });
 });

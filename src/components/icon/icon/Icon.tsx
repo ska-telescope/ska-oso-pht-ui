@@ -7,21 +7,12 @@ interface IconProps {
   icon: JSX.Element;
   ref?: any;
   sx?: any;
-  testId: string;
   toolTip: string;
 }
 
-export default function Icon({
-  disabled = false,
-  icon,
-  onClick,
-  ref,
-  sx,
-  testId,
-  toolTip
-}: IconProps) {
+export default function Icon({ disabled = false, icon, onClick, ref, sx, toolTip }: IconProps) {
   return (
-    <Tooltip data-testid={testId} title={toolTip} arrow>
+    <Tooltip title={toolTip} arrow>
       <span>
         <IconButton
           aria-label={toolTip}

@@ -95,7 +95,6 @@ export default function EdgeSlider() {
           onClick={togglePanel}
           aria-expanded={expanded}
           aria-controls="edge-slider-content"
-          data-testid="edge-slider-tab"
         >
           <HelpOutlineIcon fontSize="small" />
           <Typography

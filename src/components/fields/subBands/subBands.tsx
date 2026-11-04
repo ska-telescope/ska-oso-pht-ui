@@ -81,7 +81,6 @@ export default function SubBands({
         disabled={disabled}
         label={t(FIELD + '.label')}
         suffix={suffix}
-        testId={FIELD}
         value={value}
         setValue={validate}
         onFocus={() => setHelp(FIELD)}

@@ -67,7 +67,7 @@ describe('RankEntryField', () => {
       const user = userEvent.setup();
       wrapper(<RankEntryField selectedRank={3} setSelectedRank={mockOnRankChange} />);
 
-      const centerCircle = screen.getByTestId('section0TestId');
+      const centerCircle = screen.getByLabelText('Select rank 0');
       await user.click(centerCircle);
 
       expect(mockOnRankChange).toHaveBeenCalledWith(0);

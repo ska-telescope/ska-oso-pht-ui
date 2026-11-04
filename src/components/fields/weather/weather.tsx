@@ -12,7 +12,6 @@ interface WeatherFieldProps {
   setValue?: Function;
   label?: string;
   suffix?: any;
-  testId: string;
   value: number;
   widthButton?: number;
   widthLabel?: number;
@@ -60,7 +59,6 @@ export default function WeatherField({
       <NumberEntry
         errorText={errorMessage}
         label={label}
-        testId="weather"
         value={value}
         setValue={checkValue}
         onFocus={onFocus}

@@ -1,5 +1,6 @@
-import { click, entry, selectId, verifyContent, verifyExists, verifyVisible } from './cypress';
+import { selectId } from './cypress';
 import { fetchLiveOpsToken, loginAsUser, stubMsalForceRefresh } from './auth';
+import { select, setChecked } from './editor/fields';
 
 // visitWithAuth logs in via a real MSAL session (see auth.js's loginAsUser) and then
 // does its own cy.visit() on top of that restored session - login itself no longer happens here.
@@ -58,217 +59,166 @@ export const mockValidateAPI = () => {
 
 /*----------------------------------------------------------------------*/
 
-export const verify = (testId) => {
-  verifyExists(testId);
-  verifyVisible(testId);
-};
+// Elements are found the way a user finds them: buttons by their names, fields by their labels
+export const button = (name, options) => cy.findByRole('button', { name, ...options });
 
-export const clickButton = (testId) => {
-  verify(testId);
-  click(testId);
-};
+export const clickButton = (name) => button(name).scrollIntoView().should('be.visible').click();
 
-export const clickAddSubmission = () => clickButton('addSubmissionButton');
-export const clickCreateSubmission = () => clickButton('nextButtonTestId');
-export const clickHome = () => clickButton('homeButtonTestId');
-export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
-export const clickUserMenu = () => clickButton('usernameMenu');
+// The library's user button is named after the signed-in user, so it's found by its description
+export const userMenuButton = (options) => cy.get('[aria-description="User Button"]', options);
+
+// The footer shows alerts like "Submission added with unique identifier ..."
+export const verifyAlertFooter = (text, timeout = 10000) => cy.contains(text, { timeout });
+
+// The status icon of a page in the page navigation, e.g. 'Observation'. Its label includes the
+// page's status, e.g. "Status of the observation page : OK".
+export const pageStatus = (pageName) =>
+  cy.get(`[aria-label^="Status of the ${pageName.toLowerCase()} page : "]`);
+
+const submissionsTable = () => cy.findByRole('table', { name: 'Table of Proposal Submissions' });
+
+export const clickAddSubmission = () => clickButton('Submission');
+export const clickCreateSubmission = () => clickButton('Create');
+export const clickHome = () => clickButton('Home');
+export const clickCycleConfirm = () =>
+  cy.findByRole('dialog', { name: 'Cycle Selection' }).within(() => clickButton('Confirm'));
+export const clickUserMenu = () => userMenuButton().should('be.visible').click();
 export const clickToAddTarget = () => cy.findByRole('button', { name: 'Add Target' }).click();
-export const clickAddDataProduct = () => clickButton('addDataProductButton');
-export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
-export const clickObservationSetup = () => clickButton('addObservationButton');
-export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
-export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
-export const clickToNextPage = () => clickButton('nextButtonTestId');
-export const clickFileUpload = () => clickButton('fileUploadUploadButton');
-export const clickToSubmitProposal = () => {
-  cy.get('[data-testid="submitBtnTestId"]').should('exist');
-  cy.get('[data-testid="submitBtnTestId"]').click();
-};
+export const clickAddDataProduct = () => clickButton('Data Product');
+export const clickAddDataProductEntry = () => clickButton('Add');
+export const clickObservationSetup = () => clickButton('Observation Setup');
+export const clickAddObservationEntry = () => clickButton('Add');
+export const clickToConfirmProposalSubmission = () => clickButton('Confirm Submission');
+// The footer's next button is named after the page it goes to
+export const clickToNextPage = (pageTitle) => clickButton(pageTitle);
+export const clickFileUpload = () => clickButton('Upload');
+export const clickToSubmitProposal = () => button('Submit').click();
 export const clickObservationFromTable = () => {
   cy.get('[data-rowindex="0"]').click({ multiple: true });
 };
+// Ticks the box in every row of the grid, leaving any select-all box in the header alone
 export const clickToLinkTargetAndObservation = () => {
-  cy.get('[data-testid="linkedTickBox"]').click({ multiple: true });
+  cy.get('[role="row"][data-rowindex] input[type="checkbox"]').click({ multiple: true });
 };
 export const clickToObservationPage = () => {
-  clickToNextPage();
+  clickToNextPage('Observation');
   pageConfirmed('OBSERVATION');
 };
 export const verifySensitivityCalculatorStatusSuccess = () => {
-  cy.get('[data-testid="statusId"]').should('exist');
   cy.get('[aria-label="Status : OK "]').should('exist');
 };
 export const addContinuumImagesObservatoryDataProduct = () => {
   clickAddDataProductEntry();
 };
-export const selectOptionFromDropdown = (testId, value) => {
-  // Open the dropdown using mousedown instead of click
-  cy.get('[data-testid="' + testId + '"] [role="combobox"]').trigger('mousedown', {
-    button: 0,
-    force: true
-  });
-
-  // Select the option
-  cy.get('li[role="option"]')
-    .filter((_, el) => el.innerText.trim() === value)
-    .click({ force: true });
-};
+export const selectOptionFromDropdown = (label, value) => select(label, value);
 // Stub-only - no standard/PI-proposal cycle is seeded in the real backend yet (only a Science
 // Verification one), so this only ever needs to match the mock fixture's cycle. Kept ready for
 // when a matching cycle exists on the real backend.
-export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
-export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
+export const clickCycleSelectionMockProposal = () =>
+  cy.findByRole('dialog', { name: 'Cycle Selection' }).contains('button', 'CYCLE-003').click();
+const titleField = () => cy.findByRole('textbox', { name: 'Title' });
+export const enterProposalTitle = () => titleField().type('Proposal Title');
 export const clickProposalTypePrincipleInvestigator = () =>
   selectId('ProposalType-standard_proposal');
 export const clickSubProposalTypeTargetOfOpportunity = () =>
   selectId('proposalAttribute-target_of_opportunity');
 export const verifySubmissionCreatedAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Submission added with unique identifier');
+  verifyAlertFooter('Submission added with unique identifier');
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
+  submissionsTable().should('contain', 'prsl-test');
 };
-export const verifyDataInTable = (tableTestId, text) => {
-  cy.get(`[data-testid="${tableTestId}"]`).find('[role="row"]').filter(`:contains("${text}")`);
+export const verifyDataInTable = (text) => {
+  cy.contains('[role="row"]', text);
 };
 export const uploadTestFile = (fileName) => {
-  cy.get('[data-testid="fileUpload"] input[type="file"]').attachFile(fileName);
+  cy.get('input[type="file"]').attachFile(fileName);
 };
 export const verifyTestFileUploaded = (fileName) => {
   cy.contains(fileName).should('be.visible');
 };
-export const verifyAlertFooter = (text) => {
-  verifyContent('timeAlertFooter', text);
-};
-// Selects by the cycle's rendered description text rather than its exact ID - CycleSelection.tsx
-// doesn't render the OSD `type` field, so description text (which every real SV cycle includes
-// "Science Verification" in) is the next best generic discriminator - matching how the
-// component's own unit tests already select a card.
+// The cycle selection dialog's card for the Science Verification cycle. Selects by the cycle's
+// rendered description text rather than its exact ID - CycleSelection.tsx doesn't render the OSD
+// `type` field, so description text (which every real SV cycle includes "Science Verification"
+// in) is the next best generic discriminator.
+const scienceVerificationCycleCard = () =>
+  cy.findByRole('dialog', { name: 'Cycle Selection' }).contains('button', 'Science Verification');
+
 export const clickCycleSelectionSV = () => {
-  cy.contains('[data-testid$="_description"]', 'Science Verification').click();
+  scienceVerificationCycleCard().click();
 };
 
-export const clickStatusIconNav = (testId) => {
-  cy.get('[data-testid="' + testId + '"]')
-    .eq(0)
-    .click();
+// Goes to a page from the page navigation, e.g. 'Details'
+export const clickStatusIconNav = (pageName) => {
+  pageStatus(pageName).eq(0).click();
 };
 
 /*----------------------------------------------------------------------*/
 
-export const checkFieldDisabled = (testId, disabled) => {
-  if (disabled) {
-    cy.get('[data-testid="' + testId + '"]').should('not.be.enabled');
-  } else {
-    cy.get('[data-testid="' + testId + '"]').should('not.be.disabled');
-  }
+export const checkFieldDisabled = (name, disabled) => {
+  button(name).should(disabled ? 'be.disabled' : 'be.enabled');
 };
 
-export const checkStatusIndicatorDisabled = (testId, disabled) => {
-  if (disabled) {
-    cy.get('[data-testid="' + testId + '"]')
-      .closest('button')
-      .should('be.disabled');
-  } else {
-    cy.get('[data-testid="' + testId + '"]')
-      .closest('button')
-      .should('be.enabled');
-  }
-};
-
-export const verifyStatusIndicatorLabel = (testId, label) => {
-  cy.get('[data-testid="' + testId + '"]')
-    .closest('button')
-    .contains(label);
-};
-
-export const checkFieldIsVisible = (testId, visible) => {
+export const checkFieldIsVisible = (name, visible) => {
   if (visible) {
-    cy.get('[data-testid="' + testId + '"]')
-      .closest('button')
-      .should('be.visible');
+    button(name).should('be.visible');
   } else {
-    cy.get('body').find(`[data-testid="${testId}"]`).should('not.exist');
+    button(name).should('not.exist');
   }
 };
 /*----------------------------------------------------------------------*/
 
-export const clickNav = (testId, title) => {
-  click(testId);
+export const clickNav = (menuItem, title) => {
+  cy.findByRole('menuitem', { name: menuItem }).click();
   if (title.length) {
-    verifyContent('pageTitle', title);
+    pageConfirmed(title);
   }
 };
 
 /*----------------------------------------------------------------------*/
 
-export const clickSignINBtns = (testId, title) => {
+export const clickSignINBtns = (menuItem, title) => {
   clickUserMenu();
-  clickNav(testId, title);
+  clickNav(menuItem, title);
 };
-export const clickUserMenuOverview = () => clickSignINBtns('menuItemOverview', 'OVERVIEW');
-export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals', '');
-export const clickUserMenuPanels = () =>
-  clickSignINBtns('menuItemPanelSummary', 'PANEL MANAGEMENT');
+export const clickUserMenuOverview = () => clickSignINBtns('Overview', 'OVERVIEW');
+export const clickUserMenuProposals = () => clickSignINBtns('Submissions', '');
+export const clickUserMenuPanels = () => clickSignINBtns('Panel Management', 'PANEL MANAGEMENT');
 // The reviews page's title depends on the real reviewable list's own cycle data (see
 // ReviewListPage.tsx's reviewListIsSV comment) - it's not a fixed string, so skip the title check
 // there the same way clickUserMenuProposals already does for its own destination page.
-export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', '');
-export const clickUserMenuDecisions = () =>
-  clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
+export const clickUserMenuReviews = () => clickSignINBtns('Panel Reviews', '');
+export const clickUserMenuDecisions = () => clickSignINBtns('Review Decisions', 'REVIEW DECISIONS');
 
 /*----------------------------------------------------------------------*/
 
-function verifyUserMenu(testId, shouldExist) {
-  const selector = `[data-testid="${testId}"]`;
-
-  if (shouldExist) {
-    cy.get(selector).should('exist').and('be.visible');
-  } else {
-    cy.get('body').then(($body) => {
-      if ($body.find(selector).length > 0) {
-        cy.get(selector).should('not.be.visible');
-      } else {
-        cy.log(`Menu item "${testId}" not found, as expected`);
-      }
-    });
-  }
+// A closed menu's items are hidden, so they aren't found by role
+function verifyUserMenu(menuItem, shouldExist) {
+  cy.findByRole('menuitem', { name: menuItem }).should(shouldExist ? 'be.visible' : 'not.exist');
 }
-export const verifyUserMenuOverview = (exists) => verifyUserMenu('menuItemOverview', exists);
-export const verifyUserMenuProposals = (exists) => verifyUserMenu('menuItemProposals', exists);
-export const verifyUserMenuPanels = (exists) => verifyUserMenu('menuItemPanelSummary', exists);
-export const verifyUserMenuReviews = (exists) => verifyUserMenu('menuItemReviews', exists);
-export const verifyUserMenuDecisions = (exists) =>
-  verifyUserMenu('menuItemReviewDecisions', exists);
+export const verifyUserMenuOverview = (exists) => verifyUserMenu('Overview', exists);
+export const verifyUserMenuProposals = (exists) => verifyUserMenu('Submissions', exists);
+export const verifyUserMenuPanels = (exists) => verifyUserMenu('Panel Management', exists);
+export const verifyUserMenuReviews = (exists) => verifyUserMenu('Panel Reviews', exists);
+export const verifyUserMenuDecisions = (exists) => verifyUserMenu('Review Decisions', exists);
 
 /*----------------------------------------------------------------------*/
 
 export const pageConfirmed = (label) => cy.get('#pageTitle').contains(label);
-export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
+export const verifyOnLandingPage = () => button('Submission', { timeout: 10000 }).should('exist');
 
 /*----------------------------------------------------------------------*/
 
 export const enterScienceVerificationIdeaTitle = (title = 'Science Verification Idea Title') =>
-  entry('titleId', title);
+  titleField().type(title);
 
-const selectDropDownOption = (testId, value) => {
-  // Open the dropdown using mousedown instead of click
-  cy.get('[data-testid="' + testId + '"] [role="combobox"]').trigger('mousedown', {
-    button: 0,
-    force: true
-  });
-
-  // Select the option
-  cy.get('li[role="option"]')
-    .filter((_, el) => el.innerText.trim() === value)
-    .click({ force: true });
-};
-
-export const selectScienceCategory = (value) => selectDropDownOption('categoryId', value);
+export const selectScienceCategory = (value) => select('Science Category', value);
 
 // SV proposals have no science category - their observing mode, selected on the Details page, is
 // the observation's type
-export const selectObservingMode = (value) => selectDropDownOption('observationType', value);
+export const selectObservingMode = (value) => select('Observing Mode', value);
+
+// Ticks or unticks a tick box, e.g. the 'I' polarisation
+export const setTickBox = (label, checked) => setChecked(label, checked);
 
 // Reads the actual response body of the (already cy.wait()-ed) '@mockOSDData' interception,
 // rather than re-reading a specific fixture file directly - that keeps these assertions honest
@@ -293,56 +243,40 @@ const formatDateForLocale = (str) =>
     new Date(normalizeDateStr(str))
   );
 
-// The opens/closes testids are prefixed with the cycle's own ID, so derive the prefix from
-// whichever SV card is actually on screen rather than hardcoding it.
-const getScienceVerificationCycleTestIdPrefix = () =>
-  cy
-    .contains('[data-testid$="_description"]', 'Science Verification')
-    .invoke('attr', 'data-testid')
-    .then((testId) => testId.replace(/_description$/, ''));
-
 export const verifyOsdDataProposalOpen = (data) => {
   getOsdData().then((osdData) => {
     expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_open).to.equal(data);
   });
-  getScienceVerificationCycleTestIdPrefix().then((prefix) =>
-    verifyContent(`${prefix}_opens`, formatDateForLocale(data))
-  );
+  scienceVerificationCycleCard().should('contain.text', formatDateForLocale(data));
 };
 
 export const verifyOsdDataProposalClose = (data) => {
   getOsdData().then((osdData) => {
     expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_close).to.equal(data);
   });
-  getScienceVerificationCycleTestIdPrefix().then((prefix) =>
-    verifyContent(`${prefix}_closes`, formatDateForLocale(data))
-  );
+  scienceVerificationCycleCard().should('contain.text', formatDateForLocale(data));
 };
 
 // 30000ms (not the verifyContent default of 10000ms) since this now waits on the real backend
 // creating the idea (see common.js's "spies on the real backend" note above) rather than an
 // instant stub reply - CI has been seen still showing the "please wait" placeholder at 10s.
 export const verifyScienceIdeaCreatedAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Science Verification Idea added with unique identifier', 30000);
+  verifyAlertFooter('Science Verification Idea added with unique identifier', 30000);
 
 // Same real-backend latency reasoning as verifyScienceIdeaCreatedAlertFooter above - this waits
 // on the real auto-link generation call, not a stub.
 export const verifyAutoLinkAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Target added and auto-linked successfully', 30000);
+  verifyAlertFooter('Target added and auto-linked successfully', 30000);
 
 export const clickEdit = () => {
-  cy.get('[data-testId="editIcon"]').should('be.visible');
-  cy.get('[data-testId="editIcon"]').click();
+  button('Edit the target').should('be.visible').click();
 };
 
-export const clickEditIconForRow = (tableTestId, text) => {
-  cy.get(`[data-testid="${tableTestId}"]`)
-    .find('[role="row"]')
-    .filter(`:contains("${text}")`)
+export const clickEditIconForRow = (text) => {
+  cy.contains('[role="row"]', text)
     .click()
-    .first()
     .within(() => {
-      cy.get('[data-testid="editIcon"]').should('be.visible').click();
+      button('Edit proposal').should('be.visible').click();
     });
 };
 
@@ -483,7 +417,7 @@ export const createStandardProposalSession = (user) => {
 export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = null) => {
   // New SV proposals start with a Continuum observation, so only other modes need selecting
   if (observingMode !== 'Continuum' || summary) {
-    clickStatusIconNav('statusId2'); // Details page
+    clickStatusIconNav('Details');
     pageConfirmed('DETAILS');
     if (observingMode !== 'Continuum') {
       selectObservingMode(observingMode);
@@ -492,16 +426,19 @@ export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = nu
       addSubmissionSummary(summary);
     }
   }
-  clickStatusIconNav('statusId4'); // Target page
+  clickStatusIconNav('Target');
   pageConfirmed('TARGET');
   addM2Target();
   clickToAddTarget();
   verifyAutoLinkAlertFooter();
 };
 
+// The abstract, labelled "Idea Summary" for SV
+export const submissionSummaryField = () =>
+  cy.findByRole('textbox', { name: /^(Idea Summary|Abstract)$/ });
+
 export const addSubmissionSummary = (value) => {
-  cy.get('[data-testid="abstractId"]').should('exist');
-  cy.get('[data-testid="abstractId"]').type(value);
+  submissionSummaryField().type(value);
 };
 
 // Types in the values the resolver gives M2, so the tests don't depend on the resolver's external
@@ -511,14 +448,6 @@ export const addM2Target = () => {
   enterTargetField('Right Ascension', '21:33:27.0200');
   enterTargetField('Declination', '-00:49:23.700');
   enterTargetField('Velocity', '-3.6');
-};
-
-export const updateDataProductField = (testId, value) => {
-  // The underlying NumberEntry component puts data-testid on the outer MuiFormControl
-  // wrapper, not the actual <input> - type into the nested input directly, otherwise
-  // Cypress silently types into the non-editable wrapper and the field never changes.
-  cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"] input').type(value);
 };
 
 // The target entry's fields are found by their labels, e.g. 'Name' or 'Right Ascension'
@@ -544,18 +473,24 @@ export const checkAddTargetDisabled = (disabled) => {
   cy.findByRole('button', { name: 'Add Target' }).should(disabled ? 'be.disabled' : 'be.enabled');
 };
 
-export const updateFieldValue = (testId, value) => {
-  cy.get(`[data-testid="${testId}"]`).should('exist').type('{selectall}{backspace}').type(value);
+// A number field, e.g. 'Central Frequency'
+export const numberField = (label) => cy.findByRole('spinbutton', { name: label });
+
+export const updateFieldValue = (label, value) => {
+  numberField(label).type('{selectall}{backspace}').type(value);
 };
 
+// The status filter's dropdown is labelled "Status types"
 export const verifyOnLandingPageFilterIsVisible = () => {
-  cy.get('[data-testid="proposalType"]').should('exist');
-  cy.get('[data-testid="proposalType"]').realClick();
+  cy.contains('label', /^Status types/)
+    .parent()
+    .find('[role="combobox"]')
+    .realClick();
   cy.get('[data-value="draft"]').realClick();
 };
 
 export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="table-submissions"]').should('contain', 'Science Verification Idea Title');
+  submissionsTable().should('contain', 'Science Verification Idea Title');
 };
 
 export const verifyTargetInTargetTable = (targetName, ra, dec, velocity) => {

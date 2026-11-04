@@ -100,7 +100,7 @@ describe('<ReviewListPage />', () => {
     // Wait for the proposals/reviews fetch effects to settle so their state updates land inside
     // act() instead of firing after the test has already finished.
     await waitFor(() => {
-      expect(screen.getByTestId('helpPanelId')).toBeInTheDocument();
+      expect(screen.getByText('proposals.empty')).toBeInTheDocument();
     });
   });
 
@@ -118,9 +118,7 @@ describe('<ReviewListPage />', () => {
     wrapper(<ReviewListPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('pageTitle')).toHaveTextContent(
-        'REVIEW SCIENCE VERIFICATION IDEAS'
-      );
+      expect(screen.getByText('REVIEW SCIENCE VERIFICATION IDEAS')).toBeInTheDocument();
     });
   });
 
@@ -135,7 +133,7 @@ describe('<ReviewListPage />', () => {
     wrapper(<ReviewListPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('pageTitle')).toHaveTextContent('REVIEW PROPOSALS');
+      expect(screen.getByText('REVIEW PROPOSALS')).toBeInTheDocument();
     });
   });
 });

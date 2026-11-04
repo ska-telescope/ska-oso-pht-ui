@@ -44,7 +44,9 @@ describe('TableDataProductsRow', () => {
   it('calls toggleRow when expand button is clicked', () => {
     wrapper(<TableDataProductsRow {...defaultProps} />);
 
-    const button = screen.getByTestId('expandIcon');
+    // The expand icon shares its tool tip with the edit icon after it
+    const button = screen.getAllByRole('button', { name: 'editDataProduct.toolTip' })[0];
     fireEvent.click(button);
+    expect(defaultProps.toggleRow).toHaveBeenCalled();
   });
 });

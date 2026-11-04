@@ -17,12 +17,11 @@ describe('Delete Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     wrapper(<DeleteButton action={mockAction} />);
-    expect(screen.getByTestId('deleteButtonTestId')).toHaveTextContent('deleteBtn.label');
-    screen.getByTestId('deleteButtonTestId').click();
+    screen.getByRole('button', { name: 'deleteBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<DeleteButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('deleteButtonTestId')).toHaveTextContent('deleteBtn.label');
+    expect(screen.getByRole('button', { name: 'deleteBtn.label' })).toBeInTheDocument();
   });
 });

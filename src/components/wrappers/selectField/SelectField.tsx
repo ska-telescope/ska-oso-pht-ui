@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react';
+import { useId } from 'react';
 import {
   FormControl,
   FormHelperText,
@@ -21,7 +21,6 @@ interface SelectFieldProps {
   options: SelectFieldOption[];
   required?: boolean;
   setValue: (value: number) => void;
-  testId: string;
   value: number;
 }
 
@@ -35,11 +34,10 @@ export default function SelectField({
   options,
   required = false,
   setValue,
-  testId,
   value
 }: SelectFieldProps) {
-  const labelId = `${testId}Label`;
-  const selectDisplayProps = { 'data-testid': testId } as unknown as HTMLAttributes<HTMLDivElement>;
+  // Ties the label to the select, which gives the select its accessible name
+  const labelId = useId();
 
   const handleChange = (e: SelectChangeEvent<number>) => {
     setValue(Number(e.target.value));
@@ -68,7 +66,6 @@ export default function SelectField({
         value={value}
         onChange={handleChange}
         onFocus={onFocus}
-        SelectDisplayProps={selectDisplayProps}
       >
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value}>

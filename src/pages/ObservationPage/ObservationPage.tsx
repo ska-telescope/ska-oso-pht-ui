@@ -154,11 +154,7 @@ export default function ObservationPage() {
         }}
       >
         <Grid size={{ md: 10 }}>
-          <Alert
-            color={AlertColorTypes.Warning}
-            text={t('error.noObservations')}
-            testId="noObservationsNotification"
-          />
+          <Alert color={AlertColorTypes.Warning} text={t('error.noObservations')} />
         </Grid>
       </Grid>
     );
@@ -174,7 +170,6 @@ export default function ObservationPage() {
       <AddButton
         action={PATH[PAGE_OBSERVATION_ENTRY]}
         primary={!hasObservations()}
-        testId="addObservationButton"
         title="addObservation.button"
       />
     </Box>

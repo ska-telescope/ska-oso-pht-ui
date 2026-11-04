@@ -14,7 +14,7 @@ const Consumer: React.FC = () => {
   const { settings, setSettings } = useThemeA11y();
   return (
     <div>
-      <span data-testid="version">{settings.version}</span>
+      <output aria-label="version">{settings.version}</output>
       <button
         onClick={() =>
           setSettings({
@@ -46,7 +46,7 @@ describe('ThemeA11yContext', () => {
       </ThemeA11yProvider>
     );
 
-    expect(screen.getByTestId('version').textContent).toBe('1');
+    expect(screen.getByRole('status', { name: 'version' }).textContent).toBe('1');
   });
 
   it('calls saveThemeA11y when setSettings is used', () => {
@@ -92,7 +92,7 @@ describe('ThemeA11yContext', () => {
       })
     );
 
-    expect(screen.getByTestId('version').textContent).toBe('1');
+    expect(screen.getByRole('status', { name: 'version' }).textContent).toBe('1');
   });
 
   // it('throws if useThemeA11y is used outside provider', () => {

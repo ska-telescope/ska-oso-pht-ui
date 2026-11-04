@@ -33,7 +33,6 @@ interface SteppedNumberFieldProps {
   required?: boolean;
   step?: number;
   suffix?: React.JSX.Element;
-  testId: string;
   value: number;
 }
 
@@ -56,7 +55,6 @@ export default function SteppedNumberField({
   parse = defaultParse,
   required = false,
   suffix,
-  testId,
   value
 }: SteppedNumberFieldProps) {
   // Defaults to disabling a direction once stepping it is a genuine no-op, per onStep itself -
@@ -196,7 +194,6 @@ export default function SteppedNumberField({
     >
       <IconButton
         aria-label="increment"
-        data-testid={`${testId}Increment`}
         disabled={disabled || effectiveIncrementDisabled}
         onClick={() => handleSpinButtonClick(1)}
         onMouseDown={(e) => handleSpinButtonMouseDown(e, 1)}
@@ -209,7 +206,6 @@ export default function SteppedNumberField({
       </IconButton>
       <IconButton
         aria-label="decrement"
-        data-testid={`${testId}Decrement`}
         disabled={disabled || effectiveDecrementDisabled}
         onClick={() => handleSpinButtonClick(-1)}
         onMouseDown={(e) => handleSpinButtonMouseDown(e, -1)}
@@ -259,7 +255,7 @@ export default function SteppedNumberField({
             }
           }}
           slotProps={{
-            htmlInput: { 'data-testid': testId, min, max, step: 'any' },
+            htmlInput: { min, max, step: 'any' },
             input: {
               endAdornment: (
                 <InputAdornment position="end">
@@ -272,11 +268,7 @@ export default function SteppedNumberField({
           value={inputValue}
         />
       </Tooltip>
-      {errorText && (
-        <FormHelperText data-testid={`${testId}Error`} error>
-          {errorText}
-        </FormHelperText>
-      )}
+      {errorText && <FormHelperText error>{errorText}</FormHelperText>}
     </Box>
   );
 }

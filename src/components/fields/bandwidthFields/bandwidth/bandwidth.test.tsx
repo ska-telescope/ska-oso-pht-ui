@@ -26,8 +26,10 @@ const pressArrowUp = async (input: HTMLElement) => {
 describe('<Bandwidth />', () => {
   test('MID renders the legacy preset dropdown, unchanged', () => {
     wrapper(<Bandwidth telescope={TELESCOPE_MID_NUM} value={1} setValue={vi.fn()} />);
-    expect(screen.getByTestId('bandwidth')).toBeInTheDocument();
-    expect(screen.queryByTestId('zoomChannels')).not.toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'bandwidth.label' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('spinbutton', { name: 'zoomChannels.label' })
+    ).not.toBeInTheDocument();
   });
 
   test('LOW renders channel count and bandwidth-in-frequency fields, synced from zoomChannels', () => {
@@ -43,10 +45,10 @@ describe('<Bandwidth />', () => {
         centralFrequencyHz={200_000_000}
       />
     );
-    expect(screen.getByTestId('zoomChannels')).toHaveValue(1000);
+    expect(screen.getByRole('spinbutton', { name: 'zoomChannels.label' })).toHaveValue(1000);
     // 1000 channels * 1808.449074 Hz = 1,808,449.074 Hz. That's >= 1 MHz, so the field defaults
     // to MHz (1.808449074 MHz), shown to the nearest centi-Hz (8dp in MHz).
-    expect(screen.getByTestId('bandwidth')).toHaveValue(1.80844907);
+    expect(screen.getByRole('spinbutton', { name: 'bandwidth.label' })).toHaveValue(1.80844907);
   });
 
   test('LOW: editing channel count pushes the new value via setZoomChannels', async () => {
@@ -62,7 +64,7 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    const channelsInput = screen.getByTestId('zoomChannels');
+    const channelsInput = screen.getByRole('spinbutton', { name: 'zoomChannels.label' });
     await userEvent.clear(channelsInput);
     await userEvent.type(channelsInput, '500');
     expect(setZoomChannels).toHaveBeenLastCalledWith(500);
@@ -82,7 +84,7 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    const channelsInput = screen.getByTestId('zoomChannels');
+    const channelsInput = screen.getByRole('spinbutton', { name: 'zoomChannels.label' });
     await userEvent.clear(channelsInput);
     await userEvent.type(channelsInput, '5000');
     expect(setZoomChannels).toHaveBeenLastCalledWith(MAX_ZOOM_CHANNELS_FOR_AA2);
@@ -101,7 +103,7 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    await pressArrowUp(screen.getByTestId('zoomChannels'));
+    await pressArrowUp(screen.getByRole('spinbutton', { name: 'zoomChannels.label' }));
     expect(setZoomChannels).toHaveBeenCalledWith(1001);
   });
 
@@ -118,7 +120,7 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    await pressArrowUp(screen.getByTestId('bandwidth'));
+    await pressArrowUp(screen.getByRole('spinbutton', { name: 'bandwidth.label' }));
     expect(setZoomChannels).toHaveBeenCalledWith(1001);
   });
 
@@ -137,7 +139,7 @@ describe('<Bandwidth />', () => {
     );
     // With zoomChannels=1000 the field defaults to MHz (see the "synced from zoomChannels"
     // test above) - 3.6169 MHz is the MHz-equivalent of the 2000-channel target.
-    const bandwidthInput = screen.getByTestId('bandwidth');
+    const bandwidthInput = screen.getByRole('spinbutton', { name: 'bandwidth.label' });
     await userEvent.clear(bandwidthInput);
     await userEvent.type(bandwidthInput, '3.6169');
     expect(setZoomChannels).toHaveBeenLastCalledWith(2000);
@@ -156,7 +158,7 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    await pressArrowUp(screen.getByTestId('zoomChannels'));
+    await pressArrowUp(screen.getByRole('spinbutton', { name: 'zoomChannels.label' }));
     expect(setZoomChannels).not.toHaveBeenCalled();
   });
 
@@ -172,7 +174,7 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    await userEvent.click(screen.getByTestId('zoomChannels'));
+    await userEvent.click(screen.getByRole('spinbutton', { name: 'zoomChannels.label' }));
     expect(mockSetHelp).toHaveBeenCalledWith('zoomChannels', { max: MAX_ZOOM_CHANNELS_FOR_AA2 });
   });
 });

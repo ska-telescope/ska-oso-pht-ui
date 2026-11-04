@@ -6,7 +6,6 @@ interface AssignButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -15,7 +14,6 @@ export default function AssignButton({
   action,
   primary = false,
   title = 'assignBtn.label',
-  testId = 'assignButtonTestId',
   toolTip = 'assignBtn.toolTip'
 }: AssignButtonProps) {
   return (
@@ -24,7 +22,6 @@ export default function AssignButton({
       disabled={disabled}
       icon={<JoinLeftIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

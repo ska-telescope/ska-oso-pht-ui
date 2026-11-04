@@ -9,7 +9,6 @@ interface SaveButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
   showCountdown?: boolean;
   autoSaveInterval?: number;
@@ -21,7 +20,6 @@ export default function SaveButton({
   autoSaveInterval = 0,
   title = 'saveBtn.label',
   primary = false,
-  testId = 'saveButtonTestId',
   toolTip = 'saveBtn.tooltip',
   showCountdown = false
 }: SaveButtonProps) {
@@ -102,7 +100,6 @@ export default function SaveButton({
       disabled={disabled}
       icon={iconWithCountdown}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

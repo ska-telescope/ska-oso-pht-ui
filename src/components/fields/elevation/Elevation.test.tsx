@@ -10,12 +10,12 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<Elevation />', () => {
   test('renders correctly', () => {
-    wrapper(<Elevation testId={''} value={20} />);
+    wrapper(<Elevation value={20} />);
   });
   test('renders correctly, isLow', () => {
-    wrapper(<Elevation isLow testId={''} value={0} />);
+    wrapper(<Elevation isLow value={0} />);
   });
   test('renders correctly, value > max', () => {
-    wrapper(<Elevation isLow testId={''} value={100} />);
+    wrapper(<Elevation isLow value={100} />);
   });
 });

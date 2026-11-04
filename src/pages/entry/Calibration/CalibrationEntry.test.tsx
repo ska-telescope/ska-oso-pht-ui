@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
@@ -119,6 +119,10 @@ const tree = (component: React.ReactElement | null) => (
 
 const wrapper = (component: React.ReactElement) => render(tree(component));
 
+// The comment has no label of its own, but it is the only textbox the user can edit
+const commentBox = () =>
+  screen.getAllByRole('textbox').find((box) => !box.hasAttribute('disabled'))!;
+
 describe('CalibrationEntry', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -133,7 +137,7 @@ describe('CalibrationEntry', () => {
   it('writes the comment to the calibration in the form, keeping its calibrators', () => {
     wrapper(<CalibrationEntry />);
 
-    const comment = within(screen.getByTestId('commentId')).getByRole('textbox');
+    const comment = commentBox();
     fireEvent.change(comment, { target: { value: 'Please add a second scan' } });
 
     const [strategy] = formProbe.getValues('calibrationStrategy');
@@ -147,15 +151,13 @@ describe('CalibrationEntry', () => {
 
   it('keeps the comment after leaving the page and coming back', () => {
     const { rerender } = wrapper(<CalibrationEntry />);
-    fireEvent.change(within(screen.getByTestId('commentId')).getByRole('textbox'), {
+    fireEvent.change(commentBox(), {
       target: { value: 'Kept comment' }
     });
 
     rerender(tree(null));
     rerender(tree(<CalibrationEntry />));
 
-    expect(within(screen.getByTestId('commentId')).getByRole('textbox')).toHaveValue(
-      'Kept comment'
-    );
+    expect(commentBox()).toHaveValue('Kept comment');
   });
 });

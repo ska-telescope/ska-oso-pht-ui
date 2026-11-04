@@ -198,7 +198,6 @@ export default function CentralFrequency({
 
   return (
     <SteppedNumberField
-      testId={FIELD}
       label={t(FIELD + '.label')}
       value={value}
       onStep={isLowZoom ? stepWindowBandwidth : stepChannel}

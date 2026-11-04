@@ -6,7 +6,6 @@ interface AddButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -15,7 +14,6 @@ export default function AddButton({
   action,
   primary = false,
   title = 'addBtn.label',
-  testId = 'addButtonTestId',
   toolTip
 }: AddButtonProps) {
   return (
@@ -24,7 +22,6 @@ export default function AddButton({
       disabled={disabled}
       icon={<AddIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

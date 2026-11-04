@@ -1,11 +1,18 @@
 import { describe, expect, test } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import SensCalcModalMultiple from './SensCalcModalMultiple';
 import { BAND_LOW_STR, STATUS_ERROR, TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+
+// The data row's cells, minus the target name before the 11 results and the status after them
+const expectResultCells = (text: string) => {
+  const cells = within(screen.getAllByRole('row')[1]).getAllByRole('gridcell').slice(1, -1);
+  expect(cells).toHaveLength(11);
+  cells.forEach((cell) => expect(cell).toHaveTextContent(text));
+};
 
 const data = [
   {
@@ -158,51 +165,7 @@ describe('<SensCalcModalMultiple />', () => {
         isNatural={false}
       />
     );
-    await waitFor(() => {
-      const element1 = screen.getByTestId('field1');
-      expect(element1).toBeInTheDocument();
-      expect(element1).toHaveTextContent('0 Jy');
-
-      const element2 = screen.getByTestId('field2');
-      expect(element2).toBeInTheDocument();
-      expect(element2).toHaveTextContent('0 Jy');
-
-      const element3 = screen.getByTestId('field3');
-      expect(element3).toBeInTheDocument();
-      expect(element3).toHaveTextContent('0 Jy');
-
-      const element4 = screen.getByTestId('field4');
-      expect(element4).toBeInTheDocument();
-      expect(element4).toHaveTextContent('0 Jy');
-
-      const element5 = screen.getByTestId('field5');
-      expect(element5).toBeInTheDocument();
-      expect(element5).toHaveTextContent('0 Jy');
-
-      const element6 = screen.getByTestId('field6');
-      expect(element6).toBeInTheDocument();
-      expect(element6).toHaveTextContent('0 Jy');
-
-      const element7 = screen.getByTestId('field7');
-      expect(element7).toBeInTheDocument();
-      expect(element7).toHaveTextContent('0 Jy');
-
-      const element8 = screen.getByTestId('field8');
-      expect(element8).toBeInTheDocument();
-      expect(element8).toHaveTextContent('0 Jy');
-
-      const element9 = screen.getByTestId('field9');
-      expect(element9).toBeInTheDocument();
-      expect(element9).toHaveTextContent('0 Jy');
-
-      const element10 = screen.getByTestId('field10');
-      expect(element10).toBeInTheDocument();
-      expect(element10).toHaveTextContent('0 Jy');
-
-      const element11 = screen.getByTestId('field11');
-      expect(element11).toBeInTheDocument();
-      expect(element11).toHaveTextContent('0 Jy');
-    });
+    await waitFor(() => expectResultCells('0 Jy'));
   });
   test('renders correctly with data ( custom )', async () => {
     wrapper(
@@ -241,51 +204,7 @@ describe('<SensCalcModalMultiple />', () => {
         isNatural={false}
       />
     );
-    await waitFor(() => {
-      const element1 = screen.getByTestId('field1');
-      expect(element1).toBeInTheDocument();
-      expect(element1).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element2 = screen.getByTestId('field2');
-      expect(element2).toBeInTheDocument();
-      expect(element2).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element3 = screen.getByTestId('field3');
-      expect(element3).toBeInTheDocument();
-      expect(element3).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element4 = screen.getByTestId('field4');
-      expect(element4).toBeInTheDocument();
-      expect(element4).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element5 = screen.getByTestId('field5');
-      expect(element5).toBeInTheDocument();
-      expect(element5).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element6 = screen.getByTestId('field6');
-      expect(element6).toBeInTheDocument();
-      expect(element6).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element7 = screen.getByTestId('field7');
-      expect(element7).toBeInTheDocument();
-      expect(element7).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element8 = screen.getByTestId('field8');
-      expect(element8).toBeInTheDocument();
-      expect(element8).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element9 = screen.getByTestId('field9');
-      expect(element9).toBeInTheDocument();
-      expect(element9).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element10 = screen.getByTestId('field10');
-      expect(element10).toBeInTheDocument();
-      expect(element10).toHaveTextContent('sensitivityCalculatorResults.customArray');
-
-      const element11 = screen.getByTestId('field11');
-      expect(element11).toBeInTheDocument();
-      expect(element11).toHaveTextContent('sensitivityCalculatorResults.customArray');
-    });
+    await waitFor(() => expectResultCells('sensitivityCalculatorResults.customArray'));
   });
   test('renders correctly with data ( natural )', async () => {
     wrapper(
@@ -324,51 +243,7 @@ describe('<SensCalcModalMultiple />', () => {
         isNatural={true}
       />
     );
-    await waitFor(() => {
-      const element1 = screen.getByTestId('field1');
-      expect(element1).toBeInTheDocument();
-      expect(element1).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element2 = screen.getByTestId('field2');
-      expect(element2).toBeInTheDocument();
-      expect(element2).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element3 = screen.getByTestId('field3');
-      expect(element3).toBeInTheDocument();
-      expect(element3).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element4 = screen.getByTestId('field4');
-      expect(element4).toBeInTheDocument();
-      expect(element4).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element5 = screen.getByTestId('field5');
-      expect(element5).toBeInTheDocument();
-      expect(element5).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element6 = screen.getByTestId('field6');
-      expect(element6).toBeInTheDocument();
-      expect(element6).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element7 = screen.getByTestId('field7');
-      expect(element7).toBeInTheDocument();
-      expect(element7).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element8 = screen.getByTestId('field8');
-      expect(element8).toBeInTheDocument();
-      expect(element8).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element9 = screen.getByTestId('field9');
-      expect(element9).toBeInTheDocument();
-      expect(element9).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element10 = screen.getByTestId('field10');
-      expect(element10).toBeInTheDocument();
-      expect(element10).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element11 = screen.getByTestId('field11');
-      expect(element11).toBeInTheDocument();
-      expect(element11).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-    });
+    await waitFor(() => expectResultCells('sensitivityCalculatorResults.nonGaussian'));
   });
 
   test('renders correctly (error)', () => {

@@ -22,7 +22,6 @@ export default function GroupObservationsField({
   obsId
 }: GroupObservationsFieldProps) {
   const { t } = useScopedTranslation();
-  const FIELD = 'groupObservations';
   const { application, updateAppContent2 } = storageObject.useStore();
   const [editing, setEditing] = React.useState(false);
   const [groupId, setGroupId] = React.useState('');
@@ -140,7 +139,6 @@ export default function GroupObservationsField({
         <TextEntry
           inputRef={inputRef}
           label={t('groupObservations.label')}
-          testId={FIELD + 'Value1'}
           value={groupId}
           setValue={setGroupValue}
           onBlur={addGroup}
@@ -157,7 +155,6 @@ export default function GroupObservationsField({
           options={options()}
           required
           setValue={processEntry}
-          testId={FIELD + 'Entry'}
         />
       )}
     </Box>

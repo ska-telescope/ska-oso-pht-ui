@@ -63,7 +63,6 @@ export default function OutputSamplingIntervalField({
       }}
     >
       <SteppedNumberField
-        testId={FIELD}
         value={value}
         format={(multiplier: number) => (multiplier * FUNDAMENTAL_INTERVAL_MS).toFixed(3)}
         parse={(raw: string) => {
@@ -87,7 +86,6 @@ export default function OutputSamplingIntervalField({
         suffix={
           <Box sx={{ minWidth: 90 }}>
             <SelectField
-              testId={FIELD + 'Units'}
               disabled
               options={[{ label: t(FIELD + '.units'), value: OUTPUT_SAMPLING_INTERVAL_UNIT_VALUE }]}
               value={OUTPUT_SAMPLING_INTERVAL_UNIT_VALUE}

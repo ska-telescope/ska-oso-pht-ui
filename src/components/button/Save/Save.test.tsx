@@ -28,13 +28,12 @@ describe('Save Button', () => {
   });
   test('renders correctly', () => {
     wrapper(<SaveButton action={mockAction} />);
-    expect(screen.getByTestId('saveButtonTestId')).toHaveTextContent('saveBtn.label');
-    screen.getByTestId('saveButtonTestId').click();
+    screen.getByRole('button', { name: 'saveBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<SaveButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('saveButtonTestId')).toHaveTextContent('saveBtn.label');
+    expect(screen.getByRole('button', { name: 'saveBtn.label' })).toBeInTheDocument();
   });
 
   test('does not trigger auto-save if action is not a function', () => {
@@ -83,8 +82,8 @@ describe('SaveButton iconWithCountdown', () => {
   });
 
   it('renders SaveIcon inside a Box', () => {
-    const { getByTestId } = wrapper(<SaveButton action={mockAction} />);
-    const btn = getByTestId('saveButtonTestId');
+    wrapper(<SaveButton action={mockAction} />);
+    const btn = screen.getByRole('button', { name: 'saveBtn.label' });
     expect(btn.querySelector('svg')).toBeTruthy();
   });
 
@@ -111,7 +110,7 @@ describe('SaveButton iconWithCountdown', () => {
 
   it('respects disabled prop', () => {
     wrapper(<SaveButton action={mockAction} disabled />);
-    const btn = screen.getByTestId('saveButtonTestId');
+    const btn = screen.getByRole('button', { name: 'saveBtn.label' });
     expect(btn).toBeDisabled();
   });
 });

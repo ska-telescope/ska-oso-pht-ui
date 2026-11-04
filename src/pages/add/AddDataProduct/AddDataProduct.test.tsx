@@ -4,13 +4,11 @@ import { StoreProvider } from '@utils/storage/store';
 import AddDataProduct from './AddDataProduct';
 
 vi.mock('@/components/layout/pageBannerPPT/PageBannerPPT', () => ({
-  default: () => <div data-testid="page-banner">PageBannerPPT</div>
+  default: () => <div>PageBannerPPT</div>
 }));
 
 vi.mock('@ska-telescope/ska-gui-components', () => ({
-  Spacer: ({ size, axis }: { size: number; axis: string }) => (
-    <div data-testid="spacer">{`Spacer ${size} ${axis}`}</div>
-  ),
+  Spacer: ({ size, axis }: { size: number; axis: string }) => <div>{`Spacer ${size} ${axis}`}</div>,
   SPACER_VERTICAL: 'vertical',
   LABEL_POSITION: 'top',
   TELESCOPE_LOW: {
@@ -24,7 +22,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
 }));
 
 vi.mock('@/pages/entry/DataProduct/DataProduct', () => ({
-  default: () => <div data-testid="data-product">DataProduct</div>
+  default: () => <div>DataProduct</div>
 }));
 
 const wrapper = (component: React.ReactElement) => {
@@ -35,8 +33,8 @@ describe('AddDataProduct', () => {
   it('renders all expected components', () => {
     wrapper(<AddDataProduct />);
 
-    expect(screen.getByTestId('page-banner')).toBeInTheDocument();
-    expect(screen.getByTestId('spacer')).toBeInTheDocument();
-    expect(screen.getByTestId('data-product')).toBeInTheDocument();
+    expect(screen.getByText('PageBannerPPT')).toBeInTheDocument();
+    expect(screen.getByText(/^Spacer /)).toBeInTheDocument();
+    expect(screen.getByText('DataProduct')).toBeInTheDocument();
   });
 });

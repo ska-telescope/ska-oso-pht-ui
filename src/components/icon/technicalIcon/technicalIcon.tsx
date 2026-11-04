@@ -12,13 +12,5 @@ export default function TechnicalIcon({
   onClick,
   toolTip = ''
 }: TechnicalIconProps) {
-  return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<BuildIcon />}
-      testId="technicalIcon"
-      toolTip={toolTip}
-    />
-  );
+  return <Icon disabled={disabled} onClick={onClick} icon={<BuildIcon />} toolTip={toolTip} />;
 }

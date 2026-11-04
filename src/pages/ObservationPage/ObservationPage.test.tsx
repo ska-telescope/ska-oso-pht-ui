@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import '@testing-library/jest-dom';
@@ -46,7 +46,7 @@ vi.mock('../../components/layout/Shell/Shell', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 vi.mock('../entry/ObservationEntry/ObservationEntry', () => ({
-  default: () => <div data-testid="observationEntryStub" />
+  default: () => <div>observationEntryStub</div>
 }));
 
 const renderWithProposal = (proposal: object) => {
@@ -77,14 +77,14 @@ describe('<ObservationPage />', () => {
       observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }]
     });
 
-    expect(screen.getByTestId('observationEntryStub')).toBeInTheDocument();
-    expect(screen.queryByTestId('noObservationsNotification')).not.toBeInTheDocument();
+    expect(screen.getByText('observationEntryStub')).toBeInTheDocument();
+    expect(screen.queryByText('error.noObservations')).not.toBeInTheDocument();
   });
 
   test('shows the same no-observation message for every proposal type', () => {
     renderWithProposal({ proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, observations: [] });
 
-    expect(screen.queryByTestId('observationEntryStub')).not.toBeInTheDocument();
+    expect(screen.queryByText('observationEntryStub')).not.toBeInTheDocument();
     expect(screen.getByText('error.noObservations')).toBeInTheDocument();
   });
 
@@ -111,8 +111,8 @@ describe('<ObservationPage />', () => {
       calibrationStrategy: [strategy('obs-1'), strategy('obs-2')]
     });
 
-    fireEvent.click(within(screen.getAllByTestId('trashIcon')[0]).getByRole('button'));
-    fireEvent.click(await screen.findByTestId('dialogConfirmationButton'));
+    fireEvent.click(screen.getAllByRole('button', { name: 'observations.delete' })[0]);
+    fireEvent.click(await screen.findByRole('button', { name: 'confirmBtn.label' }));
 
     await waitFor(() => {
       expect(formProbe.getValues('targetObservation')).toEqual([

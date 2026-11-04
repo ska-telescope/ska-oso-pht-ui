@@ -121,7 +121,6 @@ const D3PieChart: React.FC<Props> = ({
         .append('text')
         .attr('text-anchor', 'middle')
         .attr('dy', '0.35em')
-        .attr('data-testid', 'pie-chart-center-text')
         .style('font-size', theme.typography.h4.fontSize ?? '1.5rem')
         .style('fill', theme.palette.text.primary)
         .style('pointer-events', 'none')
@@ -152,7 +151,6 @@ const D3PieChart: React.FC<Props> = ({
       .enter()
       .append('text')
       .attr('class', 'label')
-      .attr('data-testid', (d) => `pie-chart-label-${d.data.name}`)
       .attr('transform', (d) => {
         const pos = outerArc.centroid(d);
         const midAngle = (d.startAngle + d.endAngle) / 2;
@@ -203,15 +201,10 @@ const D3PieChart: React.FC<Props> = ({
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      <svg
-        ref={svgRef}
-        role="presentation"
-        aria-label="Pie chart visualization"
-        data-testid="pie-chart-svg"
-      />
+      <svg ref={svgRef} role="img" aria-label="Pie chart visualization" />
       <div
         ref={tooltipRef}
-        data-testid="pie-chart-tooltip"
+        role="tooltip"
         style={{
           position: 'absolute',
           backgroundColor: theme.palette.background.paper,

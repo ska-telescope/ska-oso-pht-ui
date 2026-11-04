@@ -14,8 +14,8 @@ describe('D3ColumnChart', () => {
       </ThemeProvider>
     );
 
-    expect(screen.getByTestId('column-chart-svg')).toBeInTheDocument();
-    expect(screen.getByTestId('column-chart-tooltip')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Column chart visualization' })).toBeInTheDocument();
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
   });
 
   it('renders bars and labels for simple data', async () => {
@@ -30,7 +30,7 @@ describe('D3ColumnChart', () => {
       </ThemeProvider>
     );
 
-    const svg = screen.getByTestId('column-chart-svg');
+    const svg = screen.getByRole('img', { name: 'Column chart visualization' });
     // Bars are rendered as <rect> elements
     const rects = svg.querySelectorAll('rect.bar');
     expect(rects.length).toBe(sampleData.length);
@@ -59,7 +59,7 @@ describe('D3ColumnChart', () => {
       </ThemeProvider>
     );
 
-    const svg = screen.getByTestId('column-chart-svg');
+    const svg = screen.getByRole('img', { name: 'Column chart visualization' });
     const chartGroup = svg.querySelector('.chart-group')!;
     const rects = chartGroup.querySelectorAll('rect');
     expect(rects.length).toBe(groupedData.length); // now 4

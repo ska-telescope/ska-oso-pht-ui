@@ -34,7 +34,7 @@ export const D3ChartSelector: React.FC<{
   }, [data, chartType, groupField, valueField]);
 
   if (!data.length) {
-    return <div data-testid="noDataMessage">No data available</div>;
+    return <div>No data available</div>;
   }
 
   return (
@@ -42,7 +42,7 @@ export const D3ChartSelector: React.FC<{
       <div className="flex flex-wrap items-center gap-4">
         <label className="font-semibold">Chart Type:</label>
         <select
-          data-testid="chartTypeSelect"
+          aria-label="Chart Type"
           value={chartType}
           onChange={(e) => setChartType(e.target.value as 'bar' | 'pie')}
           className="select select-bordered"
@@ -53,7 +53,7 @@ export const D3ChartSelector: React.FC<{
 
         <label className="font-semibold">Group&nbsp;By:</label>
         <select
-          data-testid="groupFieldSelect"
+          aria-label="Group By"
           value={groupField}
           onChange={(e) => setGroupField(e.target.value)}
           className="select select-bordered"
@@ -67,7 +67,7 @@ export const D3ChartSelector: React.FC<{
           <>
             <label className="font-semibold">Value&nbsp;Field:</label>
             <select
-              data-testid="valueFieldSelect"
+              aria-label="Value Field"
               value={valueField}
               onChange={(e) => setValueField(e.target.value)}
               className="select select-bordered"
@@ -148,11 +148,11 @@ const BarChart: React.FC<{
   return (
     <svg
       ref={ref}
-      data-testid="barChartSvg"
       width={width}
       height={height}
       className="mx-auto"
       role="img"
+      aria-label="Bar chart"
     />
   );
 };
@@ -216,11 +216,11 @@ const PieChart: React.FC<{
   return (
     <svg
       ref={ref}
-      data-testid="pieChartSvg"
       width={width}
       height={height}
       className="mx-auto"
       role="img"
+      aria-label="Pie chart"
     />
   );
 };

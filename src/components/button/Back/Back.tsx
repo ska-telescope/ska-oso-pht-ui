@@ -6,7 +6,6 @@ interface BackButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -15,7 +14,6 @@ export default function BackButton({
   action,
   primary = false,
   title = 'backBtn.label',
-  testId = 'backButtonTestId',
   toolTip
 }: BackButtonProps) {
   return (
@@ -24,7 +22,6 @@ export default function BackButton({
       disabled={disabled}
       icon={<ArrowBackIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

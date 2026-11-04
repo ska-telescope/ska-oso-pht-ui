@@ -16,11 +16,10 @@ const wrapper = (component: React.ReactElement) => {
 describe('Home Button', () => {
   test('renders correctly', () => {
     wrapper(<HomeButton />);
-    expect(screen.getByTestId('homeButtonTestId')).toHaveTextContent('homeBtn.label');
-    screen.getByTestId('homeButtonTestId').click();
+    screen.getByRole('button', { name: 'homeBtn.label' }).click();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<HomeButton toolTip="" />);
-    expect(screen.getByTestId('homeButtonTestId')).toHaveTextContent('homeBtn.label');
+    expect(screen.getByRole('button', { name: 'homeBtn.label' })).toBeInTheDocument();
   });
 });

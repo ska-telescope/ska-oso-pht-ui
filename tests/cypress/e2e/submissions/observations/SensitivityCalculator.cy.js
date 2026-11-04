@@ -24,13 +24,15 @@ const addTargetUsingCoordinates = () => {
   enterTargetField('Declination', '00:00:00.0');
 };
 
+// The sensitivity calculator's status icon is labelled with its status
+const sensitivityCalculatorStatus = () => cy.get('[aria-label="Status : OK "]');
+
 const verifySensitivityCalculatorStatusSuccess = () => {
-  cy.get('[data-testid="statusId"]').should('exist');
-  cy.get('[aria-label="Status : OK "]').should('exist');
+  sensitivityCalculatorStatus().should('exist');
 };
 
 const clickToViewSensitivityCalculatorResults = () => {
-  cy.get('[data-testid="statusId"]').click();
+  sensitivityCalculatorStatus().click();
 };
 const verifyField = (id, value) => {
   if (value !== '') {
@@ -99,7 +101,7 @@ describe.skip('Proposal Flow: Sensitivity Calculator', () => {
   beforeEach(() => {
     cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
     createStandardProposalSession(standardUser);
-    clickStatusIconNav('statusId4'); //Click to target page
+    clickStatusIconNav('Target');
     pageConfirmed('TARGET');
     addTargetUsingCoordinates();
     clickToAddTarget();
@@ -119,19 +121,19 @@ describe.skip('Proposal Flow: Sensitivity Calculator', () => {
       { jiraKey: 'XTP-71885' },
       () => {
         clickObservationSetup();
-        selectOptionFromDropdown('observingBand', rec.band);
-        selectOptionFromDropdown('subArrayConfiguration', rec.subarray);
-        selectOptionFromDropdown('observationType', rec.observationType);
+        selectOptionFromDropdown('Band', rec.band);
+        selectOptionFromDropdown('Subarray Configuration', rec.subarray);
+        selectOptionFromDropdown('Observing Mode', rec.observationType);
         clickAddObservationEntry();
-        verifyDataInTable('review-table', 'obs-');
-        verifyDataInTable('review-table', rec.subarrayTableLabel);
+        verifyDataInTable('obs-');
+        verifyDataInTable(rec.subarrayTableLabel);
 
-        clickStatusIconNav('statusId7'); //Click to data product page
+        clickStatusIconNav('Data Product');
         pageConfirmed('DATA PRODUCT');
         clickAddDataProduct();
         clickAddDataProductEntry();
 
-        clickStatusIconNav('statusId8'); //Click to linking page
+        clickStatusIconNav('Linking');
         pageConfirmed('LINKING');
         clickObservationFromTable();
         clickToLinkTargetAndObservation();

@@ -122,11 +122,7 @@ export default function TargetListSection() {
             </FieldWrapper>
           </>
         )}
-        <Alert
-          color={AlertColorTypes.Info}
-          text={t('deleteTarget.info')}
-          testId="deleteTargetInfoId"
-        />
+        <Alert color={AlertColorTypes.Info} text={t('deleteTarget.info')} />
       </Grid>
     );
   };
@@ -244,7 +240,6 @@ export default function TargetListSection() {
             text={t(maxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached', {
               value: osdCyclePolicy?.maxTargets
             })}
-            testId="targetLimitPanelId"
           />
         </Box>
       )}

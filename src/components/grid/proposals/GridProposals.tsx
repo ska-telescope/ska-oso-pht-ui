@@ -203,7 +203,6 @@ export default function GridProposals({
         <TickBox
           label=""
           labelPosition="top"
-          testId="linkedTickBox"
           checked={isProposalSelected(e.row.id)}
           onChange={() => tickBoxClicked?.(e.row, isProposalSelected(e.row.id))}
         />
@@ -300,7 +299,6 @@ export default function GridProposals({
     >
       <DropDown
         options={[{ label: t('scienceCategory.all'), value: null }, ...DETAILS.ScienceCategory]}
-        testId="proposalScienceCategory"
         value={searchScienceCategory}
         setValue={setSearchScienceCategory}
         label={t('scienceCategory.all')}
@@ -322,7 +320,6 @@ export default function GridProposals({
             value: type
           }))
         ]}
-        testId="proposalType"
         value={searchProposalType}
         setValue={setSearchProposalType}
         label={t('proposalType.all')}
@@ -330,13 +327,8 @@ export default function GridProposals({
     </Box>
   );
 
-  const searchEntryField = (testId: string) => (
-    <SearchEntry
-      label={t('search.label')}
-      testId={testId}
-      value={searchTerm}
-      setValue={setSearchTerm}
-    />
+  const searchEntryField = () => (
+    <SearchEntry label={t('search.label')} value={searchTerm} setValue={setSearchTerm} />
   );
 
   const getTheProposal = async (id: string) => {
@@ -463,7 +455,7 @@ export default function GridProposals({
         >
           <Grid size={{ sm: 3 }}>{proposalTypeDropdown()}</Grid>
           <Grid size={{ sm: 3 }}>{scienceCategoryDropdown()}</Grid>
-          <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
+          <Grid size={{ sm: 5 }}>{searchEntryField()}</Grid>
         </Grid>
       )}
 
@@ -472,23 +464,14 @@ export default function GridProposals({
           <div>
             <DataGrid
               maxHeight={finalHeight}
-              testId="dataGridProposals"
               rows={filteredData}
               columns={forReview ? reviewColumns : proposalColumns}
               height={finalHeight}
             />
           </div>
         )}
-        {axiosViewError && (
-          <Alert
-            color={AlertColorTypes.Error}
-            testId="axiosViewErrorTestId"
-            text={axiosViewError}
-          />
-        )}
-        {axiosError && (
-          <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
-        )}
+        {axiosViewError && <Alert color={AlertColorTypes.Error} text={axiosViewError} />}
+        {axiosError && <Alert color={AlertColorTypes.Error} text={axiosError} />}
       </Grid>
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}

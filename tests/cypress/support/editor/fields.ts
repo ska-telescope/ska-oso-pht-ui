@@ -1,11 +1,7 @@
 // Field helpers shared by the page objects.
 
 // The bordered section with the given title, e.g. "Array Setup"
-export const section = (title: string) =>
-  cy
-    .findByRole('heading', { name: title })
-    .closest('[data-testid="borderedSection-label"]')
-    .parent();
+export const section = (title: string) => cy.findByRole('region', { name: title });
 
 // Replaces a field's value and leaves the field, so the app stores it. Types over the selected
 // value rather than clearing it, because number fields turn an empty value into 0.

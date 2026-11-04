@@ -14,7 +14,7 @@ describe('D3LineChart', () => {
       </ThemeProvider>
     );
 
-    expect(screen.getByTestId('line-chart-svg')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Line chart visualization' })).toBeInTheDocument();
   });
 
   it('renders a line and points for simple data', () => {
@@ -30,7 +30,7 @@ describe('D3LineChart', () => {
       </ThemeProvider>
     );
 
-    const svg = screen.getByTestId('line-chart-svg');
+    const svg = screen.getByRole('img', { name: 'Line chart visualization' });
     // Line path
     const paths = svg.querySelectorAll('path.line');
     expect(paths.length).toBe(1);
@@ -58,7 +58,7 @@ describe('D3LineChart', () => {
       </ThemeProvider>
     );
 
-    const svg = screen.getByTestId('line-chart-svg');
+    const svg = screen.getByRole('img', { name: 'Line chart visualization' });
     const paths = svg.querySelectorAll('path.line');
     expect(paths.length).toBe(2); // one per group
 

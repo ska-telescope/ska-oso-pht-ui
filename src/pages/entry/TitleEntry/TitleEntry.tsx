@@ -230,7 +230,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     );
   };
 
-  const titleField = (ipad: boolean = false) => {
+  const titleField = () => {
     const helperFunction = (title: string) => {
       const color = theme.palette.error.dark;
 
@@ -255,8 +255,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
           required
           slotProps={{
             htmlInput: {
-              maxLength: MAX_CHAR,
-              'data-testid': ipad ? 'titleIdIpad' : 'titleId'
+              maxLength: MAX_CHAR
             }
           }}
           helperText={helperFunction(title)}
@@ -327,7 +326,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
               display: { xs: 'block', lg: 'none' }
             }}
           >
-            {titleField(true)}
+            {titleField()}
           </Grid>
 
           <Grid

@@ -5,7 +5,6 @@ interface TeamInviteButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -14,7 +13,6 @@ export default function TeamInviteButton({
   action,
   primary = false,
   title = 'sendInviteBtn.label',
-  testId = 'investigatorInviteButtonTestId',
   toolTip
 }: TeamInviteButtonProps) {
   return (
@@ -23,7 +21,6 @@ export default function TeamInviteButton({
       disabled={disabled}
       icon={<EmailIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

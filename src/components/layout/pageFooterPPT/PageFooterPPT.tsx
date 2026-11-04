@@ -193,20 +193,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         }}
       >
         <Grid sx={{ pointerEvents: 'auto' }}>
-          {showPrevNav() && (
-            <PreviousPageButton
-              action={prevPageNav}
-              testId="prevButtonTestId"
-              title={prevLabel()}
-            />
-          )}
+          {showPrevNav() && <PreviousPageButton action={prevPageNav} title={prevLabel()} />}
         </Grid>
 
         <Grid sx={{ pointerEvents: 'auto' }}>
           {showNextNav() && (
             <NextPageButton
               disabled={buttonDisabled || (currPageNo === -1 && !isValid)}
-              testId="nextButtonTestId"
               title={nextLabel()}
               page={currPageNo}
               primary

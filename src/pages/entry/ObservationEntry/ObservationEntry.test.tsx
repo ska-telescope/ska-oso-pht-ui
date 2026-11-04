@@ -121,9 +121,7 @@ vi.mock('@utils/helpers.ts', async () => {
 const NEW_BANDWIDTH = 6; // must differ from ZOOM_BANDWIDTH_DEFAULT_LOW (8), and be a legal coarse zoom value (5-8)
 vi.mock('@/components/fields/bandwidthFields/bandwidth/bandwidth', () => ({
   default: ({ setValue }: { setValue: (v: number) => void }) => (
-    <button data-testid="bandwidth-change-btn" onClick={() => setValue(NEW_BANDWIDTH)}>
-      change bandwidth
-    </button>
+    <button onClick={() => setValue(NEW_BANDWIDTH)}>change bandwidth</button>
   )
 }));
 
@@ -180,7 +178,7 @@ describe('<ObservationEntry />', () => {
       });
       mockUpdateAppContent2.mockClear();
 
-      await user.click(screen.getByTestId('bandwidth-change-btn'));
+      await user.click(screen.getByRole('button', { name: 'change bandwidth' }));
       await act(async () => {});
 
       expect(mockUpdateAppContent2).toHaveBeenCalledWith(
@@ -204,7 +202,7 @@ describe('<ObservationEntry />', () => {
       });
       mockUpdateAppContent2.mockClear();
 
-      await user.click(screen.getByTestId('bandwidth-change-btn'));
+      await user.click(screen.getByRole('button', { name: 'change bandwidth' }));
       await act(async () => {});
 
       expect(mockUpdateAppContent2).toHaveBeenCalledWith(
@@ -265,7 +263,7 @@ describe('<ObservationEntry />', () => {
 
   describe('observation type field', () => {
     const observationTypeCombobox = () =>
-      screen.getByTestId('observationType').querySelector('[role="combobox"]');
+      screen.getByRole('combobox', { name: /observationType\.label/ });
 
     beforeEach(() => {
       mockState.observationTypes = ['continuum', 'spectral'];
@@ -308,9 +306,9 @@ describe('<ObservationEntry />', () => {
       await act(async () => {
         wrapper(<ObservationEntry data={DEFAULT_PST_OBSERVATION_LOW} />);
       });
-      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
-      expect(screen.queryByTestId('bandwidth-change-btn')).not.toBeInTheDocument();
-      expect(screen.getByTestId('pstMode')).toBeInTheDocument();
+      expect(screen.getByLabelText(/continuumBandwidth\.label/)).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'change bandwidth' })).not.toBeInTheDocument();
+      expect(screen.getByRole('combobox', { name: /pstMode\.label/ })).toBeInTheDocument();
     });
 
     it('shows sub-bands for a continuum observation', async () => {
@@ -318,8 +316,8 @@ describe('<ObservationEntry />', () => {
       await act(async () => {
         wrapper(<ObservationEntry data={DEFAULT_CONTINUUM_OBSERVATION_LOW} />);
       });
-      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
-      expect(screen.getByTestId('subBands')).toBeInTheDocument();
+      expect(screen.getByLabelText(/continuumBandwidth\.label/)).toBeInTheDocument();
+      expect(screen.getByLabelText(/subBands\.label/)).toBeInTheDocument();
     });
 
     it('hides sub-bands for a continuum observation in a science verification proposal', async () => {
@@ -327,8 +325,8 @@ describe('<ObservationEntry />', () => {
       await act(async () => {
         wrapper(<ObservationEntry data={DEFAULT_CONTINUUM_OBSERVATION_LOW} />);
       });
-      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
-      expect(screen.queryByTestId('subBands')).not.toBeInTheDocument();
+      expect(screen.getByLabelText(/continuumBandwidth\.label/)).toBeInTheDocument();
+      expect(screen.queryByLabelText(/subBands\.label/)).not.toBeInTheDocument();
     });
   });
 

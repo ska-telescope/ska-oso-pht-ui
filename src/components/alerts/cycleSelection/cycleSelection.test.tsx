@@ -78,14 +78,14 @@ describe('CycleSelection component', () => {
   it('calls onClose when cancel button clicked', () => {
     const onClose = vi.fn();
     wrapper(<CycleSelection open={true} onClose={onClose} onConfirm={vi.fn()} />);
-    fireEvent.click(screen.getByTestId('cancelButtonTestId'));
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(onClose).toHaveBeenCalled();
   });
 
   it('calls onConfirm with selectedPolicy when confirm button clicked', () => {
     const onConfirm = vi.fn();
     wrapper(<CycleSelection open={true} onClose={vi.fn()} onConfirm={onConfirm} />);
-    fireEvent.click(screen.getByTestId('cycleConfirmationButton'));
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
     expect(onConfirm).toHaveBeenCalledWith(expect.objectContaining(mockPolicy));
   });
 
@@ -95,8 +95,11 @@ describe('CycleSelection component', () => {
     expect(dialog).toHaveAttribute('aria-labelledby', 'alert-dialog-title');
     expect(dialog).toHaveAttribute('aria-describedby', 'alert-dialog-description');
     expect(screen.getByText('Cycle')).toHaveAttribute('id', 'alert-dialog-title');
-    expect(screen.getByTestId('cycleConfirmationButton')).toHaveAttribute('aria-label', 'Confirm');
-    expect(screen.getByTestId('cancelButtonTestId')).toHaveAttribute('aria-label', 'Close');
+    expect(screen.getByRole('button', { name: 'Confirm' })).toHaveAttribute(
+      'aria-label',
+      'Confirm'
+    );
+    expect(screen.getByRole('button', { name: 'Close' })).toHaveAttribute('aria-label', 'Close');
   });
 
   it('renders multiple policies and allows selection of second', () => {
@@ -131,7 +134,7 @@ describe('CycleSelection component', () => {
     fireEvent.click(screen.getByText((c) => c.includes('FAKE_ID_FOR_TESTING')));
 
     // Confirm should be called with second policy
-    fireEvent.click(screen.getByTestId('cycleConfirmationButton'));
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
     expect(onConfirm).toHaveBeenCalledWith(expect.objectContaining(secondPolicy));
   });
 });

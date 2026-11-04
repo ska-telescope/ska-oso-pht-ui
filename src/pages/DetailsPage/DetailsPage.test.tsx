@@ -1,5 +1,5 @@
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import DetailsPage from './DetailsPage';
@@ -171,7 +171,7 @@ const renderPage = async () => {
 };
 
 const observingModeCombobox = () =>
-  within(screen.getByTestId('observationType')).getByRole('combobox');
+  screen.getByRole('combobox', { name: /observationType\.label/ });
 
 const selectObservingMode = async (label: string) => {
   fireEvent.mouseDown(observingModeCombobox());
@@ -196,15 +196,19 @@ describe('<DetailsPage /> observing mode', () => {
     };
     await renderPage();
 
-    expect(screen.getByTestId('categoryId')).toBeInTheDocument();
-    expect(screen.queryByTestId('observationType')).not.toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /scienceCategory\.label/ })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('combobox', { name: /observationType\.label/ })
+    ).not.toBeInTheDocument();
   });
 
   it('shows the observing mode of the observation and no science category for SV proposals', async () => {
     mockState.proposal = svProposal();
     await renderPage();
 
-    expect(screen.queryByTestId('categoryId')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('combobox', { name: /scienceCategory\.label/ })
+    ).not.toBeInTheDocument();
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
   });
 

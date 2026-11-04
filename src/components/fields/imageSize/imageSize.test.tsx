@@ -1,5 +1,5 @@
 import { describe, test, vi, expect } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import ImageSize from './imageSize';
@@ -38,12 +38,9 @@ describe('<ImageSize />', () => {
         <ImageSize value={1} units={1} setUnits={vi.fn()} />
       </StoreProvider>
     );
-    const units = screen.getByTestId('imageSizeUnits');
+    const units = screen.getByRole('combobox');
     expect(units).toHaveTextContent('imageSize.1');
-    expect(within(units.parentElement as HTMLElement).getByRole('combobox')).not.toHaveAttribute(
-      'aria-disabled',
-      'true'
-    );
+    expect(units).not.toHaveAttribute('aria-disabled', 'true');
   });
 
   test('disables both controls in read-only mode', () => {
@@ -53,10 +50,7 @@ describe('<ImageSize />', () => {
       </StoreProvider>
     );
     expect(screen.getByRole('textbox')).toBeDisabled();
-    const units = screen.getByTestId('imageSizeUnits');
-    expect(within(units.parentElement as HTMLElement).getByRole('combobox')).toHaveAttribute(
-      'aria-disabled',
-      'true'
-    );
+    const units = screen.getByRole('combobox');
+    expect(units).toHaveAttribute('aria-disabled', 'true');
   });
 });

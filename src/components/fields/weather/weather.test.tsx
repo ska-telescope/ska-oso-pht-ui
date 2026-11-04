@@ -13,6 +13,6 @@ describe('<WeatherField />', () => {
   });
 
   test('renders correctly', () => {
-    wrapper(<WeatherField testId={'weather'} value={20} />);
+    wrapper(<WeatherField value={20} />);
   });
 });

@@ -5,7 +5,6 @@ interface PreviousPageButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   title?: string;
   toolTip?: string;
 }
@@ -15,7 +14,6 @@ export default function PreviousPageButton({
   action,
   primary = false,
   title = 'baseBtn.label',
-  testId = 'previousPageButtonTestId',
   toolTip
 }: PreviousPageButtonProps) {
   return (
@@ -24,7 +22,6 @@ export default function PreviousPageButton({
       disabled={disabled}
       icon={<ArrowBackIosIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

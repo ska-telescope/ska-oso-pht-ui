@@ -1020,7 +1020,6 @@ export default function DataProduct({ data }: DataProductProps) {
               disabled={!enabled()}
               primary
               action={buttonClicked}
-              testId={'addDataProductButtonEntry'}
               title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
             />
           </Grid>

@@ -5,7 +5,6 @@ interface ResetButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -14,7 +13,6 @@ export default function ResetButton({
   action,
   primary = false,
   title = 'reset.label',
-  testId = 'resetButtonTestId',
   toolTip
 }: ResetButtonProps) {
   return (
@@ -23,7 +21,6 @@ export default function ResetButton({
       disabled={disabled}
       icon={<RestartAltIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

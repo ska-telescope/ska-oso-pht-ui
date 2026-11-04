@@ -24,7 +24,7 @@ afterEach(() => {
 describe('Science Verification: Target entry validation', () => {
   beforeEach(() => {
     createScienceIdeaSession(standardUser);
-    clickStatusIconNav('statusId4'); //Click to target page
+    clickStatusIconNav('Target');
     pageConfirmed('TARGET');
     checkAddTargetDisabled(true); //verify add target button is disabled when all target fields are incomplete
   });
@@ -64,7 +64,7 @@ describe('Science Verification: Target entry validation', () => {
     // update target name to invalid value
     updateTargetField('Name', '  '); // enter invalid target name
     verifyTargetFieldError('Name', 'Please provide a target name', true); //verify field error on name field, as is invalid
-    checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled when target name field is invalid
+    checkFieldDisabled('Confirm', true); // verify confirm button is disabled when target name field is invalid
   });
 
   it('SV: Verify submitting an edited target is disabled when ra is invalid', () => {
@@ -82,7 +82,7 @@ describe('Science Verification: Target entry validation', () => {
     // update target ra to invalid value
     updateTargetField('Right Ascension', '1'); // enter invalid coordinate
     verifyTargetFieldError('Right Ascension', 'Input formatted incorrectly', true); //verify field error on ra field, as is invalid
-    checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
+    checkFieldDisabled('Confirm', true); // verify confirm button is disabled
   });
 
   it('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
@@ -100,7 +100,7 @@ describe('Science Verification: Target entry validation', () => {
     // update target dec to invalid value
     updateTargetField('Declination', '1'); // enter invalid coordinate
     verifyTargetFieldError('Declination', 'Input formatted incorrectly', true); //verify field error on dec field, as is invalid
-    checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
+    checkFieldDisabled('Confirm', true); // verify confirm button is disabled
   });
 });
 
@@ -115,7 +115,7 @@ describe('Science Verification: Target entry validation', () => {
 describe.skip('Proposal Flow: Target entry validation', () => {
   beforeEach(() => {
     createStandardProposalSession(standardUser);
-    clickStatusIconNav('statusId4'); //Click to target page
+    clickStatusIconNav('Target');
     pageConfirmed('TARGET');
     checkAddTargetDisabled(true); //verify add target button is disabled when all target fields are incomplete
   });

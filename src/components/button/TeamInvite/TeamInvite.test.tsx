@@ -17,16 +17,11 @@ describe('TeamInvite Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     wrapper(<TeamInviteButton action={mockAction} />);
-    expect(screen.getByTestId('investigatorInviteButtonTestId')).toHaveTextContent(
-      'sendInviteBtn.label'
-    );
-    screen.getByTestId('investigatorInviteButtonTestId').click();
+    screen.getByRole('button', { name: 'sendInviteBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<TeamInviteButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('investigatorInviteButtonTestId')).toHaveTextContent(
-      'sendInviteBtn.label'
-    );
+    expect(screen.getByRole('button', { name: 'sendInviteBtn.label' })).toBeInTheDocument();
   });
 });

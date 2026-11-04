@@ -108,7 +108,7 @@ describe('CentralFrequency component', () => {
     wrapper(
       <CentralFrequency observingBand={BAND_LOW_STR} value={149.609375} setValue={setValue} />
     );
-    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    await pressArrowUp(screen.getByRole('spinbutton', { name: 'centralFrequency.label' }));
     expect(setValue).toHaveBeenCalledWith(151.171875);
   });
 
@@ -121,7 +121,7 @@ describe('CentralFrequency component', () => {
     // round-half-up tie-break would snap it up instead, which is correct but not what this test is
     // meant to demonstrate.)
     wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={setValue} />);
-    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    await pressArrowUp(screen.getByRole('spinbutton', { name: 'centralFrequency.label' }));
     expect(setValue).toHaveBeenCalledWith(151.171875);
   });
 
@@ -131,7 +131,7 @@ describe('CentralFrequency component', () => {
     // Stepping down must land on 199.609375 - snapping to the nearest point and then also adding
     // a step (the bug this guards against) would overshoot to 198.046875 instead.
     wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={200} setValue={setValue} />);
-    await pressArrowDown(screen.getByTestId('centralFrequency'));
+    await pressArrowDown(screen.getByRole('spinbutton', { name: 'centralFrequency.label' }));
     expect(setValue).toHaveBeenCalledWith(199.609375);
   });
 
@@ -147,7 +147,7 @@ describe('CentralFrequency component', () => {
         windowBandwidthHz={1_808_449.074}
       />
     );
-    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    await pressArrowUp(screen.getByRole('spinbutton', { name: 'centralFrequency.label' }));
     expect(setValue).toHaveBeenCalledWith(200.001808);
   });
 
@@ -163,7 +163,7 @@ describe('CentralFrequency component', () => {
         windowBandwidthHz={1_808_449.074} // 1.808449074 MHz wide window
       />
     );
-    const input = screen.getByTestId('centralFrequency');
+    const input = screen.getByRole('spinbutton', { name: 'centralFrequency.label' });
     await userEvent.clear(input);
     await userEvent.type(input, '300');
     expect(setValue).toHaveBeenCalledWith(300);
@@ -183,7 +183,7 @@ describe('CentralFrequency component', () => {
       />
     );
     // Window is ~0.9 MHz either side of centre - centring on 50 MHz would spill below the band.
-    const input = screen.getByTestId('centralFrequency');
+    const input = screen.getByRole('spinbutton', { name: 'centralFrequency.label' });
     await userEvent.clear(input);
     await userEvent.type(input, '50');
     expect(setValue).toHaveBeenCalledWith(50);
@@ -199,7 +199,9 @@ describe('CentralFrequency component', () => {
         windowBandwidthHz={1_808_449.074}
       />
     );
-    const input = screen.getByTestId('centralFrequency') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton', {
+      name: 'centralFrequency.label'
+    }) as HTMLInputElement;
     await userEvent.clear(input);
     await userEvent.type(input, '123.456'); // in range, but not on the channel grid
     expect(screen.getByText('centralFrequency.error.divisibility')).toBeInTheDocument();
@@ -220,7 +222,7 @@ describe('CentralFrequency component', () => {
         windowBandwidthHz={1_808_449.074}
       />
     );
-    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    await pressArrowUp(screen.getByRole('spinbutton', { name: 'centralFrequency.label' }));
     const [[committed]] = setValue.mock.calls;
     expect(committed).toBeLessThanOrEqual(350 - 1_808_449.074 / 1_000_000 / 2 + 1e-6);
   });

@@ -45,7 +45,6 @@ export default function DispersionMeasureField({
       unitOptions={[{ label: t(FIELD + '.units'), value: DISPERSION_MEASURE_UNIT_VALUE }]}
       units={DISPERSION_MEASURE_UNIT_VALUE}
       setUnits={() => {}}
-      unitsTestId={FIELD + 'Units'}
       unitsDisabled
       unitsMinWidth={90}
       topPadding={1}

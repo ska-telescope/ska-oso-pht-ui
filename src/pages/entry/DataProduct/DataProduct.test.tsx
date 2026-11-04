@@ -51,23 +51,24 @@ vi.mock('@/utils/helpers', () => ({
 vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
   default: ({ value, options }: { value: number; options?: Array<{ value: number }> }) => (
     <div
-      data-testid="BitDepthField"
       data-value={String(value)}
       data-options={JSON.stringify((options ?? []).map((option) => option.value))}
-    />
+    >
+      BitDepthField
+    </div>
   )
 }));
 vi.mock('@/components/fields/dataProductType/dataProductType', () => ({
   default: (props: any) => (
-    <div data-testid="DataProductTypeField" data-value={String(props.value)}>
+    <div data-value={String(props.value)}>
       {/* 2 = DP_TYPE_VISIBLE */}
-      <button data-testid="selectVisibilities" onClick={() => props.setValue(2)} />
+      <button onClick={() => props.setValue(2)}>selectVisibilities</button>
     </div>
   )
 }));
 vi.mock('@/components/grid/observation/GridObservation', () => ({
   default: (props: any) => (
-    <div data-testid="GridObservation">
+    <div role="grid">
       {props.data.map((obs: any) => (
         <div key={obs.id} onClick={() => props.rowClick({ row: obs })}>
           Observation {obs.id}
@@ -78,7 +79,7 @@ vi.mock('@/components/grid/observation/GridObservation', () => ({
 }));
 vi.mock('@/components/button/Add/Add', () => ({
   default: (props: any) => (
-    <button data-testid={props.testId} onClick={props.action} disabled={props.disabled}>
+    <button onClick={props.action} disabled={props.disabled}>
       {props.title}
     </button>
   )
@@ -149,10 +150,6 @@ describe('DataProduct component', () => {
         <DataProduct />
       </ThemeProvider>
     );
-    // expect(screen.getByTestId('taper')).toBeInTheDocument();
-    // expect(screen.getByTestId('imageSize')).toBeInTheDocument();
-    // expect(screen.getByTestId('pixelSize')).toBeInTheDocument();
-    // expect(screen.getByTestId('imageWeighting')).toBeInTheDocument();
   });
 
   it('hides continuum sensitivity results when only one output channel is selected', () => {
@@ -204,8 +201,12 @@ describe('DataProduct component', () => {
     expect(
       screen.getByText('sensitivityCalculatorResults.title (Imaging ODP)')
     ).toBeInTheDocument();
-    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toBeInTheDocument();
-    expect(screen.queryByTestId('field-spectralSensitivityWeighted')).not.toBeInTheDocument();
+    expect(
+      screen.getByLabelText('sensitivityCalculatorResults.continuumSensitivityWeighted')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('sensitivityCalculatorResults.spectralSensitivityWeighted')
+    ).not.toBeInTheDocument();
   });
 
   it('updates taper value when user types', () => {
@@ -214,9 +215,6 @@ describe('DataProduct component', () => {
         <DataProduct />
       </ThemeProvider>
     );
-    // const taperInput = screen.getByTestId('taper');
-    // fireEvent.change(taperInput, { target: { value: '42' } });
-    // expect((taperInput as HTMLInputElement).value).toBe('42');
   });
 
   it('updates image size units via DropDown', () => {
@@ -225,9 +223,6 @@ describe('DataProduct component', () => {
         <DataProduct />
       </ThemeProvider>
     );
-    // const dropdown = screen.getByTestId('frequencyUnits');
-    // fireEvent.change(dropdown, { target: { value: '2' } });
-    // expect((dropdown as HTMLSelectElement).value).toBe('2');
   });
 
   it('renders GridObservation when observations exist', () => {
@@ -240,7 +235,7 @@ describe('DataProduct component', () => {
         <DataProduct />
       </ThemeProvider>
     );
-    expect(screen.getByTestId('GridObservation')).toBeInTheDocument();
+    expect(screen.getByRole('grid')).toBeInTheDocument();
     expect(screen.getByText(/Observation OBS1/)).toBeInTheDocument();
   });
 
@@ -250,7 +245,7 @@ describe('DataProduct component', () => {
         <DataProduct />
       </ThemeProvider>
     );
-    const addButton = screen.getByTestId('addDataProductButtonEntry');
+    const addButton = screen.getByRole('button', { name: /^(add|update)Btn\.label$/ });
     expect(addButton).toBeInTheDocument();
     expect(addButton).toHaveAttribute('disabled');
   });
@@ -272,7 +267,7 @@ describe('DataProduct component', () => {
       </ThemeProvider>
     );
 
-    const bitDepthField = screen.getByTestId('BitDepthField');
+    const bitDepthField = screen.getByText('BitDepthField');
     expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8,16]');
     expect(bitDepthField).toHaveAttribute('data-value', '8');
   });
@@ -294,7 +289,7 @@ describe('DataProduct component', () => {
       </ThemeProvider>
     );
 
-    const bitDepthField = screen.getByTestId('BitDepthField');
+    const bitDepthField = screen.getByText('BitDepthField');
     expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8]');
     expect(bitDepthField).toHaveAttribute('data-value', '8');
   });
@@ -328,7 +323,9 @@ describe('DataProduct component', () => {
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
     expect(mockFetchSensCalcPatches).not.toHaveBeenCalled();
-    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
+    expect(
+      screen.getByLabelText('sensitivityCalculatorResults.continuumSensitivityWeighted')
+    ).toHaveTextContent('1');
   });
 
   it('immediately calculates missing sensitivity results when the edit page loads', () => {
@@ -508,10 +505,12 @@ describe('DataProduct component', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent(
-        'sensitivityCalculatorResults.nonGaussian'
-      );
-      expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('7.18');
+      expect(
+        screen.getByLabelText('sensitivityCalculatorResults.continuumSynthBeamSize')
+      ).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
+      expect(
+        screen.getByLabelText('sensitivityCalculatorResults.continuumSensitivityWeighted')
+      ).toHaveTextContent('7.18');
     });
   });
 
@@ -583,10 +582,12 @@ describe('DataProduct component', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).not.toHaveTextContent(
-        'sensitivityCalculatorResults.nonGaussian'
-      );
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent('0');
+      expect(
+        screen.getByLabelText('sensitivityCalculatorResults.continuumSynthBeamSize')
+      ).not.toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
+      expect(
+        screen.getByLabelText('sensitivityCalculatorResults.continuumSynthBeamSize')
+      ).toHaveTextContent('0');
     });
   });
 
@@ -627,7 +628,7 @@ describe('DataProduct component', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId('BitDepthField')).toHaveAttribute(
+      expect(screen.getByText('BitDepthField')).toHaveAttribute(
         'data-value',
         String(Number(legacyBitDepth))
       );

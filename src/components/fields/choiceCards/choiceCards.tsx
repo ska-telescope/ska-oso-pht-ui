@@ -96,7 +96,7 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
                 onClick={() => handleSelect(choice.value)}
                 fullWidth
                 variant="outlined"
-                data-testId={'Feasibility' + choice.label}
+                data-
                 sx={{
                   display: 'flex',
                   alignItems: 'center',

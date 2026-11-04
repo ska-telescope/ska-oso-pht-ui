@@ -9,23 +9,20 @@ const renderWithTheme = (ui: React.ReactElement) =>
   render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 
 describe('ResizablePanel', () => {
-  it('renders the panel container with correct test ID', () => {
+  it('renders the panel container named by its title', () => {
     renderWithTheme(<ResizablePanel title="Test Title">Content</ResizablePanel>);
-    const panel = screen.getByTestId('resizable-panel');
+    const panel = screen.getByRole('region', { name: 'Test Title' });
     expect(panel).toBeInTheDocument();
   });
 
   it('renders the title correctly', () => {
     renderWithTheme(<ResizablePanel title="My Panel">Content</ResizablePanel>);
-    const title = screen.getByTestId('panel-title');
-    expect(title).toBeInTheDocument();
-    expect(title).toHaveTextContent('My Panel');
+    expect(screen.getByRole('heading', { name: 'My Panel' })).toBeInTheDocument();
   });
 
   it('renders the children inside panel content', () => {
     renderWithTheme(<ResizablePanel title="Panel">Hello World</ResizablePanel>);
-    const content = screen.getByTestId('panel-content');
-    expect(content).toBeInTheDocument();
-    expect(content).toHaveTextContent('Hello World');
+    const panel = screen.getByRole('region', { name: 'Panel' });
+    expect(panel).toHaveTextContent('Hello World');
   });
 });

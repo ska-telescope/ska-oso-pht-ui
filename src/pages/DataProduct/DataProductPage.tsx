@@ -128,11 +128,7 @@ export default function DataProductsPage() {
         }}
       >
         <Grid size={{ md: 10 }}>
-          <Alert
-            color={AlertColorTypes.Warning}
-            text={t('error.noObservations')}
-            testId="noObservationsNotification"
-          />
+          <Alert color={AlertColorTypes.Warning} text={t('error.noObservations')} />
         </Grid>
       </Grid>
     );
@@ -152,12 +148,7 @@ export default function DataProductsPage() {
             pr: GAP
           }}
         >
-          <AddButton
-            title="dataProduct.button"
-            action={PATH[3]}
-            disabled={!hasObservations()}
-            testId="addDataProductButton"
-          />
+          <AddButton title="dataProduct.button" action={PATH[3]} disabled={!hasObservations()} />
           <TableDataProducts
             data={getProposal().dataProductSDP ?? []}
             deleteFunction={deleteIconClicked}

@@ -96,7 +96,6 @@ describe('GridObservation', () => {
 
   it('renders without crashing and displays rows', () => {
     wrapper(<GridObservation data={mockData} rowClick={rowClickMock} />);
-    expect(screen.getByTestId('gridObservation')).toBeInTheDocument();
     expect(screen.getByText('OBS001')).toBeInTheDocument();
     expect(screen.getByText('OBS002')).toBeInTheDocument();
   });

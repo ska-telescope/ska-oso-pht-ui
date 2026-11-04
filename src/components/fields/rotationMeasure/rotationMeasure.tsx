@@ -42,7 +42,6 @@ export default function RotationMeasureField({
       unitOptions={[{ label: t(FIELD + '.units'), value: ROTATION_MEASURE_UNIT_VALUE }]}
       units={ROTATION_MEASURE_UNIT_VALUE}
       setUnits={() => {}}
-      unitsTestId={FIELD + 'Units'}
       unitsDisabled
       unitsMinWidth={90}
       topPadding={1}

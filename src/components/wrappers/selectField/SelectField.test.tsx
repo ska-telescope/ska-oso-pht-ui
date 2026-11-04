@@ -13,15 +13,15 @@ const OPTIONS = [
 
 describe('<SelectField />', () => {
   test('renders the current value label', () => {
-    render(<SelectField testId="resolution" options={OPTIONS} value={8} setValue={vi.fn()} />);
-    expect(screen.getByTestId('resolution')).toHaveTextContent('1808.45 Hz');
+    render(<SelectField options={OPTIONS} value={8} setValue={vi.fn()} />);
+    expect(screen.getByRole('combobox')).toHaveTextContent('1808.45 Hz');
   });
 
   test('opens the menu on a click anywhere in the display and selects a new value', async () => {
     const setValue = vi.fn();
-    render(<SelectField testId="resolution" options={OPTIONS} value={8} setValue={setValue} />);
+    render(<SelectField options={OPTIONS} value={8} setValue={setValue} />);
 
-    await userEvent.click(screen.getByTestId('resolution'));
+    await userEvent.click(screen.getByRole('combobox'));
     const option = await screen.findByRole('option', { name: '226.06 Hz' });
     await userEvent.click(option);
 
@@ -30,14 +30,9 @@ describe('<SelectField />', () => {
 
   test('restricted option list only shows the passed-in options', async () => {
     render(
-      <SelectField
-        testId="resolution"
-        options={OPTIONS.filter((o) => o.value >= 5)}
-        value={5}
-        setValue={vi.fn()}
-      />
+      <SelectField options={OPTIONS.filter((o) => o.value >= 5)} value={5} setValue={vi.fn()} />
     );
-    await userEvent.click(screen.getByTestId('resolution'));
+    await userEvent.click(screen.getByRole('combobox'));
     expect(screen.queryByRole('option', { name: '14.13 Hz' })).not.toBeInTheDocument();
   });
 });

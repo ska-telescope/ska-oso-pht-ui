@@ -50,13 +50,13 @@ export default function GridMembers({
     <Typography variant="subtitle1">{t(inValue)}</Typography>
   );
 
-  const dataDisplay = (value: string, toolTip: string, testId: string) => (
+  const dataDisplay = (value: string, toolTip: string) => (
     <Box
       sx={{
         pt: 2
       }}
     >
-      <Tooltip data-testid={testId} title={toolTip ? toolTip : ''} arrow>
+      <Tooltip title={toolTip ? toolTip : ''} arrow>
         <Typography variant="subtitle2">{value}</Typography>
       </Tooltip>
     </Box>
@@ -67,8 +67,7 @@ export default function GridMembers({
     renderHeader: () => headerDisplay('lastName.label'),
     flex: 2,
     minWidth: 150,
-    renderCell: (e: { row: { lastName: string } }) =>
-      dataDisplay(e.row.lastName, e.row.lastName, 'lastName')
+    renderCell: (e: { row: { lastName: string } }) => dataDisplay(e.row.lastName, e.row.lastName)
   };
 
   const colFirstName = {
@@ -76,8 +75,7 @@ export default function GridMembers({
     renderHeader: () => headerDisplay('firstName.label'),
     flex: 2,
     minWidth: 150,
-    renderCell: (e: { row: { firstName: string } }) =>
-      dataDisplay(e.row.firstName, e.row.firstName, 'firstName')
+    renderCell: (e: { row: { firstName: string } }) => dataDisplay(e.row.firstName, e.row.firstName)
   };
 
   const colStatus = {
@@ -85,8 +83,7 @@ export default function GridMembers({
     renderHeader: () => headerDisplay('status.label'),
     flex: 1,
     minWidth: 120,
-    renderCell: (e: { row: { status: string } }) =>
-      dataDisplay(e.row.status, e.row.status, 'status')
+    renderCell: (e: { row: { status: string } }) => dataDisplay(e.row.status, e.row.status)
   };
 
   const colPHD = {
@@ -166,7 +163,7 @@ export default function GridMembers({
         const highestAccess = accessDisplay.split(',');
         const inValue = highestAccess ? highestAccess[highestAccess.length - 1] : '';
         const inTooltip = accessDisplay ? accessDisplay : '';
-        return dataDisplay(inValue, inTooltip, 'memberAccess');
+        return dataDisplay(inValue, inTooltip);
       }
     }
   ];
@@ -178,18 +175,10 @@ export default function GridMembers({
   return (
     <>
       {rows.length > 0 && (
-        <DataGrid
-          rows={rows}
-          columns={getColumns()}
-          height={height}
-          onRowClick={rowClick}
-          testId="investigatorsTableId"
-        />
+        <DataGrid rows={rows} columns={getColumns()} height={height} onRowClick={rowClick} />
       )}
       {!rows ||
-        (rows.length === 0 && (
-          <Alert color={AlertColorTypes.Error} text={t('members.empty')} testId="helpPanelId" />
-        ))}
+        (rows.length === 0 && <Alert color={AlertColorTypes.Error} text={t('members.empty')} />)}
     </>
   );
 }

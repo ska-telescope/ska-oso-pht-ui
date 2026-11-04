@@ -21,7 +21,8 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
 
   return (
     <Box
-      data-testid="resizable-panel"
+      role="region"
+      aria-label={title}
       sx={{
         width,
         height,
@@ -36,7 +37,6 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
     >
       <Typography
         variant="h5"
-        data-testid="panel-title"
         sx={{
           p: 1
         }}
@@ -45,7 +45,6 @@ const ResizablePanel: React.FC<ResizablePanelProps> = ({
       </Typography>
 
       <Box
-        data-testid="panel-content"
         sx={{
           flex: 1,
           display: 'flex',

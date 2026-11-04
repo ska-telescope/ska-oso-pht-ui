@@ -173,7 +173,6 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
           dropzonePreview={false}
           direction="row"
           maxFileWidth={UPLOAD_MAX_WIDTH_CSV}
-          testId="csvUpload"
           uploadFunction={validateUploadCsv}
           uploadToolTip={t('pdfUpload.science.tooltip.upload')}
           status={uploadButtonStatus}

@@ -66,8 +66,8 @@ describe('<FrequencyAveraging />', () => {
         <FrequencyAveraging value={2} setValue={setValue} />
       </StoreProvider>
     );
-    fireEvent.click(screen.getByTestId('frequencyAveragingIncrement'));
-    fireEvent.click(screen.getByTestId('frequencyAveragingDecrement'));
+    fireEvent.click(screen.getByRole('button', { name: 'increment' }));
+    fireEvent.click(screen.getByRole('button', { name: 'decrement' }));
     expect(setValue).toHaveBeenNthCalledWith(1, 3);
     expect(setValue).toHaveBeenNthCalledWith(2, 1);
   });

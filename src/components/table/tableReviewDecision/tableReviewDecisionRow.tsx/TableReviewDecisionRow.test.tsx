@@ -70,7 +70,7 @@ describe('TableReviewDecisionRow', () => {
   it('calls toggleRow when expand button is clicked', () => {
     wrapper(<TableReviewDecisionRow {...defaultProps} />);
 
-    const button = screen.getByTestId('expand-button-1');
+    const button = screen.getByRole('button', { name: /^Expand details for Sample Review Title/ });
     fireEvent.click(button);
     expect(defaultProps.toggleRow).toHaveBeenCalledWith(1);
   });

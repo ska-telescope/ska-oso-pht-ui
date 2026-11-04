@@ -234,7 +234,6 @@ export default function PanelManagement() {
   const backButton = () => (
     <BackButton
       action={() => navigate(PMT[2])}
-      testId="overviewButtonTestId"
       title={'overview.title'}
       toolTip="overview.toolTip"
     />

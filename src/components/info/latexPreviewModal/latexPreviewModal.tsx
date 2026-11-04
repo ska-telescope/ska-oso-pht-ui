@@ -58,11 +58,7 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
                   pt: 1
                 }}
               >
-                <CancelButton
-                  action={handleClose}
-                  title="closeBtn.label"
-                  testId="cancelButtonTestId"
-                />
+                <CancelButton action={handleClose} title="closeBtn.label" />
               </Grid>
             </Grid>
           </Grid>

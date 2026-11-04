@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, test, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
@@ -20,6 +20,15 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 const mockOSD = vi.hoisted(() => ({ isSV: false }));
+
+// The store is shared between tests, so each starts without the previous test's proposal
+beforeEach(() => {
+  const { result, unmount } = renderHook(() => storageObject.useStore(), {
+    wrapper: ({ children }) => <StoreProvider>{children}</StoreProvider>
+  });
+  act(() => result.current.clearApplication());
+  unmount();
+});
 
 vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: () => true
@@ -56,16 +65,24 @@ describe('Create button validation', () => {
     'requires a valid title and a selected type (%s) for a normal cycle',
     async (type) => {
       const { container } = wrapper(<AddProposal />);
-      fireEvent.change(screen.getByTestId('titleId'), {
+      fireEvent.change(screen.getByRole('textbox', { name: 'title.label' }), {
         target: { value: 'A short valid title' }
       });
-      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+      await waitFor(() =>
+        expect(screen.getByRole('button', { name: 'createBtn.label' })).toBeDisabled()
+      );
 
       fireEvent.click(container.querySelector(`#ProposalType-${type}`)!);
-      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+      await waitFor(() =>
+        expect(screen.getByRole('button', { name: 'createBtn.label' })).toBeEnabled()
+      );
 
-      fireEvent.change(screen.getByTestId('titleId'), { target: { value: '' } });
-      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+      fireEvent.change(screen.getByRole('textbox', { name: 'title.label' }), {
+        target: { value: '' }
+      });
+      await waitFor(() =>
+        expect(screen.getByRole('button', { name: 'createBtn.label' })).toBeDisabled()
+      );
     }
   );
 
@@ -73,33 +90,41 @@ describe('Create button validation', () => {
     mockOSD.isSV = true;
     const { container } = wrapper(<AddProposal />);
     expect(container.querySelector('[id^="ProposalType-"]')).not.toBeInTheDocument();
-    expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'createBtn.label' })).toBeDisabled();
 
-    fireEvent.change(screen.getByTestId('titleId'), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'title.label' }), {
       target: { value: 'A valid SV title' }
     });
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'createBtn.label' })).toBeEnabled()
+    );
   });
 
   test('clears an earlier SV type when starting a new proposal in a normal cycle', async () => {
     mockOSD.isSV = true;
     const { rerender, container } = wrapper(<AddProposal />);
-    fireEvent.change(screen.getByTestId('titleId'), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'title.label' }), {
       target: { value: 'An SV title' }
     });
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'createBtn.label' })).toBeEnabled()
+    );
 
     rerender(<></>);
     mockOSD.isSV = false;
     rerender(<AddProposal />);
-    expect(screen.getByTestId('titleId')).toHaveValue('');
+    expect(screen.getByRole('textbox', { name: 'title.label' })).toHaveValue('');
 
-    fireEvent.change(screen.getByTestId('titleId'), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'title.label' }), {
       target: { value: 'A normal proposal title' }
     });
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'createBtn.label' })).toBeDisabled()
+    );
     fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.STANDARD}`)!);
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'createBtn.label' })).toBeEnabled()
+    );
   });
 });
 

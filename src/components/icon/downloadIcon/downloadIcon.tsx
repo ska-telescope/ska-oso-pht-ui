@@ -12,13 +12,5 @@ export default function DownloadIcon({
   onClick,
   toolTip = ''
 }: DownloadIconProps) {
-  return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<Download />}
-      testId="downloadIcon"
-      toolTip={toolTip}
-    />
-  );
+  return <Icon disabled={disabled} onClick={onClick} icon={<Download />} toolTip={toolTip} />;
 }

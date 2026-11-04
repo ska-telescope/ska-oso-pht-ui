@@ -17,12 +17,11 @@ describe('PDFPreview Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     wrapper(<PDFPreviewButton action={mockAction} />);
-    expect(screen.getByTestId('pdfPreviewButtonTestId')).toHaveTextContent('pdfPreview.label');
-    screen.getByTestId('pdfPreviewButtonTestId').click();
+    screen.getByRole('button', { name: 'pdfPreview.label' }).click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<PDFPreviewButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('pdfPreviewButtonTestId')).toHaveTextContent('pdfPreview.label');
+    expect(screen.getByRole('button', { name: 'pdfPreview.label' })).toBeInTheDocument();
   });
 });

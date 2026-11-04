@@ -29,13 +29,13 @@ const pressArrowUp = async (input: HTMLElement) => {
 describe('<ChannelsOut />', () => {
   it('renders correctly', () => {
     render(<ChannelsOut value={2} setValue={vi.fn()} />);
-    expect(screen.getByTestId('channelsOut')).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton', { name: 'channelsOut.label' })).toBeInTheDocument();
   });
 
   it.each([[2], [40]])('accepts valid value %i and calls setValue with no error', async (value) => {
     const setValue = vi.fn();
     render(<ChannelsOut value={2} setValue={setValue} />);
-    const input = screen.getByTestId('channelsOut');
+    const input = screen.getByRole('spinbutton', { name: 'channelsOut.label' });
     await userEvent.clear(input);
     await userEvent.type(input, String(value));
     expect(setValue).toHaveBeenCalledWith(value);
@@ -47,7 +47,7 @@ describe('<ChannelsOut />', () => {
     async (value) => {
       const setValue = vi.fn();
       render(<ChannelsOut value={2} setValue={setValue} />);
-      const input = screen.getByTestId('channelsOut');
+      const input = screen.getByRole('spinbutton', { name: 'channelsOut.label' });
       await userEvent.clear(input);
       await userEvent.type(input, String(value));
       expect(setValue).toHaveBeenCalledWith(value);
@@ -57,7 +57,7 @@ describe('<ChannelsOut />', () => {
 
   it('does not auto-correct an invalid value on blur', async () => {
     render(<StatefulChannelsOut initial={2} />);
-    const input = screen.getByTestId('channelsOut') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton', { name: 'channelsOut.label' }) as HTMLInputElement;
     await userEvent.clear(input);
     await userEvent.type(input, '41');
     await userEvent.tab();
@@ -67,7 +67,7 @@ describe('<ChannelsOut />', () => {
 
   it('clears the error once the user enters a valid value', async () => {
     render(<StatefulChannelsOut initial={2} />);
-    const input = screen.getByTestId('channelsOut');
+    const input = screen.getByRole('spinbutton', { name: 'channelsOut.label' });
     await userEvent.clear(input);
     await userEvent.type(input, '41');
     expect(screen.getByText(ERROR_TEXT)).toBeInTheDocument();
@@ -80,7 +80,7 @@ describe('<ChannelsOut />', () => {
   it('steps up by 1 and clamps at the configured maxValue', async () => {
     const setValue = vi.fn();
     render(<ChannelsOut value={CHANNELS_OUT_MIN_SPECTRAL} setValue={setValue} maxValue={5} />);
-    await pressArrowUp(screen.getByTestId('channelsOut'));
+    await pressArrowUp(screen.getByRole('spinbutton', { name: 'channelsOut.label' }));
     expect(setValue).toHaveBeenCalledWith(CHANNELS_OUT_MIN_SPECTRAL + 1);
   });
 
@@ -92,7 +92,7 @@ describe('<ChannelsOut />', () => {
         maxValue={CHANNELS_OUT_MIN_SPECTRAL}
       />
     );
-    expect(screen.getByTestId('channelsOutDecrement')).toBeDisabled();
-    expect(screen.getByTestId('channelsOutIncrement')).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'decrement' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'increment' })).toBeDisabled();
   });
 });

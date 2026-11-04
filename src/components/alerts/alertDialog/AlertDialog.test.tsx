@@ -21,14 +21,14 @@ describe('<AlertDialog />', () => {
     wrapper(
       <AlertDialog open={true} onClose={mockActionClose} onDialogResponse={mockActionCancel} />
     );
-    const btn = screen.getAllByTestId('dialogCancelButton');
+    const btn = screen.getAllByRole('button', { name: 'cancelBtn.label' });
     btn[0].click();
   });
   test('renders correctly, click confirm', () => {
     wrapper(
       <AlertDialog open={true} onClose={mockActionClose} onDialogResponse={mockActionCancel} />
     );
-    const btn = screen.getAllByTestId('dialogConfirmationButton');
+    const btn = screen.getAllByRole('button', { name: 'confirmBtn.label' });
     btn[0].click();
   });
 });

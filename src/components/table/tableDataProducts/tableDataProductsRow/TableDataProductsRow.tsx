@@ -108,7 +108,6 @@ export default function TableDataProductsRow({
     <>
       <TableRow
         key={Number(item.id)}
-        data-testid={`row-${item.id}`}
         sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
         role="row"
         aria-rowindex={index + 2}

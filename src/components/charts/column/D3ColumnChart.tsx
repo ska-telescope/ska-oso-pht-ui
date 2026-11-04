@@ -258,15 +258,10 @@ const D3ColumnChart: React.FC<Props> = ({
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
-      <svg
-        ref={svgRef}
-        role="presentation"
-        aria-label="Column chart visualization"
-        data-testid="column-chart-svg"
-      />
+      <svg ref={svgRef} role="img" aria-label="Column chart visualization" />
       <div
         ref={tooltipRef}
-        data-testid="column-chart-tooltip"
+        role="tooltip"
         style={{
           position: 'absolute',
           backgroundColor: theme.palette.background.paper,

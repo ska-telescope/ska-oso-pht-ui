@@ -22,15 +22,10 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   },
   TELESCOPE_MID: 'MID',
   TELESCOPE_LOW: 'LOW',
-  NumberEntry: ({ errorText, value, setValue, onFocus, testId }: any) => (
+  NumberEntry: ({ errorText, value, setValue, onFocus }: any) => (
     <div>
-      <input
-        data-testid={testId}
-        value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
-        onFocus={onFocus}
-      />
-      {errorText && <span data-testid="error">{errorText}</span>}
+      <input value={value} onChange={(e) => setValue(Number(e.target.value))} onFocus={onFocus} />
+      {errorText && <span>{errorText}</span>}
     </div>
   )
 }));

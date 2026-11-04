@@ -13,7 +13,7 @@ vi.mock('i18next', () => ({
 // Stub out the modal so opening it can be asserted on without needing the
 // providers (store/theme) its own internals depend on.
 vi.mock('../../sensCalcModal/single/SensCalcModalSingle', () => ({
-  default: ({ open }: { open: boolean }) => (open ? <div data-testid="sensCalcModal" /> : null)
+  default: ({ open }: { open: boolean }) => (open ? <div role="dialog" /> : null)
 }));
 
 const buildTargetObservation = (sensCalc: Partial<SensCalcResults>): TargetObservation =>
@@ -30,8 +30,7 @@ describe('<SensCalcDisplaySingle />', () => {
         field="icon"
       />
     );
-    expect(screen.queryByTestId('statusId')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('field-icon')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
   test('renders an enabled icon when status is OK, and opens the modal on click', () => {
@@ -44,11 +43,11 @@ describe('<SensCalcDisplaySingle />', () => {
     );
     const button = screen.getByRole('button');
     expect(button).not.toBeDisabled();
-    expect(screen.queryByTestId('sensCalcModal')).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
     fireEvent.click(button);
 
-    expect(screen.getByTestId('sensCalcModal')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   test('renders a disabled icon when status is not OK, and click does not open the modal', () => {
@@ -64,7 +63,7 @@ describe('<SensCalcDisplaySingle />', () => {
 
     fireEvent.click(button);
 
-    expect(screen.queryByTestId('sensCalcModal')).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   test('renders the value and units for a matching continuum field', () => {
@@ -78,7 +77,7 @@ describe('<SensCalcDisplaySingle />', () => {
         field="testField"
       />
     );
-    expect(screen.getByTestId('field-testField')).toHaveTextContent('42.50 Jy');
+    expect(document.body).toHaveTextContent('42.50 Jy');
   });
 
   test('renders the value and units for a matching zoom field when section2 is empty', () => {
@@ -92,7 +91,7 @@ describe('<SensCalcDisplaySingle />', () => {
         field="testField"
       />
     );
-    expect(screen.getByTestId('field-testField')).toHaveTextContent('42.50 Jy');
+    expect(document.body).toHaveTextContent('42.50 Jy');
   });
 
   test('renders blank when no section1 entry matches the field', () => {
@@ -106,7 +105,7 @@ describe('<SensCalcDisplaySingle />', () => {
         field="testField"
       />
     );
-    expect(screen.getByTestId('field-testField')).toHaveTextContent('0');
+    expect(document.body).toHaveTextContent('0');
   });
 
   test('renders the custom placeholder instead of the value for SynthBeamSize when isCustom', () => {
@@ -121,9 +120,7 @@ describe('<SensCalcDisplaySingle />', () => {
         isCustom
       />
     );
-    expect(screen.getByTestId('field-SynthBeamSize')).toHaveTextContent(
-      'sensitivityCalculatorResults.customArray'
-    );
+    expect(document.body).toHaveTextContent('sensitivityCalculatorResults.customArray');
   });
 
   test('renders the non-Gaussian placeholder instead of the value for SynthBeamSize when isNatural', () => {
@@ -138,8 +135,6 @@ describe('<SensCalcDisplaySingle />', () => {
         isNatural
       />
     );
-    expect(screen.getByTestId('field-SynthBeamSize')).toHaveTextContent(
-      'sensitivityCalculatorResults.nonGaussian'
-    );
+    expect(document.body).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
   });
 });

@@ -99,10 +99,17 @@ const renderLinking = () => {
   return render(linkingTree(<LinkingPage />));
 };
 
+// The observations grid comes first, then the targets grid. The target's tick box is the checkbox
+// in its row; the column header holds a select-all checkbox.
+const targetTickBox = async () => {
+  const targetRows = within(screen.getAllByRole('grid')[1]).getAllByRole('row');
+  return within(targetRows[1]).findByRole('checkbox');
+};
+
 const selectObservationAndTickTarget = async () => {
-  const observationRows = within(screen.getByTestId('observationDetails')).getAllByRole('row');
+  const observationRows = within(screen.getAllByRole('grid')[0]).getAllByRole('row');
   fireEvent.click(within(observationRows[1]).getAllByRole('gridcell')[0]);
-  fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+  fireEvent.click(await targetTickBox());
 };
 
 // Each test renders the whole page, which is slow under coverage
@@ -131,7 +138,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
     );
 
     // Unticking removes the link and its calibration
-    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    fireEvent.click(await targetTickBox());
 
     await waitFor(() => {
       expect(formProbe.getValues('targetObservation')).toEqual([]);
@@ -230,7 +237,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
       ]);
     });
 
-    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    fireEvent.click(await targetTickBox());
     await waitFor(() => {
       expect(formProbe.getValues('targetObservation')).toEqual([]);
     });
@@ -261,7 +268,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
     vi.mocked(GetCalibratorList).mockResolvedValueOnce(calibratorsForM3 as never);
 
     // Unlinking M2 leaves M3 linked, so the calibrators are chosen for M3
-    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    fireEvent.click(await targetTickBox());
     await waitFor(() => {
       expect(formProbe.getValues('calibrationStrategy')).toEqual([
         expect.objectContaining({
@@ -304,7 +311,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
     vi.mocked(GetCalibratorList).mockImplementationOnce(
       () => new Promise((resolve) => (resolveCalibrators = resolve))
     );
-    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    fireEvent.click(await targetTickBox());
     await waitFor(() => expect(formProbe.getValues('targetObservation')).toEqual([secondLink]));
 
     // The notes are edited while the lookup runs
@@ -332,9 +339,9 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
     rerender(linkingTree(null));
     rerender(linkingTree(<LinkingPage />));
 
-    const observationRows = within(screen.getByTestId('observationDetails')).getAllByRole('row');
+    const observationRows = within(screen.getAllByRole('grid')[0]).getAllByRole('row');
     fireEvent.click(within(observationRows[1]).getAllByRole('gridcell')[0]);
-    expect(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox')).toBeChecked();
+    expect(await targetTickBox()).toBeChecked();
     expect(formProbe.getValues('targetObservation')).toHaveLength(1);
   });
 });

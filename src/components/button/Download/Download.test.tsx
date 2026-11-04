@@ -17,12 +17,11 @@ describe('Download Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     wrapper(<DownloadButton action={mockAction} />);
-    expect(screen.getByTestId('downloadButtonTestId')).toHaveTextContent('downloadBtn.label');
-    screen.getByTestId('downloadButtonTestId').click();
+    screen.getByRole('button', { name: 'downloadBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<DownloadButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('downloadButtonTestId')).toHaveTextContent('downloadBtn.label');
+    expect(screen.getByRole('button', { name: 'downloadBtn.label' })).toBeInTheDocument();
   });
 });

@@ -549,7 +549,6 @@ export default function LinkingPage() {
                   onClick={() =>
                     getLevel(rec) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
                   }
-                  testId="testId"
                   toolTip={t('sensCalc.' + getLevel(rec))}
                 />
               }
@@ -596,7 +595,6 @@ export default function LinkingPage() {
               <TickBox
                 label=""
                 labelPosition="top"
-                testId="linkedTickBox"
                 checked={isTargetSelected(e.row.target.id)}
                 onChange={() => targetSelectedToggle(e.row)}
               />
@@ -718,14 +716,12 @@ export default function LinkingPage() {
                   setRowSelectionModel(newRowSelectionModel);
                 }}
                 rowSelectionModel={rowSelectionModel}
-                testId="observationDetails"
               />
             )}
             {!hasObservations() && (
               <Alert
                 color={AlertColorTypes.Error}
                 text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
-                testId="noObservationsNotification"
               />
             )}
           </BorderedSection>
@@ -737,14 +733,12 @@ export default function LinkingPage() {
                 rows={filteredTargets()}
                 columns={extendedColumnsTargets}
                 height={DATA_GRID_TARGET}
-                testId="linkedTargetDetails"
               />
             )}
             {!hasTargets() && (
               <Alert
                 color={AlertColorTypes.Error}
                 text={loggedIn ? t('targets.empty') : t('targets.loggedOut')}
-                testId="noTargetsNotification"
               />
             )}
           </BorderedSection>

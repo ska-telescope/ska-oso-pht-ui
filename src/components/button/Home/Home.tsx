@@ -11,7 +11,6 @@ interface HomeButtonProps {
   title?: string;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -19,7 +18,6 @@ export default function HomeButton({
   disabled = false,
   title = 'homeBtn.label',
   primary = false,
-  testId = 'homeButtonTestId',
   toolTip = 'homeBtn.tooltip'
 }: HomeButtonProps) {
   const [openWarningDialog, setOpenWarningDialog] = React.useState(false);
@@ -59,7 +57,6 @@ export default function HomeButton({
         disabled={disabled}
         icon={<HomeIcon />}
         primary={primary}
-        testId={testId}
         title={title}
         toolTip={toolTip}
       />

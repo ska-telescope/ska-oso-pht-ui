@@ -127,7 +127,6 @@ export default function ProposalDisplay({
           </Box>
           <Box
             component="span"
-            data-testid="proposal-title-latex"
             sx={{
               minWidth: 0,
               flex: '1 1 auto',
@@ -306,7 +305,7 @@ export default function ProposalDisplay({
       }}
     >
       <Grid>
-        <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
+        <CancelButton action={handleCancel} title="closeBtn.label" />
       </Grid>
     </Grid>
   );
@@ -324,11 +323,7 @@ export default function ProposalDisplay({
     >
       {onConfirmLabel && (
         <Grid>
-          <ConfirmButton
-            action={handleConfirm}
-            testId="displayConfirmationButton"
-            title={onConfirmLabel}
-          />
+          <ConfirmButton action={handleConfirm} title={onConfirmLabel} />
         </Grid>
       )}
     </Grid>
@@ -356,13 +351,7 @@ export default function ProposalDisplay({
           <Grid>{buttonsLeft()}</Grid>
         </Grid>
       </Grid>
-      <Grid>
-        {
-          false && (
-            <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
-          ) /* See STAR-246 */
-        }
-      </Grid>
+      <Grid>{false && <DownloadButton action={handleDownload} disabled /> /* See STAR-246 */}</Grid>
       <Grid size={{ xs: 3 }}>
         <Grid
           container
@@ -517,11 +506,7 @@ export default function ProposalDisplay({
       }}
     >
       {proposal === null && (
-        <Alert
-          color={AlertColorTypes.Warning}
-          text={t('displayProposal.warning')}
-          testId="helpPanelId"
-        />
+        <Alert color={AlertColorTypes.Warning} text={t('displayProposal.warning')} />
       )}
       {proposal !== null && (
         <DialogContent>

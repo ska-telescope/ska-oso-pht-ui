@@ -19,7 +19,6 @@ export default function ChartIcon({
       disabled={disabled}
       onClick={onClick}
       icon={<MultilineChartOutlinedIcon />}
-      testId="ChartIcon"
       toolTip={toolTip}
       sx={{ padding: padding }}
     />

@@ -10,7 +10,7 @@ import { BAND_LOW_STR } from '@/utils/constants';
 vi.mock('../alertDialog/AlertDialog', () => ({
   default: ({ open, onClose, children }: any) =>
     open ? (
-      <div data-testid="mock-alert-dialog">
+      <div>
         <button onClick={onClose}>CANCEL</button>
         {children}
       </div>

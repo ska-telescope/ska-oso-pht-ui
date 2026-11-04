@@ -118,7 +118,6 @@ export default function GridObservation({
 
   return (
     <Box
-      data-testid="gridObservationContainer"
       sx={{
         flex: 1,
         display: 'flex',
@@ -128,10 +127,7 @@ export default function GridObservation({
         minHeight: 0
       }}
     >
-      <Box
-        data-testid="gridObservation"
-        sx={{ width: '90%', overflowY: 'auto', margin: '0 auto', flex: 1, minHeight: 0 }}
-      >
+      <Box sx={{ width: '90%', overflowY: 'auto', margin: '0 auto', flex: 1, minHeight: 0 }}>
         <Box>{data.map((row) => rowContent(row))}</Box>
       </Box>
     </Box>

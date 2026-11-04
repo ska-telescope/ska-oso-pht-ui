@@ -13,7 +13,7 @@ vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
   return {
     ...actual,
     DataGrid: ({ columns }: { columns: Array<{ field: string; headerName: string }> }) => (
-      <div data-testid="grid-targets-columns">
+      <div>
         {columns.map((column) => (
           <span key={column.field}>{column.headerName}</span>
         ))}

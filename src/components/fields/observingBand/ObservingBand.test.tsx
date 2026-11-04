@@ -15,11 +15,10 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   LABEL_POSITION: 'start',
   TELESCOPE_MID: 'MID',
   TELESCOPE_LOW: 'LOW',
-  DropDown: vi.fn(({ label, options, disabled, testId, value, setValue, onFocus }) => (
+  DropDown: vi.fn(({ label, options, disabled, value, setValue, onFocus }) => (
     <div>
       <label>{label}</label>
       <select
-        data-testid={testId}
         disabled={disabled}
         value={value}
         onChange={(e) => setValue?.(e.target.value)} // ✅ keep raw value, no Number()
@@ -78,7 +77,7 @@ describe('ObservingBandField', () => {
     }));
 
     wrapper(<ObservingBandField value={BAND_LOW_STR} setValue={setValueMock} />);
-    const dropdown = screen.getByTestId('observingBand');
+    const dropdown = screen.getByRole('combobox');
     expect(dropdown).toBeInTheDocument();
     expect(screen.getByText(/observingBand.label/)).toBeInTheDocument();
     // expect(screen.getByText(/Low \(1 - 2 MHz\)/)).toBeInTheDocument();
@@ -121,7 +120,7 @@ describe('ObservingBandField', () => {
     }));
 
     wrapper(<ObservingBandField value={BAND_LOW_STR} setValue={setValueMock} />);
-    const dropdown = screen.getByTestId('observingBand');
+    const dropdown = screen.getByRole('combobox');
     fireEvent.change(dropdown, { target: { value: BAND_LOW_STR } });
     // expect(setValueMock).toHaveBeenCalledWith(BAND_LOW_STR);
   });
@@ -141,7 +140,7 @@ describe('ObservingBandField', () => {
     }));
 
     wrapper(<ObservingBandField value={BAND_LOW_STR} setValue={setValueMock} />);
-    const dropdown = screen.getByTestId('observingBand');
+    const dropdown = screen.getByRole('combobox');
     fireEvent.focus(dropdown);
     // expect(setHelpMock).toHaveBeenCalledWith('observingBand.help');
   });
@@ -161,7 +160,7 @@ describe('ObservingBandField', () => {
     }));
 
     wrapper(<ObservingBandField value={BAND_LOW_STR} setValue={setValueMock} disabled />);
-    const dropdown = screen.getByTestId('observingBand');
+    const dropdown = screen.getByRole('combobox');
     expect(dropdown).toBeDisabled();
   });
 
@@ -195,7 +194,7 @@ describe('ObservingBandField', () => {
     }));
 
     wrapper(<ObservingBandField value={BAND_LOW_STR} setValue={setValueMock} />);
-    const dropdown = screen.getByTestId('observingBand');
+    const dropdown = screen.getByRole('combobox');
     expect(dropdown).toBeDisabled(); // no options available
   });
 });

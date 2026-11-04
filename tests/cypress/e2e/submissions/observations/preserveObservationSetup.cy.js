@@ -5,7 +5,9 @@ import {
   updateFieldValue,
   addSubmissionSummary,
   addM2TargetAndAutoLink,
-  createScienceIdeaSession
+  createScienceIdeaSession,
+  numberField,
+  submissionSummaryField
 } from '../../../support/common.js';
 import { standardUser } from '../../../support/users.js';
 
@@ -20,7 +22,7 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
   });
 
   it('Abstract is saved by debounce without requiring onBlur — navigating after 2s confirms the value persisted', () => {
-    clickStatusIconNav('statusId2');
+    clickStatusIconNav('Details');
     pageConfirmed('DETAILS');
     addSubmissionSummary('Debounce test summary.');
 
@@ -31,38 +33,31 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
     // loaded CI runner can delay JS timer firing.
     cy.wait(4000);
 
-    clickStatusIconNav('statusId5');
+    clickStatusIconNav('Observation');
     pageConfirmed('OBSERVATION');
 
-    clickStatusIconNav('statusId2');
+    clickStatusIconNav('Details');
     pageConfirmed('DETAILS');
-    // The testid lands on the MuiFormControl wrapper, not the actual <textarea> - a div has no
-    // .value property, so the assertion must target the nested field directly.
-    cy.get('[data-testid="abstractId"] textarea')
-      .first()
-      .should('have.value', 'Debounce test summary.');
+    submissionSummaryField().should('have.value', 'Debounce test summary.');
   });
 
   it('Changing the abstract does not reset the observation frequency setup, and the abstract is saved', () => {
-    clickStatusIconNav('statusId5');
+    clickStatusIconNav('Observation');
     pageConfirmed('OBSERVATION');
-    updateFieldValue('centralFrequency', '180');
+    updateFieldValue('Central Frequency', '180');
 
-    clickStatusIconNav('statusId2');
+    clickStatusIconNav('Details');
     pageConfirmed('DETAILS');
     addSubmissionSummary('This is a summary of the science idea.');
 
     // Navigating away blurs the field, triggering the onBlur save
-    clickStatusIconNav('statusId5');
+    clickStatusIconNav('Observation');
     pageConfirmed('OBSERVATION');
-    // centralFrequency's testid is on the input itself (slotProps.htmlInput), not a wrapper.
-    cy.get('[data-testid="centralFrequency"]').should('have.value', '180');
+    numberField('Central Frequency').should('have.value', '180');
 
-    clickStatusIconNav('statusId2');
+    clickStatusIconNav('Details');
     pageConfirmed('DETAILS');
 
-    cy.get('[data-testid="abstractId"] textarea')
-      .first()
-      .should('have.value', 'This is a summary of the science idea.');
+    submissionSummaryField().should('have.value', 'This is a summary of the science idea.');
   });
 });

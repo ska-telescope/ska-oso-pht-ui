@@ -59,7 +59,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     return fieldWrapper(
       <TickBox
         label={t('manageTeamMember.submit.label')}
-        testId="submitCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_SUBMIT)}
         onFocus={() => setHelp('manageTeamMember.submit.help')}
@@ -71,7 +70,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     return fieldWrapper(
       <TickBox
         label={t('manageTeamMember.edit.label')}
-        testId="editCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_UPDATE)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_UPDATE)}
         onFocus={() => setHelp('manageTeamMember.edit.help')}
@@ -84,7 +82,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     return fieldWrapper(
       <TickBox
         label={t('manageTeamMember.view.label')}
-        testId="viewCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_VIEW)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_VIEW)}
         onFocus={() => setHelp('manageTeamMember.view.help')}

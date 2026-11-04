@@ -45,11 +45,7 @@ vi.mock('@/utils/constants.ts', () => ({
 vi.mock('@ska-telescope/ska-gui-components', () => ({
   LABEL_POSITION: 'start',
   TELESCOPE_MID: 'MID',
-  NumberEntry2: (props: any) => (
-    <div data-testid={props.testId} data-errortext={props.errorText}>
-      {props.value}
-    </div>
-  )
+  NumberEntry2: (props: any) => <div data-errortext={props.errorText}>{props.value}</div>
 }));
 
 vi.mock('@utils/osd/useOSDAccessors/useOSDAccessors.tsx', () => ({

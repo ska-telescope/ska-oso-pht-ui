@@ -28,7 +28,6 @@ export default function TriStateCheckbox({
       indeterminate={state === 'indeterminate'}
       size={'medium'}
       onChange={handleClick}
-      data-testid="triStateTestId"
       sx={{
         '& .MuiSvgIcon-root': { fontSize: 32 },
         color: colors ? theme.palette.error.main : theme.palette.secondary.main,

@@ -1,4 +1,4 @@
-import { initializeUserNotLoggedIn, clearLocalStorage, verify } from '../../support/common';
+import { initializeUserNotLoggedIn, clearLocalStorage, button } from '../../support/common';
 
 describe('Guest User', () => {
   beforeEach(() => {
@@ -10,19 +10,19 @@ describe('Guest User', () => {
   });
 
   it('Validate user has not yet signed in, log in button is present', () => {
-    verify('loginButton');
+    button('Sign In').should('be.visible');
   });
 
   it('Verify a guest user can use the external link to the sensitivity calculator application', () => {
     //verify not logged in - the landing page prompts the guest to sign in
-    verify('landingWelcomeLoginButton');
+    button('Register / Sign in').should('be.visible');
 
     //stub window.open to verify the correct URL is being opened
     cy.window().then((win) => {
       cy.stub(win, 'open').as('windowOpen');
     });
 
-    cy.get('[data-testId="SensCalcButtonTestId"]').click();
+    button('Open Sensitivity Calculator').click();
 
     cy.get('@windowOpen').should('have.been.called');
 

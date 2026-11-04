@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import { StoreProvider } from '@utils/storage/store';
@@ -29,21 +29,15 @@ describe('PixelSizeField', () => {
 
   it('renders the pixel size units dropdown', () => {
     wrapper(<PixelSizeField value={10} units={1} setUnits={vi.fn()} />);
-    const units = screen.getByTestId('pixelSizeUnits');
+    const units = screen.getByRole('combobox');
     expect(units).toHaveTextContent('pixelSize.1');
-    expect(within(units.parentElement as HTMLElement).getByRole('combobox')).not.toHaveAttribute(
-      'aria-disabled',
-      'true'
-    );
+    expect(units).not.toHaveAttribute('aria-disabled', 'true');
   });
 
   it('disables both controls in read-only mode', () => {
     wrapper(<PixelSizeField value={10} units={1} disabled />);
     expect(screen.getByRole('textbox')).toBeDisabled();
-    const units = screen.getByTestId('pixelSizeUnits');
-    expect(within(units.parentElement as HTMLElement).getByRole('combobox')).toHaveAttribute(
-      'aria-disabled',
-      'true'
-    );
+    const units = screen.getByRole('combobox');
+    expect(units).toHaveAttribute('aria-disabled', 'true');
   });
 });

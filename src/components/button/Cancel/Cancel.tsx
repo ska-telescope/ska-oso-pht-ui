@@ -7,7 +7,6 @@ interface CancelButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -17,7 +16,6 @@ export default function CancelButton({
   action,
   title = 'cancelBtn.label',
   primary = false,
-  testId = 'cancelButtonTestId',
   toolTip
 }: CancelButtonProps) {
   return (
@@ -27,7 +25,6 @@ export default function CancelButton({
       disabled={disabled}
       icon={<ClearIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

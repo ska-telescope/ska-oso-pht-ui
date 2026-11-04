@@ -121,7 +121,6 @@ export default function PolarisationsField({
                     labelBold
                     labelPosition={LABEL_POSITION.END}
                     labelWidth={10}
-                    testId={`${FIELD}${option.value}`}
                     checked={value.includes(option.value)}
                     onChange={(e: { target: { checked: boolean } }) =>
                       handleChange(option.value, e.target.checked)

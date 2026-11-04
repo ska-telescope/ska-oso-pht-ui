@@ -13,7 +13,6 @@ export default function EmptyCell() {
       text={STATUS_ERROR_SYMBOL}
       level={STATUS_ERROR}
       size={SIZE}
-      testId="emptyCell"
       toolTip={t('empty.cell')}
     />
   );

@@ -10,7 +10,6 @@ const WRAPPER_HEIGHT = '75px';
 export default function FieldWrapper({ children }: FieldWrapperProps): React.JSX.Element {
   return (
     <Box
-      data-testid="fieldWrapperTestId"
       sx={{
         p: 0,
         pt: 1,

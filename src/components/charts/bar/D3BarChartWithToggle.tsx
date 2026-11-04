@@ -155,7 +155,6 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
         <svg ref={svgRef} role="img" className="w-full h-full" />
         <div
           ref={tooltipRef}
-          data-testid="toolTip"
           className="absolute bg-white border border-gray-300 p-2 rounded shadow-md pointer-events-none opacity-0 transition-opacity duration-200 text-base"
         />
       </div>

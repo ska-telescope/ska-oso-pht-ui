@@ -112,7 +112,6 @@ export default function TableObservationsRow({
     <>
       <TableRow
         key={item.id}
-        data-testid={`row-${item.id}`}
         sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
         role="row"
         aria-rowindex={index + 2}
@@ -127,7 +126,6 @@ export default function TableObservationsRow({
                 aria-controls={`observation-details-${item.id}`}
                 size="small"
                 onClick={() => toggleRow(item.id)}
-                data-testid={`expand-button-${item.id}`}
                 sx={{ transition: 'transform 0.2s' }}
               >
                 {expanded ? <ExpandMore /> : <ChevronRight />}

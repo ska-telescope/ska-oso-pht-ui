@@ -11,7 +11,8 @@ import {
   verifyOsdDataProposalClose,
   beginScienceIdeaSession,
   selectScienceVerificationCycle,
-  completeScienceIdeaCreation
+  completeScienceIdeaCreation,
+  pageStatus
 } from '../../../support/common.js';
 import { standardUser } from '../../../support/users.js';
 
@@ -35,31 +36,27 @@ describe('SV Flow: Validate Observation Fields', () => {
   });
 
   it('SV Flow: Validate continuum bandwidth field', () => {
-    clickStatusIconNav('statusId5'); //Click to observation page
+    clickStatusIconNav('Observation');
     pageConfirmed('OBSERVATION');
-    updateFieldValue('continuumBandwidth', '500'); //update continuum bandwidth to an invalid value
-    // continuumBandwidth's testid is on the input itself, and its FormHelperText is a sibling
-    // of the input's own parent (not reachable with a single .parent() hop), so
-    // it carries its own dedicated testid instead.
-    cy.get('[data-testid="continuumBandwidthError"]').should(
-      'contain.text',
-      'Maximum bandwidth for this array assembly (150.00 MHz) exceeded'
+    updateFieldValue('Bandwidth', '500'); //update continuum bandwidth to an invalid value
+    cy.contains('Maximum bandwidth for this array assembly (150.00 MHz) exceeded').should(
+      'be.visible'
     );
   });
 
   it('SV Flow: Valid frequency shows OK in the observation breadcrumb', () => {
-    clickStatusIconNav('statusId5');
+    clickStatusIconNav('Observation');
     pageConfirmed('OBSERVATION');
     // Default auto-linked observation: 200 MHz central frequency, 150 MHz bandwidth
     // Valid centre range for LOW (50–350 MHz band): [50+75, 350-75] = [125, 275] MHz
-    cy.get('[data-testid="statusId5"]').should('have.attr', 'aria-label').and('include', 'OK');
+    pageStatus('Observation').should('have.attr', 'aria-label').and('include', 'OK');
   });
 
   it('SV Flow: Frequency bandwidth extending outside band edge shows Error in the observation breadcrumb', () => {
-    clickStatusIconNav('statusId5');
+    clickStatusIconNav('Observation');
     pageConfirmed('OBSERVATION');
     // 110 MHz: lower edge = 110 - 75 = 35 MHz, below the 50 MHz band floor
-    updateFieldValue('centralFrequency', '110');
-    cy.get('[data-testid="statusId5"]').should('have.attr', 'aria-label').and('include', 'Error');
+    updateFieldValue('Central Frequency', '110');
+    pageStatus('Observation').should('have.attr', 'aria-label').and('include', 'Error');
   });
 });

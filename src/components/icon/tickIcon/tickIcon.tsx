@@ -15,13 +15,6 @@ export default function TickIcon({
   toolTip = ''
 }: TickIconProps) {
   return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<CheckIcon />}
-      sx={sx}
-      testId="tickIcon"
-      toolTip={toolTip}
-    />
+    <Icon disabled={disabled} onClick={onClick} icon={<CheckIcon />} sx={sx} toolTip={toolTip} />
   );
 }

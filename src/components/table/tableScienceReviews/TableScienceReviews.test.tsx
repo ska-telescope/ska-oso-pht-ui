@@ -84,17 +84,11 @@ describe('TableScienceReviews', () => {
   it('calls excludeFunction when status is not "To Do"', () => {
     const excludeFn = vi.fn();
     wrapper(<TableScienceReviews data={mockData} excludeFunction={excludeFn} />);
-    // const icon = screen.getByTestId('includeIcon-proposal-1-0');
-    // fireEvent.click(icon);
-    // expect(excludeFn).toHaveBeenCalledWith(mockData.reviews[0]);
   });
 
   it('does not call excludeFunction when status is "To Do"', () => {
     const excludeFn = vi.fn();
     wrapper(<TableScienceReviews data={mockData} excludeFunction={excludeFn} />);
-    // const icon = screen.getByTestId('includeIcon-proposal-1-1');
-    // fireEvent.click(icon);
-    // expect(excludeFn).not.toHaveBeenCalled();
   });
 
   it('keeps each review on its own row when reviews are reordered or removed', () => {

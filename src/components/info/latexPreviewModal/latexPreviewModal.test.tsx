@@ -17,7 +17,7 @@ describe('<LatexPreviewModal />', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     wrapper(<LatexPreviewModal value={''} open={true} onClose={mockAction} title="" />);
-    screen.getByTestId('cancelButtonTestId').click();
+    screen.getByRole('button', { name: 'closeBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
 });

@@ -7,7 +7,6 @@ interface NextPageButtonProps {
   disabled?: boolean;
   page?: number;
   primary?: boolean;
-  testId?: string;
   title?: string;
   toolTip?: string;
 }
@@ -18,7 +17,6 @@ export default function NextPageButton({
   page = 0,
   primary = false,
   title = 'addBtn.label',
-  testId = 'nextPageButtonTestId',
   toolTip
 }: NextPageButtonProps) {
   const getIcon = () => (page < 0 ? <AddIcon /> : <ArrowForwardIosIcon />);
@@ -29,7 +27,6 @@ export default function NextPageButton({
       disabled={disabled}
       icon={getIcon()}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

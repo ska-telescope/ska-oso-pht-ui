@@ -206,7 +206,7 @@ export default function PHT({
   }, [location.pathname, application.content2, loggedIn, authClient, notifyError, getValues]);
 
   const mediaSizeNotSupported = () => (
-    <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
+    <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} />
   );
 
   const themeToggle = () => {
@@ -262,7 +262,6 @@ export default function PHT({
             <TimedAlert
               color={notification?.level}
               delay={notification?.delay}
-              testId="timeAlertFooter"
               text={notification?.message}
             />
           </Grid>

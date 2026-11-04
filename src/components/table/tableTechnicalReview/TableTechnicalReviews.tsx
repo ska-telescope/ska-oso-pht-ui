@@ -32,7 +32,6 @@ export default function TableTechnicalReviews({ data }: TableTechnicalReviewsPro
         elevation={1}
         role="region"
         aria-label="Employee data table with expandable details"
-        data-testid="employee-table"
       >
         <Table aria-label={`Review comments and ranks for ${data.title}`}>
           <TableHead>

@@ -24,7 +24,7 @@ describe('<GridProposals /> data rendering', () => {
       data: MockProposalBackendList
     });
     wrapper(<GridProposals />);
-    expect(await screen.findAllByTestId('dataGridProposals')).toBeDefined();
+    expect(await screen.findAllByRole('grid')).toBeDefined();
   });
   vi.clearAllMocks();
   test('renders correctly with data error', async () => {
@@ -32,7 +32,7 @@ describe('<GridProposals /> data rendering', () => {
       data: 'Error'
     });
     wrapper(<GridProposals />);
-    expect(screen.queryByTestId('helpProposalsId')).toBeDefined();
+    expect(screen.queryByRole('alert')).toBeDefined();
   });
   vi.clearAllMocks();
   test('renders correctly with empty data', async () => {
@@ -40,7 +40,7 @@ describe('<GridProposals /> data rendering', () => {
       data: []
     });
     wrapper(<GridProposals />);
-    expect(await screen.findAllByTestId('dataGridProposals')).toBeDefined();
+    expect(await screen.findAllByRole('grid')).toBeDefined();
   });
   vi.clearAllMocks();
 });
@@ -116,7 +116,7 @@ describe('<GridProposals /> showSelection', () => {
       data: MockProposalBackendList
     });
     wrapper(<GridProposals showSelection />);
-    const checkboxes = await screen.findAllByTestId('linkedTickBox');
+    const checkboxes = await screen.findAllByRole('checkbox');
     expect(checkboxes.length).toBeGreaterThan(0);
   });
   vi.clearAllMocks();
@@ -125,7 +125,7 @@ describe('<GridProposals /> showSelection', () => {
       data: MockProposalBackendList
     });
     wrapper(<GridProposals />);
-    const emptyCheckboxes = screen.queryAllByTestId('linkedTickBox');
+    const emptyCheckboxes = screen.queryAllByRole('checkbox');
     expect(emptyCheckboxes.length).toBe(0);
   });
   vi.clearAllMocks();
@@ -178,14 +178,14 @@ describe('<GridProposals /> showSearch', () => {
       data: MockProposalBackendList
     });
     wrapper(<GridProposals showSearch />);
-    expect(screen.queryByTestId('searchId')).toBeDefined();
+    expect(screen.getByRole('textbox', { name: 'search.label' })).toBeInTheDocument();
   });
   test('renders correctly, showSearch false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockProposalBackendList
     });
     wrapper(<GridProposals />);
-    expect(screen.queryByTestId('searchId')).toBeNull();
+    expect(screen.queryByRole('textbox', { name: 'search.label' })).toBeNull();
   });
 });
 
@@ -195,14 +195,14 @@ describe('<GridProposals /> showTitle', () => {
       data: MockProposalBackendList
     });
     wrapper(<GridProposals showTitle />);
-    expect(screen.queryByTestId('pageTitle')).toBeDefined();
+    expect(screen.getByText('proposals.label')).toBeInTheDocument();
   });
   test('renders correctly, showTitle false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockProposalBackendList
     });
     wrapper(<GridProposals />);
-    expect(screen.queryByTestId('pageTitle')).toBeNull();
+    expect(screen.queryByText('proposals.label')).toBeNull();
   });
 });
 

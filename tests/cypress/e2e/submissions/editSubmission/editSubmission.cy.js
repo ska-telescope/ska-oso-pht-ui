@@ -57,20 +57,20 @@ describe('Edit Proposal', () => {
         verifyOnLandingPage();
         verifyOnLandingPageFilterIsVisible();
         verifyMockedProposalOnLandingPageIsVisible();
-        clickEditIconForRow('review-table', 'Proposal');
+        clickEditIconForRow('Proposal');
         pageConfirmed('TITLE');
 
         //complete mandatory fields
-        clickStatusIconNav('statusId2'); //Click to general page
+        clickStatusIconNav('General');
         pageConfirmed('GENERAL');
         selectScienceCategory('Cosmology');
         addSubmissionSummary('This is a summary of the proposal.');
-        clickStatusIconNav('statusId4'); //Click to target page
+        clickStatusIconNav('Target');
         pageConfirmed('TARGET');
         //add target
         addM2Target();
         clickToAddTarget();
-        clickStatusIconNav('statusId5'); //Click to observation page
+        clickStatusIconNav('Observation');
         pageConfirmed('OBSERVATION');
         clickObservationSetup();
         // The band midpoint (200 MHz) isn't a valid centre frequency - a valid one needs the SPW's
@@ -78,27 +78,27 @@ describe('Edit Proposal', () => {
         // validated LOW spectral window schema. 199.609375 MHz is the nearest valid point (also
         // ODT's own default), so set that explicitly rather than fail the observation page's own
         // validation before the proposal is even submitted.
-        updateFieldValue('centralFrequency', '199.609375');
+        updateFieldValue('Central Frequency', '199.609375');
         clickAddObservationEntry();
-        verifyDataInTable('review-table', 'Continuum');
-        clickStatusIconNav('statusId7'); //Click to data product page
+        verifyDataInTable('Continuum');
+        clickStatusIconNav('Data Product');
         pageConfirmed('DATA PRODUCT');
         clickAddDataProduct();
         addContinuumImagesObservatoryDataProduct();
-        clickStatusIconNav('statusId8'); //Click to linking page
+        clickStatusIconNav('Linking');
         pageConfirmed('LINKING');
         clickObservationFromTable();
         clickToLinkTargetAndObservation();
         verifySensitivityCalculatorStatusSuccess();
-        clickStatusIconNav('statusId9'); //Click to calibration page
+        clickStatusIconNav('Calibration');
         pageConfirmed('CALIBRATION');
-        clickStatusIconNav('statusId3'); //Click to science page
+        clickStatusIconNav('Science');
         pageConfirmed('SCIENCE');
         uploadTestFile('testFile.pdf');
         verifyTestFileUploaded('testFile.pdf');
         clickFileUpload();
         verifyAlertFooter('Science Justification PDF successfully uploaded');
-        clickStatusIconNav('statusId6'); //Click to technical page
+        clickStatusIconNav('Technical');
         pageConfirmed('TECHNICAL');
         uploadTestFile('testFile.pdf');
         verifyTestFileUploaded('testFile.pdf');

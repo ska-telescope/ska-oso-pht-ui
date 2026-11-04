@@ -49,7 +49,7 @@ vi.mock('../../components/layout/Shell/Shell', () => ({
 }));
 
 vi.mock('../entry/Calibration/CalibrationEntry', () => ({
-  default: () => <div data-testid="calibrationEntryStub" />
+  default: () => <div>calibrationEntryStub</div>
 }));
 
 const renderWithProposal = (proposal: object) => {
@@ -77,7 +77,7 @@ describe('<CalibrationPage />', () => {
     renderWithProposal({ calibrationStrategy: null });
 
     expect(screen.getByText('error.noCalibrationsLoggedOut')).toBeInTheDocument();
-    expect(screen.queryByTestId('calibrationEntryStub')).not.toBeInTheDocument();
+    expect(screen.queryByText('calibrationEntryStub')).not.toBeInTheDocument();
   });
 
   describe('auto-linked proposals', () => {
@@ -86,7 +86,7 @@ describe('<CalibrationPage />', () => {
       renderWithProposal({ targets: [], targetObservation: [], calibrationStrategy: [] });
 
       expect(screen.getByText('error.noCalibrationsNoTarget')).toBeInTheDocument();
-      expect(screen.queryByTestId('calibrationEntryStub')).not.toBeInTheDocument();
+      expect(screen.queryByText('calibrationEntryStub')).not.toBeInTheDocument();
     });
 
     test('shows the calibration once the target is linked', () => {
@@ -97,8 +97,8 @@ describe('<CalibrationPage />', () => {
         ]
       });
 
-      expect(screen.getByTestId('calibrationEntryStub')).toBeInTheDocument();
-      expect(screen.queryByTestId('noDataNotification')).not.toBeInTheDocument();
+      expect(screen.getByText('calibrationEntryStub')).toBeInTheDocument();
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
   });
 });

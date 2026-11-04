@@ -8,7 +8,6 @@ import { STATUS_ERROR_SYMBOL } from '@/utils/constants';
 interface StandardAlertProps {
   color: typeof AlertColorTypes;
   gap?: number;
-  testId: string;
   text: string;
   closeFunc?: () => void;
   fadeDuration?: number;
@@ -20,7 +19,6 @@ const FONTSIZE_1 = 30;
 export default function StandardAlert({
   color,
   gap = 1,
-  testId,
   text,
   closeFunc,
   fadeDuration = 0
@@ -57,7 +55,7 @@ export default function StandardAlert({
     <Box sx={{ m: 0, p: 0 }}>
       <Fade in={visible} timeout={fadeDuration}>
         <div>
-          <Alert color={color} testId={testId} sx={{ p: 0 }}>
+          <Alert color={color} sx={{ p: 0 }}>
             <Grid
               sx={{
                 display: 'grid',
@@ -74,7 +72,6 @@ export default function StandardAlert({
                   icon={AlertColorTypes.Error !== color}
                   level={getLevel(color)}
                   size={gap === 0 ? FONTSIZE_0 : FONTSIZE_1}
-                  testId={`${testId}Icon`}
                   text={AlertColorTypes.Error === color ? STATUS_ERROR_SYMBOL : ''}
                   toolTip=" "
                 />

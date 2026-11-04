@@ -108,7 +108,6 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
               options={optionsDropdown1}
               required
               setValue={setXField}
-              testId="wrapperDropdown1"
               fullWidth
             />
           </Box>
@@ -119,7 +118,6 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
               options={optionsDropdown2}
               required
               setValue={setGroupField}
-              testId="wrapperDropdown2"
               fullWidth
             />
           </Box>

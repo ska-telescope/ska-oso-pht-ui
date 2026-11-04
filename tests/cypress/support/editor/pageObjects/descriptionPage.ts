@@ -1,9 +1,9 @@
 import type { PageObject } from '../types';
 
+// The page's only file input is the document upload's
 export const chooseDocument = (file: string | Cypress.FileReferenceObject) =>
   cy
-    .findByTestId('fileUpload')
-    .find('input[type="file"]')
+    .get('input[type="file"]')
     .selectFile(typeof file === 'string' ? `tests/cypress/fixtures/${file}` : file, {
       force: true
     });

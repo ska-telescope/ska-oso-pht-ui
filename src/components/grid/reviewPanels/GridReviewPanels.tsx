@@ -112,14 +112,12 @@ export default function GridReviewPanels({
           <Alert
             color={AlertColorTypes.Info}
             text={t('page.' + PAGE_OBSERVATION_UPDATE + '.empty')}
-            testId="helpPanelId"
           />
         )}
         {data.length > 0 && (
           <>
             <DataGrid
               maxHeight={height}
-              testId="dataGridId"
               rows={filteredData(data)}
               columns={stdColumns}
               height={height}

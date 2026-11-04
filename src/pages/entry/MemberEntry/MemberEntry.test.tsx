@@ -10,32 +10,37 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 let isSVFromContext: boolean;
 
-const isEnabled = (testId: string, enabled: boolean = true) => {
+// Each field is found by its label, except the tick boxes, whose labels the library doesn't tie to
+// the checkbox, so they go by order
+const FIELDS = {
+  email: () => screen.getByRole('textbox', { name: /email\.label/ }),
+  firstName: () => screen.getByRole('textbox', { name: /firstName\.label/ }),
+  lastName: () => screen.getByRole('textbox', { name: /lastName\.label/ }),
+  piCheckbox: () => screen.getAllByRole('checkbox')[0],
+  PhDCheckbox: () => screen.getAllByRole('checkbox')[1]
+};
+type Field = keyof typeof FIELDS;
+
+const isEnabled = (field: Field, enabled: boolean = true) => {
   if (enabled) {
-    expect(screen.getByTestId(testId)).not.toBeDisabled();
+    expect(FIELDS[field]()).not.toBeDisabled();
   } else {
-    expect(screen.getByTestId(testId)).toBeDisabled();
+    expect(FIELDS[field]()).toBeDisabled();
   }
 };
 
-const hasValue = (testId: string, value: string) => {
-  const wrapper = screen.getByTestId(testId);
-  const input = wrapper.tagName === 'INPUT' ? wrapper : wrapper.querySelector('input');
-  if (!input) throw new Error(`No input found inside testId="${testId}"`);
-  expect(input).toHaveValue(value);
+const hasValue = (field: Field, value: string) => {
+  expect(FIELDS[field]()).toHaveValue(value);
 };
 
-const enterValue = async (testId: string, value: string) => {
-  const wrapper = screen.getByTestId(testId);
-  const input = wrapper.tagName === 'INPUT' ? wrapper : wrapper.querySelector('input');
-  if (!input) throw new Error(`No input found inside testId="${testId}"`);
-  fireEvent.change(input, { target: { value: value } });
+const enterValue = async (field: Field, value: string) => {
+  fireEvent.change(FIELDS[field](), { target: { value: value } });
 };
 
-const clickButton = async (testId: string) => {
-  const resolveButton = screen.getByTestId(testId);
+const clickSearchButton = async () => {
+  const searchButton = screen.getByRole('button', { name: 'search.label' });
   act(() => {
-    fireEvent.click(resolveButton);
+    fireEvent.click(searchButton);
   });
 };
 
@@ -63,7 +68,7 @@ describe('<MemberEntry /> search for user', () => {
     isEnabled('email');
     await enterValue('email', MockUserFrontendList[0].email);
     hasValue('email', MockUserFrontendList[0].email);
-    clickButton('userSearchButton');
+    clickSearchButton();
 
     await waitFor(() => {
       isEnabled('email');
@@ -83,7 +88,7 @@ describe('<MemberEntry /> search for user', () => {
     isEnabled('email');
     await enterValue('email', 'unknown@skao.int');
     hasValue('email', 'unknown@skao.int');
-    clickButton('userSearchButton');
+    clickSearchButton();
 
     await waitFor(() => {
       isEnabled('email');

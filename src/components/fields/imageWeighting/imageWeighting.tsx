@@ -19,7 +19,6 @@ export default function ImageWeightingField({
   value
 }: ImageWeightingFieldProps) {
   const { t } = useScopedTranslation();
-  const FIELD = 'imageWeighting';
 
   const options = () =>
     IMAGE_WEIGHTING.map((el) => {
@@ -41,7 +40,6 @@ export default function ImageWeightingField({
         options={options()}
         required={required}
         setValue={setValue}
-        testId={FIELD}
       />
     </Box>
   );

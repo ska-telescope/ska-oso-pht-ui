@@ -73,7 +73,6 @@ export default function FrequencyAveragingField({
       }}
     >
       <SteppedNumberField
-        testId={FIELD}
         value={value}
         format={(multiplier) => (multiplier * UNAVERAGED_VALUE_KHZ).toFixed(2)}
         parse={(raw) => {

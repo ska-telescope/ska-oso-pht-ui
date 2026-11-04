@@ -536,20 +536,14 @@ export default function ReviewListPage() {
   const searchDropdown = () => (
     <DropDown
       options={[{ label: t('status.0'), value: '' }, ...PROPOSAL_STATUS_OPTIONS]}
-      testId="proposalType"
       value={searchType}
       setValue={setSearchType}
       label={t('status.0')}
     />
   );
 
-  const searchEntryField = (testId: string) => (
-    <SearchEntry
-      label={t('search.label')}
-      testId={testId}
-      value={searchTerm}
-      setValue={setSearchTerm}
-    />
+  const searchEntryField = () => (
+    <SearchEntry label={t('search.label')} value={searchTerm} setValue={setSearchTerm} />
   );
 
   const submitAllDisabled = () => {
@@ -599,7 +593,7 @@ export default function ReviewListPage() {
             mt: -1
           }}
         >
-          {searchEntryField('searchId')}
+          {searchEntryField()}
         </Grid>
       </Grid>
       <Grid
@@ -613,16 +607,11 @@ export default function ReviewListPage() {
       >
         <Grid size={{ sm: 12 }}>
           {(!filteredData || filteredData.length === 0) && (
-            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} />
           )}
           {filteredData.length > 0 && (
             <div>
-              <DataGrid
-                testId="dataGridId"
-                rows={filteredData}
-                columns={stdColumns}
-                height={DATA_GRID_HEIGHT}
-              />
+              <DataGrid rows={filteredData} columns={stdColumns} height={DATA_GRID_HEIGHT} />
             </div>
           )}
         </Grid>

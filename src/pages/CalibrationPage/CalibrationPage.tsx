@@ -55,7 +55,6 @@ export default function CalibrationPage() {
           <Alert
             color={autoLink ? AlertColorTypes.Error : AlertColorTypes.Warning}
             text={theText}
-            testId="noDataNotification"
           />
         </Grid>
       </Grid>
@@ -84,7 +83,6 @@ export default function CalibrationPage() {
               title={'page.' + PAGE + '.title'}
               action={PATH[PAGE_CALIBRATION_ENTRY]}
               primary={!hasData()}
-              testId="addDataProductButton"
             />
           </Box>
         )}

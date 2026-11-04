@@ -28,11 +28,7 @@ export default function TableSubmissions({
 
   return (
     <TableContainer>
-      <Table
-        aria-label="Table of Proposal Submissions"
-        sx={{ tableLayout: 'auto', width: '100%' }}
-        data-testid="table-submissions"
-      >
+      <Table aria-label="Table of Proposal Submissions" sx={{ tableLayout: 'auto', width: '100%' }}>
         {<TableSubmissionsHeader />}
         <colgroup>
           <col style={{ width: '1%' }} />

@@ -40,7 +40,6 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
         elevation={1}
         role="region"
         aria-label="Employee data table with expandable details"
-        data-testid="employee-table"
       >
         <Table aria-label={`Review comments and ranks for ${data.title}`}>
           <TableHead>
@@ -59,16 +58,13 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
           </TableHead>
           <TableBody>
             {filteredData(data.reviews)?.map(
-              (
-                detail: {
-                  id: string;
-                  status: string;
-                  comments: string;
-                  srcNet: string;
-                  reviewType: ScienceReview;
-                },
-                detailIndex: number
-              ) => (
+              (detail: {
+                id: string;
+                status: string;
+                comments: string;
+                srcNet: string;
+                reviewType: ScienceReview;
+              }) => (
                 <TableRow key={detail.id}>
                   <TableCell
                     sx={{
@@ -151,7 +147,6 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                           disabled={isReviewerAdminOnly() || detail.reviewType.conflict.hasConflict}
                         >
                           <StatusIcon
-                            testId={`includeIcon-${data.id}-${detailIndex}`}
                             softColors={detail.reviewType.conflict.hasConflict}
                             icon
                             level={

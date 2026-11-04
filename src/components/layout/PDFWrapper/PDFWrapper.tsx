@@ -28,7 +28,7 @@ export default function PDFWrapper({ open, onClose, url }: PDFWrapperProps) {
             p: 2
           }}
         >
-          <CancelButton action={handleClose} title="closeBtn.label" testId="cancelButtonTestId" />
+          <CancelButton action={handleClose} title="closeBtn.label" />
         </Grid>
       </Grid>
     </Grid>
@@ -43,7 +43,6 @@ export default function PDFWrapper({ open, onClose, url }: PDFWrapperProps) {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
-      data-testid="pdf-wrapper"
     >
       <PDFViewer url={url} />
       {footerContent()}

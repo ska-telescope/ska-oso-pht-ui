@@ -56,7 +56,6 @@ export default function TaperDropdown({
     >
       <DropDown
         options={getOptions([{ label: t('tapering.0'), value: 0 }], centralFrequency)}
-        testId={FIELD}
         value={value}
         setValue={setValue}
         label={t(FIELD + '.label')}

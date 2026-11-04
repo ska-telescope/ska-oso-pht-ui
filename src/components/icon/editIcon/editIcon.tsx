@@ -8,13 +8,5 @@ interface EditIconProps {
 }
 
 export default function EditIcon({ disabled = false, onClick, toolTip = '' }: EditIconProps) {
-  return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<Edit />}
-      testId="editIcon"
-      toolTip={toolTip}
-    />
-  );
+  return <Icon disabled={disabled} onClick={onClick} icon={<Edit />} toolTip={toolTip} />;
 }

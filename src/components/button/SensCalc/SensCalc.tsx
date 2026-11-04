@@ -5,7 +5,6 @@ interface SensCalcButtonProps {
   title?: string;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
   link?: string;
 }
@@ -14,7 +13,6 @@ export default function SensCalcButton({
   disabled = false,
   title = 'sensCalc.button',
   primary = false,
-  testId = 'SensCalcButtonTestId',
   toolTip = 'sensCalc.tooltip',
   link = ''
 }: SensCalcButtonProps) {
@@ -29,7 +27,6 @@ export default function SensCalcButton({
         disabled={disabled}
         icon={<CalculateOutlinedIcon />}
         primary={primary}
-        testId={testId}
         title={title}
         toolTip={toolTip}
       />

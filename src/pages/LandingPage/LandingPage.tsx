@@ -279,7 +279,6 @@ export default function LandingPage() {
       action={() => {
         setOpenCycleDialog(true);
       }}
-      testId={'addSubmissionButton'}
       title="addProposal.label"
       toolTip="addProposal.toolTip"
     />
@@ -323,20 +322,14 @@ export default function LandingPage() {
   const searchDropdown = () => (
     <DropDown
       options={[{ label: t('status.0'), value: '' }, ...PROPOSAL_STATUS_OPTIONS]}
-      testId="proposalType"
       value={searchType}
       setValue={setSearchType}
       label={t('status.0')}
     />
   );
 
-  const searchEntryField = (testId: string) => (
-    <SearchEntry
-      label={t('search.label')}
-      testId={testId}
-      value={searchTerm}
-      setValue={setSearchTerm}
-    />
+  const searchEntryField = () => (
+    <SearchEntry label={t('search.label')} value={searchTerm} setValue={setSearchTerm} />
   );
 
   const deleteClicked = () => (
@@ -404,7 +397,7 @@ export default function LandingPage() {
             mt: -1
           }}
         >
-          {displayField() && searchEntryField('searchId')}
+          {displayField() && searchEntryField()}
         </Grid>
         <Grid
           size={{ xs: 12 }}
@@ -414,14 +407,10 @@ export default function LandingPage() {
         >
           {/* TODO(BTN-3258): remove "under test" notice before go-live */}
           {!axiosViewError && (
-            <Alert
-              color={AlertColorTypes.Warning}
-              text={t('proposals.underTest')}
-              testId="underTestPanelId"
-            />
+            <Alert color={AlertColorTypes.Warning} text={t('proposals.underTest')} />
           )}
           {!axiosViewError && loggedIn && (!filteredData || filteredData.length === 0) && (
-            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} />
           )}
           {!axiosViewError && filteredData.length > 0 && (
             <Box
@@ -474,7 +463,6 @@ export default function LandingPage() {
                       toolTip={t('landingWelcome.tooltip')}
                       colorBG={theme.palette.secondary.main}
                       colorFG={theme.palette.secondary.contrastText}
-                      testId="landingWelcomeLoginButton"
                     />
                   </Box>
                 </Stack>
@@ -527,16 +515,8 @@ export default function LandingPage() {
           sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}
         >
           <Grid>
-            {axiosViewError && (
-              <Alert
-                color={AlertColorTypes.Error}
-                testId="axiosViewErrorTestId"
-                text={axiosViewError}
-              />
-            )}
-            {axiosError && (
-              <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
-            )}
+            {axiosViewError && <Alert color={AlertColorTypes.Error} text={axiosViewError} />}
+            {axiosError && <Alert color={AlertColorTypes.Error} text={axiosError} />}
           </Grid>
         </Grid>
       </Paper>

@@ -49,7 +49,6 @@ export default function PixelSizeField({
       }))}
       units={units}
       setUnits={setUnits}
-      unitsTestId={FIELD + 'Units'}
       unitsMinWidth={90}
       topPadding={1}
       label={t(FIELD + '.label')}

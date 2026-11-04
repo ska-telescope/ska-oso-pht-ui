@@ -124,7 +124,6 @@ export default function SpectralResolutionField({
     >
       {interactive ? (
         <SelectField
-          testId="spectralResolution"
           label={label}
           options={resolutionOptionsWithVelocity()}
           value={safeBandWidth}
@@ -137,7 +136,6 @@ export default function SpectralResolutionField({
           disabledUnderline
           label={label}
           onFocus={onFocus}
-          testId="spectralResolution"
           value={spectralResolution}
         />
       )}

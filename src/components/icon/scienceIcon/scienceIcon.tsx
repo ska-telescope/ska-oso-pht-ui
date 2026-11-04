@@ -8,13 +8,5 @@ interface ScienceIconProps {
 }
 
 export default function ScienceIcon({ disabled = false, onClick, toolTip = '' }: ScienceIconProps) {
-  return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<BiotechIcon />}
-      testId="scienceIcon"
-      toolTip={toolTip}
-    />
-  );
+  return <Icon disabled={disabled} onClick={onClick} icon={<BiotechIcon />} toolTip={toolTip} />;
 }

@@ -16,11 +16,10 @@ const wrapper = (component: React.ReactElement) => {
 describe('SensCalc Button', () => {
   test('renders correctly', () => {
     wrapper(<SensCalcButton />);
-    expect(screen.getByTestId('SensCalcButtonTestId')).toHaveTextContent('sensCalc.button');
-    screen.getByTestId('SensCalcButtonTestId').click();
+    screen.getByRole('button', { name: 'sensCalc.button' }).click();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<SensCalcButton toolTip="" />);
-    expect(screen.getByTestId('SensCalcButtonTestId')).toHaveTextContent('sensCalc.button');
+    expect(screen.getByRole('button', { name: 'sensCalc.button' })).toBeInTheDocument();
   });
 });

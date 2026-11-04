@@ -115,12 +115,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       }}
     >
       <Grid>
-        <CancelButton
-          action={onClose}
-          title="closeBtn.label"
-          testId="cancelButtonTestId"
-          ariaLabel="Cancel cycle selection"
-        />
+        <CancelButton action={onClose} title="closeBtn.label" ariaLabel="Cancel cycle selection" />
       </Grid>
     </Grid>
   );
@@ -138,7 +133,6 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       <Grid>
         <ConfirmButton
           action={() => currentPolicy && onConfirm(currentPolicy)}
-          testId="cycleConfirmationButton"
           title="confirmBtn.label"
           ariaLabel="Confirm cycle selection"
         />
@@ -190,7 +184,6 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
               <CardActionArea onClick={() => handleCardClick(policy)}>
                 <CardContent>
                   <Typography
-                    data-testid={policy.cycleInformation.cycleId + '_ID'}
                     variant="h6"
                     sx={{
                       color: 'text.primary'
@@ -199,7 +192,6 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     {t('id.label')}: {policy.cycleInformation.cycleId}
                   </Typography>
                   <Typography
-                    data-testid={policy.cycleInformation.cycleId + '_description'}
                     variant="body1"
                     sx={{
                       color: 'text.secondary'
@@ -208,7 +200,6 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     {t('cycleDescription.label')}: {policy?.cycleDescription}
                   </Typography>
                   <Typography
-                    data-testid={policy.cycleInformation.cycleId + '_opens'}
                     variant="body2"
                     sx={{
                       color: 'text.secondary'
@@ -220,7 +211,6 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     })}
                   </Typography>
                   <Typography
-                    data-testid={policy.cycleInformation.cycleId + '_closes'}
                     variant="body2"
                     sx={{
                       color: 'text.secondary'

@@ -183,7 +183,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const pulsarTimingValueField = () =>
     fieldWrapper(
       <Typography
-        data-testid="pulsarTimingValue"
         sx={{
           p: GAP
         }}

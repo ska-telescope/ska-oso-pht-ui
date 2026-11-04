@@ -13,7 +13,7 @@ function LossyRoundTripField() {
   const displayValue = channels * 1.8; // arbitrary "resolution" - never round-trips exactly
   return (
     <SteppedNumberField
-      testId="lossy"
+      label="lossy"
       value={displayValue}
       format={(v) => v.toFixed(2)}
       onCommit={(raw) => setChannels(Math.round(raw / 1.8))}
@@ -31,23 +31,23 @@ describe('<SteppedNumberField />', () => {
   test('renders the current value, formatted', () => {
     render(
       <SteppedNumberField
-        testId="zoomChannels"
+        label="zoomChannels"
         value={1000}
         format={(v) => v.toFixed(1)}
         onCommit={vi.fn()}
         onStep={(v) => v}
       />
     );
-    expect(screen.getByTestId('zoomChannels')).toHaveValue(1000);
+    expect(screen.getByRole('spinbutton', { name: 'zoomChannels' })).toHaveValue(1000);
   });
 
   test('ArrowUp/ArrowDown call onStep then onCommit with the result', async () => {
     const onCommit = vi.fn();
     const onStep = vi.fn((value: number, direction: 1 | -1) => value + direction * 10);
     render(
-      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={onCommit} onStep={onStep} />
+      <SteppedNumberField label="zoomChannels" value={1000} onCommit={onCommit} onStep={onStep} />
     );
-    const input = screen.getByTestId('zoomChannels');
+    const input = screen.getByRole('spinbutton', { name: 'zoomChannels' });
 
     await pressArrow(input, 'ArrowUp');
     expect(onStep).toHaveBeenCalledWith(1000, 1);
@@ -64,9 +64,9 @@ describe('<SteppedNumberField />', () => {
     // the stale typed value while waiting for a blur that may never come.
     const onStep = vi.fn((_value: number, direction: 1 | -1) => (direction === 1 ? 500 : -500));
     render(
-      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={vi.fn()} onStep={onStep} />
+      <SteppedNumberField label="zoomChannels" value={1000} onCommit={vi.fn()} onStep={onStep} />
     );
-    const input = screen.getByTestId('zoomChannels');
+    const input = screen.getByRole('spinbutton', { name: 'zoomChannels' });
 
     await pressArrow(input, 'ArrowUp');
     expect(input).toHaveValue(500);
@@ -75,28 +75,28 @@ describe('<SteppedNumberField />', () => {
   test('typing a valid number calls onCommit with the parsed value', async () => {
     const onCommit = vi.fn();
     render(
-      <SteppedNumberField testId="zoomChannels" value={0} onCommit={onCommit} onStep={(v) => v} />
+      <SteppedNumberField label="zoomChannels" value={0} onCommit={onCommit} onStep={(v) => v} />
     );
 
-    await userEvent.type(screen.getByTestId('zoomChannels'), '5');
+    await userEvent.type(screen.getByRole('spinbutton', { name: 'zoomChannels' }), '5');
     expect(onCommit).toHaveBeenCalledWith(5);
   });
 
   test('typing an invalid value does not call onCommit', async () => {
     const onCommit = vi.fn();
     render(
-      <SteppedNumberField testId="zoomChannels" value={0} onCommit={onCommit} onStep={(v) => v} />
+      <SteppedNumberField label="zoomChannels" value={0} onCommit={onCommit} onStep={(v) => v} />
     );
 
-    await userEvent.type(screen.getByTestId('zoomChannels'), '-');
+    await userEvent.type(screen.getByRole('spinbutton', { name: 'zoomChannels' }), '-');
     expect(onCommit).not.toHaveBeenCalled();
   });
 
   test('blur resets the displayed value back to the formatted prop value', async () => {
     render(
-      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={vi.fn()} onStep={(v) => v} />
+      <SteppedNumberField label="zoomChannels" value={1000} onCommit={vi.fn()} onStep={(v) => v} />
     );
-    const input = screen.getByTestId('zoomChannels');
+    const input = screen.getByRole('spinbutton', { name: 'zoomChannels' });
     await userEvent.clear(input);
     await userEvent.type(input, '5');
     await userEvent.tab();
@@ -105,7 +105,7 @@ describe('<SteppedNumberField />', () => {
 
   test('a lossy round-tripped commit does not interrupt typing while still focused', async () => {
     render(<LossyRoundTripField />);
-    const input = screen.getByTestId('lossy');
+    const input = screen.getByRole('spinbutton', { name: 'lossy' });
 
     await userEvent.clear(input);
     // Type a value that never round-trips exactly through the channels->display conversion.
@@ -117,7 +117,7 @@ describe('<SteppedNumberField />', () => {
 
   test('a lossy round-tripped commit resyncs the display once the field is blurred', async () => {
     render(<LossyRoundTripField />);
-    const input = screen.getByTestId('lossy');
+    const input = screen.getByRole('spinbutton', { name: 'lossy' });
 
     await userEvent.clear(input);
     await userEvent.type(input, '1234.56');
@@ -130,7 +130,7 @@ describe('<SteppedNumberField />', () => {
     const onCommit = vi.fn();
     render(
       <SteppedNumberField
-        testId="zoomChannels"
+        label="zoomChannels"
         value={0}
         digitsOnly
         onCommit={onCommit}
@@ -138,7 +138,7 @@ describe('<SteppedNumberField />', () => {
       />
     );
 
-    const input = screen.getByTestId('zoomChannels');
+    const input = screen.getByRole('spinbutton', { name: 'zoomChannels' });
     await userEvent.clear(input);
     await userEvent.type(input, '123');
     expect(input).toHaveValue(123);
@@ -149,7 +149,7 @@ describe('<SteppedNumberField />', () => {
     const onCommit = vi.fn();
     render(
       <SteppedNumberField
-        testId="zoomChannels"
+        label="zoomChannels"
         value={1000}
         onCommit={onCommit}
         onStep={(v) => v}
@@ -157,7 +157,7 @@ describe('<SteppedNumberField />', () => {
       />
     );
 
-    await pressArrow(screen.getByTestId('zoomChannels'), 'ArrowUp');
+    await pressArrow(screen.getByRole('spinbutton', { name: 'zoomChannels' }), 'ArrowUp');
     expect(onCommit).not.toHaveBeenCalled();
   });
 
@@ -167,14 +167,14 @@ describe('<SteppedNumberField />', () => {
     // is still showing the raw typed number until this arrow press.
     render(
       <SteppedNumberField
-        testId="zoomChannels"
+        label="zoomChannels"
         value={100}
         onCommit={vi.fn()}
         onStep={(v) => v}
         incrementDisabled
       />
     );
-    const input = screen.getByTestId('zoomChannels');
+    const input = screen.getByRole('spinbutton', { name: 'zoomChannels' });
     await userEvent.click(input);
     await userEvent.keyboard('{ArrowUp}');
     expect(input).toHaveValue(100);
@@ -182,12 +182,12 @@ describe('<SteppedNumberField />', () => {
 
   test('the spin buttons are visible regardless of focus', async () => {
     render(
-      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={vi.fn()} onStep={(v) => v} />
+      <SteppedNumberField label="zoomChannels" value={1000} onCommit={vi.fn()} onStep={(v) => v} />
     );
-    const increment = screen.getByTestId('zoomChannelsIncrement');
+    const increment = screen.getByRole('button', { name: 'increment' });
     expect(increment).toBeVisible();
 
-    await userEvent.click(screen.getByTestId('zoomChannels'));
+    await userEvent.click(screen.getByRole('spinbutton', { name: 'zoomChannels' }));
     expect(increment).toBeVisible();
 
     await userEvent.tab();
@@ -198,15 +198,15 @@ describe('<SteppedNumberField />', () => {
     const onCommit = vi.fn();
     const onStep = vi.fn((value: number, direction: 1 | -1) => value + direction * 10);
     render(
-      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={onCommit} onStep={onStep} />
+      <SteppedNumberField label="zoomChannels" value={1000} onCommit={onCommit} onStep={onStep} />
     );
-    await userEvent.click(screen.getByTestId('zoomChannels'));
+    await userEvent.click(screen.getByRole('spinbutton', { name: 'zoomChannels' }));
 
-    await userEvent.click(screen.getByTestId('zoomChannelsIncrement'));
+    await userEvent.click(screen.getByRole('button', { name: 'increment' }));
     expect(onStep).toHaveBeenCalledWith(1000, 1);
     expect(onCommit).toHaveBeenCalledWith(1010);
 
-    await userEvent.click(screen.getByTestId('zoomChannelsDecrement'));
+    await userEvent.click(screen.getByRole('button', { name: 'decrement' }));
     expect(onStep).toHaveBeenCalledWith(1000, -1);
     expect(onCommit).toHaveBeenCalledWith(990);
   });
@@ -220,13 +220,13 @@ describe('<SteppedNumberField />', () => {
       const onCommit = vi.fn();
       render(
         <SteppedNumberField
-          testId="zoomChannels"
+          label="zoomChannels"
           value={1000}
           onCommit={onCommit}
           onStep={(v, d) => v + d}
         />
       );
-      const increment = screen.getByTestId('zoomChannelsIncrement');
+      const increment = screen.getByRole('button', { name: 'increment' });
 
       fireEvent.mouseDown(increment);
       fireEvent.mouseUp(increment);
@@ -241,13 +241,13 @@ describe('<SteppedNumberField />', () => {
       const onCommit = vi.fn();
       render(
         <SteppedNumberField
-          testId="zoomChannels"
+          label="zoomChannels"
           value={1000}
           onCommit={onCommit}
           onStep={(v, d) => v + d}
         />
       );
-      const increment = screen.getByTestId('zoomChannelsIncrement');
+      const increment = screen.getByRole('button', { name: 'increment' });
 
       fireEvent.mouseDown(increment);
       expect(onCommit).not.toHaveBeenCalled(); // not yet past the initial hold delay
@@ -275,13 +275,13 @@ describe('<SteppedNumberField />', () => {
       const onCommit = vi.fn();
       render(
         <SteppedNumberField
-          testId="zoomChannels"
+          label="zoomChannels"
           value={1000}
           onCommit={onCommit}
           onStep={(v, d) => v + d}
         />
       );
-      const increment = screen.getByTestId('zoomChannelsIncrement');
+      const increment = screen.getByRole('button', { name: 'increment' });
 
       fireEvent.mouseDown(increment);
       act(() => {
@@ -300,15 +300,15 @@ describe('<SteppedNumberField />', () => {
   test('the increment/decrement spin buttons default to disabling once onStep would be a no-op, with no explicit prop', () => {
     render(
       <SteppedNumberField
-        testId="zoomChannels"
+        label="zoomChannels"
         value={100}
         onCommit={vi.fn()}
         onStep={(v, d) => Math.min(100, Math.max(0, v + d))}
       />
     );
 
-    expect(screen.getByTestId('zoomChannelsIncrement')).toBeDisabled();
-    expect(screen.getByTestId('zoomChannelsDecrement')).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'increment' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'decrement' })).not.toBeDisabled();
   });
 
   test('the default does not disable stepping just because value already sits past max - onStep is still expected to correct it', () => {
@@ -317,22 +317,22 @@ describe('<SteppedNumberField />', () => {
     // back in - a naive value >= max default would wrongly disable exactly the step that fixes it.
     render(
       <SteppedNumberField
-        testId="zoomChannels"
+        label="zoomChannels"
         value={105}
         onCommit={vi.fn()}
         onStep={(v, d) => Math.min(100, Math.max(0, v + d))}
       />
     );
 
-    expect(screen.getByTestId('zoomChannelsIncrement')).not.toBeDisabled();
-    expect(screen.getByTestId('zoomChannelsDecrement')).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'increment' })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'decrement' })).not.toBeDisabled();
   });
 
   test('an explicit incrementDisabled/decrementDisabled prop overrides the value/min/max default', async () => {
     const onCommit = vi.fn();
     render(
       <SteppedNumberField
-        testId="zoomChannels"
+        label="zoomChannels"
         value={1000}
         onCommit={onCommit}
         onStep={(v) => v}
@@ -341,7 +341,7 @@ describe('<SteppedNumberField />', () => {
       />
     );
 
-    expect(screen.getByTestId('zoomChannelsIncrement')).toBeDisabled();
-    expect(screen.getByTestId('zoomChannelsDecrement')).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'increment' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'decrement' })).toBeDisabled();
   });
 });

@@ -68,7 +68,6 @@ export default function SrcDataPage() {
               <Alert
                 color={AlertColorTypes.Info}
                 text="This page is a placeholder for future enhancements"
-                testId="developmentPanelId"
               />
             </Grid>
           </Grid>

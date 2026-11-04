@@ -9,11 +9,10 @@ interface TimedAlertProps {
   color: typeof AlertColorTypes;
   gap?: number;
   delay?: number;
-  testId: string;
   text: string;
 }
 
-export default function TimedAlert({ color, gap = 1, delay = 2, testId, text }: TimedAlertProps) {
+export default function TimedAlert({ color, gap = 1, delay = 2, text }: TimedAlertProps) {
   const [show, setShow] = React.useState(false);
   const { notifyClear } = useNotify();
 
@@ -37,22 +36,10 @@ export default function TimedAlert({ color, gap = 1, delay = 2, testId, text }: 
   return (
     <>
       {show && gap !== 0 && (
-        <StandardAlert
-          color={color}
-          testId={testId}
-          text={text}
-          closeFunc={closeFunction}
-          fadeDuration={2000}
-        />
+        <StandardAlert color={color} text={text} closeFunc={closeFunction} fadeDuration={2000} />
       )}
       {show && gap === 0 && (
-        <StandardChip
-          color={color}
-          testId={testId}
-          text={text}
-          closeFunc={closeFunction}
-          fadeDuration={2000}
-        />
+        <StandardChip color={color} text={text} closeFunc={closeFunction} fadeDuration={2000} />
       )}
     </>
   );

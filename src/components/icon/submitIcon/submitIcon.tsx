@@ -9,12 +9,6 @@ interface SubmitIconProps {
 
 export default function SubmitIcon({ disabled = false, onClick, toolTip = '' }: SubmitIconProps) {
   return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<SendOutlinedIcon />}
-      testId="submitIcon"
-      toolTip={toolTip}
-    />
+    <Icon disabled={disabled} onClick={onClick} icon={<SendOutlinedIcon />} toolTip={toolTip} />
   );
 }

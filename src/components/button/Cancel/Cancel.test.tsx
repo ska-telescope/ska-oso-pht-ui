@@ -17,12 +17,11 @@ describe('Cancel Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     wrapper(<CancelButton action={mockAction} />);
-    expect(screen.getByTestId('cancelButtonTestId')).toHaveTextContent('cancelBtn.label');
-    screen.getByTestId('cancelButtonTestId').click();
+    screen.getByRole('button', { name: 'cancelBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<CancelButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('cancelButtonTestId')).toHaveTextContent('cancelBtn.label');
+    expect(screen.getByRole('button', { name: 'cancelBtn.label' })).toBeInTheDocument();
   });
 });

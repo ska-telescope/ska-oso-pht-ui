@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import TableReviewDecision from './TableReviewDecision';
 
@@ -13,25 +13,12 @@ vi.mock('./tableReviewDecisionHeader/TableReviewDecisionHeader', () => ({
   )
 }));
 
-vi.mock('./tableReviewDecisionRow/TableReviewDecisionRow', () => ({
-  default: (props: any) => (
-    <tr data-testid={`row-${props.item.id}`}>
-      <td>{props.item.title}</td>
-      <td data-testid={`rank-${props.item.id}`}>{props.item.rank}</td>
-      <td>
-        <button
-          onClick={() => props.toggleRow(props.item.id)}
-          data-testid={`toggle-${props.item.id}`}
-        >
-          Toggle
-        </button>
-      </td>
-    </tr>
-  )
-}));
-
 const mockExclude = vi.fn();
 const mockUpdate = vi.fn();
+
+// The rank is the 8th cell of the proposal's row
+const rankOf = (title: string) =>
+  within(screen.getByText(title).closest('tr')!).getAllByRole('gridcell')[7].textContent;
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
@@ -133,13 +120,13 @@ describe('TableReviewDecision', () => {
     );
 
     // High Score and Tied Score should both be rank 1
-    expect(screen.getByTestId('rank-1').textContent).toBe('1');
-    expect(screen.getByTestId('rank-4').textContent).toBe('1');
+    expect(rankOf('High Score')).toBe('1');
+    expect(rankOf('Tied Score')).toBe('1');
 
     // Medium Score should be rank 3
-    expect(screen.getByTestId('rank-2').textContent).toBe('3');
+    expect(rankOf('Medium Score')).toBe('3');
 
     // Zero Score should be rank 4 (lowest)
-    expect(screen.getByTestId('rank-3').textContent).toBe('4');
+    expect(rankOf('Zero Score')).toBe('4');
   });
 });

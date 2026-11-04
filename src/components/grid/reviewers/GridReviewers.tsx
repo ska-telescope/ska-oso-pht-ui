@@ -161,7 +161,6 @@ export default function GridReviewers({
         <TickBox
           label=""
           labelPosition="top"
-          testId="linkedTickBox"
           checked={isReviewerSelected(e.row.id)}
           onChange={() => tickBoxClicked(e.row, isReviewerSelected(e.row.id))}
         />
@@ -211,7 +210,6 @@ export default function GridReviewers({
     >
       <DropDown
         options={[{ label: t('subjectExpertise.0'), value: '' }, ...SEARCH_TYPE_OPTIONS_REVIEWERS]}
-        testId="subExpertise"
         value={searchTypeExpertise}
         setValue={setSearchTypeExpertise}
         label={t('subjectExpertise.0')}
@@ -237,7 +235,6 @@ export default function GridReviewers({
     >
       <DropDown
         options={[{ label: t('affiliation.0'), value: '' }, ...getAffiliationOptions()]}
-        testId="officeLocation"
         value={searchTypeAffiliation}
         setValue={setSearchTypeAffiliation}
         label={t('affiliation.0')}
@@ -245,13 +242,8 @@ export default function GridReviewers({
     </Box>
   );
 
-  const searchEntryField = (testId: string) => (
-    <SearchEntry
-      label={t('search.label')}
-      testId={testId}
-      value={searchTerm}
-      setValue={setSearchTerm}
-    />
+  const searchEntryField = () => (
+    <SearchEntry label={t('search.label')} value={searchTerm} setValue={setSearchTerm} />
   );
 
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -302,7 +294,7 @@ export default function GridReviewers({
         >
           <Grid size={{ sm: 3 }}>{searchDropdownExpertise()}</Grid>
           <Grid size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid>
-          <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
+          <Grid size={{ sm: 5 }}>{searchEntryField()}</Grid>
         </Grid>
       )}
       <Grid size={{ xs: 12 }}>
@@ -310,16 +302,13 @@ export default function GridReviewers({
           <div>
             <DataGrid
               maxHeight={finalHeight}
-              testId="dataGridReviewers"
               rows={filteredData}
               columns={stdColumns}
               height={finalHeight}
             />
           </div>
         )}
-        {axiosError && (
-          <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
-        )}
+        {axiosError && <Alert color={AlertColorTypes.Error} text={axiosError} />}
       </Grid>
     </Box>
   );

@@ -17,13 +17,11 @@ describe('TableContainer', () => {
       </TableContainer>
     );
 
-    // Check container is rendered
-    const container = screen.getByTestId('review-table');
+    // The container is a named region
+    const container = screen.getByRole('region', {
+      name: 'Review data table with expandable details'
+    });
     expect(container).toBeInTheDocument();
-
-    // Check role and aria-label
-    expect(container).toHaveAttribute('role', 'region');
-    expect(container).toHaveAttribute('aria-label', 'Review data table with expandable details');
 
     // Check child content is rendered
     expect(screen.getByText('Test Cell')).toBeInTheDocument();

@@ -46,7 +46,6 @@ export default function SensCalcModalSingle({
                 error: ''
               })}
               ariaDescription=""
-              testId="statusId"
               icon
               level={targetObservation?.sensCalc?.statusGUI}
               size={SIZE}

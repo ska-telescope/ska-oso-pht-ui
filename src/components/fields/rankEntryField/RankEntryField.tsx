@@ -169,7 +169,7 @@ export default function RankEntryField({
                     onClick={() => handleRankSelect(rank)}
                     tabIndex={0}
                     role="button"
-                    data-testId={`Rank${rank}`}
+                    data-
                     aria-label={`Select rank ${rank}`}
                     aria-pressed={isSelected}
                     onMouseEnter={() => handleMouseEnter(rank)}
@@ -231,7 +231,6 @@ export default function RankEntryField({
               aria-pressed={selectedRank === 0}
               onMouseEnter={() => handleMouseEnter(0)}
               onMouseLeave={handleMouseLeave}
-              data-testid="section0TestId"
             />
             <text
               x="120"

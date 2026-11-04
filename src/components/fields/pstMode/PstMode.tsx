@@ -40,7 +40,6 @@ export default function PstModeField({
         <DropDown
           disabled={disabled || getOptions()?.length < 2}
           options={getOptions()}
-          testId={FIELD}
           value={value}
           setValue={setValue}
           label={t(FIELD + '.label')}

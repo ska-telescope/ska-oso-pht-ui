@@ -13,7 +13,6 @@ interface ElevationFieldProps {
   setValue?: Function;
   label?: string;
   suffix?: any;
-  testId: string;
   value: number;
   widthButton?: number;
   widthLabel?: number;
@@ -31,7 +30,6 @@ export default function ElevationField({
   label = '',
   required = false,
   setValue,
-  testId,
   value
 }: ElevationFieldProps) {
   const { t } = useScopedTranslation();
@@ -73,7 +71,6 @@ export default function ElevationField({
         errorText={errorMessage}
         label={label}
         required={required}
-        testId={testId}
         value={value}
         setValue={checkValue}
         onFocus={onFocus}

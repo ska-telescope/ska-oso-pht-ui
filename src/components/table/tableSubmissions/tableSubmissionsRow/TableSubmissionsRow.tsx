@@ -70,7 +70,6 @@ export default function TableSubmissionsRow({
     <>
       <TableRow
         key={item.id}
-        data-testid={`row-${item.id}`}
         sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
         role="row"
         aria-rowindex={index + 2}
@@ -177,7 +176,6 @@ export default function TableSubmissionsRow({
         >
           <Typography
             variant="body2"
-            data-testid={`row-title-${item.id}`}
             sx={{
               color: 'text.secondary',
               display: { xs: '-webkit-box', md: 'block' },

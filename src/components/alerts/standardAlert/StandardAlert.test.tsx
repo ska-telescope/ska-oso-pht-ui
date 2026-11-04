@@ -13,46 +13,22 @@ describe('<StandardAlert />', () => {
   const mockActionClose = vi.fn();
   test('renders correctly (SUCCESS)', () => {
     wrapper(
-      <StandardAlert
-        closeFunc={mockActionClose}
-        color={AlertColorTypes.Success}
-        testId={''}
-        text={''}
-      />
+      <StandardAlert closeFunc={mockActionClose} color={AlertColorTypes.Success} text={''} />
     );
-    screen.queryByTestId('CloseIcon')?.click();
+    screen.getByRole('button', { name: 'closeBtn.label' }).click();
   });
   test('renders correctly (INFO)', () => {
-    wrapper(
-      <StandardAlert
-        closeFunc={mockActionClose}
-        color={AlertColorTypes.Info}
-        testId={''}
-        text={''}
-      />
-    );
-    screen.queryByTestId('CloseIcon')?.click();
+    wrapper(<StandardAlert closeFunc={mockActionClose} color={AlertColorTypes.Info} text={''} />);
+    screen.getByRole('button', { name: 'closeBtn.label' }).click();
   });
   test('renders correctly (WARNING)', () => {
     wrapper(
-      <StandardAlert
-        closeFunc={mockActionClose}
-        color={AlertColorTypes.Warning}
-        testId={''}
-        text={''}
-      />
+      <StandardAlert closeFunc={mockActionClose} color={AlertColorTypes.Warning} text={''} />
     );
-    screen.queryByTestId('CloseIcon')?.click();
+    screen.getByRole('button', { name: 'closeBtn.label' }).click();
   });
   test('renders correctly (ERROR)', () => {
-    wrapper(
-      <StandardAlert
-        closeFunc={mockActionClose}
-        color={AlertColorTypes.Error}
-        testId={''}
-        text={''}
-      />
-    );
-    screen.queryByTestId('CloseIcon')?.click();
+    wrapper(<StandardAlert closeFunc={mockActionClose} color={AlertColorTypes.Error} text={''} />);
+    screen.getByRole('button', { name: 'closeBtn.label' }).click();
   });
 });

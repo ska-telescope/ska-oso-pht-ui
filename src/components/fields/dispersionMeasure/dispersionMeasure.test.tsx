@@ -1,5 +1,5 @@
 import { describe, test, vi, expect } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import DispersionMeasureField from './dispersionMeasure';
@@ -67,9 +67,8 @@ describe('<DispersionMeasureField />', () => {
         <DispersionMeasureField value={0} setValue={vi.fn()} />
       </StoreProvider>
     );
-    const units = screen.getByTestId('dispersionMeasureUnits');
+    const units = screen.getByRole('combobox');
     expect(units).toHaveTextContent('dispersionMeasure.units');
-    const fieldRoot = within(units.parentElement as HTMLElement).getByRole('combobox');
-    expect(fieldRoot).toHaveAttribute('aria-disabled', 'true');
+    expect(units).toHaveAttribute('aria-disabled', 'true');
   });
 });

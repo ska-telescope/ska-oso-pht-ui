@@ -5,7 +5,9 @@ import {
   updateFieldValue,
   addM2TargetAndAutoLink,
   mockEmailAPI,
-  createScienceIdeaSession
+  createScienceIdeaSession,
+  pageStatus,
+  setTickBox
 } from '../../../support/common.js';
 import { standardUser } from '../../../support/users.js';
 beforeEach(() => {
@@ -21,29 +23,26 @@ describe('Data product validation', () => {
     createScienceIdeaSession(standardUser);
     addM2TargetAndAutoLink('Continuum', 'This is a summary of the science idea.');
 
-    clickStatusIconNav('statusId7'); //Click to data product page
+    clickStatusIconNav('Data Product');
     pageConfirmed('DATA PRODUCT');
 
-    // ChannelsOutField is a SteppedNumberField, which puts data-testid directly on the <input>
-    // (not on an outer wrapper) - updateFieldValue types straight into it, matching how other
-    // SteppedNumberField-based fields (e.g. centralFrequency) are driven elsewhere.
-    updateFieldValue('channelsOut', '41'); //enter invalid channels out
-    cy.get('[data-testid="channelsOutError"]').should('contain.text', 'Valid range is 1 - 40'); //verify field error
+    updateFieldValue('Channels Out', '41'); //enter invalid channels out
+    cy.contains('Valid range is 1 - 40').should('be.visible'); //verify field error
   });
 
   it('SV Flow: Deselecting all polarisations shows Error in the Data Product breadcrumb', () => {
     createScienceIdeaSession(standardUser);
     addM2TargetAndAutoLink('Continuum', 'This is a summary of the science idea.');
 
-    clickStatusIconNav('statusId7'); //Click to data product page
+    clickStatusIconNav('Data Product');
     pageConfirmed('DATA PRODUCT');
-    cy.get('[data-testid="statusId7"]').should('have.attr', 'aria-label').and('include', 'OK');
+    pageStatus('Data Product').should('have.attr', 'aria-label').and('include', 'OK');
 
     // AutoLinking sets a freshly auto-linked Continuum data product's polarisations to
     // POLARISATIONS_DEFAULT (['I']) - deselect it to reach the zero-polarisations state
     // BTN-3269 made reachable.
-    cy.get('[data-testid="polarisationsI"]').click();
+    setTickBox('I', false);
 
-    cy.get('[data-testid="statusId7"]').should('have.attr', 'aria-label').and('include', 'Error');
+    pageStatus('Data Product').should('have.attr', 'aria-label').and('include', 'Error');
   });
 });

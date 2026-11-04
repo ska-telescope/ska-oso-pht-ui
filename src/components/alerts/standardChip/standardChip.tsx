@@ -5,7 +5,6 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 interface StandardChipProps {
   color: typeof AlertColorTypes;
-  testId: string;
   text: string;
   closeFunc?: () => void;
   fadeDuration?: number;
@@ -15,7 +14,6 @@ const FONTSIZE = 20;
 
 export default function StandardChip({
   color,
-  testId,
   text,
   closeFunc,
   fadeDuration = 0
@@ -59,7 +57,6 @@ export default function StandardChip({
         <div>
           <Chip
             variant="outlined"
-            data-testid={testId}
             label={text}
             icon={
               <Box
@@ -73,7 +70,6 @@ export default function StandardChip({
                   ariaTitle=" "
                   level={getLevel(color)}
                   size={FONTSIZE}
-                  testId={`${testId}Icon`}
                   toolTip=" "
                 />
               </Box>

@@ -48,7 +48,6 @@ export default function TaperField({
     >
       <NumberEntry
         label={t(FIELD + '.label')}
-        testId={FIELD}
         value={value}
         setValue={checkValue}
         onFocus={onFocus}

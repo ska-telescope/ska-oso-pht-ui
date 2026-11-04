@@ -6,7 +6,6 @@ interface DeleteButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -15,7 +14,6 @@ export default function DeleteButton({
   action,
   title = 'deleteBtn.label',
   primary = false,
-  testId = 'deleteButtonTestId',
   toolTip
 }: DeleteButtonProps) {
   return (
@@ -24,7 +22,6 @@ export default function DeleteButton({
       disabled={disabled}
       icon={<DeleteIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

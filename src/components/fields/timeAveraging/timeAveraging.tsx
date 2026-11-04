@@ -73,7 +73,6 @@ export default function TimeAveragingField({
       }}
     >
       <SteppedNumberField
-        testId={FIELD}
         value={value}
         format={(multiplier) => (multiplier * UNAVERAGED_VALUE_S).toFixed(3)}
         parse={(raw) => {

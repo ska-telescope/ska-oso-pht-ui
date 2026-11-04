@@ -51,7 +51,6 @@ export default function DataProductTypeField({
           disabled={disabled}
           disabledUnderline={disabled}
           options={options()}
-          testId={FIELD}
           value={value}
           setValue={setValue}
           label={t(FIELD + '.label')}

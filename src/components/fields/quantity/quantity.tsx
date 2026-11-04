@@ -23,7 +23,6 @@ interface QuantityFieldProps {
   units?: number;
   setUnits?: (unit: number) => void;
   unitOptions?: DropDownProps['options'];
-  unitsTestId?: string;
   unitsDisabled?: boolean;
   unitsMinWidth?: number;
   topPadding?: number;
@@ -47,7 +46,6 @@ export default function QuantityField({
   units,
   setUnits,
   unitOptions,
-  unitsTestId,
   unitsDisabled,
   unitsMinWidth,
   topPadding = 2
@@ -92,7 +90,6 @@ export default function QuantityField({
           <Box sx={{ minWidth: unitsMinWidth }}>
             <DropDown
               options={unitOptions}
-              testId={unitsTestId}
               value={units}
               disabled={unitsDisabled ?? disabled}
               setValue={setUnits}

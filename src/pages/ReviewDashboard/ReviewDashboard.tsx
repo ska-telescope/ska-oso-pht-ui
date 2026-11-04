@@ -393,19 +393,13 @@ export default function ReviewDashboard() {
                 { value: 'LOW', label: 'LOW' },
                 { value: 'MID', label: 'MID' }
               ]}
-              testId={'telescopeTestId'}
               value={filter.telescope}
               setValue={(e: string) => setFilter({ ...filter, telescope: e })}
               label={'Telescope'}
             />
           </Grid>
           <Grid size={{ sm: 6 }}>
-            <SearchEntry
-              label=""
-              testId="effectiveResolution"
-              value={search}
-              setValue={setSearch}
-            />
+            <SearchEntry label="" value={search} setValue={setSearch} />
           </Grid>
           <Grid
             sx={{

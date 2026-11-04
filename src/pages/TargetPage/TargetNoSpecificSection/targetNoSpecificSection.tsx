@@ -3,10 +3,6 @@ import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 
 export default function TargetNoSpecificSection() {
   return (
-    <Alert
-      color={AlertColorTypes.Info}
-      text="This functionality is not currently available"
-      testId="helpPanelId"
-    />
+    <Alert color={AlertColorTypes.Info} text="This functionality is not currently available" />
   );
 }

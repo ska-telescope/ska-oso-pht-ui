@@ -26,7 +26,7 @@ vi.mock('react-router', () => ({
 
 vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: vi.fn(() => false),
-  ButtonLogin: (props: any) => <button data-testid={props.testId}>{props.label}</button>
+  ButtonLogin: (props: any) => <button>{props.label}</button>
 }));
 
 vi.mock('@azure/msal-react', () => ({
@@ -108,7 +108,7 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 vi.mock('@/components/table/tableSubmissions/TableSubmissions', () => ({
   default: ({ cloneFunction, data }: any) =>
     data.map((item: any) => (
-      <button key={item.id} data-testid="cloneIcon" onClick={() => cloneFunction(item.id)}>
+      <button key={item.id} onClick={() => cloneFunction(item.id)}>
         Clone
       </button>
     ))
@@ -117,11 +117,7 @@ vi.mock('@/components/table/tableSubmissions/TableSubmissions', () => ({
 // Stub ProposalDisplay so the confirm button reliably calls onConfirm
 vi.mock('@/components/alerts/proposalDisplay/ProposalDisplay', () => ({
   default: ({ onConfirm, open, onConfirmLabel }: any) =>
-    open && onConfirmLabel ? (
-      <button data-testid="displayConfirmationButton" onClick={() => onConfirm()}>
-        Confirm
-      </button>
-    ) : null
+    open && onConfirmLabel ? <button onClick={() => onConfirm()}>Confirm</button> : null
 }));
 
 // ---- Helpers ----
@@ -144,12 +140,12 @@ describe('<LandingPage />', () => {
   test('does not show addSubmissionButton when not logged in', () => {
     wrapper(<LandingPage />);
     expect(isLoggedIn()).toBe(false);
-    expect(screen.queryByTestId('addSubmissionButton')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'addProposal.label' })).toBeNull();
   });
 
   test('shows the sign-in button when not logged in', () => {
     wrapper(<LandingPage />);
-    expect(screen.getByTestId('landingWelcomeLoginButton')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'landingWelcome.button' })).toBeInTheDocument();
   });
 });
 
@@ -259,16 +255,16 @@ describe('clone proposal', () => {
     wrapper(<LandingPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('cloneIcon')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Clone' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('cloneIcon'));
+    fireEvent.click(screen.getByRole('button', { name: 'Clone' }));
 
     await waitFor(() => {
-      expect(screen.getByTestId('displayConfirmationButton')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Confirm' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('displayConfirmationButton'));
+    fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
   };
 
   test('preserves original targets, observations, abstract and data products after cloning', async () => {

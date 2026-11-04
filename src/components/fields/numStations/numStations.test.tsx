@@ -29,31 +29,27 @@ describe('NumStationsField', () => {
 
   it('renders NumberEntry with correct label and value', () => {
     wrapper(<NumStationsField value={2} setValue={mockSetValue} />);
-    const inputWrapper = screen.getByTestId('numStations');
-    expect(inputWrapper).toBeInTheDocument();
-    const input = inputWrapper.querySelector('input');
+    const input = screen.getByRole<HTMLInputElement>('spinbutton', { name: 'Number of Stations' });
+    expect(input).toBeInTheDocument();
     expect(input?.value).toBe('2');
   });
 
   it('does not call setValue with out-of-range value', async () => {
     wrapper(<NumStationsField value={1} setValue={mockSetValue} rangeLower={0} rangeUpper={2} />);
-    const inputWrapper = screen.getByTestId('numStations');
-    const input = inputWrapper.querySelector('input');
-    await userEvent.clear(input!);
-    await userEvent.type(input!, '5');
+    const input = screen.getByRole('spinbutton', { name: 'Number of Stations' });
+    await userEvent.clear(input);
+    await userEvent.type(input, '5');
     expect(mockSetValue.mock.calls.some((call) => call[0] === '5')).toBe(false);
   });
 
   it('respects disabled prop', () => {
     wrapper(<NumStationsField value={1} disabled />);
-    const inputWrapper = screen.getByTestId('numStations');
-    const input = inputWrapper.querySelector('input');
+    const input = screen.getByRole('spinbutton', { name: 'Number of Stations' });
     expect(input).toBeDisabled();
   });
 
   it('uses default labelWidth when not provided', () => {
     wrapper(<NumStationsField value={1} />);
-    const inputWrapper = screen.getByTestId('numStations');
-    expect(inputWrapper).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton', { name: 'Number of Stations' })).toBeInTheDocument();
   });
 });

@@ -239,7 +239,7 @@ export default function TechnicalPage() {
           justifyContent: 'space-around'
         }}
       >
-        <Grid size={{ xs: 6 }} data-testid="fileUpload">
+        <Grid size={{ xs: 6 }}>
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>
           ) : (
@@ -259,7 +259,6 @@ export default function TechnicalPage() {
               maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
               setFile={setFile}
               setStatus={setUploadStatus}
-              testId="fileUpload"
               uploadFunction={uploadPdftoSignedUrl}
               uploadToolTip={t('pdfUpload.technical.tooltip.upload')}
               status={technicalLoadStatus ?? undefined}

@@ -152,7 +152,6 @@ export default function DetailsPage() {
       <Box sx={{ height: LINE_OFFSET * numRows }}>
         <TextEntry
           label={t('abstract.label')}
-          testId="abstractId"
           rows={numRows}
           required
           value={abstract}
@@ -233,7 +232,6 @@ export default function DetailsPage() {
           typeof getProposal().scienceCategory === 'number' ? '' : t('scienceCategory.error')
         }
         required
-        testId="categoryId"
         value={scienceCategoryId}
         setValue={setScienceCategoryId}
         label={t('scienceCategory.label')}

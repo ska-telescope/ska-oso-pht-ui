@@ -5,9 +5,8 @@ import Icon from './Icon';
 
 describe('Icon component', () => {
   const defaultProps = {
-    icon: <Delete data-testid="iconElement" />,
+    icon: <Delete />,
     onClick: vi.fn(),
-    testId: 'deleteIcon',
     toolTip: 'Delete item',
     sx: { color: 'red' }
   };
@@ -15,15 +14,12 @@ describe('Icon component', () => {
   it('renders tooltip and icon button', () => {
     render(<Icon {...defaultProps} />);
 
-    // Tooltip wrapper
-    expect(screen.getByTestId('deleteIcon')).toBeInTheDocument();
-
-    // IconButton with aria-label
+    // IconButton named by its tool tip
     const button = screen.getByRole('button', { name: /delete item/i });
     expect(button).toBeInTheDocument();
 
     // Icon inside the button
-    expect(screen.getByTestId('iconElement')).toBeInTheDocument();
+    expect(button.querySelector('svg')).toBeInTheDocument();
   });
 
   it('calls onClick when icon button is clicked', () => {

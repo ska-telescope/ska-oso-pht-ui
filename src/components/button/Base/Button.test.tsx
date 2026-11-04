@@ -19,32 +19,30 @@ describe('Base Button', () => {
 
   test('renders correctly', () => {
     wrapper(<BaseButton action={mockAction} icon={<AddIcon />} />);
-    expect(screen.getByTestId('baseButtonTestId')).toHaveTextContent('baseBtn.label');
-    screen.getByTestId('baseButtonTestId').click();
+    screen.getByRole('button', { name: 'baseBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
 
   test('renders correctly with tooltip empty', () => {
     wrapper(<BaseButton action={mockAction} icon={<AddIcon />} toolTip="" />);
-    expect(screen.getByTestId('baseButtonTestId')).toHaveTextContent('baseBtn.label');
+    expect(screen.getByRole('button', { name: 'baseBtn.label' })).toBeInTheDocument();
   });
 
   test('renders correctly with action as a string', () => {
     wrapper(<BaseButton action={'string'} icon={<AddIcon />} toolTip="" />);
-    expect(screen.getByTestId('baseButtonTestId')).toHaveTextContent('baseBtn.label');
-    screen.getByTestId('baseButtonTestId').click();
+    screen.getByRole('button', { name: 'baseBtn.label' }).click();
   });
 
   test('respects reducedMotion flag', () => {
     wrapper(<BaseButton action={mockAction} icon={<AddIcon />} />);
-    const btn = screen.getByTestId('baseButtonTestId');
+    const btn = screen.getByRole('button', { name: 'baseBtn.label' });
     // We can’t assert exact transition string in JSDOM, but we can check it rendered
     expect(btn).toBeInTheDocument();
   });
 
   test('respects focusVisibleAlways flag', () => {
     wrapper(<BaseButton action={mockAction} icon={<AddIcon />} />);
-    const btn = screen.getByTestId('baseButtonTestId');
+    const btn = screen.getByRole('button', { name: 'baseBtn.label' });
     expect(btn).toBeInTheDocument();
   });
 });

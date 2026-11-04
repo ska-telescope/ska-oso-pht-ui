@@ -12,9 +12,9 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: () => true
 }));
 
-// Mock notify
 const notifySuccess = vi.fn();
 const notifyError = vi.fn();
+// Mock notify
 vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: () => ({
     notifySuccess,
@@ -27,7 +27,6 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
 }));
 
-// Mock storage
 const mockProposal = {
   id: '123',
   technicalPDF: { documentId: 'technical-doc-123', isUploadedPdf: true },
@@ -52,6 +51,7 @@ vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   };
 });
 
+// Mock storage
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => mockStore
@@ -59,7 +59,7 @@ vi.mock('@utils/storage/store', () => ({
 }));
 
 vi.mock('../../components/info/helpPanel/HelpPanel', () => ({
-  default: () => <div data-testid="mock-help-panel" />
+  default: () => <div />
 }));
 
 // Mock API calls
@@ -116,7 +116,7 @@ describe('TechnicalPage', () => {
     wrapper(<TechnicalPage />);
     fireEvent.click(screen.getByText('pdfUpload.technical.label.preview'));
     await waitFor(() => {
-      expect(screen.getByTestId('pdf-wrapper')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
   });
 
@@ -136,18 +136,4 @@ describe('TechnicalPage', () => {
       expect(notifySuccess).toHaveBeenCalledWith('pdfDelete.technical.success', 5);
     });
   });
-
-  // it('handles upload error gracefully', async () => {
-  //   const PutUploadPDF = require('@services/axios/put/putUploadPDF/putUploadPDF').default;
-  //   PutUploadPDF.mockResolvedValue({ error: true });
-  //   wrapper(<TechnicalPage />);
-  //   const uploadFn = screen.getByTestId('fileUpload').getAttribute('uploadFunction');
-  //   expect(uploadFn).toBeDefined();
-  // });
-
-  // it('triggers setHelp and validation on mount', () => {
-  //   wrapper(<TechnicalPage />);
-  //   expect(mockStore.setHelp).toHaveBeenCalledWith('page.6.help');
-  //   expect(mockStore.updateAppContent1).toHaveBeenCalled();
-  // });
 });

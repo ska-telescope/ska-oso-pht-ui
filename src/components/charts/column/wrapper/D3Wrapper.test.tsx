@@ -4,18 +4,13 @@ import D3Wrapper from './D3Wrapper';
 
 // Mock D3ColumnChart to inspect chart output
 vi.mock('../D3ColumnChart', () => ({
-  default: ({ data }: any) => <div data-testid="d3chart">{JSON.stringify(data)}</div>
+  default: ({ data }: any) => <output aria-label="chart data">{JSON.stringify(data)}</output>
 }));
 
 // Mock DropDown
 vi.mock('@ska-telescope/ska-gui-components', () => ({
-  DropDown: ({ label, options, value, setValue, testId }: any) => (
-    <select
-      data-testid={testId}
-      aria-label={label}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    >
+  DropDown: ({ label, options, value, setValue }: any) => (
+    <select aria-label={label} value={value} onChange={(e) => setValue(e.target.value)}>
       {options.map((opt: any) => (
         <option key={opt.value} value={opt.value}>
           {opt.label}
@@ -70,14 +65,20 @@ describe('ColumnChartWrapper', () => {
 
   it('renders dropdowns', () => {
     render(<D3Wrapper data={sampleData} fields={fields} t={t} />);
-    expect(screen.getByTestId('wrapperDropdown1')).toBeInTheDocument();
-    expect(screen.getByTestId('wrapperDropdown2')).toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', { name: 'reviewDashboard.chart.label1' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('combobox', { name: 'reviewDashboard.chart.label2' })
+    ).toBeInTheDocument();
   });
 
   it('renders chart with counts grouped by xField only', () => {
     render(<D3Wrapper data={sampleData} fields={fields} t={t} />);
     triggerResize();
-    const chartData = JSON.parse(screen.getByTestId('d3chart').textContent ?? '[]');
+    const chartData = JSON.parse(
+      screen.getByRole('status', { name: 'chart data' }).textContent ?? '[]'
+    );
     expect(chartData).toEqual([
       { name: 'open', value: 2 },
       { name: 'closed', value: 1 }
@@ -88,9 +89,13 @@ describe('ColumnChartWrapper', () => {
     render(<D3Wrapper data={sampleData} fields={fields} t={t} />);
     triggerResize();
     act(() => {
-      fireEvent.change(screen.getByTestId('wrapperDropdown2'), { target: { value: 'category' } });
+      fireEvent.change(screen.getByRole('combobox', { name: 'reviewDashboard.chart.label2' }), {
+        target: { value: 'category' }
+      });
     });
-    const chartData = JSON.parse(screen.getByTestId('d3chart').textContent ?? '[]');
+    const chartData = JSON.parse(
+      screen.getByRole('status', { name: 'chart data' }).textContent ?? '[]'
+    );
     expect(chartData).toEqual([
       { name: 'open', group: 'A', value: 1 },
       { name: 'open', group: 'B', value: 1 },
@@ -102,18 +107,20 @@ describe('ColumnChartWrapper', () => {
     render(<D3Wrapper data={sampleData} fields={fields} t={t} />);
     triggerResize();
     act(() => {
-      fireEvent.change(screen.getByTestId('wrapperDropdown2'), {
+      fireEvent.change(screen.getByRole('combobox', { name: 'reviewDashboard.chart.label2' }), {
         target: { value: 'nonexistent' }
       });
     });
-    const chartData = JSON.parse(screen.getByTestId('d3chart').textContent ?? '[]');
+    const chartData = JSON.parse(
+      screen.getByRole('status', { name: 'chart data' }).textContent ?? '[]'
+    );
     expect(chartData.every((d: { group: string }) => d.group === '∅')).toBe(false);
   });
 
   it('updates size via ResizeObserver', () => {
     render(<D3Wrapper data={sampleData} fields={fields} t={t} />);
     triggerResize(500, 400);
-    expect(screen.getByTestId('d3chart')).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'chart data' })).toBeInTheDocument();
   });
 
   it('calls getColors with correct type', async () => {
@@ -132,7 +139,9 @@ describe('ColumnChartWrapper', () => {
 
     // Change groupField to "array"
     act(() => {
-      fireEvent.change(screen.getByTestId('wrapperDropdown2'), { target: { value: 'array' } });
+      fireEvent.change(screen.getByRole('combobox', { name: 'reviewDashboard.chart.label2' }), {
+        target: { value: 'array' }
+      });
     });
     expect(mockedGetColors).toHaveBeenCalledWith({
       type: 'observationType',

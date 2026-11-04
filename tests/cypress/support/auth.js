@@ -118,7 +118,8 @@ const hydrateIndigoSession = (tokenResponse) => {
       })
     );
   cy.visit('/?use_indigo=true');
-  cy.get('[data-testid="usernameMenu"]', { timeout: 15000 }).should('exist');
+  // The library's user button is named after the signed-in user, so it's found by its description
+  cy.get('[aria-description="User Button"]', { timeout: 15000 }).should('exist');
 };
 
 // Log in again if the cached access token expires within this time

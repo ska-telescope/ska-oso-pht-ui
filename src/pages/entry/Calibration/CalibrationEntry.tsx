@@ -133,13 +133,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   const nameField = (inLabel: string, cal: Calibrator | null) => {
     return fieldWrapper(
-      <TextEntry
-        testId="calibratorName"
-        value={cal ? cal.name : ''}
-        disabled={true}
-        label={t(inLabel)}
-        width="100%"
-      />
+      <TextEntry value={cal ? cal.name : ''} disabled={true} label={t(inLabel)} width="100%" />
     );
   };
   const name1Field = () => nameField('calibrator.calibratorStart', calibrators.beforeEachScan);
@@ -148,7 +142,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const durationField = (inLabel: string, cal: Calibrator | null) => {
     return fieldWrapper(
       <TextEntry
-        testId="duration"
         value={cal ? cal.durationSeconds / 60 : 0} // this is so we display the duration in minutes
         disabled={true}
         label={t(inLabel)}
@@ -162,12 +155,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   const intentField = (inLabel: string, cal: Calibrator | null) => {
     return fieldWrapper(
-      <TextEntry
-        testId="intent"
-        value={cal ? cal.calibrationIntent : ''}
-        disabled={true}
-        label={t(inLabel)}
-      />
+      <TextEntry value={cal ? cal.calibrationIntent : ''} disabled={true} label={t(inLabel)} />
     );
   };
   const intent1Field = () => intentField('calibrator.intentStart', calibrators.beforeEachScan);
@@ -176,7 +164,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const targetField = () => {
     return fieldWrapper(
       <TextEntry
-        testId="target"
         value={target ? target.name : ''}
         disabled={true}
         label={t('calibrator.target')}
@@ -192,7 +179,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     const theUnits = observatoryConstants.Supplied[theType - 1]?.units[obUnits - 1].label;
     return fieldWrapper(
       <TextEntry
-        testId="integrationTime"
         value={observation ? observation.supplied.value : ''}
         disabled={true}
         label={theLabel}
@@ -209,7 +195,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
       <BorderedSection title={t('calibrator.comment.label')}>
         <TextEntry
           label=""
-          testId="commentId"
           rows={numRows}
           value={notes}
           setValue={setNotes}
@@ -263,11 +248,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   };
 
   const ssoNotSupportedBox = () => (
-    <Alert
-      testId="alertCalibratorSSOId"
-      color={AlertColorTypes.Warning}
-      sx={{ textAlign: 'center', width: '100%' }}
-    >
+    <Alert color={AlertColorTypes.Warning} sx={{ textAlign: 'center', width: '100%' }}>
       <Typography
         sx={{
           p: GAP

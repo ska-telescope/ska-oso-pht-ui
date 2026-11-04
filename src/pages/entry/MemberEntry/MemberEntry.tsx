@@ -284,7 +284,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
           action={userSearchClickFunction}
           disabled={emailInvalid}
           primary
-          testId="userSearchButton"
           size={ButtonSizeTypes.Small}
         />
       </Box>
@@ -313,7 +312,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const firstNameField = () => (
     <TextEntry
       label={t('firstName.label')}
-      testId="firstName"
       value={firstName}
       setValue={setFirstName}
       onFocus={() => setHelp('firstName.help')}
@@ -326,7 +324,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const lastNameField = () => (
     <TextEntry
       label={t('lastName.label')}
-      testId="lastName"
       value={lastName}
       setValue={setLastName}
       onFocus={() => setHelp('lastName.help')}
@@ -339,7 +336,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const emailField = () => (
     <TextEntry
       label={t('email.label')}
-      testId="email"
       value={email}
       setValue={setEmail}
       errorText={errorTextEmail ? t(errorTextEmail) : ''}
@@ -361,7 +357,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         label={t('pi.label')}
         labelPosition={LAB_POS_TICK}
         labelWidth={LABEL_WIDTH}
-        testId="piCheckbox"
         checked={pi}
         onChange={handleCheckboxChangePI}
         onFocus={() => setHelp('pi.help')}
@@ -380,7 +375,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         label={t('phdThesis.label')}
         labelPosition={LAB_POS_TICK}
         labelWidth={LABEL_WIDTH}
-        testId="PhDCheckbox"
         checked={phdThesis}
         onChange={handleCheckboxChangePhD}
         onFocus={() => setHelp('phdThesis.help')}
@@ -401,12 +395,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       {!isSV && piField()}
       {!isSV && phdThesisField()}
       <Stack spacing={GAP} direction="row">
-        <TeamInviteButton
-          action={clickFunction}
-          disabled={formInvalid}
-          primary
-          testId="sendInviteButton"
-        />
+        <TeamInviteButton action={clickFunction} disabled={formInvalid} primary />
         {forSearch && <ResetButton action={clearForm} />}
       </Stack>
     </Stack>

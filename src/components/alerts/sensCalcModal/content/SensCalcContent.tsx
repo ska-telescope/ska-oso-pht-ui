@@ -93,7 +93,8 @@ export default function SensCalcContent({
         <Grid size={{ xs: 6 }}>
           <Typography
             id={`${elementId}-label`}
-            data-testid={`field-${elementId}`}
+            // Named by the result's label beside it
+            aria-labelledby={elementId}
             sx={{ align: 'left', fontWeight: 'bold' }}
             variant="body1"
           >
@@ -113,7 +114,7 @@ export default function SensCalcContent({
 
   if (!targetObservation) {
     return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
+      <Alert color={AlertColorTypes.Error}>
         <Typography
           sx={{
             p: GAP
@@ -127,7 +128,7 @@ export default function SensCalcContent({
 
   if (observation?.type === TYPE_PST) {
     return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
+      <Alert color={AlertColorTypes.Warning}>
         <Typography
           sx={{
             p: GAP
@@ -141,7 +142,7 @@ export default function SensCalcContent({
 
   if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
     return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
+      <Alert color={AlertColorTypes.Warning}>
         <Typography
           sx={{
             p: GAP
@@ -155,7 +156,7 @@ export default function SensCalcContent({
 
   if (targetObservation?.sensCalc?.error) {
     return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
+      <Alert color={AlertColorTypes.Error}>
         <Typography
           sx={{
             p: GAP

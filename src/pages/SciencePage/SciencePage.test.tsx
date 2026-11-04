@@ -60,7 +60,7 @@ vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
 });
 
 vi.mock('../../components/info/helpPanel/HelpPanel', () => ({
-  default: () => <div data-testid="mock-help-panel" />
+  default: () => <div />
 }));
 
 // Mock API calls
@@ -121,7 +121,7 @@ vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
         capturedFile = file;
         return (
           <>
-            <input data-testid="mock-file-input" type="file" />
+            <input aria-label="mock file input" type="file" />
             {suffix}
           </>
         );
@@ -210,7 +210,7 @@ describe('SciencePage', () => {
     wrapper(<SciencePage />);
     fireEvent.click(screen.getByText('pdfUpload.science.label.preview'));
     await waitFor(() => {
-      expect(screen.getByTestId('pdf-wrapper')).toBeInTheDocument();
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
   });
 
@@ -387,7 +387,7 @@ describe('SciencePage', () => {
     it('clearDisabled becomes false when there is a PDF validation error', async () => {
       mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
-      fireEvent.change(screen.getByTestId('mock-file-input'), {
+      fireEvent.change(screen.getByLabelText('mock file input'), {
         target: { files: [makeNonPdfFile()] }
       });
       await waitFor(() => {
@@ -411,7 +411,7 @@ describe('SciencePage', () => {
 
     it('uploaded science PDF ignores file selector change events', async () => {
       wrapper(<SciencePage />);
-      fireEvent.change(screen.getByTestId('mock-file-input'), {
+      fireEvent.change(screen.getByLabelText('mock file input'), {
         target: { files: [makeNonPdfFile()] }
       });
       await waitFor(() => {
@@ -421,7 +421,7 @@ describe('SciencePage', () => {
 
     it('uploaded science PDF ignores drop events', async () => {
       wrapper(<SciencePage />);
-      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+      fireEvent.drop(screen.getByLabelText('mock file input'), {
         dataTransfer: { files: [makeNonPdfFile()] }
       });
       await waitFor(() => {
@@ -432,7 +432,7 @@ describe('SciencePage', () => {
     it('selecting non-PDF file shows invalidFileError', async () => {
       mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
-      fireEvent.change(screen.getByTestId('mock-file-input'), {
+      fireEvent.change(screen.getByLabelText('mock file input'), {
         target: { files: [makeNonPdfFile()] }
       });
       await waitFor(() => {
@@ -443,7 +443,7 @@ describe('SciencePage', () => {
     it('file selector non-PDF change event shows invalidFileError', async () => {
       mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
-      fireEvent.change(screen.getByTestId('mock-file-input'), {
+      fireEvent.change(screen.getByLabelText('mock file input'), {
         target: { files: [makeNonPdfFile()] }
       });
       await waitFor(() => {
@@ -454,7 +454,7 @@ describe('SciencePage', () => {
     it('dropzone non-PDF drop event shows invalidFileError', async () => {
       mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
-      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+      fireEvent.drop(screen.getByLabelText('mock file input'), {
         dataTransfer: { files: [makeNonPdfFile()] }
       });
       await waitFor(() => {
@@ -468,7 +468,7 @@ describe('SciencePage', () => {
       wrapper(<SciencePage />);
       const callsAfterRender = FileUploadMock.mock.calls.length;
 
-      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+      fireEvent.drop(screen.getByLabelText('mock file input'), {
         dataTransfer: { files: [makeNonPdfFile()] }
       });
 

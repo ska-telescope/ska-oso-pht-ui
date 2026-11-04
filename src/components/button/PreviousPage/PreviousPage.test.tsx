@@ -17,12 +17,11 @@ describe('PreviousPage Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     wrapper(<PreviousPageButton action={mockAction} />);
-    expect(screen.getByTestId('previousPageButtonTestId')).toHaveTextContent('baseBtn.label');
-    screen.getByTestId('previousPageButtonTestId').click();
+    screen.getByRole('button', { name: 'baseBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<PreviousPageButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('previousPageButtonTestId')).toHaveTextContent('baseBtn.label');
+    expect(screen.getByRole('button', { name: 'baseBtn.label' })).toBeInTheDocument();
   });
 });

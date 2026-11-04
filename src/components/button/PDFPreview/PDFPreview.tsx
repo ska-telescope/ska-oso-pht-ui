@@ -6,7 +6,6 @@ interface PDFPreviewButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -15,7 +14,6 @@ export default function PDFPreviewButton({
   action,
   title = 'pdfPreview.label',
   primary = false,
-  testId = 'pdfPreviewButtonTestId',
   toolTip
 }: PDFPreviewButtonProps) {
   return (
@@ -24,7 +22,6 @@ export default function PDFPreviewButton({
       disabled={disabled}
       icon={<PictureAsPdfIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

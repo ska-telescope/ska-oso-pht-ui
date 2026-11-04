@@ -94,6 +94,12 @@ beforeEach(() => {
     }) as any;
 });
 
+// The footer has a previous page button on the left, when there is a previous page, and a next
+// page button on the right. Both are named after the page they lead to.
+const footerButtons = () => screen.queryAllByRole('button');
+const nextButton = () => footerButtons()[footerButtons().length - 1];
+const previousButton = () => (footerButtons().length > 1 ? footerButtons()[0] : null);
+
 const wrapper = (
   component: React.ReactElement,
   title = mockProposal.title,
@@ -128,23 +134,23 @@ const wrapper = (
 describe('PageFooterPPT', () => {
   it('renders next button on a normal page', () => {
     wrapper(<PageFooterPPT pageNo={1} />);
-    expect(screen.getByTestId('nextButtonTestId')).toBeInTheDocument();
+    expect(nextButton()).toBeInTheDocument();
   });
 
   it('hides previous button on first page', () => {
     wrapper(<PageFooterPPT pageNo={0} />);
-    expect(screen.queryByTestId('prevButtonTestId')).not.toBeInTheDocument();
+    expect(previousButton()).toBeNull();
   });
 
   it('disables next button when buttonDisabled is true', () => {
     wrapper(<PageFooterPPT pageNo={1} buttonDisabled />);
-    expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
+    expect(nextButton()).toBeDisabled();
   });
 
   it('calls createProposal when pageNo = -1', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />);
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+    await waitFor(() => expect(nextButton()).toBeEnabled());
+    fireEvent.click(nextButton());
 
     await waitFor(() => {
       expect(PostProposal).toHaveBeenCalled();
@@ -162,8 +168,8 @@ describe('PageFooterPPT', () => {
       }) as any;
 
     wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title);
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+    await waitFor(() => expect(nextButton()).toBeEnabled());
+    fireEvent.click(nextButton());
 
     await waitFor(() => {
       expect(PostProposal).toHaveBeenCalledWith(
@@ -186,8 +192,8 @@ describe('PageFooterPPT', () => {
     });
 
     wrapper(<PageFooterPPT pageNo={-1} />, 'Invalid @ title');
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+    await waitFor(() => expect(nextButton()).toBeDisabled());
+    fireEvent.click(nextButton());
 
     expect(PostProposal).not.toHaveBeenCalled();
     expect(mockNotifyError).not.toHaveBeenCalled();
@@ -197,8 +203,8 @@ describe('PageFooterPPT', () => {
     wrapper(<PageFooterPPT pageNo={-1} />, 'Edited title', {
       proposalType: PROPOSAL_TYPE.KEY_SCIENCE
     });
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+    await waitFor(() => expect(nextButton()).toBeEnabled());
+    fireEvent.click(nextButton());
 
     await waitFor(() =>
       expect(PostProposal).toHaveBeenCalledWith(
@@ -216,15 +222,15 @@ describe('PageFooterPPT', () => {
   // The form holds an unselected type as null
   it('disables Create when the form has no proposal type', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, { proposalType: null });
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+    await waitFor(() => expect(nextButton()).toBeDisabled());
+    fireEvent.click(nextButton());
 
     expect(PostProposal).not.toHaveBeenCalled();
   });
 
   it('navigates to next page when next button clicked', async () => {
     wrapper(<PageFooterPPT pageNo={1} />);
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+    fireEvent.click(nextButton());
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalled();
@@ -234,7 +240,7 @@ describe('PageFooterPPT', () => {
   it('moves on from the Target page of an SV proposal without a target', async () => {
     mockOSD.isSV = true;
     wrapper(<PageFooterPPT pageNo={PAGE_TARGET} />);
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+    fireEvent.click(nextButton());
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith(NAV[PAGE_OBSERVATION]);
@@ -243,7 +249,7 @@ describe('PageFooterPPT', () => {
 
   it('navigates to previous page when prev button clicked', async () => {
     wrapper(<PageFooterPPT pageNo={2} />);
-    fireEvent.click(screen.getByTestId('prevButtonTestId'));
+    fireEvent.click(previousButton()!);
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalled();
@@ -252,11 +258,11 @@ describe('PageFooterPPT', () => {
 
   it('uses correct label for next button', () => {
     wrapper(<PageFooterPPT pageNo={2} />);
-    expect(screen.getByTestId('nextButtonTestId').textContent).toContain('page.');
+    expect(nextButton().textContent).toContain('page.');
   });
 
   it('uses correct label for prev button', () => {
     wrapper(<PageFooterPPT pageNo={2} />);
-    expect(screen.getByTestId('prevButtonTestId').textContent).toContain('page.');
+    expect(previousButton()!.textContent).toContain('page.');
   });
 });

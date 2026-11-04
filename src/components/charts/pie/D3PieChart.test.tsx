@@ -60,36 +60,36 @@ describe('D3PieChart', () => {
 
   it('renders the SVG container', () => {
     renderWithTheme(<D3PieChart data={sampleData} />);
-    expect(screen.getByTestId('pie-chart-svg')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Pie chart visualization' })).toBeInTheDocument();
   });
 
   it('renders center total when showTotal is true', () => {
     renderWithTheme(<D3PieChart data={sampleData} showTotal />);
-    expect(screen.getByTestId('pie-chart-center-text')).toHaveTextContent('100');
+    expect(screen.getByText('100')).toBeInTheDocument();
   });
 
   it('renders custom center text', () => {
     renderWithTheme(<D3PieChart data={sampleData} showTotal centerText="Fruit Count" />);
-    expect(screen.getByTestId('pie-chart-center-text')).toHaveTextContent('Fruit Count');
+    expect(screen.getByText('Fruit Count')).toBeInTheDocument();
   });
 
   it('renders labels for each slice', () => {
     renderWithTheme(<D3PieChart data={sampleData} />);
-    expect(screen.getByTestId('pie-chart-label-Apples')).toBeInTheDocument();
-    expect(screen.getByTestId('pie-chart-label-Bananas')).toBeInTheDocument();
+    expect(screen.getByText('Apples')).toBeInTheDocument();
+    expect(screen.getByText('Bananas')).toBeInTheDocument();
   });
 
   it('does not render chart if data is empty', () => {
     renderWithTheme(<D3PieChart data={[]} />);
-    const svg = screen.getByTestId('pie-chart-svg');
+    const svg = screen.getByRole('img', { name: 'Pie chart visualization' });
     expect(svg.querySelectorAll('path').length).toBe(0);
   });
 
   it('shows tooltip on mouseover and hides on mouseout', () => {
     renderWithTheme(<D3PieChart data={sampleData} />);
-    const svg = screen.getByTestId('pie-chart-svg');
+    const svg = screen.getByRole('img', { name: 'Pie chart visualization' });
     const path = svg.querySelector('path');
-    const tooltip = screen.getByTestId('pie-chart-tooltip');
+    const tooltip = screen.getByRole('tooltip');
 
     expect(tooltip).toHaveStyle('opacity: 0');
 
@@ -102,7 +102,7 @@ describe('D3PieChart', () => {
 
   it('positions tooltip on mousemove', () => {
     renderWithTheme(<D3PieChart data={sampleData} />);
-    const svg = screen.getByTestId('pie-chart-svg');
+    const svg = screen.getByRole('img', { name: 'Pie chart visualization' });
     const path = svg.querySelector('path');
 
     fireEvent.mouseMove(path!, {
@@ -110,7 +110,7 @@ describe('D3PieChart', () => {
       clientY: 80
     });
 
-    const tooltip = screen.getByTestId('pie-chart-tooltip');
+    const tooltip = screen.getByRole('tooltip');
     expect(tooltip.style.left).toMatch(/px/);
     expect(tooltip.style.top).toMatch(/px/);
   });

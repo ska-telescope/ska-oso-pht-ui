@@ -55,7 +55,7 @@ describe('<SpectralResolution />', () => {
         />
       </StoreProvider>
     );
-    expect(screen.getByTestId('spectralResolution')).toHaveTextContent('1808.45 Hz');
+    expect(screen.getByRole('combobox')).toHaveTextContent('1808.45 Hz');
   });
 
   test('interactive mode snaps a fine mode up to the coarsest one for a restricted subarray', () => {
@@ -76,7 +76,7 @@ describe('<SpectralResolution />', () => {
       </StoreProvider>
     );
     expect(setBandWidth).toHaveBeenCalledWith(5);
-    expect(screen.getByTestId('spectralResolution')).toHaveTextContent('226.06 Hz');
+    expect(screen.getByRole('combobox')).toHaveTextContent('226.06 Hz');
   });
 
   test('interactive mode allows fine modes for an unrestricted subarray', () => {
@@ -97,6 +97,6 @@ describe('<SpectralResolution />', () => {
       </StoreProvider>
     );
     expect(setBandWidth).not.toHaveBeenCalled();
-    expect(screen.getByTestId('spectralResolution')).toHaveTextContent('28.26 Hz');
+    expect(screen.getByRole('combobox')).toHaveTextContent('28.26 Hz');
   });
 });

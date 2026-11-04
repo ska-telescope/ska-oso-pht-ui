@@ -76,7 +76,7 @@ vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>;
   return {
     ...actual,
-    AppWrapper: () => <div data-testid="app-wrapper" />
+    AppWrapper: () => <div />
   };
 });
 
@@ -124,7 +124,7 @@ const { mockProposal, mockUpdateAppContent2 } = vi.hoisted(() => ({
 // page - stub the default '/' route so the test doesn't have to satisfy LandingPage's own
 // data-loading requirements.
 vi.mock('../LandingPage/LandingPage', () => ({
-  default: () => <div data-testid="landing-page-stub" />
+  default: () => <div />
 }));
 
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({

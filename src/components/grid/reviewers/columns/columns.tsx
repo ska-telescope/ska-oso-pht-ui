@@ -72,7 +72,6 @@ export const getColReviewerType = (
           { label: t('reviewerType.science'), value: 'sci' },
           { label: t('reviewerType.technical'), value: 'tec' }
         ]}
-        testId="subExpertise"
         value={typeState}
         setValue={setTypeState}
         label={''}

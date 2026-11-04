@@ -8,13 +8,5 @@ interface CloneIconProps {
 }
 
 export default function CloneIcon({ disabled = false, onClick, toolTip = '' }: CloneIconProps) {
-  return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<FileCopyIcon />}
-      testId="cloneIcon"
-      toolTip={toolTip}
-    />
-  );
+  return <Icon disabled={disabled} onClick={onClick} icon={<FileCopyIcon />} toolTip={toolTip} />;
 }

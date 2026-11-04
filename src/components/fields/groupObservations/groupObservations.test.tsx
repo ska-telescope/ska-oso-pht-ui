@@ -42,7 +42,7 @@ describe('GroupObservationsField', () => {
         onFocus={mockOnFocus}
       />
     );
-    expect(screen.getByTestId('groupObservationsEntry')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'groupObservations.label' })).toBeInTheDocument();
   });
 
   it('enters editing mode when selecting "new" option', async () => {
@@ -55,15 +55,8 @@ describe('GroupObservationsField', () => {
       />
     );
 
-    const dropdown = screen.getByTestId('groupObservationsEntry');
+    const dropdown = screen.getByRole('combobox', { name: 'groupObservations.label' });
     userEvent.click(dropdown);
-
-    // const newOption = await screen.findByText('groupObservations.new');
-    // userEvent.click(newOption);
-
-    // await waitFor(() => {
-    //   expect(screen.getByTestId('groupObservationsValue1')).toBeInTheDocument();
-    // });
   });
 
   it('removes group when selecting "none"', async () => {
@@ -76,16 +69,8 @@ describe('GroupObservationsField', () => {
       />
     );
 
-    const dropdown = screen.getByTestId('groupObservationsEntry');
+    const dropdown = screen.getByRole('combobox', { name: 'groupObservations.label' });
     userEvent.click(dropdown);
-
-    // const noneOption = await screen.findByText('groupObservations.none');
-    // userEvent.click(noneOption);
-
-    // await waitFor(() => {
-    //   expect(mockSetValue).toHaveBeenCalledWith(0);
-    //   expect(mockUpdateAppContent2).toHaveBeenCalled();
-    // });
   });
 
   it('reuses group when selecting existing groupId', async () => {
@@ -98,16 +83,8 @@ describe('GroupObservationsField', () => {
       />
     );
 
-    const dropdown = screen.getByTestId('groupObservationsEntry');
+    const dropdown = screen.getByRole('combobox', { name: 'groupObservations.label' });
     userEvent.click(dropdown);
-
-    //  const groupOption = await screen.findByText('groupB');
-    // userEvent.click(groupOption);
-
-    // await waitFor(() => {
-    //   expect(mockSetValue).toHaveBeenCalledWith('groupB');
-    //   expect(mockUpdateAppContent2).toHaveBeenCalled();
-    // });
   });
 
   it('adds group on blur in editing mode', async () => {
@@ -120,20 +97,8 @@ describe('GroupObservationsField', () => {
       />
     );
 
-    const dropdown = screen.getByTestId('groupObservationsEntry');
+    const dropdown = screen.getByRole('combobox', { name: 'groupObservations.label' });
     userEvent.click(dropdown);
-
-    // const newOption = await screen.findByText('groupObservations.new');
-    // userEvent.click(newOption);
-
-    // const inputWrapper = await screen.findByTestId('groupObservationsValue1');
-    // const input = inputWrapper.querySelector('input');
-    // await userEvent.type(input!, 'newGroup');
-    // fireEvent.blur(input!);
-
-    // await waitFor(() => {
-    //   expect(mockUpdateAppContent2).toHaveBeenCalled();
-    // });
   });
 
   it('respects disabled prop', () => {
@@ -146,13 +111,10 @@ describe('GroupObservationsField', () => {
         onFocus={mockOnFocus}
       />
     );
-
-    // const dropdown = screen.getByTestId('groupObservationsEntry');
-    // expect(dropdown).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('uses default labelWidth when not provided', () => {
     wrapper(<GroupObservationsField value={1} obsId="obs1" setValue={mockSetValue} />);
-    expect(screen.getByTestId('groupObservationsEntry')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'groupObservations.label' })).toBeInTheDocument();
   });
 });

@@ -57,7 +57,7 @@ describe('<ProposalDisplay />', () => {
         onConfirm={mockActionConfirm}
       />
     );
-    screen.getByTestId('cancelButtonTestId').click();
+    screen.getByRole('button', { name: 'closeBtn.label' }).click();
     expect(mockActionClose).toBeCalled();
   });
   test('renders correctly ( standard type with sub-type )', () => {
@@ -149,7 +149,7 @@ describe('<ProposalDisplay />', () => {
     expect(renderedLatex).toBeInTheDocument();
     expect(renderedLatex).not.toHaveTextContent(/\\[a-zA-Z]+/);
 
-    const titleContainer = screen.getByTestId('proposal-title-latex');
+    const titleContainer = document.querySelector('#title > span:last-child');
     expect(titleContainer).toHaveStyle({
       overflow: 'hidden',
       textOverflow: 'ellipsis',

@@ -21,6 +21,7 @@ describe('<PDFWrapper />', () => {
   test('renders correctly, open, calls onClose when dialog is closed', () => {
     const mockActionClose = vi.fn();
     wrapper(<PDFWrapper open={true} onClose={mockActionClose} url={'dummy file'} />);
-    screen.queryByTestId('cancelButtonTestId')?.click();
+    screen.getByRole('button', { name: 'closeBtn.label' }).click();
+    expect(mockActionClose).toHaveBeenCalled();
   });
 });

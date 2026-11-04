@@ -19,7 +19,6 @@ export default function CloseIcon({
       disabled={disabled}
       onClick={onClick}
       icon={<CancelIcon />}
-      testId="CloseIcon"
       toolTip={toolTip}
       sx={{ padding: padding }}
     />

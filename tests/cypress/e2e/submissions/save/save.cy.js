@@ -20,10 +20,10 @@ describe('Verify Save', () => {
     beginScienceIdeaSession(standardUser);
     selectScienceVerificationCycle();
     //Verify save is not visible before sv creation
-    checkFieldIsVisible('saveBtn', false);
+    checkFieldIsVisible('Save', false);
     completeScienceIdeaCreation();
     //Verify save is enabled after sv creation
-    checkFieldDisabled('saveBtn', false);
+    checkFieldDisabled('Save', false);
   });
 
   // No standard/PI-proposal cycle exists in the real backend yet (only a Science Verification
@@ -37,9 +37,9 @@ describe('Verify Save', () => {
     beginStandardProposalSession(standardUser);
     selectStandardProposalCycle();
     //Verify save is not visible before proposal creation
-    checkFieldIsVisible('saveBtn', false);
+    checkFieldIsVisible('Save', false);
     completeStandardProposalCreation();
     //Verify save is enabled after proposal creation
-    checkFieldDisabled('saveBtn', false);
+    checkFieldDisabled('Save', false);
   });
 });

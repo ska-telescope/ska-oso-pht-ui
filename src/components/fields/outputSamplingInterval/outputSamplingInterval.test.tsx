@@ -1,5 +1,5 @@
 import { describe, test, vi, expect } from 'vitest';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import OutputSamplingIntervalField from './outputSamplingInterval';
@@ -21,7 +21,9 @@ describe('<OutputSamplingIntervalField />', () => {
         <OutputSamplingIntervalField value={1} setValue={vi.fn()} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton', {
+      name: 'outputSamplingInterval.label'
+    }) as HTMLInputElement;
     expect(input.value).toBe('0.207');
   });
 
@@ -32,7 +34,7 @@ describe('<OutputSamplingIntervalField />', () => {
         <OutputSamplingIntervalField value={1} setValue={handleSetValue} />
       </StoreProvider>
     );
-    fireEvent.click(screen.getByTestId('outputSamplingIntervalIncrement'));
+    fireEvent.click(screen.getByRole('button', { name: 'increment' }));
     expect(handleSetValue).toHaveBeenCalledWith(2);
     expect(screen.queryByText('multiple-0.207')).not.toBeInTheDocument();
   });
@@ -43,8 +45,10 @@ describe('<OutputSamplingIntervalField />', () => {
         <OutputSamplingIntervalField value={1} setValue={vi.fn()} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
-    fireEvent.click(screen.getByTestId('outputSamplingIntervalDecrement'));
+    const input = screen.getByRole('spinbutton', {
+      name: 'outputSamplingInterval.label'
+    }) as HTMLInputElement;
+    fireEvent.click(screen.getByRole('button', { name: 'decrement' }));
     expect(input.value).toBe('0.207');
   });
 
@@ -55,7 +59,9 @@ describe('<OutputSamplingIntervalField />', () => {
         <OutputSamplingIntervalField value={2} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton', {
+      name: 'outputSamplingInterval.label'
+    }) as HTMLInputElement;
     fireEvent.change(input, { target: { value: 0.207 } });
     fireEvent.blur(input);
     expect(handleSetValue).toHaveBeenCalledWith(1);
@@ -69,7 +75,9 @@ describe('<OutputSamplingIntervalField />', () => {
         <OutputSamplingIntervalField value={1} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton', {
+      name: 'outputSamplingInterval.label'
+    }) as HTMLInputElement;
     fireEvent.change(input, { target: { value: 0.5 } });
     expect(screen.getByText('multiple-0.207')).toBeInTheDocument();
     fireEvent.blur(input);
@@ -85,7 +93,9 @@ describe('<OutputSamplingIntervalField />', () => {
         <OutputSamplingIntervalField value={1} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton', {
+      name: 'outputSamplingInterval.label'
+    }) as HTMLInputElement;
     fireEvent.change(input, { target: { value: 0.5 } });
     fireEvent.change(input, { target: { value: '' } });
     fireEvent.blur(input);
@@ -101,7 +111,9 @@ describe('<OutputSamplingIntervalField />', () => {
         <OutputSamplingIntervalField value={1} setValue={handleSetValue} />
       </StoreProvider>
     );
-    const input = screen.getByTestId('outputSamplingInterval') as HTMLInputElement;
+    const input = screen.getByRole('spinbutton', {
+      name: 'outputSamplingInterval.label'
+    }) as HTMLInputElement;
     fireEvent.change(input, { target: { value: 0.5 } });
     fireEvent.keyDown(input, { key: 'ArrowDown' });
     expect(input.value).toBe('0.207');
@@ -117,9 +129,8 @@ describe('<OutputSamplingIntervalField />', () => {
         <OutputSamplingIntervalField value={1} setValue={vi.fn()} />
       </StoreProvider>
     );
-    const units = screen.getByTestId('outputSamplingIntervalUnits');
+    const units = screen.getByRole('combobox');
     expect(units).toHaveTextContent('outputSamplingInterval.units');
-    const fieldRoot = within(units.parentElement as HTMLElement).getByRole('combobox');
-    expect(fieldRoot).toHaveAttribute('aria-disabled', 'true');
+    expect(units).toHaveAttribute('aria-disabled', 'true');
   });
 });

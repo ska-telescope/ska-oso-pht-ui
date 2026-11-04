@@ -20,10 +20,8 @@ vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@ska-telescope/ska-gui-components')>();
   return {
     ...actual,
-    FileUpload: ({ testId, uploadFunction }: any) => (
-      <button data-testid={testId} onClick={() => uploadFunction('fakeFile')}>
-        Upload
-      </button>
+    FileUpload: ({ uploadFunction }: any) => (
+      <button onClick={() => uploadFunction('fakeFile')}>Upload</button>
     ),
     FileUploadStatus: { PENDING: 'PENDING', OK: 'OK', ERROR: 'ERROR' }
   };
@@ -88,7 +86,7 @@ describe('TargetFileImport', () => {
     });
 
     renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
-    screen.getByTestId('csvUpload').click();
+    screen.getByRole('button', { name: 'Upload' }).click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
     expect(form.getValues('targets')).toHaveLength(1);
@@ -103,7 +101,7 @@ describe('TargetFileImport', () => {
     });
 
     renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
-    screen.getByTestId('csvUpload').click();
+    screen.getByRole('button', { name: 'Upload' }).click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
     const targets = form.getValues('targets');
@@ -127,7 +125,7 @@ describe('TargetFileImport', () => {
     });
 
     renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
-    screen.getByTestId('csvUpload').click();
+    screen.getByRole('button', { name: 'Upload' }).click();
 
     expect(getTargetsSchema().safeParse(form.getValues('targets')).error).toBeUndefined();
   });
@@ -138,7 +136,7 @@ describe('TargetFileImport', () => {
     });
 
     renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
-    screen.getByTestId('csvUpload').click();
+    screen.getByRole('button', { name: 'Upload' }).click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
   });
@@ -149,7 +147,7 @@ describe('TargetFileImport', () => {
     });
 
     renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
-    screen.getByTestId('csvUpload').click();
+    screen.getByRole('button', { name: 'Upload' }).click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
   });
@@ -163,7 +161,7 @@ describe('TargetFileImport', () => {
     });
 
     renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
-    screen.getByTestId('csvUpload').click();
+    screen.getByRole('button', { name: 'Upload' }).click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
   });
@@ -174,7 +172,7 @@ describe('TargetFileImport', () => {
     });
 
     renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
-    screen.getByTestId('csvUpload').click();
+    screen.getByRole('button', { name: 'Upload' }).click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
   });

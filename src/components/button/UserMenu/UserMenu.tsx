@@ -137,7 +137,6 @@ export default function ButtonUserMenu({
             onClick={handleMenuOpen}
             showPhoto={!getUseIndigo()}
             showUsername
-            testId="usernameMenu"
             toolTip={toolTip}
             variant={ButtonVariantTypes.Text}
           />
@@ -146,30 +145,22 @@ export default function ButtonUserMenu({
 
       <Menu id="user-menu" anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
         {isReviewerAdmin() && (
-          <MenuItem data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
-            {t('overview.title')}
-          </MenuItem>
+          <MenuItem onClick={() => onMenuSelect(PMT[2])}>{t('overview.title')}</MenuItem>
         )}
-        <MenuItem data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
-          {t('homeBtn.title')}
-        </MenuItem>
+        <MenuItem onClick={() => onMenuSelect(PATH[0])}>{t('homeBtn.title')}</MenuItem>
         {isReviewerAdmin() && (
-          <MenuItem data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
+          <MenuItem onClick={() => onMenuSelect(PMT[0])}>
             {t('page.' + PAGE_PANEL_MANAGEMENT + '.title')}
           </MenuItem>
         )}
         {(isReviewer() || isReviewerAdmin()) && (
-          <MenuItem data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
-            {t('reviewProposalList.short')}
-          </MenuItem>
+          <MenuItem onClick={() => onMenuSelect(PMT[1])}>{t('reviewProposalList.short')}</MenuItem>
         )}
         {isReviewerChair() && (
-          <MenuItem data-testid="menuItemReviewDecisions" onClick={() => onMenuSelect(PMT[4])}>
-            {t('reviewDecisionsList.title')}
-          </MenuItem>
+          <MenuItem onClick={() => onMenuSelect(PMT[4])}>{t('reviewDecisionsList.title')}</MenuItem>
         )}
         {(isReviewerChair() || isReviewerAdmin() || isReviewer()) && <Divider component="li" />}
-        <MenuItem data-testid="menuItemPanelLogout">
+        <MenuItem>
           <ButtonLogout
             isText
             variant={ButtonVariantTypes.Outlined}

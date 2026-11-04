@@ -12,9 +12,15 @@ describe('D3ChartSelector', () => {
   it('renders all selectors with correct default values', () => {
     render(<D3ChartSelector data={mockData} />);
 
-    const chartTypeSelect = screen.getByTestId('chartTypeSelect') as HTMLSelectElement;
-    const groupFieldSelect = screen.getByTestId('groupFieldSelect') as HTMLSelectElement;
-    const valueFieldSelect = screen.getByTestId('valueFieldSelect') as HTMLSelectElement;
+    const chartTypeSelect = screen.getByRole('combobox', {
+      name: 'Chart Type'
+    }) as HTMLSelectElement;
+    const groupFieldSelect = screen.getByRole('combobox', {
+      name: 'Group By'
+    }) as HTMLSelectElement;
+    const valueFieldSelect = screen.getByRole('combobox', {
+      name: 'Value Field'
+    }) as HTMLSelectElement;
 
     expect(chartTypeSelect).toBeInTheDocument();
     expect(groupFieldSelect).toBeInTheDocument();
@@ -27,23 +33,25 @@ describe('D3ChartSelector', () => {
 
   it('renders bar chart SVG by default', () => {
     render(<D3ChartSelector data={mockData} />);
-    const barChartSvg = screen.getByTestId('barChartSvg');
+    const barChartSvg = screen.getByRole('img', { name: 'Bar chart' });
     expect(barChartSvg).toBeInTheDocument();
   });
 
   it('switches to pie chart and renders pie chart SVG', () => {
     render(<D3ChartSelector data={mockData} />);
-    const chartTypeSelect = screen.getByTestId('chartTypeSelect');
+    const chartTypeSelect = screen.getByRole('combobox', { name: 'Chart Type' });
 
     fireEvent.change(chartTypeSelect, { target: { value: 'pie' } });
 
-    const pieChartSvg = screen.getByTestId('pieChartSvg');
+    const pieChartSvg = screen.getByRole('img', { name: 'Pie chart' });
     expect(pieChartSvg).toBeInTheDocument();
   });
 
   it('updates group field selection', () => {
     render(<D3ChartSelector data={mockData} />);
-    const groupFieldSelect = screen.getByTestId('groupFieldSelect') as HTMLSelectElement;
+    const groupFieldSelect = screen.getByRole('combobox', {
+      name: 'Group By'
+    }) as HTMLSelectElement;
 
     fireEvent.change(groupFieldSelect, { target: { value: 'type' } });
     expect(groupFieldSelect.value).toBe('type');
@@ -51,7 +59,9 @@ describe('D3ChartSelector', () => {
 
   it('updates value field selection when chart type is bar', () => {
     render(<D3ChartSelector data={mockData} />);
-    const valueFieldSelect = screen.getByTestId('valueFieldSelect') as HTMLSelectElement;
+    const valueFieldSelect = screen.getByRole('combobox', {
+      name: 'Value Field'
+    }) as HTMLSelectElement;
 
     fireEvent.change(valueFieldSelect, { target: { value: 'value' } });
     expect(valueFieldSelect.value).toBe('value');
@@ -59,16 +69,16 @@ describe('D3ChartSelector', () => {
 
   it('hides value field selector when chart type is pie', () => {
     render(<D3ChartSelector data={mockData} />);
-    const chartTypeSelect = screen.getByTestId('chartTypeSelect');
+    const chartTypeSelect = screen.getByRole('combobox', { name: 'Chart Type' });
 
     fireEvent.change(chartTypeSelect, { target: { value: 'pie' } });
 
-    expect(screen.queryByTestId('valueFieldSelect')).not.toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: 'Value Field' })).not.toBeInTheDocument();
   });
 
   it('shows fallback message when data is empty', () => {
     render(<D3ChartSelector data={[]} />);
-    const fallback = screen.getByTestId('noDataMessage');
+    const fallback = screen.getByText('No data available');
     expect(fallback).toBeInTheDocument();
     expect(fallback.textContent).toMatch(/no data available/i);
   });

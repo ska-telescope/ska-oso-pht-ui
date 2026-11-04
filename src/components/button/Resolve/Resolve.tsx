@@ -8,7 +8,6 @@ interface ResolveButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -17,7 +16,6 @@ export default function ResolveButton({
   action,
   title = 'resolve.label',
   primary = false,
-  testId = 'resolveButtonTestId',
   toolTip
 }: ResolveButtonProps) {
   return (
@@ -32,7 +30,6 @@ export default function ResolveButton({
         icon={<MyLocationIcon />}
         primary={primary}
         size={ButtonSizeTypes.Small}
-        testId={testId}
         title={title}
         toolTip={toolTip}
       />

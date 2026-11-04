@@ -24,7 +24,6 @@ export default function ExpandIcon({
       onClick={onClick}
       icon={expanded ? <ExpandMore /> : <ChevronRight />}
       ref={ref}
-      testId="expandIcon"
       toolTip={toolTip}
     />
   );

@@ -123,13 +123,12 @@ export default function ConflictConfirmation({
     return CONFLICT_REASONS.map((e) => ({ label: t('conflict.reason.' + e), value: e }));
   };
 
-  const buttonLeft = () => <CancelButton action={handleCancel} testId="cancelButtonTestId" />;
+  const buttonLeft = () => <CancelButton action={handleCancel} />;
 
   const buttonRight = () => (
     <ConfirmButton
       action={handleConfirm}
       primary
-      testId="displayConfirmationButton"
       title={onConfirmLabel}
       toolTip={onConfirmToolTip}
     />
@@ -157,7 +156,6 @@ export default function ConflictConfirmation({
             options={getOptions()}
             required
             setValue={setReason}
-            testId={'conflictConfirmationGroupDropDown'}
           />
         </Box>
       </Grid>
@@ -234,11 +232,7 @@ export default function ConflictConfirmation({
       }}
     >
       {proposal === null && (
-        <Alert
-          color={AlertColorTypes.Warning}
-          text={t('displayProposal.warning')}
-          testId="helpPanelId"
-        />
+        <Alert color={AlertColorTypes.Warning} text={t('displayProposal.warning')} />
       )}
       {proposal !== null && (
         <DialogContent>

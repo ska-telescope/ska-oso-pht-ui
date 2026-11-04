@@ -29,39 +29,23 @@ export default function DeleteObservationConfirmation({
         container
         sx={{ flexDirection: 'column', p: 2, alignItems: 'center', justifyContent: 'space-around' }}
       >
-        <FieldWrapper
-          label={t('arrayConfiguration.label')}
-          labelWidth={LABEL_WIDTH}
-          testId="arrayConfiguration"
-        >
+        <FieldWrapper label={t('arrayConfiguration.label')} labelWidth={LABEL_WIDTH}>
           <Typography id="arrayConfigurationData" variant="body1">
             {t('arrayConfiguration.' + rec.telescope)}
           </Typography>
         </FieldWrapper>
-        <FieldWrapper
-          label={t('subArrayConfiguration.short')}
-          labelWidth={LABEL_WIDTH}
-          testId="subArrayConfiguration"
-        >
+        <FieldWrapper label={t('subArrayConfiguration.short')} labelWidth={LABEL_WIDTH}>
           <Typography id="subArrayConfigurationData" variant="body1">
             {t('subArrayConfiguration.' + rec.subarray)}
           </Typography>
         </FieldWrapper>
-        <FieldWrapper
-          label={t('observationType.label')}
-          labelWidth={LABEL_WIDTH}
-          testId="observationType"
-        >
+        <FieldWrapper label={t('observationType.label')} labelWidth={LABEL_WIDTH}>
           <Typography id="observationTypeData" variant="body1">
             {t('observationType.' + rec.type)}
           </Typography>
         </FieldWrapper>
 
-        <Alert
-          color={AlertColorTypes.Info}
-          text={t('deleteObservation.info')}
-          testId="deleteObservationInfoId"
-        />
+        <Alert color={AlertColorTypes.Info} text={t('deleteObservation.info')} />
       </Grid>
     );
   };

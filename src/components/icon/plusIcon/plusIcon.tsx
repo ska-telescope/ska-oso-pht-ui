@@ -8,13 +8,5 @@ interface PlusIconProps {
 }
 
 export default function PlusIcon({ disabled = false, onClick, toolTip = '' }: PlusIconProps) {
-  return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<AddIcon />}
-      testId="plusIcon"
-      toolTip={toolTip}
-    />
-  );
+  return <Icon disabled={disabled} onClick={onClick} icon={<AddIcon />} toolTip={toolTip} />;
 }

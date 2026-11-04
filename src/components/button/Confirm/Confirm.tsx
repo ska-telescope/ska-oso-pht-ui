@@ -7,7 +7,6 @@ interface ConfirmButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -17,7 +16,6 @@ export default function ConfirmButton({
   action,
   title = 'confirmBtn.label',
   primary = false,
-  testId = 'confirmButtonTestId',
   toolTip
 }: ConfirmButtonProps) {
   return (
@@ -27,7 +25,6 @@ export default function ConfirmButton({
       disabled={disabled}
       icon={<CheckIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

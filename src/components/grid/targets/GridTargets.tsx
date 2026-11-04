@@ -163,7 +163,6 @@ export default function GridTargets({
           <Alert
             color={AlertColorTypes.Error}
             text={loggedIn ? t('targets.empty') : t('targets.loggedOut')}
-            testId="helpPanelId"
           />
         ))}
     </>

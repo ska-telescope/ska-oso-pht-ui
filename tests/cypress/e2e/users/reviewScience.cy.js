@@ -107,7 +107,7 @@ describe('Reviewer ( Science )', () => {
           .then((prslId) => assignProposalToPanel('pnl-b2', prslId));
 
         addM2TargetAndAutoLink('Continuum', 'This is a summary of the science idea.');
-        clickStatusIconNav('statusId3'); //Click to description page
+        clickStatusIconNav('Description');
         pageConfirmed('DESCRIPTION');
 
         // Stops here deliberately - the remaining flow (PDF upload) needs real AWS S3

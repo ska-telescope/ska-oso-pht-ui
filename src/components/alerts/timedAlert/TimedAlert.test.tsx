@@ -26,54 +26,53 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('TimedAlert', () => {
-  const testId = 'alert-test';
   const text = 'This is a test alert';
 
   it('renders and auto-dismisses for Info alert', async () => {
-    wrapper(<TimedAlert color={AlertColorTypes.Info} testId={testId} text={text} delay={1} />);
-    expect(screen.getByTestId(testId)).toBeInTheDocument();
+    wrapper(<TimedAlert color={AlertColorTypes.Info} text={text} delay={1} />);
+    expect(screen.getByText(text)).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(2000); // 1 * SECS
     });
 
     expect(mockNotifyClear).toHaveBeenCalled();
-    expect(screen.queryByTestId(testId)).not.toBeInTheDocument();
+    expect(screen.queryByText(text)).not.toBeInTheDocument();
   });
 
   it('renders and auto-dismisses for Success alert', async () => {
-    wrapper(<TimedAlert color={AlertColorTypes.Success} testId={testId} text={text} delay={1} />);
-    expect(screen.getByTestId(testId)).toBeInTheDocument();
+    wrapper(<TimedAlert color={AlertColorTypes.Success} text={text} delay={1} />);
+    expect(screen.getByText(text)).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(2000);
     });
 
     expect(mockNotifyClear).toHaveBeenCalled();
-    expect(screen.queryByTestId(testId)).not.toBeInTheDocument();
+    expect(screen.queryByText(text)).not.toBeInTheDocument();
   });
 
   it('renders and does not auto-dismiss for Error alert', async () => {
-    wrapper(<TimedAlert color={AlertColorTypes.Error} testId={testId} text={text} />);
-    expect(screen.getByTestId(testId)).toBeInTheDocument();
+    wrapper(<TimedAlert color={AlertColorTypes.Error} text={text} />);
+    expect(screen.getByText(text)).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(6000); // Wait longer than default delay
     });
 
     expect(mockNotifyClear).not.toHaveBeenCalled();
-    expect(screen.getByTestId(testId)).toBeInTheDocument();
+    expect(screen.getByText(text)).toBeInTheDocument();
   });
 
   it('renders and does not auto-dismiss for Warning alert', async () => {
-    wrapper(<TimedAlert color={AlertColorTypes.Warning} testId={testId} text={text} />);
-    expect(screen.getByTestId(testId)).toBeInTheDocument();
+    wrapper(<TimedAlert color={AlertColorTypes.Warning} text={text} />);
+    expect(screen.getByText(text)).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(6000);
     });
 
     expect(mockNotifyClear).not.toHaveBeenCalled();
-    expect(screen.getByTestId(testId)).toBeInTheDocument();
+    expect(screen.getByText(text)).toBeInTheDocument();
   });
 });

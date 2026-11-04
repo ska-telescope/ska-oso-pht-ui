@@ -69,7 +69,6 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
               pageName: pageName().toLowerCase(),
               status: t('statusValue.' + getLevel())
             })}
-            testId={'statusId' + page}
             toolTip={t('pageStatus.toolTip', {
               pageName: pageName().toLowerCase(),
               status: t('statusValue.' + getLevel())

@@ -440,7 +440,7 @@ export default function SciencePage() {
           justifyContent: 'space-around'
         }}
       >
-        <Grid size={{ xs: 6 }} data-testid="fileUpload">
+        <Grid size={{ xs: 6 }}>
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>
           ) : (
@@ -460,12 +460,13 @@ export default function SciencePage() {
                          * Workaround for FileUpload limitations:
                          * we need `file` set so the uploaded filename is shown, but FileUpload ties
                          * clear/upload button visibility to internal selected-file state. Hide those
-                         * buttons while an uploaded PDF already exists.
+                         * buttons while an uploaded PDF already exists. The library's Button names
+                         * itself by its label, and the upload button keeps its default "Upload". A
+                         * disabled button renders as a span, so match on the label alone.
                          */
-                        '& [data-testid="fileUploadClearButton"], & [data-testid="fileUploadUploadButton"]':
-                          {
-                            display: 'none'
-                          }
+                        [`& [aria-label="${t('clearBtn.label')}"], & [aria-label="Upload"]`]: {
+                          display: 'none'
+                        }
                       }
                     : {})
                 }}
@@ -488,7 +489,6 @@ export default function SciencePage() {
                   maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
                   setFile={setFile}
                   setStatus={setUploadStatus}
-                  testId="fileUpload"
                   clearDisabled={hasUploadedSciencePdf && !pdfError}
                   uploadDisabled={hasUploadedSciencePdf || !!pdfError}
                   uploadFunction={uploadPdftoSignedUrl}

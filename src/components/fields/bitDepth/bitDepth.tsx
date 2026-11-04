@@ -21,7 +21,6 @@ export default function BitDepthField({
   options
 }: BitDepthFieldProps) {
   const { t } = useScopedTranslation();
-  const FIELD = 'bitDepth';
 
   const resolvedOptions =
     options ??
@@ -48,7 +47,6 @@ export default function BitDepthField({
         options={resolvedOptions}
         required={required}
         setValue={setValue}
-        testId={FIELD}
       />
     </Box>
   );

@@ -81,15 +81,7 @@ export default function ValidationResults({
               flexWrap: 'nowrap'
             }}
           >
-            <StatusIcon
-              ariaDescription=""
-              ariaTitle=""
-              text="!"
-              level={1}
-              size={SIZE}
-              testId="statusId"
-              toolTip=""
-            />
+            <StatusIcon ariaDescription="" ariaTitle="" text="!" level={1} size={SIZE} toolTip="" />
             <Typography
               variant={CONTENT_STYLE}
               sx={{
@@ -122,7 +114,7 @@ export default function ValidationResults({
             pt: 1
           }}
         >
-          <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
+          <CancelButton action={handleCancel} title="closeBtn.label" />
         </Grid>
       </Grid>
     </Grid>
@@ -144,11 +136,7 @@ export default function ValidationResults({
       }}
     >
       {proposal === null && (
-        <Alert
-          color={AlertColorTypes.Warning}
-          text={t('displayProposal.warning')}
-          testId="helpPanelId"
-        />
+        <Alert color={AlertColorTypes.Warning} text={t('displayProposal.warning')} />
       )}
       {proposal !== null && (
         <>

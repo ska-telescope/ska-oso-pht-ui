@@ -78,16 +78,16 @@ describe('<SensCalcModalSingle />', () => {
       />
     );
 
-    const element1 = screen.getByTestId('field-testField1');
+    const element1 = screen.getByLabelText('sensitivityCalculatorResults.testField1');
     expect(element1).toBeInTheDocument();
     expect(element1).toHaveTextContent('1');
 
     screen.debug();
-    const element2 = screen.getByTestId('field-sensitivity');
+    const element2 = screen.getByLabelText('sensitivityCalculatorResults.sensitivity');
     expect(element2).toBeInTheDocument();
     expect(element2).toHaveTextContent('200');
 
-    const element3 = screen.getByTestId('field-testField2');
+    const element3 = screen.getByLabelText('sensitivityCalculatorResults.testField2');
     expect(element3).toBeInTheDocument();
     expect(element3).toHaveTextContent('50');
   });
@@ -120,11 +120,13 @@ describe('<SensCalcModalSingle />', () => {
       />
     );
     await waitFor(() => {
-      const element1 = screen.getByTestId('field-naturalField1');
+      const element1 = screen.getByLabelText('sensitivityCalculatorResults.naturalField1');
       expect(element1).toBeInTheDocument();
       expect(element1).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
 
-      const element3 = screen.getByTestId('field-continuumSensitivityWeighted');
+      const element3 = screen.getByLabelText(
+        'sensitivityCalculatorResults.continuumSensitivityWeighted'
+      );
       expect(element3).toBeInTheDocument();
       expect(element3).toHaveTextContent('7.18');
     });

@@ -11,7 +11,6 @@ interface PageBannerPMTProps {
 export default function PageBannerPMT({ backBtn, fwdBtn, title }: PageBannerPMTProps) {
   const pageTitle = () => (
     <Typography
-      data-testid="pageTitle"
       id="pageTitle"
       variant="h6"
       sx={{

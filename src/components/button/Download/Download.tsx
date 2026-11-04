@@ -6,7 +6,6 @@ interface DownloadButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -15,7 +14,6 @@ export default function DownloadButton({
   action,
   title = 'downloadBtn.label',
   primary = false,
-  testId = 'downloadButtonTestId',
   toolTip
 }: DownloadButtonProps) {
   return (
@@ -24,7 +22,6 @@ export default function DownloadButton({
       disabled={disabled}
       icon={<DownloadIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />

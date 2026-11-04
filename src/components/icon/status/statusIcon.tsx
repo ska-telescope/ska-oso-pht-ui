@@ -9,7 +9,6 @@ interface StatusIconDisplayProps {
   onClick?: Function;
   size?: number;
   text?: string;
-  testId: string;
   toolTip?: string;
 }
 
@@ -21,7 +20,6 @@ export default function StatusIconDisplay({
   onClick = () => {},
   size = 30,
   text = '',
-  testId,
   toolTip = ''
 }: StatusIconDisplayProps) {
   return (
@@ -35,7 +33,6 @@ export default function StatusIconDisplay({
         ariaDescription={ariaDescription}
         ariaTitle={ariaTitle}
         disabled={disabled}
-        testId={testId}
         toolTip={toolTip}
         icon={text?.length > 0 ? false : true}
         level={level}

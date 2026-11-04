@@ -22,7 +22,6 @@ export default function TableContainer({ children }: TableContainerProps) {
         elevation={1}
         role="region"
         aria-label="Review data table with expandable details"
-        data-testid="review-table"
       >
         {children}
       </MuiTableContainer>

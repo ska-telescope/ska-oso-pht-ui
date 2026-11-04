@@ -100,7 +100,7 @@ describe('TableSubmissionsRow', () => {
   it('renders title with ellipsis overflow styles', () => {
     wrapper(<TableSubmissionsRow {...defaultProps} proposal={mockProposal} />);
 
-    const title = screen.getByTestId('row-title-test-row-id');
+    const title = screen.getByText('Sample Review Title').closest('.MuiTypography-root');
     expect(title).toHaveStyle({ overflow: 'hidden', textOverflow: 'ellipsis' });
   });
 
@@ -115,7 +115,7 @@ describe('TableSubmissionsRow', () => {
       />
     );
 
-    const title = screen.getByTestId('row-title-test-row-id');
+    const title = document.querySelector('.katex')!.closest('.MuiTypography-root')!;
     const renderedFraction = title.querySelector('.katex .mfrac');
     expect(renderedFraction).toBeInTheDocument();
     const renderedLatex = title.querySelector('.katex-html');

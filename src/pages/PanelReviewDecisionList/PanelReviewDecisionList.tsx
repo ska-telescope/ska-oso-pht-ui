@@ -189,13 +189,8 @@ export default function ReviewDecisionListPage() {
       }));
   }, [mergedData, rankMap, searchTerm]);
 
-  const searchEntryField = (testId: string) => (
-    <SearchEntry
-      label={t('search.label')}
-      testId={testId}
-      value={searchTerm}
-      setValue={setSearchTerm}
-    />
+  const searchEntryField = () => (
+    <SearchEntry label={t('search.label')} value={searchTerm} setValue={setSearchTerm} />
   );
 
   function handleExcludeAction(review: any): void {
@@ -229,7 +224,7 @@ export default function ReviewDecisionListPage() {
             mt: -1
           }}
         >
-          {searchEntryField('searchId')}
+          {searchEntryField()}
         </Grid>
       </Grid>
       <Grid

@@ -50,8 +50,8 @@ const wrapper = (
       <StoreProvider>
         <FormProvider {...methods}>
           {component}
-          <output data-testid="formTitle">{methods.watch('title')}</output>
-          <output data-testid="formProposalType">{methods.watch('proposalType')}</output>
+          <output aria-label="formTitle">{methods.watch('title')}</output>
+          <output aria-label="formProposalType">{methods.watch('proposalType')}</output>
         </FormProvider>
       </StoreProvider>
     );
@@ -77,12 +77,12 @@ describe('<TitleEntry />', () => {
   // The form's values reach the store through useCopySlicesToStore, not the page
   test('puts title changes in the form', () => {
     wrapper(<TitleEntry page={0} />);
-    const titleInput = screen.getByTestId('titleId');
+    const titleInput = screen.getByRole('textbox', { name: 'title.label' });
 
     expect(titleInput.tagName).toBe('INPUT');
     fireEvent.change(titleInput, { target: { value: 'Updated title' } });
 
-    expect(screen.getByTestId('formTitle')).toHaveTextContent('Updated title');
+    expect(screen.getByRole('status', { name: 'formTitle' })).toHaveTextContent('Updated title');
     expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
   });
 
@@ -91,10 +91,12 @@ describe('<TitleEntry />', () => {
     fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
 
     await waitFor(() =>
-      expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
+      expect(
+        screen.getByRole('status', { name: 'formProposalType', hidden: true })
+      ).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
     );
     expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
-    expect(screen.queryByTestId('dialogConfirmationButton')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'confirmBtn.label' })).not.toBeInTheDocument();
   });
 
   test('only changes the form type and clears subtypes after confirmation', async () => {
@@ -102,11 +104,15 @@ describe('<TitleEntry />', () => {
       proposalType: PROPOSAL_TYPE.STANDARD
     });
     fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
-    expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.STANDARD);
+    expect(
+      screen.getByRole('status', { name: 'formProposalType', hidden: true })
+    ).toHaveTextContent(PROPOSAL_TYPE.STANDARD);
 
-    fireEvent.click(screen.getByTestId('dialogConfirmationButton'));
+    fireEvent.click(screen.getByRole('button', { name: 'confirmBtn.label' }));
     await waitFor(() =>
-      expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
+      expect(
+        screen.getByRole('status', { name: 'formProposalType', hidden: true })
+      ).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
     );
     // The sub-types are not in the form yet, so the page clears them in the store itself
     expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
@@ -119,9 +125,11 @@ describe('<TitleEntry />', () => {
       proposalType: PROPOSAL_TYPE.STANDARD
     });
     fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
-    fireEvent.click(screen.getByTestId('dialogCancelButton'));
+    fireEvent.click(screen.getByRole('button', { name: 'cancelBtn.label' }));
 
-    expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.STANDARD);
+    expect(
+      screen.getByRole('status', { name: 'formProposalType', hidden: true })
+    ).toHaveTextContent(PROPOSAL_TYPE.STANDARD);
     expect(mockStore.updateAppContent2).not.toHaveBeenCalledWith(
       expect.objectContaining({ proposalType: PROPOSAL_TYPE.KEY_SCIENCE })
     );
@@ -132,7 +140,9 @@ describe('<TitleEntry /> validation', () => {
   test('shows the zod error when the title is cleared', async () => {
     wrapper(<TitleEntry page={0} />, { validate: true });
 
-    fireEvent.change(screen.getByTestId('titleId'), { target: { value: '' } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'title.label' }), {
+      target: { value: '' }
+    });
 
     expect((await screen.findAllByText(phtTranslations.title.empty))[0]).toBeInTheDocument();
   });
@@ -140,7 +150,9 @@ describe('<TitleEntry /> validation', () => {
   test('shows the zod error for unsupported characters', async () => {
     wrapper(<TitleEntry page={0} />, { validate: true });
 
-    fireEvent.change(screen.getByTestId('titleId'), { target: { value: 'A title with @' } });
+    fireEvent.change(screen.getByRole('textbox', { name: 'title.label' }), {
+      target: { value: 'A title with @' }
+    });
 
     expect(
       (await screen.findAllByText(phtTranslations.specialCharacters.invalid))[0]

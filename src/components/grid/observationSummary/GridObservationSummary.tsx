@@ -190,7 +190,6 @@ export default function GridObservationSummary({
           getRowHeight={() => 'auto'}
           height={height}
           onRowClick={rowClick}
-          testId="investigatorsTableId"
         />
       )}
       {!proposal?.observations ||
@@ -198,7 +197,6 @@ export default function GridObservationSummary({
           <Alert
             color={AlertColorTypes.Error}
             text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
-            testId="noObservationsNotification"
           />
         ))}
     </>

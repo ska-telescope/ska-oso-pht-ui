@@ -773,7 +773,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           errorText={isEdit() ? '' : validateId()}
           label={t('observationId.label')}
           onFocus={() => setHelp('observationId')}
-          testId="observationId"
           value={myObsId}
           setValue={setMyObsId}
         />
@@ -915,7 +914,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <NumberEntry
           disabled={subarrayConfig !== SA_CUSTOM}
           label={t('numOf15mAntennas.label')}
-          testId="numOf15mAntennas"
           value={numOf15mAntennas}
           setValue={validate}
           onFocus={() => setHelp('numOf15mAntennas')}
@@ -939,7 +937,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <NumberEntry
           disabled={subarrayConfig !== SA_CUSTOM}
           label={t('numOf13mAntennas.label')}
-          testId="numOf13mAntennas"
           value={numOf13mAntennas}
           setValue={validate}
           onFocus={() => setHelp('numOf13mAntennas')}
@@ -969,7 +966,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         label={t('elevation.label')}
         onFocus={() => setHelp('elevation')}
         setValue={setElevation}
-        testId="elevation"
         value={elevation}
       />
     );
@@ -981,7 +977,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         label={t('weather.label')}
         onFocus={() => setHelp('weather')}
         setValue={setWeather}
-        testId="weather"
         value={weather}
       />
     );
@@ -1035,7 +1030,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       >
         <DropDown
           options={getOptions()}
-          testId="suppliedType"
           value={suppliedType ?? ''}
           setValue={setSuppliedType}
           disabled={getOptions()?.length < 2}
@@ -1107,7 +1101,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         units={suppliedUnits}
         setUnits={setSuppliedUnits}
         unitOptions={getUnitOptions()}
-        unitsTestId="suppliedUnits"
         validate={validateSuppliedValue}
         required
       />
@@ -1146,7 +1139,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <DropDown
           disabledUnderline
           options={options}
-          testId="continuumBandwidthUnits"
           value={continuumBandwidthUnits}
           setValue={setContinuumBandwidthUnits}
           label=""
@@ -1218,7 +1210,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return (
       <DropDown
         options={options}
-        testId="frequencyUnits"
         value={centralFrequencyUnits}
         setValue={setCentralFrequencyUnits}
         label=""
@@ -1354,7 +1345,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 action={buttonClicked}
                 disabled={addButtonDisabled()}
                 primary
-                testId={isEdit() ? 'updateObservationButtonEntry' : 'addObservationButtonEntry'}
                 title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
               />
             )}

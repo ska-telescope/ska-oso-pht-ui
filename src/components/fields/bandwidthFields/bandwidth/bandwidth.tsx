@@ -121,7 +121,6 @@ export default function BandwidthField({
       >
         <Grid size={{ xs: 8 }}>
           <SteppedNumberField
-            testId={FIELD}
             label={t(FIELD + '.label')}
             value={bandwidthDisplayValue}
             format={(v) => v.toFixed(BANDWIDTH_DECIMAL_PLACES[bandwidthUnits] ?? 2)}
@@ -138,14 +137,12 @@ export default function BandwidthField({
             suffix={
               <>
                 <SelectField
-                  testId={FIELD + 'Units'}
                   options={BANDWIDTH_UNIT_OPTIONS}
                   value={bandwidthUnits}
                   setValue={setBandwidthUnits}
                 />
                 <Typography
                   variant="body1"
-                  data-testid={FIELD + 'Velocity'}
                   sx={{
                     whiteSpace: 'nowrap',
                     pl: 1
@@ -159,7 +156,6 @@ export default function BandwidthField({
         </Grid>
         <Grid size={{ xs: 4 }}>
           <SteppedNumberField
-            testId="zoomChannels"
             label={t('zoomChannels.label')}
             value={zoomChannels}
             digitsOnly
@@ -198,7 +194,6 @@ export default function BandwidthField({
         <DropDown
           disabled={disabled}
           options={getOptions()}
-          testId={FIELD}
           value={value}
           setValue={setValue}
           label={t(FIELD + '.label')}

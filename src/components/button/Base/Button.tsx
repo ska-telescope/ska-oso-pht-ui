@@ -17,7 +17,6 @@ interface BaseButtonProps {
   primary?: boolean;
   size?: string;
   sx?: any;
-  testId?: string;
   toolTip?: string;
   variant?: string;
 }
@@ -31,7 +30,6 @@ export default function BaseButton({
   primary = false,
   size = ButtonSizeTypes.Medium,
   sx = null,
-  testId = 'baseButtonTestId',
   toolTip = '',
   variant = ButtonVariantTypes.Contained
 }: BaseButtonProps) {
@@ -60,7 +58,6 @@ export default function BaseButton({
       label={theTitle}
       onClick={ClickFunction}
       sx={sx}
-      testId={testId}
       toolTip={theToolTip}
       variant={variant}
     />

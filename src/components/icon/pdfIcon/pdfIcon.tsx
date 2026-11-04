@@ -9,12 +9,6 @@ interface PDFIconProps {
 
 export default function PDFIcon({ disabled = false, onClick, toolTip = '' }: PDFIconProps) {
   return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<PictureAsPdfIcon />}
-      testId="pdfIcon"
-      toolTip={toolTip}
-    />
+    <Icon disabled={disabled} onClick={onClick} icon={<PictureAsPdfIcon />} toolTip={toolTip} />
   );
 }

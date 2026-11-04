@@ -204,7 +204,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       <Grid>
         {loggedIn && getProposal().id !== null && pages.includes(pageNo) && (
           <SaveButton
-            testId={'saveBtn'}
             disabled={isDisableEndpoints()}
             action={handleSave}
             autoSaveInterval={AUTO_SAVE_INTERVAL}

@@ -197,7 +197,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const backButton = () => (
     <BackButton
       action={() => (isView() ? navigate(PMT[4]) : navigate(PMT[1]))}
-      testId="pmtBackButton"
       title={isView() ? 'reviewDecisionsList.title' : 'reviewProposalList.title'}
       toolTip={isView() ? 'reviewDecisionsList.toolTip' : 'reviewProposalList.toolTip'}
     />
@@ -346,13 +345,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const generalCommentsField = () => (
     <>
       {!isView() && (
-        <TextEntry
-          label={''}
-          testId="generalCommentsId"
-          rows={srcRows()}
-          setValue={setComments}
-          value={comments}
-        />
+        <TextEntry label={''} rows={srcRows()} setValue={setComments} value={comments} />
       )}
       {isView() && (
         <Box
@@ -381,7 +374,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             <TextEntry
               disabledUnderline
               label={''}
-              testId="technicalCommentsId"
               rows={tecRows()}
               setValue={setComments}
               value={comments}
@@ -398,7 +390,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       {!isView() && (
         <TextEntry
           label={''}
-          testId="srcNetCommentsId"
           rows={srcRows()}
           setValue={setSrcNetComments}
           value={srcNetComments}
@@ -443,17 +434,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           onChange={handleTabChange}
           aria-label="basic tabs example"
         >
-          <Tab data-testId={t('rank.label')} label={t('rank.label')} {...a11yProps(0)} />
-          <Tab
-            data-testId={t('generalComments.label')}
-            label={t('generalComments.label')}
-            {...a11yProps(1)}
-          />
-          <Tab
-            data-testId={t('srcNetComments.label')}
-            label={t('srcNetComments.label')}
-            {...a11yProps(2)}
-          />
+          <Tab data- label={t('rank.label')} {...a11yProps(0)} />
+          <Tab data- label={t('generalComments.label')} {...a11yProps(1)} />
+          <Tab data- label={t('srcNetComments.label')} {...a11yProps(2)} />
         </Tabs>
         {tabValueReview === 0 && <>{rankField()}</>}
         {tabValueReview === 1 && <>{generalCommentsField()}</>}

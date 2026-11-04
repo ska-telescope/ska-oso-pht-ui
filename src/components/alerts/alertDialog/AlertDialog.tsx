@@ -79,14 +79,10 @@ export default function AlertDialog({
           }}
         >
           <Grid>
-            <CancelButton testId="dialogCancelButton" action={handleCancel} />
+            <CancelButton action={handleCancel} />
           </Grid>
           <Grid>
-            <ConfirmButton
-              testId="dialogConfirmationButton"
-              action={handleContinue}
-              disabled={disabled}
-            />
+            <ConfirmButton action={handleContinue} disabled={disabled} />
           </Grid>
         </Grid>
       </DialogActions>

@@ -22,7 +22,7 @@ describe('<GridReviewers /> data rendering', () => {
       data: MockReviewersList
     });
     wrapper(<GridReviewers />);
-    expect(await screen.findAllByTestId('dataGridReviewers')).toBeDefined();
+    expect(await screen.findAllByRole('grid')).toBeDefined();
   });
   vi.clearAllMocks();
   test('renders correctly with data error', async () => {
@@ -30,7 +30,7 @@ describe('<GridReviewers /> data rendering', () => {
       data: 'Error'
     });
     wrapper(<GridReviewers />);
-    expect(screen.queryByTestId('helpPanelId')).toBeDefined();
+    expect(screen.queryByRole('alert')).toBeDefined();
   });
   vi.clearAllMocks();
 });
@@ -48,7 +48,7 @@ describe('<GridReviewers /> showSelection', () => {
       data: MockReviewersList
     });
     wrapper(<GridReviewers />);
-    const emptyCheckboxes = screen.queryAllByTestId('triStateTestId');
+    const emptyCheckboxes = screen.queryAllByRole('checkbox', { checked: false });
     expect(emptyCheckboxes.length).toBe(0);
   });
   vi.clearAllMocks();
@@ -77,14 +77,14 @@ describe('<GridReviewers /> showSearch', () => {
       data: MockReviewersList
     });
     wrapper(<GridReviewers showSearch />);
-    expect(screen.queryByTestId('searchId')).toBeDefined();
+    expect(screen.queryByRole('textbox', { name: 'search.label' })).toBeDefined();
   });
   test('renders correctly, showSearch false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
     wrapper(<GridReviewers />);
-    expect(screen.queryByTestId('searchId')).toBeNull();
+    expect(screen.queryByRole('textbox', { name: 'search.label' })).toBeNull();
   });
 });
 
@@ -94,14 +94,14 @@ describe('<GridReviewers /> showTitle', () => {
       data: MockReviewersList
     });
     wrapper(<GridReviewers showTitle />);
-    expect(screen.queryByTestId('pageTitle')).toBeDefined();
+    expect(screen.queryByText('reviewers.label')).toBeDefined();
   });
   test('renders correctly, showTitle false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
     wrapper(<GridReviewers />);
-    expect(screen.queryByTestId('pageTitle')).toBeNull();
+    expect(screen.queryByText('reviewers.label')).toBeNull();
   });
 });
 

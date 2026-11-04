@@ -82,7 +82,7 @@ describe('GridReviewPanels', () => {
     wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
     await vi.runAllTicks();
 
-    const alert = screen.getByTestId('helpPanelId');
+    const alert = screen.getByRole('alert');
     expect(alert).toBeInTheDocument();
   });
 
@@ -96,7 +96,7 @@ describe('GridReviewPanels', () => {
 
     let grid;
     for (let i = 0; i < 20; i++) {
-      grid = screen.queryByTestId('dataGridId');
+      grid = screen.queryByRole('grid');
       if (grid) break;
       await new Promise(res => setTimeout(res, 250));
     }
@@ -109,7 +109,7 @@ describe('GridReviewPanels', () => {
     wrapper(<GridReviewPanels onRowClick={onRowClick} />);
     await vi.runAllTicks();
 
-    const grid = screen.getByTestId('dataGridId');
+    const grid = screen.getByRole('grid');
     const row = grid.querySelector('[role="row"]');
     if (row) fireEvent.click(row);
     expect(onRowClick).toHaveBeenCalled();

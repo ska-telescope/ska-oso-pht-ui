@@ -9,12 +9,6 @@ interface StarIconProps {
 
 export default function StarIcon({ disabled = false, onClick, toolTip = '' }: StarIconProps) {
   return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<StarRateRounded />}
-      testId="starIcon"
-      toolTip={toolTip}
-    />
+    <Icon disabled={disabled} onClick={onClick} icon={<StarRateRounded />} toolTip={toolTip} />
   );
 }

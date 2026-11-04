@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useState } from 'react';
 import { StoreProvider } from '@utils/storage/store';
@@ -25,9 +25,8 @@ describe('PolarisationsField', () => {
     };
     wrapper(<Controlled />);
 
-    const checkbox = within(screen.getByTestId('polarisationsI')).getByRole(
-      'checkbox'
-    ) as HTMLInputElement;
+    // The tick boxes have no accessible name; I is the first
+    const checkbox = screen.getAllByRole('checkbox')[0] as HTMLInputElement;
     expect(checkbox).toBeChecked();
 
     fireEvent.click(checkbox);

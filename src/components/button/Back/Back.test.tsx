@@ -17,12 +17,11 @@ describe('Overview Button', () => {
   const mockAction = vi.fn();
   test('renders correctly', () => {
     wrapper(<BackButton action={mockAction} />);
-    expect(screen.getByTestId('backButtonTestId')).toHaveTextContent('backBtn.label');
-    screen.getByTestId('backButtonTestId').click();
+    screen.getByRole('button', { name: 'backBtn.label' }).click();
     expect(mockAction).toBeCalled();
   });
   test('renders correctly with tooltip empty', () => {
     wrapper(<BackButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('backButtonTestId')).toHaveTextContent('backBtn.label');
+    expect(screen.getByRole('button', { name: 'backBtn.label' })).toBeInTheDocument();
   });
 });

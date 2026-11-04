@@ -8,13 +8,5 @@ interface LockIconProps {
 }
 
 export default function LockIcon({ disabled = false, onClick, toolTip = '' }: LockIconProps) {
-  return (
-    <Icon
-      disabled={disabled}
-      onClick={onClick}
-      icon={<LockPersonIcon />}
-      testId="lockIcon"
-      toolTip={toolTip}
-    />
-  );
+  return <Icon disabled={disabled} onClick={onClick} icon={<LockPersonIcon />} toolTip={toolTip} />;
 }

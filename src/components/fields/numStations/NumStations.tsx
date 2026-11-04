@@ -44,7 +44,6 @@ export default function NumStationsField({
       <NumberEntry
         disabled={disabled}
         label={t(FIELD + '.label')}
-        testId={FIELD}
         value={value}
         setValue={validate}
         onFocus={() => setHelp(FIELD + '.help')}

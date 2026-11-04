@@ -26,7 +26,7 @@ vi.mock('../../components/layout/Shell/Shell', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 vi.mock('../entry/DataProduct/DataProduct', () => ({
-  default: () => <div data-testid="dataProductEntryStub" />
+  default: () => <div>dataProductEntryStub</div>
 }));
 
 const renderWithProposal = (proposal: object) => {
@@ -57,8 +57,8 @@ describe('<DataProductPage />', () => {
       dataProductSDP: [{ id: 'sdp-1', observationId: 'obs-1', data: {} }]
     });
 
-    expect(screen.getByTestId('dataProductEntryStub')).toBeInTheDocument();
-    expect(screen.queryByTestId('noObservationsNotification')).not.toBeInTheDocument();
+    expect(screen.getByText('dataProductEntryStub')).toBeInTheDocument();
+    expect(screen.queryByText('error.noObservations')).not.toBeInTheDocument();
   });
 
   test('shows the same no-observation message for every proposal type', () => {
@@ -68,7 +68,7 @@ describe('<DataProductPage />', () => {
       dataProductSDP: []
     });
 
-    expect(screen.queryByTestId('dataProductEntryStub')).not.toBeInTheDocument();
+    expect(screen.queryByText('dataProductEntryStub')).not.toBeInTheDocument();
     expect(screen.getByText('error.noObservations')).toBeInTheDocument();
   });
 });

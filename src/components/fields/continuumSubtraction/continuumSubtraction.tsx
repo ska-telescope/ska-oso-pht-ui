@@ -48,7 +48,6 @@ export default function ContinuumSubtractionField({
           labelBold
           labelPosition={LAB_POS_TICK}
           labelWidth={TICK_LABEL_WIDTH}
-          testId={FIELD}
           checked={value}
           onChange={(event: { target: { checked: boolean } }) => setValue?.(event.target.checked)}
           onFocus={onFocus}

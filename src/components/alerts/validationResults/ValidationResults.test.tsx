@@ -58,6 +58,6 @@ describe('<ValidationResults />', () => {
         results={['LOOKS OK', 'NO ISSUES FOUND']}
       />
     );
-    screen.queryByTestId('cancelButtonTestId')?.click();
+    screen.queryByRole('button', { name: 'cancelBtn.label' })?.click();
   });
 });

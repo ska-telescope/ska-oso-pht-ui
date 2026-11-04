@@ -63,7 +63,6 @@ export default function OutputFrequencyResolutionField({
       }}
     >
       <SteppedNumberField
-        testId={FIELD}
         value={value}
         format={(multiplier: number) => (multiplier * FUNDAMENTAL_RESOLUTION_KHZ).toFixed(2)}
         parse={(raw: string) => {
@@ -87,7 +86,6 @@ export default function OutputFrequencyResolutionField({
         suffix={
           <Box sx={{ minWidth: 90 }}>
             <SelectField
-              testId={FIELD + 'Units'}
               disabled
               options={[
                 { label: t(FIELD + '.units'), value: OUTPUT_FREQUENCY_RESOLUTION_UNIT_VALUE }

@@ -57,7 +57,6 @@ export default function ChannelsOutField({
       }}
     >
       <SteppedNumberField
-        testId={FIELD}
         label={t('channelsOut.label')}
         value={value}
         digitsOnly

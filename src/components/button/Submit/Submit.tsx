@@ -6,7 +6,6 @@ interface SubmitButtonProps {
   action: string | Function;
   disabled?: boolean;
   primary?: boolean;
-  testId?: string;
   toolTip?: string;
 }
 
@@ -15,7 +14,6 @@ export default function SubmitButton({
   action,
   title = 'submitBtn.label',
   primary = true,
-  testId = 'submitBtnTestId',
   toolTip = ''
 }: SubmitButtonProps) {
   return (
@@ -24,7 +22,6 @@ export default function SubmitButton({
       disabled={disabled}
       icon={<SendOutlinedIcon />}
       primary={primary}
-      testId={testId}
       title={title}
       toolTip={toolTip}
     />
