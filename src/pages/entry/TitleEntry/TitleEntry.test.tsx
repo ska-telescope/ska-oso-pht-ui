@@ -5,8 +5,7 @@ import { StoreProvider } from '@utils/storage/store';
 import TitleEntry from './TitleEntry';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
 import phtTranslations from '../../../../public/locales/en/pht.json';
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
@@ -45,7 +44,7 @@ const wrapper = (
     const methods = useForm<ProposalType>({
       mode: 'all',
       defaultValues: { title: 'A title', proposalType },
-      resolver: validate ? zodResolver(getProposalSchema()) : undefined
+      resolver: validate ? getProposalResolver() : undefined
     });
     return (
       <StoreProvider>

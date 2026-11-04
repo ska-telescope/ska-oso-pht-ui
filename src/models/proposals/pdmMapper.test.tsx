@@ -11,7 +11,9 @@ const pdm = MockProposalBackend as ProposalBackend;
 const emptySlices = {
   targets: [],
   targetObservation: [],
-  calibrationStrategy: []
+  calibrationStrategy: [],
+  sciencePDF: null,
+  technicalPDF: null
 };
 
 describe('mapPdmToForm', () => {

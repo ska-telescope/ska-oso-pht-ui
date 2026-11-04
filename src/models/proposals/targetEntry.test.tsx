@@ -1,14 +1,17 @@
 import { describe, expect, test } from 'vitest';
 import {
+  FIELD_PATTERN_POINTING_CENTRES,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
   VELOCITY_DEFINITION,
-  VELOCITY_TYPE
+  VELOCITY_TYPE,
+  VELOCITY_UNIT
 } from '@/utils/constants';
 import Target from '@/utils/types/target';
 import {
   applyTargetEdit,
+  getTargetEntryDefaults,
   getTargetEntrySchema,
   TARGET_ENTRY_DEFAULTS,
   targetEntryFromTarget,
@@ -104,6 +107,40 @@ describe('target entry schema', () => {
     expect(errorsFor({ ...validIcrs, velType: VELOCITY_TYPE.REDSHIFT, redshift: 'abc' })).toEqual({
       redshift: text('velocity.error')
     });
+  });
+});
+
+describe('getTargetEntryDefaults', () => {
+  test('gives a new entry from the schema defaults', () => {
+    expect(getTargetEntryDefaults()).toEqual({
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
+      name: '',
+      raStr: '',
+      decStr: '',
+      l: '',
+      b: '',
+      velType: VELOCITY_TYPE.VELOCITY,
+      vel: '',
+      velUnit: VELOCITY_UNIT.KM_PER_S,
+      redshift: '',
+      fieldPattern: FIELD_PATTERN_POINTING_CENTRES
+    });
+  });
+
+  test('starts an entry for another coordinate system, keeping the values given', () => {
+    expect(
+      getTargetEntryDefaults(REFERENCE_COORDINATE_TYPE_GALACTIC.value, {
+        velType: VELOCITY_TYPE.REDSHIFT
+      })
+    ).toEqual(
+      expect.objectContaining({
+        kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
+        name: '',
+        l: '',
+        b: '',
+        velType: VELOCITY_TYPE.REDSHIFT
+      })
+    );
   });
 });
 

@@ -46,6 +46,7 @@ import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ProposalType } from '@/models/proposals/proposal';
 import {
+  getTargetEntryDefaults,
   TARGET_ENTRY_DEFAULTS,
   TargetEntryType,
   useTargetEntryForm
@@ -131,19 +132,11 @@ export default function TargetEntry({
   const setTheReferenceCoordinates = (newKind: number) => {
     invalidatePendingResolve();
 
-    // A new coordinate system starts the entry again, without errors
+    // A new coordinate system starts the entry again, without errors, keeping only the velocity
+    // type and unit and the field pattern
     if (newKind !== kind) {
-      entryValues.reset({
-        ...entryValues.getValues(),
-        kind: newKind,
-        name: '',
-        raStr: '',
-        decStr: '',
-        l: '',
-        b: '',
-        vel: '',
-        redshift: ''
-      });
+      const { velType, velUnit, fieldPattern } = entryValues.getValues();
+      entryValues.reset(getTargetEntryDefaults(newKind, { velType, velUnit, fieldPattern }));
     }
   };
 
@@ -153,7 +146,7 @@ export default function TargetEntry({
 
   const clearForm = () => {
     invalidatePendingResolve();
-    entryValues.reset({ ...TARGET_ENTRY_DEFAULTS });
+    entryValues.reset(getTargetEntryDefaults());
   };
 
   const addButton = () => {

@@ -2,12 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '@/utils/constants';
-import {
-  documentsFromPdm,
-  documentsToPdm,
-  getDocumentPageStatus,
-  getDocumentValues
-} from './documents';
+import { documentsFromPdm, documentsToPdm, getDocumentPageStatus } from './documents';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 
 const science = { document_id: 'science-doc-p1', uploaded_pdf: true };
@@ -23,13 +18,6 @@ describe('documents slice', () => {
       technicalPDF: { documentId: 'technical-doc-p1', isUploadedPdf: false }
     });
     expect(documentsFromPdm(undefined)).toEqual({ sciencePDF: null, technicalPDF: null });
-  });
-
-  test('defaults missing values to null', () => {
-    expect(getDocumentValues(undefined)).toEqual({
-      sciencePDF: null,
-      technicalPDF: null
-    });
   });
 
   test('maps references back to PDM documents', () => {

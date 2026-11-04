@@ -49,18 +49,35 @@ function checkGalacticLongitude(value: string): ValueError | null {
  * the field, with the text for the axis and the error code as its message.
  */
 function coordinateField(axis: SkyDirectionAxis, check: CoordinateCheck) {
-  return z.string().superRefine(function reportCoordinateError(value, ctx) {
-    const errorCode = check(value);
-    if (errorCode !== null) {
-      ctx.addIssue({ code: 'custom', message: coordinateErrorText(axis, errorCode) });
-    }
-  });
+  return z
+    .string()
+    .superRefine(function reportCoordinateError(value, ctx) {
+      const errorCode = check(value);
+      if (errorCode !== null) {
+        ctx.addIssue({ code: 'custom', message: coordinateErrorText(axis, errorCode) });
+      }
+    })
+    .default('');
+}
+
+/** The target's name: required, and not one already in the proposal. */
+function nameField(takenNames: string[]) {
+  return z
+    .string()
+    .superRefine(function checkName(name, ctx) {
+      if (!name.trim()) {
+        ctx.addIssue({ code: 'custom', message: phtTranslations.addTarget.valueError });
+      } else if (takenNames.some((taken) => isSameName(taken, name))) {
+        ctx.addIssue({ code: 'custom', message: phtTranslations.addTarget.error });
+      }
+    })
+    .default('');
 }
 
 // The entry holds the coordinates of every coordinate system under the target's own names, so it
 // keeps one shape; each coordinate system checks only its own pair. Galactic coordinates are typed
 // as text and become numbers when the target is added.
-const unchecked = z.string();
+const unchecked = z.string().default('');
 const ICRS_COORDINATES = {
   kind: z.literal(REFERENCE_COORDINATE_TYPE_ICRS.value),
   raStr: coordinateField(SKY_DIRECTION_AXIS.LONGITUDE, validateRightAscension),
@@ -85,19 +102,22 @@ const SSO_COORDINATES = {
 };
 
 /**
- * The fields shared with a saved target come from its schema, all required while entering; the
- * coordinates are checked by coordinate system. Error messages are the text to show, as the
- * controlled inputs display them directly. `takenNames` are the names of the targets already in
- * the proposal, so a new target can't repeat one.
+ * The fields shared with a saved target come from its schema, required while entering and with
+ * the defaults of a new entry; the coordinates are checked by coordinate system. Error messages
+ * are the text to show, as the controlled inputs display them directly. `takenNames` are the names
+ * of the targets already in the proposal, so a new target can't repeat one.
  */
 export function getTargetEntrySchema(takenNames: string[] = []) {
-  const common = getTargetSchema()
-    .pick({ name: true, velType: true, vel: true, velUnit: true, redshift: true })
-    .required()
-    .extend({
-      // Shown in the entry only; not yet saved with the target
-      fieldPattern: z.string()
-    });
+  const target = getTargetSchema().shape;
+  const common = z.object({
+    name: nameField(takenNames),
+    velType: target.velType.unwrap().default(VELOCITY_TYPE.VELOCITY),
+    vel: target.vel.unwrap().default(''),
+    velUnit: target.velUnit.unwrap().default(VELOCITY_UNIT.KM_PER_S),
+    redshift: target.redshift.unwrap().default(''),
+    // Shown in the entry only; not yet saved with the target
+    fieldPattern: z.string().default(FIELD_PATTERN_POINTING_CENTRES)
+  });
 
   return z
     .discriminatedUnion('kind', [
@@ -108,12 +128,6 @@ export function getTargetEntrySchema(takenNames: string[] = []) {
     .superRefine((entry, ctx) => {
       const fail = (path: keyof TargetEntryType, message: string) =>
         ctx.addIssue({ code: 'custom', path: [path], message });
-
-      if (!entry.name.trim()) {
-        fail('name', phtTranslations.addTarget.valueError);
-      } else if (takenNames.some((taken) => isSameName(taken, entry.name))) {
-        fail('name', phtTranslations.addTarget.error);
-      }
 
       // Velocity or redshift, whichever is in use; a solar system object has neither
       const radialMotion = entry.velType === VELOCITY_TYPE.VELOCITY ? 'vel' : 'redshift';
@@ -127,21 +141,19 @@ export function getTargetEntrySchema(takenNames: string[] = []) {
     });
 }
 
-export type TargetEntryType = z.input<ReturnType<typeof getTargetEntrySchema>>;
+// Every field has a value in the form, so the entry is the schema's output, defaults filled in
+export type TargetEntryType = z.output<ReturnType<typeof getTargetEntrySchema>>;
 
-export const TARGET_ENTRY_DEFAULTS: TargetEntryType = {
-  kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-  name: '',
-  raStr: '',
-  decStr: '',
-  l: '',
-  b: '',
-  velType: VELOCITY_TYPE.VELOCITY,
-  vel: '',
-  velUnit: VELOCITY_UNIT.KM_PER_S,
-  redshift: '',
-  fieldPattern: FIELD_PATTERN_POINTING_CENTRES
-};
+/**
+ * A new entry for a coordinate system, with the schema's defaults. `kept` carries values over
+ * from the entry it replaces, such as the velocity type when the coordinate system changes.
+ */
+export const getTargetEntryDefaults = (
+  kind: number = REFERENCE_COORDINATE_TYPE_ICRS.value,
+  kept: Partial<TargetEntryType> = {}
+): TargetEntryType => getTargetEntrySchema().parse({ ...kept, kind });
+
+export const TARGET_ENTRY_DEFAULTS = getTargetEntryDefaults();
 
 interface TargetEntryContext {
   takenNames?: string[];
@@ -158,8 +170,10 @@ export const useTargetEntryForm = (takenNames?: string[]) =>
     defaultValues: { ...TARGET_ENTRY_DEFAULTS },
     // The names change as targets are added, so they reach the schema through the context
     context: { takenNames },
+    // The form always holds every field, so its values are the schema's output; the resolver is
+    // typed for the input, where the defaulted fields are optional
     resolver: (values, context, options) =>
-      zodResolver(getTargetEntrySchema(context?.takenNames))(values, context, options)
+      zodResolver(getTargetEntrySchema(context?.takenNames))(values, context, options as never)
   });
 
 /** An entry holding an existing target's values, for the edit dialog. */
