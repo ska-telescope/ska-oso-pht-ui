@@ -14,12 +14,8 @@ import {
   TAPER_DEFAULT,
   TIME_HOURS,
   TIME_SECS,
-  FREQUENCY_KHZ,
   IW_BRIGGS,
-  LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
-  CHANNELS_OUT_DEFAULT,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE
+  DP_TYPE_IMAGES
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
@@ -37,6 +33,7 @@ import Observation from '@/utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
 import Fetch from '../fetch/Fetch';
+import { getLowSpectralAveragingFactor } from '@/services/sensitivityCalculator/calculate';
 import { frequencyConversion } from '@/utils/helpers';
 import {
   getPointingCentre,
@@ -126,7 +123,7 @@ export function getSensCalcContinuumParams(
       value: observation?.centralFrequency,
       unit: observation?.centralFrequencyUnits?.toString()
     },
-    spectralAveragingFactor: getSpectralAveragingFactor(observation, dataProductSDP),
+    spectralAveragingFactor: getLowSpectralAveragingFactor(observation, dataProductSDP),
     numberOfSubBands: observation?.numSubBands ?? 0,
     imageWeighting: (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IW_UNIFORM,
     robust: (dataProductSDP?.data as SDPImageContinuumData)?.robust ?? ROBUST_DEFAULT,
@@ -386,31 +383,6 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
 
   return properties;
 };
-
-export function getSpectralAveragingFactor(
-  observation: Observation,
-  dataProduct: DataProductSDPNew
-) {
-  const totalChannels =
-    frequencyConversion(
-      observation.continuumBandwidth,
-      observation.continuumBandwidthUnits,
-      FREQUENCY_KHZ
-    ) / LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ;
-
-  const channelsOut =
-    observation.type == TYPE_CONTINUUM && dataProduct.data.dataProductType == DP_TYPE_VISIBLE
-      ? CHANNELS_OUT_DEFAULT
-      : dataProduct.data.channelsOut;
-
-  // Spectral results ignored for channelsOut = 1.
-  // Sending a dummy value as the Sensitivity Calculator backend requires it.
-  if (channelsOut === 1) {
-    return 1;
-  }
-
-  return Math.floor(totalChannels / channelsOut);
-}
 
 function GetContinuumData(
   telescope: Telescope,

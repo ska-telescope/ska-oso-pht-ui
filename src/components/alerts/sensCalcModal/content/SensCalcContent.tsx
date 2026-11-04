@@ -18,7 +18,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal.tsx';
-import { getSpectralAveragingFactor } from '@services/axios/get/getSensitivityCalculator/getContinuumData/getContinuumData.tsx';
+import { getLowSpectralAveragingFactor } from '@/services/sensitivityCalculator/calculate';
 import {
   convertFrequencyToDisplayUnits,
   getBandwidthZoom,
@@ -189,7 +189,7 @@ export default function SensCalcContent({
         [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
           observation?.type
         )
-          ? getSpectralAveragingFactor(observation, dataProduct) *
+          ? getLowSpectralAveragingFactor(observation, dataProduct) *
               LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
           : getSpectralResolutionHz(observation) * 1e-3,
         FREQUENCY_STR_KHZ
