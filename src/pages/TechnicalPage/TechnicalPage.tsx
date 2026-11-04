@@ -178,9 +178,7 @@ export default function TechnicalPage() {
   }, []);
 
   React.useEffect(() => {
-    setUploadStatus(
-      technicalPDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL
-    );
+    setUploadStatus(technicalPDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL);
   }, [proposalId, technicalPDF]);
 
   // Bridge: unmigrated consumers and the save path still read the legacy store.

@@ -374,9 +374,7 @@ export default function SciencePage() {
   }, []);
 
   React.useEffect(() => {
-    setUploadStatus(
-      sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL
-    );
+    setUploadStatus(sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL);
   }, [proposalId, sciencePDF]);
 
   // Bridge: unmigrated consumers and the save path still read the legacy store.
