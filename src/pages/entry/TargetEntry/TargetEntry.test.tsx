@@ -1,7 +1,7 @@
 import React from 'react';
 import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
 import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, act, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
@@ -11,6 +11,7 @@ import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
+import { TargetEntryType, useTargetEntryForm } from '@/models/proposals/targetEntry';
 
 // Exposes the global form, which holds the entry and the targets
 let formProbe: UseFormReturn<ProposalType>;
@@ -108,6 +109,31 @@ describe('<TargetEntry /> target limit', () => {
     await waitFor(() => {
       expect(screen.getByTestId('addTargetButton')).toBeDisabled();
     });
+  }, 15000);
+});
+
+describe('<TargetEntry /> velocity type', () => {
+  // A form passed in, as the edit dialog does, so its errors can be read
+  let entryProbe: UseFormReturn<TargetEntryType>;
+  const EntryWithForm = () => {
+    const entryForm = useTargetEntryForm();
+    entryProbe = entryForm;
+    return <TargetEntry entryForm={entryForm} />;
+  };
+
+  it('re-checks velocity and redshift when the velocity type changes', async () => {
+    const user = userEvent.setup();
+    await act(async () => {
+      wrapper(<EntryWithForm />);
+    });
+
+    await user.type(screen.getByTestId('velocityValue').querySelector('input')!, 'abc');
+    await waitFor(() => expect(entryProbe.getFieldState('vel').error).toBeDefined());
+
+    // Redshift is in use now, so the velocity is no longer checked
+    fireEvent.mouseDown(within(screen.getByTestId('velocityType')).getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'velocity.1.label' }));
+    await waitFor(() => expect(entryProbe.getFieldState('vel').error).toBeUndefined());
   }, 15000);
 });
 

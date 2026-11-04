@@ -137,6 +137,8 @@ interface TargetEntryContext {
  */
 export const useTargetEntryForm = (takenNames?: string[]) =>
   useForm<TargetEntryType, TargetEntryContext>({
+    // Each field is checked as it changes
+    mode: 'onChange',
     defaultValues: { ...TARGET_ENTRY_DEFAULTS },
     // The names change as targets are added, so they reach the schema through the context
     context: { takenNames },
