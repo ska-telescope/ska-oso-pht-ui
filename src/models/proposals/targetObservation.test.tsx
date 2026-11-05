@@ -42,7 +42,9 @@ describe('target observation schema', () => {
   });
 
   test('rejects an unknown sensitivity status', () => {
-    expect(schema.safeParse([{ ...link, sensCalc: { statusGUI: 2 } }]).success).toBe(false);
+    expect(schema.safeParse([{ ...link, sensitivityResults: { statusGUI: 2 } }]).success).toBe(
+      false
+    );
   });
 
   test('legacy links can seed the form', () => {

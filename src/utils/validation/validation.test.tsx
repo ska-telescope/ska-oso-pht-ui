@@ -442,13 +442,19 @@ describe('validateSDPPage auto-linked sensitivity rules', () => {
 
   it('is valid when the target is linked with sensitivity results', () => {
     expect(
-      validateSDPPage(makeProposal([{ ...link, sensCalc: { statusGUI: STATUS_OK } }]), true)
+      validateSDPPage(
+        makeProposal([{ ...link, sensitivityResults: { statusGUI: STATUS_OK } }]),
+        true
+      )
     ).toBe(STATUS_OK);
   });
 
   it('is invalid when the sensitivity results are an error', () => {
     expect(
-      validateSDPPage(makeProposal([{ ...link, sensCalc: { statusGUI: STATUS_ERROR } }]), true)
+      validateSDPPage(
+        makeProposal([{ ...link, sensitivityResults: { statusGUI: STATUS_ERROR } }]),
+        true
+      )
     ).toBe(STATUS_ERROR);
   });
 

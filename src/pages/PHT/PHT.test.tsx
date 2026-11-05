@@ -262,7 +262,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
         targetId: 1,
         observationId: 'obs-1',
         dataProductsSDPId: 'sdp-1',
-        sensCalc: { id: 1, title: 'Target 1', statusGUI: 0 }
+        sensitivityResults: { id: 1, title: 'Target 1', statusGUI: 0 }
       }
     ];
 

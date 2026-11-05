@@ -161,7 +161,9 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
 
     await act(async () => resolveSensCalc({ statusGUI: STATUS_OK, error: '' }));
     await waitFor(() => {
-      expect(formProbe.getValues('targetObservation')[0].sensCalc?.statusGUI).toBe(STATUS_OK);
+      expect(formProbe.getValues('targetObservation')[0].sensitivityResults?.statusGUI).toBe(
+        STATUS_OK
+      );
     });
     expect(getSensCalc).toHaveBeenCalledTimes(1);
   });
@@ -203,7 +205,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
         expect.arrayContaining([
           expect.objectContaining({
             targetId: 't1',
-            sensCalc: expect.objectContaining({ statusGUI: STATUS_OK })
+            sensitivityResults: expect.objectContaining({ statusGUI: STATUS_OK })
           }),
           expect.objectContaining(otherLink)
         ])

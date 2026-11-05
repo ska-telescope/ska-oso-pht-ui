@@ -10,7 +10,7 @@ const link = (targetId: string, observationId: string): TargetObservation => ({
   targetId,
   observationId,
   dataProductsSDPId: `sdp-${observationId}`,
-  sensCalc: { statusGUI: STATUS_PARTIAL, error: '' }
+  sensitivityResults: { statusGUI: STATUS_PARTIAL, error: '' }
 });
 
 const result: SensCalcResults = {
@@ -35,12 +35,15 @@ describe('patchSensCalcResults', () => {
 
   test('writes the results to the matching link only, changing nothing else', () => {
     patchSensCalcResults(form, [
-      { targetObservationKey: getTargetObservationKey(link('t2', 'o2')), sensCalc: result }
+      {
+        targetObservationKey: getTargetObservationKey(link('t2', 'o2')),
+        sensitivityResults: result
+      }
     ]);
 
     expect(values.targetObservation).toEqual([
       link('t1', 'o1'),
-      { ...link('t2', 'o2'), sensCalc: result }
+      { ...link('t2', 'o2'), sensitivityResults: result }
     ]);
   });
 
@@ -49,11 +52,14 @@ describe('patchSensCalcResults', () => {
     values.targetObservation = [link('t1', 'o1'), link('t2', 'o2'), link('t3', 'o3')];
 
     patchSensCalcResults(form, [
-      { targetObservationKey: getTargetObservationKey(link('t1', 'o1')), sensCalc: result }
+      {
+        targetObservationKey: getTargetObservationKey(link('t1', 'o1')),
+        sensitivityResults: result
+      }
     ]);
 
     expect(values.targetObservation).toEqual([
-      { ...link('t1', 'o1'), sensCalc: result },
+      { ...link('t1', 'o1'), sensitivityResults: result },
       link('t2', 'o2'),
       link('t3', 'o3')
     ]);
@@ -61,7 +67,10 @@ describe('patchSensCalcResults', () => {
 
   test('leaves the form alone when no link matches', () => {
     patchSensCalcResults(form, [
-      { targetObservationKey: getTargetObservationKey(link('gone', 'o9')), sensCalc: result }
+      {
+        targetObservationKey: getTargetObservationKey(link('gone', 'o9')),
+        sensitivityResults: result
+      }
     ]);
     patchSensCalcResults(form, []);
 
@@ -72,7 +81,10 @@ describe('patchSensCalcResults', () => {
     values.targetObservation = [];
 
     patchSensCalcResults(form, [
-      { targetObservationKey: getTargetObservationKey(link('t1', 'o1')), sensCalc: result }
+      {
+        targetObservationKey: getTargetObservationKey(link('t1', 'o1')),
+        sensitivityResults: result
+      }
     ]);
 
     expect(form.setValue).not.toHaveBeenCalled();

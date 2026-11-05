@@ -456,7 +456,7 @@ export const isDataProductChannelsOutValid = (
 const hasUsableTargetLinks = (proposal: Proposal) =>
   (proposal?.observations ?? []).every((obs) => {
     const link = proposal?.targetObservation?.find((to) => to.observationId === obs.id);
-    return !!link && link.sensCalc?.statusGUI !== STATUS_ERROR;
+    return !!link && link.sensitivityResults?.statusGUI !== STATUS_ERROR;
   });
 
 export const validateSDPPage = (proposal: Proposal, autoLink = false) => {

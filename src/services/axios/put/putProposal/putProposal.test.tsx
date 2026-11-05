@@ -586,7 +586,7 @@ describe('getObservationTypeDetails', () => {
 
 describe('getSuppliedFieldsIntegrationTime', () => {
   const mockTarObs = {
-    sensCalc: {
+    sensitivityResults: {
       section3: [{ value: 123, units: 'hr', field: 'integrationTime' }]
     }
   } as any;
@@ -610,7 +610,7 @@ describe('getSuppliedFieldsIntegrationTime', () => {
   });
 
   test('should handle missing section3 gracefully', () => {
-    const tarObs = { sensCalc: {} } as any;
+    const tarObs = { sensitivityResults: {} } as any;
     const result = getSuppliedFieldsIntegrationTime('integration_time', TYPE_CONTINUUM, tarObs);
     expect(result).toEqual({
       supplied_type: 'integration_time',

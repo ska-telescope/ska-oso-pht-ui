@@ -212,7 +212,7 @@ const buildTargetLink = async (
     targetId: target?.id,
     observationId: observation.id,
     dataProductsSDPId: mainDataProduct.id,
-    sensCalc: sensCalcResult
+    sensitivityResults: sensCalcResult
   };
 
   const existingNotes = form.getValues('calibrationStrategy')?.[0]?.notes ?? null;

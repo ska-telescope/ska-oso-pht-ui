@@ -41,7 +41,7 @@ describe('fetchSensCalcPatches', () => {
         observationId: 'obs1',
         targetId: 't1',
         dataProductsSDPId: 'dp1',
-        sensCalc: {
+        sensitivityResults: {
           id: 't1',
           title: '',
           statusGUI: 0,
@@ -83,7 +83,7 @@ describe('fetchSensCalcPatches', () => {
     expect(result).toEqual([]);
   });
 
-  it('updates sensCalc with result from getSensCalc', async () => {
+  it('updates sensitivityResults with result from getSensCalc', async () => {
     (getSensCalc as any).mockResolvedValue({
       id: 't1',
       title: 'calc result',
@@ -96,7 +96,7 @@ describe('fetchSensCalcPatches', () => {
     expect(result).toEqual([
       {
         targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
-        sensCalc: expect.objectContaining({
+        sensitivityResults: expect.objectContaining({
           id: 't1',
           title: 'calc result',
           statusGUI: STATUS_OK,
@@ -117,7 +117,7 @@ describe('fetchSensCalcPatches', () => {
     expect(result).toEqual([
       {
         targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
-        sensCalc: expect.objectContaining({
+        sensitivityResults: expect.objectContaining({
           statusGUI: STATUS_ERROR,
           error: 'SensCalc error message'
         })
@@ -156,7 +156,7 @@ describe('fetchSensCalcPatches', () => {
     expect(result).toEqual([
       {
         targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
-        sensCalc: expect.objectContaining({
+        sensitivityResults: expect.objectContaining({
           title: '',
           statusGUI: STATUS_INITIAL,
           error: ''
@@ -185,7 +185,7 @@ describe('fetchSensCalcPatches', () => {
     expect(result).toEqual([
       {
         targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
-        sensCalc: expect.objectContaining({
+        sensitivityResults: expect.objectContaining({
           title: '',
           statusGUI: STATUS_INITIAL,
           error: ''
@@ -202,24 +202,24 @@ describe('applySensCalcPatches', () => {
         targetId: 't1',
         observationId: 'obs1',
         dataProductsSDPId: 'dp1',
-        sensCalc: { title: 'old' }
+        sensitivityResults: { title: 'old' }
       },
       {
         targetId: 't2',
         observationId: 'obs2',
         dataProductsSDPId: 'dp2',
-        sensCalc: { title: 'other' }
+        sensitivityResults: { title: 'other' }
       }
     ] as unknown as TargetObservation[];
     const result = applySensCalcPatches(existing, [
       {
         targetObservationKey: getTargetObservationKey(existing[0]),
-        sensCalc: { title: 'new', statusGUI: STATUS_OK, error: '' } as any
+        sensitivityResults: { title: 'new', statusGUI: STATUS_OK, error: '' } as any
       }
     ]);
 
-    expect(result?.[0].sensCalc).toMatchObject({ title: 'new' });
-    expect(result?.[1].sensCalc).toMatchObject({ title: 'other' });
+    expect(result?.[0].sensitivityResults).toMatchObject({ title: 'new' });
+    expect(result?.[1].sensitivityResults).toMatchObject({ title: 'other' });
   });
 
   it('returns existing rows unchanged when there are no patches', () => {
@@ -228,7 +228,7 @@ describe('applySensCalcPatches', () => {
         targetId: 't1',
         observationId: 'obs1',
         dataProductsSDPId: 'dp1',
-        sensCalc: { title: 'old' }
+        sensitivityResults: { title: 'old' }
       }
     ] as unknown as TargetObservation[];
 

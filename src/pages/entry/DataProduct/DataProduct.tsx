@@ -273,9 +273,13 @@ export default function DataProduct({ data }: DataProductProps) {
     getLinks().filter((rec) => rec.observationId === obsId);
 
   const hasSensCalcResults = (obsId: string) => {
-    const sensCalc = getLinks().find((rec) => rec.observationId === obsId)?.sensCalc;
+    const sensitivityResults = getLinks().find(
+      (rec) => rec.observationId === obsId
+    )?.sensitivityResults;
     return Boolean(
-      sensCalc?.section1?.length || sensCalc?.section2?.length || sensCalc?.section3?.length
+      sensitivityResults?.section1?.length ||
+      sensitivityResults?.section2?.length ||
+      sensitivityResults?.section3?.length
     );
   };
 
@@ -1249,9 +1253,9 @@ export default function DataProduct({ data }: DataProductProps) {
               borderColor={
                 !targetObservation()
                   ? theme.palette.error.main
-                  : targetObservation()?.sensCalc == undefined
+                  : targetObservation()?.sensitivityResults == undefined
                     ? theme.palette.warning.main
-                    : targetObservation()?.sensCalc?.statusGUI !== STATUS_INITIAL
+                    : targetObservation()?.sensitivityResults?.statusGUI !== STATUS_INITIAL
                       ? theme.palette.success.main
                       : theme.palette.error.main
               }

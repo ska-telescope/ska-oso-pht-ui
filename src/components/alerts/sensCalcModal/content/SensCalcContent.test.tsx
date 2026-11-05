@@ -36,7 +36,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: STATUS_INITIAL,
             error: undefined,
             section1: undefined,
@@ -51,7 +51,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: 0,
             error: undefined,
             section1: [
@@ -95,7 +95,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: 0,
             error: undefined,
             section1: [
@@ -127,7 +127,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: 0,
             error: undefined,
             section1: [
@@ -168,7 +168,7 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: STATUS_ERROR,
             error: 'SOME ERROR',
             section1: undefined,
