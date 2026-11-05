@@ -330,11 +330,6 @@ export const verifyScienceIdeaCreatedAlertFooter = () =>
 export const verifyAutoLinkAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Target added and auto-linked successfully', 30000);
 
-export const clickEdit = () => {
-  cy.get('[data-testId="editIcon"]').should('be.visible');
-  cy.get('[data-testId="editIcon"]').click();
-};
-
 export const clickEditIconForRow = (tableTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`)
     .find('[role="row"]')
@@ -528,18 +523,6 @@ export const enterTargetField = (label, value) => {
   targetField(label).first().type(value);
 };
 
-// The edit dialog opens over the target page, so its field is the later one with the label
-export const updateTargetField = (label, value) => {
-  targetField(label).last().clear().type(value);
-};
-
-export const verifyTargetFieldError = (label, error, exists) => {
-  targetField(label)
-    .last()
-    .closest('.MuiFormControl-root')
-    .should(exists ? 'contain.text' : 'not.contain.text', error);
-};
-
 export const checkAddTargetDisabled = (disabled) => {
   cy.findByRole('button', { name: 'Add Target' }).should(disabled ? 'be.disabled' : 'be.enabled');
 };
@@ -558,27 +541,3 @@ export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
   cy.get('[data-testid="table-submissions"]').should('contain', 'Science Verification Idea Title');
 };
 
-export const verifyTargetInTargetTable = (targetName, ra, dec, velocity) => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .eq(0)
-    .within(() => {
-      cy.get('[data-field="name"]').should('contain', targetName);
-      cy.get('[data-field="coord1"]').should('contain', ra);
-      cy.get('[data-field="coord2"]').should('contain', dec);
-      cy.get('[data-field="vel"]').should('contain', velocity);
-    });
-};
-
-export const clickFirstRowOfTargetTable = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .eq(0)
-    .within(() => {
-      cy.get('[data-field="actions"]').should('be.visible');
-    });
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .eq(0)
-    .click();
-};

@@ -172,6 +172,19 @@ describe('<TargetListSection />', () => {
       expect(formProbe.getValues('targets')[1]).toEqual(target2);
     });
 
+    it('does not let an invalid edit be confirmed', async () => {
+      wrapper(<TargetListSection />);
+
+      clickIcon('editIcon', 0);
+      const dialog = await screen.findByRole('dialog');
+      const nameInput = within(dialog).getByRole('textbox', { name: 'name.label' });
+      fireEvent.change(nameInput, { target: { value: '  ' } });
+
+      const confirm = within(dialog).getByRole('button', { name: 'confirmBtn.label' });
+      await waitFor(() => expect(confirm).toBeDisabled());
+      expect(formProbe.getValues('targets')).toEqual([target1, target2]);
+    });
+
     it('keeps the changes after leaving the page and coming back', async () => {
       const { rerender } = wrapper(<TargetListSection />);
 
