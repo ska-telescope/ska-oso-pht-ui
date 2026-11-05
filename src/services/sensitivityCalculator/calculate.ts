@@ -30,7 +30,7 @@ import {
   TYPE_ZOOM_LONG
 } from '@/utils/constants';
 import { OSD_CONSTANTS } from '@/utils/OSDConstants';
-import { frequencyConversion, getSpectralResolutionHz } from '@/utils/helpers';
+import { frequencyConversion, getBandwidthZoom, getSpectralResolutionHz } from '@/utils/helpers';
 import { getImageWeightingMapping, timeConversion } from '@/utils/helpersSensCalc';
 import type Observation from '@/utils/types/observation';
 import type Target from '@/utils/types/target';
@@ -62,10 +62,6 @@ import type {
 } from './types';
 
 export type SensitivityResult = ContinuumResult | ZoomResult;
-
-// TODO BTN-3462 Use getBandwidthZoom(observation) once the calculator supports arbitrary zoom
-//  bandwidths. Only the spectral results are used, so the widest zoom window gives the same result.
-const ZOOM_BANDWIDTH_KHZ = 3125;
 
 const MID_RX_BANDS: Record<string, MidRxBand> = {
   [BAND_1_STR]: 'Band 1',
@@ -199,7 +195,9 @@ const lowZoomRequest = (
   elevation_limit: Number(observation.elevation),
   freq_centres_mhz: [centralFrequency(observation, FREQUENCY_MHZ)],
   spectral_resolutions_hz: [getSpectralResolutionHz(observation)],
-  total_bandwidths_khz: [ZOOM_BANDWIDTH_KHZ],
+  total_bandwidths_khz: [
+    frequencyConversion(getBandwidthZoom(observation).value, FREQUENCY_MHZ, FREQUENCY_KHZ)
+  ],
   reference_coordinates: [referenceCoordinate(target)]
 });
 
@@ -216,7 +214,11 @@ const midZoomRequest = (
   el: Number(observation.elevation),
   freq_centres_hz: [centralFrequency(observation, FREQUENCY_HZ)],
   spectral_resolutions_hz: [getSpectralResolutionHz(observation)],
-  total_bandwidths_hz: [ZOOM_BANDWIDTH_KHZ * 1000],
+  // TODO The calculator rejects MID zoom bandwidths below 3.125 MHz, so narrower MID zooms fail
+  //  validation. Revisit after SV call delivery.
+  total_bandwidths_hz: [
+    frequencyConversion(getBandwidthZoom(observation).value, FREQUENCY_MHZ, FREQUENCY_HZ)
+  ],
   reference_coordinates: [referenceCoordinate(target)]
 });
 

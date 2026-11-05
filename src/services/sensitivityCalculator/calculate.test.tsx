@@ -90,7 +90,11 @@ const MID_CONTINUUM_OBSERVATION: Observation = {
   numSubBands: 1
 };
 
-const MID_ZOOM_OBSERVATION: Observation = { ...MID_CONTINUUM_OBSERVATION, type: TYPE_ZOOM };
+const MID_ZOOM_OBSERVATION: Observation = {
+  ...MID_CONTINUUM_OBSERVATION,
+  type: TYPE_ZOOM,
+  zoomChannels: 1000
+};
 
 const quantity = (value: number, unit = 'uJy / beam') => ({ value, unit });
 const beam = { beam_maj: quantity(1, 'arcsec'), beam_min: quantity(2, 'arcsec') };
@@ -164,7 +168,7 @@ describe('calculateSensitivity request bodies', () => {
       elevation_limit: 15,
       freq_centres_mhz: [200],
       spectral_resolutions_hz: [1808.45],
-      total_bandwidths_khz: [3125],
+      total_bandwidths_khz: [1808.45],
       reference_coordinates: [{ kind: 'icrs', ra_str: '05:34:31.94', dec_str: '+22:00:52.2' }]
     });
   });
@@ -211,7 +215,7 @@ describe('calculateSensitivity request bodies', () => {
       el: 45,
       freq_centres_hz: [797500000],
       spectral_resolutions_hz: [13440],
-      total_bandwidths_hz: [3125000],
+      total_bandwidths_hz: [13440000],
       reference_coordinates: [{ kind: 'icrs', ra_str: '05:34:31.94', dec_str: '+22:00:52.2' }]
     });
   });
