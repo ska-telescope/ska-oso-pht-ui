@@ -1,5 +1,11 @@
 import { describe, expect, test } from 'vitest';
-import { getTeamSchema, getTeamValues, mergeTeamInvestigators, teamToPdm } from './team';
+import {
+  getTeamSchema,
+  getTeamValues,
+  mergeTeamInvestigators,
+  teamFromPdm,
+  teamToPdm
+} from './team';
 import Investigator from '@/utils/types/investigator';
 
 const investigator: Investigator = {
@@ -37,6 +43,17 @@ const backendInvestigator = {
 };
 
 describe('team form model', () => {
+  test('maps backend investigators into form values', () => {
+    expect(teamFromPdm([backendInvestigator])).toEqual({ investigators: [formInvestigator] });
+  });
+
+  test.each([undefined, null, []])(
+    'defaults missing backend investigators: %s',
+    (investigators) => {
+      expect(teamFromPdm(investigators)).toEqual({ investigators: [] });
+    }
+  );
+
   test('defaults to no investigators', () => {
     expect(getTeamSchema().parse({})).toEqual({ investigators: [] });
     expect(getTeamValues()).toEqual({ investigators: [] });

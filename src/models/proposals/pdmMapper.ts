@@ -2,8 +2,7 @@ import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
 import { detailsFromPdm, detailsToPdm } from './details';
-import { teamFromProposal, teamToPdm } from './team';
-import { getInvestigators } from '@services/axios/get/getProposal/getProposal';
+import { teamFromPdm, teamToPdm } from './team';
 
 /** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
 export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
@@ -13,9 +12,7 @@ export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
       getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ??
       null,
     ...detailsFromPdm(pdm?.proposal_info),
-    ...teamFromProposal({
-      investigators: getInvestigators(pdm?.proposal_info?.investigators)
-    })
+    ...teamFromPdm(pdm?.proposal_info?.investigators)
   };
 }
 

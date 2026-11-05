@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
+import { getInvestigators } from '@services/axios/get/getProposal/getProposal';
 
 const investigatorSchema = z.object({
   id: z.string(),
@@ -25,9 +26,10 @@ export const getTeamValues = (proposal?: {
   )
 });
 
-export const teamFromProposal = (proposal?: {
-  investigators?: Investigator[] | null;
-}): { investigators: InvestigatorFormValues[] } => getTeamValues(proposal);
+export const teamFromPdm = (
+  investigators?: InvestigatorBackend[] | null
+): { investigators: InvestigatorFormValues[] } =>
+  getTeamValues({ investigators: getInvestigators(investigators) });
 
 export const mergeTeamInvestigators = (
   investigators: InvestigatorFormValues[],
