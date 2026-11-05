@@ -227,22 +227,26 @@ describe('<PHT />', () => {
   });
 
   test.each(['Latest summary before blur', '', 'word '.repeat(251).trim()])(
-    'saves current RHF abstract on navigation without a legacy store update: %s',
+    'saves and synchronizes current RHF abstract on navigation without blur: %s',
     async (abstract) => {
       const formSpy = vi.spyOn(proposalForm, 'useProposalForm');
       try {
         mockApplicationContent2.current = { id: 'prsl-123', abstract: 'Stale store summary' };
-        mockPathname.current = NAV[1];
+        mockPathname.current = NAV[2];
         const { rerenderPHT } = renderPHT();
         const form = formSpy.mock.results[formSpy.mock.results.length - 1].value;
         act(() => {
           form.setValue('abstract', abstract);
         });
 
-        mockPathname.current = NAV[2];
+        mockPathname.current = NAV[1];
         rerenderPHT();
 
         await waitFor(() => {
+          expect(mockUpdateAppContent2).toHaveBeenCalledWith({
+            id: 'prsl-123',
+            abstract
+          });
           expect(PutProposal).toHaveBeenCalledWith(
             {},
             expect.objectContaining({ abstract: 'Stale store summary' }),

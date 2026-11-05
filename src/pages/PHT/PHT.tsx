@@ -186,13 +186,12 @@ export default function PHT({
       isProposalPageTransition && loggedIn && proposal?.id != null && proposal.id !== '';
 
     if (canAutoSave) {
+      const values = getValues();
+      if (proposal.abstract !== values.abstract) {
+        updateAppContent2({ ...proposal, abstract: values.abstract });
+      }
       void (async () => {
-        const response = await PutProposal(
-          authClient,
-          proposal,
-          PROPOSAL_STATUS.DRAFT,
-          getValues()
-        );
+        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT, values);
         if ('error' in response) {
           notifyError(response.error);
         }
@@ -200,7 +199,15 @@ export default function PHT({
     }
 
     previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, loggedIn, authClient, notifyError, getValues]);
+  }, [
+    location.pathname,
+    application.content2,
+    loggedIn,
+    authClient,
+    notifyError,
+    getValues,
+    updateAppContent2
+  ]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
