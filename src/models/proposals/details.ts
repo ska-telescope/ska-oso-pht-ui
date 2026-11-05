@@ -11,7 +11,7 @@ export function getDetailsSchema() {
   return z.object({
     abstract: z
       .string()
-      .min(1, phtTranslations.abstract.empty)
+      .min(1)
       .superRefine((value, ctx) => {
         const wordCount = countWords(value);
         if (wordCount > MAX_ABSTRACT_WORDS) {

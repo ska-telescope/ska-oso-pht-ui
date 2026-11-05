@@ -370,23 +370,24 @@ describe('<DetailsPage /> observing mode', () => {
   });
 
   it('displays a required error on blur and clears it when an abstract is entered', async () => {
+    const requiredError = 'Too small: expected string to have >=1 characters';
     mockState.proposal = svProposal();
     await renderPage();
 
     const abstractInput = screen.getByTestId('abstractId');
     fireEvent.blur(abstractInput);
 
-    expect(await screen.findByText(phtTranslations.abstract.empty)).toBeInTheDocument();
+    expect(await screen.findByText(requiredError)).toBeInTheDocument();
     expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
 
     fireEvent.change(abstractInput, { target: { value: 'A scientific summary' } });
     await waitFor(() => {
-      expect(screen.queryByText(phtTranslations.abstract.empty)).not.toBeInTheDocument();
+      expect(screen.queryByText(requiredError)).not.toBeInTheDocument();
       expect(abstractInput).toHaveAttribute('aria-invalid', 'false');
     });
 
     fireEvent.change(abstractInput, { target: { value: '' } });
-    expect(await screen.findByText(phtTranslations.abstract.empty)).toBeInTheDocument();
+    expect(await screen.findByText(requiredError)).toBeInTheDocument();
   });
 
   it('previews the current abstract as LaTeX', async () => {
