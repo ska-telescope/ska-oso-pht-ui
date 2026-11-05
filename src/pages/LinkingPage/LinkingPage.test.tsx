@@ -9,14 +9,17 @@ import { ProposalType } from '@/models/proposals/proposal';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import completeMockStore from '@/utils/MockStore';
 import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE, STATUS_OK } from '@/utils/constants';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import { calculateSensitivity } from '@/services/sensitivityCalculator/calculate';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
-vi.mock(
-  '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts',
-  () => ({ default: vi.fn(async () => ({ statusGUI: STATUS_OK, error: '' })) })
-);
+// The conversion of results is tested in results.test.tsx
+vi.mock('@/services/sensitivityCalculator/calculate', () => ({
+  calculateSensitivity: vi.fn(async () => null)
+}));
+vi.mock('@/services/sensitivityCalculator/results', () => ({
+  toSensCalcResults: vi.fn(() => ({ statusGUI: STATUS_OK, error: '' }))
+}));
 vi.mock('@services/axios/get/getCalibratorList/getCalibratorList', () => ({
   default: vi.fn(async () => [])
 }));
@@ -140,15 +143,17 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
   });
 
   test('requests the sensitivity of a new link once while the page re-renders', async () => {
-    vi.mocked(getSensCalc).mockClear();
-    let resolveSensCalc: (value: Awaited<ReturnType<typeof getSensCalc>>) => void = () => {};
-    vi.mocked(getSensCalc).mockImplementationOnce(
+    vi.mocked(calculateSensitivity).mockClear();
+    let resolveSensCalc: (
+      value: Awaited<ReturnType<typeof calculateSensitivity>>
+    ) => void = () => {};
+    vi.mocked(calculateSensitivity).mockImplementationOnce(
       () => new Promise((resolve) => (resolveSensCalc = resolve))
     );
     renderLinking();
 
     await selectObservationAndTickTarget();
-    await waitFor(() => expect(getSensCalc).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(calculateSensitivity).toHaveBeenCalledTimes(1));
 
     // Another change to the watched slices re-runs the effect while the request is pending
     act(() =>
@@ -157,28 +162,30 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
         formProbe.getValues('calibrationStrategy').map((c) => ({ ...c, notes: 'edited' }))
       )
     );
-    expect(getSensCalc).toHaveBeenCalledTimes(1);
+    expect(calculateSensitivity).toHaveBeenCalledTimes(1);
 
-    await act(async () => resolveSensCalc({ statusGUI: STATUS_OK, error: '' }));
+    await act(async () => resolveSensCalc(null));
     await waitFor(() => {
       expect(formProbe.getValues('targetObservation')[0].sensitivityResults?.statusGUI).toBe(
         STATUS_OK
       );
     });
-    expect(getSensCalc).toHaveBeenCalledTimes(1);
+    expect(calculateSensitivity).toHaveBeenCalledTimes(1);
   });
 
   test('keeps a link made while the calibrators of a new link are being looked up', async () => {
-    vi.mocked(getSensCalc).mockClear();
+    vi.mocked(calculateSensitivity).mockClear();
     vi.mocked(GetCalibratorList).mockClear();
-    let resolveSensCalc: (value: Awaited<ReturnType<typeof getSensCalc>>) => void = () => {};
-    vi.mocked(getSensCalc).mockImplementationOnce(
+    let resolveSensCalc: (
+      value: Awaited<ReturnType<typeof calculateSensitivity>>
+    ) => void = () => {};
+    vi.mocked(calculateSensitivity).mockImplementationOnce(
       () => new Promise((resolve) => (resolveSensCalc = resolve))
     );
     renderLinking();
 
     await selectObservationAndTickTarget();
-    await waitFor(() => expect(getSensCalc).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(calculateSensitivity).toHaveBeenCalledTimes(1));
 
     // The calibrator lookup that follows the sensitivity result is held until released below
     let resolveCalibrators: (
@@ -187,7 +194,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
     vi.mocked(GetCalibratorList).mockImplementationOnce(
       () => new Promise((resolve) => (resolveCalibrators = resolve))
     );
-    await act(async () => resolveSensCalc({ statusGUI: STATUS_OK, error: '' }));
+    await act(async () => resolveSensCalc(null));
     await waitFor(() => expect(GetCalibratorList).toHaveBeenCalledTimes(2));
 
     // Another link is made while that lookup is pending

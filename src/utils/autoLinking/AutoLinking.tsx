@@ -36,7 +36,8 @@ import Observation from '../types/observation';
 import Target from '../types/target';
 import Proposal from '@utils/types/proposal.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import { calculateSensitivity } from '@/services/sensitivityCalculator/calculate';
+import { toSensCalcResults } from '@/services/sensitivityCalculator/results';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 
 interface DefaultsResults {
@@ -202,7 +203,10 @@ const buildTargetLink = async (
 > => {
   // TODO(BTN-3595): Request the sensitivity through the shared sensitivity service, and ignore a
   //  stale calibration result from buildCalibrationStrategy below.
-  const sensCalcResult = await getSensCalc(observation, target, mainDataProduct);
+  const sensCalcResult = toSensCalcResults(
+    await calculateSensitivity(observation, target, mainDataProduct),
+    observation
+  );
 
   if (sensCalcResult?.statusGUI == STATUS_ERROR) {
     return { success: false, error: sensCalcResult.error };

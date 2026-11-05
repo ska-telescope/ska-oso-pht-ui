@@ -5,7 +5,6 @@ import { STATUS_ERROR_SYMBOL } from '@/utils/constants';
 
 describe('StatusIconDisplay', () => {
   const baseProps = {
-    ariaDescription: 'Test description',
     ariaTitle: 'Test title',
     level: 1,
     testId: 'status-icon',

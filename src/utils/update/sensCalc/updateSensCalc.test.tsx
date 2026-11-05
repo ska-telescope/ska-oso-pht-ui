@@ -15,15 +15,14 @@ import {
 import Observation from '@/utils/types/observation';
 import TargetObservation from '@/utils/types/targetObservation';
 import Proposal from '@/utils/types/proposal';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import { calculateSensitivity } from '@/services/sensitivityCalculator/calculate';
+import { toSensCalcResults } from '@/services/sensitivityCalculator/results';
 
-// Mock getSensCalc
-vi.mock(
-  '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData',
-  () => ({
-    default: vi.fn()
-  })
-);
+// The conversion of results is tested in results.test.tsx; these tests set the stored results
+vi.mock('@/services/sensitivityCalculator/calculate', () => ({
+  calculateSensitivity: vi.fn(async () => null)
+}));
+vi.mock('@/services/sensitivityCalculator/results', () => ({ toSensCalcResults: vi.fn() }));
 
 describe('fetchSensCalcPatches', () => {
   const observation: Observation = {
@@ -83,10 +82,8 @@ describe('fetchSensCalcPatches', () => {
     expect(result).toEqual([]);
   });
 
-  it('updates sensitivityResults with result from getSensCalc', async () => {
-    (getSensCalc as any).mockResolvedValue({
-      id: 't1',
-      title: 'calc result',
+  it('updates sensitivityResults with the calculated results', async () => {
+    vi.mocked(toSensCalcResults).mockReturnValue({
       statusGUI: STATUS_OK,
       error: ''
     });
@@ -97,8 +94,6 @@ describe('fetchSensCalcPatches', () => {
       {
         targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
         sensitivityResults: expect.objectContaining({
-          id: 't1',
-          title: 'calc result',
           statusGUI: STATUS_OK,
           error: ''
         })
@@ -107,7 +102,7 @@ describe('fetchSensCalcPatches', () => {
   });
 
   it('preserves sensitivity calculator errors', async () => {
-    (getSensCalc as any).mockResolvedValue({
+    vi.mocked(toSensCalcResults).mockReturnValue({
       statusGUI: STATUS_ERROR,
       error: 'SensCalc error message'
     });
@@ -152,7 +147,7 @@ describe('fetchSensCalcPatches', () => {
 
     const result = await fetchSensCalcPatches(proposalBase, observationWithInvalidSupplied, dp);
 
-    expect(getSensCalc).not.toHaveBeenCalled();
+    expect(calculateSensitivity).not.toHaveBeenCalled();
     expect(result).toEqual([
       {
         targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),
@@ -181,7 +176,7 @@ describe('fetchSensCalcPatches', () => {
       dataProductWithInvalidRobust
     );
 
-    expect(getSensCalc).not.toHaveBeenCalled();
+    expect(calculateSensitivity).not.toHaveBeenCalled();
     expect(result).toEqual([
       {
         targetObservationKey: getTargetObservationKey(proposalBase.targetObservation![0]),

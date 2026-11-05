@@ -2,7 +2,6 @@ import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { IconButton } from '@mui/material';
 
 interface StatusIconDisplayProps {
-  ariaDescription: string;
   ariaTitle: string;
   disabled?: boolean;
   level: number;
@@ -14,7 +13,6 @@ interface StatusIconDisplayProps {
 }
 
 export default function StatusIconDisplay({
-  ariaDescription,
   ariaTitle,
   disabled = false,
   level,
@@ -32,7 +30,6 @@ export default function StatusIconDisplay({
       style={{ cursor: 'pointer' }}
     >
       <StatusIcon
-        ariaDescription={ariaDescription}
         ariaTitle={ariaTitle}
         disabled={disabled}
         testId={testId}

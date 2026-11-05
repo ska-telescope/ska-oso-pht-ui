@@ -1,6 +1,6 @@
 import React from 'react';
 import { t } from 'i18next';
-import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
+import { presentUnits, presentValue } from '@utils/present/present';
 import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
 import { STATUS_OK, TYPE_ZOOM, TYPE_CONTINUUM, STATUS_ERROR } from '../../../../utils/constants';
@@ -32,10 +32,10 @@ export default function SensCalcDisplaySingle({
 
   const ariaStatusMessage = (sensitivityResults?: { statusGUI: string; error: string }) => {
     const status = t('statusLoading.' + sensitivityResults?.statusGUI);
-    const error = sensitivityResults?.error?.length
-      ? t(presentSensCalcError(sensitivityResults?.error))
-      : '';
-    return t('sensitivityCalculatorResults.status', { status: status, error: error });
+    return t('sensitivityCalculatorResults.status', {
+      status: status,
+      error: sensitivityResults?.error ?? ''
+    });
   };
 
   const FieldFetch: any = (type: string, field: string) => {
@@ -63,7 +63,6 @@ export default function SensCalcDisplaySingle({
     <>
       {show && field === 'icon' && (
         <StatusIconDisplay
-          ariaDescription={ariaStatusMessage(targetObservation?.sensitivityResults)}
           ariaTitle={ariaStatusMessage(targetObservation?.sensitivityResults)}
           disabled={isDisabled()}
           text={''}

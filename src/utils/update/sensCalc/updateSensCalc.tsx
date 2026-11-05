@@ -4,7 +4,8 @@ import Observation from '@/utils/types/observation';
 import Proposal from '@/utils/types/proposal';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import TargetObservation from '@/utils/types/targetObservation';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import { calculateSensitivity } from '@/services/sensitivityCalculator/calculate';
+import { toSensCalcResults } from '@/services/sensitivityCalculator/results';
 import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
 
 export const getTargetObservationKey = (
@@ -85,11 +86,9 @@ export const fetchSensCalcPatches = async (
           return null;
         }
 
-        const sensCalcResponse = await getSensCalc(ob, target, dp);
-
         return {
           targetObservationKey,
-          sensitivityResults: sensCalcResponse
+          sensitivityResults: toSensCalcResults(await calculateSensitivity(ob, target, dp), ob)
         };
       })
   );

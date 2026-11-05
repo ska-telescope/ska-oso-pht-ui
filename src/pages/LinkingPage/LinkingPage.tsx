@@ -51,7 +51,8 @@ import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import { calculateSensitivity } from '@/services/sensitivityCalculator/calculate';
+import { toSensCalcResults } from '@/services/sensitivityCalculator/results';
 
 export const isNonGaussianSensitivityCase = ({
   subarray,
@@ -279,7 +280,10 @@ export default function LinkingPage() {
     target: Target,
     dataProductSDP: DataProductSDPNew
   ) => {
-    const response = await getSensCalc(observation, target, dataProductSDP);
+    const response = toSensCalcResults(
+      await calculateSensitivity(observation, target, dataProductSDP),
+      observation
+    );
     if (response?.error) {
       const errMsg = response.error;
       notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
@@ -543,7 +547,6 @@ export default function LinkingPage() {
             <>
               {
                 <StatusIconDisplay
-                  ariaDescription=" "
                   ariaTitle={t('sensCalc.' + getLevel(rec))}
                   level={getLevel(rec)}
                   onClick={() =>

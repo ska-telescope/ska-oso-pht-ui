@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
+import { presentUnits, presentValue } from '@utils/present/present';
 import {
   CUSTOM_VALID_FIELDS,
   SUPPLIED_TYPE_SENSITIVITY,
@@ -226,7 +226,7 @@ export default function SensCalcModalMultiple({
           <StatusIcon
             ariaTitle={t('sensitivityCalculatorResults.status', {
               status: t('statusValue.' + e.row.statusGUI),
-              error: e.row.error ? t(presentSensCalcError(e.row.error)) : ''
+              error: e.row.error ?? ''
             })}
             testId="statusId"
             icon

@@ -1,16 +1,12 @@
-import { IW_BRIGGS, IW_NATURAL, SUPPLIED_TYPE_INTEGRATION } from './constants';
+import { IW_BRIGGS, IW_NATURAL } from './constants';
 import {
   DECIMAL_PLACES,
   IMAGE_WEIGHTING,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
   SENSITIVITY_UNITS,
-  TELESCOPE_LOW_CODE,
   TIME_SECS,
   TIME_UNITS
 } from './constants';
-import { Telescope, ValueUnitPair } from './types/typesSensCalc';
-
-export const isLow = (telescope: Telescope) => telescope?.code === TELESCOPE_LOW_CODE;
+import { ValueUnitPair } from './types/valueUnitPair';
 
 export const getImageWeightingMapping = (value: number) => {
   return IMAGE_WEIGHTING.find((e) => e.value === value)?.lookup;
@@ -92,53 +88,6 @@ export const transformPerSubBandTime = (inValues: {
   return `${maxRange.value.toFixed(DECIMAL_PLACES).toString()} ${
     maxRange.unit
   } - ${minRange.value.toFixed(DECIMAL_PLACES).toString()} ${minRange.unit}`;
-};
-
-export const isGalactic = (skyDirectionType: any) =>
-  skyDirectionType === REFERENCE_COORDINATE_TYPE_GALACTIC;
-
-// Converts a Declination string value in degrees to its sexagesimal equivalent.
-// It returns a Declination sexagesimal value.
-// @param value Declination in decimal degrees.
-
-export const degDecToSexagesimal = (value: string): string => {
-  const decDeg = parseFloat(value);
-  const sign = decDeg >= 0 ? '+' : '-';
-  const absDecDeg = Math.abs(decDeg);
-  const degrees = Math.floor(absDecDeg);
-  const decMinutes = (absDecDeg - degrees) * 60;
-  const minutes = Math.floor(decMinutes);
-  const seconds = (decMinutes - minutes) * 60;
-  const sexagesimal = `${sign}${String(degrees).padStart(2, '0')}:${String(minutes).padStart(
-    2,
-    '0'
-  )}:${seconds.toFixed(DECIMAL_PLACES).padStart(5, '0')}`;
-  return sexagesimal;
-};
-
-// Converts a right ascension string value in degrees to its sexagesimal equivalent.
-// It returns a right ascension sexagesimal value.
-// @param value right ascension in decimal degrees.
-
-export const degRaToSexagesimal = (value: string): string => {
-  const decimalDegrees = parseFloat(value);
-  const hours = Math.floor(decimalDegrees / 15);
-  const remainingDegrees = decimalDegrees - hours * 15;
-  const minutes = Math.floor(remainingDegrees * 4);
-  const remainingMinutes = remainingDegrees * 4 - minutes;
-  const seconds = remainingMinutes * 60;
-
-  const sexagesimalString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(
-    2,
-    '0'
-  )}:${seconds.toFixed(2).padStart(5, '0')}`;
-  return sexagesimalString;
-};
-
-export const isSuppliedTime = (suppliedType: number) => suppliedType === SUPPLIED_TYPE_INTEGRATION;
-
-export const getSensitivitiesUnitsMapping = (value: number) => {
-  return SENSITIVITY_UNITS[value - 1].value;
 };
 
 export const shiftSensitivity = (inValues: ValueUnitPair) => {

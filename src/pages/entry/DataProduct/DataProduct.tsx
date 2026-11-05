@@ -12,7 +12,7 @@ import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import { useTheme } from '@mui/material/styles';
 import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
-import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
+import { ValueUnitPair } from '@/utils/types/valueUnitPair';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
 import {

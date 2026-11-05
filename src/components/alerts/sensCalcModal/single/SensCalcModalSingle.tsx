@@ -45,7 +45,6 @@ export default function SensCalcModalSingle({
                 status: t('statusLoading.' + targetObservation?.sensitivityResults?.statusGUI),
                 error: ''
               })}
-              ariaDescription=""
               testId="statusId"
               icon
               level={targetObservation?.sensitivityResults?.statusGUI}
