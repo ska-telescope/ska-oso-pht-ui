@@ -540,4 +540,3 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
   cy.get('[data-testid="table-submissions"]').should('contain', 'Science Verification Idea Title');
 };
-
