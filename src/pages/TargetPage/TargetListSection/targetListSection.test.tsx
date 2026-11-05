@@ -1,5 +1,5 @@
 import { afterEach, describe, it, expect, vi, beforeEach } from 'vitest';
-import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
@@ -21,10 +21,10 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
 
 const tree = (component: React.ReactElement | null) => (
   <StoreProvider>
-    <ProposalFormProvider>
+    <TestProposalFormProvider>
       <FormProbe onForm={keepForm} />
       <ThemeA11yProvider>{component}</ThemeA11yProvider>
-    </ProposalFormProvider>
+    </TestProposalFormProvider>
   </StoreProvider>
 );
 

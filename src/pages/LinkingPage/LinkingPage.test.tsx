@@ -6,7 +6,7 @@ import LinkingPage, { isNonGaussianSensitivityCase } from './LinkingPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import completeMockStore from '@/utils/MockStore';
 import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE, STATUS_OK } from '@/utils/constants';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
@@ -84,10 +84,10 @@ const linkingProposal = {
 
 const linkingTree = (page: React.ReactElement | null) => (
   <StoreProvider>
-    <ProposalFormProvider>
+    <TestProposalFormProvider>
       <FormProbe onForm={keepForm} />
       <ThemeA11yProvider>{page}</ThemeA11yProvider>
-    </ProposalFormProvider>
+    </TestProposalFormProvider>
   </StoreProvider>
 );
 

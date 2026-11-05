@@ -1,5 +1,5 @@
 import React from 'react';
-import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -26,10 +26,10 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ProposalFormProvider>
+      <TestProposalFormProvider>
         <FormProbe onForm={keepForm} />
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
-      </ProposalFormProvider>
+      </TestProposalFormProvider>
     </StoreProvider>
   );
 };

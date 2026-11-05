@@ -5,7 +5,7 @@ import {
   MockProposalBackendZoom
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { MockSlicesPdm } from './mockSlicesPdm';
+import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import TargetObservation from '@utils/types/targetObservation';
 import {
   getTargetObservationSchema,
