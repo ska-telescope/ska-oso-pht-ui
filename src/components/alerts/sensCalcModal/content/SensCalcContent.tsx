@@ -153,7 +153,7 @@ export default function SensCalcContent({
     );
   }
 
-  if (targetObservation?.sensCalc?.error) {
+  if (targetObservation?.sensitivityResults?.error) {
     return (
       <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
         <Typography
@@ -161,15 +161,15 @@ export default function SensCalcContent({
             p: GAP
           }}
         >
-          {targetObservation?.sensCalc?.error}
+          {targetObservation?.sensitivityResults?.error}
         </Typography>
       </Alert>
     );
   }
 
   if (
-    targetObservation?.sensCalc?.statusGUI === STATUS_INITIAL ||
-    targetObservation?.sensCalc == undefined
+    targetObservation?.sensitivityResults?.statusGUI === STATUS_INITIAL ||
+    targetObservation?.sensitivityResults == undefined
   ) {
     return (
       <Alert>
@@ -218,17 +218,17 @@ export default function SensCalcContent({
       {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
       {displayElement('integrationTime', observation?.supplied.value, 'h')}
 
-      {targetObservation?.sensCalc?.section1 && (
+      {targetObservation?.sensitivityResults?.section1 && (
         <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
       )}
-      {targetObservation?.sensCalc?.section1?.map((rec) =>
+      {targetObservation?.sensitivityResults?.section1?.map((rec) =>
         displayElement(rec.field, rec.value, rec.units)
       )}
-      {!hideSpectralResults && targetObservation?.sensCalc?.section2 && (
+      {!hideSpectralResults && targetObservation?.sensitivityResults?.section2 && (
         <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
       )}
       {!hideSpectralResults &&
-        targetObservation?.sensCalc?.section2?.map((rec) =>
+        targetObservation?.sensitivityResults?.section2?.map((rec) =>
           displayElement(rec.field, rec.value, rec.units)
         )}
     </>

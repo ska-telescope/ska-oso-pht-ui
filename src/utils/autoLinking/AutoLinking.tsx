@@ -1,3 +1,5 @@
+import { buildCalibrationStrategy } from '@/models/proposals/calibrationOperations';
+import type { ProposalFormAccess } from '@/models/proposals/proposal';
 import {
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX_COMBINED,
@@ -10,7 +12,6 @@ import {
   PIXEL_SIZE_UNIT_DEFAULT,
   POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
-  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   STATUS_ERROR,
@@ -20,13 +21,8 @@ import {
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
-import {
-  generateCalibrationId,
-  generateDataProductId,
-  generateObsSetId,
-  getDefaultObservationLowAA2
-} from '../helpers';
-import { CalibrationStrategy, Calibrator } from '../types/calibrationStrategy';
+import { generateDataProductId, generateObsSetId, getDefaultObservationLowAA2 } from '../helpers';
+import { CalibrationStrategy } from '../types/calibrationStrategy';
 import {
   DataProductSDPNew,
   SDPFilterbankPSTData,
@@ -42,7 +38,6 @@ import Proposal from '@utils/types/proposal.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 
 interface DefaultsResults {
   success: boolean;
@@ -73,31 +68,6 @@ export const newObservationForMode = (
       ? observationMode
       : defaultObservation.type,
     ...(observationMode === TYPE_ZOOM && maxZoomChannels ? { zoomChannels: maxZoomChannels } : {})
-  };
-};
-
-export const newCalibrationStrategy = async (
-  observationId: string,
-  authAxiosClient: AxiosAuthClient,
-  observation: Observation,
-  target: Target,
-  notes: string | null = null
-): Promise<CalibrationStrategy> => {
-  let calibrators: Calibrator[] | null = null;
-
-  if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value) {
-    const response = await GetCalibratorList(authAxiosClient, observation, target);
-    if (typeof response !== 'string') {
-      calibrators = response;
-    }
-  }
-
-  return {
-    observatoryDefined: true,
-    id: generateCalibrationId(),
-    observationIdRef: observationId,
-    calibrators,
-    notes
   };
 };
 
@@ -220,7 +190,7 @@ const buildTargetLink = async (
   target: Target,
   observation: Observation,
   mainDataProduct: DataProductSDPNew,
-  getProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient
 ): Promise<
   | {
@@ -230,6 +200,8 @@ const buildTargetLink = async (
     }
   | { success: false; error?: string }
 > => {
+  // TODO(BTN-3595): Request the sensitivity through the shared sensitivity service, and ignore a
+  //  stale calibration result from buildCalibrationStrategy below.
   const sensCalcResult = await getSensCalc(observation, target, mainDataProduct);
 
   if (sensCalcResult?.statusGUI == STATUS_ERROR) {
@@ -240,20 +212,32 @@ const buildTargetLink = async (
     targetId: target?.id,
     observationId: observation.id,
     dataProductsSDPId: mainDataProduct.id,
-    sensCalc: sensCalcResult
+    sensitivityResults: sensCalcResult
   };
 
-  const existingNotes = getProposal()?.calibrationStrategy?.[0]?.notes ?? null;
+  const existingNotes = form.getValues('calibrationStrategy')?.[0]?.notes ?? null;
 
-  const calibrationStrategy = await newCalibrationStrategy(
-    observation.id,
-    authAxiosClient,
+  const calibrationStrategy = await buildCalibrationStrategy(authAxiosClient, {
+    observationId: observation.id,
     observation,
     target,
-    existingNotes
-  );
+    notes: existingNotes
+  });
 
   return { success: true, targetObservation, calibrationStrategy };
+};
+
+/**
+ * Writes a target link to the form, which owns the targets, links and calibration.
+ */
+const setTargetLink = (
+  form: ProposalFormAccess,
+  target: Target,
+  link: { targetObservation: TargetObservation; calibrationStrategy: CalibrationStrategy }
+) => {
+  form.setValue('targets', [target]);
+  form.setValue('targetObservation', [link.targetObservation]);
+  form.setValue('calibrationStrategy', [link.calibrationStrategy]);
 };
 
 /**
@@ -265,6 +249,7 @@ export async function regenerateForMode(
   target: Target,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient,
   observationMode?: string,
   maxZoomChannels?: number
@@ -276,7 +261,7 @@ export async function regenerateForMode(
     target,
     newObservation,
     newDataProducts[0],
-    getProposal,
+    form,
     authAxiosClient
   );
 
@@ -284,13 +269,11 @@ export async function regenerateForMode(
     return { success: false, error: link.error };
   }
 
+  setTargetLink(form, target, link);
   setProposal({
     ...getProposal(),
-    targets: [target],
     observations: [newObservation],
-    dataProductSDP: newDataProducts,
-    targetObservation: [link.targetObservation],
-    calibrationStrategy: [link.calibrationStrategy]
+    dataProductSDP: newDataProducts
   });
 
   return { success: true };
@@ -305,6 +288,7 @@ export async function linkTarget(
   target: Target,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient
 ): Promise<DefaultsResults> {
   const proposal: Proposal = getProposal();
@@ -316,25 +300,17 @@ export async function linkTarget(
   const mainDataProduct =
     existingDataProducts.find((dp) => dp.selected) ?? existingDataProducts[0] ?? newDataProducts[0];
 
-  const link = await buildTargetLink(
-    target,
-    observation,
-    mainDataProduct,
-    getProposal,
-    authAxiosClient
-  );
+  const link = await buildTargetLink(target, observation, mainDataProduct, form, authAxiosClient);
 
   if (!link.success) {
     return { success: false, error: link.error };
   }
 
+  setTargetLink(form, target, link);
   setProposal({
     ...getProposal(),
-    targets: [target],
     observations: [observation],
-    dataProductSDP: [...(getProposal().dataProductSDP ?? []), ...newDataProducts],
-    targetObservation: [link.targetObservation],
-    calibrationStrategy: [link.calibrationStrategy]
+    dataProductSDP: [...(getProposal().dataProductSDP ?? []), ...newDataProducts]
   });
 
   return { success: true };
@@ -352,15 +328,17 @@ export async function setObservingMode(
   observationMode: string,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient,
   maxZoomChannels?: number
 ): Promise<DefaultsResults> {
-  const target = getProposal().targets?.[0];
+  const target = form.getValues('targets')?.[0] as Target | undefined;
   if (target) {
     return regenerateForMode(
       target,
       getProposal,
       setProposal,
+      form,
       authAxiosClient,
       observationMode,
       maxZoomChannels

@@ -197,7 +197,12 @@ describe('<PHT />', () => {
     await waitFor(() => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
         title: '',
-        proposalType: null
+        proposalType: null,
+        targets: [],
+        targetObservation: [],
+        calibrationStrategy: [],
+        sciencePDF: null,
+        technicalPDF: null
       });
     });
   });
@@ -214,7 +219,12 @@ describe('<PHT />', () => {
     await waitFor(() => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
         title: '',
-        proposalType: null
+        proposalType: null,
+        targets: [],
+        targetObservation: [],
+        calibrationStrategy: [],
+        sciencePDF: null,
+        technicalPDF: null
       });
     });
   });
@@ -241,6 +251,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
       mockProposal.targets[0],
       expect.any(Function),
       expect.any(Function),
+      expect.objectContaining({ getValues: expect.any(Function) }),
       {}
     );
   });
@@ -251,7 +262,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
         targetId: 1,
         observationId: 'obs-1',
         dataProductsSDPId: 'sdp-1',
-        sensCalc: { id: 1, title: 'Target 1', statusGUI: 0 }
+        sensitivityResults: { id: 1, title: 'Target 1', statusGUI: 0 }
       }
     ];
 

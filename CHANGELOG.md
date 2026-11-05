@@ -6,10 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Bugfix: Only reset DP Parameters if values on the Observaion page change.
+* Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
+* Bugfix: Only reset DP Parameters if values on the Observation page change.
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
-* Bugfix: Show a meaningful message when target name resolution fails, including when the external resolvers are unavailable
+* Bugfix: The edit target dialog cannot be confirmed while the velocity or redshift is invalid
+* Bugfix: Calibration notes edited while calibrators are being looked up are kept
 * Dependency update: Sensitivity Calculator v12.0.2
+* Changed: Target name resolution error improved and shown in a pop-up
+* Changed: Do not allow duplicate target names when adding multiple targets
 
 11.1.0
 ----------

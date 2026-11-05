@@ -1,6 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Box, FormHelperText, Grid } from '@mui/material';
+import { useController } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
@@ -14,7 +15,8 @@ import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { validateSciencePage } from '@utils/validation/validation.tsx';
+import { ProposalType } from '@/models/proposals/proposal';
+import { getDocumentPageStatus } from '@/models/proposals/documents';
 import {
   PAGE_DESCRIPTION,
   SCIENCE_PDF_MAX_PAGES,
@@ -33,8 +35,13 @@ export default function SciencePage() {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
+  const { application, updateAppContent1 } = storageObject.useStore();
+  const {
+    field: { value: sciencePDF, onChange: onSciencePdfChange }
+  } = useController<ProposalType, 'sciencePDF'>({ name: 'sciencePDF' });
+  const [scienceLoadStatus, setScienceLoadStatus] = React.useState(
+    sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL
+  );
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
   const [pdfError, setPdfError] = React.useState<string | null>(null);
@@ -51,10 +58,11 @@ export default function SciencePage() {
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const proposalId = getProposal()?.id;
+  const activeProposalIdRef = React.useRef(getProposal()?.id);
+  activeProposalIdRef.current = getProposal()?.id;
 
-  const getSciencePdfDisplayFilename = () =>
-    getProposal()?.sciencePDF?.documentId + t('fileType.pdf');
+  const getSciencePdfDisplayFilename = () => sciencePDF?.documentId + t('fileType.pdf');
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -85,7 +93,7 @@ export default function SciencePage() {
 
   const setFile = (theFile: File | '') => {
     if (theFile instanceof File) {
-      if (getProposal()?.sciencePDF?.isUploadedPdf) {
+      if (sciencePDF?.isUploadedPdf) {
         /*
          * FileUpload has no dedicated prop to disable dropzone file acceptance while preserving
          * the dropzone prompt/preview. Guarding here blocks replacement attempts until delete.
@@ -117,7 +125,7 @@ export default function SciencePage() {
           }
         });
     } else {
-      const hasUploadedSciencePdf = !!getProposal()?.sciencePDF?.isUploadedPdf;
+      const hasUploadedSciencePdf = !!sciencePDF?.isUploadedPdf;
       validationFileRef.current = null;
       setPdfError(null);
       /*
@@ -133,17 +141,14 @@ export default function SciencePage() {
         setOriginalFile(getSciencePdfDisplayFilename());
       } else {
         setOriginalFile(null);
-        setProposal({
-          ...getProposal(),
-          sciencePDF: null
-        });
+        onSciencePdfChange(null);
         setCurrentFile(null);
       }
     }
   };
 
   const setUploadStatus = (status: typeof FileUploadStatus) => {
-    setProposal({ ...getProposal(), scienceLoadStatus: status });
+    setScienceLoadStatus(status);
   };
 
   const validateSelectedFile = (selectedFile: File) => {
@@ -195,7 +200,7 @@ export default function SciencePage() {
    * (for example onDropRejected/onFileRejected) and moving this warning handling to that API.
    */
   const handleFileInputChangeCapture = (event: React.FormEvent<HTMLDivElement>) => {
-    if (getProposal()?.sciencePDF?.isUploadedPdf) {
+    if (sciencePDF?.isUploadedPdf) {
       return;
     }
 
@@ -216,7 +221,7 @@ export default function SciencePage() {
   const blockUploadInteractionWhenPdfExists = (
     event: React.SyntheticEvent<HTMLDivElement, Event>
   ) => {
-    if (!getProposal()?.sciencePDF?.isUploadedPdf) {
+    if (!sciencePDF?.isUploadedPdf) {
       return;
     }
 
@@ -241,7 +246,7 @@ export default function SciencePage() {
    * Capturing drop events here lets SciencePage surface invalidFileError consistently.
    */
   const handleDropCapture = (event: React.DragEvent<HTMLDivElement>) => {
-    if (getProposal()?.sciencePDF?.isUploadedPdf) {
+    if (sciencePDF?.isUploadedPdf) {
       blockUploadInteractionWhenPdfExists(event);
       return;
     }
@@ -264,16 +269,17 @@ export default function SciencePage() {
       return;
     }
     setPdfError(null);
+    const proposal = getProposal();
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
       notifyWarning(t('pdfUpload.science.warning'));
-      const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
+      if (activeProposalIdRef.current !== proposal.id) return;
 
       if (uploadResult.error) {
         setUploadStatus(FileUploadStatus.ERROR);
@@ -285,14 +291,12 @@ export default function SciencePage() {
         isUploadedPdf: true
       };
 
-      setProposal({
-        ...getProposal(),
-        sciencePDF: sciencePDFUploaded,
-        scienceLoadStatus: FileUploadStatus.OK
-      });
+      onSciencePdfChange(sciencePDFUploaded);
+      setScienceLoadStatus(FileUploadStatus.OK);
 
       notifySuccess(t('pdfUpload.science.success'));
     } catch (e) {
+      if (activeProposalIdRef.current !== proposal.id) return;
       setFile('');
       setUploadStatus(FileUploadStatus.ERROR);
     }
@@ -304,7 +308,7 @@ export default function SciencePage() {
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
+      if (signedUrl === t('pdfDownload.sampleData') || sciencePDF != null) {
         window.open(signedUrl, '_blank');
       }
     } catch (e) {
@@ -320,16 +324,14 @@ export default function SciencePage() {
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
       const deleteResult = await DeletePDF(signedUrl);
+      if (activeProposalIdRef.current !== proposal.id) return;
 
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to Delete Science PDF');
       }
 
-      setProposal({
-        ...getProposal(),
-        sciencePDF: null,
-        scienceLoadStatus: FileUploadStatus.INITIAL
-      });
+      onSciencePdfChange(null);
+      setScienceLoadStatus(FileUploadStatus.INITIAL);
 
       /*
        * FileUpload has no controlled-clear API: its file-prop sync effect ignores falsy values, so
@@ -353,7 +355,7 @@ export default function SciencePage() {
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
-      if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
+      if (signedUrl === t('pdfDownload.sampleData') || sciencePDF != null) {
         setCurrentFile(signedUrl);
         setOpenPDFViewer(true);
       }
@@ -363,24 +365,20 @@ export default function SciencePage() {
   };
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-    if (getProposal()?.sciencePDF?.documentId) {
-      setCurrentFile(getProposal()?.sciencePDF?.documentId);
+    if (sciencePDF?.documentId) {
+      setCurrentFile(sciencePDF.documentId);
       setOriginalFile(getSciencePdfDisplayFilename());
     }
     setHelp('page.' + PAGE + '.help');
   }, []);
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-    if (getProposal()?.scienceLoadStatus === null) {
-      setUploadStatus(FileUploadStatus.INITIAL);
-    }
-  }, [getProposal()]);
+    setUploadStatus(sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL);
+  }, [proposalId, sciencePDF]);
 
   React.useEffect(() => {
-    setTheProposalState(validateSciencePage(getProposal()));
-  }, [validateToggle]);
+    setTheProposalState(getDocumentPageStatus(sciencePDF));
+  }, [sciencePDF]);
 
   const renderPDFView = () => (
     <PDFWrapper open={openPDFViewer} onClose={handleClosePDFViewer} url={currentFile ?? ''} />
@@ -398,7 +396,7 @@ export default function SciencePage() {
       }}
     >
       <Grid>
-        {getProposal()?.sciencePDF?.isUploadedPdf && (
+        {sciencePDF?.isUploadedPdf && (
           <PDFPreviewButton
             title="pdfUpload.science.label.preview"
             toolTip="pdfUpload.science.tooltip.preview"
@@ -407,7 +405,7 @@ export default function SciencePage() {
         )}
       </Grid>
       <Grid>
-        {getProposal()?.sciencePDF?.isUploadedPdf && (
+        {sciencePDF?.isUploadedPdf && (
           <DownloadButton
             title="pdfUpload.science.label.download"
             toolTip="pdfUpload.science.tooltip.download"
@@ -416,7 +414,7 @@ export default function SciencePage() {
         )}
       </Grid>
       <Grid>
-        {getProposal()?.sciencePDF?.isUploadedPdf && (
+        {sciencePDF?.isUploadedPdf && (
           <DeleteButton
             title={'pdfUpload.science.label.delete'}
             toolTip="pdfUpload.science.tooltip.delete"
@@ -427,7 +425,7 @@ export default function SciencePage() {
     </Grid>
   );
 
-  const hasUploadedSciencePdf = !!getProposal()?.sciencePDF?.isUploadedPdf;
+  const hasUploadedSciencePdf = !!sciencePDF?.isUploadedPdf;
   const dropzonePrompt = hasUploadedSciencePdf
     ? t('pdfUpload.science.prompt.deleteToEnableUpload')
     : t('dropzone.prompt');
@@ -491,7 +489,7 @@ export default function SciencePage() {
                   setFile={setFile}
                   setStatus={setUploadStatus}
                   testId="fileUpload"
-                  clearDisabled={!!getProposal()?.sciencePDF?.isUploadedPdf && !pdfError}
+                  clearDisabled={hasUploadedSciencePdf && !pdfError}
                   uploadDisabled={hasUploadedSciencePdf || !!pdfError}
                   uploadFunction={uploadPdftoSignedUrl}
                   uploadToolTip={
@@ -499,7 +497,7 @@ export default function SciencePage() {
                       ? t('pdfUpload.science.tooltip.uploadDisabled')
                       : t('pdfUpload.science.tooltip.upload')
                   }
-                  status={getProposal().scienceLoadStatus}
+                  status={scienceLoadStatus ?? undefined}
                   suffix={uploadSuffix()}
                 />
               </Box>
