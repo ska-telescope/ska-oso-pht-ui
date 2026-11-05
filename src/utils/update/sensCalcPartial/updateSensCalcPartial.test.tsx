@@ -9,7 +9,7 @@ describe('updateSensCalcPartial', () => {
   const baseTargetObs: TargetObservation = {
     observationId: 'obs1',
     targetId: 'target-1',
-    sensCalc: {
+    sensitivityResults: {
       statusGUI: 0,
       error: 'none'
     },
@@ -19,7 +19,7 @@ describe('updateSensCalcPartial', () => {
   const otherTargetObs: TargetObservation = {
     observationId: 'obs2',
     targetId: 'target-2',
-    sensCalc: {
+    sensitivityResults: {
       statusGUI: 0,
       error: 'none'
     },
@@ -37,14 +37,14 @@ describe('updateSensCalcPartial', () => {
     type: TYPE_CONTINUUM
   } as Observation;
 
-  it('updates sensCalc to STATUS_PARTIAL when observationId matches', () => {
+  it('updates sensitivityResults to STATUS_PARTIAL when observationId matches', () => {
     const result = updateSensCalcPartial([baseTargetObs], matchingObservation);
 
     expect(result).toHaveLength(1);
     expect(result[0].observationId).toBe('obs1');
     expect(result[0].targetId).toBe('target-1');
-    expect(result[0].sensCalc.statusGUI).toBe(STATUS_PARTIAL);
-    expect(result[0].sensCalc.error).toBe('');
+    expect(result[0].sensitivityResults.statusGUI).toBe(STATUS_PARTIAL);
+    expect(result[0].sensitivityResults.error).toBe('');
     expect(result[0].dataProductsSDPId).toBe('');
   });
 
@@ -59,7 +59,7 @@ describe('updateSensCalcPartial', () => {
     const result = updateSensCalcPartial([baseTargetObs, otherTargetObs], matchingObservation);
 
     expect(result).toHaveLength(2);
-    expect(result[0].sensCalc.statusGUI).toBe(STATUS_PARTIAL);
+    expect(result[0].sensitivityResults.statusGUI).toBe(STATUS_PARTIAL);
     expect(result[1]).toEqual(otherTargetObs);
   });
 

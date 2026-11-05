@@ -2,6 +2,19 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Box, Grid, Paper, Typography, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
+import { useFormContext } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import {
+  getFormLinks,
+  getFormTargets,
+  getFormCalibration,
+  withFormSlices
+} from '@/models/proposals/formSlices';
+import {
+  buildCalibrationStrategy,
+  calibrationNotesFor,
+  withCalibrationFor
+} from '@/models/proposals/calibrationOperations';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -50,12 +63,10 @@ import {
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   INTEGRATION_TIME_UNITS,
-  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
-  REFERENCE_COORDINATE_TYPE_SSO
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
-  generateCalibrationId,
   generateObsSetId,
   getBandwidthZoom,
   timeConversion
@@ -94,7 +105,8 @@ import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
-import fetchSensCalcPatches, { applySensCalcPatches } from '@/utils/update/sensCalc/updateSensCalc';
+import fetchSensCalcPatches from '@/utils/update/sensCalc/updateSensCalc';
+import { patchSensCalcResults } from '@/models/proposals/targetObservationOperations';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
@@ -104,8 +116,6 @@ import {
   useIsFrequencyOutOfRange
 } from '@/utils/validation/validation';
 import QuantityField from '@/components/fields/quantity/quantity';
-import { CalibrationStrategy, Calibrator } from '@utils/types/calibrationStrategy.tsx';
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 
 const GAP = 5;
@@ -190,6 +200,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setProposal(proposal);
   };
 
+  // The form owns the targets, links and calibration; observations stay in the store
+  const form = useFormContext<ProposalType>();
+  const getLinks = () => getFormLinks(form);
+
   const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
     isSuppliedValueValid({
       type: ob?.supplied?.type,
@@ -197,6 +211,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       units: ob?.supplied?.units
     }) && isDataProductRobustValid(dp);
 
+  // TODO(BTN-3595): Replace this per-page sensitivity update (debounce and request counter) with
+  //  the shared sensitivity service, writing its results through patchSensCalcResults
+  //  (targetObservationOperations.ts) as this does.
   const scheduleLocalSensCalcUpdate = (
     ob: Observation,
     dp: DataProductSDPNew,
@@ -209,54 +226,42 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
     const applyUpdate = async () => {
       sensCalcDebounceTimerRef.current = null;
-      const sensCalcPatches = await fetchSensCalcPatches(latestProposalRef.current, ob, dp);
+      const sensCalcPatches = await fetchSensCalcPatches(
+        withFormSlices(latestProposalRef.current, form),
+        ob,
+        dp
+      );
 
       if (requestId !== latestSensCalcRequestIdRef.current) {
         return;
       }
 
-      const targetObservation = applySensCalcPatches(
-        latestProposalRef.current.targetObservation,
-        sensCalcPatches
+      const linkedTarget = getFormTargets(form).find((t) =>
+        getLinks().some((to) => to.observationId === ob.id && to.targetId === t.id)
       );
 
-      const linkedTarget = latestProposalRef.current.targets?.find((t) =>
-        targetObservation.some((to) => to.observationId === ob.id && to.targetId === t.id)
-      );
+      const getCalibration = () => getFormCalibration(form);
+      // TODO(BTN-3595): Take the calibrator refresh out of the sensitivity callback, and call
+      //  buildCalibrationStrategy (calibrationOperations.ts) from the observation-change trigger
+      //  instead. It is kept here only because this callback refreshes the calibrators today.
+      const updatedStrategy = linkedTarget
+        ? await buildCalibrationStrategy(authAxiosClient, {
+            observationId: ob.id,
+            observation: ob,
+            target: linkedTarget,
+            notes: calibrationNotesFor(getCalibration(), ob.id)
+          })
+        : undefined;
 
-      let calibrationStrategy = latestProposalRef.current.calibrationStrategy ?? [];
-      if (linkedTarget) {
-        let calibrators: Calibrator[] | null = null;
-        if (linkedTarget.kind !== REFERENCE_COORDINATE_TYPE_SSO.value) {
-          const response = await GetCalibratorList(authAxiosClient, ob, linkedTarget);
-          if (typeof response !== 'string') {
-            calibrators = response;
-          }
-        }
-
-        const existingNotes =
-          calibrationStrategy.find((cal) => cal.observationIdRef === ob.id)?.notes ?? null;
-
-        const updatedStrategy: CalibrationStrategy = {
-          observatoryDefined: true,
-          id: generateCalibrationId(),
-          observationIdRef: ob.id,
-          calibrators,
-          notes: existingNotes
-        };
-
-        calibrationStrategy = [
-          ...calibrationStrategy.filter((cal) => cal.observationIdRef !== ob.id),
-          updatedStrategy
-        ];
+      // The calibrator lookup takes time too, so a newer request may have started meanwhile
+      if (requestId !== latestSensCalcRequestIdRef.current) {
+        return;
       }
 
-      const mergedProposal = {
-        ...latestProposalRef.current,
-        targetObservation,
-        calibrationStrategy
-      };
-      persistProposal(mergedProposal);
+      patchSensCalcResults(form, sensCalcPatches);
+      if (updatedStrategy) {
+        form.setValue('calibrationStrategy', withCalibrationFor(getCalibration(), updatedStrategy));
+      }
     };
 
     if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
@@ -359,7 +364,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
-    const linkedDataProductId = proposal.targetObservation?.find(
+    const linkedDataProductId = getLinks().find(
       (to) => to.observationId === newObservation.id
     )?.dataProductsSDPId;
 
@@ -380,14 +385,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       (dp) => dp.id === linkedDataProductId
     );
 
-    const oldTO = proposal?.targetObservation ?? [];
-    const tmp = {
+    if (!dataProductSDP) {
+      form.setValue('targetObservation', updateSensCalcPartial(getLinks(), newObservation));
+    }
+    persistProposal({
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: newDataProducts,
-      targetObservation: dataProductSDP ? oldTO : updateSensCalcPartial(oldTO, newObservation)
-    };
-    persistProposal(tmp);
+      dataProductSDP: newDataProducts
+    });
 
     if (!dataProductSDP) {
       return;
@@ -669,8 +674,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   // TODO: Min channel width for Mid hardcoded for now since I'm not sure if it's correct
+  // Without the OSD channel width the minimum-width constraint is skipped; the bandwidth fields
+  // treat 0 as "no constraint"
+  const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz;
   const minimumChannelWidthHz = isLow()
-    ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+    ? coarseChannelWidthHz === undefined
+      ? 0
+      : coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
     : 13.44e3;
 
   // LOW-zoom channel resolution (Hz) for the selected `bandwidth` index, and the total zoom

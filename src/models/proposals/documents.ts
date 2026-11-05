@@ -12,20 +12,13 @@ export function getDocumentRefSchema() {
     .nullish();
 }
 
-export type DocumentRef = z.infer<ReturnType<typeof getDocumentRefSchema>>;
+// A document reference or null; the form never holds undefined
+export type DocumentRef = Exclude<z.infer<ReturnType<typeof getDocumentRefSchema>>, undefined>;
 
 export type DocumentValues = {
   sciencePDF: DocumentRef;
   technicalPDF: DocumentRef;
 };
-
-export const getDocumentValues = (proposal?: Partial<DocumentValues>): DocumentValues => ({
-  sciencePDF: proposal?.sciencePDF ?? null,
-  technicalPDF: proposal?.technicalPDF ?? null
-});
-
-export const isSameDocumentRef = (a: DocumentRef, b: DocumentRef): boolean =>
-  !!a === !!b && a?.documentId === b?.documentId && a?.isUploadedPdf === b?.isUploadedPdf;
 
 // Same rule as validateSciencePage / validateTechnicalPage.
 export const getDocumentPageStatus = (ref: DocumentRef): number => {
@@ -52,7 +45,7 @@ export const documentsToPdm = ({
   sciencePDF,
   technicalPDF
 }: Pick<Partial<DocumentValues>, 'sciencePDF' | 'technicalPDF'>): DocumentTransport[] => {
-  const toDocument = (ref: DocumentRef): DocumentTransport[] =>
+  const toDocument = (ref?: DocumentRef): DocumentTransport[] =>
     ref ? [{ document_id: ref.documentId as string, uploaded_pdf: ref.isUploadedPdf }] : [];
   return [...toDocument(sciencePDF), ...toDocument(technicalPDF)];
 };

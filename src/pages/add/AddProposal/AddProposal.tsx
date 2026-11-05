@@ -9,6 +9,7 @@ import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { newDataProductsForMode, newObservationForMode } from '@/utils/autoLinking/AutoLinking';
 import { ProposalType } from '@/models/proposals/proposal';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
 const PAGE = PAGE_TITLE_ADD;
 const PAGE_INNER = 0;
@@ -30,7 +31,7 @@ export default function AddProposal() {
   // is always selected on the Landing page before this page opens.
   React.useEffect(() => {
     const proposalType = isSV ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined;
-    reset({ title: NEW_PROPOSAL.title, proposalType: proposalType ?? null });
+    reset(getProposalFormValues({ ...NEW_PROPOSAL, id: undefined, proposalType }));
     updateAppContent1(EMPTY_STATUS);
     updateAppContent2({
       ...NEW_PROPOSAL,

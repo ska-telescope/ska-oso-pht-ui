@@ -1,4 +1,6 @@
 import React from 'react';
+import { ProposalType } from '@/models/proposals/proposal';
+import { useFormContext } from 'react-hook-form';
 import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
@@ -177,9 +179,11 @@ export default function DetailsPage() {
   const isLow = observation ? observation.telescope === TELESCOPE_LOW_NUM : !!osdLOW;
   const observingModeOptions = useObservationTypeOptions(SA_AA2, isLow);
 
+  const form = useFormContext<ProposalType>();
+
   const changeObservingMode = async (mode: string) => {
     if (mode === observation?.type) return;
-    const hasTarget = (getProposal().targets?.length ?? 0) > 0;
+    const hasTarget = (form.getValues('targets')?.length ?? 0) > 0;
     const record = isLow ? osdLOW : osdMID;
     const sArray = (
       record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
@@ -188,6 +192,7 @@ export default function DetailsPage() {
       mode,
       getProposal,
       setProposal,
+      form,
       authAxiosClient,
       sArray?.numberZoomChannels
     );

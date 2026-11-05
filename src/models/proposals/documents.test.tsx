@@ -2,13 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '@/utils/constants';
-import {
-  documentsFromPdm,
-  documentsToPdm,
-  getDocumentPageStatus,
-  getDocumentValues,
-  isSameDocumentRef
-} from './documents';
+import { documentsFromPdm, documentsToPdm, getDocumentPageStatus } from './documents';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 
 const science = { document_id: 'science-doc-p1', uploaded_pdf: true };
@@ -24,13 +18,6 @@ describe('documents slice', () => {
       technicalPDF: { documentId: 'technical-doc-p1', isUploadedPdf: false }
     });
     expect(documentsFromPdm(undefined)).toEqual({ sciencePDF: null, technicalPDF: null });
-  });
-
-  test('defaults missing values to null', () => {
-    expect(getDocumentValues(undefined)).toEqual({
-      sciencePDF: null,
-      technicalPDF: null
-    });
   });
 
   test('maps references back to PDM documents', () => {
@@ -52,15 +39,13 @@ describe('documents slice', () => {
     expect(getDocumentPageStatus({ documentId: 'x', isUploadedPdf: true })).toBe(STATUS_OK);
   });
 
-  test('compares references by value', () => {
-    expect(isSameDocumentRef(null, undefined)).toBe(true);
-    expect(isSameDocumentRef({ documentId: 'a' }, { documentId: 'a' })).toBe(true);
-    expect(isSameDocumentRef({ documentId: 'a' }, null)).toBe(false);
-  });
-
-  test('round-trips PDM with documents through the form unchanged', () => {
+  // Only the documents: targets also go through the form, and are saved without the fields the
+  // PHT does not use
+  test('round-trips PDM documents through the form unchanged', () => {
     const withDocs = withDocuments([science, technical]);
-    expect(mapFormToPdm(mapPdmToForm(withDocs), withDocs)).toEqual(withDocs);
+    expect(mapFormToPdm(mapPdmToForm(withDocs), withDocs).observation_info.documents).toEqual(
+      withDocs.observation_info.documents
+    );
   });
 
   test('form document changes reach the PDM', () => {

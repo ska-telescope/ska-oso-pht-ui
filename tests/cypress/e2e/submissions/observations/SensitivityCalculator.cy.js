@@ -1,4 +1,5 @@
 import {
+  enterTargetField,
   clickObservationFromTable,
   clickObservationSetup,
   clickToAddTarget,
@@ -18,10 +19,9 @@ import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculato
 import { standardUser } from '../../../support/users.js';
 
 const addTargetUsingCoordinates = () => {
-  cy.get('[data-testid="name"]').should('exist');
-  cy.get('[data-testid="name"]').type('test');
-  cy.get('[data-testid="skyDirectionValue1"]').type('00:00:00.0');
-  cy.get('[data-testid="skyDirectionValue2"]').type('00:00:00.0');
+  enterTargetField('Name', 'test');
+  enterTargetField('Right Ascension', '00:00:00.0');
+  enterTargetField('Declination', '00:00:00.0');
 };
 
 const verifySensitivityCalculatorStatusSuccess = () => {

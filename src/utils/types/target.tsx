@@ -1,3 +1,5 @@
+import type { VelocityDefinition, VelocityType } from '@/utils/constants';
+
 /*
 export type TargetBackend = {
   declination: string;
@@ -31,13 +33,6 @@ export type TargetBackend = {
 
 // NOT USED : Note that the fields marked as NOT USED should be removed until such time as they are actually needed
 
-// NOT USED
-export type PointingPatternParams = {
-  kind: string;
-  offsetXArcsec: number;
-  offsetYArcsec: number;
-};
-
 export type ReferenceCoordinateGalactic = {
   kind: string;
   l: number; // replaces Galactic longitude
@@ -66,9 +61,9 @@ export type Target = {
   id: string;
   name: string;
   redshift?: string;
-  raReferenceFrame?: string; // NOT USED
-  raDefinition?: string; // NOT USED
-  velType?: number;
+  referenceFrame?: string;
+  velocityDefinition: VelocityDefinition;
+  velType?: VelocityType;
   vel?: string;
   velUnit?: number;
   /*------- reference coordinate properties --------------------- */
@@ -84,11 +79,6 @@ export type Target = {
   parallax?: number; // NOT USED YET // for both Galactic & ICRS
   epoch?: number; // NOT USED YET // for both Galactic & ICRS
   /*------- end of reference coordinate properties --------------------- */
-  pointingPattern?: {
-    // NOT USED
-    active: string; // NOT USED
-    parameters: PointingPatternParams[]; // NOT USED
-  }; // NOT USED
 };
 
 export default Target;

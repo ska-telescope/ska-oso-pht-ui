@@ -23,8 +23,6 @@ export function getTitleSchema() {
     });
 }
 
-export const getTitleValues = (proposal?: { title?: string }): TitleType => proposal?.title ?? '';
-
 export type TitleType = z.infer<ReturnType<typeof getTitleSchema>>;
 
 export const titleFromPdm = (proposalInfo?: Partial<ProposalInfo>): TitleType =>

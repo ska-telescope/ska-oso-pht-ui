@@ -67,14 +67,40 @@ describe('GetCoordinates Service', () => {
     expect(result).toEqual({ error: 'API_UNKNOWN_ERROR' });
   });
 
-  const axiosErrorWithStatus = (status?: number) =>
+  const axiosErrorWithStatus = (status?: number, data?: unknown) =>
     new AxiosError(
       'Request failed',
       undefined,
       undefined,
       undefined,
-      status === undefined ? undefined : ({ status } as AxiosResponse)
+      status === undefined ? undefined : ({ status, data } as AxiosResponse)
     );
+
+  test('returns the backend message with the error code', async () => {
+    const detail = 'Object M1 not found in SIMBAD, NED or VizieR.';
+    vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(404, { detail }));
+
+    const result = await GetCoordinates('M1', 0);
+    expect(result).toEqual({ error: 'notFound', message: detail });
+  });
+
+  test('returns the backend message for a resolver failure', async () => {
+    const detail = 'Error occurred while resolving target.';
+    vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(500, { detail }));
+
+    const result = await GetCoordinates('M1', 0);
+    expect(result).toEqual({ error: 'unavailable', message: detail });
+  });
+
+  test.each([{}, { detail: '' }, { detail: '   ' }, { detail: { nested: true } }, 'text'])(
+    'leaves out the message when the backend sends no usable detail (%o)',
+    async (data) => {
+      vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(500, data));
+
+      const result = await GetCoordinates('M1', 0);
+      expect(result).toEqual({ error: 'unavailable' });
+    }
+  );
 
   test('returns notFound if the resolver responds with 404', async () => {
     vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(404));

@@ -35,6 +35,7 @@ export type SDPVisibilitiesContinuumData = {
 };
 
 export type SDPSpectralData = {
+  dataProductType: number;
   imageSizeValue: number;
   imageSizeUnits: number;
   pixelSizeValue: number;

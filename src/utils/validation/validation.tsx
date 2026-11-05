@@ -1,3 +1,5 @@
+import { getSubmitPageStatuses } from '@/models/proposals/submit';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import {
   DataProductSDPNew,
   SDPFilterbankPSTData,
@@ -162,9 +164,6 @@ export const validateSciencePage = (proposal: Proposal) => {
   count += count && proposal?.sciencePDF?.isUploadedPdf ? 1 : 0;
   return result[count];
 };
-
-export const validateTargetPage = (proposal: Proposal) =>
-  proposal?.targets?.length ? STATUS_OK : STATUS_ERROR;
 
 const hasValidSuppliedValue = (observation: Observation): boolean => {
   const supplied = observation?.supplied;
@@ -457,7 +456,7 @@ export const isDataProductChannelsOutValid = (
 const hasUsableTargetLinks = (proposal: Proposal) =>
   (proposal?.observations ?? []).every((obs) => {
     const link = proposal?.targetObservation?.find((to) => to.observationId === obs.id);
-    return !!link && link.sensCalc?.statusGUI !== STATUS_ERROR;
+    return !!link && link.sensitivityResults?.statusGUI !== STATUS_ERROR;
   });
 
 export const validateSDPPage = (proposal: Proposal, autoLink = false) => {
@@ -482,19 +481,6 @@ export const validateSDPPage = (proposal: Proposal, autoLink = false) => {
 
 export const validateSRCPage = () => STATUS_OK;
 
-export const validateCalibrationPage = (proposal: Proposal) => {
-  const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  const count = proposal?.calibrationStrategy?.length > 0 ? 2 : 0;
-  return result[count];
-};
-
-export const validateLinkingPage = (proposal: Proposal) => {
-  const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
-  const count = hasTargetObservations() ? 2 : 0;
-  return result[count];
-};
-
 export const useValidateProposal = () => {
   const { autoLink } = useOSDAccessors();
   const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
@@ -504,47 +490,55 @@ export const useValidateProposal = () => {
     const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
       isObservationFrequencyOutOfRange(obs)
     );
+    // The Target, Linking and Calibration pages are checked by the submit
+    // schema, over the given proposal's values for them (which may not be the
+    // proposal open in the form)
+    const submitStatuses = getSubmitPageStatuses(getProposalFormValues(proposal));
     return [
       validateTitlePage(proposal),
       validateTeamPage(proposal),
       validateDetailsPage(proposal),
       validateSciencePage(proposal),
-      validateTargetPage(proposal),
+      submitStatuses.target,
       obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
       validateTechnicalPage(proposal),
       validateSDPPage(proposal, autoLink),
-      validateLinkingPage(proposal),
-      validateCalibrationPage(proposal)
+      submitStatuses.linking,
+      submitStatuses.calibration
       /* See SRCNet INACTIVE - validateSRCPage() */
     ];
   };
 };
 
-export function validateSkyDirection1Text(value: string): string | null {
+/** The codes the sky direction and radial motion checks return when a value is wrong. */
+export const VALUE_ERROR = { FORMAT: '0', RANGE: '1' } as const;
+export type ValueError = (typeof VALUE_ERROR)[keyof typeof VALUE_ERROR];
+
+export function validateRightAscension(value: string): ValueError | null {
   const formatValid = /^\+?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   const arr = value.split(':');
   if (arr?.length !== 3) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   if (Number(arr[0]) > 24) {
-    return '1';
+    return VALUE_ERROR.RANGE;
   }
   if (Number(arr[1]) > 59) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   if (Number(arr[2]) >= 60) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   if (Number(arr[0]) === 24 && (Number(arr[1]) > 0 || Number(arr[2]) > 0)) {
-    return '1';
+    return VALUE_ERROR.RANGE;
   }
   return null;
 }
 
-export function validateSkyDirection1Number(value: string): boolean {
+export function isValidGalacticLongitude(value: string): boolean {
   if (!/^[0-9]*\.?[0-9]+$/.test(value)) {
     return false;
   }
@@ -552,15 +546,15 @@ export function validateSkyDirection1Number(value: string): boolean {
   return number >= 0 && number < 360;
 }
 
-export function validateSkyDirection2Text(value: string): string | null {
+export function validateDeclination(value: string): ValueError | null {
   const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
 
   const arr = value.split(':');
   if (arr.length !== 3) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
 
   const hours = Number(arr[0]);
@@ -568,34 +562,34 @@ export function validateSkyDirection2Text(value: string): string | null {
   const seconds = Number(arr[2].split('.')[0]);
 
   if (Math.abs(hours) > 90 || (Math.abs(hours) === 90 && (minutes > 0 || seconds > 0))) {
-    return '1';
+    return VALUE_ERROR.RANGE;
   }
 
   // explicitly treat these as a format rather than a range error
   // because they are not valid in the context of sky direction
   if (minutes > 59) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   if (seconds > 59) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
   return null;
 }
 
-export function validateSkyDirection2Number(value: string): string | null {
+export function validateGalacticLatitude(value: string): ValueError | null {
   if (!/^[-+]?[0-9]*\.?[0-9]+$/.test(value)) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
 
   if (parseFloat(value) < -90 || parseFloat(value) > 90) {
-    return '1';
+    return VALUE_ERROR.RANGE;
   }
   return null;
 }
 
-export function validateRadialMotion(value: string): string | null {
+export function validateRadialMotion(value: string): ValueError | null {
   if (!/^[-+]?[0-9]*\.?[0-9]+$/.test(value)) {
-    return '0';
+    return VALUE_ERROR.FORMAT;
   }
 
   return null;

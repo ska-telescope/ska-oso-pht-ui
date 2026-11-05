@@ -11,7 +11,7 @@ import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-import { getDocumentPageStatus, isSameDocumentRef } from '@/models/proposals/documents';
+import { getDocumentPageStatus } from '@/models/proposals/documents';
 import { ProposalType } from '@/models/proposals/proposal';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
@@ -32,7 +32,7 @@ const PAGE = PAGE_TECHNICAL;
 export default function TechnicalPage() {
   const { t } = useScopedTranslation();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const {
     field: { value: technicalPDF, onChange: onTechnicalPdfChange }
   } = useController<ProposalType, 'technicalPDF'>({ name: 'technicalPDF' });
@@ -54,7 +54,6 @@ export default function TechnicalPage() {
   const proposalId = getProposal()?.id;
   const activeProposalIdRef = React.useRef(getProposal()?.id);
   activeProposalIdRef.current = getProposal()?.id;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
 
   const getProposalState = () => application.content1 as number[];
@@ -180,17 +179,6 @@ export default function TechnicalPage() {
   React.useEffect(() => {
     setUploadStatus(technicalPDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL);
   }, [proposalId, technicalPDF]);
-
-  // Bridge: unmigrated consumers and the save path still read the legacy store.
-  React.useEffect(() => {
-    const proposal = getProposal();
-    if (!isSameDocumentRef(proposal?.technicalPDF, technicalPDF)) {
-      setProposal({
-        ...proposal,
-        technicalPDF: technicalPDF ?? null
-      });
-    }
-  }, [technicalPDF]);
 
   React.useEffect(() => {
     setTheProposalState(getDocumentPageStatus(technicalPDF));

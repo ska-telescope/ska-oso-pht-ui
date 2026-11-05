@@ -73,7 +73,7 @@ export const clickCreateSubmission = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
-export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickToAddTarget = () => cy.findByRole('button', { name: 'Add Target' }).click();
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
 export const clickObservationSetup = () => clickButton('addObservationButton');
@@ -330,11 +330,6 @@ export const verifyScienceIdeaCreatedAlertFooter = () =>
 export const verifyAutoLinkAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Target added and auto-linked successfully', 30000);
 
-export const clickEdit = () => {
-  cy.get('[data-testId="editIcon"]').should('be.visible');
-  cy.get('[data-testId="editIcon"]').click();
-};
-
 export const clickEditIconForRow = (tableTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`)
     .find('[role="row"]')
@@ -507,10 +502,10 @@ export const addSubmissionSummary = (value) => {
 // Types in the values the resolver gives M2, so the tests don't depend on the resolver's external
 // services (only tests/cypress/e2e/sv/pages/target.cy.ts resolves)
 export const addM2Target = () => {
-  enterTargetField('name', 'M2');
-  enterTargetField('skyDirectionValue1', '21:33:27.0200');
-  enterTargetField('skyDirectionValue2', '-00:49:23.700');
-  enterTargetField('velocityValue', '-3.6');
+  enterTargetField('Name', 'M2');
+  enterTargetField('Right Ascension', '21:33:27.0200');
+  enterTargetField('Declination', '-00:49:23.700');
+  enterTargetField('Velocity', '-3.6');
 };
 
 export const updateDataProductField = (testId, value) => {
@@ -521,17 +516,15 @@ export const updateDataProductField = (testId, value) => {
   cy.get('[data-testid="' + testId + '"] input').type(value);
 };
 
-export const enterTargetField = (testId, value) => {
-  cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]').type(value);
+// The target entry's fields are found by their labels, e.g. 'Name' or 'Right Ascension'
+const targetField = (label) => cy.findAllByRole('textbox', { name: label });
+
+export const enterTargetField = (label, value) => {
+  targetField(label).first().type(value);
 };
 
-export const updateTargetField = (testId, value) => {
-  cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]')
-    .eq(1)
-    .clear()
-    .type(value);
+export const checkAddTargetDisabled = (disabled) => {
+  cy.findByRole('button', { name: 'Add Target' }).should(disabled ? 'be.disabled' : 'be.enabled');
 };
 
 export const updateFieldValue = (testId, value) => {
@@ -546,44 +539,4 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 
 export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
   cy.get('[data-testid="table-submissions"]').should('contain', 'Science Verification Idea Title');
-};
-
-export const verifyFieldError = (testId, error, exists) => {
-  const selector = `[data-testid="${testId}"]`;
-
-  cy.get(selector)
-    .should('exist')
-    .parent() // move to parent
-    .then(($parent) => {
-      if (exists) {
-        cy.wrap($parent).should('contain.text', error);
-      } else {
-        cy.wrap($parent).should('not.contain.text', error);
-      }
-    });
-};
-
-export const verifyTargetInTargetTable = (targetName, ra, dec, velocity) => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .eq(0)
-    .within(() => {
-      cy.get('[data-field="name"]').should('contain', targetName);
-      cy.get('[data-field="coord1"]').should('contain', ra);
-      cy.get('[data-field="coord2"]').should('contain', dec);
-      cy.get('[data-field="vel"]').should('contain', velocity);
-    });
-};
-
-export const clickFirstRowOfTargetTable = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .eq(0)
-    .within(() => {
-      cy.get('[data-field="actions"]').should('be.visible');
-    });
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .eq(0)
-    .click();
 };

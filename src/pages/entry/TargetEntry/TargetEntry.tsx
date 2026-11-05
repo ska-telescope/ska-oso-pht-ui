@@ -1,28 +1,41 @@
 import React from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, InputAdornment, Tooltip } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
+import {
+  FormProvider,
+  useFormContext,
+  useFormState,
+  UseFormReturn,
+  useWatch
+} from 'react-hook-form';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
-import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
+import { BorderedSection, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates, {
-  RESOLVE_ERROR_UNKNOWN
+  RESOLVE_ERROR_UNKNOWN,
+  ResolveError
 } from '@services/axios/get/getCoordinates/getCoordinates';
-import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
-import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
-import { generateTargetId, leadZero, trailingZeros } from '@utils/helpers.ts';
+import { generateTargetId } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import CancelButton from '@/components/button/Cancel/Cancel';
 import ResolveButton from '@/components/button/Resolve/Resolve';
-import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
-import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
-import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
+  ControlledNumberField,
+  ControlledSelect,
+  ControlledTextField
+} from '@ska-telescope/ska-gui-components/controlled';
+import {
+  REFERENCE_COORDINATE_OPTIONS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
+  SKY_DIRECTION_AXIS,
+  SkyDirectionAxis,
+  SSO_OPTIONS,
+  VELOCITY_UNITS,
+  VELOCITY_DEFINITION,
   VELOCITY_TYPE,
-  FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
   NOTIFICATION_DELAY_IN_SECONDS
 } from '@/utils/constants';
@@ -31,27 +44,44 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import VelocityTypeField from '@/components/fields/velocityType/VelocityType';
+import { ProposalType } from '@/models/proposals/proposal';
+import {
+  getTargetEntryDefaults,
+  TARGET_ENTRY_DEFAULTS,
+  TargetEntryType,
+  useTargetEntryForm
+} from '@/models/proposals/targetEntry';
 interface TargetEntryProps {
-  setTarget?: Function;
+  // The local form holding the entry, when the parent needs its values (the edit dialog);
+  // otherwise the entry keeps its own
+  entryForm?: UseFormReturn<TargetEntryType>;
+  // The target being edited; leave out when adding a new one
   target?: Target;
   textAlign?: string;
-  onCoord1FieldErrorChange?: (error: string) => void;
-  onCoord2FieldErrorChange?: (error: string) => void;
-  onNameFieldErrorChange?: (error: string) => void;
 }
 
 const GAP = 2;
-const DEFAULT_VELOCITY_TYPE = VELOCITY_TYPE.VELOCITY;
-const DEFAULT_VELOCITY_UNIT = 0;
-const DEFAULT_REFERENCE_COORDINATES = REFERENCE_COORDINATE_TYPE_ICRS.value;
+
+// The coordinate inputs each coordinate system shows, bound to the target's own field names
+type CoordinateFieldDef = {
+  name: 'raStr' | 'decStr' | 'l' | 'b';
+  axis: SkyDirectionAxis;
+};
+const ICRS_FIELDS: CoordinateFieldDef[] = [
+  { name: 'raStr', axis: SKY_DIRECTION_AXIS.LONGITUDE },
+  { name: 'decStr', axis: SKY_DIRECTION_AXIS.LATITUDE }
+];
+const GALACTIC_FIELDS: CoordinateFieldDef[] = [
+  { name: 'l', axis: SKY_DIRECTION_AXIS.LONGITUDE },
+  { name: 'b', axis: SKY_DIRECTION_AXIS.LATITUDE }
+];
+const DEFAULT_VELOCITY_TYPE = TARGET_ENTRY_DEFAULTS.velType;
+const DEFAULT_VELOCITY_UNIT = TARGET_ENTRY_DEFAULTS.velUnit;
+const DEFAULT_KIND = TARGET_ENTRY_DEFAULTS.kind;
 
 export default function TargetEntry({
-  setTarget = undefined,
-  target = undefined,
-  onCoord1FieldErrorChange,
-  onCoord2FieldErrorChange,
-  onNameFieldErrorChange
+  entryForm = undefined,
+  target = undefined
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
@@ -59,270 +89,86 @@ export default function TargetEntry({
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent2 } = storageObject.useStore();
-  const [nameFieldError, setNameFieldError] = React.useState('');
-  const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
-  const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
-  const [rmFieldError, setRmFieldError] = React.useState('');
+  const form = useFormContext<ProposalType>();
   const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [id, setId] = React.useState('');
-  const [name, setName] = React.useState('');
-  const [coord1, setCoord1] = React.useState('');
-  const [coord2, setCoord2] = React.useState('');
-  const [velType, setVelType] = React.useState(DEFAULT_VELOCITY_TYPE);
-  const [vel, setVel] = React.useState('');
-  const [velUnit, setVelUnit] = React.useState(DEFAULT_VELOCITY_UNIT);
-  const [redshift, setRedshift] = React.useState('');
-  const [referenceCoordinates, setReferenceCoordinates] = React.useState(
-    DEFAULT_REFERENCE_COORDINATES
-  );
-  const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
+  // The entry is held in a small local form, so it is not saved and goes when the entry closes;
+  // the targets it adds go to the global form. Each input is bound to the entry form, whose schema
+  // checks it as it changes; loading state stays with the page. A new target's name can't repeat
+  // one already in the proposal.
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const ownEntryForm = useTargetEntryForm(targets.map((rec) => rec.name));
+  const entryValues = entryForm ?? ownEntryForm;
+  const { control } = entryValues;
+  const { isValid } = useFormState({ control });
+  // The inputs are bound to the entry form themselves; these values only decide what is shown
+  const { name, kind, raStr, decStr, l, b, velType, vel, velUnit, redshift } = useWatch({
+    control
+  }) as TargetEntryType;
+
   const [resolutionLoading, setResolutionLoading] = React.useState(false);
   const resolveRevisionRef = React.useRef(0);
 
   /**
    * Invalidates any pending coordinate-resolution response so it can't overwrite newer edits when
-   * it arrives - the underlying GetCoordinates request itself is not aborted.
+   * it arrives - the underlying GetCoordinates request itself is not aborted. Any edit does this.
    */
   const invalidatePendingResolve = () => {
     resolveRevisionRef.current += 1;
     setResolutionLoading(false);
   };
 
-  React.useEffect(() => {
-    if (nameFieldError === t('addTarget.error')) {
-      if (formValidation()) {
-        setNameFieldError('');
-      }
-    }
-  }, [name]);
+  /** Sets values that come from somewhere other than the inputs, checking them as the inputs do. */
+  const setEntryValues = (changes: Partial<TargetEntryType>) =>
+    (Object.keys(changes) as (keyof TargetEntryType)[]).forEach((key) =>
+      entryValues.setValue(key, changes[key] as never, { shouldValidate: true })
+    );
 
-  React.useEffect(() => {
-    if (onCoord1FieldErrorChange) {
-      onCoord1FieldErrorChange(skyDirection1Error); // Notify parent
-    }
-  }, [skyDirection1Error]);
-
-  React.useEffect(() => {
-    if (onCoord2FieldErrorChange) {
-      onCoord2FieldErrorChange(skyDirection2Error); // Notify parent
-    }
-  }, [skyDirection2Error]);
-
-  React.useEffect(() => {
-    if (onNameFieldErrorChange) {
-      onNameFieldErrorChange(nameFieldError); // Notify parent
-    }
-  }, [nameFieldError]);
-
-  const setTheName = (inValue: string) => {
-    invalidatePendingResolve();
-    setName(inValue);
-    if (!inValue.trim()) {
-      setNameFieldError(t('addTarget.valueError'));
-    } else {
-      setNameFieldError('');
-    }
-    if (setTarget) {
-      setTarget({ ...target, name: inValue });
-    }
-  };
-
-  const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
-
-  const isSSO = referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
-
-  const setTheCoord1 = (value: string) => {
-    invalidatePendingResolve();
-    setCoord1(value);
-
-    if (!setTarget) return;
-
-    if (isICRS) {
-      setTarget({
-        ...target,
-        raStr: leadZero(value).toString()
-      });
-    } else {
-      setTarget({
-        ...target,
-        l: parseFloat(value)
-      });
-    }
-  };
-  const setTheCoord2 = (value: string) => {
-    invalidatePendingResolve();
-    setCoord2(value);
-
-    if (!setTarget) return;
-
-    if (isICRS) {
-      setTarget({
-        ...target,
-        decStr: leadZero(value).toString()
-      });
-    } else {
-      setTarget({
-        ...target,
-        b: parseFloat(value)
-      });
-    }
-  };
+  const isSSO = kind === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const setTheReferenceCoordinates = (newKind: number) => {
     invalidatePendingResolve();
 
-    if (newKind !== referenceCoordinates) {
-      setName('');
-      setCoord1('');
-      setCoord2('');
-      setVel('');
-      setRedshift('');
-
-      setSkyDirection1Error('');
-      setSkyDirection2Error('');
-      setRmFieldError('');
-      setNameFieldError('');
+    // A new coordinate system starts the entry again, without errors, keeping only the velocity
+    // type and unit and the field pattern
+    if (newKind !== kind) {
+      const { velType, velUnit, fieldPattern } = entryValues.getValues();
+      entryValues.reset(getTargetEntryDefaults(newKind, { velType, velUnit, fieldPattern }));
     }
-
-    setReferenceCoordinates(newKind);
-
-    if (setTarget) {
-      setTarget({
-        ...target,
-        kind: newKind
-      });
-    }
-  };
-
-  const setTheRedshift = (inValue: string) => {
-    invalidatePendingResolve();
-    setRedshift(inValue);
-    if (setTarget) {
-      setTarget({ ...target, redshift: inValue });
-    }
-  };
-
-  const setTheVel = (inValue: string) => {
-    invalidatePendingResolve();
-    setVel(inValue);
-    if (setTarget) {
-      setTarget({ ...target, vel: inValue });
-    }
-  };
-
-  const setTheVelType = (inValue: number) => {
-    invalidatePendingResolve();
-    setVelType(inValue);
-    if (setTarget) {
-      setTarget({ ...target, velType: inValue });
-    }
-  };
-
-  const setTheVelUnit = (inValue: number) => {
-    invalidatePendingResolve();
-    setVelUnit(inValue);
-    if (setTarget) {
-      setTarget({ ...target, velUnit: inValue });
-    }
-  };
-
-  const targetIn = (target: Target) => {
-    const incomingKind = target?.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value;
-    const incomingIsICRS = incomingKind === REFERENCE_COORDINATE_TYPE_ICRS.value;
-    setReferenceCoordinates(incomingKind);
-    setId(target.id);
-    setName(target?.name ?? '');
-    setCoord1(incomingIsICRS ? (target.raStr ?? '') : target.l != null ? String(target.l) : '');
-    setCoord2(incomingIsICRS ? (target.decStr ?? '') : target.b != null ? String(target.b) : '');
-    setVelType(target?.velType ?? DEFAULT_VELOCITY_TYPE);
-    setVel(target?.vel ?? '');
-    setVelUnit(target?.velUnit ?? DEFAULT_VELOCITY_UNIT);
-    setRedshift(target?.redshift ?? '');
-  };
-
-  const blurCoord1 = () => {
-    setCoord1(trailingZeros(leadZero(coord1.trimEnd()).toString()));
-  };
-
-  const blurCoord2 = () => {
-    setCoord2(trailingZeros(leadZero(coord2.trimEnd()).toString()));
-  };
-
-  const blurName = () => {
-    const formatted = name.trimEnd();
-    setName(formatted);
-    if (setTarget) setTarget({ ...target, name: formatted });
-  };
-
-  const blurVel = () => {
-    setVel(vel.trimEnd());
-  };
-
-  const blurRedshift = () => {
-    setRedshift(redshift.trimEnd());
   };
 
   React.useEffect(() => {
     setHelp('name.help');
-    if (target) {
-      targetIn(target);
-    }
   }, []);
-
-  function formValidation() {
-    let valid = true;
-    const targets = getProposal()?.targets;
-    targets?.forEach((rec) => {
-      if (rec.name.toLowerCase() === name.toLowerCase()) {
-        valid = false;
-        setNameFieldError(t('addTarget.error'));
-      }
-    });
-    return valid;
-  }
 
   const clearForm = () => {
     invalidatePendingResolve();
-    setName('');
-    setCoord1('');
-    setCoord2('');
-    setVel('');
-    setRedshift('');
-    setVelType(DEFAULT_VELOCITY_TYPE);
-    setVelUnit(DEFAULT_VELOCITY_UNIT);
-    setReferenceCoordinates(DEFAULT_REFERENCE_COORDINATES);
-    setFieldPattern(FIELD_PATTERN_POINTING_CENTRES);
-    setNameFieldError('');
-    setSkyDirection1Error('');
-    setSkyDirection2Error('');
-    setRmFieldError('');
+    entryValues.reset(getTargetEntryDefaults());
   };
 
   const addButton = () => {
+    // The whole entry is checked before the target is added
     const addButtonAction = () => {
       invalidatePendingResolve();
-
-      if (!formValidation()) {
-        return;
-      } else {
-        AddTheTarget();
-      }
+      return entryValues.handleSubmit(AddTheTarget)();
     };
 
-    const AddTheTarget = () => {
+    // The entry as the schema parsed it, so its text is trimmed
+    const AddTheTarget = (entry: TargetEntryType) => {
+      const { name, kind, raStr, decStr, l, b, velType, vel, velUnit, redshift } = entry;
       const baseTarget = {
-        kind: referenceCoordinates,
+        kind,
         id: generateTargetId(),
         name: name ?? '',
-        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT
+        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT,
+        velocityDefinition: VELOCITY_DEFINITION.RADIO
       };
 
       const buildTarget = (): Target => {
-        switch (referenceCoordinates) {
+        switch (kind) {
           case REFERENCE_COORDINATE_TYPE_SSO.value:
             return {
               ...baseTarget,
@@ -335,8 +181,8 @@ export default function TargetEntry({
             return {
               ...baseTarget,
               velType: velType ?? DEFAULT_VELOCITY_TYPE,
-              raStr: coord1 ?? '',
-              decStr: coord2 ?? '',
+              raStr,
+              decStr,
               redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
               vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
             };
@@ -345,21 +191,27 @@ export default function TargetEntry({
             return {
               ...baseTarget,
               velType: velType ?? DEFAULT_VELOCITY_TYPE,
-              l: Number(coord1),
-              b: Number(coord2),
+              l: Number(l),
+              b: Number(b),
               redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
               vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
             };
 
           default:
-            throw new Error(`Unsupported reference coordinate kind: ${referenceCoordinates}`);
+            throw new Error(`Unsupported reference coordinate kind: ${kind}`);
         }
       };
 
       const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
-        const defaults = await linkTarget(newTarget, getProposal, setProposal, authAxiosClient);
+        const defaults = await linkTarget(
+          newTarget,
+          getProposal,
+          setProposal,
+          form,
+          authAxiosClient
+        );
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
           clearForm();
@@ -373,42 +225,30 @@ export default function TargetEntry({
           generateAutoLinkData();
           return;
         }
-        const updatedProposal = {
-          ...getProposal(),
-          targets: [...(getProposal().targets ?? []), newTarget]
-        };
-        setProposal(updatedProposal);
+        form.setValue('targets', [...(form.getValues('targets') ?? []), newTarget]);
         notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
         clearForm();
       };
       addTargetAsync();
     };
 
-    const disabled = () => {
-      return (
-        referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value ||
-        nameFieldError !== '' ||
-        skyDirection1Error !== '' ||
-        skyDirection2Error !== '' ||
-        rmFieldError !== '' ||
-        !(name?.length && (isSSO || (coord1?.length && coord2?.length)) && targetLengthCheck())
-      );
-    };
+    // The schema covers what the entry needs: a name, and coordinates unless it is a solar
+    // system object
+    const disabled = () =>
+      kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value || !isValid || !targetLengthCheck();
 
     const targetLengthCheck = () => {
       const maxTargets = osdCyclePolicy?.maxTargets;
-      return maxTargets == null || (getProposal()?.targets?.length ?? 0) < maxTargets;
+      return maxTargets == null || targets.length < maxTargets;
     };
 
     const hasAnyFieldEntered = () => {
-      const hasTextValue = [name, coord1, coord2, vel, redshift].some(
+      const hasTextValue = [name, raStr, decStr, l, b, vel, redshift].some(
         (value) => value.trim().length > 0
       );
       const hasSelectorChange =
         velType !== DEFAULT_VELOCITY_TYPE || velUnit !== DEFAULT_VELOCITY_UNIT;
-      return (
-        hasTextValue || hasSelectorChange || referenceCoordinates !== DEFAULT_REFERENCE_COORDINATES
-      );
+      return hasTextValue || hasSelectorChange || kind !== DEFAULT_KIND;
     };
 
     return (
@@ -426,10 +266,9 @@ export default function TargetEntry({
           action={addButtonAction}
           disabled={disabled()}
           primary
-          testId={'addTargetButton'}
           title="addTarget.label"
           toolTip={
-            referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value
+            kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value
               ? 'addTarget.galacticDisabled'
               : 'addTarget.toolTip'
           }
@@ -440,7 +279,7 @@ export default function TargetEntry({
             action={clearForm}
             disabled={resolutionLoading}
             primary={false}
-            testId={'clearFormButton'}
+            ariaLabel="clearBtn.label"
             title="clearBtn.label"
             toolTip="addTarget.clearToolTip"
           />
@@ -451,6 +290,17 @@ export default function TargetEntry({
 
   const resolveButton = () => {
     /**
+     * Shows why the name could not be resolved in an error pop-up: the backend's message when it
+     * sent one, otherwise our own for the kind of failure.
+     */
+    const showResolveError = (response?: ResolveError) => {
+      notifyError(
+        response?.message ?? t('resolve.error.' + (response?.error ?? RESOLVE_ERROR_UNKNOWN)),
+        NOTIFICATION_DELAY_IN_SECONDS
+      );
+    };
+
+    /**
      * Applies a coordinate-resolve response to the form, unless it's been superseded.
      */
     const processCoordinatesResults = (response: any, requestRevision: number) => {
@@ -459,32 +309,33 @@ export default function TargetEntry({
       }
 
       if (response && !response.error) {
+        invalidatePendingResolve();
         if (response.reference_coordinate.kind === 'galactic') {
-          setTheCoord1(String(response.reference_coordinate.l));
-          setTheCoord2(String(response.reference_coordinate.b));
+          setEntryValues({
+            l: String(response.reference_coordinate.l),
+            b: String(response.reference_coordinate.b)
+          });
         } else {
-          setTheCoord1(response.reference_coordinate.ra_str);
-          setTheCoord2(response.reference_coordinate.dec_str);
+          setEntryValues({
+            raStr: response.reference_coordinate.ra_str,
+            decStr: response.reference_coordinate.dec_str
+          });
         }
 
         const velocity = response.radial_velocity?.quantity?.value;
         const redshift = response.radial_velocity?.redshift;
 
         if (redshift && redshift !== 0) {
-          setVelType(VELOCITY_TYPE.REDSHIFT);
-
-          setRedshift(String(redshift));
-          setVel('');
+          setEntryValues({ velType: VELOCITY_TYPE.REDSHIFT, redshift: String(redshift), vel: '' });
         } else {
-          setVelType(VELOCITY_TYPE.VELOCITY);
-
-          setVel(velocity != null ? String(velocity) : '');
-          setRedshift('');
+          setEntryValues({
+            velType: VELOCITY_TYPE.VELOCITY,
+            vel: velocity != null ? String(velocity) : '',
+            redshift: ''
+          });
         }
-
-        setNameFieldError('');
       } else {
-        setNameFieldError(t('resolve.error.' + (response?.error ?? RESOLVE_ERROR_UNKNOWN)));
+        showResolveError(response);
       }
     };
 
@@ -499,11 +350,11 @@ export default function TargetEntry({
       setResolutionLoading(true);
 
       try {
-        const response = await GetCoordinates(requestName, referenceCoordinates);
+        const response = await GetCoordinates(requestName, kind);
         processCoordinatesResults(response, requestRevision);
       } catch {
         if (resolveRevisionRef.current === requestRevision) {
-          setNameFieldError(t('resolve.error.' + RESOLVE_ERROR_UNKNOWN));
+          showResolveError(undefined);
         }
       } finally {
         if (resolveRevisionRef.current === requestRevision) {
@@ -517,17 +368,13 @@ export default function TargetEntry({
         {resolutionLoading ? (
           <Progress size={20} />
         ) : (
-          <ResolveButton
-            action={() => getCoordinates()}
-            disabled={!name || resolutionLoading}
-            testId={'resolveButton'}
-          />
+          <ResolveButton action={() => getCoordinates()} disabled={!name || resolutionLoading} />
         )}
       </>
     );
   };
 
-  const isRequired = () => name !== '' || coord1 !== '' || coord2 !== '';
+  const isRequired = () => [name, raStr, decStr, l, b].some((value) => value !== '');
 
   const wrapper = (children?: React.JSX.Element) => (
     <Box
@@ -541,123 +388,158 @@ export default function TargetEntry({
     </Box>
   );
 
-  const wrapper2 = (children?: React.JSX.Element) => (
-    <Box
-      sx={{
-        p: 0,
-        pt: 2,
-        height: WRAPPER_HEIGHT
-      }}
-    >
-      {children}
-    </Box>
-  );
-
-  // this allows for the
+  // Editing an existing target: its coordinate system is fixed, and the dialog
+  // confirms the edit instead of the Add button
   const isEditMode = !!target;
 
-  const referenceCoordinatesField = () =>
-    wrapper(
-      <ReferenceCoordinatesField
-        setValue={setTheReferenceCoordinates}
-        value={referenceCoordinates}
-        disabled={isEditMode || resolutionLoading}
-      />
+  const VELOCITY_TYPE_OPTIONS = [VELOCITY_TYPE.VELOCITY, VELOCITY_TYPE.REDSHIFT].map((e) => ({
+    label: t('velocity.' + e + '.label'),
+    value: e
+  }));
+  const VELOCITY_UNIT_OPTIONS = VELOCITY_UNITS.map(({ value }) => ({
+    label: t('velocity.units.' + value),
+    value
+  }));
+
+  const endAdornment = (content: React.ReactNode) => ({
+    input: { endAdornment: <InputAdornment position="end">{content}</InputAdornment> }
+  });
+
+  const referenceCoordinatesField = () => {
+    const disabled = isEditMode || resolutionLoading;
+    return wrapper(
+      <Tooltip title={disabled ? t('referenceCoordinates.tooltip') : ''}>
+        <Box sx={{ pt: 1 }}>
+          <ControlledSelect
+            name="kind"
+            options={REFERENCE_COORDINATE_OPTIONS}
+            required
+            label={t('referenceCoordinates.label')}
+            // A new coordinate system starts the entry again, so it resets the form itself
+            withFormUpdate={false}
+            onChange={(event) => setTheReferenceCoordinates(Number(event.target.value))}
+            disabled={disabled}
+          />
+        </Box>
+      </Tooltip>
     );
+  };
 
   const solarSystemObjectField = () =>
-    wrapper(<SolarSystemObjectField setValue={setTheName} value={name} />);
-
-  const fieldPatternTypeField = () => {
-    return wrapper(
-      <Box
-        sx={{
-          pt: 1
-        }}
-      >
-        <TextEntry
-          disabled={true}
-          label={t('fieldPattern.label')}
-          onFocus={() => setHelp('fieldPattern.help')}
-          testId="fieldPatternId"
-          value={fieldPattern}
-          setValue={setFieldPattern}
-          toolTip={t('fieldPattern.toolTip')}
+    wrapper(
+      <Box sx={{ pt: 1 }}>
+        <ControlledSelect
+          name="name"
+          options={SSO_OPTIONS}
+          required
+          label={t('name.label')}
+          onChange={invalidatePendingResolve}
         />
       </Box>
     );
-  };
+
+  const fieldPatternTypeField = () =>
+    wrapper(
+      <Box sx={{ pt: 1 }}>
+        <Tooltip title={t('fieldPattern.toolTip')}>
+          <ControlledTextField
+            name="fieldPattern"
+            disabled
+            label={t('fieldPattern.label')}
+            onFocus={() => setHelp('fieldPattern.help')}
+          />
+        </Tooltip>
+      </Box>
+    );
+
   const nameField = () =>
     wrapper(
-      <TextEntry
+      <ControlledTextField
+        name="name"
         required={isRequired()}
         label={t('name.label')}
-        testId={'name'}
-        value={name}
-        setValue={setTheName}
-        suffix={!isSSO ? resolveButton() : undefined}
-        onBlur={blurName}
+        slotProps={!isSSO ? endAdornment(resolveButton()) : undefined}
+        onChange={invalidatePendingResolve}
         onFocus={() => setHelp('name.help')}
-        errorText={nameFieldError}
         disabled={resolutionLoading}
       />
     );
 
-  const skyDirection1Field = () =>
-    wrapper(
-      <SkyDirection1
-        required={isRequired()}
-        setValue={setTheCoord1}
-        skyUnits={referenceCoordinates}
-        value={coord1}
-        valueBlur={blurCoord1}
-        valueFocus={() => setHelp('skyDirection.1')}
-        setErrorText={setSkyDirection1Error} // Pass the callback
-      />
+  // The inputs for the chosen coordinate system: text for ICRS, numbers for Galactic, and none for a
+  // solar system object, which is found by name
+  const coordinateFields = () => {
+    const field = (
+      { name: fieldName, axis }: CoordinateFieldDef,
+      Entry: typeof ControlledTextField | typeof ControlledNumberField
+    ) => (
+      <Grid key={fieldName} size={{ md: 12, lg: 6 }}>
+        {wrapper(
+          <Entry
+            name={fieldName}
+            required={isRequired()}
+            label={t(`skyDirection.label.${axis}.${kind}`)}
+            slotProps={endAdornment(t(`skyDirection.units.${axis}.${kind}`))}
+            onChange={invalidatePendingResolve}
+            onFocus={() => setHelp(`skyDirection.${axis}`)}
+          />
+        )}
+      </Grid>
     );
-
-  const skyDirection2Field = () =>
-    wrapper(
-      <SkyDirection2
-        required={isRequired()}
-        setValue={setTheCoord2}
-        skyUnits={referenceCoordinates}
-        value={coord2}
-        valueFocus={() => setHelp('skyDirection.2')}
-        valueBlur={blurCoord2}
-        setErrorText={setSkyDirection2Error} // Pass the callback
-      />
-    );
+    switch (kind) {
+      case REFERENCE_COORDINATE_TYPE_ICRS.value:
+        return ICRS_FIELDS.map((def) => field(def, ControlledTextField));
+      case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
+        return GALACTIC_FIELDS.map((def) => field(def, ControlledNumberField));
+      default:
+        return null;
+    }
+  };
 
   const velocityTypeField = () =>
-    wrapper2(
-      <VelocityTypeField
-        setVelType={setTheVelType}
-        velType={velType}
-        velTypeFocus={() => setHelp('velocityType')}
+    wrapper(
+      <ControlledSelect
+        name="velType"
+        options={VELOCITY_TYPE_OPTIONS}
+        label={t('velocityType.label')}
+        onChange={invalidatePendingResolve}
+        onFocus={() => setHelp('velocityType')}
       />
     );
 
   const velocityField = () =>
     wrapper(
-      <VelocityField
-        setRedshift={setTheRedshift}
-        setVel={setTheVel}
-        setVelUnit={setTheVelUnit}
-        redshift={redshift}
-        redshiftBlur={blurRedshift}
-        vel={vel}
-        velType={velType}
-        velUnit={velUnit}
-        velFocus={() => setHelp('velocity.' + velType)}
-        velUnitFocus={() => setHelp('velocity.' + velType)}
-        velBlur={blurVel}
-        setErrorText={setRmFieldError}
-      />
+      velType === VELOCITY_TYPE.VELOCITY ? (
+        <Grid container spacing={0.5}>
+          <Grid size={9}>
+            <ControlledTextField
+              name="vel"
+              label={t('velocity.' + velType + '.label')}
+              onChange={invalidatePendingResolve}
+              onFocus={() => setHelp('velocity.' + velType)}
+            />
+          </Grid>
+          <Grid size={3}>
+            <ControlledSelect
+              name="velUnit"
+              options={VELOCITY_UNIT_OPTIONS}
+              onChange={invalidatePendingResolve}
+              onFocus={() => setHelp('velocity.' + velType)}
+            />
+          </Grid>
+        </Grid>
+      ) : (
+        <ControlledTextField
+          name="redshift"
+          label={t('velocity.' + velType + '.label')}
+          onChange={invalidatePendingResolve}
+          onFocus={() => setHelp('velocity.' + velType)}
+        />
+      )
     );
 
+  // The inputs below find the entry form through this provider
   return (
-    <>
+    <FormProvider {...entryValues}>
       <Grid
         sx={{
           pt: 4
@@ -701,8 +583,7 @@ export default function TargetEntry({
                   alignItems: 'center'
                 }}
               >
-                <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
-                <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
+                {coordinateFields()}
               </Grid>
             )}
           </BorderedSection>
@@ -732,10 +613,9 @@ export default function TargetEntry({
                   alignItems: 'center'
                 }}
               >
-                <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
-                <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
+                <Grid size={6}>{velocityTypeField()}</Grid>
+                <Grid size={6}>{velocityField()}</Grid>
               </Grid>
-              {velType === VELOCITY_TYPE.VELOCITY}
             </BorderedSection>
           </Box>
         </Grid>
@@ -760,7 +640,7 @@ export default function TargetEntry({
           </Box>
         </Grid>
       )}
-      {!id && (
+      {!isEditMode && (
         <Grid
           sx={{
             pl: 10
@@ -769,6 +649,6 @@ export default function TargetEntry({
           {addButton()}
         </Grid>
       )}
-    </>
+    </FormProvider>
   );
 }

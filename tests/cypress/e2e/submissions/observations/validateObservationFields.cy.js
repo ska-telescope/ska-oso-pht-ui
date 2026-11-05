@@ -1,9 +1,9 @@
 import {
+  checkAddTargetDisabled,
   clearLocalStorage,
   pageConfirmed,
   clickStatusIconNav,
   updateFieldValue,
-  checkFieldDisabled,
   addM2TargetAndAutoLink,
   verifyOsdDataCycleID,
   verifyOsdDataCycleDescription,
@@ -27,7 +27,7 @@ describe('SV Flow: Validate Observation Fields', () => {
     completeScienceIdeaCreation();
     addM2TargetAndAutoLink('Continuum');
     //verify addTarget is disabled after autoLink
-    checkFieldDisabled('addTargetButton', true);
+    checkAddTargetDisabled(true);
   });
 
   afterEach(() => {
@@ -39,7 +39,7 @@ describe('SV Flow: Validate Observation Fields', () => {
     pageConfirmed('OBSERVATION');
     updateFieldValue('continuumBandwidth', '500'); //update continuum bandwidth to an invalid value
     // continuumBandwidth's testid is on the input itself, and its FormHelperText is a sibling
-    // of the input's own parent (not reachable via verifyFieldError's single .parent() hop), so
+    // of the input's own parent (not reachable with a single .parent() hop), so
     // it carries its own dedicated testid instead.
     cy.get('[data-testid="continuumBandwidthError"]').should(
       'contain.text',

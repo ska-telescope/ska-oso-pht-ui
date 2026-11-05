@@ -5,7 +5,7 @@ import SciencePage from './SciencePage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getDocumentValues } from '@/models/proposals/documents';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -143,11 +143,11 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: {
+      defaultValues: getProposalFormValues({
         title: '',
         proposalType: null,
-        ...getDocumentValues(mockStore.application.content2 as any)
-      }
+        ...(mockStore.application.content2 as any)
+      })
     });
     return (
       <FormProvider {...methods}>
