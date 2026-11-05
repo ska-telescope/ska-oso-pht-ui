@@ -51,6 +51,7 @@ function checkGalacticLongitude(value: string): ValueError | null {
 function coordinateField(axis: SkyDirectionAxis, check: CoordinateCheck) {
   return z
     .string()
+    .trim()
     .superRefine(function reportCoordinateError(value, ctx) {
       const errorCode = check(value);
       if (errorCode !== null) {
@@ -64,8 +65,9 @@ function coordinateField(axis: SkyDirectionAxis, check: CoordinateCheck) {
 function nameField(takenNames: string[]) {
   return z
     .string()
+    .trim()
     .superRefine(function checkName(name, ctx) {
-      if (!name.trim()) {
+      if (!name) {
         ctx.addIssue({ code: 'custom', message: phtTranslations.addTarget.valueError });
       } else if (takenNames.some((taken) => isSameName(taken, name))) {
         ctx.addIssue({ code: 'custom', message: phtTranslations.addTarget.error });
@@ -112,9 +114,9 @@ export function getTargetEntrySchema(takenNames: string[] = []) {
   const common = z.object({
     name: nameField(takenNames),
     velType: target.velType.unwrap().default(VELOCITY_TYPE.VELOCITY),
-    vel: target.vel.unwrap().default(''),
+    vel: target.vel.unwrap().trim().default(''),
     velUnit: target.velUnit.unwrap().default(VELOCITY_UNIT.KM_PER_S),
-    redshift: target.redshift.unwrap().default(''),
+    redshift: target.redshift.unwrap().trim().default(''),
     // Shown in the entry only; not yet saved with the target
     fieldPattern: z.string().default(FIELD_PATTERN_POINTING_CENTRES)
   });

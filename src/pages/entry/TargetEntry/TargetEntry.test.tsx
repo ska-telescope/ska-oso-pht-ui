@@ -240,8 +240,8 @@ describe('<TargetEntry /> form preservation on auto-linking error', { timeout: 1
     });
 
     expect(nameField).toHaveValue('My Target');
-    expect(raField).toHaveValue('12:34:56.000');
-    expect(decField).toHaveValue('45:00:00.000');
+    expect(raField).toHaveValue('12:34:56');
+    expect(decField).toHaveValue('45:00:00');
   }, 15000);
 
   it('shows a loading state and disables editing and clearing while coordinates are resolving', async () => {
@@ -390,7 +390,7 @@ describe('<TargetEntry /> auto-linking route', () => {
 
     expect(linkTarget).not.toHaveBeenCalled();
     expect(formProbe.getValues('targets')).toEqual([
-      expect.objectContaining({ name: 'My Target', raStr: '12:34:56.000' })
+      expect.objectContaining({ name: 'My Target', raStr: '12:34:56' })
     ]);
     expect(nameInput()).toHaveValue('');
   }, 15000);

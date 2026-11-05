@@ -14,7 +14,7 @@ import GetCoordinates, {
   RESOLVE_ERROR_UNKNOWN,
   ResolveError
 } from '@services/axios/get/getCoordinates/getCoordinates';
-import { generateTargetId, leadZero, trailingZeros } from '@utils/helpers.ts';
+import { generateTargetId } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import CancelButton from '@/components/button/Cancel/Cancel';
@@ -153,12 +153,12 @@ export default function TargetEntry({
     // The whole entry is checked before the target is added
     const addButtonAction = () => {
       invalidatePendingResolve();
-      return entryValues.handleSubmit(() => AddTheTarget())();
+      return entryValues.handleSubmit(AddTheTarget)();
     };
 
-    const AddTheTarget = () => {
-      const { name, kind, raStr, decStr, l, b, velType, vel, velUnit, redshift } =
-        entryValues.getValues();
+    // The entry as the schema parsed it, so its text is trimmed
+    const AddTheTarget = (entry: TargetEntryType) => {
+      const { name, kind, raStr, decStr, l, b, velType, vel, velUnit, redshift } = entry;
       const baseTarget = {
         kind,
         id: generateTargetId(),
@@ -401,8 +401,7 @@ export default function TargetEntry({
   );
 
   // Editing an existing target: its coordinate system is fixed, and the dialog
-  // confirms the edit
-  //instead of the Add button
+  // confirms the edit instead of the Add button
   const isEditMode = !!target;
 
   const VELOCITY_TYPE_OPTIONS = [VELOCITY_TYPE.VELOCITY, VELOCITY_TYPE.REDSHIFT].map((e) => ({
@@ -413,26 +412,6 @@ export default function TargetEntry({
     label: t('velocity.units.' + value),
     value
   }));
-
-  const trimEnd = (value: string) => value.trimEnd();
-  const tidyCoordinate = (value: string) => trailingZeros(leadZero(value.trimEnd()).toString());
-
-  /**
-   * Tidies an input's text when it is left. Only a real change is set, so leaving a field the user
-   * has not touched shows no error.
-   */
-  const tidyOnBlur =
-    (
-      fieldName: 'name' | 'raStr' | 'decStr' | 'vel' | 'redshift',
-      tidy: (value: string) => string
-    ) =>
-    () => {
-      const value = entryValues.getValues(fieldName);
-      const tidied = tidy(value);
-      if (tidied !== value) {
-        entryValues.setValue(fieldName, tidied, { shouldValidate: true });
-      }
-    };
 
   const endAdornment = (content: React.ReactNode) => ({
     input: { endAdornment: <InputAdornment position="end">{content}</InputAdornment> }
@@ -493,7 +472,6 @@ export default function TargetEntry({
         label={t('name.label')}
         slotProps={!isSSO ? endAdornment(resolveButton()) : undefined}
         onChange={invalidatePendingResolve}
-        onBlur={tidyOnBlur('name', trimEnd)}
         onFocus={() => setHelp('name.help')}
         disabled={resolutionLoading}
       />
@@ -514,11 +492,6 @@ export default function TargetEntry({
             label={t(`skyDirection.label.${axis}.${kind}`)}
             slotProps={endAdornment(t(`skyDirection.units.${axis}.${kind}`))}
             onChange={invalidatePendingResolve}
-            onBlur={
-              Entry === ControlledTextField
-                ? tidyOnBlur(fieldName as 'raStr' | 'decStr', tidyCoordinate)
-                : undefined
-            }
             onFocus={() => setHelp(`skyDirection.${axis}`)}
           />
         )}
@@ -564,7 +537,6 @@ export default function TargetEntry({
             />
           )}
           onChange={invalidatePendingResolve}
-          onBlur={tidyOnBlur('vel', trimEnd)}
           onFocus={() => setHelp('velocity.' + velType)}
         />
       ) : (
@@ -572,7 +544,6 @@ export default function TargetEntry({
           name="redshift"
           label={t('velocity.' + velType + '.label')}
           onChange={invalidatePendingResolve}
-          onBlur={tidyOnBlur('redshift', trimEnd)}
           onFocus={() => setHelp('velocity.' + velType)}
         />
       )

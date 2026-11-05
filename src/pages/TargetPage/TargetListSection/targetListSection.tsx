@@ -69,17 +69,19 @@ export default function TargetListSection() {
     setOpenEditDialog(true);
   };
 
-  const editConfirmed = () => {
-    if (rowTarget && editStartRef.current) {
-      const edited = applyTargetEdit(rowTarget, editStartRef.current, editEntryForm.getValues());
-      form.setValue(
-        'targets',
-        targets.map((rec) => (rec.id === edited.id ? edited : rec))
-      );
-    }
-    setRowTarget(null);
-    closeDialog();
-  };
+  // The edit as the schema parsed it, so its text is trimmed
+  const editConfirmed = () =>
+    editEntryForm.handleSubmit((after) => {
+      if (rowTarget && editStartRef.current) {
+        const edited = applyTargetEdit(rowTarget, editStartRef.current, after);
+        form.setValue(
+          'targets',
+          targets.map((rec) => (rec.id === edited.id ? edited : rec))
+        );
+      }
+      setRowTarget(null);
+      closeDialog();
+    })();
 
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
