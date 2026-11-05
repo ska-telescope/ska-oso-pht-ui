@@ -388,18 +388,6 @@ export default function TargetEntry({
     </Box>
   );
 
-  const wrapper2 = (children?: React.JSX.Element) => (
-    <Box
-      sx={{
-        p: 0,
-        pt: 2,
-        height: WRAPPER_HEIGHT
-      }}
-    >
-      {children}
-    </Box>
-  );
-
   // Editing an existing target: its coordinate system is fixed, and the dialog
   // confirms the edit instead of the Add button
   const isEditMode = !!target;
@@ -508,37 +496,37 @@ export default function TargetEntry({
   };
 
   const velocityTypeField = () =>
-    wrapper2(
-      <Box sx={{ pt: 1 }}>
-        <ControlledSelect
-          name="velType"
-          options={VELOCITY_TYPE_OPTIONS}
-          label={t('velocityType.label')}
-          required
-          onChange={invalidatePendingResolve}
-          onFocus={() => setHelp('velocityType')}
-        />
-      </Box>
+    wrapper(
+      <ControlledSelect
+        name="velType"
+        options={VELOCITY_TYPE_OPTIONS}
+        label={t('velocityType.label')}
+        onChange={invalidatePendingResolve}
+        onFocus={() => setHelp('velocityType')}
+      />
     );
 
   const velocityField = () =>
     wrapper(
       velType === VELOCITY_TYPE.VELOCITY ? (
-        <ControlledTextField
-          name="vel"
-          label={t('velocity.' + velType + '.label')}
-          slotProps={endAdornment(
-            <ControlledSelect
-              name="velUnit"
-              options={VELOCITY_UNIT_OPTIONS}
-              variant="standard"
+        <Grid container spacing={0.5}>
+          <Grid size={9}>
+            <ControlledTextField
+              name="vel"
+              label={t('velocity.' + velType + '.label')}
               onChange={invalidatePendingResolve}
               onFocus={() => setHelp('velocity.' + velType)}
             />
-          )}
-          onChange={invalidatePendingResolve}
-          onFocus={() => setHelp('velocity.' + velType)}
-        />
+          </Grid>
+          <Grid size={3}>
+            <ControlledSelect
+              name="velUnit"
+              options={VELOCITY_UNIT_OPTIONS}
+              onChange={invalidatePendingResolve}
+              onFocus={() => setHelp('velocity.' + velType)}
+            />
+          </Grid>
+        </Grid>
       ) : (
         <ControlledTextField
           name="redshift"
@@ -625,8 +613,8 @@ export default function TargetEntry({
                   alignItems: 'center'
                 }}
               >
-                <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
-                <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
+                <Grid size={6}>{velocityTypeField()}</Grid>
+                <Grid size={6}>{velocityField()}</Grid>
               </Grid>
             </BorderedSection>
           </Box>
