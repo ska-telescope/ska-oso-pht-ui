@@ -25,8 +25,7 @@ export function getDetailsSchema() {
   });
 }
 
-type DetailsSeed = {
-  abstract?: string;
+type DetailsSeed = Omit<Partial<DetailsType>, 'scienceCategory'> & {
   scienceCategory?: number | string | null;
 };
 
