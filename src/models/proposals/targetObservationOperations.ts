@@ -6,7 +6,7 @@ import type { ProposalFormAccess } from './proposal';
 // mappers stay free of the form.
 
 /**
- * Writes sensitivity results to the links they belong to, changing nothing but their sensCalc.
+ * Writes sensitivity results to the links they belong to, changing nothing but their sensitivityResults.
  * The patches are applied to the links as they are now, so links changed while the results were
  * being calculated are kept. The form is left alone when no link is patched.
  *

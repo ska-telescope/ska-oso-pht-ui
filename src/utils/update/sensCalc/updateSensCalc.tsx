@@ -14,7 +14,7 @@ export const getTargetObservationKey = (
 
 export type SensCalcPatch = {
   targetObservationKey: string;
-  sensCalc: SensCalcResults;
+  sensitivityResults: SensCalcResults;
 };
 
 export const applySensCalcPatches = (
@@ -26,14 +26,14 @@ export const applySensCalcPatches = (
   }
 
   const patchesByKey = new Map(
-    patches.map((patch) => [patch.targetObservationKey, patch.sensCalc])
+    patches.map((patch) => [patch.targetObservationKey, patch.sensitivityResults])
   );
   return targetObservations.map((targetObservation) => {
     const patchedSensCalc = patchesByKey.get(getTargetObservationKey(targetObservation));
     if (!patchedSensCalc) {
       return targetObservation;
     }
-    return { ...targetObservation, sensCalc: patchedSensCalc };
+    return { ...targetObservation, sensitivityResults: patchedSensCalc };
   });
 };
 
@@ -73,7 +73,7 @@ export const fetchSensCalcPatches = async (
         if (!inputsAreValid) {
           return {
             targetObservationKey,
-            sensCalc: {
+            sensitivityResults: {
               title: '',
               statusGUI: STATUS_INITIAL,
               error: ''
@@ -89,7 +89,7 @@ export const fetchSensCalcPatches = async (
 
         return {
           targetObservationKey,
-          sensCalc: sensCalcResponse
+          sensitivityResults: sensCalcResponse
         };
       })
   );

@@ -120,7 +120,7 @@ export const MockProposalFrontend: Proposal = {
       targetId: 'target-123',
       observationId: 'obs-obR1Ej',
       dataProductsSDPId: 'SDP-2',
-      sensCalc: {
+      sensitivityResults: {
         statusGUI: 0,
         error: '',
         section1: [
@@ -300,7 +300,7 @@ export const MockProposalFrontendZoom: Proposal = {
       targetId: 'target-123',
       observationId: 'obs-arMIoY',
       dataProductsSDPId: 'SDP-1',
-      sensCalc: {
+      sensitivityResults: {
         statusGUI: 0,
         error: '',
         section1: [

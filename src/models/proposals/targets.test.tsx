@@ -5,7 +5,7 @@ import {
   MockProposalBackendZoom
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { MockSlicesPdm } from './mockSlicesPdm';
+import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import Target from '@utils/types/target';
 import { VELOCITY_DEFINITION, VELOCITY_TYPE } from '@/utils/constants';
 import { getTargetsSchema, TargetsType, targetsFromPdm, targetsToPdm } from './targets';

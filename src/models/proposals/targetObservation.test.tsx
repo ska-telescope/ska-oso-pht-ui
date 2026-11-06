@@ -5,7 +5,7 @@ import {
   MockProposalBackendZoom
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { MockSlicesPdm } from './mockSlicesPdm';
+import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import TargetObservation from '@utils/types/targetObservation';
 import {
   getTargetObservationSchema,
@@ -42,7 +42,9 @@ describe('target observation schema', () => {
   });
 
   test('rejects an unknown sensitivity status', () => {
-    expect(schema.safeParse([{ ...link, sensCalc: { statusGUI: 2 } }]).success).toBe(false);
+    expect(schema.safeParse([{ ...link, sensitivityResults: { statusGUI: 2 } }]).success).toBe(
+      false
+    );
   });
 
   test('legacy links can seed the form', () => {

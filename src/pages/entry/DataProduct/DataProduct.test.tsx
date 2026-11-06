@@ -1,5 +1,5 @@
 // DataProduct.test.tsx
-import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -18,7 +18,7 @@ const { mockFetchSensCalcPatches } = vi.hoisted(() => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(<ProposalFormProvider>{component}</ProposalFormProvider>);
+  return render(<TestProposalFormProvider>{component}</TestProposalFormProvider>);
 };
 
 // --- Mocks ---
@@ -94,7 +94,7 @@ describe('DataProduct component', () => {
   } as DataProductSDPNew;
 
   const renderExistingDataProduct = (
-    sensCalc?: SensCalcResults,
+    sensitivityResults?: SensCalcResults,
     observationType: string = TYPE_CONTINUUM
   ) => {
     mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
@@ -114,13 +114,13 @@ describe('DataProduct component', () => {
             }
           ],
           dataProductSDP: [existingDataProduct],
-          targetObservation: sensCalc
+          targetObservation: sensitivityResults
             ? [
                 {
                   observationId: 'OBS1',
                   dataProductsSDPId: 'DP1',
                   targetId: 'T1',
-                  sensCalc
+                  sensitivityResults
                 }
               ]
             : []
@@ -158,7 +158,7 @@ describe('DataProduct component', () => {
       ...existingDataProduct,
       data: { ...existingDataProduct.data, channelsOut: 1 }
     } as DataProductSDPNew;
-    const sensCalc = {
+    const sensitivityResults = {
       section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }],
       section2: [{ field: 'spectralSensitivityWeighted', value: '2', units: 'Jy' }],
       statusGUI: 0
@@ -184,7 +184,7 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               dataProductsSDPId: 'DP1',
               targetId: 'T1',
-              sensCalc
+              sensitivityResults
             }
           ]
         }
@@ -472,7 +472,7 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               dataProductsSDPId: 'DP1',
               targetId: 'T1',
-              sensCalc: {
+              sensitivityResults: {
                 title: 'Target 1',
                 statusGUI: 0,
                 error: '',
@@ -549,7 +549,7 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               dataProductsSDPId: 'DP1',
               targetId: 'T1',
-              sensCalc: {
+              sensitivityResults: {
                 title: 'Target 1',
                 statusGUI: 0,
                 error: '',

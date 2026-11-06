@@ -183,7 +183,7 @@ describe('regenerateForMode()', () => {
           targetId: mockTarget.id,
           observationId: 'existing-obs',
           dataProductsSDPId: 'existing-sdp',
-          sensCalc: { stub: true } as any
+          sensitivityResults: { stub: true } as any
         }
       ],
       calibrationStrategy: [
@@ -233,7 +233,7 @@ describe('regenerateForMode()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
     expect(proposal.targetObservation?.[0].observationId).toBe('mock-0000000');
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe(proposal.dataProductSDP?.[0].id);
-    expect(proposal.targetObservation?.[0].sensCalc).toEqual(validMockSensCal);
+    expect(proposal.targetObservation?.[0].sensitivityResults).toEqual(validMockSensCal);
   });
 
   it('updates existing observations, calibrations, sdps, targets so that there is always only 1 of each', async () => {
@@ -303,7 +303,7 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensCalc).toEqual(mockSensCal);
+    expect(link?.sensitivityResults).toEqual(mockSensCal);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
@@ -355,7 +355,7 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensCalc).toEqual(mockSensCal);
+    expect(link?.sensitivityResults).toEqual(mockSensCal);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
@@ -382,7 +382,7 @@ describe('regenerateForMode()', () => {
           targetId: mockTarget.id,
           observationId: 'existing-pst-obs',
           dataProductsSDPId: 'existing-pst-sdp',
-          sensCalc: { stub: true } as any
+          sensitivityResults: { stub: true } as any
         }
       ],
       calibrationStrategy: [
@@ -427,7 +427,7 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensCalc).toEqual(validMockSensCal);
+    expect(link?.sensitivityResults).toEqual(validMockSensCal);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
@@ -503,9 +503,9 @@ describe('regenerateForMode()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
   });
 
-  it('creates a link for an SSO target even without a sensCalc result', async () => {
+  it('creates a link for an SSO target even without sensitivity results', async () => {
     const ssoTarget = { ...mockTarget, kind: REFERENCE_COORDINATE_TYPE_SSO.value };
-    // SSO targets skip the sensCalc call — getSensCalc resolves undefined
+    // SSO targets skip the sensitivity calculator call — getSensCalc resolves undefined
     vi.mocked(getSensCalc as any).mockResolvedValue(undefined);
 
     const result = await regenerateForMode(
@@ -528,7 +528,7 @@ describe('regenerateForMode()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
 
     // ...but with no sensitivity result attached
-    expect(proposal.targetObservation?.[0].sensCalc).toBeUndefined(); // ← verify: may be null
+    expect(proposal.targetObservation?.[0].sensitivityResults).toBeUndefined(); // ← verify: may be null
   });
 });
 
@@ -724,7 +724,7 @@ describe('linkTarget()', () => {
         targetId: mockTarget.id,
         observationId: 'existing-obs',
         dataProductsSDPId: 'existing-sdp',
-        sensCalc: validMockSensCal
+        sensitivityResults: validMockSensCal
       }
     ]);
   });

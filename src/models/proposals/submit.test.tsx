@@ -6,7 +6,7 @@ import {
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { STATUS_ERROR, STATUS_OK, PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
 import { ProposalBackend } from '@/utils/types/proposal';
-import { MockSlicesPdm } from './mockSlicesPdm';
+import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import { getProposalSchema, ProposalType } from './proposal';
 import { getProposalSubmitSchema, getSubmitPageStatuses } from './submit';
 import { getProposalFormValues } from './useProposalForm';
@@ -86,7 +86,7 @@ describe('getSubmitPageStatuses', () => {
 
 test.each([
   ['target', { targets: [{ ...target, kind: 'not a number' }] }],
-  ['linking', { targetObservation: [{ ...link, sensCalc: { statusGUI: 99 } }] }],
+  ['linking', { targetObservation: [{ ...link, sensitivityResults: { statusGUI: 99 } }] }],
   ['calibration', { calibrationStrategy: [{ ...strategy, calibrators: 'not a list' }] }]
 ] as const)(
   'does not check anything the page checks did not, such as a malformed %s entry',

@@ -38,7 +38,7 @@ export function getTargetObservationLinkSchema() {
     targetId: z.string(),
     observationId: z.string(),
     dataProductsSDPId: z.string(),
-    sensCalc: getSensCalcResultsSchema().optional()
+    sensitivityResults: getSensCalcResultsSchema().optional()
   });
 }
 
@@ -225,7 +225,7 @@ export const targetObservationFromPdm = (
     };
 
     if (result.result != undefined) {
-      targetObs.sensCalc = {
+      targetObs.sensitivityResults = {
         statusGUI: 0, // only for UI
         error: '', // only for UI
         section1: getResultsSection1(
@@ -303,7 +303,7 @@ const getSuppliedFieldsSensitivity = (
   tarObs: Link,
   spectralSection: SpectralSection
 ) => {
-  if (!tarObs?.sensCalc) {
+  if (!tarObs?.sensitivityResults) {
     return null;
   }
 
@@ -314,60 +314,70 @@ const getSuppliedFieldsSensitivity = (
     value:
       isContinuum(obsType) || isPST(obsType)
         ? Number(
-            tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumSensitivityWeighted')
-              ?.value
+            tarObs?.sensitivityResults?.section1?.find(
+              (o) => o.field === 'continuumSensitivityWeighted'
+            )?.value
           )
         : 0,
     unit:
       isContinuum(obsType) || isPST(obsType)
-        ? (tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumSensitivityWeighted')
-            ?.units as string)
+        ? (tarObs?.sensitivityResults?.section1?.find(
+            (o) => o.field === 'continuumSensitivityWeighted'
+          )?.units as string)
         : ''
   };
   params.total_continuum_sensitivity = {
     value:
       isContinuum(obsType) || isPST(obsType)
         ? Number(
-            tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumTotalSensitivity')?.value
+            tarObs?.sensitivityResults?.section1?.find(
+              (o) => o.field === 'continuumTotalSensitivity'
+            )?.value
           )
         : 0,
     unit:
       isContinuum(obsType) || isPST(obsType)
-        ? (tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumTotalSensitivity')
-            ?.units as string)
+        ? (tarObs?.sensitivityResults?.section1?.find(
+            (o) => o.field === 'continuumTotalSensitivity'
+          )?.units as string)
         : ''
   };
 
   params.weighted_spectral_sensitivity = {
     value: Number(
-      tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSensitivityWeighted')
-        ?.value
+      tarObs.sensitivityResults[spectralSection]?.find(
+        (o) => o.field === 'spectralSensitivityWeighted'
+      )?.value
     ),
-    unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSensitivityWeighted')
-      ?.units as string
+    unit: tarObs.sensitivityResults[spectralSection]?.find(
+      (o) => o.field === 'spectralSensitivityWeighted'
+    )?.units as string
   };
   params.total_spectral_sensitivity = {
     value: Number(
-      tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralTotalSensitivity')?.value
+      tarObs.sensitivityResults[spectralSection]?.find(
+        (o) => o.field === 'spectralTotalSensitivity'
+      )?.value
     ),
-    unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralTotalSensitivity')
-      ?.units as string
+    unit: tarObs.sensitivityResults[spectralSection]?.find(
+      (o) => o.field === 'spectralTotalSensitivity'
+    )?.units as string
   };
   params.surface_brightness_sensitivity = {
     continuum:
       isContinuum(obsType) || isPST(obsType)
         ? Number(
-            tarObs.sensCalc.section1?.find(
+            tarObs.sensitivityResults.section1?.find(
               (o) => o.field === 'continuumSurfaceBrightnessSensitivity'
             )?.value
           )
         : 0,
     spectral: Number(
-      tarObs.sensCalc[spectralSection]?.find(
+      tarObs.sensitivityResults[spectralSection]?.find(
         (o) => o.field === 'spectralSurfaceBrightnessSensitivity'
       )?.value
     ),
-    unit: tarObs.sensCalc[spectralSection]?.find(
+    unit: tarObs.sensitivityResults[spectralSection]?.find(
       (o) => o.field === 'spectralSurfaceBrightnessSensitivity'
     )?.units as string
   };
@@ -379,7 +389,7 @@ export const getSuppliedFieldsIntegrationTime = (
   obsType: string,
   tarObs: Link
 ) => {
-  if (!tarObs?.sensCalc) {
+  if (!tarObs?.sensitivityResults) {
     return null;
   }
 
@@ -388,13 +398,18 @@ export const getSuppliedFieldsIntegrationTime = (
   };
   params.continuum = {
     value:
-      isContinuum(obsType) || isPST(obsType) ? Number(tarObs.sensCalc.section3?.[0]?.value) : 0,
-    unit: isContinuum(obsType) || isPST(obsType) ? (tarObs.sensCalc.section3?.[0]?.units ?? '') : ''
+      isContinuum(obsType) || isPST(obsType)
+        ? Number(tarObs.sensitivityResults.section3?.[0]?.value)
+        : 0,
+    unit:
+      isContinuum(obsType) || isPST(obsType)
+        ? (tarObs.sensitivityResults.section3?.[0]?.units ?? '')
+        : ''
   };
 
   params.spectral = {
-    value: Number(tarObs.sensCalc.section3?.[0]?.value),
-    unit: tarObs.sensCalc.section3?.[0]?.units ?? ''
+    value: Number(tarObs.sensitivityResults.section3?.[0]?.value),
+    unit: tarObs.sensitivityResults.section3?.[0]?.units ?? ''
   };
   return params;
 };
@@ -411,7 +426,7 @@ export const targetObservationToPdm = (
 ): Result[] => {
   const resultsArr = [];
   for (const tarObs of incTargetObservations) {
-    // refs always populate; result/noise blocks are null when there's no sensCalc (SSO, PST)
+    // refs always populate; result/noise blocks are null when there are no sensitivity results (SSO, PST)
     const result: Result = {
       observation_set_ref: tarObs.observationId,
       data_product_ref: tarObs.dataProductsSDPId,
@@ -422,13 +437,15 @@ export const targetObservationToPdm = (
       synthesized_beam_size: null
     };
 
-    const sensCalc = tarObs.sensCalc;
+    const sensitivityResults = tarObs.sensitivityResults;
 
-    if (sensCalc != undefined && sensCalc.statusGUI == STATUS_OK) {
+    if (sensitivityResults != undefined && sensitivityResults.statusGUI == STATUS_OK) {
       const obsType = getObsType(tarObs, observationTypes);
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
-        sensCalc.section3?.[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+        sensitivityResults.section3?.[0]?.field === 'sensitivity'
+          ? 'sensitivity'
+          : 'integration_time';
 
       const suppliedRelatedFields =
         suppliedType === 'sensitivity'
@@ -443,29 +460,36 @@ export const targetObservationToPdm = (
       result.continuum_confusion_noise = {
         value:
           isContinuum(obsType) || isPST(obsType)
-            ? Number(sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.value)
+            ? Number(
+                sensitivityResults.section1?.find((o) => o.field === 'continuumConfusionNoise')
+                  ?.value
+              )
             : 0,
         unit:
           isContinuum(obsType) || isPST(obsType)
-            ? sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
+            ? sensitivityResults.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
             : ''
       };
 
       result.synthesized_beam_size = {
-        spectral: sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
-          ?.value,
+        spectral: sensitivityResults[spectralSection]?.find(
+          (o) => o.field === 'spectralSynthBeamSize'
+        )?.value,
         continuum:
           isContinuum(obsType) || isPST(obsType)
-            ? sensCalc.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
+            ? sensitivityResults.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
             : '',
-        unit: sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')?.units
+        unit: sensitivityResults[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
+          ?.units
       } as Result['synthesized_beam_size'];
 
       result.spectral_confusion_noise = {
         value: Number(
-          sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')?.value
+          sensitivityResults[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
+            ?.value
         ),
-        unit: sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')?.units
+        unit: sensitivityResults[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
+          ?.units
       };
     }
     resultsArr.push(result);

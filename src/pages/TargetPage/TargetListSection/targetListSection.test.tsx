@@ -1,5 +1,5 @@
 import { afterEach, describe, it, expect, vi, beforeEach } from 'vitest';
-import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
@@ -21,10 +21,10 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
 
 const tree = (component: React.ReactElement | null) => (
   <StoreProvider>
-    <ProposalFormProvider>
+    <TestProposalFormProvider>
       <FormProbe onForm={keepForm} />
       <ThemeA11yProvider>{component}</ThemeA11yProvider>
-    </ProposalFormProvider>
+    </TestProposalFormProvider>
   </StoreProvider>
 );
 
@@ -171,6 +171,19 @@ describe('<TargetListSection />', () => {
         redshift: ''
       });
       expect(formProbe.getValues('targets')[1]).toEqual(target2);
+    });
+
+    it('does not let an invalid edit be confirmed', async () => {
+      wrapper(<TargetListSection />);
+
+      clickIcon('editTarget.toolTip', 0);
+      const dialog = await screen.findByRole('dialog');
+      const nameInput = within(dialog).getByRole('textbox', { name: 'name.label' });
+      fireEvent.change(nameInput, { target: { value: '  ' } });
+
+      const confirm = within(dialog).getByRole('button', { name: 'confirmBtn.label' });
+      await waitFor(() => expect(confirm).toBeDisabled());
+      expect(formProbe.getValues('targets')).toEqual([target1, target2]);
     });
 
     it('keeps the changes after leaving the page and coming back', async () => {

@@ -42,12 +42,12 @@ export default function SensCalcModalSingle({
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusLoading.' + targetObservation?.sensCalc?.statusGUI),
+                status: t('statusLoading.' + targetObservation?.sensitivityResults?.statusGUI),
                 error: ''
               })}
               ariaDescription=""
               icon
-              level={targetObservation?.sensCalc?.statusGUI}
+              level={targetObservation?.sensitivityResults?.statusGUI}
               size={SIZE}
               text=""
             />

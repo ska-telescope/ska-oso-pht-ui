@@ -6,7 +6,7 @@ import LinkingPage, { isNonGaussianSensitivityCase } from './LinkingPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import completeMockStore from '@/utils/MockStore';
 import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE, STATUS_OK } from '@/utils/constants';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
@@ -84,10 +84,10 @@ const linkingProposal = {
 
 const linkingTree = (page: React.ReactElement | null) => (
   <StoreProvider>
-    <ProposalFormProvider>
+    <TestProposalFormProvider>
       <FormProbe onForm={keepForm} />
       <ThemeA11yProvider>{page}</ThemeA11yProvider>
-    </ProposalFormProvider>
+    </TestProposalFormProvider>
   </StoreProvider>
 );
 
@@ -168,7 +168,9 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
 
     await act(async () => resolveSensCalc({ statusGUI: STATUS_OK, error: '' }));
     await waitFor(() => {
-      expect(formProbe.getValues('targetObservation')[0].sensCalc?.statusGUI).toBe(STATUS_OK);
+      expect(formProbe.getValues('targetObservation')[0].sensitivityResults?.statusGUI).toBe(
+        STATUS_OK
+      );
     });
     expect(getSensCalc).toHaveBeenCalledTimes(1);
   });
@@ -210,7 +212,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
         expect.arrayContaining([
           expect.objectContaining({
             targetId: 't1',
-            sensCalc: expect.objectContaining({ statusGUI: STATUS_OK })
+            sensitivityResults: expect.objectContaining({ statusGUI: STATUS_OK })
           }),
           expect.objectContaining(otherLink)
         ])

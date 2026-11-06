@@ -16,9 +16,9 @@ vi.mock('../../sensCalcModal/single/SensCalcModalSingle', () => ({
   default: ({ open }: { open: boolean }) => (open ? <div role="dialog" /> : null)
 }));
 
-const buildTargetObservation = (sensCalc: Partial<SensCalcResults>): TargetObservation =>
+const buildTargetObservation = (sensitivityResults: Partial<SensCalcResults>): TargetObservation =>
   ({
-    sensCalc: { statusGUI: STATUS_OK, ...sensCalc }
+    sensitivityResults: { statusGUI: STATUS_OK, ...sensitivityResults }
   }) as TargetObservation;
 
 describe('<SensCalcDisplaySingle />', () => {

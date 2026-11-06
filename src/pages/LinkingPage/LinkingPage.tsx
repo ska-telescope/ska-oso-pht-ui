@@ -178,7 +178,7 @@ export default function LinkingPage() {
       observationId: observationId,
       dataProductsSDPId: dataProductsSDPId,
       targetId: target.id,
-      sensCalc: results
+      sensitivityResults: results
     };
 
     const calibration = await buildCalibrationStrategy(authAxiosClient, {
@@ -316,7 +316,7 @@ export default function LinkingPage() {
       observationId: currRec.id2,
       targetId: target.id,
       dataProductsSDPId: currRec.id ?? '',
-      sensCalc: {
+      sensitivityResults: {
         statusGUI: STATUS_PARTIAL,
         error: ''
       }
@@ -349,7 +349,7 @@ export default function LinkingPage() {
 
   const checkPartials = async () => {
     const proposal = getProposal();
-    const results = getLinks().find((p) => p.sensCalc?.statusGUI === STATUS_PARTIAL);
+    const results = getLinks().find((p) => p.sensitivityResults?.statusGUI === STATUS_PARTIAL);
     if (!results) return;
     const key = `${results.targetId}|${results.observationId}|${results.dataProductsSDPId}`;
     if (pendingPartial.current === key) return;
@@ -680,8 +680,8 @@ export default function LinkingPage() {
   const filteredByDataProduct = (id: string) => {
     const results: SensCalcResults[] = [];
     getLinks()?.forEach((rec) => {
-      if (rec.dataProductsSDPId === id && rec.sensCalc != undefined) {
-        results.push(rec.sensCalc);
+      if (rec.dataProductsSDPId === id && rec.sensitivityResults != undefined) {
+        results.push(rec.sensitivityResults);
       }
     });
     return results;

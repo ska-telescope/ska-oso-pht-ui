@@ -25,7 +25,7 @@ describe('<SensCalcModalSingle />', () => {
         open={false}
         onClose={vi.fn()}
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: STATUS_INITIAL,
             error: undefined,
             section1: undefined,
@@ -43,7 +43,7 @@ describe('<SensCalcModalSingle />', () => {
         open={true}
         onClose={vi.fn()}
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: 0,
             error: undefined,
             section1: [
@@ -97,7 +97,7 @@ describe('<SensCalcModalSingle />', () => {
         open={true}
         onClose={vi.fn()}
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: 0,
             error: undefined,
             section1: [
@@ -137,7 +137,7 @@ describe('<SensCalcModalSingle />', () => {
         open={false}
         onClose={vi.fn()}
         targetObservation={{
-          sensCalc: {
+          sensitivityResults: {
             statusGUI: STATUS_ERROR,
             error: 'SOME ERROR',
             section1: undefined,

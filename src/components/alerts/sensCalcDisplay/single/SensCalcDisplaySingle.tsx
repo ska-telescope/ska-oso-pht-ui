@@ -30,17 +30,19 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
-  const ariaStatusMessage = (sensCalc?: { statusGUI: string; error: string }) => {
-    const status = t('statusLoading.' + sensCalc?.statusGUI);
-    const error = sensCalc?.error?.length ? t(presentSensCalcError(sensCalc?.error)) : '';
+  const ariaStatusMessage = (sensitivityResults?: { statusGUI: string; error: string }) => {
+    const status = t('statusLoading.' + sensitivityResults?.statusGUI);
+    const error = sensitivityResults?.error?.length
+      ? t(presentSensCalcError(sensitivityResults?.error))
+      : '';
     return t('sensitivityCalculatorResults.status', { status: status, error: error });
   };
 
   const FieldFetch: any = (type: string, field: string) => {
     const observationTypeLabel: string =
-      targetObservation?.sensCalc?.section2?.length > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
-    if (targetObservation?.sensCalc?.section1) {
-      const result = targetObservation?.sensCalc?.section1.find(
+      targetObservation?.sensitivityResults?.section2?.length > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
+    if (targetObservation?.sensitivityResults?.section1) {
+      const result = targetObservation?.sensitivityResults?.section1.find(
         (item: { field: string }) => item.field === `${observationTypeLabel}${field}`
       );
       return result ? result[type] : '';
@@ -48,7 +50,7 @@ export default function SensCalcDisplaySingle({
     return '';
   };
 
-  const isDisabled = () => targetObservation?.sensCalc?.statusGUI !== STATUS_OK;
+  const isDisabled = () => targetObservation?.sensitivityResults?.statusGUI !== STATUS_OK;
 
   const PresentCustomResultValue = () => {
     if (isNatural) {
@@ -61,13 +63,13 @@ export default function SensCalcDisplaySingle({
     <>
       {show && field === 'icon' && (
         <StatusIconDisplay
-          ariaDescription={ariaStatusMessage(targetObservation?.sensCalc)}
-          ariaTitle={ariaStatusMessage(targetObservation?.sensCalc)}
+          ariaDescription={ariaStatusMessage(targetObservation?.sensitivityResults)}
+          ariaTitle={ariaStatusMessage(targetObservation?.sensitivityResults)}
           disabled={isDisabled()}
           text={''}
           onClick={isDisabled() ? undefined : IconClicked}
-          toolTip={ariaStatusMessage(targetObservation?.sensCalc)}
-          level={targetObservation?.sensCalc?.statusGUI ?? STATUS_ERROR}
+          toolTip={ariaStatusMessage(targetObservation?.sensitivityResults)}
+          level={targetObservation?.sensitivityResults?.statusGUI ?? STATUS_ERROR}
         />
       )}
       {show && field !== 'icon' && (

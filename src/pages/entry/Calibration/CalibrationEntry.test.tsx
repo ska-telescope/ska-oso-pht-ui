@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
@@ -108,10 +108,10 @@ const tree = (component: React.ReactElement | null) => (
   <MemoryRouter>
     <ThemeA11yProvider>
       <ThemeProvider theme={theme}>
-        <ProposalFormProvider>
+        <TestProposalFormProvider>
           <FormProbe onForm={keepForm} />
           {component}
-        </ProposalFormProvider>
+        </TestProposalFormProvider>
       </ThemeProvider>
     </ThemeA11yProvider>
   </MemoryRouter>

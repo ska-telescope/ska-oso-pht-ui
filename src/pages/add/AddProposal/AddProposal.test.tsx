@@ -5,14 +5,14 @@ import { storageObject, StoreProvider } from '@utils/storage/store';
 import { PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import ProposalFormProvider from '@/models/proposals/ProposalFormProvider';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 
 const wrapper = (component: React.ReactElement) => {
   return render(component, {
     wrapper: ({ children }) => (
       <StoreProvider>
         <ThemeA11yProvider>
-          <ProposalFormProvider>{children}</ProposalFormProvider>
+          <TestProposalFormProvider>{children}</TestProposalFormProvider>
         </ThemeA11yProvider>
       </StoreProvider>
     )
