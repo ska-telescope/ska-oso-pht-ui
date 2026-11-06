@@ -29,7 +29,12 @@ export default defineConfig({
     //
     experimentalRunAllSpecs: true,
     supportFile: 'tests/cypress/support/e2e.ts',
-    specPattern: ['tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}'],
+    // E2E_SUITE=smoke runs only the real Indigo login specs (see tests/cypress/smoke), which need
+    // a deployment whose redirect URI is registered with Indigo
+    specPattern:
+      process.env.E2E_SUITE === 'smoke'
+        ? ['tests/cypress/smoke/**/*.cy.{js,jsx,ts,tsx}']
+        : ['tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}'],
     setupNodeEvents(on, config) {
       on('file:preprocessor', vitePreprocessor());
 
