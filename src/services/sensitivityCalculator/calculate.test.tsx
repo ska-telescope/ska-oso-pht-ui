@@ -28,7 +28,7 @@ import {
 import type Observation from '@/utils/types/observation';
 import type { TargetType } from '@/models/proposals/targets';
 import type { DataProductSDPNew } from '@/utils/types/dataProduct';
-import { calculateSensitivity } from './calculate';
+import { buildSensitivityRequest, SENS_CALC_MODE, sendSensitivityRequest } from './calculate';
 import { SENS_CALC_ERROR_KIND } from './client';
 import type { ContinuumResult, ZoomResult } from './types';
 
@@ -125,26 +125,24 @@ const zoomResponse = { data: [{ transformed_result: [SPECTRAL_RESULT] }] };
 
 const mockPost = (response: unknown) => vi.spyOn(axiosClient, 'post').mockResolvedValue(response);
 
-/** The path and body of the one request made. */
-const postedRequest = (post: ReturnType<typeof mockPost>) => {
-  expect(post).toHaveBeenCalledTimes(1);
-  const [url, body] = post.mock.calls[0];
-  return { url: url as string, body };
+/** The request for an observation, target and data product the calculator supports. */
+const build = (...args: Parameters<typeof buildSensitivityRequest>) => {
+  const request = buildSensitivityRequest(...args);
+  if (!request) throw new Error('Expected a sensitivity request');
+  return request;
 };
 
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('calculateSensitivity request bodies', () => {
-  test('LOW continuum', async () => {
-    const post = mockPost(continuumResponse);
+describe('buildSensitivityRequest', () => {
+  test('LOW continuum', () => {
+    const request = build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
 
-    await calculateSensitivity(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
-
-    const { url, body } = postedRequest(post);
-    expect(url).toMatch(/low\/continuum\/calculate$/);
-    expect(body).toEqual({
+    expect(request.mode).toBe(SENS_CALC_MODE.CONTINUUM);
+    expect(request.path).toBe('low/continuum/calculate');
+    expect(request.body).toEqual({
       subarray_configuration: 'LOW_AA2_all',
       weighting_mode: 'natural',
       integration_time_h: 1,
@@ -158,14 +156,12 @@ describe('calculateSensitivity request bodies', () => {
     });
   });
 
-  test('LOW zoom', async () => {
-    const post = mockPost(zoomResponse);
+  test('LOW zoom', () => {
+    const request = build(DEFAULT_ZOOM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
 
-    await calculateSensitivity(DEFAULT_ZOOM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
-
-    const { url, body } = postedRequest(post);
-    expect(url).toMatch(/low\/zoom\/calculate$/);
-    expect(body).toEqual({
+    expect(request.mode).toBe(SENS_CALC_MODE.ZOOM);
+    expect(request.path).toBe('low/zoom/calculate');
+    expect(request.body).toEqual({
       subarray_configuration: 'LOW_AA2_all',
       weighting_mode: 'natural',
       integration_time_h: 1,
@@ -177,18 +173,16 @@ describe('calculateSensitivity request bodies', () => {
     });
   });
 
-  test('MID continuum', async () => {
-    const post = mockPost(continuumResponse);
-
-    await calculateSensitivity(
+  test('MID continuum', () => {
+    const request = build(
       MID_CONTINUUM_OBSERVATION,
       ICRS_TARGET,
       imageDataProduct({ taperValue: 0.25 })
     );
 
-    const { url, body } = postedRequest(post);
-    expect(url).toMatch(/mid\/continuum\/calculate$/);
-    expect(body).toEqual({
+    expect(request.mode).toBe(SENS_CALC_MODE.CONTINUUM);
+    expect(request.path).toBe('mid/continuum/calculate');
+    expect(request.body).toEqual({
       subarray_configuration: 'AA*',
       weighting_mode: 'natural',
       rx_band: 'Band 1',
@@ -203,14 +197,12 @@ describe('calculateSensitivity request bodies', () => {
     });
   });
 
-  test('MID zoom', async () => {
-    const post = mockPost(zoomResponse);
+  test('MID zoom', () => {
+    const request = build(MID_ZOOM_OBSERVATION, ICRS_TARGET, imageDataProduct());
 
-    await calculateSensitivity(MID_ZOOM_OBSERVATION, ICRS_TARGET, imageDataProduct());
-
-    const { url, body } = postedRequest(post);
-    expect(url).toMatch(/mid\/zoom\/calculate$/);
-    expect(body).toEqual({
+    expect(request.mode).toBe(SENS_CALC_MODE.ZOOM);
+    expect(request.path).toBe('mid/zoom/calculate');
+    expect(request.body).toEqual({
       subarray_configuration: 'AA*',
       weighting_mode: 'natural',
       rx_band: 'Band 1',
@@ -224,122 +216,67 @@ describe('calculateSensitivity request bodies', () => {
     });
   });
 
-  test('a galactic target is sent as l and b', async () => {
-    const post = mockPost(continuumResponse);
+  test('a galactic target is sent as l and b', () => {
+    const request = build(DEFAULT_CONTINUUM_OBSERVATION_LOW, GALACTIC_TARGET, imageDataProduct());
 
-    await calculateSensitivity(
-      DEFAULT_CONTINUUM_OBSERVATION_LOW,
-      GALACTIC_TARGET,
-      imageDataProduct()
-    );
-
-    expect(postedRequest(post).body).toMatchObject({
+    expect(request.body).toMatchObject({
       reference_coordinates: [{ kind: 'galactic', l: 10, b: 5 }]
     });
   });
 
-  test('robustness is only sent with Briggs weighting', async () => {
-    const post = mockPost(continuumResponse);
-
-    await calculateSensitivity(
+  test('robustness is only sent with Briggs weighting', () => {
+    const request = build(
       DEFAULT_CONTINUUM_OBSERVATION_LOW,
       ICRS_TARGET,
       imageDataProduct({ weighting: IW_BRIGGS, robust: -1 })
     );
 
-    expect(postedRequest(post).body).toMatchObject({ weighting_mode: 'robust', robustness: -1 });
+    expect(request.body).toMatchObject({ weighting_mode: 'robust', robustness: -1 });
   });
 
-  test('a custom LOW subarray sends the number of stations', async () => {
-    const post = mockPost(continuumResponse);
-
-    await calculateSensitivity(
+  test('a custom LOW subarray sends the number of stations', () => {
+    const request = build(
       { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, subarray: SA_CUSTOM, numStations: 100 },
       ICRS_TARGET,
       imageDataProduct()
     );
 
-    const { body } = postedRequest(post);
-    expect(body).toMatchObject({ num_stations: 100 });
-    expect(body).not.toHaveProperty('subarray_configuration');
+    expect(request.body).toMatchObject({ num_stations: 100 });
+    expect(request.body).not.toHaveProperty('subarray_configuration');
   });
 
-  test('a custom MID subarray sends the antenna numbers', async () => {
-    const post = mockPost(continuumResponse);
-
-    await calculateSensitivity(
+  test('a custom MID subarray sends the antenna numbers', () => {
+    const request = build(
       { ...MID_CONTINUUM_OBSERVATION, subarray: SA_CUSTOM, num15mAntennas: 10, num13mAntennas: 4 },
       ICRS_TARGET,
       imageDataProduct()
     );
 
-    const { body } = postedRequest(post);
-    expect(body).toMatchObject({ n_ska: 10, n_meer: 4 });
-    expect(body).not.toHaveProperty('subarray_configuration');
+    expect(request.body).toMatchObject({ n_ska: 10, n_meer: 4 });
+    expect(request.body).not.toHaveProperty('subarray_configuration');
   });
 
-  test('the combined mode uses the continuum endpoint', async () => {
-    const post = mockPost(continuumResponse);
-
-    await calculateSensitivity(
+  test('the combined mode uses the continuum endpoint', () => {
+    const request = build(
       { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, type: TYPE_CONTINUUM_SPECTRAL },
       ICRS_TARGET,
       imageDataProduct({ dataProductType: undefined, channelsOut: 4000 })
     );
 
-    const { url, body } = postedRequest(post);
-    expect(url).toMatch(/low\/continuum\/calculate$/);
-    expect(body).toMatchObject({ bandwidth_mhz: 150, spectral_averaging_factor: 6 });
+    expect(request.mode).toBe(SENS_CALC_MODE.CONTINUUM);
+    expect(request.path).toBe('low/continuum/calculate');
+    expect(request.body).toMatchObject({ bandwidth_mhz: 150, spectral_averaging_factor: 6 });
   });
 
-  test('continuum visibilities average over the default number of channels', async () => {
-    const post = mockPost(continuumResponse);
-
-    await calculateSensitivity(
+  test('continuum visibilities average over the default number of channels', () => {
+    const request = build(
       DEFAULT_CONTINUUM_OBSERVATION_LOW,
       ICRS_TARGET,
       imageDataProduct({ dataProductType: DP_TYPE_VISIBLE })
     );
 
     // 27648 channels / CHANNELS_OUT_DEFAULT (10)
-    expect(postedRequest(post).body).toMatchObject({ spectral_averaging_factor: 2764 });
-  });
-
-  test('passes the abort signal to the request', async () => {
-    const post = mockPost(continuumResponse);
-    const controller = new AbortController();
-
-    await calculateSensitivity(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct(), {
-      signal: controller.signal
-    });
-
-    expect(post.mock.calls[0][2]).toEqual({ signal: controller.signal });
-  });
-});
-
-describe('calculateSensitivity results', () => {
-  test('returns the continuum results', async () => {
-    mockPost(continuumResponse);
-
-    const response = await calculateSensitivity(
-      DEFAULT_CONTINUUM_OBSERVATION_LOW,
-      ICRS_TARGET,
-      imageDataProduct()
-    );
-
-    expect(response).toEqual({ ok: true, data: CONTINUUM_RESULT });
-  });
-
-  test('returns the results of the zoom window', async () => {
-    mockPost(zoomResponse);
-
-    const response = await calculateSensitivity(
-      DEFAULT_ZOOM_OBSERVATION_LOW,
-      ICRS_TARGET,
-      imageDataProduct()
-    );
-
-    expect(response).toEqual({ ok: true, data: SPECTRAL_RESULT });
+    expect(request.body).toMatchObject({ spectral_averaging_factor: 2764 });
   });
 
   test.each([
@@ -352,33 +289,58 @@ describe('calculateSensitivity results', () => {
       name: 'a PST observation',
       observation: DEFAULT_PST_OBSERVATION_LOW,
       target: ICRS_TARGET
+    },
+    {
+      name: 'an unknown observation type',
+      observation: { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, type: 'unknown' },
+      target: ICRS_TARGET
     }
-  ])('returns null and makes no request for $name', async ({ observation, target }) => {
-    const post = vi.spyOn(axiosClient, 'post');
-
-    const response = await calculateSensitivity(observation, target, imageDataProduct());
-
-    expect(response).toBeNull();
-    expect(post).not.toHaveBeenCalled();
-  });
-
-  test('makes no request for an unknown observation type', async () => {
-    const post = vi.spyOn(axiosClient, 'post');
-
-    const response = await calculateSensitivity(
-      { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, type: 'unknown' },
-      ICRS_TARGET,
-      imageDataProduct()
-    );
-
-    expect(response).toBeNull();
-    expect(post).not.toHaveBeenCalled();
+  ])('builds no request for $name', ({ observation, target }) => {
+    expect(buildSensitivityRequest(observation, target, imageDataProduct())).toBeNull();
   });
 });
 
-describe('calculateSensitivity errors', () => {
+describe('sendSensitivityRequest', () => {
+  test('sends the request to its path, with the abort signal', async () => {
+    const post = mockPost(continuumResponse);
+    const controller = new AbortController();
+    const request = build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
+
+    await sendSensitivityRequest(request, { signal: controller.signal });
+
+    expect(post).toHaveBeenCalledTimes(1);
+    const [url, body, options] = post.mock.calls[0];
+    expect(url).toMatch(/low\/continuum\/calculate$/);
+    expect(body).toEqual(request.body);
+    expect(options).toEqual({ signal: controller.signal });
+  });
+
+  test('returns the continuum results', async () => {
+    mockPost(continuumResponse);
+
+    const response = await sendSensitivityRequest(
+      build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct())
+    );
+
+    expect(response).toEqual({ ok: true, data: CONTINUUM_RESULT });
+  });
+
+  test('returns the results of the zoom window', async () => {
+    mockPost(zoomResponse);
+
+    const response = await sendSensitivityRequest(
+      build(DEFAULT_ZOOM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct())
+    );
+
+    expect(response).toEqual({ ok: true, data: SPECTRAL_RESULT });
+  });
+});
+
+describe('sendSensitivityRequest errors', () => {
   const calculate = () =>
-    calculateSensitivity(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
+    sendSensitivityRequest(
+      build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct())
+    );
 
   const responseError = (status: number, data: unknown) =>
     new AxiosError('Request failed', 'ERR_BAD_REQUEST', undefined, undefined, {

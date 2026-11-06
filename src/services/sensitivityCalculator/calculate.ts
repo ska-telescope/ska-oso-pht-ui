@@ -310,14 +310,3 @@ export const sendSensitivityRequest = async (
   // sends one of each
   return response.ok ? { ok: true, data: response.data[0].transformed_result[0] } : response;
 };
-
-// TODO BTN-3595 Remove once the pages and autolinking leave their requests to useSensitivityService
-export const calculateSensitivity = async (
-  observation: Observation,
-  target: TargetType,
-  dataProduct: DataProductSDPNew,
-  options: SensCalcRequestOptions = {}
-): Promise<SensCalcSuccess<SensitivityResult> | SensCalcError | null> => {
-  const request = buildSensitivityRequest(observation, target, dataProduct);
-  return request ? sendSensitivityRequest(request, options) : null;
-};

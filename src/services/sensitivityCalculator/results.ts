@@ -31,7 +31,8 @@ const quantity = (field: string, value: Quantity): ResultsSection => ({
 });
 
 /**
- * Converts a calculateSensitivity response into the results stored on a target–observation link.
+ * Converts a sendSensitivityRequest response into the results stored on a target–observation
+ * link.
  *
  * Returns undefined when no calculation applies (SSO targets and PST observing mode). Errors are
  * stored as a single line: the calculator's detail, or its title when there is no detail.

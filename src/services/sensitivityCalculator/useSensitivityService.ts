@@ -1,13 +1,12 @@
 import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { ProposalType } from '@/models/proposals/proposal';
-import { patchSensCalcResults } from '@/models/proposals/targetObservationOperations';
 import { storageObject } from '@utils/storage/store';
 import { STATUS_PARTIAL } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import type Proposal from '@/utils/types/proposal';
+import type { SensCalcResults } from '@/utils/types/sensCalcResults';
 import type TargetObservation from '@/utils/types/targetObservation';
-import { getTargetObservationKey } from '@/utils/update/sensCalc/updateSensCalc';
 import { SENS_CALC_ERROR_KIND } from './client';
 import { buildSensitivityRequest, sendSensitivityRequest } from './calculate';
 import { toSensCalcResults } from './results';
@@ -19,6 +18,10 @@ export const SENS_CALC_DEBOUNCE_MS = 500;
  * were calculated from, and the request's controller while it is still in flight.
  */
 type LinkRecords = Map<string, { requestKey: string; controller?: AbortController }>;
+
+// TODO BTN-3595 Use link.id once links have their own ID; until then, the three IDs joined
+const getLinkId = (link: { targetId: string; observationId: string; dataProductsSDPId: string }) =>
+  `${link.targetId}|${link.observationId}|${link.dataProductsSDPId}`;
 
 // A link with no results, or with results still to be calculated (a new or cloned link)
 const needsResults = (link: TargetObservation) =>
@@ -52,13 +55,21 @@ export const useSensitivityService = () => {
   }, [proposal?.id]);
 
   React.useEffect(() => {
+    // Writes a link's results to the links as they are now, as a response can arrive after a change
+    const writeResults = (linkId: string, results: SensCalcResults | undefined) =>
+      setValue(
+        'targetObservation',
+        getValues('targetObservation').map((link) =>
+          getLinkId(link) === linkId ? { ...link, sensitivityResults: results } : link
+        )
+      );
+
     const update = () => {
-      const form = { getValues, setValue };
       const formLinks = (links ?? []) as TargetObservation[];
       const formTargets = targets ?? [];
 
       // Forget links that no longer exist, canceling their requests
-      const linkIds = new Set(formLinks.map(getTargetObservationKey));
+      const linkIds = new Set(formLinks.map(getLinkId));
       recordsRef.current.forEach((record, linkId) => {
         if (!linkIds.has(linkId)) {
           record.controller?.abort();
@@ -67,8 +78,7 @@ export const useSensitivityService = () => {
       });
 
       formLinks.forEach((link) => {
-        // TODO BTN-3595 link.id once links have their own ID; until then, the three IDs joined
-        const linkId = getTargetObservationKey(link);
+        const linkId = getLinkId(link);
         const target = formTargets.find((t) => t.id === link.targetId);
         const observation = observations?.find((o) => o.id === link.observationId);
         const dataProduct = dataProducts?.find((d) => d.id === link.dataProductsSDPId);
@@ -99,9 +109,7 @@ export const useSensitivityService = () => {
         //    if (!inputsValid) {
         //      recordsRef.current.set(linkId, { requestKey });
         //      if (link.sensitivityResults?.statusGUI === STATUS_INITIAL) return;
-        //      patchSensCalcResults(form, [
-        //        { targetObservationKey: linkId, sensitivityResults: { statusGUI: STATUS_INITIAL } }
-        //      ]);
+        //      writeResults(linkId, { statusGUI: STATUS_INITIAL, error: '' });
         //      return;
         //    }
         const request = buildSensitivityRequest(observation, target, dataProduct);
@@ -120,23 +128,13 @@ export const useSensitivityService = () => {
           // The calculator doesn't apply (SSO targets and PST), so the link has no results
           recordsRef.current.set(linkId, { requestKey });
           if (!link.sensitivityResults) return;
-          patchSensCalcResults(form, [
-            {
-              targetObservationKey: linkId,
-              sensitivityResults: toSensCalcResults(null, observation)
-            }
-          ]);
+          writeResults(linkId, toSensCalcResults(null, observation));
           return;
         }
 
         // Shown as calculating until the response arrives, rather than with the previous results
         if (link.sensitivityResults?.statusGUI !== STATUS_PARTIAL) {
-          patchSensCalcResults(form, [
-            {
-              targetObservationKey: linkId,
-              sensitivityResults: { statusGUI: STATUS_PARTIAL, error: '' }
-            }
-          ]);
+          writeResults(linkId, { statusGUI: STATUS_PARTIAL, error: '' });
         }
 
         const controller = new AbortController();
@@ -149,9 +147,7 @@ export const useSensitivityService = () => {
           }
           recordsRef.current.set(linkId, { requestKey });
           const results = toSensCalcResults(response, observation);
-          patchSensCalcResults(form, [
-            { targetObservationKey: linkId, sensitivityResults: results }
-          ]);
+          writeResults(linkId, results);
           if (!response.ok) {
             notifyError(results?.error ?? '');
           }
