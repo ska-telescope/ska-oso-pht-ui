@@ -9,6 +9,7 @@ import {
   REFERENCE_COORDINATE_TYPE_SSO,
   SA_CUSTOM,
   STATUS_INITIAL,
+  STATUS_PARTIAL,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
@@ -217,6 +218,19 @@ export default function SensCalcContent({
       {displayElement('bandwidth', bandwidth.value, bandwidth.unit)}
       {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
       {displayElement('integrationTime', observation?.supplied.value, 'h')}
+
+      {targetObservation.sensitivityResults.statusGUI === STATUS_PARTIAL && (
+        <>
+          <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
+          <Typography
+            data-testid="sensCalcCalculating"
+            sx={{ textAlign: 'center' }}
+            variant="body1"
+          >
+            {t('sensitivityCalculatorResults.calculating')}
+          </Typography>
+        </>
+      )}
 
       {targetObservation?.sensitivityResults?.section1 && (
         <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />

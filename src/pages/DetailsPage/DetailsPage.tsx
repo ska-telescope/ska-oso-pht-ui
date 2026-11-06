@@ -7,7 +7,6 @@ import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   DETAILS,
   ERROR_SECS,
-  NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DETAILS,
   PROPOSAL_TYPE,
   SA_AA2,
@@ -25,7 +24,6 @@ import ObservationTypeField from '../../components/fields/observationType/Observ
 import { useObservationTypeOptions } from '../../components/fields/observationType/useObservationTypeOptions';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
@@ -38,7 +36,6 @@ const GAP = 0;
 export default function DetailsPage() {
   const { t } = useScopedTranslation();
   const theme = useTheme();
-  const { notifyError, notifySuccess } = useNotify();
   const { osdLOW, osdMID } = useOSDAccessors();
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
 
@@ -183,12 +180,11 @@ export default function DetailsPage() {
 
   const changeObservingMode = async (mode: string) => {
     if (mode === observation?.type) return;
-    const hasTarget = (form.getValues('targets')?.length ?? 0) > 0;
     const record = isLow ? osdLOW : osdMID;
     const sArray = (
       record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
     )?.find((sub) => sub.subArray === SA_AA2);
-    const result = await setObservingMode(
+    await setObservingMode(
       mode,
       getProposal,
       setProposal,
@@ -196,11 +192,6 @@ export default function DetailsPage() {
       authAxiosClient,
       sArray?.numberZoomChannels
     );
-    if (!result.success) {
-      notifyError(t(result.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
-    } else if (hasTarget) {
-      notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
-    }
   };
 
   const observingModeField = () => (

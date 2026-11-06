@@ -13,8 +13,9 @@ const NO_TARGET = 'Define a target to see sensitivity results';
 const CONTINUUM_SENSITIVITY = 'Weighted continuum sensitivity';
 
 // A result's value is shown next to its label, with nothing linking the two, so it's found from
-// the label
-const result = (label: string) => cy.findByText(label).parent().next();
+// the label. The real calculator runs after a short debounce, so the label is given as long as a
+// backend call to appear.
+const result = (label: string) => cy.findByText(label, { timeout: 30000 }).parent().next();
 
 // The results come from the sensitivity calculator, so they're only checked for having a value.
 // Waits for them, as they're calculated after the change that triggers them.
@@ -27,8 +28,6 @@ describe('SV sensitivity results', () => {
   const changeObservingMode = (mode: string) => {
     goToPage(detailsPage);
     select('Observing Mode', mode);
-    // With a target, changing the mode links it to the new observation and recalculates
-    cy.findByText('Observation setup auto-linked successfully.', { timeout: 30000 });
   };
 
   beforeEach(() => {
@@ -81,6 +80,7 @@ describe('SV sensitivity results', () => {
 
     changeObservingMode('Spectral');
     goToPage(dataProductPage);
+    // Only spectral results have this row, so the old continuum ones can't pass for it
     verifyResult('Weighted spectral sensitivity');
     cy.findByText(CONTINUUM_SENSITIVITY).should('not.exist');
   });
@@ -105,7 +105,8 @@ describe('SV sensitivity results', () => {
 
     goToPage(dataProductPage);
     cy.findByText(
-      'PST mode is not currently supported within the Sensitivity Calculator application.'
+      'PST mode is not currently supported within the Sensitivity Calculator application.',
+      { timeout: 30000 }
     );
     cy.findByText(CONTINUUM_SENSITIVITY).should('not.exist');
   });
@@ -115,7 +116,7 @@ describe('SV sensitivity results', () => {
     select('Coordinate Type', 'Solar System Object');
     select('Name', 'Mars');
     cy.findByRole('button', { name: 'Add Target' }).click();
-    cy.findByText('Target added and auto-linked successfully.', { timeout: 30000 });
+    cy.findByRole('row', { name: /Mars/, timeout: 30000 });
 
     goToPage(dataProductPage);
     cy.findByText('Currently unavailable for non-sidereal objects');

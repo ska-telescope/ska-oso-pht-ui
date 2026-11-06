@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import SensCalcContent from './SensCalcContent';
-import { STATUS_ERROR, STATUS_INITIAL } from '@/utils/constants';
+import { STATUS_ERROR, STATUS_INITIAL, STATUS_PARTIAL } from '@/utils/constants';
 
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
@@ -30,6 +30,22 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(<SensCalcContent targetObservation={{}} />);
 
     expect(screen.getByText('sensitivityCalculatorResults.noData')).toBeInTheDocument();
+  });
+
+  test('renders the calculating state, without results, while results are being calculated', () => {
+    wrapper(
+      <SensCalcContent
+        targetObservation={{
+          targetId: 'target-1',
+          observationId: 'obs-1',
+          dataProductsSDPId: 'dp-1',
+          sensitivityResults: { statusGUI: STATUS_PARTIAL, error: '' }
+        }}
+      />
+    );
+
+    expect(screen.getByText('sensitivityCalculatorResults.calculating')).toBeInTheDocument();
+    expect(screen.queryByText('sensitivityCalculatorResults.noData')).not.toBeInTheDocument();
   });
 
   test('renders correctly ( INITIAL )', () => {

@@ -46,6 +46,7 @@ import {
   ROBUST_DEFAULT,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   STATUS_INITIAL,
+  STATUS_PARTIAL,
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
   TYPE_CONTINUUM,
@@ -1255,9 +1256,11 @@ export default function DataProduct({ data }: DataProductProps) {
                   ? theme.palette.error.main
                   : targetObservation()?.sensitivityResults == undefined
                     ? theme.palette.warning.main
-                    : targetObservation()?.sensitivityResults?.statusGUI !== STATUS_INITIAL
-                      ? theme.palette.success.main
-                      : theme.palette.error.main
+                    : targetObservation()?.sensitivityResults?.statusGUI === STATUS_PARTIAL
+                      ? theme.palette.info.main
+                      : targetObservation()?.sensitivityResults?.statusGUI !== STATUS_INITIAL
+                        ? theme.palette.success.main
+                        : theme.palette.error.main
               }
               title={
                 isContinuum()

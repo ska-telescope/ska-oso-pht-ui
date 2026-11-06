@@ -201,11 +201,26 @@ describe('useSensitivityService', () => {
 
     expect(firstSignal?.aborted).toBe(true);
     await resolveFirst(FAILURE);
-    expect(storedResults(getForm())).toBeUndefined();
+    expect(storedResults(getForm())?.statusGUI).toBe(STATUS_PARTIAL);
 
     await resolveSecond(SUCCESS);
     expect(storedResults(getForm())?.statusGUI).toBe(STATUS_OK);
     expect(notifyError).not.toHaveBeenCalled();
+  });
+
+  test('marks a link as calculating, without its previous results, while its request runs', async () => {
+    const { getForm, setProposal } = renderService({ ...LINK, sensitivityResults: STORED_RESULTS });
+    await debounce();
+
+    const resolve = holdNextRequest();
+    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    await debounce();
+
+    expect(storedResults(getForm())).toEqual({ statusGUI: STATUS_PARTIAL, error: '' });
+
+    await resolve(SUCCESS);
+    expect(storedResults(getForm())?.statusGUI).toBe(STATUS_OK);
+    expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
   });
 
   test('stores a calculator error and shows it as a notification', async () => {

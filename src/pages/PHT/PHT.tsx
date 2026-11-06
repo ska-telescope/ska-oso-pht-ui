@@ -122,7 +122,7 @@ export default function PHT({
   const location = useLocation();
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { setHelp } = useHelp();
-  const { notifyWarning, notifyError } = useNotify();
+  const { notifyError } = useNotify();
   const theme = useTheme();
   const previousPathRef = React.useRef(location.pathname);
 
@@ -168,11 +168,7 @@ export default function PHT({
       return;
     }
     autoRepairAttemptedForIdRef.current = proposal.id;
-    linkTarget(target, getProposal, setProposal, formMethods, authClient).then((result) => {
-      if (!result?.success) {
-        notifyWarning(result?.error ?? t('autoLink.error'));
-      }
-    });
+    void linkTarget(target, getProposal, setProposal, formMethods, authClient);
   }, [getProposal(), autoLink]);
 
   React.useEffect(() => {

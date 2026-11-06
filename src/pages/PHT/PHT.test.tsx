@@ -233,7 +233,7 @@ describe('<PHT />', () => {
 describe('<PHT /> auto-repair for a linked target with no observation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(linkTarget).mockResolvedValue({ success: true });
+    vi.mocked(linkTarget).mockResolvedValue();
     mockProposal.targetObservation = [];
     mockApplicationContent2.current = mockProposal;
   });

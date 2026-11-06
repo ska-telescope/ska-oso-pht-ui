@@ -129,6 +129,16 @@ export const useSensitivityService = () => {
           return;
         }
 
+        // Shown as calculating until the response arrives, rather than with the previous results
+        if (link.sensitivityResults?.statusGUI !== STATUS_PARTIAL) {
+          patchSensCalcResults(form, [
+            {
+              targetObservationKey: linkId,
+              sensitivityResults: { statusGUI: STATUS_PARTIAL, error: '' }
+            }
+          ]);
+        }
+
         const controller = new AbortController();
         recordsRef.current.set(linkId, { requestKey, controller });
         void sendSensitivityRequest(request, { signal: controller.signal }).then((response) => {

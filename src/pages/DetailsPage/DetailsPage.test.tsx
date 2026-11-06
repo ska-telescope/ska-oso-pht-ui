@@ -4,12 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import DetailsPage from './DetailsPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import {
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  NOTIFICATION_DELAY_IN_SECONDS,
-  PROPOSAL_TYPE,
-  TYPE_PST
-} from '@/utils/constants';
+import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE, TYPE_PST } from '@/utils/constants';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
@@ -18,8 +13,6 @@ import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 // ---- Module mocks ----
 
 const mockState = vi.hoisted(() => ({ proposal: {} as Record<string, unknown> }));
-const mockNotifyError = vi.hoisted(() => vi.fn());
-const mockNotifySuccess = vi.hoisted(() => vi.fn());
 
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
@@ -48,10 +41,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => ({ axiosClient: {} })
-}));
-
-vi.mock('@/utils/notify/useNotify', () => ({
-  useNotify: () => ({ notifyError: mockNotifyError, notifySuccess: mockNotifySuccess })
 }));
 
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({
@@ -185,7 +174,7 @@ const selectObservingMode = async (label: string) => {
 describe('<DetailsPage /> observing mode', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(setObservingMode).mockResolvedValue({ success: true });
+    vi.mocked(setObservingMode).mockResolvedValue();
   });
 
   it('shows the science category and no observing mode for standard proposals', async () => {
@@ -215,7 +204,7 @@ describe('<DetailsPage /> observing mode', () => {
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
   });
 
-  it('sets the observing mode on the observation when changed, without a notification if there is no target', async () => {
+  it('sets the observing mode on the observation when changed', async () => {
     mockState.proposal = svProposal();
     await renderPage();
 
@@ -229,30 +218,5 @@ describe('<DetailsPage /> observing mode', () => {
       {},
       42
     );
-    expect(mockNotifySuccess).not.toHaveBeenCalled();
-    expect(mockNotifyError).not.toHaveBeenCalled();
-  });
-
-  it('notifies of the auto-link success when changed with a target', async () => {
-    mockState.proposal = svProposal({ targets: [{ id: 1, name: 'M2' }] });
-    await renderPage();
-
-    await selectObservingMode('observationType.pst');
-
-    expect(mockNotifySuccess).toHaveBeenCalledWith(
-      'autoLink.success',
-      NOTIFICATION_DELAY_IN_SECONDS
-    );
-  });
-
-  it('notifies of the error when setting the observing mode fails', async () => {
-    vi.mocked(setObservingMode).mockResolvedValue({ success: false, error: 'bad' });
-    mockState.proposal = svProposal({ targets: [{ id: 1, name: 'M2' }] });
-    await renderPage();
-
-    await selectObservingMode('observationType.pst');
-
-    expect(mockNotifyError).toHaveBeenCalledWith('bad', NOTIFICATION_DELAY_IN_SECONDS);
-    expect(mockNotifySuccess).not.toHaveBeenCalled();
   });
 });

@@ -205,19 +205,8 @@ export default function TargetEntry({
       const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
-        const defaults = await linkTarget(
-          newTarget,
-          getProposal,
-          setProposal,
-          form,
-          authAxiosClient
-        );
-        if (defaults && defaults.success) {
-          notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
-          clearForm();
-        } else {
-          notifyError(t(defaults?.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
-        }
+        await linkTarget(newTarget, getProposal, setProposal, form, authAxiosClient);
+        clearForm();
       };
 
       const addTargetAsync = async () => {
