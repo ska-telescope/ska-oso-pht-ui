@@ -49,10 +49,7 @@ describe('SV sensitivity results', () => {
     verifyResult(CONTINUUM_SENSITIVITY);
   });
 
-  // TODO: Enable once fixed as part of BTN-3595. This test currently fails because the Observation
-  //  page recalculates the results shortly after a change, but cancels that when it's left, so
-  //  leaving straight after a change keeps the old results.
-  it.skip('recalculates the results when an observation field changes', () => {
+  it('recalculates the results when an observation field changes', () => {
     goToPage(targetPage);
     targetPage.fill(proposal);
     goToPage(dataProductPage);

@@ -26,7 +26,24 @@ const mockState = vi.hoisted(() => ({
   proposalType: undefined as string | undefined,
   observationTypes: ['spectral'],
   observations: [] as any[],
-  dataProductSDP: [] as any[]
+  dataProductSDP: [] as any[],
+  targets: [] as any[],
+  targetObservation: [] as any[]
+}));
+
+// The calibrator lookup goes to the backend; these tests only check when it's made
+const mockBuildCalibrationStrategy = vi.hoisted(() =>
+  vi.fn(async ({ observationId }: { observationId: string }) => ({
+    observatoryDefined: true,
+    id: 'cal-1',
+    observationIdRef: observationId,
+    calibrators: null,
+    notes: null
+  }))
+);
+vi.mock('@/models/proposals/calibrationOperations', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/models/proposals/calibrationOperations')>()),
+  buildCalibrationStrategy: mockBuildCalibrationStrategy
 }));
 
 // Setting `state=null` ensures that we can define some non "edit mode" tests.
@@ -96,7 +113,8 @@ vi.mock('@utils/storage/store', () => ({
           proposalType: mockState.proposalType,
           observations: mockState.observations,
           dataProductSDP: mockState.dataProductSDP,
-          targetObservation: []
+          targets: mockState.targets,
+          targetObservation: mockState.targetObservation
         }
       },
       updateAppContent2: mockUpdateAppContent2,
@@ -163,6 +181,60 @@ describe('<ObservationEntry />', () => {
         ])
       })
     );
+  });
+
+  describe('calibrator refresh', () => {
+    const TARGET = { id: 'T1', name: 'M1', kind: 0, raStr: '0:0:0', decStr: '0:0:0' };
+
+    beforeEach(() => {
+      vi.clearAllMocks();
+      mockState.targets = [TARGET];
+      mockState.targetObservation = [
+        { targetId: 'T1', observationId: DEFAULT_ZOOM_OBSERVATION_LOW.id, dataProductsSDPId: 'DP1' }
+      ];
+    });
+
+    afterEach(() => {
+      mockState.observations = [];
+      mockState.targets = [];
+      mockState.targetObservation = [];
+    });
+
+    it('looks up the calibrators again for the linked target when the integration time changes', async () => {
+      // The stored observation has a different integration time from the one being edited
+      mockState.observations = [
+        {
+          ...DEFAULT_ZOOM_OBSERVATION_LOW,
+          supplied: { ...DEFAULT_ZOOM_OBSERVATION_LOW.supplied, value: 99 }
+        }
+      ];
+
+      await act(async () => {
+        wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
+      });
+
+      expect(mockBuildCalibrationStrategy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          observationId: DEFAULT_ZOOM_OBSERVATION_LOW.id,
+          target: expect.objectContaining({ id: 'T1' })
+        })
+      );
+    });
+
+    it('does not look up the calibrators when only another field changes', async () => {
+      const user = userEvent.setup();
+      mockState.observations = [DEFAULT_ZOOM_OBSERVATION_LOW];
+
+      await act(async () => {
+        wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
+      });
+      await user.click(screen.getByTestId('bandwidth-change-btn'));
+      await act(async () => {});
+
+      expect(mockUpdateAppContent2).toHaveBeenCalled();
+      expect(mockBuildCalibrationStrategy).not.toHaveBeenCalled();
+    });
   });
 
   describe('bandwidth propagation to storage', () => {

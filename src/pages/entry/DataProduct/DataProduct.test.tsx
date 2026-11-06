@@ -13,10 +13,6 @@ import {
 } from '@/utils/constants.ts';
 import DataProduct from './DataProduct';
 
-const { mockFetchSensCalcPatches } = vi.hoisted(() => ({
-  mockFetchSensCalcPatches: vi.fn(async () => [])
-}));
-
 const wrapper = (component: React.ReactElement) => {
   return render(<TestProposalFormProvider>{component}</TestProposalFormProvider>);
 };
@@ -34,10 +30,6 @@ let mockStoreReturn: any = {
 };
 vi.mock('@utils/storage/store', () => ({
   storageObject: { useStore: () => mockStoreReturn }
-}));
-vi.mock('@/utils/update/sensCalc/updateSensCalc', () => ({
-  default: mockFetchSensCalcPatches,
-  applySensCalcPatches: (existing: any[] = []) => existing
 }));
 
 vi.mock('@/utils/helpers', () => ({
@@ -135,7 +127,6 @@ describe('DataProduct component', () => {
   };
 
   beforeEach(() => {
-    mockFetchSensCalcPatches.mockClear();
     mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
     mockStoreReturn = {
       application: { content2: { observations: [], dataProductSDP: [] } },
@@ -320,32 +311,14 @@ describe('DataProduct component', () => {
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
   });
 
-  it('uses persisted sensitivity results without recalculating when the edit page loads', () => {
+  it('shows persisted sensitivity results without changing the proposal when the edit page loads', () => {
     renderExistingDataProduct({
       statusGUI: 0,
       section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }]
     });
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
-    expect(mockFetchSensCalcPatches).not.toHaveBeenCalled();
     expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
-  });
-
-  it('immediately calculates missing sensitivity results when the edit page loads', () => {
-    renderExistingDataProduct({
-      statusGUI: 3,
-      error: ''
-    });
-
-    expect(mockFetchSensCalcPatches).toHaveBeenCalledWith(
-      expect.objectContaining({
-        observations: expect.any(Array),
-        dataProductSDP: expect.any(Array),
-        targetObservation: expect.any(Array)
-      }),
-      expect.objectContaining({ id: 'OBS1' }),
-      expect.objectContaining({ id: 'DP1' })
-    );
   });
 
   it('persists a data product when a valid observation is explicitly selected', async () => {

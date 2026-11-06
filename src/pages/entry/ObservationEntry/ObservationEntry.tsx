@@ -4,12 +4,7 @@ import { Box, Grid, Paper, Typography, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { useFormContext } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import {
-  getFormLinks,
-  getFormTargets,
-  getFormCalibration,
-  withFormSlices
-} from '@/models/proposals/formSlices';
+import { getFormLinks, getFormTargets, getFormCalibration } from '@/models/proposals/formSlices';
 import {
   buildCalibrationStrategy,
   calibrationNotesFor,
@@ -104,23 +99,14 @@ import CentralFrequency from '@/components/fields/centralFrequency/centralFreque
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
-import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
-import fetchSensCalcPatches from '@/utils/update/sensCalc/updateSensCalc';
-import { patchSensCalcResults } from '@/models/proposals/targetObservationOperations';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
-import {
-  isDataProductRobustValid,
-  isSuppliedValueValid,
-  useIsFrequencyOutOfRange
-} from '@/utils/validation/validation';
+import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 import QuantityField from '@/components/fields/quantity/quantity';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
-const SENS_CALC_DEBOUNCE_MS = 500;
 
 interface ObservationEntryProps {
   data?: Observation;
@@ -153,9 +139,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const latestProposalRef = React.useRef(getProposal());
-  const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const latestSensCalcRequestIdRef = React.useRef(0);
+  // Counts calibrator lookups, so only the latest one is applied
+  const latestCalibratorRequestIdRef = React.useRef(0);
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
@@ -195,80 +180,32 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
 
-  const persistProposal = (proposal: Proposal) => {
-    latestProposalRef.current = proposal;
-    setProposal(proposal);
-  };
-
   // The form owns the targets, links and calibration; observations stay in the store
   const form = useFormContext<ProposalType>();
   const getLinks = () => getFormLinks(form);
 
-  const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
-    isSuppliedValueValid({
-      type: ob?.supplied?.type,
-      value: ob?.supplied?.value,
-      units: ob?.supplied?.units
-    }) && isDataProductRobustValid(dp);
-
-  // TODO(BTN-3595): Replace this per-page sensitivity update (debounce and request counter) with
-  //  the shared sensitivity service, writing its results through patchSensCalcResults
-  //  (targetObservationOperations.ts) as this does.
-  const scheduleLocalSensCalcUpdate = (
-    ob: Observation,
-    dp: DataProductSDPNew,
-    delay = SENS_CALC_DEBOUNCE_MS
-  ) => {
-    if (sensCalcDebounceTimerRef.current) {
-      clearTimeout(sensCalcDebounceTimerRef.current);
+  /**
+   * Looks up the calibrators again for an observation's linked target, keeping the strategy's
+   * notes. A lookup that a newer one has overtaken is ignored.
+   */
+  const refreshCalibrators = async (ob: Observation) => {
+    const linkedTarget = getFormTargets(form).find((t) =>
+      getLinks().some((to) => to.observationId === ob.id && to.targetId === t.id)
+    );
+    if (!linkedTarget) {
+      return;
     }
-    const requestId = ++latestSensCalcRequestIdRef.current;
-
-    const applyUpdate = async () => {
-      sensCalcDebounceTimerRef.current = null;
-      const sensCalcPatches = await fetchSensCalcPatches(
-        withFormSlices(latestProposalRef.current, form),
-        ob,
-        dp
-      );
-
-      if (requestId !== latestSensCalcRequestIdRef.current) {
-        return;
-      }
-
-      const linkedTarget = getFormTargets(form).find((t) =>
-        getLinks().some((to) => to.observationId === ob.id && to.targetId === t.id)
-      );
-
-      const getCalibration = () => getFormCalibration(form);
-      // TODO(BTN-3595): Take the calibrator refresh out of the sensitivity callback, and call
-      //  buildCalibrationStrategy (calibrationOperations.ts) from the observation-change trigger
-      //  instead. It is kept here only because this callback refreshes the calibrators today.
-      const updatedStrategy = linkedTarget
-        ? await buildCalibrationStrategy(authAxiosClient, {
-            observationId: ob.id,
-            observation: ob,
-            target: linkedTarget,
-            notes: calibrationNotesFor(getCalibration(), ob.id)
-          })
-        : undefined;
-
-      // The calibrator lookup takes time too, so a newer request may have started meanwhile
-      if (requestId !== latestSensCalcRequestIdRef.current) {
-        return;
-      }
-
-      patchSensCalcResults(form, sensCalcPatches);
-      if (updatedStrategy) {
-        form.setValue('calibrationStrategy', withCalibrationFor(getCalibration(), updatedStrategy));
-      }
-    };
-
-    if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
-      sensCalcDebounceTimerRef.current = setTimeout(() => void applyUpdate(), delay);
-    } else {
-      void applyUpdate();
+    const requestId = ++latestCalibratorRequestIdRef.current;
+    const strategy = await buildCalibrationStrategy(authAxiosClient, {
+      observationId: ob.id,
+      observation: ob,
+      target: linkedTarget,
+      notes: calibrationNotesFor(getFormCalibration(form), ob.id)
+    });
+    if (requestId !== latestCalibratorRequestIdRef.current) {
+      return;
     }
+    form.setValue('calibrationStrategy', withCalibrationFor(getFormCalibration(form), strategy));
   };
 
   const observationIn = (ob: Observation) => {
@@ -364,9 +301,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
-    const linkedDataProductId = getLinks().find(
-      (to) => to.observationId === newObservation.id
-    )?.dataProductsSDPId;
 
     // Only reset data products when a field they are derived from has changed, otherwise
     // revisiting this page would overwrite the user's data product values
@@ -381,23 +315,22 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const newDataProducts = dataProductInputsChanged
       ? updateDataProductsOnObservationChange(oldDataProducts, newObservation)
       : oldDataProducts;
-    const dataProductSDP: DataProductSDPNew | undefined = newDataProducts.find(
-      (dp) => dp.id === linkedDataProductId
-    );
 
-    if (!dataProductSDP) {
-      form.setValue('targetObservation', updateSensCalcPartial(getLinks(), newObservation));
-    }
-    persistProposal({
+    setProposal({
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
       dataProductSDP: newDataProducts
     });
 
-    if (!dataProductSDP) {
-      return;
+    // The calibrators depend on the telescope and the integration time
+    const calibratorInputsChanged =
+      !oldObservation ||
+      oldObservation.telescope !== newObservation.telescope ||
+      oldObservation.supplied?.value !== newObservation.supplied.value ||
+      oldObservation.supplied?.units !== newObservation.supplied.units;
+    if (calibratorInputsChanged) {
+      void refreshCalibrators(newObservation);
     }
-    scheduleLocalSensCalcUpdate(newObservation, dataProductSDP);
   };
 
   const addObservationToProposal = () => {
@@ -511,18 +444,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
     return 0;
   };
-
-  React.useEffect(() => {
-    latestProposalRef.current = getProposal();
-  }, [application.content2]);
-
-  React.useEffect(() => {
-    return () => {
-      if (sensCalcDebounceTimerRef.current) {
-        clearTimeout(sensCalcDebounceTimerRef.current);
-      }
-    };
-  }, []);
 
   React.useEffect(() => {
     setHelp('observationId');
