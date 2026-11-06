@@ -32,7 +32,6 @@ export default defineConfig({
         'src/services/theme/theme.tsx',
         'src/services/api/getSubArrayData/getSubArrayData.tsx',
         'src/utils/storage',
-        'src/utils/testing',
         'src/utils/types'
       ]
     },

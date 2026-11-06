@@ -2,9 +2,13 @@ import { describe, expect, test } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import { useProposalForm } from './useProposalForm';
-import { PROPOSAL_TYPE } from '@/utils/constants';
 import Investigator from '@/utils/types/investigator';
 import { getTeamValues } from './team';
+import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
+import Target from '@/utils/types/target';
+import TargetObservation from '@/utils/types/targetObservation';
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
+import type { DocumentValues } from './documents';
 
 type Props = {
   id?: string;
@@ -13,7 +17,33 @@ type Props = {
   abstract?: string;
   scienceCategory?: number | null;
   investigators?: Investigator[];
+  targets?: Target[];
+  targetObservation?: TargetObservation[];
+  calibrationStrategy?: CalibrationStrategy[];
 };
+
+const slicesFor = (id: string) => ({
+  targets: [
+    {
+      id: `target-${id}`,
+      name: `Target ${id}`,
+      kind: 0,
+      velocityDefinition: VELOCITY_DEFINITION.RADIO
+    }
+  ],
+  targetObservation: [
+    { targetId: `target-${id}`, observationId: `obs-${id}`, dataProductsSDPId: `sdp-${id}` }
+  ],
+  calibrationStrategy: [
+    {
+      observatoryDefined: true,
+      id: `cal-${id}`,
+      observationIdRef: `obs-${id}`,
+      calibrators: null,
+      notes: null
+    }
+  ]
+});
 
 describe('useProposalForm', () => {
   test('seeds the title from the proposal', () => {
@@ -39,6 +69,26 @@ describe('useProposalForm', () => {
     expect(result.current.getValues('investigators')).toEqual(
       getTeamValues({ investigators: second }).investigators
     );
+  });
+
+  test('seeds and re-seeds document references when switching proposals', () => {
+    const { result, rerender } = renderHook(
+      (proposal: Partial<Props & DocumentValues>) => useProposalForm(proposal),
+      {
+        initialProps: {
+          id: 'p1',
+          title: 'First',
+          sciencePDF: { documentId: 'science-doc-p1', isUploadedPdf: true }
+        } as Partial<Props & DocumentValues>
+      }
+    );
+    expect(result.current.getValues('sciencePDF')).toEqual({
+      documentId: 'science-doc-p1',
+      isUploadedPdf: true
+    });
+
+    rerender({ id: 'p2', title: 'Second' });
+    expect(result.current.getValues('sciencePDF')).toBeNull();
   });
 
   test('re-seeds the title when a proposal is loaded after mount', () => {
@@ -104,5 +154,69 @@ describe('useProposalForm', () => {
     rerender({ id: 'p1', title: 'First', proposalType: PROPOSAL_TYPE.STANDARD });
 
     expect(result.current.getValues('proposalType')).toBe(PROPOSAL_TYPE.KEY_SCIENCE);
+  });
+
+  test('seeds targets, links and calibration from the proposal', () => {
+    const { result } = renderHook(() =>
+      useProposalForm({ id: 'p1', title: 'First', ...slicesFor('p1') })
+    );
+    const { targets, targetObservation, calibrationStrategy } = result.current.getValues();
+    expect({ targets, targetObservation, calibrationStrategy }).toEqual(slicesFor('p1'));
+  });
+
+  test('defaults targets, links and calibration to empty lists', () => {
+    const { result } = renderHook(() => useProposalForm({ id: 'p1', title: 'First' }));
+    expect(result.current.getValues('targets')).toEqual([]);
+    expect(result.current.getValues('targetObservation')).toEqual([]);
+    expect(result.current.getValues('calibrationStrategy')).toEqual([]);
+  });
+
+  test('re-seeds targets, links and calibration when switching proposals', () => {
+    const { result, rerender } = renderHook((proposal: Props) => useProposalForm(proposal), {
+      initialProps: { id: 'p1', title: 'First', ...slicesFor('p1') } as Props
+    });
+
+    rerender({ id: 'p2', title: 'Second', ...slicesFor('p2') });
+
+    const { targets, targetObservation, calibrationStrategy } = result.current.getValues();
+    expect({ targets, targetObservation, calibrationStrategy }).toEqual(slicesFor('p2'));
+  });
+
+  test('clears targets, links and calibration when switching to a proposal without them', () => {
+    const { result, rerender } = renderHook((proposal: Props) => useProposalForm(proposal), {
+      initialProps: { id: 'p1', title: 'First', ...slicesFor('p1') } as Props
+    });
+
+    rerender({ id: 'p2', title: 'Second' });
+
+    expect(result.current.getValues('targets')).toEqual([]);
+    expect(result.current.getValues('targetObservation')).toEqual([]);
+    expect(result.current.getValues('calibrationStrategy')).toEqual([]);
+  });
+
+  test('keeps the form slices when the same proposal changes in the store', () => {
+    const { result, rerender } = renderHook((proposal: Props) => useProposalForm(proposal), {
+      initialProps: { id: 'p1', title: 'First', ...slicesFor('p1') } as Props
+    });
+
+    rerender({ id: 'p1', title: 'First', ...slicesFor('other') });
+
+    expect(result.current.getValues('targets')).toEqual(slicesFor('p1').targets);
+  });
+
+  test('starts valid with a completed abstract and empty structural slices', async () => {
+    const { result } = renderHook(() =>
+      useProposalForm({
+        id: 'p1',
+        title: 'A title',
+        proposalType: PROPOSAL_TYPE.STANDARD,
+        abstract: 'A valid abstract'
+      })
+    );
+    let valid = false;
+    await act(async () => {
+      valid = await result.current.trigger();
+    });
+    expect(valid).toBe(true);
   });
 });

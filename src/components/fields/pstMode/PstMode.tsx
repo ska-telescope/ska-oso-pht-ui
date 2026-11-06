@@ -22,8 +22,7 @@ export default function PstModeField({
   const FIELD = 'pstMode';
 
   const getOptions = () => {
-    const options = PST_MODES;
-    return options?.map((e: any) => {
+    return PST_MODES?.map((e: any) => {
       return {
         label: t(FIELD + '.options.' + e.value),
         value: e.value

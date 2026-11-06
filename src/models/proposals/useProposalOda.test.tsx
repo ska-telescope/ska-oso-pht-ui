@@ -13,6 +13,7 @@ import { useProposalOda } from './useProposalOda';
 import { getDetailsSchema } from './details';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import { InvestigatorBackend } from '@/utils/types/investigator';
+import { getProposalFormValues } from './useProposalForm';
 
 const { mockGet, mockPut } = vi.hoisted(() => ({
   mockGet: vi.fn(),
@@ -28,13 +29,8 @@ const investigator = MockUserFrontendList[0];
 const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) => {
   const { result: form } = renderHook(() =>
     useForm<ProposalType>({
-      defaultValues: {
-        title,
-        proposalType,
-        abstract: pdm.proposal_info.abstract ?? '',
-        scienceCategory: 1,
-        investigators: []
-      }
+      // The other slices match the proposal being saved, as they do when seeded from the store
+      defaultValues: { ...getProposalFormValues(mapping(pdm)), title, proposalType }
     })
   );
   const { result: oda } = renderHook(() => useProposalOda(), {

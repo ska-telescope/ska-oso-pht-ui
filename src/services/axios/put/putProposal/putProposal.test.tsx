@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import '@testing-library/jest-dom';
 import {
   PROPOSAL_STATUS,
@@ -41,6 +42,9 @@ import MappingPutProposal, {
   mapCalibrationStrategyToBackend
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
+
+// The form's other slices match the proposal being saved, as they do when seeded from the store
+const formSlices = getProposalFormValues(MockProposalFrontend);
 
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
@@ -130,6 +134,7 @@ describe('PutProposal Service', () => {
       const base = MappingPutProposal(MockProposalFrontend, status);
 
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
+        ...formSlices,
         title: 'Title from RHF',
         proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
         abstract: 'Abstract from RHF',
@@ -157,6 +162,7 @@ describe('PutProposal Service', () => {
     mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
 
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
+      ...formSlices,
       title: '',
       proposalType: PROPOSAL_TYPE.STANDARD,
       abstract: '',
@@ -275,7 +281,7 @@ describe('mapCalibrationStrategyToBackend', () => {
 });
 
 describe('getReferenceCoordinate', () => {
-  test('should map galactic coordinates correctly', () => {
+  test('maps galactic coordinates, leaving the unused fields to the PDM', () => {
     const galactic = {
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
       l: 123.4,
@@ -289,15 +295,11 @@ describe('getReferenceCoordinate', () => {
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: 123.4,
-      b: 56.7,
-      pm_l: 1.1,
-      pm_b: 2.2,
-      epoch: 'J2000',
-      parallax: 0.5
+      b: 56.7
     });
   });
 
-  test('should map ICRS coordinates correctly', () => {
+  test('maps ICRS coordinates, leaving the unused fields to the PDM', () => {
     const icrs = {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       raStr: '12:34:56.7',
@@ -311,11 +313,7 @@ describe('getReferenceCoordinate', () => {
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       ra_str: '12:34:56.7',
-      dec_str: '-12:34:56.7',
-      pm_ra: 0.1,
-      pm_dec: 0.2,
-      epoch: 'J2000',
-      parallax: 0.3
+      dec_str: '-12:34:56.7'
     });
   });
 });
@@ -594,7 +592,7 @@ describe('getObservationTypeDetails', () => {
 
 describe('getSuppliedFieldsIntegrationTime', () => {
   const mockTarObs = {
-    sensCalc: {
+    sensitivityResults: {
       section3: [{ value: 123, units: 'hr', field: 'integrationTime' }]
     }
   } as any;
@@ -618,7 +616,7 @@ describe('getSuppliedFieldsIntegrationTime', () => {
   });
 
   test('should handle missing section3 gracefully', () => {
-    const tarObs = { sensCalc: {} } as any;
+    const tarObs = { sensitivityResults: {} } as any;
     const result = getSuppliedFieldsIntegrationTime('integration_time', TYPE_CONTINUUM, tarObs);
     expect(result).toEqual({
       supplied_type: 'integration_time',

@@ -1,33 +1,43 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { getProposalSchema, ProposalType } from './proposal';
-import { getTitleValues } from './title';
+import { getProposalSchema, ProposalType, getProposalResolver } from './proposal';
 import { getDetailsValues } from './details';
 import { getTeamValues } from './team';
 import Investigator from '@/utils/types/investigator';
 
-type ProposalSeed = {
+type ProposalSeed = Omit<Partial<ProposalType>, 'scienceCategory' | 'investigators'> & {
   id?: string | null;
-  title?: string;
-  proposalType?: ProposalType['proposalType'];
-  abstract?: string;
   scienceCategory?: number | string | null;
-  observations?: { type?: string }[];
   investigators?: Investigator[] | null;
+};
+
+/** The form values of a new proposal: the schema's defaults. */
+export const getProposalFormDefaults = (): ProposalType => getProposalSchema().parse({});
+
+/**
+ * Form values for every migrated slice, taken from the proposal or defaulted. The proposal's own
+ * content is not validated here: Details categories are normalized and Team metadata is excluded.
+ */
+export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => {
+  const defaults = getProposalFormDefaults();
+  const slices = Object.fromEntries(
+    (Object.keys(defaults) as (keyof ProposalType)[]).map((slice) => [
+      slice,
+      proposal?.[slice] ?? defaults[slice]
+    ])
+  ) as ProposalType;
+  return {
+    ...slices,
+    ...getDetailsValues(proposal),
+    ...getTeamValues(proposal)
+  };
 };
 
 export function useProposalForm(proposal?: ProposalSeed) {
   const formMethods = useForm<ProposalType>({
     mode: 'all',
-    resolver: zodResolver(getProposalSchema()),
-    defaultValues: {
-      title: getTitleValues(proposal),
-      // Controlled fields need null to clear a previous selection on reset.
-      proposalType: proposal?.proposalType ?? null,
-      ...getDetailsValues(proposal),
-      ...getTeamValues(proposal)
-    }
+    resolver: getProposalResolver(),
+    defaultValues: getProposalFormValues(proposal)
   });
 
   const { reset } = formMethods;
@@ -43,12 +53,7 @@ export function useProposalForm(proposal?: ProposalSeed) {
   React.useEffect(() => {
     if (proposalId === seededProposalIdRef.current) return;
     seededProposalIdRef.current = proposalId;
-    reset({
-      title: getTitleValues(currentProposalRef.current),
-      proposalType: currentProposalRef.current?.proposalType ?? null,
-      ...getDetailsValues(currentProposalRef.current),
-      ...getTeamValues(currentProposalRef.current)
-    });
+    reset(getProposalFormValues(currentProposalRef.current));
   }, [proposalId, reset]);
 
   return formMethods;

@@ -65,8 +65,12 @@ vi.mock('react-i18next', () => ({
   }
 }));
 
-vi.mock('axios', () => {
+vi.mock('axios', async (importOriginal) => {
+  // Keep the real error helpers so services can inspect failed requests
+  const { AxiosError, isAxiosError } = await importOriginal<typeof import('axios')>();
   return {
+    AxiosError,
+    isAxiosError,
     default: {
       post: vi.fn(),
       get: vi.fn(),

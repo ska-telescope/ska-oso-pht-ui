@@ -28,6 +28,14 @@ ts-typecheck:
   script:
     - make typecheck
 
+cypress-typecheck:
+  image: ${JS_BUILD_IMAGE}
+  stage: lint
+  before_script:
+    - make js-install
+  script:
+    - make cypress-typecheck
+
 CHANGELOG:
   stage: lint
   only:

@@ -73,13 +73,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
-    const { proposalType, investigators, ...formValues } = getValues();
+    // Only the slices a new proposal takes from the form; the rest come from the legacy defaults
+    const { title, proposalType, abstract, scienceCategory, investigators } = getValues();
     const response = await PostProposal(
       authClient,
       refreshAuthToken,
       {
         ...proposal,
-        ...formValues,
+        title,
+        abstract,
+        scienceCategory,
         ...(investigators && {
           investigators: mergeTeamInvestigators(investigators, proposal.investigators)
         }),

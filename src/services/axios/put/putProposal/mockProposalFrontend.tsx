@@ -48,21 +48,11 @@ export const MockProposalFrontend: Proposal = {
       l: undefined,
       raStr: '00:00:00.0',
       redshift: '0',
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
       velType: 1,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     },
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
@@ -74,21 +64,11 @@ export const MockProposalFrontend: Proposal = {
       l: undefined,
       raStr: '05:34:30.900',
       redshift: '0',
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
       velType: 1,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     },
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
@@ -100,21 +80,11 @@ export const MockProposalFrontend: Proposal = {
       l: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
       velType: 1,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     }
   ],
   observations: [
@@ -150,7 +120,7 @@ export const MockProposalFrontend: Proposal = {
       targetId: 'target-123',
       observationId: 'obs-obR1Ej',
       dataProductsSDPId: 'SDP-2',
-      sensCalc: {
+      sensitivityResults: {
         statusGUI: 0,
         error: '',
         section1: [
@@ -289,21 +259,11 @@ export const MockProposalFrontendZoom: Proposal = {
       l: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
       velType: 1,
       vel: '-3.6',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     }
   ],
   observations: [
@@ -340,7 +300,7 @@ export const MockProposalFrontendZoom: Proposal = {
       targetId: 'target-123',
       observationId: 'obs-arMIoY',
       dataProductsSDPId: 'SDP-1',
-      sensCalc: {
+      sensitivityResults: {
         statusGUI: 0,
         error: '',
         section1: [

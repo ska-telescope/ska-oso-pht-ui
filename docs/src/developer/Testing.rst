@@ -1,123 +1,209 @@
 Testing
 ~~~~~~~
 
+The application has two kinds of automated tests:
+
+- **Unit tests**, written with Vitest and React Testing Library, for components, pages, services
+  and utilities in isolation.
+- **End-to-end (e2e) tests**, written with Cypress, which drive the real application in a browser
+  against a real backend.
+
+Unit tests
+==========
+
 Writing
-=======
+-------
 
-We use Cypress as the test running framework. It will look for test files within a number of locations, however the standard that the SKAO will employ will be the use of `.test.{tsx | jsx}` in the same folder as the component being tested.
-Below is a small illustration as an example.
+Unit tests live next to the code they test, in a file with the same name ending in
+``.test.tsx``:
 
-```
+.. code-block:: text
 
-components
-└─ App
-   |  App.test.tsx
-   |  App.tsx
-└─ ReactSkeleton
-   |  ReactSkeleton.test.tsx
-   |  ReactSkeleton.tsx
+    src/pages/TitlePage
+    ├── TitlePage.tsx
+    └── TitlePage.test.tsx
 
-```
-
-Note that the ReactSkeleton component is exposed via WebPack 5 ModuleFederationPlugin, so this name should be changed to reflect the application being written ( e.g. SignalDisplay, DataProductDashboard ...)
-
-See the SKAO developer guide for more information
+Vitest finds every ``*.test.tsx`` file. Tests run in a simulated browser (happy-dom), and
+``src/setupTests.ts`` sets up the shared mocks and environment variables every test needs.
 
 Running
-=======
+-------
 
-To run the unit tests once, with coverage (the same as `make js-test`, which CI runs), execute
+To run the unit tests once, with coverage (the same as ``make js-test``, which CI runs):
 
-    > yarn test:unit
+.. code-block:: bash
 
-A JUnit report is written to `./build/reports/unit-tests.xml`. The coverage results are displayed
-in the console and also written to the `build/reports` folder.
+    yarn test:unit
 
-    `./build/reports/index.html` - open in a web browser to view
+A JUnit report is written to ``build/reports/unit-tests.xml``. The coverage results are shown in
+the console and written to ``build/reports``; open ``build/reports/index.html`` in a browser to
+view them.
 
-To skip coverage, execute
+Other useful options:
 
-    > yarn test:unit --coverage.enabled=false
+.. code-block:: bash
 
-**All the tests should pass before merging the code**
+    # Skip coverage
+    yarn test:unit --coverage.enabled=false
 
-End-2-End
-=========
+    # Run one file, or every file whose path contains the text
+    yarn test:unit src/pages/TitlePage
 
-To run the ui test runner for e2e tests, execute
+    # Re-run tests as files change
+    yarn vitest
 
-    > yarn test:e2e:ui
+End-to-end tests
+================
 
-This will launch Cypress in interactive mode for end-to-end tests.
+The Cypress tests run against the real backend: ska-oso-services and the Sensitivity Calculator.
+They log in through Indigo IAM using shared test accounts. The only thing stubbed is the upload
+of documents to S3, because the local backend has no S3 credentials.
+
+Each spec should create the data it needs, rather than relying on what is already in the
+database, as the backend may already hold proposals from earlier runs.
+
+Running
+-------
+
+.. warning::
+
+    Only run the Cypress tests against a local Minikube deployment, or a dev deployment from a
+    branch. The tests create proposals that can't be deleted, so running them against the
+    integration deployment would leave that data in its database.
+
+Start the application at http://localhost:6101 with a backend to talk to, for example:
+
+.. code-block:: bash
+
+    make dev-start
+
+See the README for the other ways of pointing it at a backend. Then open Cypress to pick and run
+specs:
+
+.. code-block:: bash
+
+    yarn test:e2e:ui
+
+Use the **Chrome** or **Chromium** browser rather than Electron, which is unreliable with this
+suite. Keep the Cypress window in front while tests run: when it is in the background, the browser
+can stop animating, and tests fail with elements that "exist but are not visible".
+
+.. note::
+
+    Only the older tests in ``submissions`` and ``users`` are affected, as they check that
+    elements are visible using the helpers in ``common.js``. Remove this advice once those tests
+    have been replaced.
+
+To run the whole suite headless across several workers, as CI does:
+
+.. code-block:: bash
+
+    yarn test:e2e:parallel --browser chromium
+
+On Linux, this needs ``xvfb-run`` to give each worker its own virtual display. On Ubuntu or
+Debian, install it with ``sudo apt-get install xvfb``.
+
+Specs are shared between the workers by how long each took last time, from
+``scripts/cypress-timings.json``. Each run rewrites that file, so commit it when specs have been
+added or removed, or their durations have changed a lot.
+
+CI runs it through ``make js-e2e-test`` against a fresh deployment with an empty database.
+Failing tests are retried twice in headless runs.
+
+Test Structure
+--------------
+
+Specs are in ``tests/cypress/e2e``:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Folder
+     - What it tests
+   * - ``sv/flows``
+     - A whole Science Verification proposal, from creation to submission, for each observing
+       mode. Checks every value survives navigation and reloading.
+   * - ``sv/pages``
+     - What can be done on one page of the SV proposal editor, and its effect on the rest of
+       the proposal. For example, changing the observing mode on the Details page resets the
+       observation, and choosing a PST mode on the Observation page changes the Data Product
+       fields.
+   * - ``sv/features``
+     - One behaviour followed through every change that triggers it, wherever those changes are
+       made: auto-linking, sensitivity results and validation.
+   * - ``submissions``
+     - Older proposal editor tests, which are being replaced by the ``sv`` tests. These should all be deleted
+       when the refactoring is complete as by then the functionality should be tested elsewhere.
+   * - ``users``
+     - What each user role sees: the user menu and the pages they can open.
+
+Tests for standard proposals will go in a matching ``standard`` folder.
+
+Shared code is in ``tests/cypress/support``:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - File or folder
+     - Contents
+   * - ``editor``
+     - Helpers for the proposal editor tests, described below.
+   * - ``users.js``, ``auth.js``
+     - The test users, and logging in as them.
+   * - ``common.js``
+     - Helpers used by the older ``submissions`` and ``users`` tests.
+   * - ``e2e.ts``
+     - Setup run before every spec.
+
+Test files, such as the PDFs used for uploads, are in ``tests/cypress/fixtures``.
+
+Writing proposal editor tests
+-----------------------------
+
+The proposal editor tests are built from a few pieces in ``tests/cypress/support/editor``:
+
+- ``data``: the proposals the tests enter, one per observing mode, and the default values the
+  editor should show.
+- ``pageObjects``: one object per editor page, which knows how to fill in and check that page's
+  part of a proposal.
+- ``cycles.ts``: what differs between kinds of cycle, such as the pages they have and the
+  messages they show.
+- ``editorActions.ts``: steps that span pages, such as creating, saving, reopening and submitting
+  a proposal.
+- ``fields.ts``: finding and filling in fields by their label.
 
 
-Examples can be found in the PT UI repo, however below should be a guide in how to follow the standard for enw tests.
-Note: This is for BDD Cucumber style cypress testing.
-
-In the cypress/e2e directory
-    - Create a feature file for example {createProposal.feature}
-    - Create a new directory within cypress/e2e named the EXACT same as the feature file created.
-    - Within the new directory for example {createProposal} create a new step definition file for example
-    {createProposal.js}
-
-The feature file should follow the format as below
-
-Feature: Creating proposals
-
-  Scenario: Create a basic proposal
-  Given I am a PHT user who wants to create a proposal
-  When I provide a title and select the proposal category
-  Then a proposal with unique ID is created and I can see that on the landing page
-
-The step definition file should follow the format as below.
-It is important to note that the text within the Given/When/Then steps MUST match the statements from the feature file.
-This example showcases imported methods from a common class, which is recommended to prevent duplication.
-
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
-import {
-  clickAddProposal,
-  clickCreateProposal, clickHome, clickSaveProposal,
-  clickStandardProposalSubTypeTargetOfOpportunity, verifyProposalOnLandingPage
-} from '../../common/common';
-
-Given('I am a PHT user who wants to create a proposal', () => {
-  clickAddProposal()
-});
-
-When('I provide a title and select the proposal category', () => {
-  clickStandardProposalSubTypeTargetOfOpportunity()
-  clickCreateProposal()
-});
-
-Then('a proposal with unique ID is created and I can see that on the landing page', () => {
-  clickSaveProposal()
-  clickHome()
-  verifyProposalOnLandingPage()
-});
-
-
-Code Analysis
+Type checking
 =============
 
-[ESLint](https://ESLint.org/) and [Prettier](https://prettier.io/) are included as code analysis and formatting tools.
-These do not need installing as they're included in `node_modules` by running `yarn init`.
+The application and the Cypress tests have their own TypeScript configurations, so they're type
+checked separately:
 
-These tools can be run in the command line or integrated into your IDE (recommended).
+.. code-block:: bash
 
-JavaScript based SKA projects must comply with the [AirBnB JavaScript Style Guide](https://github.com/airbnb/javascript). These rules are included in this project and ESLint and Prettier are configured to use them.
+    yarn typecheck           # the application (make typecheck)
+    yarn typecheck:cypress   # the Cypress tests (make cypress-typecheck)
 
-Running
-=======
+CI runs both. The Cypress check must pass. The application check is allowed to fail for now, as
+the application still has type errors.
 
-To run the analysis tools, execute
+Code analysis
+=============
 
-    > yarn lint
+`ESLint <https://eslint.org/>`_ and `Prettier <https://prettier.io/>`_ check the code and its
+formatting. They're installed with the other dependencies, and work best set up in your IDE.
 
-This runs ESLint on ``src`` and checks formatting with Prettier, displaying any errors in the command line.
+To check the code from the command line:
 
-To fix linting and formatting issues automatically, run
+.. code-block:: bash
 
-    > yarn lint:fix
+    yarn lint       # ESLint on src
+    yarn prettier   # Prettier on src and tests
 
-This runs Prettier (``yarn prettier:fix``) followed by ``eslint --fix``.
+To fix what can be fixed automatically:
 
+.. code-block:: bash
+
+    yarn checker    # Prettier, then ESLint

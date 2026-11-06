@@ -201,7 +201,12 @@ describe('<PHT />', () => {
         proposalType: null,
         abstract: '',
         scienceCategory: null,
-        investigators: []
+        investigators: [],
+        targets: [],
+        targetObservation: [],
+        calibrationStrategy: [],
+        sciencePDF: null,
+        technicalPDF: null
       });
     });
   });
@@ -221,7 +226,12 @@ describe('<PHT />', () => {
         proposalType: null,
         abstract: '',
         scienceCategory: null,
-        investigators: []
+        investigators: [],
+        targets: [],
+        targetObservation: [],
+        calibrationStrategy: [],
+        sciencePDF: null,
+        technicalPDF: null
       });
     });
   });
@@ -243,10 +253,9 @@ describe('<PHT />', () => {
         rerenderPHT();
 
         await waitFor(() => {
-          expect(mockUpdateAppContent2).toHaveBeenCalledWith({
-            id: 'prsl-123',
-            abstract
-          });
+          expect(mockUpdateAppContent2).toHaveBeenCalledWith(
+            expect.objectContaining({ id: 'prsl-123', abstract })
+          );
           expect(PutProposal).toHaveBeenCalledWith(
             {},
             expect.objectContaining({ abstract: 'Stale store summary' }),
@@ -282,6 +291,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
       mockProposal.targets[0],
       expect.any(Function),
       expect.any(Function),
+      expect.objectContaining({ getValues: expect.any(Function) }),
       {}
     );
   });
@@ -292,7 +302,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
         targetId: 1,
         observationId: 'obs-1',
         dataProductsSDPId: 'sdp-1',
-        sensCalc: { id: 1, title: 'Target 1', statusGUI: 0 }
+        sensitivityResults: { id: 1, title: 'Target 1', statusGUI: 0 }
       }
     ];
 

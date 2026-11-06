@@ -175,13 +175,13 @@ export default function LandingPage() {
   };
 
   // The clone keeps the original's target/observation/data-product links (same targets and
-  // observations carry over), but not the calculated sensCalc results attached to them - those
+  // observations carry over), but not the calculated sensitivity results attached to them - those
   // are stale for the new proposal. Reset each link to the same "linked, not yet calculated"
   // shape LinkingPage.tsx uses for a brand new link, rather than dropping the links entirely.
   const resetTargetObservationResults = (targetObservation?: TargetObservation[]) =>
     targetObservation?.map((rec) => ({
       ...rec,
-      sensCalc: { id: rec.targetId, title: '', statusGUI: STATUS_PARTIAL, error: '' }
+      sensitivityResults: { id: rec.targetId, title: '', statusGUI: STATUS_PARTIAL, error: '' }
     })) ?? [];
 
   const createProposal = async () => {
@@ -245,6 +245,7 @@ export default function LandingPage() {
     createProposal();
   };
 
+  // TODO(T9): Full cleanup needed once everything is migrated to the form
   const deleteConfirmed = async () => {
     const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
     if (response && !('error' in response)) {

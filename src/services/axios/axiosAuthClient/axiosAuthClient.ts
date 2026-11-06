@@ -184,7 +184,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    timeout: 10000
+    timeout: 20000
   });
 
   axiosClient.interceptors.request.use(createRequestInterceptor(instance), (error) =>

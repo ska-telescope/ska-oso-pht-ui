@@ -1,0 +1,96 @@
+{
+  "durations": [
+    {
+      "spec": "tests/cypress/e2e/submissions/createSubmission/createSubmission.cy.js",
+      "duration": 25423
+    },
+    {
+      "spec": "tests/cypress/e2e/submissions/dataProducts/dataProductsValidation.cy.js",
+      "duration": 41685
+    },
+    {
+      "spec": "tests/cypress/e2e/submissions/editSubmission/editSubmission.cy.js",
+      "duration": 30
+    },
+    {
+      "spec": "tests/cypress/e2e/submissions/observations/preserveObservationSetup.cy.js",
+      "duration": 44804
+    },
+    {
+      "spec": "tests/cypress/e2e/submissions/observations/SensitivityCalculator.cy.js",
+      "duration": 33
+    },
+    {
+      "spec": "tests/cypress/e2e/submissions/observations/validateObservationFields.cy.js",
+      "duration": 59780
+    },
+    {
+      "spec": "tests/cypress/e2e/submissions/save/save.cy.js",
+      "duration": 14563
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/features/autoLinking.cy.ts",
+      "duration": 58505
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/features/sensitivityResults.cy.ts",
+      "duration": 112038
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/features/validation.cy.ts",
+      "duration": 50264
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/flows/proposal.cy.ts",
+      "duration": 253466
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/pages/calibration.cy.ts",
+      "duration": 26917
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/pages/description.cy.ts",
+      "duration": 77375
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/pages/details.cy.ts",
+      "duration": 125016
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/pages/observation.cy.ts",
+      "duration": 20651
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/pages/target.cy.ts",
+      "duration": 71714
+    },
+    {
+      "spec": "tests/cypress/e2e/sv/pages/team.cy.ts",
+      "duration": 12114
+    },
+    {
+      "spec": "tests/cypress/e2e/users/guest.cy.js",
+      "duration": 7522
+    },
+    {
+      "spec": "tests/cypress/e2e/users/reviewAdministrator.cy.js",
+      "duration": 20883
+    },
+    {
+      "spec": "tests/cypress/e2e/users/reviewPanelChairman.cy.js",
+      "duration": 35
+    },
+    {
+      "spec": "tests/cypress/e2e/users/reviewScience.cy.js",
+      "duration": 51
+    },
+    {
+      "spec": "tests/cypress/e2e/users/reviewTechnical.cy.js",
+      "duration": 8703
+    },
+    {
+      "spec": "tests/cypress/e2e/users/standard.cy.js",
+      "duration": 9483
+    }
+  ]
+}

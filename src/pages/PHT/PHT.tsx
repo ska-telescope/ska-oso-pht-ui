@@ -1,4 +1,5 @@
 import React from 'react';
+import Target from '@/utils/types/target';
 import { Routes, Route, useLocation, useNavigate } from 'react-router';
 import {
   AlertColorTypes,
@@ -63,6 +64,7 @@ import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/s
 import { useTheme } from '@mui/material/styles';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider } from 'react-hook-form';
+import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -144,6 +146,7 @@ export default function PHT({
 
   const formMethods = useProposalForm(getProposal());
   const { getValues } = formMethods;
+  useCopySlicesToStore(formMethods);
 
   // A target can end up linked with no matching targetObservation entry (e.g. an older
   // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
@@ -153,18 +156,18 @@ export default function PHT({
   // the proposal is fetched, so this does not latch until autoLink actually becomes true.
   React.useEffect(() => {
     const proposal = getProposal();
-    const target = proposal?.targets?.[0];
+    const target = formMethods.getValues('targets')?.[0] as Target | undefined;
     if (
       !proposal?.id ||
       autoRepairAttemptedForIdRef.current === proposal.id ||
       !autoLink ||
       !target ||
-      (proposal?.targetObservation?.length ?? 0) > 0
+      (formMethods.getValues('targetObservation')?.length ?? 0) > 0
     ) {
       return;
     }
     autoRepairAttemptedForIdRef.current = proposal.id;
-    linkTarget(target, getProposal, setProposal, authClient).then((result) => {
+    linkTarget(target, getProposal, setProposal, formMethods, authClient).then((result) => {
       if (!result?.success) {
         notifyWarning(result?.error ?? t('autoLink.error'));
       }
@@ -187,9 +190,6 @@ export default function PHT({
 
     if (canAutoSave) {
       const values = getValues();
-      if (proposal.abstract !== values.abstract) {
-        updateAppContent2({ ...proposal, abstract: values.abstract });
-      }
       void (async () => {
         const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT, values);
         if ('error' in response) {
@@ -199,15 +199,7 @@ export default function PHT({
     }
 
     previousPathRef.current = currentPath;
-  }, [
-    location.pathname,
-    application.content2,
-    loggedIn,
-    authClient,
-    notifyError,
-    getValues,
-    updateAppContent2
-  ]);
+  }, [location.pathname, application.content2, loggedIn, authClient, notifyError, getValues]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />

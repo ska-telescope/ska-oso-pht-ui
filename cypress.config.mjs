@@ -14,6 +14,10 @@ export default defineConfig({
   screenshotsFolder: 'tests/cypress/artefacts/screenshots',
   videosFolder: 'tests/cypress/artefacts/videos',
   downloadsFolder: 'tests/cypress/artefacts/downloads',
+  // Wide enough for the app's desktop layout: full page headings (lg breakpoint), the page
+  // status indicators on one row (1500px), and room for fields above the fixed page footer
+  viewportWidth: 2000,
+  viewportHeight: 1500,
   e2e: {
     baseUrl: 'http://localhost:6101',
     //
@@ -25,7 +29,7 @@ export default defineConfig({
     //
     experimentalRunAllSpecs: true,
     supportFile: 'tests/cypress/support/e2e.ts',
-    specPattern: ['tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
+    specPattern: ['tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}'],
     setupNodeEvents(on, config) {
       on('file:preprocessor', vitePreprocessor());
 

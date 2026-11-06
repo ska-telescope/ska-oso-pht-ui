@@ -4,7 +4,7 @@ type TargetObservation = {
   targetId: string;
   observationId: string;
   dataProductsSDPId: string;
-  sensCalc?: SensCalcResults;
+  sensitivityResults?: SensCalcResults;
 };
 
 export default TargetObservation;

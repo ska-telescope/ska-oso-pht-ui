@@ -17,10 +17,9 @@ import {
 } from '@/utils/constants';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { getProposalResolver, ProposalType } from '@/models/proposals/proposal';
 import phtTranslations from '../../../public/locales/en/pht.json';
-import { getDetailsValues } from '@/models/proposals/details';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
 // ---- Module mocks ----
 
@@ -87,21 +86,10 @@ const wrapper = (component: React.ReactElement) => {
       mockState.proposal = proposal;
       rerender();
     });
-    const proposal = mockState.proposal as {
-      proposalType?: ProposalType['proposalType'];
-      observations?: { type?: string }[];
-      abstract?: string;
-      scienceCategory?: number | null;
-    };
     const methods = useForm<ProposalType>({
       mode: 'all',
-      resolver: zodResolver(getProposalSchema()),
-      defaultValues: {
-        title: '',
-        proposalType: proposal.proposalType ?? null,
-        ...getDetailsValues(proposal),
-        investigators: []
-      }
+      resolver: getProposalResolver(),
+      defaultValues: getProposalFormValues(mockState.proposal)
     });
     const formValues = useWatch({ control: methods.control });
     return (
@@ -434,6 +422,7 @@ describe('<DetailsPage /> observing mode', () => {
       TYPE_PST,
       expect.any(Function),
       expect.any(Function),
+      expect.objectContaining({ getValues: expect.any(Function) }),
       {},
       42
     );

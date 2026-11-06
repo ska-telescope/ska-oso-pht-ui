@@ -530,15 +530,17 @@ export const UPLOAD_MAX_WIDTH_PDF = 25;
 export const SCIENCE_PDF_MAX_PAGES = 4;
 export const SCIENCE_PDF_MAX_SIZE_MB = 100;
 
-export const VEL_TYPES = [
-  { label: 'Velocity', value: 0 },
-  { label: 'Redshift', value: 1 }
+export const VELOCITY_UNIT = { KM_PER_S: 0, M_PER_S: 1 } as const;
+
+export const VELOCITY_UNITS = [
+  { label: 'km/s', value: VELOCITY_UNIT.KM_PER_S, metresPerSecond: 1000 },
+  { label: 'm/s', value: VELOCITY_UNIT.M_PER_S, metresPerSecond: 1 }
 ];
 
-export const VEL_UNITS = [
-  { label: 'km/s', value: 0 },
-  { label: 'm/s', value: 1 }
-];
+// The two coordinates of a sky direction: right ascension and declination for ICRS, longitude
+// and latitude for Galactic. Their labels, units and errors are translated by these numbers.
+export const SKY_DIRECTION_AXIS = { LONGITUDE: 1, LATITUDE: 2 } as const;
+export type SkyDirectionAxis = (typeof SKY_DIRECTION_AXIS)[keyof typeof SKY_DIRECTION_AXIS];
 
 export const SEARCH_TYPE_OPTIONS_REVIEWERS = [
   { label: 'Pulsar Timing', value: 'Pulsar Timing' },
@@ -616,15 +618,22 @@ export const TEXT_ENTRY_PARAMS = {
   }
 };
 
+/** Whether a target's radial motion is entered as a velocity or a redshift (PHT only, not a PDM field) */
 export const VELOCITY_TYPE = {
   VELOCITY: 0,
   REDSHIFT: 1
-};
+} as const;
 
-export const VELOCITY_UNITS = [
-  { label: 'm/s', value: 0, convert: 1 },
-  { label: 'km/s', value: 1, convert: 1000 }
-];
+export type VelocityType = (typeof VELOCITY_TYPE)[keyof typeof VELOCITY_TYPE];
+
+/** The convention a target's radial velocity is given in. New targets use RADIO, the PDM default. */
+export const VELOCITY_DEFINITION = {
+  RADIO: 'RADIO',
+  OPTICAL: 'OPTICAL',
+  RELATIVISTIC: 'RELATIVISTIC'
+} as const;
+
+export type VelocityDefinition = (typeof VELOCITY_DEFINITION)[keyof typeof VELOCITY_DEFINITION];
 
 export const WRAPPER_HEIGHT = '75px';
 

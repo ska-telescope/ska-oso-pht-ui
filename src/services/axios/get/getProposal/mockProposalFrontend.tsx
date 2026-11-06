@@ -39,93 +39,48 @@ export const MockProposalFrontend: Proposal = {
   targets: [
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      epoch: 2000,
       decStr: '00:00:00.0',
       id: 'target-123',
       name: 'target',
       b: undefined,
       l: undefined,
-      parallax: undefined,
-      pmDec: undefined,
-      pmRa: undefined,
       raStr: '00:00:00.0',
       redshift: '0',
-      // referenceFrame: RA_TYPE_ICRS.label,
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
-      velType: 1,
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
+      velType: 0,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     },
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      epoch: 2000,
       decStr: '+22:00:53.000',
       id: 'target-456',
       name: 'target2',
       b: undefined,
       l: undefined,
-      parallax: undefined,
-      pmDec: undefined,
-      pmRa: undefined,
       raStr: '05:34:30.900',
       redshift: '0',
-      // referenceFrame: RA_TYPE_ICRS.label,
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
-      velType: 1,
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
+      velType: 0,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     },
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      epoch: 2000,
       decStr: '-00:49:23.700',
       id: 'target-789',
       name: 'M2',
       b: undefined,
       l: undefined,
-      parallax: undefined,
-      pmDec: undefined,
-      pmRa: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      // referenceFrame: RA_TYPE_ICRS.label,
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
-      velType: 1,
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
+      velType: 0,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     }
   ],
   observations: [
@@ -161,7 +116,7 @@ export const MockProposalFrontend: Proposal = {
       targetId: 'target-789',
       observationId: 'obs-obR1Ej',
       dataProductsSDPId: 'SDP-2',
-      sensCalc: {
+      sensitivityResults: {
         statusGUI: 0,
         error: '',
         section1: [
@@ -310,33 +265,18 @@ export const MockProposalFrontendZoom: Proposal = {
   targets: [
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      epoch: 2000,
       decStr: '-00:49:23.700',
       id: 'target-123',
       name: 'target',
       b: undefined,
       l: undefined,
-      parallax: undefined,
-      pmDec: undefined,
-      pmRa: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      // referenceFrame: RA_TYPE_ICRS.label,
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
-      velType: 1,
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
+      velType: 0,
       vel: '-3.6',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     }
   ],
   observations: [
@@ -372,7 +312,7 @@ export const MockProposalFrontendZoom: Proposal = {
       targetId: 'target-789',
       observationId: 'obs-arMIoY',
       dataProductsSDPId: 'SDP-1',
-      sensCalc: {
+      sensitivityResults: {
         statusGUI: 0,
         error: '',
         section1: [

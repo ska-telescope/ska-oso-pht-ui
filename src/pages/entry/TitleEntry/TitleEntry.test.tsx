@@ -5,8 +5,7 @@ import { StoreProvider } from '@utils/storage/store';
 import TitleEntry from './TitleEntry';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
 import phtTranslations from '../../../../public/locales/en/pht.json';
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
@@ -44,18 +43,14 @@ const wrapper = (
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
       mode: 'all',
-      defaultValues: {
-        title: 'A title',
-        proposalType,
-        abstract: '',
-        scienceCategory: null
-      },
-      resolver: validate ? zodResolver(getProposalSchema()) : undefined
+      defaultValues: { title: 'A title', proposalType },
+      resolver: validate ? getProposalResolver() : undefined
     });
     return (
       <StoreProvider>
         <FormProvider {...methods}>
           {component}
+          <output data-testid="formTitle">{methods.watch('title')}</output>
           <output data-testid="formProposalType">{methods.watch('proposalType')}</output>
         </FormProvider>
       </StoreProvider>
@@ -79,28 +74,26 @@ describe('<TitleEntry />', () => {
     ).not.toBeInTheDocument();
   });
 
-  test('saves title changes from the RHF field to the proposal', () => {
+  // The form's values reach the store through useCopySlicesToStore, not the page
+  test('puts title changes in the form', () => {
     wrapper(<TitleEntry page={0} />);
     const titleInput = screen.getByTestId('titleId');
 
     expect(titleInput.tagName).toBe('INPUT');
     fireEvent.change(titleInput, { target: { value: 'Updated title' } });
 
-    expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
-      expect.objectContaining({ title: 'Updated title' })
-    );
+    expect(screen.getByTestId('formTitle')).toHaveTextContent('Updated title');
+    expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
   });
 
-  test('saves a selected type to the form and the proposal', async () => {
+  test('puts a selected type in the form', async () => {
     const { container } = wrapper(<TitleEntry page={0} />, { validate: true });
     fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
 
     await waitFor(() =>
       expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
     );
-    expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
-      expect.objectContaining({ proposalType: PROPOSAL_TYPE.KEY_SCIENCE })
-    );
+    expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
     expect(screen.queryByTestId('dialogConfirmationButton')).not.toBeInTheDocument();
   });
 
@@ -115,11 +108,9 @@ describe('<TitleEntry />', () => {
     await waitFor(() =>
       expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
     );
+    // The sub-types are not in the form yet, so the page clears them in the store itself
     expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
-      expect.objectContaining({
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
-        proposalSubType: []
-      })
+      expect.objectContaining({ proposalSubType: [] })
     );
   });
 

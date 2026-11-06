@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { useNavigate } from 'react-router';
 import { FormProvider, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
@@ -11,7 +10,7 @@ import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { NAV, PAGE_OBSERVATION, PAGE_TARGET, PROPOSAL_TYPE } from '@/utils/constants';
-import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
 
 // --- Additional mocks ---
 const mockNotifyError = vi.hoisted(() => vi.fn());
@@ -103,8 +102,11 @@ const wrapper = (
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
       mode: 'all',
-      resolver: zodResolver(getProposalSchema()),
+      resolver: getProposalResolver(),
       defaultValues: {
+        targets: [],
+        targetObservation: [],
+        calibrationStrategy: [],
         title,
         proposalType: (storageObject.useStore().application.content2 as Partial<ProposalType>)
           .proposalType,
@@ -213,10 +215,9 @@ describe('PageFooterPPT', () => {
     );
   });
 
+  // The form holds an unselected type as null
   it('disables Create when the form has no proposal type', async () => {
-    wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, {
-      proposalType: undefined
-    });
+    wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, { proposalType: null });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 

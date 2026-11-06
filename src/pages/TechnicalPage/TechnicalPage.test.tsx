@@ -5,6 +5,7 @@ import TechnicalPage from './TechnicalPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -81,12 +82,11 @@ vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: {
+      defaultValues: getProposalFormValues({
         title: '',
         proposalType: null,
-        abstract: '',
-        scienceCategory: null
-      }
+        ...(mockStore.application.content2 as any)
+      })
     });
     return (
       <FormProvider {...methods}>
