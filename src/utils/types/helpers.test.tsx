@@ -15,4 +15,8 @@ describe('PHT UI helper functions', () => {
   test('Velocity', () => {
     expect(calculateVelocity(200, 300, 2)).toBe('199861.64 km/s');
   });
+
+  test('Velocity below 1 km/s is shown in m/s', () => {
+    expect(calculateVelocity(1, 1e6)).toBe('299.8 m/s');
+  });
 });

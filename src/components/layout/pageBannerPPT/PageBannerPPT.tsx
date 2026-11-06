@@ -86,6 +86,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
+  // TODO(T9): Full cleanup needed once everything is migrated to the form
   const validateTheProposal = async (): Promise<boolean> => {
     let result = false;
     setValidationResults([]);

@@ -1,0 +1,57 @@
+@startuml proposalEditorSvVsStandard
+' Proposal editor: the pages a standard and a Science Verification (SV) proposal go through.
+' Highlighted pages differ between the two proposal types.
+
+skinparam rectangleBackgroundColor #FFFFFF
+skinparam shadowing false
+hide stereotype
+skinparam rectangle<<diff>> {
+  BackgroundColor #FEFECE
+}
+
+frame "Standard proposal" {
+  rectangle "Title" as sTitle
+  rectangle "Team" as sTeam
+  rectangle "Details" as sDetails <<diff>>
+  rectangle "Science" as sScience <<diff>>
+  rectangle "Technical" as sTechnical <<diff>>
+  rectangle "Targets" as sTargets
+  rectangle "Observations" as sObservations
+  rectangle "Data products" as sDataProducts
+  rectangle "Linking" as sLinking <<diff>>
+  rectangle "Calibration" as sCalibration
+
+  sTitle -right-> sTeam
+  sTeam -right-> sDetails
+  sDetails -right-> sScience
+  sScience -right-> sTechnical
+  sTechnical -right-> sTargets
+  sTargets -right-> sObservations
+  sObservations -right-> sDataProducts
+  sDataProducts -right-> sLinking
+  sLinking -right-> sCalibration
+}
+
+frame "SV proposal" {
+  rectangle "Title" as vTitle
+  rectangle "Team" as vTeam
+  rectangle "Details" as vDetails <<diff>>
+  rectangle "Description" as vDescription <<diff>>
+  rectangle "Targets" as vTargets
+  rectangle "Observations" as vObservations
+  rectangle "Data products" as vDataProducts
+  rectangle "Calibration" as vCalibration
+
+  vTitle -right-> vTeam
+  vTeam -right-> vDetails
+  vDetails -right-> vDescription
+  vDescription -right-> vTargets
+  vTargets -right-> vObservations
+  vObservations -right-> vDataProducts
+  vDataProducts -right-> vCalibration
+}
+
+' Stack the two flows on top of each other
+sTitle -[hidden]down- vTitle
+
+@enduml

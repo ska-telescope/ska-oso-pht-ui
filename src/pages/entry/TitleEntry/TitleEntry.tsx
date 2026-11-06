@@ -85,12 +85,6 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   );
 
   React.useEffect(() => {
-    if ((getProposal()?.title ?? '') !== title || getProposal()?.proposalType !== proposalType) {
-      setProposal({ ...getProposal(), title, proposalType });
-    }
-  }, [getProposal, setProposal, title, proposalType]);
-
-  React.useEffect(() => {
     const status =
       errors.title || errors.proposalType
         ? STATUS_ERROR
@@ -100,7 +94,9 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const handleDialogResponse = () => {
     onProposalTypeChange(tempValue);
-    setProposal({ ...getProposal(), proposalType: tempValue, proposalSubType: [] });
+    // The sub-types belong to the type, so they start again; the type itself reaches the store
+    // through useCopySlicesToStore
+    setProposal({ ...getProposal(), proposalSubType: [] });
     setOpenDialog(false);
   };
 

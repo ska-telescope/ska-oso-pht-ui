@@ -404,6 +404,7 @@ export default function GridProposals({
     }
   };
 
+  // TODO(T9): Full cleanup needed once everything is migrated to the form
   const deleteConfirmed = async () => {
     const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
     if (response && !('error' in response)) {

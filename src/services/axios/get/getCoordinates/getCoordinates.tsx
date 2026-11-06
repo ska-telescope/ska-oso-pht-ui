@@ -4,7 +4,8 @@ import axiosClient from '../../axiosClient/axiosClient.tsx';
 
 const UNITS = ['equatorial', 'galactic'];
 
-// Error codes are keys under resolve.error in the translations
+// Error codes are keys under resolve.error in the translations. They are only shown when the
+// backend sends no message of its own (e.g. the request got no response).
 export const RESOLVE_ERROR_NOT_FOUND = 'notFound';
 export const RESOLVE_ERROR_UNAVAILABLE = 'unavailable';
 export const RESOLVE_ERROR_UNKNOWN = 'API_UNKNOWN_ERROR';
@@ -25,6 +26,14 @@ const resolveErrorCode = (e: unknown): string => {
   return RESOLVE_ERROR_UNKNOWN;
 };
 
+// The backend's own description of the failure (FastAPI sends it as `detail`), if there is one
+const resolveErrorMessage = (e: unknown): string | undefined => {
+  const detail = isAxiosError(e) ? e.response?.data?.detail : undefined;
+  return typeof detail === 'string' && detail.trim() ? detail : undefined;
+};
+
+export type ResolveError = { error: string; message?: string };
+
 async function GetCoordinates(targetName: string, skyUnits: number) {
   const units = skyUnits < 0 || skyUnits > UNITS.length - 1 ? 0 : skyUnits;
 
@@ -36,7 +45,8 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
     );
     return typeof result === 'undefined' ? { error: RESOLVE_ERROR_UNKNOWN } : result.data;
   } catch (e) {
-    return { error: resolveErrorCode(e) };
+    const message = resolveErrorMessage(e);
+    return { error: resolveErrorCode(e), ...(message && { message }) } as ResolveError;
   }
 }
 

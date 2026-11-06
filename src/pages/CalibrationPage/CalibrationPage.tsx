@@ -1,8 +1,9 @@
 import React from 'react';
-import { storageObject } from '@utils/storage/store';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Box, Grid } from '@mui/material';
-import { Proposal } from '@utils/types/proposal.tsx';
+import { ProposalType } from '@/models/proposals/proposal';
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import Shell from '../../components/layout/Shell/Shell';
 import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
@@ -16,31 +17,23 @@ const PAGE = PAGE_CALIBRATION;
 const GAP = 4;
 
 export default function CalibrationPage() {
-  const { application } = storageObject.useStore();
+  // The form owns the links and calibration
+  const form = useFormContext<ProposalType>();
+  const links = useWatch({ control: form.control, name: 'targetObservation' }) ?? [];
+  const strategies = (useWatch({ control: form.control, name: 'calibrationStrategy' }) ??
+    []) as CalibrationStrategy[];
 
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const { autoLink, osdCyclePolicy } = useOSDAccessors();
 
-  const getProposal = () => application.content2 as Proposal;
-
   React.useEffect(() => {
     setHelp('page.' + PAGE + '.help');
   }, []);
 
-  const hasData = (): boolean => {
-    const proposal = getProposal();
-    return (
-      !!proposal &&
-      !!(proposal?.targetObservation && proposal.targetObservation.length > 0) &&
-      Array.isArray(proposal.calibrationStrategy) &&
-      proposal.calibrationStrategy.length > 0
-    );
-  };
+  const hasData = (): boolean => links.length > 0 && strategies.length > 0;
 
-  const hasTargetObservations = () => {
-    return (getProposal()?.targetObservation?.length ?? 0) > 0;
-  };
+  const hasTargetObservations = () => links.length > 0;
 
   const noData = () => {
     // Calibration needs a target linked to an observation, which is the same for every proposal
@@ -106,7 +99,7 @@ export default function CalibrationPage() {
                   p: GAP
                 }}
               >
-                <CalibrationEntry data={getProposal()?.calibrationStrategy?.[0]} />
+                <CalibrationEntry data={strategies[0]} />
               </Box>
             )}
           </>

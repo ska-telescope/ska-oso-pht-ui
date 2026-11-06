@@ -1,24 +1,30 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { getProposalSchema, ProposalType } from './proposal';
-import { getTitleValues } from './title';
+import { getProposalSchema, ProposalType, getProposalResolver } from './proposal';
+type ProposalSeed = Partial<ProposalType> & { id?: string | null };
 
-type ProposalSeed = {
-  id?: string | null;
-  title?: string;
-  proposalType?: ProposalType['proposalType'];
+/** The form values of a new proposal: the schema's defaults. */
+export const getProposalFormDefaults = (): ProposalType => getProposalSchema().parse({});
+
+/**
+ * Form values for every migrated slice, taken from the proposal or defaulted. The proposal's own
+ * values are not checked here: a loaded proposal can hold content the checks reject.
+ */
+export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => {
+  const defaults = getProposalFormDefaults();
+  return Object.fromEntries(
+    (Object.keys(defaults) as (keyof ProposalType)[]).map((slice) => [
+      slice,
+      proposal?.[slice] ?? defaults[slice]
+    ])
+  ) as ProposalType;
 };
 
 export function useProposalForm(proposal?: ProposalSeed) {
   const formMethods = useForm<ProposalType>({
     mode: 'all',
-    resolver: zodResolver(getProposalSchema()),
-    defaultValues: {
-      title: getTitleValues(proposal),
-      // Controlled fields need null to clear a previous selection on reset.
-      proposalType: proposal?.proposalType ?? null
-    }
+    resolver: getProposalResolver(),
+    defaultValues: getProposalFormValues(proposal)
   });
 
   const { reset } = formMethods;
@@ -31,10 +37,7 @@ export function useProposalForm(proposal?: ProposalSeed) {
 
   // Re-seed migrated fields when loading or switching proposals, not on store synchronization.
   React.useEffect(() => {
-    reset({
-      title: getTitleValues(latestProposal.current),
-      proposalType: latestProposal.current?.proposalType ?? null
-    });
+    reset(getProposalFormValues(latestProposal.current));
   }, [proposalId, reset]);
 
   return formMethods;
