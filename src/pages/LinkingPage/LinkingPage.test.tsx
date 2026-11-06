@@ -11,7 +11,7 @@ import completeMockStore from '@/utils/MockStore';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   PROPOSAL_TYPE,
-  STATUS_PARTIAL
+  SENSITIVITY_STATE
 } from '@/utils/constants';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
 
@@ -124,7 +124,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
         observationId: 'obs-1',
         dataProductsSDPId: 'sdp-1',
         // The page doesn't calculate the link: the sensitivity service does
-        sensitivityResults: { statusGUI: STATUS_PARTIAL, error: '' }
+        sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
       })
     ]);
     expect(formProbe.getValues('calibrationStrategy')[0]).toEqual(

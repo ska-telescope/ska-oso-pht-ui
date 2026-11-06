@@ -4,9 +4,10 @@ import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
-import { SensCalcResults } from '@/utils/types/sensCalcResults';
+import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 import {
   IW_BRIGGS,
+  SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_ZOOM
@@ -76,6 +77,20 @@ vi.mock('@/components/button/Add/Add', () => ({
   )
 }));
 
+const values = ({
+  weighted,
+  beamSize = '1.00 x 2.00'
+}: {
+  weighted: number;
+  beamSize?: string;
+}): SensitivityValues => ({
+  weightedSensitivity: { value: weighted, unit: 'Jy/beam' },
+  totalSensitivity: { value: 3, unit: 'Jy/beam' },
+  confusionNoise: { value: 2, unit: 'Jy/beam' },
+  surfaceBrightnessSensitivity: { value: 4, unit: 'K' },
+  synthesizedBeamSize: { value: beamSize, unit: 'arcsec2' }
+});
+
 describe('DataProduct component', () => {
   const theme = createTheme();
   const existingDataProduct = {
@@ -85,7 +100,7 @@ describe('DataProduct component', () => {
   } as DataProductSDPNew;
 
   const renderExistingDataProduct = (
-    sensitivityResults?: SensCalcResults,
+    sensitivity?: Sensitivity,
     observationType: string = TYPE_CONTINUUM
   ) => {
     mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
@@ -105,13 +120,13 @@ describe('DataProduct component', () => {
             }
           ],
           dataProductSDP: [existingDataProduct],
-          targetObservation: sensitivityResults
+          targetObservation: sensitivity
             ? [
                 {
                   observationId: 'OBS1',
                   dataProductsSDPId: 'DP1',
                   targetId: 'T1',
-                  sensitivityResults
+                  sensitivity
                 }
               ]
             : []
@@ -152,11 +167,11 @@ describe('DataProduct component', () => {
       ...existingDataProduct,
       data: { ...existingDataProduct.data, channelsOut: 1 }
     } as DataProductSDPNew;
-    const sensitivityResults = {
-      section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }],
-      section2: [{ field: 'spectralSensitivityWeighted', value: '2', units: 'Jy' }],
-      statusGUI: 0
-    } as SensCalcResults;
+    const sensitivity: Sensitivity = {
+      state: SENSITIVITY_STATE.DONE,
+      continuum: values({ weighted: 1 }),
+      spectral: values({ weighted: 2 })
+    };
 
     mockStoreReturn = {
       application: {
@@ -178,7 +193,7 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               dataProductsSDPId: 'DP1',
               targetId: 'T1',
-              sensitivityResults
+              sensitivity
             }
           ]
         }
@@ -313,8 +328,9 @@ describe('DataProduct component', () => {
 
   it('shows persisted sensitivity results without changing the proposal when the edit page loads', () => {
     renderExistingDataProduct({
-      statusGUI: 0,
-      section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }]
+      state: SENSITIVITY_STATE.DONE,
+      continuum: values({ weighted: 1 }),
+      spectral: values({ weighted: 2 })
     });
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
@@ -448,24 +464,10 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               dataProductsSDPId: 'DP1',
               targetId: 'T1',
-              sensitivityResults: {
-                title: 'Target 1',
-                statusGUI: 0,
-                error: '',
-                section1: [
-                  {
-                    field: 'continuumSynthBeamSize',
-                    value: '0',
-                    units: 'arcsec2'
-                  },
-                  {
-                    field: 'continuumSensitivityWeighted',
-                    value: '7.18',
-                    units: 'Jy/beam'
-                  }
-                ],
-                section2: [],
-                section3: []
+              sensitivity: {
+                state: SENSITIVITY_STATE.DONE,
+                continuum: values({ weighted: 7.18, beamSize: '0' }),
+                spectral: values({ weighted: 1 })
               }
             }
           ]
@@ -523,24 +525,10 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               dataProductsSDPId: 'DP1',
               targetId: 'T1',
-              sensitivityResults: {
-                title: 'Target 1',
-                statusGUI: 0,
-                error: '',
-                section1: [
-                  {
-                    field: 'continuumSynthBeamSize',
-                    value: '0',
-                    units: 'arcsec2'
-                  },
-                  {
-                    field: 'continuumSensitivityWeighted',
-                    value: '7.18',
-                    units: 'Jy/beam'
-                  }
-                ],
-                section2: [],
-                section3: []
+              sensitivity: {
+                state: SENSITIVITY_STATE.DONE,
+                continuum: values({ weighted: 7.18, beamSize: '0' }),
+                spectral: values({ weighted: 1 })
               }
             }
           ]

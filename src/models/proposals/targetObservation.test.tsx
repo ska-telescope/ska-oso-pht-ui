@@ -9,7 +9,6 @@ import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import TargetObservation from '@utils/types/targetObservation';
 import {
   getTargetObservationSchema,
-  observationTypesFromPdm,
   TargetObservationType,
   targetObservationFromPdm,
   targetObservationToPdm
@@ -42,7 +41,7 @@ describe('target observation schema', () => {
   });
 
   test('rejects an unknown sensitivity status', () => {
-    expect(schema.safeParse([{ ...link, sensitivityResults: { statusGUI: 2 } }]).success).toBe(
+    expect(schema.safeParse([{ ...link, sensitivity: { state: 'unknown' } }]).success).toBe(
       false
     );
   });
@@ -55,19 +54,16 @@ describe('target observation schema', () => {
 describe('target observation PDM mapping', () => {
   test.each(mockPdms)('round-trips %s through the form without further change', (_, pdm) => {
     const sets = pdm.observation_info?.observation_sets ?? [];
-    const types = observationTypesFromPdm(sets);
     const saved = targetObservationToPdm(
-      targetObservationFromPdm(pdm.observation_info?.result_details, sets),
-      types
+      targetObservationFromPdm(pdm.observation_info?.result_details, sets)
     );
-    expect(targetObservationToPdm(targetObservationFromPdm(saved, sets), types)).toEqual(saved);
+    expect(targetObservationToPdm(targetObservationFromPdm(saved, sets))).toEqual(saved);
   });
 
   const save = (pdm: ProposalBackend) => {
     const sets = pdm.observation_info.observation_sets ?? [];
     return targetObservationToPdm(
-      targetObservationFromPdm(pdm.observation_info.result_details, sets),
-      observationTypesFromPdm(sets)
+      targetObservationFromPdm(pdm.observation_info.result_details, sets)
     );
   };
 
@@ -76,9 +72,14 @@ describe('target observation PDM mapping', () => {
     const expected = (MockSlicesPdm.observation_info.result_details ?? []).map((r) =>
       structuredClone(r)
     ) as any[];
-    // Results supplied as sensitivity are saved from the observation's supplied sensitivity
-    expected[1].result.continuum = { value: 10, unit: 'uJy/beam' };
-    expected[1].result.spectral = { value: 10, unit: 'uJy/beam' };
+    // Results for a supplied sensitivity are read as no results, so only the references are saved
+    expected[1] = {
+      ...expected[1],
+      result: null,
+      continuum_confusion_noise: null,
+      spectral_confusion_noise: null,
+      synthesized_beam_size: null
+    };
     // A spectral line observation saves no continuum values
     expected[2].result.weighted_continuum_sensitivity = { value: 0, unit: '' };
     expected[2].result.total_continuum_sensitivity = { value: 0, unit: '' };

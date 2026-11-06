@@ -1,4 +1,12 @@
-import { IW_BRIGGS, IW_NATURAL } from './constants';
+import {
+  IW_BRIGGS,
+  IW_NATURAL,
+  SENSITIVITY_STATE,
+  SensitivityState,
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL
+} from './constants';
 import {
   DECIMAL_PLACES,
   IMAGE_WEIGHTING,
@@ -7,6 +15,14 @@ import {
   TIME_UNITS
 } from './constants';
 import { ValueUnitPair } from './types/valueUnitPair';
+
+/** The status level shown for sensitivity results, as the status icons and their labels take. */
+export const sensitivityStatusLevel = (state: SensitivityState) =>
+  state === SENSITIVITY_STATE.DONE
+    ? STATUS_OK
+    : state === SENSITIVITY_STATE.FAILED
+      ? STATUS_ERROR
+      : STATUS_PARTIAL;
 
 export const getImageWeightingMapping = (value: number) => {
   return IMAGE_WEIGHTING.find((e) => e.value === value)?.lookup;

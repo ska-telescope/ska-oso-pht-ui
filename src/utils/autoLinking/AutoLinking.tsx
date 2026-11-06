@@ -14,7 +14,7 @@ import {
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
-  STATUS_PARTIAL,
+  SENSITIVITY_STATE,
   TAPER_DEFAULT,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -190,7 +190,7 @@ const buildTargetLink = async (
     targetId: target?.id,
     observationId: observation.id,
     dataProductsSDPId: mainDataProduct.id,
-    sensitivityResults: { statusGUI: STATUS_PARTIAL, error: '' }
+    sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
   };
 
   const existingNotes = form.getValues('calibrationStrategy')?.[0]?.notes ?? null;

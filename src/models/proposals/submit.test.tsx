@@ -86,7 +86,7 @@ describe('getSubmitPageStatuses', () => {
 
 test.each([
   ['target', { targets: [{ ...target, kind: 'not a number' }] }],
-  ['linking', { targetObservation: [{ ...link, sensitivityResults: { statusGUI: 99 } }] }],
+  ['linking', { targetObservation: [{ ...link, sensitivity: { state: 'unknown' } }] }],
   ['calibration', { calibrationStrategy: [{ ...strategy, calibrators: 'not a list' }] }]
 ] as const)(
   'does not check anything the page checks did not, such as a malformed %s entry',

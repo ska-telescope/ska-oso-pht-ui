@@ -6,7 +6,7 @@ import {
   DP_TYPE_VISIBLE,
   IW_BRIGGS,
   REFERENCE_COORDINATE_TYPE_SSO,
-  STATUS_PARTIAL,
+  SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -144,7 +144,7 @@ describe('AutoLinking, newDataProductsForMode', () => {
 });
 
 // A new link has partial results: the sensitivity service calculates them
-const PARTIAL_RESULTS = { statusGUI: STATUS_PARTIAL, error: '' };
+const PARTIAL_RESULTS = { state: SENSITIVITY_STATE.CALCULATING };
 
 describe('regenerateForMode()', () => {
   let proposal: Partial<Proposal>;
@@ -170,7 +170,7 @@ describe('regenerateForMode()', () => {
           targetId: mockTarget.id,
           observationId: 'existing-obs',
           dataProductsSDPId: 'existing-sdp',
-          sensitivityResults: { stub: true } as any
+          sensitivity: { stub: true } as any
         }
       ],
       calibrationStrategy: [
@@ -217,7 +217,7 @@ describe('regenerateForMode()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
     expect(proposal.targetObservation?.[0].observationId).toBe('mock-0000000');
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe(proposal.dataProductSDP?.[0].id);
-    expect(proposal.targetObservation?.[0].sensitivityResults).toEqual(PARTIAL_RESULTS);
+    expect(proposal.targetObservation?.[0].sensitivity).toEqual(PARTIAL_RESULTS);
   });
 
   it('updates existing observations, calibrations, sdps, targets so that there is always only 1 of each', async () => {
@@ -274,7 +274,7 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivityResults).toEqual(PARTIAL_RESULTS);
+    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
@@ -316,7 +316,7 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivityResults).toEqual(PARTIAL_RESULTS);
+    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
@@ -343,7 +343,7 @@ describe('regenerateForMode()', () => {
           targetId: mockTarget.id,
           observationId: 'existing-pst-obs',
           dataProductsSDPId: 'existing-pst-sdp',
-          sensitivityResults: { stub: true } as any
+          sensitivity: { stub: true } as any
         }
       ],
       calibrationStrategy: [
@@ -385,7 +385,7 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivityResults).toEqual(PARTIAL_RESULTS);
+    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
@@ -445,7 +445,7 @@ describe('regenerateForMode()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
 
     // ...as partial, like any new link: the sensitivity service gives an SSO link no results
-    expect(proposal.targetObservation?.[0].sensitivityResults).toEqual(PARTIAL_RESULTS);
+    expect(proposal.targetObservation?.[0].sensitivity).toEqual(PARTIAL_RESULTS);
   });
 });
 
@@ -593,7 +593,7 @@ describe('linkTarget()', () => {
         targetId: mockTarget.id,
         observationId: 'existing-obs',
         dataProductsSDPId: 'existing-sdp',
-        sensitivityResults: PARTIAL_RESULTS
+        sensitivity: PARTIAL_RESULTS
       }
     ]);
   });

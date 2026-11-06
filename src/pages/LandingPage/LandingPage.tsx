@@ -32,7 +32,7 @@ import {
   PATH,
   PROPOSAL_STATUS,
   PROPOSAL_STATUS_OPTIONS,
-  STATUS_PARTIAL
+  SENSITIVITY_STATE
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
@@ -181,7 +181,7 @@ export default function LandingPage() {
   const resetTargetObservationResults = (targetObservation?: TargetObservation[]) =>
     targetObservation?.map((rec) => ({
       ...rec,
-      sensitivityResults: { id: rec.targetId, title: '', statusGUI: STATUS_PARTIAL, error: '' }
+      sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     })) ?? [];
 
   const createProposal = async () => {

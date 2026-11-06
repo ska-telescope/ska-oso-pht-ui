@@ -45,8 +45,7 @@ import {
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
-  STATUS_INITIAL,
-  STATUS_PARTIAL,
+  SENSITIVITY_STATE,
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
   TYPE_CONTINUUM,
@@ -320,7 +319,7 @@ export default function DataProduct({ data }: DataProductProps) {
             ...rec,
             dataProductsSDPId,
             // The results were for the other data product; the sensitivity service calculates them
-            sensitivityResults: { statusGUI: STATUS_PARTIAL, error: '' }
+            sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
           }
         : rec
     );
@@ -1177,13 +1176,13 @@ export default function DataProduct({ data }: DataProductProps) {
               borderColor={
                 !targetObservation()
                   ? theme.palette.error.main
-                  : targetObservation()?.sensitivityResults == undefined
+                  : targetObservation()?.sensitivity == undefined
                     ? theme.palette.warning.main
-                    : targetObservation()?.sensitivityResults?.statusGUI === STATUS_PARTIAL
+                    : targetObservation()?.sensitivity?.state === SENSITIVITY_STATE.CALCULATING
                       ? theme.palette.info.main
-                      : targetObservation()?.sensitivityResults?.statusGUI !== STATUS_INITIAL
-                        ? theme.palette.success.main
-                        : theme.palette.error.main
+                      : targetObservation()?.sensitivity?.state === SENSITIVITY_STATE.FAILED
+                        ? theme.palette.error.main
+                        : theme.palette.success.main
               }
               title={
                 isContinuum()

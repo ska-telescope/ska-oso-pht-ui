@@ -4,6 +4,7 @@ import CancelButton from '../../../button/Cancel/Cancel';
 import SensCalcContent from '../content/SensCalcContent';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
+import { sensitivityStatusLevel } from '@utils/helpersSensCalc';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
@@ -24,6 +25,8 @@ export default function SensCalcModalSingle({
     onClose();
   };
 
+  const results = targetObservation?.sensitivity;
+  const level = results ? sensitivityStatusLevel(results.state) : undefined;
   const { t } = useScopedTranslation();
 
   return (
@@ -42,12 +45,12 @@ export default function SensCalcModalSingle({
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusLoading.' + targetObservation?.sensitivityResults?.statusGUI),
+                status: t('statusLoading.' + level),
                 error: ''
               })}
               testId="statusId"
               icon
-              level={targetObservation?.sensitivityResults?.statusGUI}
+              level={level}
               size={SIZE}
               text=""
             />

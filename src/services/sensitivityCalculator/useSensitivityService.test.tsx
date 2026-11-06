@@ -8,13 +8,11 @@ import {
   DP_TYPE_IMAGES,
   IW_NATURAL,
   REFERENCE_COORDINATE_TYPE_ICRS,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL
+  SENSITIVITY_STATE
 } from '@/utils/constants';
 import type { DataProductSDPNew } from '@/utils/types/dataProduct';
 import type Proposal from '@/utils/types/proposal';
-import type { SensCalcResults } from '@/utils/types/sensCalcResults';
+import type { Sensitivity } from '@/models/proposals/targetObservation';
 import type { TargetType } from '@/models/proposals/targets';
 import type TargetObservation from '@/utils/types/targetObservation';
 import { SENS_CALC_ERROR_KIND, SensCalcError, SensCalcSuccess } from './client';
@@ -77,7 +75,14 @@ const FAILURE: Response = {
   detail: 'Bandwidth too small'
 };
 
-const STORED_RESULTS: SensCalcResults = { statusGUI: STATUS_OK, section1: [] };
+const STORED_VALUES = {
+  weightedSensitivity: quantity,
+  totalSensitivity: quantity,
+  confusionNoise: quantity,
+  surfaceBrightnessSensitivity: quantity,
+  synthesizedBeamSize: { value: '1 x 1', unit: 'arcsec²' }
+};
+const STORED_RESULTS: Sensitivity = { state: SENSITIVITY_STATE.DONE, spectral: STORED_VALUES };
 
 const proposalWith = (observation = OBSERVATION, dataProduct = DATA_PRODUCT) =>
   ({ id: 'proposal-1', observations: [observation], dataProductSDP: [dataProduct] }) as Proposal;
@@ -111,7 +116,7 @@ const renderService = (link: TargetObservation, proposal = proposalWith()) => {
 };
 
 const storedResults = (form: { getValues: (name: 'targetObservation') => unknown }) =>
-  (form.getValues('targetObservation') as TargetObservation[])[0].sensitivityResults;
+  (form.getValues('targetObservation') as TargetObservation[])[0].sensitivity;
 
 const debounce = () => act(() => vi.advanceTimersByTimeAsync(SENS_CALC_DEBOUNCE_MS));
 
@@ -140,23 +145,23 @@ describe('useSensitivityService', () => {
     await debounce();
 
     expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
-    expect(storedResults(getForm())?.statusGUI).toBe(STATUS_OK);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
   });
 
   test('calculates a link marked as partial', async () => {
     const { getForm } = renderService({
       ...LINK,
-      sensitivityResults: { statusGUI: STATUS_PARTIAL, error: '' }
+      sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     });
 
     await debounce();
 
     expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
-    expect(storedResults(getForm())?.statusGUI).toBe(STATUS_OK);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
   });
 
   test('takes stored results as current when a proposal is opened', async () => {
-    const { getForm } = renderService({ ...LINK, sensitivityResults: STORED_RESULTS });
+    const { getForm } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
 
     await debounce();
 
@@ -165,7 +170,7 @@ describe('useSensitivityService', () => {
   });
 
   test('recalculates when a change alters the request', async () => {
-    const { setProposal } = renderService({ ...LINK, sensitivityResults: STORED_RESULTS });
+    const { setProposal } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
     await debounce();
 
     setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
@@ -175,7 +180,7 @@ describe('useSensitivityService', () => {
   });
 
   test('makes no request for a change that leaves the request the same', async () => {
-    const { setProposal } = renderService({ ...LINK, sensitivityResults: STORED_RESULTS });
+    const { setProposal } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
     await debounce();
 
     setProposal(
@@ -201,25 +206,25 @@ describe('useSensitivityService', () => {
 
     expect(firstSignal?.aborted).toBe(true);
     await resolveFirst(FAILURE);
-    expect(storedResults(getForm())?.statusGUI).toBe(STATUS_PARTIAL);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.CALCULATING);
 
     await resolveSecond(SUCCESS);
-    expect(storedResults(getForm())?.statusGUI).toBe(STATUS_OK);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
     expect(notifyError).not.toHaveBeenCalled();
   });
 
   test('marks a link as calculating, without its previous results, while its request runs', async () => {
-    const { getForm, setProposal } = renderService({ ...LINK, sensitivityResults: STORED_RESULTS });
+    const { getForm, setProposal } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
     await debounce();
 
     const resolve = holdNextRequest();
     setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
     await debounce();
 
-    expect(storedResults(getForm())).toEqual({ statusGUI: STATUS_PARTIAL, error: '' });
+    expect(storedResults(getForm())).toEqual({ state: SENSITIVITY_STATE.CALCULATING });
 
     await resolve(SUCCESS);
-    expect(storedResults(getForm())?.statusGUI).toBe(STATUS_OK);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
     expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
   });
 
@@ -230,7 +235,7 @@ describe('useSensitivityService', () => {
     await debounce();
 
     expect(storedResults(getForm())).toEqual({
-      statusGUI: STATUS_ERROR,
+      state: SENSITIVITY_STATE.FAILED,
       error: 'Bandwidth too small'
     });
     expect(notifyError).toHaveBeenCalledWith('Bandwidth too small');

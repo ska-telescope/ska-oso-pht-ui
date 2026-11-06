@@ -27,6 +27,7 @@ import {
   PAGE_CALIBRATION,
   PAGE_LINKING,
   REFERENCE_COORDINATE_TYPE_ICRS,
+  SENSITIVITY_STATE,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
@@ -35,7 +36,9 @@ import {
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
-import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
+import SensCalcModalMultiple, {
+  SensCalcRow
+} from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -43,7 +46,6 @@ import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
-import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
@@ -111,20 +113,18 @@ export default function LinkingPage() {
 
   const getLevel = (obs: any) => {
     let result = STATUS_INITIAL;
-    filteredByDataProduct(obs.id)?.forEach((rec) => {
-      if (typeof rec !== 'undefined') {
-        switch (rec.statusGUI) {
-          case STATUS_ERROR:
-            result = STATUS_ERROR;
-            return;
-          case STATUS_PARTIAL:
-            result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
-            return;
-          default:
-            if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
-              result = STATUS_OK;
-            }
-        }
+    filteredByDataProduct(obs.id).forEach(({ sensitivity }) => {
+      switch (sensitivity.state) {
+        case SENSITIVITY_STATE.FAILED:
+          result = STATUS_ERROR;
+          return;
+        case SENSITIVITY_STATE.CALCULATING:
+          result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
+          return;
+        default:
+          if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
+            result = STATUS_OK;
+          }
       }
     });
     return result;
@@ -132,9 +132,9 @@ export default function LinkingPage() {
 
   const getError = (obs: Observation) => {
     let result = '';
-    filteredByDataProduct(obs.id)?.forEach((rec) => {
-      if (typeof rec !== 'undefined' && rec.statusGUI === STATUS_ERROR) {
-        result = rec.error ?? '';
+    filteredByDataProduct(obs.id).forEach(({ sensitivity }) => {
+      if (sensitivity.state === SENSITIVITY_STATE.FAILED) {
+        result = sensitivity.error;
       }
     });
     return result;
@@ -259,10 +259,7 @@ export default function LinkingPage() {
       observationId: currRec.id2,
       targetId: target.id,
       dataProductsSDPId: currRec.id ?? '',
-      sensitivityResults: {
-        statusGUI: STATUS_PARTIAL,
-        error: ''
-      }
+      sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     };
 
     const calibration = await buildCalibrationStrategy(authAxiosClient, {
@@ -569,15 +566,19 @@ export default function LinkingPage() {
     else return [];
   };
 
-  const filteredByDataProduct = (id: string) => {
-    const results: SensCalcResults[] = [];
-    getLinks()?.forEach((rec) => {
-      if (rec.dataProductsSDPId === id && rec.sensitivityResults != undefined) {
-        results.push(rec.sensitivityResults);
-      }
-    });
-    return results;
-  };
+  // The data product's links with results, named by their targets
+  const filteredByDataProduct = (id: string): SensCalcRow[] =>
+    getLinks().flatMap((link) =>
+      link.dataProductsSDPId === id && link.sensitivity
+        ? [
+            {
+              id: link.targetId,
+              title: getTargets().find((target) => target.id === link.targetId)?.name ?? '',
+              sensitivity: link.sensitivity
+            }
+          ]
+        : []
+    );
 
   return (
     <Shell page={PAGE}>

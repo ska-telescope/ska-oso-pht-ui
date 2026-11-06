@@ -26,6 +26,7 @@ import {
   IW_BRIGGS,
   PROPOSAL_TYPE,
   SENSITIVITY_UNITS,
+  SENSITIVITY_STATE,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
@@ -456,7 +457,7 @@ export const isDataProductChannelsOutValid = (
 const hasUsableTargetLinks = (proposal: Proposal) =>
   (proposal?.observations ?? []).every((obs) => {
     const link = proposal?.targetObservation?.find((to) => to.observationId === obs.id);
-    return !!link && link.sensitivityResults?.statusGUI !== STATUS_ERROR;
+    return !!link && link.sensitivity?.state !== SENSITIVITY_STATE.FAILED;
   });
 
 export const validateSDPPage = (proposal: Proposal, autoLink = false) => {

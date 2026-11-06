@@ -1,15 +1,14 @@
 import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { ProposalType } from '@/models/proposals/proposal';
+import type { Sensitivity, TargetObservationLink } from '@/models/proposals/targetObservation';
 import { storageObject } from '@utils/storage/store';
-import { STATUS_PARTIAL } from '@/utils/constants';
+import { SENSITIVITY_STATE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import type Proposal from '@/utils/types/proposal';
-import type { SensCalcResults } from '@/utils/types/sensCalcResults';
-import type TargetObservation from '@/utils/types/targetObservation';
 import { SENS_CALC_ERROR_KIND } from './client';
 import { buildSensitivityRequest, sendSensitivityRequest } from './calculate';
-import { toSensCalcResults } from './results';
+import { toSensitivity } from './results';
 
 export const SENS_CALC_DEBOUNCE_MS = 500;
 
@@ -24,8 +23,8 @@ const getLinkId = (link: { targetId: string; observationId: string; dataProducts
   `${link.targetId}|${link.observationId}|${link.dataProductsSDPId}`;
 
 // A link with no results, or with results still to be calculated (a new or cloned link)
-const needsResults = (link: TargetObservation) =>
-  !link.sensitivityResults || link.sensitivityResults.statusGUI === STATUS_PARTIAL;
+const needsResults = (link: TargetObservationLink) =>
+  !link.sensitivity || link.sensitivity.state === SENSITIVITY_STATE.CALCULATING;
 
 /**
  * Keeps the sensitivity results of every target–observation link up to date. Runs for the whole
@@ -56,16 +55,16 @@ export const useSensitivityService = () => {
 
   React.useEffect(() => {
     // Writes a link's results to the links as they are now, as a response can arrive after a change
-    const writeResults = (linkId: string, results: SensCalcResults | undefined) =>
+    const writeResults = (linkId: string, results: Sensitivity | undefined) =>
       setValue(
         'targetObservation',
         getValues('targetObservation').map((link) =>
-          getLinkId(link) === linkId ? { ...link, sensitivityResults: results } : link
+          getLinkId(link) === linkId ? { ...link, sensitivity: results } : link
         )
       );
 
     const update = () => {
-      const formLinks = (links ?? []) as TargetObservation[];
+      const formLinks = links ?? [];
       const formTargets = targets ?? [];
 
       // Forget links that no longer exist, canceling their requests
@@ -108,8 +107,8 @@ export const useSensitivityService = () => {
         //
         //    if (!inputsValid) {
         //      recordsRef.current.set(linkId, { requestKey });
-        //      if (link.sensitivityResults?.statusGUI === STATUS_INITIAL) return;
-        //      writeResults(linkId, { statusGUI: STATUS_INITIAL, error: '' });
+        //      // Not calculated: no results until the inputs are valid
+        //      if (link.sensitivity) writeResults(linkId, undefined);
         //      return;
         //    }
         const request = buildSensitivityRequest(observation, target, dataProduct);
@@ -127,14 +126,14 @@ export const useSensitivityService = () => {
         if (!request) {
           // The calculator doesn't apply (SSO targets and PST), so the link has no results
           recordsRef.current.set(linkId, { requestKey });
-          if (!link.sensitivityResults) return;
-          writeResults(linkId, toSensCalcResults(null, observation));
+          if (!link.sensitivity) return;
+          writeResults(linkId, undefined);
           return;
         }
 
         // Shown as calculating until the response arrives, rather than with the previous results
-        if (link.sensitivityResults?.statusGUI !== STATUS_PARTIAL) {
-          writeResults(linkId, { statusGUI: STATUS_PARTIAL, error: '' });
+        if (link.sensitivity?.state !== SENSITIVITY_STATE.CALCULATING) {
+          writeResults(linkId, { state: SENSITIVITY_STATE.CALCULATING });
         }
 
         const controller = new AbortController();
@@ -146,10 +145,10 @@ export const useSensitivityService = () => {
             return;
           }
           recordsRef.current.set(linkId, { requestKey });
-          const results = toSensCalcResults(response, observation);
+          const results = toSensitivity(response);
           writeResults(linkId, results);
-          if (!response.ok) {
-            notifyError(results?.error ?? '');
+          if (results?.state === SENSITIVITY_STATE.FAILED) {
+            notifyError(results.error);
           }
         });
       });

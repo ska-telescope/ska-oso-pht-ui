@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { MemoryRouter } from 'react-router';
 import PHT from './PHT';
-import { NAV, PATH, PROPOSAL_STATUS } from '@/utils/constants';
+import { NAV, PATH, PROPOSAL_STATUS, SENSITIVITY_STATE } from '@/utils/constants';
 import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
@@ -262,7 +262,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
         targetId: 1,
         observationId: 'obs-1',
         dataProductsSDPId: 'sdp-1',
-        sensitivityResults: { id: 1, title: 'Target 1', statusGUI: 0 }
+        sensitivity: { id: 1, title: 'Target 1', state: SENSITIVITY_STATE.DONE }
       }
     ];
 

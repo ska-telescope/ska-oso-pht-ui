@@ -8,8 +8,7 @@ import {
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
   REFERENCE_COORDINATE_TYPE_SSO,
   SA_CUSTOM,
-  STATUS_INITIAL,
-  STATUS_PARTIAL,
+  SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
@@ -20,6 +19,8 @@ import TargetObservation from '@utils/types/targetObservation.tsx';
 import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal.tsx';
 import { getLowSpectralAveragingFactor } from '@/services/sensitivityCalculator/calculate';
+import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
+import type { SensitivityValues } from '@/models/proposals/targetObservation';
 import {
   convertFrequencyToDisplayUnits,
   getBandwidthZoom,
@@ -94,6 +95,7 @@ export default function SensCalcContent({
         <Grid size={{ xs: 6 }}>
           <Typography
             id={`${elementId}-label`}
+            aria-labelledby={elementId}
             data-testid={`field-${elementId}`}
             sx={{ align: 'left', fontWeight: 'bold' }}
             variant="body1"
@@ -154,7 +156,7 @@ export default function SensCalcContent({
     );
   }
 
-  if (targetObservation?.sensitivityResults?.error) {
+  if (targetObservation?.sensitivity?.state === SENSITIVITY_STATE.FAILED) {
     return (
       <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
         <Typography
@@ -162,16 +164,14 @@ export default function SensCalcContent({
             p: GAP
           }}
         >
-          {targetObservation?.sensitivityResults?.error}
+          {targetObservation?.sensitivity?.error}
         </Typography>
       </Alert>
     );
   }
 
-  if (
-    targetObservation?.sensitivityResults?.statusGUI === STATUS_INITIAL ||
-    targetObservation?.sensitivityResults == undefined
-  ) {
+  const sensitivity = targetObservation?.sensitivity;
+  if (sensitivity == undefined) {
     return (
       <Alert>
         <Typography
@@ -184,6 +184,16 @@ export default function SensCalcContent({
       </Alert>
     );
   }
+
+  // The continuum or spectral results, each labelled by its part, e.g. continuumSensitivityWeighted
+  const resultsPart = (part: 'continuum' | 'spectral', values: SensitivityValues) => (
+    <>
+      <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
+      {SENSITIVITY_FIELDS.map(({ key, label }) =>
+        displayElement(`${part}${label}`, values[key].value, values[key].unit)
+      )}
+    </>
+  );
 
   const spectralResolution = observation
     ? convertFrequencyToDisplayUnits(
@@ -219,7 +229,7 @@ export default function SensCalcContent({
       {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
       {displayElement('integrationTime', observation?.supplied.value, 'h')}
 
-      {targetObservation.sensitivityResults.statusGUI === STATUS_PARTIAL && (
+      {sensitivity.state === SENSITIVITY_STATE.CALCULATING && (
         <>
           <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
           <Typography
@@ -232,19 +242,14 @@ export default function SensCalcContent({
         </>
       )}
 
-      {targetObservation?.sensitivityResults?.section1 && (
-        <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
+      {sensitivity.state === SENSITIVITY_STATE.DONE && (
+        <>
+          {sensitivity.continuum && resultsPart('continuum', sensitivity.continuum)}
+          {/* A continuum observation's spectral results can be hidden; zoom ones are its only results */}
+          {!(hideSpectralResults && sensitivity.continuum) &&
+            resultsPart('spectral', sensitivity.spectral)}
+        </>
       )}
-      {targetObservation?.sensitivityResults?.section1?.map((rec) =>
-        displayElement(rec.field, rec.value, rec.units)
-      )}
-      {!hideSpectralResults && targetObservation?.sensitivityResults?.section2 && (
-        <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
-      )}
-      {!hideSpectralResults &&
-        targetObservation?.sensitivityResults?.section2?.map((rec) =>
-          displayElement(rec.field, rec.value, rec.units)
-        )}
     </>
   );
 }

@@ -1,21 +1,8 @@
 import { describe, expect, test } from 'vitest';
-import {
-  STATUS_ERROR,
-  STATUS_OK,
-  SUPPLIED_TYPE_INTEGRATION,
-  TIME_HOURS,
-  TYPE_CONTINUUM,
-  TYPE_ZOOM
-} from '@/utils/constants';
-import type Observation from '@/utils/types/observation';
+import { SENSITIVITY_STATE } from '@/utils/constants';
 import { SENS_CALC_ERROR_KIND } from './client';
-import { toSensCalcResults } from './results';
+import { toSensitivity } from './results';
 import type { ContinuumResult, ZoomResult } from './types';
-
-const OBSERVATION = {
-  type: TYPE_CONTINUUM,
-  supplied: { type: SUPPLIED_TYPE_INTEGRATION, value: 1.5, units: TIME_HOURS }
-} as Observation;
 
 const jyPerBeam = (value: number) => ({ value, unit: 'Jy / beam' });
 const beam = {
@@ -40,39 +27,34 @@ const CONTINUUM_RESULT: ContinuumResult = {
   continuum_surface_brightness_sensitivity: { value: 4.5, unit: 'K' }
 };
 
-const SPECTRAL_SECTION = [
-  { field: 'spectralSensitivityWeighted', value: '1.2345', units: 'mJy/beam' },
-  { field: 'spectralConfusionNoise', value: '0', units: 'Jy / beam' },
-  { field: 'spectralTotalSensitivity', value: '2.5', units: 'Jy/beam' },
-  { field: 'spectralSynthBeamSize', value: '1.23 x 2.50', units: 'arcsec²' },
-  { field: 'spectralSurfaceBrightnessSensitivity', value: '9.87', units: 'K' }
-];
+// Sensitivities are scaled to a readable unit; a zero keeps the calculator's unit
+const SPECTRAL_VALUES = {
+  weightedSensitivity: { value: 1.2345, unit: 'mJy/beam' },
+  confusionNoise: { value: 0, unit: 'Jy / beam' },
+  totalSensitivity: { value: 2.5, unit: 'Jy/beam' },
+  synthesizedBeamSize: { value: '1.23 x 2.50', unit: 'arcsec²' },
+  surfaceBrightnessSensitivity: { value: 9.87, unit: 'K' }
+};
 
-const INTEGRATION_TIME_SECTION = [{ field: 'integrationTime', value: '1.5', units: 'h' }];
-
-describe('toSensCalcResults', () => {
-  test('continuum results go in section1 and spectral results in section2', () => {
-    expect(toSensCalcResults({ ok: true, data: CONTINUUM_RESULT }, OBSERVATION)).toEqual({
-      statusGUI: STATUS_OK,
-      section1: [
-        { field: 'continuumSensitivityWeighted', value: '12.3', units: 'μJy/beam' },
-        { field: 'continuumConfusionNoise', value: '456', units: 'μJy/beam' },
-        { field: 'continuumTotalSensitivity', value: '78.9', units: 'μJy/beam' },
-        { field: 'continuumSynthBeamSize', value: '1.23 x 2.50', units: 'arcsec²' },
-        { field: 'continuumSurfaceBrightnessSensitivity', value: '4.5', units: 'K' }
-      ],
-      section2: SPECTRAL_SECTION,
-      section3: INTEGRATION_TIME_SECTION
+describe('toSensitivity', () => {
+  test('continuum results have a continuum and a spectral part', () => {
+    expect(toSensitivity({ ok: true, data: CONTINUUM_RESULT })).toEqual({
+      state: SENSITIVITY_STATE.DONE,
+      continuum: {
+        weightedSensitivity: { value: 12.3, unit: 'μJy/beam' },
+        confusionNoise: { value: 456, unit: 'μJy/beam' },
+        totalSensitivity: { value: 78.9, unit: 'μJy/beam' },
+        synthesizedBeamSize: { value: '1.23 x 2.50', unit: 'arcsec²' },
+        surfaceBrightnessSensitivity: { value: 4.5, unit: 'K' }
+      },
+      spectral: SPECTRAL_VALUES
     });
   });
 
-  test('zoom results go in section1', () => {
-    expect(
-      toSensCalcResults({ ok: true, data: SPECTRAL_RESULT }, { ...OBSERVATION, type: TYPE_ZOOM })
-    ).toEqual({
-      statusGUI: STATUS_OK,
-      section1: SPECTRAL_SECTION,
-      section3: INTEGRATION_TIME_SECTION
+  test('zoom results have only a spectral part', () => {
+    expect(toSensitivity({ ok: true, data: SPECTRAL_RESULT })).toEqual({
+      state: SENSITIVITY_STATE.DONE,
+      spectral: SPECTRAL_VALUES
     });
   });
 
@@ -83,8 +65,8 @@ describe('toSensCalcResults', () => {
       title: 'Validation Error',
       detail: 'Bandwidth too small'
     };
-    expect(toSensCalcResults(error, OBSERVATION)).toEqual({
-      statusGUI: STATUS_ERROR,
+    expect(toSensitivity(error)).toEqual({
+      state: SENSITIVITY_STATE.FAILED,
       error: 'Bandwidth too small'
     });
   });
@@ -96,13 +78,13 @@ describe('toSensCalcResults', () => {
       title: 'Validation Error',
       detail: ''
     };
-    expect(toSensCalcResults(error, OBSERVATION)).toEqual({
-      statusGUI: STATUS_ERROR,
+    expect(toSensitivity(error)).toEqual({
+      state: SENSITIVITY_STATE.FAILED,
       error: 'Validation Error'
     });
   });
 
   test('no calculation gives no results', () => {
-    expect(toSensCalcResults(null, OBSERVATION)).toBeUndefined();
+    expect(toSensitivity(null)).toBeUndefined();
   });
 });

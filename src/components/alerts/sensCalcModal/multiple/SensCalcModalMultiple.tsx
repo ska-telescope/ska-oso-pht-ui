@@ -2,16 +2,29 @@ import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
-import { CUSTOM_VALID_FIELDS, TYPE_CONTINUUM, TYPE_PST } from '@utils/constants.ts';
+import {
+  CUSTOM_VALID_FIELDS,
+  SENSITIVITY_STATE,
+  TIME_UNITS,
+  TYPE_CONTINUUM,
+  TYPE_PST
+} from '@utils/constants.ts';
+import { sensitivityStatusLevel } from '@utils/helpersSensCalc';
+import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
+import type { Sensitivity } from '@/models/proposals/targetObservation';
 import CancelButton from '../../../button/Cancel/Cancel';
 import Observation from '../../../../utils/types/observation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-export type Rec = { field: string; value: string; units: string };
+/** A row of the table: a link with results, named by its target. */
+export type SensCalcRow = { id: string; title: string; sensitivity: Sensitivity };
+
+type Shown = { value: string | number; unit: string };
+
 interface SensCalcModalMultipleProps {
   open: boolean;
   onClose: Function;
-  data: any;
+  data: SensCalcRow[];
   observation: Observation;
   level: number;
   levelError: string;
@@ -40,21 +53,17 @@ export default function SensCalcModalMultiple({
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
   const isPST = () => observation.type === TYPE_PST;
 
-  const PresentCustomResultValue = (rec: Rec) => {
-    if (rec.field === 'targetName') {
-      return rec.value;
-    }
-    if (!CUSTOM_VALID_FIELDS.includes(rec.field)) {
+  const PresentCustomResultValue = (field: string, shown: Shown) => {
+    if (!CUSTOM_VALID_FIELDS.includes(field)) {
       if (isNatural) {
         return t('sensitivityCalculatorResults.nonGaussian');
       }
       return t('sensitivityCalculatorResults.customArray');
     }
-    return `${presentValue(rec.value)} ${presentUnits(rec.units)}`;
+    return `${presentValue(shown.value)} ${presentUnits(shown.unit)}`;
   };
 
   let i = 0; // Just here so that the key warning is dealt with
-  let headerNumber = 0;
 
   function renderHeaderLine(str: string) {
     return <Typography key={i++}>{str}</Typography>;
@@ -72,11 +81,11 @@ export default function SensCalcModalMultiple({
     );
   };
 
-  const presentation = (rec: Rec | null) => {
-    if (rec) {
+  const presentation = (field: string, shown: Shown | undefined) => {
+    if (shown) {
       return isCustom || isNatural
-        ? PresentCustomResultValue(rec) + ' '
-        : presentValue(rec.value) + ' ' + presentUnits(rec.units);
+        ? PresentCustomResultValue(field, shown) + ' '
+        : presentValue(shown.value) + ' ' + presentUnits(shown.unit);
     } else {
       return '';
     }
@@ -89,128 +98,51 @@ export default function SensCalcModalMultiple({
     renderHeader: () => headerDisplay('targetName')
   };
 
-  const colField1 = {
-    field: 'field1',
+  // Each part's columns, labelled by the part, e.g. continuumSensitivityWeighted
+  const FIELD_FLEX = [3, 2.5, 3, 3, 4];
+  const resultColumns = (part: 'continuum' | 'spectral') =>
+    SENSITIVITY_FIELDS.map(({ key, label }, index) => ({
+      field: `${part}${label}`,
+      flex: FIELD_FLEX[index],
+      AutoResizeColumnHeadersHeight: true,
+      renderHeader: () => headerDisplay(`${part}${label}`),
+      renderCell: (e: { row: SensCalcRow }) => {
+        const sensitivity = e.row.sensitivity;
+        const values = sensitivity.state === SENSITIVITY_STATE.DONE ? sensitivity[part] : undefined;
+        return (
+          <div data-testid={`field-${part}${label}`}>
+            {presentation(`${part}${label}`, values?.[key])}
+          </div>
+        );
+      }
+    }));
+
+  // The results were calculated for the observation's integration time
+  const colIntegrationTime = {
+    field: 'integrationTime',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[0]?.field),
-    renderCell: (e: { row: { section1: Rec[] } }) => (
-      <div data-testid="field1">{presentation(e?.row?.section1 ? e.row.section1[0] : null)}</div>
+    renderHeader: () => headerDisplay('integrationTime'),
+    renderCell: (e: { row: SensCalcRow }) => (
+      <div data-testid="field-integrationTime">
+        {e.row.sensitivity.state === SENSITIVITY_STATE.DONE &&
+          presentation('integrationTime', {
+            value: observation.supplied.value,
+            unit: TIME_UNITS.find((u) => u.id === observation.supplied.units)?.value ?? ''
+          })}
+      </div>
     )
-  };
-
-  const colField2 = {
-    field: 'field2',
-    flex: 2.5,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[1]?.field),
-    renderCell: (e: { row: { section1: Rec[] } }) => (
-      <div data-testid="field2">{presentation(e?.row?.section1 ? e.row.section1[1] : null)}</div>
-    )
-  };
-
-  const colField3 = {
-    field: 'field3',
-    flex: 3,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[2]?.field),
-    renderCell: (e: { row: { section1: Rec[] } }) => (
-      <div data-testid="field3">{presentation(e?.row?.section1 ? e.row.section1[2] : null)}</div>
-    )
-  };
-
-  const colField4 = {
-    field: 'field4',
-    flex: 3,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[3]?.field),
-    renderCell: (e: { row: { section1: Rec[] } }) => (
-      <div data-testid="field4">{presentation(e?.row?.section1 ? e.row.section1[3] : null)}</div>
-    )
-  };
-
-  const colField5 = {
-    field: 'field5',
-    flex: 4,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[4]?.field),
-    renderCell: (e: { row: { section1: Rec[] } }) => (
-      <div data-testid="field5">{presentation(e?.row?.section1 ? e.row.section1[4] : null)}</div>
-    )
-  };
-
-  const colField6 = {
-    field: 'field6',
-    flex: 3,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[0]?.field),
-    renderCell: (e: { row: { section2: Rec[] } }) => (
-      <div data-testid="field6">{presentation(e?.row?.section2 ? e.row.section2[0] : null)}</div>
-    )
-  };
-
-  const colField7 = {
-    field: 'field7',
-    flex: 2.5,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[1]?.field),
-    renderCell: (e: { row: { section2: Rec[] } }) => (
-      <div data-testid="field7">{presentation(e?.row?.section2 ? e.row.section2[1] : null)}</div>
-    ),
-    optional: (params: { value: null }) => params.value !== null
-  };
-
-  const colField8 = {
-    field: 'field8',
-    flex: 3,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[2]?.field),
-    renderCell: (e: { row: { section2: Rec[] } }) => (
-      <div data-testid="field8">{presentation(e?.row?.section2 ? e.row.section2[2] : null)}</div>
-    ),
-    optional: (params: { value: null }) => params.value !== null
-  };
-
-  const colField9 = {
-    field: 'field9',
-    flex: 3,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[3]?.field),
-    renderCell: (e: { row: { section2: Rec[] } }) => (
-      <div data-testid="field9">{presentation(e?.row?.section2 ? e.row.section2[3] : null)}</div>
-    ),
-    optional: (params: { value: null }) => params.value !== null
-  };
-
-  const colField10 = {
-    field: 'field10',
-    flex: 4,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[4]?.field),
-    renderCell: (e: { row: { section2: Rec[] } }) => (
-      <div data-testid="field10">{presentation(e?.row?.section2 ? e.row.section2[4] : null)}</div>
-    ),
-    optional: (params: { value: null }) => params.value !== null
-  };
-
-  const colField11 = {
-    field: 'field11',
-    flex: 3,
-    AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section3[0]?.field),
-    renderCell: (e: { row: { section3: Rec[] } }) => (
-      <div data-testid="field11">{presentation(e?.row?.section3 ? e.row.section3[0] : null)}</div>
-    ),
-    optional: (params: { value: null }) => params.value !== null
   };
 
   const colStatus = {
-    field: 'statusGUI',
+    field: 'state',
     headerName: '',
     sortable: false,
     width: 50,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { statusGUI: number; error: string } }) => {
+    renderCell: (e: { row: SensCalcRow }) => {
+      const sensitivity = e.row.sensitivity;
+      const level = sensitivityStatusLevel(sensitivity.state);
       return (
         <Box
           sx={{
@@ -219,12 +151,12 @@ export default function SensCalcModalMultiple({
         >
           <StatusIcon
             ariaTitle={t('sensitivityCalculatorResults.status', {
-              status: t('statusValue.' + e.row.statusGUI),
-              error: e.row.error ?? ''
+              status: t('statusValue.' + level),
+              error: sensitivity.state === SENSITIVITY_STATE.FAILED ? sensitivity.error : ''
             })}
             testId="statusId"
             icon
-            level={e?.row?.statusGUI}
+            level={level}
             size={SIZE}
           />
         </Box>
@@ -232,37 +164,23 @@ export default function SensCalcModalMultiple({
     }
   };
 
-  const setHeaderNumber = () => {
-    headerNumber = -1;
-    for (i = 0; i < data.length; i++) {
-      if (data[i]?.section1) {
-        headerNumber = i;
-        return;
-      }
-    }
-  };
-
   const getColumns = () => {
-    setHeaderNumber();
-    const results = [];
-    results.push(colTitle);
-    if (headerNumber !== -1) {
-      results.push(colField1);
-      results.push(colField2);
-      results.push(colField3);
-      results.push(colField4);
-      results.push(colField5);
-      if (isContinuum()) {
-        results.push(colField6);
-        results.push(colField7);
-        results.push(colField8);
-        results.push(colField9);
-        results.push(colField10);
-      }
-      results.push(colField11);
+    const done = data.flatMap((row) =>
+      row.sensitivity.state === SENSITIVITY_STATE.DONE ? [row.sensitivity] : []
+    );
+    if (done.length === 0) {
+      return [colTitle, colStatus];
     }
-    results.push(colStatus);
-    return [...results];
+    // Zoom results are spectral only. Continuum results show their spectral part too for a
+    // continuum observation, but not for the combined mode.
+    const hasContinuum = done.some((sensitivity) => sensitivity.continuum);
+    return [
+      colTitle,
+      ...(hasContinuum ? resultColumns('continuum') : []),
+      ...(!hasContinuum || isContinuum() ? resultColumns('spectral') : []),
+      colIntegrationTime,
+      colStatus
+    ];
   };
 
   return (

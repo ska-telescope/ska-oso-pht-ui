@@ -2,11 +2,7 @@ import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
 import { targetsFromPdm, targetsToPdm } from './targets';
-import {
-  observationTypesFromPdm,
-  targetObservationFromPdm,
-  targetObservationToPdm
-} from './targetObservation';
+import { targetObservationFromPdm, targetObservationToPdm } from './targetObservation';
 import { calibrationStrategyFromPdm, calibrationStrategyToPdm } from './calibrationStrategy';
 import { documentsFromPdm, documentsToPdm } from './documents';
 
@@ -47,11 +43,7 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
       ...base.observation_info,
       targets: targetsToPdm(form.targets),
       calibration_strategy: calibrationStrategyToPdm(form.calibrationStrategy),
-      // Observations are not in the form yet, so their types come from the base PDM
-      result_details: targetObservationToPdm(
-        form.targetObservation,
-        observationTypesFromPdm(base.observation_info?.observation_sets)
-      ),
+      result_details: targetObservationToPdm(form.targetObservation),
       documents: documentsToPdm(form)
     }
   };
