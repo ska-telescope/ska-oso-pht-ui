@@ -2,12 +2,7 @@ import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
-import {
-  CUSTOM_VALID_FIELDS,
-  SUPPLIED_TYPE_SENSITIVITY,
-  TYPE_CONTINUUM,
-  TYPE_PST
-} from '@utils/constants.ts';
+import { CUSTOM_VALID_FIELDS, TYPE_CONTINUUM, TYPE_PST } from '@utils/constants.ts';
 import CancelButton from '../../../button/Cancel/Cancel';
 import Observation from '../../../../utils/types/observation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -44,7 +39,6 @@ export default function SensCalcModalMultiple({
 
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
   const isPST = () => observation.type === TYPE_PST;
-  const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   const PresentCustomResultValue = (rec: Rec) => {
     if (rec.field === 'targetName') {
@@ -256,18 +250,14 @@ export default function SensCalcModalMultiple({
       results.push(colField1);
       results.push(colField2);
       results.push(colField3);
-      if (!isSensitivity()) {
-        results.push(colField4);
-        results.push(colField5);
-      }
+      results.push(colField4);
+      results.push(colField5);
       if (isContinuum()) {
         results.push(colField6);
         results.push(colField7);
         results.push(colField8);
-        if (!isSensitivity()) {
-          results.push(colField9);
-          results.push(colField10);
-        }
+        results.push(colField9);
+        results.push(colField10);
       }
       results.push(colField11);
     }

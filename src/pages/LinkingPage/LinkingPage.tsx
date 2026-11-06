@@ -30,9 +30,7 @@ import {
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
-  STATUS_PARTIAL,
-  SUPPLIED_TYPE_INTEGRATION,
-  NOTIFICATION_DELAY_IN_SECONDS
+  STATUS_PARTIAL
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
@@ -42,7 +40,6 @@ import StatusIconDisplay from '../../components/icon/status/statusIcon';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
@@ -51,8 +48,6 @@ import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
-import { calculateSensitivity } from '@/services/sensitivityCalculator/calculate';
-import { toSensCalcResults } from '@/services/sensitivityCalculator/results';
 
 export const isNonGaussianSensitivityCase = ({
   subarray,
@@ -102,8 +97,6 @@ export default function LinkingPage() {
   const getLinks = () => getFormLinks(form);
   const getCalibration = () => getFormCalibration(form);
 
-  const { notifyError } = useNotify();
-
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number, valueCalibration: number) => {
     const temp: number[] = [];
@@ -115,9 +108,6 @@ export default function LinkingPage() {
     }
     updateAppContent1(temp);
   };
-
-  const isIntegrationTime = (ob: { supplied: { type: number } }) =>
-    ob?.supplied?.type === SUPPLIED_TYPE_INTEGRATION;
 
   const getLevel = (obs: any) => {
     let result = STATUS_INITIAL;
@@ -165,37 +155,6 @@ export default function LinkingPage() {
   ) => {
     setTargetObservationAndCalibrationStorage(
       [...getLinks(), targetObs],
-      withCalibrationFor(getCalibration(), calibration)
-    );
-  };
-
-  const updateTargetObservationStorage = async (
-    target: Target,
-    observationId: string,
-    dataProductsSDPId: string,
-    results?: SensCalcResults
-  ) => {
-    const temp = {
-      observationId: observationId,
-      dataProductsSDPId: dataProductsSDPId,
-      targetId: target.id,
-      sensitivityResults: results
-    };
-
-    const calibration = await buildCalibrationStrategy(authAxiosClient, {
-      observationId,
-      observation: getProposal().observations?.find((o) => o.id === observationId),
-      target,
-      notes: calibrationNotesFor(getCalibration(), observationId)
-    });
-
-    // The calibrator lookup takes time, so the links and strategies are read after it to keep any
-    // made meanwhile; only this observation's strategy is replaced
-    const otherLinks = getLinks().filter(
-      (e) => !(e.targetId === target.id && e.observationId === observationId)
-    );
-    setTargetObservationAndCalibrationStorage(
-      [...otherLinks, temp],
       withCalibrationFor(getCalibration(), calibration)
     );
   };
@@ -272,26 +231,6 @@ export default function LinkingPage() {
     };
   };
 
-  // TODO(BTN-3595): Move these sensitivity requests (getSensCalcData and checkPartials) onto the
-  //  shared sensitivity service. They have no protection against stale responses today. The
-  //  calibration they write already comes from buildCalibrationStrategy (BTN-3593).
-  const getSensCalcData = async (
-    observation: Observation,
-    target: Target,
-    dataProductSDP: DataProductSDPNew
-  ) => {
-    const response = toSensCalcResults(
-      await calculateSensitivity(observation, target, dataProductSDP),
-      observation
-    );
-    if (response?.error) {
-      const errMsg = response.error;
-      notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
-    }
-
-    await updateTargetObservationStorage(target, observation.id, dataProductSDP.id, response);
-  };
-
   const closeDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };
@@ -347,29 +286,6 @@ export default function LinkingPage() {
     }
   };
 
-  // The partial link whose request is running. The effect below runs again when the form changes
-  // and again when that change is copied into the store, so skip a link that is already requested.
-  const pendingPartial = React.useRef<string | null>(null);
-
-  const checkPartials = async () => {
-    const proposal = getProposal();
-    const results = getLinks().find((p) => p.sensitivityResults?.statusGUI === STATUS_PARTIAL);
-    if (!results) return;
-    const key = `${results.targetId}|${results.observationId}|${results.dataProductsSDPId}`;
-    if (pendingPartial.current === key) return;
-    const target = getTargets().find((e) => e.id === results.targetId);
-    const observation = proposal.observations?.find((e) => e.id === results.observationId);
-    const dataProductSDP = proposal.dataProductSDP?.find((d) => d.id === results.dataProductsSDPId);
-    if (observation && target && dataProductSDP) {
-      pendingPartial.current = key;
-      try {
-        await getSensCalcData(observation, target, dataProductSDP);
-      } finally {
-        pendingPartial.current = null;
-      }
-    }
-  };
-
   React.useEffect(() => {
     const proposal = getProposal();
     setValidateToggle(!validateToggle);
@@ -386,26 +302,12 @@ export default function LinkingPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    checkPartials();
   }, [getProposal(), ...watchedSlices]);
 
   React.useEffect(() => {
     const statuses = getSubmitPageStatuses(form.getValues());
     setTheProposalState(statuses.linking, statuses.calibration);
   }, [validateToggle]);
-
-  // NOTE : We used to have Groups in the list, so keep this until we are sure we don't need it.
-  // const observationGroupIds = (id: string) => {
-  //   if (
-  //     getProposal()?.groupObservations &&
-  //     getProposal()?.groupObservations?.some(e => e.observationId === id)
-  //   ) {
-  //     const group: GroupObservation[] =
-  //       getProposal().groupObservations?.filter(e => e.observationId === id) ?? [];
-  //     return group[0]?.groupId;
-  //   }
-  //   return '';
-  // };
 
   const hasTargets = () => (elementsT?.length ?? 0) > 0;
 
@@ -634,28 +536,13 @@ export default function LinkingPage() {
       {
         field: 'vel',
         renderHeader: () =>
-          currRec?.rec ? (
-            <>
-              {t(
-                isIntegrationTime(currRec?.rec as Observation)
-                  ? 'sensitivityCalculatorResults.weightedSensitivity'
-                  : 'sensitivityCalculatorResults.integrationTime'
-              )}
-            </>
-          ) : (
-            <></>
-          ),
+          currRec?.rec ? <>{t('sensitivityCalculatorResults.weightedSensitivity')}</> : <></>,
         sortable: false,
         flex: 2,
         minWidth: 170,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
-          return getSensCalcSingle(
-            e.row.id,
-            isIntegrationTime(currRec?.rec as Observation)
-              ? 'SensitivityWeighted'
-              : 'IntegrationTime'
-          );
+          return getSensCalcSingle(e.row.id, 'SensitivityWeighted');
         }
       },
       {
