@@ -5,6 +5,7 @@ import type { ProposalInfo } from '@/generated/models/proposal-info';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
 const MAX_ABSTRACT_WORDS = Number(phtTranslations.abstract.maxWord);
+const MAX_ABSTRACT_CHARACTERS = Number(phtTranslations.abstract.maxChar);
 const scienceCategorySchema = z.enum(SCIENCE_CATEGORY);
 
 export function getDetailsSchema() {
@@ -12,6 +13,7 @@ export function getDetailsSchema() {
     abstract: z
       .string()
       .min(1)
+      .max(MAX_ABSTRACT_CHARACTERS)
       .superRefine((value, ctx) => {
         const wordCount = countWords(value);
         if (wordCount > MAX_ABSTRACT_WORDS) {

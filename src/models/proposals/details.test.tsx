@@ -20,6 +20,12 @@ describe('details schema', () => {
     expect(schema.safeParse({ abstract: overLimit, scienceCategory: null }).success).toBe(false);
   });
 
+  test.each([2300, 2301])('validates an abstract with %s characters', (length) => {
+    expect(schema.safeParse({ abstract: 'a'.repeat(length), scienceCategory: null }).success).toBe(
+      length === 2300
+    );
+  });
+
   test.each(Object.values(SCIENCE_CATEGORY))('accepts science category %s', (scienceCategory) => {
     expect(schema.safeParse({ abstract: 'A scientific summary', scienceCategory }).success).toBe(
       true
@@ -99,7 +105,7 @@ describe('details PDM mapping', () => {
     expect(detailsToPdm(details).science_category).toBe(label);
   });
 
-  test.each(['', 'word '.repeat(251).trim()])(
+  test.each(['', 'word '.repeat(251).trim(), 'a'.repeat(2301)])(
     'allows saving an incomplete abstract',
     (abstract) => {
       expect(detailsToPdm({ abstract, scienceCategory: null })).toEqual({

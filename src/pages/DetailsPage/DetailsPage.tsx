@@ -47,7 +47,7 @@ export default function DetailsPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const {
-    field: { value: abstract, onChange: setAbstract, onBlur: onAbstractBlur }
+    field: { value: abstract, onBlur: onAbstractBlur }
   } = useController<ProposalFormValues, 'abstract'>({ name: 'abstract' });
   const {
     field: { value: scienceCategory, onChange: setScienceCategory },
@@ -85,7 +85,6 @@ export default function DetailsPage() {
   }, [scienceCategory]);
 
   const abstractField = () => {
-    const MAX_CHAR = Number(t('abstract.maxChar'));
     const MAX_WORD = Number(t('abstract.maxWord'));
     const numRows = Number(t('abstract.minDisplayRows'));
 
@@ -114,16 +113,11 @@ export default function DetailsPage() {
           rows={numRows}
           required
           slotProps={{
-            htmlInput: { maxLength: MAX_CHAR, 'data-testid': 'abstractId' },
+            htmlInput: { 'data-testid': 'abstractId' },
             input: {
               endAdornment: (
                 <ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />
               )
-            }
-          }}
-          onChange={(event) => {
-            if (event.target.value.length > MAX_CHAR) {
-              setAbstract(event.target.value.substring(0, MAX_CHAR));
             }
           }}
           onFocus={() => setHelp('abstract.help')}

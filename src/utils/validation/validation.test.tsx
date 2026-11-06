@@ -535,6 +535,16 @@ describe('validateObservationPage supplied rules', () => {
 describe('validateDetailsPage', () => {
   const observation = { id: 'obs-1', type: TYPE_CONTINUUM };
 
+  it.each([2300, 2301])('checks the Zod character limit at %s characters', (length) => {
+    expect(
+      validateDetailsPage({
+        proposalType: PROPOSAL_TYPE.STANDARD,
+        abstract: 'a'.repeat(length),
+        scienceCategory: 1
+      } as Parameters<typeof validateDetailsPage>[0])
+    ).toBe(length === 2300 ? STATUS_OK : STATUS_ERROR);
+  });
+
   it('requires an abstract and a science category for standard proposals', () => {
     const proposal = { proposalType: PROPOSAL_TYPE.STANDARD, abstract: 'An abstract' };
     expect(validateDetailsPage({ ...proposal, scienceCategory: 1 } as any)).toBe(STATUS_OK);

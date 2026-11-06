@@ -126,33 +126,6 @@ describe('<DetailsPage />', () => {
   });
 });
 
-describe('setValue function', () => {
-  const MAX_CHAR = 50;
-  const mockSetProposal = vi.fn();
-  const mockGetProposal = vi.fn(() => ({ abstract: '' }));
-
-  const setValue = (e: string) => {
-    mockSetProposal({ ...mockGetProposal(), abstract: e.substring(0, MAX_CHAR) });
-  };
-
-  test('updates proposal when word count is below the maximum', () => {
-    setValue('This is a valid abstract.');
-    expect(mockSetProposal).toHaveBeenCalledWith({ abstract: 'This is a valid abstract.' });
-  });
-
-  test('updates proposal even when word count exceeds the maximum', () => {
-    const overLimitAbstract = 'one two three four five six seven eight nine ten x';
-    setValue(overLimitAbstract);
-    expect(mockSetProposal).toHaveBeenCalledWith({ abstract: overLimitAbstract });
-  });
-
-  test('truncates abstract at MAX_CHAR characters', () => {
-    const longAbstract = 'a'.repeat(60);
-    setValue(longAbstract);
-    expect(mockSetProposal).toHaveBeenCalledWith({ abstract: 'a'.repeat(MAX_CHAR) });
-  });
-});
-
 describe('Abstract helperFunction', () => {
   const t = vi.fn((key, params) => {
     if (key === 'abstract.helper') {
@@ -328,23 +301,29 @@ describe('<DetailsPage /> observing mode', () => {
     }
   });
 
-  it('renders a multiline abstract and truncates changes at the character limit', async () => {
+  it('validates the character limit without truncating the abstract', async () => {
     mockState.proposal = svProposal();
     await renderPage();
 
     const abstractInput = screen.getByTestId('abstractId');
     expect(abstractInput.tagName).toBe('TEXTAREA');
-    expect(abstractInput).toHaveAttribute('maxlength', '2300');
+    expect(abstractInput).not.toHaveAttribute('maxlength');
     fireEvent.change(abstractInput, { target: { value: 'a'.repeat(2301) } });
 
-    expect(abstractInput).toHaveValue('a'.repeat(2300));
+    expect(abstractInput).toHaveValue('a'.repeat(2301));
     expect(JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').abstract).toBe(
-      'a'.repeat(2300)
+      'a'.repeat(2301)
     );
+    expect(
+      await screen.findByText('Too big: expected string to have <=2300 characters')
+    ).toBeInTheDocument();
+    expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
     fireEvent.blur(abstractInput);
     expect(mockState.updateProposal).toHaveBeenLastCalledWith(
-      expect.objectContaining({ abstract: 'a'.repeat(2300) })
+      expect.objectContaining({ abstract: 'a'.repeat(2301) })
     );
+    fireEvent.change(abstractInput, { target: { value: 'a'.repeat(2300) } });
+    await waitFor(() => expect(abstractInput).toHaveAttribute('aria-invalid', 'false'));
   });
 
   it('displays the abstract validation error from the form', async () => {

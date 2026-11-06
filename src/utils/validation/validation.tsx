@@ -40,12 +40,7 @@ import {
   ZOOM_CHANNELS_DEFAULT_LOW
 } from './../constants';
 import Proposal from './../types/proposal';
-import {
-  countWords,
-  frequencyConversion,
-  isFrequencyRangeOutOfBand,
-  timeConversion
-} from '../helpers';
+import { frequencyConversion, isFrequencyRangeOutOfBand, timeConversion } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
 import { imageSizeSchema } from '../../components/fields/imageSize/imageSize';
@@ -63,7 +58,7 @@ import {
   isCentralFrequencyDivisible,
   isCentralFrequencyOnChannelGrid
 } from '../zoomWindow';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import { getDetailsSchema } from '@/models/proposals/details';
 
 type SuppliedValueInput = {
   type?: number;
@@ -136,8 +131,8 @@ export const validateTeamPage = (proposal: Pick<Proposal, 'investigators'>) => {
 };
 
 export const validateDetailsPage = (proposal: Proposal) => {
-  const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
-  if (countWords(proposal?.abstract ?? '') > maxAbstractWords) {
+  const abstract = proposal?.abstract ?? '';
+  if (abstract.length > 0 && !getDetailsSchema().shape.abstract.safeParse(abstract).success) {
     return STATUS_ERROR;
   }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
