@@ -33,23 +33,15 @@ import { OSD_CONSTANTS } from '@/utils/OSDConstants';
 import { frequencyConversion, getBandwidthZoom, getSpectralResolutionHz } from '@/utils/helpers';
 import { getImageWeightingMapping, timeConversion } from '@/utils/helpersSensCalc';
 import type Observation from '@/utils/types/observation';
-import type Target from '@/utils/types/target';
+import type { TargetType } from '@/models/proposals/targets';
 import type {
   DataProductSDPNew,
   SDPImageContinuumData,
   SDPSpectralData
 } from '@/utils/types/dataProduct';
-import {
-  postLowContinuum,
-  postLowZoom,
-  postMidContinuum,
-  postMidZoom,
-  SENS_CALC_ERROR_KIND,
-  SensCalcError,
-  SensCalcRequestOptions,
-  SensCalcSuccess
-} from './client';
+import { post, SensCalcError, SensCalcRequestOptions, SensCalcSuccess } from './client';
 import type {
+  ContinuumResponse,
   ContinuumResult,
   LowContinuumRequest,
   LowZoomRequest,
@@ -58,10 +50,25 @@ import type {
   MidZoomRequest,
   ReferenceCoordinate,
   WeightingMode,
+  ZoomResponse,
   ZoomResult
 } from './types';
 
 export type SensitivityResult = ContinuumResult | ZoomResult;
+
+export const SENS_CALC_MODE = {
+  CONTINUUM: 'continuum',
+  ZOOM: 'zoom'
+} as const;
+
+/** A request to the calculator: the mode tells how to read its response. */
+export type SensitivityRequest =
+  | {
+      mode: typeof SENS_CALC_MODE.CONTINUUM;
+      path: string;
+      body: LowContinuumRequest | MidContinuumRequest;
+    }
+  | { mode: typeof SENS_CALC_MODE.ZOOM; path: string; body: LowZoomRequest | MidZoomRequest };
 
 const MID_RX_BANDS: Record<string, MidRxBand> = {
   [BAND_1_STR]: 'Band 1',
@@ -72,7 +79,7 @@ const MID_RX_BANDS: Record<string, MidRxBand> = {
   [BAND_5B_STR]: 'Band 5b'
 };
 
-const referenceCoordinate = (target: Target): ReferenceCoordinate =>
+const referenceCoordinate = (target: TargetType): ReferenceCoordinate =>
   target.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value
     ? { kind: 'galactic', l: Number(target.l), b: Number(target.b) }
     : { kind: 'icrs', ra_str: target.raStr ?? '', dec_str: target.decStr ?? '' };
@@ -152,7 +159,7 @@ const MID_SPECTRAL_AVERAGING_FACTOR = 1;
 
 const lowContinuumRequest = (
   observation: Observation,
-  target: Target,
+  target: TargetType,
   dataProduct: DataProductSDPNew
 ): LowContinuumRequest => ({
   ...lowArray(observation),
@@ -168,7 +175,7 @@ const lowContinuumRequest = (
 
 const midContinuumRequest = (
   observation: Observation,
-  target: Target,
+  target: TargetType,
   dataProduct: DataProductSDPNew
 ): MidContinuumRequest => ({
   ...midArray(observation),
@@ -186,7 +193,7 @@ const midContinuumRequest = (
 
 const lowZoomRequest = (
   observation: Observation,
-  target: Target,
+  target: TargetType,
   dataProduct: DataProductSDPNew
 ): LowZoomRequest => ({
   ...lowArray(observation),
@@ -203,7 +210,7 @@ const lowZoomRequest = (
 
 const midZoomRequest = (
   observation: Observation,
-  target: Target,
+  target: TargetType,
   dataProduct: DataProductSDPNew
 ): MidZoomRequest => ({
   ...midArray(observation),
@@ -222,72 +229,95 @@ const midZoomRequest = (
   reference_coordinates: [referenceCoordinate(target)]
 });
 
-const calculateContinuum = async (
+const continuumRequest = (
   observation: Observation,
-  target: Target,
-  dataProduct: DataProductSDPNew,
-  options: SensCalcRequestOptions
-): Promise<SensCalcSuccess<SensitivityResult> | SensCalcError> => {
-  const response =
-    observation.telescope === TELESCOPE_LOW_NUM
-      ? await postLowContinuum(lowContinuumRequest(observation, target, dataProduct), options)
-      : await postMidContinuum(midContinuumRequest(observation, target, dataProduct), options);
-  // One result per reference coordinate; the PHT sends one
-  return response.ok ? { ok: true, data: response.data[0].transformed_result } : response;
-};
+  target: TargetType,
+  dataProduct: DataProductSDPNew
+): SensitivityRequest =>
+  observation.telescope === TELESCOPE_LOW_NUM
+    ? {
+        mode: SENS_CALC_MODE.CONTINUUM,
+        path: 'low/continuum/calculate',
+        body: lowContinuumRequest(observation, target, dataProduct)
+      }
+    : {
+        mode: SENS_CALC_MODE.CONTINUUM,
+        path: 'mid/continuum/calculate',
+        body: midContinuumRequest(observation, target, dataProduct)
+      };
 
-const calculateZoom = async (
+const zoomRequest = (
   observation: Observation,
-  target: Target,
-  dataProduct: DataProductSDPNew,
-  options: SensCalcRequestOptions
-): Promise<SensCalcSuccess<SensitivityResult> | SensCalcError> => {
-  const response =
-    observation.telescope === TELESCOPE_LOW_NUM
-      ? await postLowZoom(lowZoomRequest(observation, target, dataProduct), options)
-      : await postMidZoom(midZoomRequest(observation, target, dataProduct), options);
-  // One result per reference coordinate, with one transformed result per zoom window; the PHT
-  // sends one of each
-  return response.ok ? { ok: true, data: response.data[0].transformed_result[0] } : response;
-};
+  target: TargetType,
+  dataProduct: DataProductSDPNew
+): SensitivityRequest =>
+  observation.telescope === TELESCOPE_LOW_NUM
+    ? {
+        mode: SENS_CALC_MODE.ZOOM,
+        path: 'low/zoom/calculate',
+        body: lowZoomRequest(observation, target, dataProduct)
+      }
+    : {
+        mode: SENS_CALC_MODE.ZOOM,
+        path: 'mid/zoom/calculate',
+        body: midZoomRequest(observation, target, dataProduct)
+      };
 
 /**
- * Calculates the sensitivity for one target, observation and data product.
+ * Builds the calculator request for one target, observation and data product.
  *
- * Returns null when the calculator doesn't apply (SSO targets and PST observing mode), in
- * which case no request is made. Never throws: calculator errors and canceled requests are
- * returned as errors.
+ * Returns null when the calculator doesn't apply: SSO targets, PST observing mode, and any
+ * observing mode the calculator doesn't support.
  */
-export const calculateSensitivity = async (
+export const buildSensitivityRequest = (
   observation: Observation,
-  target: Target,
-  dataProduct: DataProductSDPNew,
-  options: SensCalcRequestOptions = {}
-): Promise<SensCalcSuccess<SensitivityResult> | SensCalcError | null> => {
+  target: TargetType,
+  dataProduct: DataProductSDPNew
+): SensitivityRequest | null => {
   if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value || observation.type === TYPE_PST) {
     return null;
   }
 
   switch (observation.type) {
     case TYPE_CONTINUUM:
-      return calculateContinuum(observation, target, dataProduct, options);
+      return continuumRequest(observation, target, dataProduct);
     case TYPE_CONTINUUM_SPECTRAL:
     case TYPE_CONTINUUM_SPECTRAL_LONG:
-      return calculateContinuum(
-        { ...observation, type: TYPE_CONTINUUM },
-        target,
-        dataProduct,
-        options
-      );
+      return continuumRequest({ ...observation, type: TYPE_CONTINUUM }, target, dataProduct);
     case TYPE_ZOOM:
     case TYPE_ZOOM_LONG:
-      return calculateZoom(observation, target, dataProduct, options);
+      return zoomRequest(observation, target, dataProduct);
     default:
-      return {
-        ok: false,
-        kind: SENS_CALC_ERROR_KIND.FAILED,
-        title: 'Unsupported Observation Type',
-        detail: `Observation type ${observation.type} is not supported by the Sensitivity Calculator.`
-      };
+      return null;
   }
+};
+
+/**
+ * Sends a request built by buildSensitivityRequest. Never throws: calculator errors and canceled
+ * requests are returned as errors.
+ */
+export const sendSensitivityRequest = async (
+  request: SensitivityRequest,
+  options: SensCalcRequestOptions = {}
+): Promise<SensCalcSuccess<SensitivityResult> | SensCalcError> => {
+  if (request.mode === SENS_CALC_MODE.CONTINUUM) {
+    const response = await post<ContinuumResponse>(request.path, request.body, options);
+    // One result per reference coordinate; the PHT sends one
+    return response.ok ? { ok: true, data: response.data[0].transformed_result } : response;
+  }
+  const response = await post<ZoomResponse>(request.path, request.body, options);
+  // One result per reference coordinate, with one transformed result per zoom window; the PHT
+  // sends one of each
+  return response.ok ? { ok: true, data: response.data[0].transformed_result[0] } : response;
+};
+
+// TODO BTN-3595 Remove once the pages and autolinking leave their requests to useSensitivityService
+export const calculateSensitivity = async (
+  observation: Observation,
+  target: TargetType,
+  dataProduct: DataProductSDPNew,
+  options: SensCalcRequestOptions = {}
+): Promise<SensCalcSuccess<SensitivityResult> | SensCalcError | null> => {
+  const request = buildSensitivityRequest(observation, target, dataProduct);
+  return request ? sendSensitivityRequest(request, options) : null;
 };

@@ -22,34 +22,38 @@ import {
   TIME_HOURS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  VELOCITY_DEFINITION
 } from '@/utils/constants';
 import type Observation from '@/utils/types/observation';
-import type Target from '@/utils/types/target';
+import type { TargetType } from '@/models/proposals/targets';
 import type { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { calculateSensitivity } from './calculate';
 import { SENS_CALC_ERROR_KIND } from './client';
 import type { ContinuumResult, ZoomResult } from './types';
 
-const ICRS_TARGET: Target = {
+const ICRS_TARGET: TargetType = {
   id: 'target-1',
   name: 'M1',
+  velocityDefinition: VELOCITY_DEFINITION.RADIO,
   kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
   raStr: '05:34:31.94',
   decStr: '+22:00:52.2'
 };
 
-const GALACTIC_TARGET: Target = {
+const GALACTIC_TARGET: TargetType = {
   id: 'target-2',
   name: 'Galactic',
+  velocityDefinition: VELOCITY_DEFINITION.RADIO,
   kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
   l: 10,
   b: 5
 };
 
-const SSO_TARGET: Target = {
+const SSO_TARGET: TargetType = {
   id: 'target-3',
   name: 'Mars',
+  velocityDefinition: VELOCITY_DEFINITION.RADIO,
   kind: REFERENCE_COORDINATE_TYPE_SSO.value
 };
 
@@ -358,7 +362,7 @@ describe('calculateSensitivity results', () => {
     expect(post).not.toHaveBeenCalled();
   });
 
-  test('returns an error for an unknown observation type', async () => {
+  test('makes no request for an unknown observation type', async () => {
     const post = vi.spyOn(axiosClient, 'post');
 
     const response = await calculateSensitivity(
@@ -367,11 +371,7 @@ describe('calculateSensitivity results', () => {
       imageDataProduct()
     );
 
-    expect(response).toMatchObject({
-      ok: false,
-      kind: SENS_CALC_ERROR_KIND.FAILED,
-      title: 'Unsupported Observation Type'
-    });
+    expect(response).toBeNull();
     expect(post).not.toHaveBeenCalled();
   });
 });

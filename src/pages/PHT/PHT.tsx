@@ -65,6 +65,7 @@ import { useTheme } from '@mui/material/styles';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
+import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -385,6 +386,7 @@ export default function PHT({
             {/* TODO: REMOVE  */}
             {/* Global form provider for proposal form management */}
             <FormProvider {...formMethods}>
+              <SensitivityService />
               {REQUIRED_WIDTH ? (
                 <Routes>
                   {ROUTES.map((ROUTE) => (

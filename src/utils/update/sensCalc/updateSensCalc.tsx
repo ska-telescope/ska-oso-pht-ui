@@ -15,7 +15,8 @@ export const getTargetObservationKey = (
 
 export type SensCalcPatch = {
   targetObservationKey: string;
-  sensitivityResults: SensCalcResults;
+  // undefined when the calculator doesn't apply (SSO targets and PST)
+  sensitivityResults: SensCalcResults | undefined;
 };
 
 export const applySensCalcPatches = (
@@ -30,11 +31,11 @@ export const applySensCalcPatches = (
     patches.map((patch) => [patch.targetObservationKey, patch.sensitivityResults])
   );
   return targetObservations.map((targetObservation) => {
-    const patchedSensCalc = patchesByKey.get(getTargetObservationKey(targetObservation));
-    if (!patchedSensCalc) {
+    const key = getTargetObservationKey(targetObservation);
+    if (!patchesByKey.has(key)) {
       return targetObservation;
     }
-    return { ...targetObservation, sensitivityResults: patchedSensCalc };
+    return { ...targetObservation, sensitivityResults: patchesByKey.get(key) };
   });
 };
 
