@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: Move token access code used by e2e tests from main codebase into test framework
+* Changed: (temp) local testing of making test branch names consistent in CI
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
 * Bugfix: Only reset DP Parameters if values on the Observation page change.
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
