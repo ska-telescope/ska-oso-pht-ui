@@ -61,6 +61,16 @@ const CYPRESS_SPLIT_MERGE_BIN = join(BIN_DIR, 'cypress-split-merge');
 // SPLIT_FILE onto the working directory even when it's absolute.
 const SPLIT_DIR = join(REPORT_DIR, 'cypress-split');
 const MERGED_TIMINGS_FILE = relative(process.cwd(), join(SCRIPT_DIR, 'cypress-timings.json'));
+// A worker that prints nothing for this long is treated as hung and killed, so the run fails with
+// the stuck spec named instead of hitting the CI job timeout. Cypress prints a line as each spec
+// starts and a summary as it ends, and the slowest spec takes about 4 minutes (12 with its 2
+// retries), so the default leaves plenty of room. 0 turns the check off.
+const IDLE_TIMEOUT_MINUTES = Number(process.env.CYPRESS_WORKER_IDLE_TIMEOUT_MINUTES ?? 20);
+// How often to print which workers are still running and what each is doing. 0 turns it off.
+const STATUS_INTERVAL_MINUTES = Number(process.env.CYPRESS_PARALLEL_STATUS_MINUTES ?? 5);
+// Terminal colour codes, stripped from worker output before looking for spec names in it
+// eslint-disable-next-line no-control-regex -- matching terminal colour codes is the point
+const ANSI_PATTERN = /\x1b\[[0-9;]*m/g;
 
 // If the caller supplied its own --reporter-options (as CI's shared JS_E2E_TEST_DEFAULT_SWITCHES
 // always does - see this script's own top-of-file comment), every worker still receives that
@@ -185,11 +195,34 @@ async function main() {
   // one instance, but concurrent workers all racing to claim :99 collide ("Server is already
   // active for display 99"). xvfb-run --auto-servernum gives each worker its own free display
   // instead, so wrap Cypress with it on Linux. Not needed (and not available) on macOS/Windows,
-  // where Cypress either has no Xvfb dependency or uses a real display directly.
-  const useXvfbRun = process.platform === 'linux';
+  // where Cypress either has no Xvfb dependency or uses a real display directly. A Linux desktop
+  // without xvfb-run can share its own real display instead (Cypress only starts its own Xvfb
+  // when DISPLAY is unset).
+  const hasXvfbRun =
+    process.platform === 'linux' &&
+    spawnSync('sh', ['-c', 'command -v xvfb-run'], { stdio: 'ignore' }).status === 0;
+  const useXvfbRun = process.platform === 'linux' && (hasXvfbRun || !process.env.DISPLAY);
+  if (process.platform === 'linux' && !useXvfbRun) {
+    console.log(`xvfb-run not found - workers share the existing display ${process.env.DISPLAY}.`);
+  }
+
+  // Diagnostics for a run that hangs rather than fails (see watchWorkers below).
+  const workerStates = Array.from({ length: workerCount }, (_, index) => ({
+    worker: index + 1,
+    startedAt: Date.now(),
+    lastOutputAt: Date.now(),
+    currentSpec: null,
+    specStartedAt: null,
+    finishedRun: false,
+    exited: false,
+    kill: null
+  }));
+  const stopWatching = watchWorkers(workerStates);
+  const stopForwardingSignals = forwardSignals(workerStates);
 
   const runWorker = (index) =>
     new Promise((resolve) => {
+      const state = workerStates[index];
       const cypressArgs = ['run', ...reporterArgsFor(index), ...extraArgs];
       const [cmd, args] = useXvfbRun
         ? [
@@ -210,9 +243,16 @@ async function main() {
       const workerSplitDir = join(SPLIT_DIR, `worker${index + 1}`);
       mkdirSync(workerSplitDir, { recursive: true });
       const child = spawn(cmd, args, {
-        stdio: 'inherit',
+        // Piped rather than inherited so every line can be tagged with its worker - otherwise the
+        // workers' output interleaves anonymously and a hung worker can't be told apart.
+        stdio: ['ignore', 'pipe', 'pipe'],
+        // Own process group, so a hung worker can be killed along with everything it started
+        // (xvfb-run, Xvfb, Cypress, Electron) - see killWorker below.
+        detached: true,
         env: {
           ...process.env,
+          // Cypress drops colours when its output is piped - keep them for an interactive run
+          ...(process.stdout.isTTY ? { FORCE_COLOR: '1' } : {}),
           SPLIT: String(workerCount),
           SPLIT_INDEX: String(index),
           CYPRESS_WORKER_INDEX: String(index),
@@ -220,7 +260,33 @@ async function main() {
           SPLIT_OUTPUT_FILE: join(workerSplitDir, 'timings.json')
         }
       });
-      child.on('exit', (code) => resolve({ worker: index + 1, code: code ?? 1 }));
+      state.pid = child.pid;
+      state.kill = () => killWorker(child);
+      const flushStdout = prefixLines(child.stdout, process.stdout, state);
+      const flushStderr = prefixLines(child.stderr, process.stderr, state);
+      let settled = false;
+      const settle = (code, signal) => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        state.exited = true;
+        flushStdout();
+        flushStderr();
+        const how = signal ? `was killed by ${signal}` : `exited with code ${code}`;
+        const where = state.currentSpec
+          ? `, while running ${state.currentSpec}`
+          : state.finishedRun
+            ? ''
+            : ', before finishing its run';
+        log(
+          `worker ${state.worker} ${how} after ${formatMinSec((Date.now() - state.startedAt) / 1000)}${where}`
+        );
+        resolve({ worker: state.worker, code: code ?? 1 });
+      };
+      // 'exit' rather than 'close': a leftover grandchild can keep the output pipes open after
+      // the worker itself has gone, and 'close' would then never fire.
+      child.on('exit', settle);
       // Without this, a spawn failure (e.g. xvfb-run missing) never fires 'exit', so the
       // Promise.all below would hang forever instead of failing loudly.
       child.on('error', (err) => {
@@ -230,13 +296,15 @@ async function main() {
             'xvfb-run is not installed - on Ubuntu/Debian: sudo apt-get update && sudo apt-get install -y xvfb'
           );
         }
-        resolve({ worker: index + 1, code: 1 });
+        settle(1, null);
       });
     });
 
   const results = await Promise.all(
     Array.from({ length: workerCount }, (_, index) => runWorker(index))
   );
+  stopWatching();
+  stopForwardingSignals();
 
   console.log(`\nTotal wall-clock time: ${formatMinSec((Date.now() - overallStart) / 1000)}`);
 
@@ -288,6 +356,132 @@ function formatMinSec(seconds) {
 
 function dashIfZero(n) {
   return n === 0 ? '-' : String(n);
+}
+
+// Messages from this script itself, as opposed to a worker's own (prefixed [wN]) output
+function log(message) {
+  console.log(`[parallel] ${message}`);
+}
+
+// Copies a worker's output a line at a time with its [wN] prefix, and tracks from it which spec
+// the worker is on: Cypress prints "Running:  <spec>  (1 of 8)" as each spec starts, and
+// "(Run Finished)" once all of the worker's specs are done. Returns a function that writes out
+// any final partial line.
+function prefixLines(stream, out, state) {
+  const prefix = `[w${state.worker}] `;
+  let partial = '';
+  const writeLine = (line) => {
+    out.write(`${prefix}${line}\n`);
+    const plain = line.replace(ANSI_PATTERN, '');
+    const running = plain.match(/Running:\s+(\S+)/);
+    if (running) {
+      state.currentSpec = running[1];
+      state.specStartedAt = Date.now();
+    } else if (plain.includes('(Run Finished)')) {
+      state.currentSpec = null;
+      state.finishedRun = true;
+    }
+  };
+  stream.setEncoding('utf8');
+  stream.on('data', (chunk) => {
+    state.lastOutputAt = Date.now();
+    const lines = (partial + chunk).split('\n');
+    partial = lines.pop();
+    lines.forEach(writeLine);
+  });
+  return () => {
+    if (partial) {
+      writeLine(partial);
+      partial = '';
+    }
+  };
+}
+
+// What a worker is doing, for the status and timeout messages
+function describeWorker(state, now) {
+  const idle = formatMinSec((now - state.lastOutputAt) / 1000);
+  if (state.currentSpec) {
+    const onSpec = formatMinSec((now - state.specStartedAt) / 1000);
+    return `worker ${state.worker} on ${state.currentSpec} for ${onSpec} (no output for ${idle})`;
+  }
+  if (state.finishedRun) {
+    return `worker ${state.worker} printed its Run Finished summary but has not exited (no output for ${idle})`;
+  }
+  return `worker ${state.worker} has not started a spec yet (no output for ${idle})`;
+}
+
+// Prints a status line for every running worker every STATUS_INTERVAL_MINUTES, and kills any
+// worker silent for IDLE_TIMEOUT_MINUTES. Returns a function that stops both.
+function watchWorkers(states) {
+  const statusMs = STATUS_INTERVAL_MINUTES * 60_000;
+  const idleMs = IDLE_TIMEOUT_MINUTES * 60_000;
+  let lastStatusAt = Date.now();
+  const timer = setInterval(() => {
+    const now = Date.now();
+    const running = states.filter((s) => !s.exited);
+    if (statusMs > 0 && now - lastStatusAt >= statusMs) {
+      lastStatusAt = now;
+      log(`${running.length} worker(s) still running:`);
+      running.forEach((s) => log(`  ${describeWorker(s, now)}`));
+    }
+    if (idleMs > 0) {
+      running
+        .filter((s) => s.kill && !s.killed && now - s.lastOutputAt >= idleMs)
+        .forEach((s) => {
+          s.killed = true;
+          console.error(
+            `[parallel] ${describeWorker(s, now)} - killing it as hung ` +
+              `(limit CYPRESS_WORKER_IDLE_TIMEOUT_MINUTES=${IDLE_TIMEOUT_MINUTES})`
+          );
+          s.kill();
+        });
+    }
+  }, 10_000);
+  return () => clearInterval(timer);
+}
+
+// Kills a worker's whole process group (it was spawned detached), giving it 10 seconds to stop
+// before forcing it
+function killWorker(child) {
+  const signalGroup = (signal) => {
+    try {
+      process.kill(-child.pid, signal);
+    } catch {
+      // Already gone
+    }
+  };
+  signalGroup('SIGTERM');
+  setTimeout(() => signalGroup('SIGKILL'), 10_000).unref();
+}
+
+// Workers run in their own process groups, so Ctrl-C or a CI cancellation no longer reaches them
+// directly - pass it on, then exit. Returns a function that removes the handlers.
+function forwardSignals(states) {
+  const handler = (signal) => {
+    log(`received ${signal} - stopping workers`);
+    states.filter((s) => !s.exited && s.kill).forEach((s) => s.kill());
+    process.exitCode = 130;
+    setTimeout(() => process.exit(), 11_000).unref();
+  };
+  // If this script itself crashes, don't leave detached workers running on their own
+  const onExit = () =>
+    states
+      .filter((s) => !s.exited && s.pid)
+      .forEach((s) => {
+        try {
+          process.kill(-s.pid, 'SIGKILL');
+        } catch {
+          // Already gone
+        }
+      });
+  process.on('SIGINT', handler);
+  process.on('SIGTERM', handler);
+  process.on('exit', onExit);
+  return () => {
+    process.off('SIGINT', handler);
+    process.off('SIGTERM', handler);
+    process.off('exit', onExit);
+  };
 }
 
 // Each worker writes one JUnit file per spec file (mocha-junit-reporter expands [hash] per spec,
