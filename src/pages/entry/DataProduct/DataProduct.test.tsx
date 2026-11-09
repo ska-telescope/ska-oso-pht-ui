@@ -7,9 +7,11 @@ import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 import {
   IW_BRIGGS,
+  REFERENCE_COORDINATE_TYPE_SSO,
   SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
+  TYPE_PST,
   TYPE_ZOOM
 } from '@/utils/constants.ts';
 import DataProduct from './DataProduct';
@@ -101,7 +103,8 @@ describe('DataProduct component', () => {
 
   const renderExistingDataProduct = (
     sensitivity?: Sensitivity,
-    observationType: string = TYPE_CONTINUUM
+    observationType: string = TYPE_CONTINUUM,
+    targets: { id: string; kind: number }[] = []
   ) => {
     mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
     mockStoreReturn = {
@@ -120,6 +123,7 @@ describe('DataProduct component', () => {
             }
           ],
           dataProductSDP: [existingDataProduct],
+          targets,
           targetObservation: sensitivity
             ? [
                 {
@@ -335,6 +339,30 @@ describe('DataProduct component', () => {
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
     expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
+  });
+
+  describe('when the sensitivity calculator does not apply', () => {
+    it('reports PST as unsupported', () => {
+      renderExistingDataProduct(undefined, TYPE_PST);
+
+      expect(screen.getByText('page.7.pstUnavailable')).toBeInTheDocument();
+    });
+
+    it('asks for a target when none is linked', () => {
+      renderExistingDataProduct();
+
+      expect(screen.getByText('sensitivityCalculatorResults.noTarget')).toBeInTheDocument();
+    });
+
+    it('reports SSO targets as unsupported', () => {
+      renderExistingDataProduct({ state: SENSITIVITY_STATE.CALCULATING }, TYPE_CONTINUUM, [
+        { id: 'T1', kind: REFERENCE_COORDINATE_TYPE_SSO.value }
+      ]);
+
+      expect(
+        screen.getByText('sensitivityCalculatorResults.notApplicableForSSO')
+      ).toBeInTheDocument();
+    });
   });
 
   it('persists a data product when a valid observation is explicitly selected', async () => {

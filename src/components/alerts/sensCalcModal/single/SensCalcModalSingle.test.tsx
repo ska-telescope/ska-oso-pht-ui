@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import SensCalcModalSingle from './SensCalcModalSingle';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
@@ -29,7 +30,9 @@ const values = (weighted: number): SensitivityValues => ({
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <TestProposalFormProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </TestProposalFormProvider>
     </StoreProvider>
   );
 };

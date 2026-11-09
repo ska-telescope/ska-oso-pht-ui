@@ -1,4 +1,5 @@
 import { Grid, Typography } from '@mui/material';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
 import {
@@ -6,18 +7,18 @@ import {
   FREQUENCY_STR_KHZ,
   FREQUENCY_UNITS,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
-  REFERENCE_COORDINATE_TYPE_SSO,
   SA_CUSTOM,
   SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
-  TYPE_CONTINUUM_SPECTRAL_LONG,
-  TYPE_PST
+  TYPE_CONTINUUM_SPECTRAL_LONG
 } from '../../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal.tsx';
+import Target from '@utils/types/target';
+import type { ProposalType } from '@/models/proposals/proposal';
 import { getLowSpectralAveragingFactor } from '@/services/sensitivityCalculator/calculate';
 import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
 import type { SensitivityValues } from '@/models/proposals/targetObservation';
@@ -28,7 +29,7 @@ import {
 } from '@utils/helpers.ts';
 
 interface SensCalcContentProps {
-  targetObservation?: TargetObservation;
+  targetObservation: TargetObservation;
   isNatural?: boolean;
   hideSpectralResults?: boolean;
 }
@@ -49,14 +50,17 @@ export default function SensCalcContent({
 
   const proposal = getProposal();
 
-  const target = proposal.targets?.find((target) => target.id === targetObservation?.targetId);
+  // TODO: The form owns the targets; observations and data products are still read from the store
+  const form = useFormContext<ProposalType>();
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const target = targets.find((target) => target.id === targetObservation.targetId);
 
   const observation = proposal.observations?.find(
-    (observation) => observation.id === targetObservation?.observationId
+    (observation) => observation.id === targetObservation.observationId
   );
 
   const dataProduct = proposal.dataProductSDP?.find(
-    (dataProduct) => dataProduct.id === targetObservation?.dataProductsSDPId
+    (dataProduct) => dataProduct.id === targetObservation.dataProductsSDPId
   );
 
   const PresentCustomResultValue = (eValue: any, eId: string) => {
@@ -114,7 +118,7 @@ export default function SensCalcContent({
     );
   };
 
-  if (!targetObservation) {
+  if (targetObservation.sensitivity?.state === SENSITIVITY_STATE.FAILED) {
     return (
       <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
         <Typography
@@ -122,55 +126,13 @@ export default function SensCalcContent({
             p: GAP
           }}
         >
-          {t('sensitivityCalculatorResults.noTarget')}
+          {targetObservation.sensitivity?.error}
         </Typography>
       </Alert>
     );
   }
 
-  if (observation?.type === TYPE_PST) {
-    return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {t('page.7.pstUnavailable')}
-        </Typography>
-      </Alert>
-    );
-  }
-
-  if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
-    return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {t('sensitivityCalculatorResults.notApplicableForSSO')}
-        </Typography>
-      </Alert>
-    );
-  }
-
-  if (targetObservation?.sensitivity?.state === SENSITIVITY_STATE.FAILED) {
-    return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {targetObservation?.sensitivity?.error}
-        </Typography>
-      </Alert>
-    );
-  }
-
-  const sensitivity = targetObservation?.sensitivity;
+  const sensitivity = targetObservation.sensitivity;
   if (sensitivity == undefined) {
     return (
       <Alert>

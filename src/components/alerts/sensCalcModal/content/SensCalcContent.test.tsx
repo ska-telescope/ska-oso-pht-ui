@@ -1,8 +1,11 @@
 import { describe, expect, test } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { FormProvider } from 'react-hook-form';
 import { StoreProvider } from '@utils/storage/store';
 import SensCalcContent from './SensCalcContent';
+import { useProposalForm } from '@/models/proposals/useProposalForm';
+import type { ProposalType } from '@/models/proposals/proposal';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 
@@ -27,23 +30,32 @@ const values = (weighted: number): SensitivityValues => ({
   synthesizedBeamSize: { value: '1.00 x 2.00', unit: 'arcsec²' }
 });
 
+// The linked target lives in the form, which owns the targets
+const FormWithTarget = ({ children }: { children: React.ReactNode }) => {
+  const form = useProposalForm({
+    id: 'p1',
+    targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets']
+  });
+  return <FormProvider {...form}>{children}</FormProvider>;
+};
+
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <FormWithTarget>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </FormWithTarget>
     </StoreProvider>
   );
 };
 
 describe('<SensCalcModalSingle />', () => {
-  test('renders the no-target state when there is no target observation', () => {
-    wrapper(<SensCalcContent />);
-
-    expect(screen.getByText('sensitivityCalculatorResults.noTarget')).toBeInTheDocument();
-  });
-
   test('renders the no-data state when results have not been calculated', () => {
-    wrapper(<SensCalcContent targetObservation={{}} />);
+    wrapper(
+      <SensCalcContent
+        targetObservation={{ targetId: 't1', observationId: 'obs1', dataProductsSDPId: 'dp1' }}
+      />
+    );
 
     expect(screen.getByText('sensitivityCalculatorResults.noData')).toBeInTheDocument();
   });
@@ -85,6 +97,15 @@ describe('<SensCalcModalSingle />', () => {
     expect(
       screen.getByLabelText('sensitivityCalculatorResults.spectralSynthBeamSize')
     ).toHaveTextContent('1.00 x 2.00');
+  });
+  test('shows the name of the linked target from the form', () => {
+    wrapper(
+      <SensCalcContent
+        targetObservation={link({ state: SENSITIVITY_STATE.DONE, spectral: values(50) })}
+      />
+    );
+
+    expect(screen.getByTestId('field-targetName')).toHaveTextContent('Target A');
   });
   test('renders correctly ( OK, zoom )', () => {
     wrapper(

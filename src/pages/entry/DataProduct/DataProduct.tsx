@@ -5,7 +5,13 @@ import { storageObject } from '@utils/storage/store';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { getFormLinks } from '@/models/proposals/formSlices';
-import { BorderedSection, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import {
+  Alert,
+  AlertColorTypes,
+  BorderedSection,
+  Spacer,
+  SPACER_VERTICAL
+} from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
@@ -43,6 +49,7 @@ import {
   PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
   PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
   PULSAR_TIMING_VALUE,
+  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   SENSITIVITY_STATE,
@@ -79,6 +86,7 @@ import DispersionMeasureField from '@/components/fields/dispersionMeasure/disper
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
 import TargetObservation from '@/utils/types/targetObservation';
+import Target from '@/utils/types/target';
 import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import { isDataProductPolarisationsValid } from '@/utils/validation/validation';
@@ -191,6 +199,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const form = useFormContext<ProposalType>();
   const links = (useWatch({ control: form.control, name: 'targetObservation' }) ??
     []) as TargetObservation[];
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
   const getLinks = () => getFormLinks(form);
 
   const maxObservationsReached = () =>
@@ -960,12 +969,35 @@ export default function DataProduct({ data }: DataProductProps) {
   const targetObservation = (): TargetObservation | undefined =>
     links.find((rec) => rec.observationId === observationId);
 
+  // Why the sensitivity calculator doesn't apply to this data product, or undefined when it does.
+  // PST is checked first: the observing mode alone rules the calculator out, target or not.
+  const sensCalcUnavailable = ():
+    { message: string; color: AlertColorTypes.Warning | AlertColorTypes.Error } | undefined => {
+    if (isPST()) {
+      return { message: t('page.7.pstUnavailable'), color: AlertColorTypes.Warning };
+    }
+    const link = targetObservation();
+    if (!link) {
+      return { message: t('sensitivityCalculatorResults.noTarget'), color: AlertColorTypes.Error };
+    }
+    const target = targets.find((tgt) => tgt.id === link.targetId);
+    if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+      return {
+        message: t('sensitivityCalculatorResults.notApplicableForSSO'),
+        color: AlertColorTypes.Warning
+      };
+    }
+    return undefined;
+  };
+
   const isNatural = () => {
     if (!(isSpectral() || isContinuumSpectral() || (isContinuum() && isDataTypeOne()))) {
       return false;
     }
     return isNonGaussianBeamWeighting(weighting, robust);
   };
+
+  const scUnavailable = sensCalcUnavailable();
 
   return (
     <Box
@@ -1174,8 +1206,10 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                !targetObservation()
-                  ? theme.palette.error.main
+                scUnavailable
+                  ? scUnavailable.color === AlertColorTypes.Error
+                    ? theme.palette.error.main
+                    : theme.palette.warning.main
                   : targetObservation()?.sensitivity == undefined
                     ? theme.palette.warning.main
                     : targetObservation()?.sensitivity?.state === SENSITIVITY_STATE.CALCULATING
@@ -1190,11 +1224,17 @@ export default function DataProduct({ data }: DataProductProps) {
                   : t('sensitivityCalculatorResults.title')
               }
             >
-              <SensCalcContent
-                targetObservation={targetObservation()}
-                isNatural={isNatural()}
-                hideSpectralResults={hideSpectralSensitivityResults}
-              />
+              {scUnavailable ? (
+                <Alert testId="alertSensCalResultsId" color={scUnavailable.color}>
+                  <Typography sx={{ p: GAP }}>{scUnavailable.message}</Typography>
+                </Alert>
+              ) : (
+                <SensCalcContent
+                  targetObservation={targetObservation() as TargetObservation}
+                  isNatural={isNatural()}
+                  hideSpectralResults={hideSpectralSensitivityResults}
+                />
+              )}
             </BorderedSection>
           )}
         </Grid>
