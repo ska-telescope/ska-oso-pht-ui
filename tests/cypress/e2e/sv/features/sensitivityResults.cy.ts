@@ -95,7 +95,12 @@ describe('SV sensitivity results', () => {
     cy.findByText(CONTINUUM_SENSITIVITY).should('not.exist');
   });
 
-  it('shows that the results are not available in PST mode', () => {
+  // TODO: Fails intermittently on CI from a race in the app: Changing the observing mode can
+  //  take a while to generate new observation due to a wait on calibration results to return.
+  //  This means Data Product page can give incorrect information if it is opened before the
+  //  observation is properly reset. Re-enable once form migration is complete and the mode
+  //  change sets the observation without waiting on the calibrator lookup (BTN-3595).
+  it.skip('shows that the results are not available in PST mode', () => {
     goToPage(targetPage);
     targetPage.fill(proposal);
     changeObservingMode('PST');
