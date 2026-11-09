@@ -9,6 +9,7 @@ import TargetObservation from './targetObservation';
 import Investigator from './investigator';
 import { Metadata } from './metadata';
 import { CalibrationStrategy } from './calibrationStrategy';
+import type { DataProductInput } from '@/models/proposals/dataProducts';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 
 // investigator_refs is not part of the PDM, but it is still sent when saving a proposal
@@ -43,6 +44,8 @@ export type Proposal = {
   technicalPDF: DocumentPDF | null;
   technicalLoadStatus?: number;
   dataProductSDP?: DataProductSDPNew[];
+  // The form's data products. The store holds a copy for readers not yet moved to the form
+  dataProducts?: DataProductInput[];
   dataProductSRC?: DataProductSRC[];
   pipeline?: string;
 };
@@ -74,6 +77,7 @@ export const NEW_PROPOSAL = {
   technicalPDF: null,
   technicalLoadStatus: FileUploadStatus.INITIAL,
   dataProductSDP: [],
+  dataProducts: [],
   dataProductSRC: [],
   pipeline: ''
 };

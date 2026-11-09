@@ -6,7 +6,10 @@ import { PROPOSAL_TYPE } from '@/utils/constants';
 const emptySlices = {
   targets: [],
   targetObservation: [],
-  calibrationStrategy: []
+  calibrationStrategy: [],
+  sciencePDF: null,
+  technicalPDF: null,
+  dataProducts: []
 };
 
 describe('proposal schema', () => {
@@ -30,19 +33,6 @@ describe('proposal schema', () => {
       if (!result.success) {
         expect(result.error.issues[0].path).toEqual(['proposalType']);
       }
-    }
-  );
-
-  test.each(['targets', 'targetObservation', 'calibrationStrategy'])(
-    'defaults a missing %s to an empty list',
-    (slice) => {
-      const result = getProposalSchema().safeParse({
-        title: 'A valid title',
-        proposalType: PROPOSAL_TYPE.STANDARD,
-        ...emptySlices,
-        [slice]: undefined
-      });
-      expect(result.data?.[slice as 'targets']).toEqual([]);
     }
   );
 
@@ -72,7 +62,7 @@ describe('proposal schema', () => {
 });
 
 describe('proposal form values', () => {
-  test('a new proposal has the schema defaults', () => {
+  test('a new proposal has empty defaults', () => {
     expect(getProposalFormDefaults()).toEqual({
       title: '',
       proposalType: null,
@@ -80,7 +70,8 @@ describe('proposal form values', () => {
       targetObservation: [],
       calibrationStrategy: [],
       sciencePDF: null,
-      technicalPDF: null
+      technicalPDF: null,
+      dataProducts: []
     });
   });
 

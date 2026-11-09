@@ -11,6 +11,7 @@ import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { NAV, PAGE_OBSERVATION, PAGE_TARGET, PROPOSAL_TYPE } from '@/utils/constants';
 import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 
 // --- Additional mocks ---
 const mockNotifyError = vi.hoisted(() => vi.fn());
@@ -104,9 +105,7 @@ const wrapper = (
       mode: 'all',
       resolver: getProposalResolver(),
       defaultValues: {
-        targets: [],
-        targetObservation: [],
-        calibrationStrategy: [],
+        ...getProposalFormDefaults(),
         title,
         proposalType: (storageObject.useStore().application.content2 as Partial<ProposalType>)
           .proposalType,

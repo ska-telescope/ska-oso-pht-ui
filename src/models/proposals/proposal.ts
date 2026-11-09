@@ -6,6 +6,7 @@ import { getTargetsSchema } from './targets';
 import { getTargetObservationSchema } from './targetObservation';
 import { getCalibrationStrategySchema } from './calibrationStrategy';
 import { getDocumentRefSchema } from './documents';
+import { getDataProductsSchema } from './dataProducts';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
@@ -13,35 +14,30 @@ export function getProposalTypeSchema() {
   return z.enum(PROPOSAL_TYPE);
 }
 
-// Each slice has the default of a new proposal, so the form's defaults are the schema's parse of
-// an empty object. A default is not checked (Zod 4 returns it as it is), which is why it wraps the
-// slice's checks: a new proposal has no title or type yet.
 export function getProposalSchema() {
   return z.object({
-    title: getTitleSchema().default(''),
+    title: getTitleSchema(),
     proposalType: getProposalTypeSchema()
-      .nullish()
-      // Returns a plain boolean so the type is not narrowed to non-null, which the default needs
-      .refine((value): boolean => value != null, { message: phtTranslations.proposalType.help })
       // Controlled fields need null to clear a previous selection on reset
-      .default(null),
-    // These slices check structure only. Proposals loaded through the legacy mapper can contain
-    // invalid or missing data. The validation of that data against the rules for content is done
-    // in the submit validation.
-    targets: getTargetsSchema().default(() => []),
-    targetObservation: getTargetObservationSchema().default(() => []),
-    calibrationStrategy: getCalibrationStrategySchema().default(() => []),
-    sciencePDF: getDocumentRefSchema().default(null),
-    technicalPDF: getDocumentRefSchema().default(null)
+      .nullable()
+      // Returns a plain boolean so the type is not narrowed to non-null
+      .refine((value): boolean => value != null, { message: phtTranslations.proposalType.help }),
+    targets: getTargetsSchema(),
+    targetObservation: getTargetObservationSchema(),
+    calibrationStrategy: getCalibrationStrategySchema(),
+    sciencePDF: getDocumentRefSchema(),
+    technicalPDF: getDocumentRefSchema(),
+    dataProducts: getDataProductsSchema()
   });
 }
 
-// The form always holds every slice, so its values are the schema's output, defaults filled in
-export type ProposalType = z.output<ReturnType<typeof getProposalSchema>>;
+// The form holds the schema's input, which can be invalid, such as a data product without a unit.
+// TODO rename to ProposalFormInput, as in the docs, once the open MRs that use this name merge
+export type ProposalType = z.input<ReturnType<typeof getProposalSchema>>;
 
 /**
- * The form's resolver. The schema is typed for its input, where the defaulted slices are
- * optional, so it is cast to the form's values once here.
+ * The form's resolver. The form is typed as the schema's input, and its handleSubmit output is not
+ * used, so the resolver is cast to the input once here.
  */
 export const getProposalResolver = (): Resolver<ProposalType> =>
   zodResolver(getProposalSchema()) as unknown as Resolver<ProposalType>;

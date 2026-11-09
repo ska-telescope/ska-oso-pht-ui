@@ -8,6 +8,7 @@ import {
 } from '@utils/constants.ts';
 import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
+import { DATA_PRODUCT_KIND } from '@/models/proposals/dataProducts';
 
 export const MockProposalFrontend: Proposal = {
   metadata: {
@@ -173,6 +174,20 @@ export const MockProposalFrontend: Proposal = {
       }
     }
   ],
+  dataProducts: [
+    {
+      id: 'SDP-2',
+      observationId: 'obs-obR1Ej',
+      kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE,
+      imageSize: { value: 15, unit: 'deg' },
+      pixelSize: { value: 1.007, unit: 'arcsec' },
+      weighting: 'uniform',
+      robust: 0,
+      taper: 1,
+      polarisations: ['X'],
+      channelsOut: 1
+    }
+  ],
   dataProductSRC: [],
   pipeline: ''
 };
@@ -304,6 +319,21 @@ export const MockProposalFrontendZoom: Proposal = {
       }
     }
   ],
+  dataProducts: [
+    {
+      id: 'SDP-1',
+      observationId: 'obs-arMIoY',
+      kind: DATA_PRODUCT_KIND.SPECTRAL_IMAGE,
+      imageSize: { value: 100, unit: 'deg' },
+      pixelSize: { value: 3.7, unit: 'arcsec' },
+      weighting: 'briggs',
+      robust: 0.5,
+      taper: 0,
+      polarisations: ['I', 'XX'],
+      channelsOut: 1,
+      continuumSubtraction: false
+    }
+  ],
   dataProductSRC: [],
   pipeline: ''
 };
@@ -336,6 +366,7 @@ export const MockNullProposalFrontend: Proposal = {
   calibrationStrategy: [],
   technicalLoadStatus: 9,
   dataProductSDP: [],
+  dataProducts: [],
   dataProductSRC: [],
   pipeline: ''
 };

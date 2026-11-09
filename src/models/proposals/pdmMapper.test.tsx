@@ -13,7 +13,8 @@ const emptySlices = {
   targetObservation: [],
   calibrationStrategy: [],
   sciencePDF: null,
-  technicalPDF: null
+  technicalPDF: null,
+  dataProducts: []
 };
 
 describe('mapPdmToForm', () => {
@@ -26,7 +27,8 @@ describe('mapPdmToForm', () => {
       targetObservation: legacy.targetObservation,
       calibrationStrategy: legacy.calibrationStrategy,
       sciencePDF: null,
-      technicalPDF: null
+      technicalPDF: null,
+      dataProducts: legacy.dataProducts
     });
   });
 
@@ -38,7 +40,8 @@ describe('mapPdmToForm', () => {
       targetObservation: [],
       calibrationStrategy: [],
       sciencePDF: null,
-      technicalPDF: null
+      technicalPDF: null,
+      dataProducts: []
     });
   });
 

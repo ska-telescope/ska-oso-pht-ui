@@ -5,8 +5,16 @@ import { storageObject, StoreProvider } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import Target from '@utils/types/target';
 import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
+import { getDataProductScriptParameters } from '@services/axios/put/putProposal/putProposalMapping';
 import { useProposalForm } from './useProposalForm';
-import { useCopySlicesToStore } from './useCopySlicesToStore';
+import { dataProductToLegacy, useCopySlicesToStore } from './useCopySlicesToStore';
+import {
+  dataProductFromPdm,
+  dataProductsFromPdm,
+  dataProductToPdm,
+  getDataProductSchema
+} from './dataProducts';
+import { legacyObservations, pdmDataProducts } from './testing/pdmDataProducts';
 
 const target = (id: string): Target => ({
   id,
@@ -123,6 +131,26 @@ describe('useCopySlicesToStore', () => {
     );
   });
 
+  test('copies the data products into the store, also in their legacy shape', () => {
+    const { result } = renderHarness();
+    open(result, { id: 'p1', dataProducts: [] });
+    const dataProducts = dataProductsFromPdm(pdmDataProducts.slice(0, 2));
+
+    act(() => result.current.form.setValue('dataProducts', dataProducts));
+
+    expect(storedProposal(result).dataProducts).toEqual(dataProducts);
+    expect(storedProposal(result).dataProductSDP).toEqual(dataProducts.map(dataProductToLegacy));
+  });
+
+  test('puts the legacy data products back when a legacy write changes them', () => {
+    const { result } = renderHarness();
+    open(result, { id: 'p1', dataProducts: dataProductsFromPdm(pdmDataProducts.slice(0, 1)) });
+
+    open(result, { ...storedProposal(result), dataProductSDP: [] });
+
+    expect(storedProposal(result).dataProductSDP).toHaveLength(1);
+  });
+
   test('copies into a new proposal before it has an ID', () => {
     const { result } = renderHarness();
     open(result, { id: null, title: '' });
@@ -138,5 +166,28 @@ describe('useCopySlicesToStore', () => {
     act(() => result.current.form.setValue('targets', [target('a')]));
 
     expect(storedProposal(result)).toEqual([]);
+  });
+});
+
+describe('dataProductToLegacy', () => {
+  // The legacy save still sends the data products, so it must send what the new mapper would
+  test.each(pdmDataProducts.map((dp) => [dp.script_parameters.variant, dp] as const))(
+    'gives the legacy save the same %s',
+    (_, pdmDataProduct) => {
+      const dataProduct = dataProductFromPdm(pdmDataProduct);
+
+      expect(
+        getDataProductScriptParameters(legacyObservations, dataProductToLegacy(dataProduct))
+      ).toEqual(dataProductToPdm(getDataProductSchema().parse(dataProduct)).script_parameters);
+    }
+  );
+
+  test('gives a unit not yet chosen no legacy unit', () => {
+    const dataProduct = dataProductFromPdm(pdmDataProducts[0]);
+    const legacy = dataProductToLegacy({
+      ...dataProduct,
+      imageSize: { value: 1, unit: null }
+    } as typeof dataProduct);
+    expect(legacy.data).toMatchObject({ imageSizeUnits: -1 });
   });
 });

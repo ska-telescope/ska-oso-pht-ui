@@ -29,6 +29,7 @@ const values = (slices: Partial<ProposalType> = {}): ProposalType => ({
   calibrationStrategy: [strategy],
   sciencePDF: null,
   technicalPDF: null,
+  dataProducts: [],
   ...slices
 });
 

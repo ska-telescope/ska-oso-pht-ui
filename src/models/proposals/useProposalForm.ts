@@ -1,10 +1,19 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { getProposalSchema, ProposalType, getProposalResolver } from './proposal';
+import { ProposalType, getProposalResolver } from './proposal';
 type ProposalSeed = Partial<ProposalType> & { id?: string | null };
 
-/** The form values of a new proposal: the schema's defaults. */
-export const getProposalFormDefaults = (): ProposalType => getProposalSchema().parse({});
+/** The form values of a new proposal. */
+export const getProposalFormDefaults = (): ProposalType => ({
+  title: '',
+  proposalType: null,
+  targets: [],
+  targetObservation: [],
+  calibrationStrategy: [],
+  sciencePDF: null,
+  technicalPDF: null,
+  dataProducts: []
+});
 
 /**
  * Form values for every migrated slice, taken from the proposal or defaulted. The proposal's own

@@ -49,6 +49,7 @@ import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import { targetsFromPdm } from '@/models/proposals/targets';
 import { targetObservationFromPdm } from '@/models/proposals/targetObservation';
 import { calibrationStrategyFromPdm } from '@/models/proposals/calibrationStrategy';
+import { dataProductsFromPdm } from '@/models/proposals/dataProducts';
 import type {
   DataProductSDP as DataProductSDPTransport,
   DataProductSRC as DataProductSRCTransport,
@@ -481,6 +482,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
           inRec.observation_info?.result_details
         )
       : [],
+    dataProducts: dataProductsFromPdm(inRec.observation_info?.data_product_sdps),
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO remove this property from type as not needed
   };

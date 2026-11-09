@@ -202,7 +202,8 @@ describe('<PHT />', () => {
         targetObservation: [],
         calibrationStrategy: [],
         sciencePDF: null,
-        technicalPDF: null
+        technicalPDF: null,
+        dataProducts: []
       });
     });
   });
@@ -224,7 +225,8 @@ describe('<PHT />', () => {
         targetObservation: [],
         calibrationStrategy: [],
         sciencePDF: null,
-        technicalPDF: null
+        technicalPDF: null,
+        dataProducts: []
       });
     });
   });
