@@ -66,8 +66,6 @@ const MERGED_TIMINGS_FILE = relative(process.cwd(), join(SCRIPT_DIR, 'cypress-ti
 // starts and a summary as it ends, and the slowest spec takes about 4 minutes (12 with its 2
 // retries), so the default leaves plenty of room. 0 turns the check off.
 const IDLE_TIMEOUT_MINUTES = Number(process.env.CYPRESS_WORKER_IDLE_TIMEOUT_MINUTES ?? 20);
-// How often to print which workers are still running and what each is doing. 0 turns it off.
-const STATUS_INTERVAL_MINUTES = Number(process.env.CYPRESS_PARALLEL_STATUS_MINUTES ?? 5);
 // Terminal colour codes, stripped from worker output before looking for spec names in it
 // eslint-disable-next-line no-control-regex -- matching terminal colour codes is the point
 const ANSI_PATTERN = /\x1b\[[0-9;]*m/g;
@@ -397,7 +395,7 @@ function prefixLines(stream, out, state) {
   };
 }
 
-// What a worker is doing, for the status and timeout messages
+// What a worker is doing, for the timeout message
 function describeWorker(state, now) {
   const idle = formatMinSec((now - state.lastOutputAt) / 1000);
   if (state.currentSpec) {
@@ -410,32 +408,24 @@ function describeWorker(state, now) {
   return `worker ${state.worker} has not started a spec yet (no output for ${idle})`;
 }
 
-// Prints a status line for every running worker every STATUS_INTERVAL_MINUTES, and kills any
-// worker silent for IDLE_TIMEOUT_MINUTES. Returns a function that stops both.
+// Kills any worker silent for IDLE_TIMEOUT_MINUTES. Returns a function that stops watching.
 function watchWorkers(states) {
-  const statusMs = STATUS_INTERVAL_MINUTES * 60_000;
   const idleMs = IDLE_TIMEOUT_MINUTES * 60_000;
-  let lastStatusAt = Date.now();
+  if (idleMs <= 0) {
+    return () => {};
+  }
   const timer = setInterval(() => {
     const now = Date.now();
-    const running = states.filter((s) => !s.exited);
-    if (statusMs > 0 && now - lastStatusAt >= statusMs) {
-      lastStatusAt = now;
-      log(`${running.length} worker(s) still running:`);
-      running.forEach((s) => log(`  ${describeWorker(s, now)}`));
-    }
-    if (idleMs > 0) {
-      running
-        .filter((s) => s.kill && !s.killed && now - s.lastOutputAt >= idleMs)
-        .forEach((s) => {
-          s.killed = true;
-          console.error(
-            `[parallel] ${describeWorker(s, now)} - killing it as hung ` +
-              `(limit CYPRESS_WORKER_IDLE_TIMEOUT_MINUTES=${IDLE_TIMEOUT_MINUTES})`
-          );
-          s.kill();
-        });
-    }
+    states
+      .filter((s) => !s.exited && s.kill && !s.killed && now - s.lastOutputAt >= idleMs)
+      .forEach((s) => {
+        s.killed = true;
+        console.error(
+          `[parallel] ${describeWorker(s, now)} - killing it as hung ` +
+            `(limit CYPRESS_WORKER_IDLE_TIMEOUT_MINUTES=${IDLE_TIMEOUT_MINUTES})`
+        );
+        s.kill();
+      });
   }, 10_000);
   return () => clearInterval(timer);
 }
