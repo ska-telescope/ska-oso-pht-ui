@@ -8,10 +8,10 @@ import DetailsPage from './DetailsPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  ERROR_SECS,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DETAILS,
   PROPOSAL_TYPE,
+  STATUS_ERROR,
   STATUS_OK,
   TYPE_PST
 } from '@/utils/constants';
@@ -34,7 +34,10 @@ const mockNotifySuccess = vi.hoisted(() => vi.fn());
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
-      application: { content1: Array(PAGE_DETAILS + 1).fill(0), content2: mockState.proposal },
+      application: {
+        content1: Array(PAGE_DETAILS + 1).fill(STATUS_ERROR),
+        content2: mockState.proposal
+      },
       updateAppContent1: mockState.updatePageStatus,
       updateAppContent2: mockState.updateProposal,
       helpComponent: vi.fn(),
@@ -214,7 +217,7 @@ describe('<DetailsPage /> observing mode', () => {
     expect(screen.queryByTestId('observationType')).not.toBeInTheDocument();
   });
 
-  it('stores the abstract field in RHF and saves it to the proposal', async () => {
+  it('stores abstract edits in RHF without writing to the legacy store', async () => {
     mockState.proposal = {
       proposalType: PROPOSAL_TYPE.STANDARD,
       scienceCategory: null,
@@ -232,12 +235,10 @@ describe('<DetailsPage /> observing mode', () => {
     );
 
     fireEvent.blur(abstractInput);
-    expect(mockState.updateProposal).toHaveBeenLastCalledWith(
-      expect.objectContaining({ abstract: 'A new scientific summary' })
-    );
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
   });
 
-  it('stores a selected science category in RHF and the proposal', async () => {
+  it('stores a selected science category in RHF without writing to the legacy store', async () => {
     mockState.proposal = {
       proposalType: PROPOSAL_TYPE.STANDARD,
       scienceCategory: null,
@@ -251,42 +252,22 @@ describe('<DetailsPage /> observing mode', () => {
     expect(
       JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').scienceCategory
     ).toBe(7);
-    expect(mockState.updateProposal).toHaveBeenLastCalledWith(
-      expect.objectContaining({ scienceCategory: 7 })
-    );
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
   });
 
-  it('keeps abstract edits in RHF until blur, then updates the legacy store and breadcrumb', async () => {
+  it('updates the breadcrumb from RHF without writing to the legacy store', async () => {
     mockState.proposal = {
       proposalType: PROPOSAL_TYPE.STANDARD,
       scienceCategory: 1,
       abstract: ''
     };
     await renderPage();
-    vi.useFakeTimers();
-    try {
-      const input = screen.getByTestId('abstractId');
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'A scientific summary' } });
-        await vi.advanceTimersByTimeAsync(ERROR_SECS + 1);
-      });
-
-      expect(JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').abstract).toBe(
-        'A scientific summary'
-      );
-      expect(mockState.updateProposal).not.toHaveBeenCalled();
-      expect(mockState.updatePageStatus).not.toHaveBeenCalled();
-
-      await act(async () => {
-        fireEvent.blur(input);
-      });
-      expect(mockState.updateProposal).toHaveBeenLastCalledWith(
-        expect.objectContaining({ abstract: 'A scientific summary' })
-      );
+    const input = screen.getByTestId('abstractId');
+    fireEvent.change(input, { target: { value: 'A scientific summary' } });
+    await waitFor(() => {
       expect(mockState.updatePageStatus.mock.lastCall?.[0][PAGE_DETAILS]).toBe(STATUS_OK);
-    } finally {
-      vi.useRealTimers();
-    }
+    });
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
   });
 
   it('validates the character limit without truncating the abstract', async () => {
@@ -307,9 +288,7 @@ describe('<DetailsPage /> observing mode', () => {
     ).toBeInTheDocument();
     expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
     fireEvent.blur(abstractInput);
-    expect(mockState.updateProposal).toHaveBeenLastCalledWith(
-      expect.objectContaining({ abstract: 'a'.repeat(2301) })
-    );
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
     fireEvent.change(abstractInput, { target: { value: 'a'.repeat(2300) } });
     await waitFor(() => expect(abstractInput).toHaveAttribute('aria-invalid', 'false'));
   });

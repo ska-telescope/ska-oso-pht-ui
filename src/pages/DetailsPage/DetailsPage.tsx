@@ -49,27 +49,18 @@ export default function DetailsPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const {
-    field: { value: abstract, onBlur: onAbstractBlur }
+    field: { value: abstract }
   } = useController<ProposalFormValues, 'abstract'>({ name: 'abstract' });
   const {
     field: { value: scienceCategory, onChange: setScienceCategory },
     fieldState: { error: categoryError }
   } = useController<ProposalFormValues, 'scienceCategory'>({ name: 'scienceCategory' });
-  const [initial, setInitial] = React.useState(true);
-
-  const getProposalState = () => application.content1 as number[];
-  const saveDetails = () => {
-    const p = {
-      ...getProposal(),
-      abstract,
-      scienceCategory: scienceCategory ?? null,
-      scienceSubCategory: [1]
-    };
-    setProposal(p);
-    const status = validateDetailsPage(p);
-    const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
-    updateAppContent1(temp);
-  };
+  const status = validateDetailsPage({ ...getProposal(), abstract, scienceCategory });
+  const proposalState = application.content1 as number[];
+  React.useEffect(() => {
+    if (proposalState[PAGE] === status) return;
+    updateAppContent1(proposalState.map((value, index) => (index === PAGE ? status : value)));
+  }, [status, proposalState, updateAppContent1]);
 
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
   const handleOpenAbstractLatexModal = () => setOpenAbstractLatexModal(true);
@@ -78,13 +69,6 @@ export default function DetailsPage() {
   React.useEffect(() => {
     setHelp('page.' + PAGE + '.help');
   }, []);
-
-  React.useEffect(() => {
-    if (!initial) {
-      saveDetails();
-    }
-    setInitial(false);
-  }, [scienceCategory]);
 
   const abstractField = () => {
     const MAX_WORD = Number(t('abstract.maxWord'));
@@ -123,10 +107,6 @@ export default function DetailsPage() {
             }
           }}
           onFocus={() => setHelp('abstract.help')}
-          onBlur={() => {
-            onAbstractBlur();
-            saveDetails();
-          }}
           helperText={helperFunction(abstract)}
         />
         <LatexPreviewModal
