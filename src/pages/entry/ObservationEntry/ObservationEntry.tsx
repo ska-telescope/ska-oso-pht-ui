@@ -103,7 +103,9 @@ import { useHelp } from '@/utils/help/useHelp';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
-import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
+import updateDataProductsOnObservationChange, {
+  resolvePstMode
+} from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import fetchSensCalcPatches from '@/utils/update/sensCalc/updateSensCalc';
 import { patchSensCalcResults } from '@/models/proposals/targetObservationOperations';
@@ -315,7 +317,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
     setZoomChannels(ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW);
-    setPstMode(ob?.pstMode ?? PULSAR_TIMING_VALUE);
+    // A saved PST observation without a mode is flow-through (see resolvePstMode); pulsar timing
+    // stays the default for an observation that is switched to PST here
+    setPstMode(
+      ob?.type === TYPE_PST ? resolvePstMode(ob?.pstMode) : (ob?.pstMode ?? PULSAR_TIMING_VALUE)
+    );
   };
 
   // Storing sub-Hz precision doesn't reflect anything a real receiver can tune to, so round to
@@ -376,7 +382,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       !oldObservation ||
       oldObservation.type !== newObservation.type ||
       (newObservation.type === TYPE_PST
-        ? oldObservation.pstMode !== newObservation.pstMode
+        ? resolvePstMode(oldObservation.pstMode) !== resolvePstMode(newObservation.pstMode)
         : oldObservation.centralFrequency !== newObservation.centralFrequency ||
           oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
 

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import updateDataProductsOnObservationChange, {
-  PSTData
+  PSTData,
+  resolvePstMode
 } from './updateDataProductsOnObservationChange.tsx';
 
 import {
@@ -47,6 +48,17 @@ describe('PSTData', () => {
     expect(result.dataProductType).toBe(FLOW_THROUGH_VALUE);
     expect(result.polarisations).toEqual(['X', 'Y']);
     expect(result.bitDepth).toBe(8);
+  });
+});
+
+describe('resolvePstMode', () => {
+  it.each([undefined, null, NaN])('reads a missing mode (%s) as flow-through', (pstMode) => {
+    expect(resolvePstMode(pstMode)).toBe(FLOW_THROUGH_VALUE);
+  });
+
+  it('keeps a set mode', () => {
+    expect(resolvePstMode(PULSAR_TIMING_VALUE)).toBe(PULSAR_TIMING_VALUE);
+    expect(resolvePstMode(FLOW_THROUGH_VALUE)).toBe(FLOW_THROUGH_VALUE);
   });
 });
 
@@ -136,6 +148,26 @@ describe('dataProductsOnObservationChange', () => {
       expect(result[0].data).toEqual(PSTData(obsSwitched));
     }
   );
+
+  it('keeps existing values when a PST observation saved without a mode stays flow-through', () => {
+    const oldRecs: DataProductSDPNew[] = [baseDataProduct];
+    const previousObs = { ...obsPST, pstMode: undefined } as Observation;
+    const obsFlowThrough = { ...obsPST, pstMode: FLOW_THROUGH_VALUE } as Observation;
+
+    const result = updateDataProductsOnObservationChange(oldRecs, obsFlowThrough, previousObs);
+
+    expect(result).toEqual(oldRecs);
+  });
+
+  it('replaces existing record when a PST observation saved without a mode changes mode', () => {
+    const oldRecs: DataProductSDPNew[] = [baseDataProduct];
+    const previousObs = { ...obsPST, pstMode: undefined } as Observation;
+    const obsTiming = { ...obsPST, pstMode: PULSAR_TIMING_VALUE } as Observation;
+
+    const result = updateDataProductsOnObservationChange(oldRecs, obsTiming, previousObs);
+
+    expect(result[0].data).toEqual(PSTData(obsTiming));
+  });
 
   it('returns empty array when TYPE_PST and oldRecs is empty', () => {
     const result = updateDataProductsOnObservationChange([], obsPST);
