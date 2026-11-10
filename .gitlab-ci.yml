@@ -82,17 +82,17 @@ CHANGELOG:
 # TEST: namespace + environment unique per pipeline rather than per commit/ref
 .e2e_isolation:
   variables: &e2e_vars
-    KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
+    KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_IID
   environment: &e2e_env
-    name: test/$CI_COMMIT_REF_SLUG-$CI_PIPELINE_ID
+    name: test/$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID
     kubernetes:
-      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_IID
 
 # TEMP: logs the environment name GitLab stored (CI_ENVIRONMENT_NAME) and the namespace, to
-# confirm $CI_PIPELINE_ID is expanded in them. In after_script because the template's jobs
+# confirm $CI_PIPELINE_IID is expanded in them. In after_script because the template's jobs
 # already define before_script.
 .e2e_expansion_log: &e2e_expansion_log
-  - echo "e2e expansion check - pipeline id=$CI_PIPELINE_ID iid=$CI_PIPELINE_IID ref=$CI_COMMIT_REF_SLUG"
+  - echo "e2e expansion check - pipeline iid=$CI_PIPELINE_IID ref=$CI_COMMIT_REF_SLUG"
   - echo "e2e expansion check - environment name=$CI_ENVIRONMENT_NAME slug=$CI_ENVIRONMENT_SLUG namespace=$KUBE_NAMESPACE"
 
 js-e2e-deploy:
@@ -114,7 +114,7 @@ js-e2e-test:
 stop-js-e2e-test:
   variables: *e2e_vars
   environment:
-    name: test/$CI_COMMIT_REF_SLUG-$CI_PIPELINE_ID
+    name: test/$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID
   after_script:
     - *e2e_expansion_log
     - |
