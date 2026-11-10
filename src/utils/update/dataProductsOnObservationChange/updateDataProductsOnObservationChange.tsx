@@ -45,9 +45,16 @@ export const PSTData = (
   }
 };
 
+// A PST observation saved without a mode is flow-through, as the data product editor reads it
+export const resolvePstMode = (pstMode?: number | null): number =>
+  pstMode === undefined || pstMode === null || Number.isNaN(pstMode)
+    ? FLOW_THROUGH_VALUE
+    : Number(pstMode);
+
 export const updateDataProductsOnObservationChange = (
   currentDataProducts: DataProductSDPNew[],
-  observation: Observation
+  observation: Observation,
+  previousObservation?: Observation
 ) => {
   // This function handles updates to the data products based on changes to the observation.
   // It currently handles two cases:
@@ -67,7 +74,12 @@ export const updateDataProductsOnObservationChange = (
     const pstDataProductIndex = newDataProducts.findIndex(
       (dataProduct) => dataProduct.observationId === observation.id
     );
-    if (pstDataProductIndex != -1) {
+    // Keep the user's values unless the observation has just become PST or its PST mode has changed.
+    // This can't be decided from dataProductType, as PST and imaging types share the same numbers
+    const pstModeChanged =
+      previousObservation?.type !== TYPE_PST ||
+      resolvePstMode(previousObservation.pstMode) !== resolvePstMode(observation.pstMode);
+    if (pstDataProductIndex != -1 && pstModeChanged) {
       newDataProducts[pstDataProductIndex] = {
         ...newDataProducts[pstDataProductIndex],
         data: dataProductForPstMode.data

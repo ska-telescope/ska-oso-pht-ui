@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import updateDataProductsOnObservationChange, {
-  PSTData
+  PSTData,
+  resolvePstMode
 } from './updateDataProductsOnObservationChange.tsx';
 
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FREQUENCY_GHZ,
   PULSAR_TIMING_VALUE,
@@ -46,6 +48,17 @@ describe('PSTData', () => {
     expect(result.dataProductType).toBe(FLOW_THROUGH_VALUE);
     expect(result.polarisations).toEqual(['X', 'Y']);
     expect(result.bitDepth).toBe(8);
+  });
+});
+
+describe('resolvePstMode', () => {
+  it.each([undefined, null, NaN])('reads a missing mode (%s) as flow-through', (pstMode) => {
+    expect(resolvePstMode(pstMode)).toBe(FLOW_THROUGH_VALUE);
+  });
+
+  it('keeps a set mode', () => {
+    expect(resolvePstMode(PULSAR_TIMING_VALUE)).toBe(PULSAR_TIMING_VALUE);
+    expect(resolvePstMode(FLOW_THROUGH_VALUE)).toBe(FLOW_THROUGH_VALUE);
   });
 });
 
@@ -92,7 +105,7 @@ describe('dataProductsOnObservationChange', () => {
     );
   });
 
-  it('normalizes existing record when TYPE_PST and pstMode is the same', () => {
+  it('keeps existing values when TYPE_PST and pstMode is the same', () => {
     const oldRecs: DataProductSDPNew[] = [
       {
         ...baseDataProduct,
@@ -109,14 +122,51 @@ describe('dataProductsOnObservationChange', () => {
       pstMode: DETECTED_FILTER_BANK_VALUE
     };
 
-    const result = updateDataProductsOnObservationChange(oldRecs, obsSameMode);
+    const result = updateDataProductsOnObservationChange(oldRecs, obsSameMode, obsPST);
 
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual({
-      id: 'SDP-0000000',
-      observationId: 'obs1',
-      data: PSTData(obsSameMode)
-    });
+    expect(result).toEqual(oldRecs);
+  });
+
+  // Imaging and PST data product types share numeric values, so these must still be rebuilt
+  it.each([
+    ['visibilities', DP_TYPE_VISIBLE, PULSAR_TIMING_VALUE],
+    ['images', DP_TYPE_IMAGES, DETECTED_FILTER_BANK_VALUE]
+  ])(
+    'rebuilds a %s data product when the observation switches to PST',
+    (_, dataProductType, pstMode) => {
+      const oldRecs: DataProductSDPNew[] = [
+        {
+          ...baseDataProduct,
+          data: { dataProductType, imageSizeValue: 5 } as unknown as SDPTimingPSTData
+        }
+      ];
+      const obsSwitched = { ...obsPST, pstMode } as Observation;
+      const previousObs = { ...obsPST, type: TYPE_CONTINUUM } as Observation;
+
+      const result = updateDataProductsOnObservationChange(oldRecs, obsSwitched, previousObs);
+
+      expect(result[0].data).toEqual(PSTData(obsSwitched));
+    }
+  );
+
+  it('keeps existing values when a PST observation saved without a mode stays flow-through', () => {
+    const oldRecs: DataProductSDPNew[] = [baseDataProduct];
+    const previousObs = { ...obsPST, pstMode: undefined } as Observation;
+    const obsFlowThrough = { ...obsPST, pstMode: FLOW_THROUGH_VALUE } as Observation;
+
+    const result = updateDataProductsOnObservationChange(oldRecs, obsFlowThrough, previousObs);
+
+    expect(result).toEqual(oldRecs);
+  });
+
+  it('replaces existing record when a PST observation saved without a mode changes mode', () => {
+    const oldRecs: DataProductSDPNew[] = [baseDataProduct];
+    const previousObs = { ...obsPST, pstMode: undefined } as Observation;
+    const obsTiming = { ...obsPST, pstMode: PULSAR_TIMING_VALUE } as Observation;
+
+    const result = updateDataProductsOnObservationChange(oldRecs, obsTiming, previousObs);
+
+    expect(result[0].data).toEqual(PSTData(obsTiming));
   });
 
   it('returns empty array when TYPE_PST and oldRecs is empty', () => {
