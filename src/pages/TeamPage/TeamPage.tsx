@@ -28,7 +28,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useController, useFormState } from 'react-hook-form';
 import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';
-import { getTeamValues, mergeTeamInvestigators } from '@/models/proposals/team';
+import { getTeamValues } from '@/models/proposals/team';
 
 const PAGE = PAGE_TEAM;
 
@@ -67,11 +67,7 @@ export default function TeamPage() {
     defaultValue: []
   });
   const { errors } = useFormState<ProposalFormValues>();
-  const existingInvestigators = getProposal().investigators;
-  const currentInvestigators = React.useMemo(
-    () => mergeTeamInvestigators(investigators ?? [], existingInvestigators),
-    [investigators, existingInvestigators]
-  );
+  const currentInvestigators = investigators;
 
   const getAccess = () => application.content4 as ProposalAccess[];
 

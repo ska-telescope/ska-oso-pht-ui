@@ -1,11 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import {
-  getTeamSchema,
-  getTeamValues,
-  mergeTeamInvestigators,
-  teamFromPdm,
-  teamToPdm
-} from './team';
+import { getTeamSchema, getTeamValues, teamFromPdm, teamToPdm } from './team';
 import Investigator from '@/utils/types/investigator';
 
 const investigator: Investigator = {
@@ -13,12 +7,9 @@ const investigator: Investigator = {
   firstName: 'Ada',
   lastName: 'Lovelace',
   email: 'ada@example.org',
-  affiliation: 'Analytical Engines',
   phdThesis: false,
   status: 'accepted',
-  pi: true,
-  officeLocation: 'London',
-  jobTitle: 'Researcher'
+  pi: true
 };
 const formInvestigator = {
   id: investigator.id,
@@ -35,11 +26,8 @@ const backendInvestigator = {
   given_name: investigator.firstName,
   family_name: investigator.lastName,
   email: investigator.email,
-  organization: investigator.affiliation,
   for_phd: investigator.phdThesis,
-  principal_investigator: investigator.pi,
-  officeLocation: investigator.officeLocation,
-  jobTitle: investigator.jobTitle
+  principal_investigator: investigator.pi
 };
 
 describe('team form model', () => {
@@ -63,53 +51,35 @@ describe('team form model', () => {
     expect(getTeamValues({ investigators: [investigator] })).toEqual({
       investigators: [formInvestigator]
     });
+
     expect(getTeamSchema().parse({ investigators: [investigator] })).toEqual({
       investigators: [formInvestigator]
     });
   });
 
-  test('preserves metadata while applying edits to an existing PDM investigator', () => {
-    expect(
-      teamToPdm([{ ...formInvestigator, firstName: 'Edited' }], [backendInvestigator])
-    ).toEqual([{ ...backendInvestigator, given_name: 'Edited' }]);
+  test('maps edited investigator fields to PDM', () => {
+    expect(teamToPdm([{ ...formInvestigator, firstName: 'Edited' }])).toEqual([
+      { ...backendInvestigator, given_name: 'Edited' }
+    ]);
   });
 
-  test('preserves metadata by ID when members are reordered, added, or removed', () => {
-    const second = { ...backendInvestigator, user_id: 'user-2', organization: 'Second institute' };
-    const removed = { ...backendInvestigator, user_id: 'removed' };
-    const existing = [backendInvestigator, second, removed];
-    const snapshot = structuredClone(existing);
-    const result = teamToPdm(
-      [{ ...formInvestigator, id: 'user-2' }, formInvestigator, { ...formInvestigator, id: 'new' }],
-      existing
-    );
+  test('drops unused organization data when loading and saving investigators', () => {
+    const form = teamFromPdm([{ ...backendInvestigator, organization: 'Unused institute' }]);
+    expect(form.investigators).toEqual([formInvestigator]);
+    expect(teamToPdm(form.investigators)).toEqual([backendInvestigator]);
+  });
+
+  test('maps the current members in form order, including new members', () => {
+    const result = teamToPdm([
+      { ...formInvestigator, id: 'user-2' },
+      formInvestigator,
+      { ...formInvestigator, id: 'new' }
+    ]);
     expect(result.map(({ user_id }) => user_id)).toEqual(['user-2', 'user-1', 'new']);
-    expect(result[0].organization).toBe('Second institute');
     expect(result[1]).toEqual(backendInvestigator);
     expect(result[2]).toEqual({
       ...backendInvestigator,
-      user_id: 'new',
-      organization: '',
-      officeLocation: null,
-      jobTitle: null
+      user_id: 'new'
     });
-    expect(existing).toEqual(snapshot);
-  });
-
-  test('merges form edits into legacy records without leaking metadata back into the form', () => {
-    const newMember = { ...formInvestigator, id: 'new' };
-    const result = mergeTeamInvestigators(
-      [{ ...formInvestigator, firstName: 'Edited' }, newMember],
-      [investigator, { ...investigator, id: 'removed' }]
-    );
-    expect(result).toEqual([
-      { ...investigator, firstName: 'Edited' },
-      { ...newMember, affiliation: '', officeLocation: null, jobTitle: null }
-    ]);
-    expect(getTeamValues({ investigators: result }).investigators).toEqual([
-      { ...formInvestigator, firstName: 'Edited' },
-      newMember
-    ]);
-    expect(investigator.firstName).toBe('Ada');
   });
 });

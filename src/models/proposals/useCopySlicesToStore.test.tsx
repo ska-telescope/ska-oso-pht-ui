@@ -59,14 +59,9 @@ describe('useCopySlicesToStore', () => {
     expect(storedProposal(result).title).toBe('First');
   });
 
-  test('copies Details and Team edits without losing excluded investigator metadata', () => {
+  test('copies Details and Team edits to the store', () => {
     const { result } = renderHarness();
-    const investigator = {
-      ...MockUserFrontendList[0],
-      affiliation: 'Existing institute',
-      officeLocation: 'Existing office',
-      jobTitle: 'Existing job'
-    };
+    const investigator = MockUserFrontendList[0];
     open(result, {
       id: 'p1',
       abstract: 'First abstract',

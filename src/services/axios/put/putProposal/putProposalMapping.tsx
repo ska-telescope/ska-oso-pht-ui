@@ -380,11 +380,8 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
               given_name: investigator.firstName,
               family_name: investigator.lastName,
               email: investigator.email,
-              organization: investigator.affiliation,
               for_phd: investigator.phdThesis,
-              principal_investigator: investigator.pi,
-              officeLocation: investigator.officeLocation,
-              jobTitle: investigator.jobTitle
+              principal_investigator: investigator.pi
             };
           })
         : (null as unknown as undefined) // still sent as null; the PDM type has no null here

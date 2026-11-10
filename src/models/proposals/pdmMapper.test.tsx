@@ -61,7 +61,6 @@ describe('mapPdmToForm', () => {
             given_name: investigator.firstName,
             family_name: investigator.lastName,
             email: investigator.email,
-            organization: investigator.affiliation,
             for_phd: investigator.phdThesis,
             principal_investigator: investigator.pi
           }
@@ -184,9 +183,7 @@ describe('mapFormToPdm', () => {
     const existing: InvestigatorBackend = {
       user_id: investigator.id,
       status: investigator.status,
-      organization: 'Preserved institute',
-      officeLocation: 'Preserved office',
-      jobTitle: 'Preserved job'
+      organization: 'Unused institute'
     };
     const result = mapFormToPdm(
       {
@@ -211,12 +208,10 @@ describe('mapFormToPdm', () => {
       expect.objectContaining({
         user_id: investigator.id,
         given_name: investigator.firstName,
-        family_name: investigator.lastName,
-        organization: 'Preserved institute',
-        officeLocation: 'Preserved office',
-        jobTitle: 'Preserved job'
+        family_name: investigator.lastName
       })
     ]);
+    expect(result.proposal_info.investigators?.[0]).not.toHaveProperty('organization');
   });
 
   // A base from the legacy mapper, as on a real save, so the form's slices map back to it exactly

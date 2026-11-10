@@ -247,12 +247,14 @@ describe('useProposalOda', () => {
             abstract: 'Edited details',
             investigators: [
               expect.objectContaining({
-                user_id: investigator.id,
-                organization: organization ?? ''
+                user_id: investigator.id
               })
             ]
           })
         })
+      );
+      expect(mockPut.mock.calls[0][1].proposal_info.investigators[0]).not.toHaveProperty(
+        'organization'
       );
     }
   );
@@ -290,11 +292,8 @@ describe('useProposalOda', () => {
         firstName: '',
         lastName: '',
         email: '',
-        affiliation: '',
         phdThesis: false,
-        pi: false,
-        officeLocation: null,
-        jobTitle: null
+        pi: false
       };
       expect(mapping(withInvestigator).investigators).toEqual([expectedInvestigator]);
       expect(form.current.getValues('investigators')).toEqual([
@@ -330,11 +329,8 @@ describe('useProposalOda', () => {
                 given_name: '',
                 family_name: '',
                 email: '',
-                organization: '',
                 for_phd: false,
-                principal_investigator: false,
-                officeLocation: null,
-                jobTitle: null
+                principal_investigator: false
               }
             ]
           })
@@ -343,7 +339,7 @@ describe('useProposalOda', () => {
     }
   );
 
-  test('preserves existing metadata when saving team additions, edits, and removals', async () => {
+  test('saves current team additions, edits, and removals without unused metadata', async () => {
     const existing: InvestigatorBackend = {
       user_id: investigator.id,
       given_name: investigator.firstName,
@@ -351,8 +347,6 @@ describe('useProposalOda', () => {
       email: investigator.email,
       status: investigator.status,
       organization: 'Existing institute',
-      officeLocation: 'Existing office',
-      jobTitle: 'Existing job',
       for_phd: false,
       principal_investigator: true
     };
@@ -389,17 +383,11 @@ describe('useProposalOda', () => {
         proposal_info: expect.objectContaining({
           investigators: [
             expect.objectContaining({
-              user_id: 'new-member',
-              organization: '',
-              officeLocation: null,
-              jobTitle: null
+              user_id: 'new-member'
             }),
             expect.objectContaining({
               user_id: investigator.id,
-              given_name: 'Edited name',
-              organization: 'Existing institute',
-              officeLocation: 'Existing office',
-              jobTitle: 'Existing job'
+              given_name: 'Edited name'
             })
           ]
         })

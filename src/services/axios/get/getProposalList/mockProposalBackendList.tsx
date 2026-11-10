@@ -43,9 +43,7 @@ const investigators: InvestigatorBackend[] = [
     organization: '',
     for_phd: false,
     principal_investigator: true,
-    status: 'pending',
-    officeLocation: null,
-    jobTitle: null
+    status: 'pending'
   }
 ];
 

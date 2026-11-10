@@ -3,7 +3,6 @@ import { useWatch, UseFormReturn } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import { ProposalType, STORE_COPIED_SLICES } from './proposal';
-import { mergeTeamInvestigators } from './team';
 
 const pickSlices = (values: Partial<ProposalType> | Proposal) =>
   Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])) as ProposalType;
@@ -55,17 +54,13 @@ export function useCopySlicesToStore(
     // Read the form now rather than the watched values, which can still be the previous
     // proposal's when the form was re-seeded in this commit
     const slices = pickSlices(form.getValues());
-    const storeSlices = {
-      ...slices,
-      investigators: mergeTeamInvestigators(slices.investigators, proposal.investigators)
-    };
-    if (JSON.stringify(pickSlices(proposal)) === JSON.stringify(storeSlices)) {
+    if (JSON.stringify(pickSlices(proposal)) === JSON.stringify(slices)) {
       return;
     }
     // The store freezes what it is given, and the form must stay mutable
     updateAppContent2({
       ...proposal,
-      ...structuredClone(storeSlices),
+      ...structuredClone(slices),
       ...(proposal.scienceCategory !== slices.scienceCategory && { scienceSubCategory: [1] })
     });
   }, [...watched, proposal]);

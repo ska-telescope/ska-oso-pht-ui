@@ -15,12 +15,9 @@ export function mapping(data: InvestigatorMSGraph): Investigator {
     email: data.email,
     firstName: data.givenName,
     lastName: data.surname,
-    affiliation: '',
     phdThesis: false,
     status: TEAM_STATUS_TYPE_OPTIONS.pending,
-    pi: false,
-    officeLocation: data.officeLocation ? data.officeLocation : null,
-    jobTitle: data.jobTitle ? data.jobTitle : null
+    pi: false
   };
   return investigator;
 }

@@ -31,29 +31,10 @@ export const teamFromPdm = (
 ): { investigators: InvestigatorFormValues[] } =>
   getTeamValues({ investigators: getInvestigators(investigators) });
 
-export const mergeTeamInvestigators = (
-  investigators: InvestigatorFormValues[],
-  existing: Investigator[] = []
-): Investigator[] =>
-  investigators.map((investigator) => ({
-    affiliation: '',
-    officeLocation: null,
-    jobTitle: null,
-    ...existing.find(({ id }) => id === investigator.id),
-    ...investigatorSchema.parse(investigator)
-  }));
-
-export const teamToPdm = (
-  investigators: InvestigatorFormValues[],
-  existing: InvestigatorBackend[] = []
-): InvestigatorBackend[] =>
+export const teamToPdm = (investigators: InvestigatorFormValues[]): InvestigatorBackend[] =>
   getTeamSchema()
     .parse({ investigators })
     .investigators.map((investigator) => ({
-      organization: '',
-      officeLocation: null,
-      jobTitle: null,
-      ...existing.find(({ user_id }) => user_id === investigator.id),
       user_id: investigator.id,
       status: investigator.status,
       given_name: investigator.firstName,

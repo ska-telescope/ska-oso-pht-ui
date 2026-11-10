@@ -27,7 +27,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getTeamValues, mergeTeamInvestigators } from '@/models/proposals/team';
+import { getTeamValues } from '@/models/proposals/team';
 
 const GAP = 5;
 
@@ -221,20 +221,14 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       firstName: firstName,
       lastName: lastName,
       email: email,
-      affiliation: '',
       phdThesis: phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      pi: pi,
-      officeLocation: null,
-      jobTitle: null
+      pi: pi
     };
   };
 
   async function AddInvestigator() {
-    const formInvestigators = form?.getValues('investigators');
-    const currentInvestigators = formInvestigators
-      ? mergeTeamInvestigators(formInvestigators, getProposal().investigators)
-      : getProposal().investigators;
+    const currentInvestigators = form?.getValues('investigators') ?? getProposal().investigators;
     const newInvestigator: Investigator = getInvestigator(currentInvestigators);
     // ---------------------------------------------------------------------------------------------------
     // ---PATH 1---: found investigator with valid entra id (search path), should be added once rights are created

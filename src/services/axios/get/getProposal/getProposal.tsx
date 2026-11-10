@@ -77,11 +77,8 @@ export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefin
       firstName: inValue[i].given_name ?? '',
       lastName: inValue[i].family_name ?? '',
       email: inValue[i].email ?? '',
-      affiliation: inValue[i].organization ?? '',
       phdThesis: inValue[i].for_phd ?? false,
-      pi: inValue[i].principal_investigator ?? false,
-      officeLocation: inValue[i].officeLocation ?? null,
-      jobTitle: inValue[i].jobTitle ?? null
+      pi: inValue[i].principal_investigator ?? false
     });
   }
   return investigators;

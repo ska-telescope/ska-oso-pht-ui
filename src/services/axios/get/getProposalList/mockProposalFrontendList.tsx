@@ -25,12 +25,9 @@ const MockProposalFrontendList: Proposal[] = [
         firstName: 'Tony',
         lastName: 'Bennet',
         email: 'somewhere.vague@example.com',
-        affiliation: '',
         phdThesis: false,
         status: 'unknown',
-        pi: true,
-        officeLocation: null,
-        jobTitle: null
+        pi: true
       }
     ],
     calibrationStrategy: []
@@ -58,12 +55,9 @@ const MockProposalFrontendList: Proposal[] = [
         firstName: 'Tony',
         lastName: 'Bennet',
         email: 'somewhere.vague@example.com',
-        affiliation: '',
         phdThesis: false,
         status: 'unknown',
-        pi: true,
-        officeLocation: null,
-        jobTitle: null
+        pi: true
       }
     ],
     calibrationStrategy: []
@@ -91,12 +85,9 @@ const MockProposalFrontendList: Proposal[] = [
         firstName: 'Tony',
         lastName: 'Bennet',
         email: 'somewhere.vague@example.com',
-        affiliation: '',
         phdThesis: false,
         status: 'unknown',
-        pi: true,
-        officeLocation: null,
-        jobTitle: null
+        pi: true
       }
     ],
     calibrationStrategy: []
