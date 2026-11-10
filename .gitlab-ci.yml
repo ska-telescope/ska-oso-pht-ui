@@ -88,9 +88,19 @@ CHANGELOG:
     kubernetes:
       namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
 
+# TEMP: logs the environment name GitLab stored (CI_ENVIRONMENT_NAME) and the namespace, to
+# confirm $CI_PIPELINE_ID is expanded in them. In after_script because the template's jobs
+# already define before_script.
+.e2e_expansion_log: &e2e_expansion_log
+  - echo "e2e expansion check - pipeline id=$CI_PIPELINE_ID iid=$CI_PIPELINE_IID ref=$CI_COMMIT_REF_SLUG"
+  - echo "e2e expansion check - environment name=$CI_ENVIRONMENT_NAME slug=$CI_ENVIRONMENT_SLUG namespace=$KUBE_NAMESPACE"
+
 js-e2e-deploy:
   variables: *e2e_vars
   environment: *e2e_env
+  after_script:
+    - *e2e_expansion_log
+    - kubectl get namespace "$KUBE_NAMESPACE" --show-labels || echo "namespace lookup failed"
 
 js-e2e-test:
   variables:
@@ -98,12 +108,15 @@ js-e2e-test:
     JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
     CYPRESS_PARALLEL_WORKERS: "3"
   environment: *e2e_env
+  after_script:
+    - *e2e_expansion_log
 
 stop-js-e2e-test:
   variables: *e2e_vars
   environment:
     name: test/$CI_COMMIT_REF_SLUG-$CI_PIPELINE_ID
   after_script:
+    - *e2e_expansion_log
     - |
       api="$CI_API_V4_URL/projects/$CI_PROJECT_ID/environments"
       curl -sf --header "PRIVATE-TOKEN: $ENV_CLEANUP_TOKEN" \
