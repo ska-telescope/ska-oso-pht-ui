@@ -7,7 +7,11 @@ import { SENSITIVITY_STATE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import type Proposal from '@/utils/types/proposal';
 import { SENS_CALC_ERROR_KIND } from './client';
-import { buildSensitivityRequest, sendSensitivityRequest } from './calculate';
+import {
+  buildSensitivityRequest,
+  getSensitivityDataProduct,
+  sendSensitivityRequest
+} from './calculate';
 import { toSensitivity } from './results';
 
 export const SENS_CALC_DEBOUNCE_MS = 500;
@@ -80,7 +84,9 @@ export const useSensitivityService = () => {
         const linkId = getLinkId(link);
         const target = formTargets.find((t) => t.id === link.targetId);
         const observation = observations?.find((o) => o.id === link.observationId);
-        const dataProduct = dataProducts?.find((d) => d.id === link.dataProductsSDPId);
+        const dataProduct =
+          observation &&
+          getSensitivityDataProduct(observation, link.dataProductsSDPId, dataProducts ?? []);
         if (!target || !observation || !dataProduct) {
           return;
         }

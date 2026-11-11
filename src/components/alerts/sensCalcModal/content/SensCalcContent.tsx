@@ -18,7 +18,10 @@ import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal.tsx';
 import Target from '@utils/types/target';
 import type { ProposalType } from '@/models/proposals/proposal';
-import { getLowSpectralAveragingFactor } from '@/services/sensitivityCalculator/calculate';
+import {
+  getLowSpectralAveragingFactor,
+  getSensitivityDataProduct
+} from '@/services/sensitivityCalculator/calculate';
 import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
 import type { SensitivityValues } from '@/models/proposals/targetObservation';
 import {
@@ -56,9 +59,14 @@ export default function SensCalcContent({
     (observation) => observation.id === targetObservation.observationId
   );
 
-  const dataProduct = proposal.dataProductSDP?.find(
-    (dataProduct) => dataProduct.id === targetObservation.dataProductsSDPId
-  );
+  // The data product the results were calculated from, which can differ from the linked one
+  const dataProduct =
+    observation &&
+    getSensitivityDataProduct(
+      observation,
+      targetObservation.dataProductsSDPId,
+      proposal.dataProductSDP ?? []
+    );
 
   // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
   // which a custom subarray or a non-Gaussian beam has none of

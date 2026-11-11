@@ -6,6 +6,8 @@ import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
+  IW_BRIGGS,
   IW_NATURAL,
   REFERENCE_COORDINATE_TYPE_ICRS,
   SENSITIVITY_STATE
@@ -158,6 +160,30 @@ describe('useSensitivityService', () => {
 
     expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
     expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
+  });
+
+  test("calculates a link to visibilities from the observation's images data product", async () => {
+    const images = {
+      ...DATA_PRODUCT,
+      data: { ...DATA_PRODUCT.data, weighting: IW_BRIGGS, robust: -1 }
+    } as DataProductSDPNew;
+    const visibilities = {
+      id: 'dp-2',
+      observationId: 'obs-1',
+      data: { dataProductType: DP_TYPE_VISIBLE, timeAveraging: 4, frequencyAveraging: 4 }
+    } as DataProductSDPNew;
+    renderService({ ...LINK, dataProductsSDPId: 'dp-2' }, {
+      id: 'proposal-1',
+      observations: [OBSERVATION],
+      dataProductSDP: [visibilities, images]
+    } as Proposal);
+
+    await debounce();
+
+    expect(vi.mocked(sendSensitivityRequest).mock.calls[0][0].body).toMatchObject({
+      weighting_mode: 'robust',
+      robustness: -1
+    });
   });
 
   test('takes stored results as current when a proposal is opened', async () => {

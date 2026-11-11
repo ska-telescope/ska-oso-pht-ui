@@ -28,7 +28,12 @@ import {
 import type Observation from '@/utils/types/observation';
 import type { TargetType } from '@/models/proposals/targets';
 import type { DataProductSDPNew } from '@/utils/types/dataProduct';
-import { buildSensitivityRequest, SENS_CALC_MODE, sendSensitivityRequest } from './calculate';
+import {
+  buildSensitivityRequest,
+  getSensitivityDataProduct,
+  SENS_CALC_MODE,
+  sendSensitivityRequest
+} from './calculate';
 import { SENS_CALC_ERROR_KIND } from './client';
 import type { ContinuumResult, ZoomResult } from './types';
 
@@ -297,6 +302,40 @@ describe('buildSensitivityRequest', () => {
     }
   ])('builds no request for $name', ({ observation, target }) => {
     expect(buildSensitivityRequest(observation, target, imageDataProduct())).toBeNull();
+  });
+});
+
+describe('getSensitivityDataProduct', () => {
+  const CONTINUUM_OBSERVATION = { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' };
+  const IMAGES = imageDataProduct();
+  const VISIBILITIES: DataProductSDPNew = {
+    id: 'dp-2',
+    observationId: 'obs-1',
+    data: { dataProductType: DP_TYPE_VISIBLE, timeAveraging: 4, frequencyAveraging: 4 }
+  };
+  // Another observation's images data product, which must never be used
+  const OTHER_IMAGES: DataProductSDPNew = { ...imageDataProduct(), id: 'dp-3', observationId: 'x' };
+
+  test('gives the linked images data product', () => {
+    expect(getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'dp-1', [VISIBILITIES, IMAGES])).toBe(
+      IMAGES
+    );
+  });
+
+  test("gives the observation's images data product for linked visibilities", () => {
+    expect(
+      getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'dp-2', [OTHER_IMAGES, VISIBILITIES, IMAGES])
+    ).toBe(IMAGES);
+  });
+
+  test('gives linked visibilities when the observation has no images data product', () => {
+    expect(
+      getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'dp-2', [OTHER_IMAGES, VISIBILITIES])
+    ).toBe(VISIBILITIES);
+  });
+
+  test('gives nothing when the linked data product does not exist', () => {
+    expect(getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'missing', [IMAGES])).toBeUndefined();
   });
 });
 
