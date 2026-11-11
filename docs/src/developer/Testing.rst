@@ -94,11 +94,22 @@ can stop animating, and tests fail with elements that "exist but are not visible
     elements are visible using the helpers in ``common.js``. Remove this advice once those tests
     have been replaced.
 
-To run the whole suite headless across several workers (4 unless you pass ``--workers=N``):
+To run the whole suite headless across several workers (3 unless you pass ``--workers=N``, one per
+test user):
 
 .. code-block:: bash
 
     yarn test:e2e:parallel --browser chromium
+
+Every run creates proposals that the app can't delete, and a test user's proposal list gets slower
+as they pile up, until the app's requests time out. Against a local minikube deployment, add
+``--clean-db`` to delete every proposal from its database before the run (or run
+``scripts/cleanLocalDb.sh`` on its own). It refuses to run unless the kubectl context is
+``minikube``.
+
+The app gives up on a backend request after 20 seconds. Test deployments wait longer: install
+the chart with ``REQUEST_TIMEOUT_MS=60000`` (CI does), for example
+``make k8s-install-chart REQUEST_TIMEOUT_MS=60000``.
 
 On Linux without a display, this needs ``xvfb-run`` to give each worker its own virtual display.
 On Ubuntu or Debian, install it with ``sudo apt-get install xvfb``.

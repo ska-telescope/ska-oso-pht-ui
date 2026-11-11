@@ -86,6 +86,11 @@ ifneq ($(USE_INDIGO),)
   K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
 endif
 
+# Test deployments set this (in ms) to wait longer for backend responses than users would
+ifneq ($(REQUEST_TIMEOUT_MS),)
+  K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.requestTimeoutMs=$(REQUEST_TIMEOUT_MS)
+endif
+
 # CAR DEPLOYMENT CHART VERSION
 # Staging and production deploy with k8s-install-chart-car, which resolves
 # skatelescope/$(K8S_CHART) to whatever is newest in CAR. Pin the chart to this
@@ -178,6 +183,7 @@ set-dev-env-vars:
 	INDIGO_REDIRECT_URI="http://localhost:6101/" \
 	INDIGO_SCOPE="pht:readwrite pht:read openid profile" \
 	INDIGO_AUDIENCE="test:pht" \
+	REQUEST_TIMEOUT_MS="$(or $(REQUEST_TIMEOUT_MS),20000)" \
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 
 dev-start: set-dev-env-vars

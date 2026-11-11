@@ -3,7 +3,10 @@
 // (see cypress.config.mjs) gives each one its share of the specs, balanced by how long each spec
 // took last time. CI doesn't use this: it splits the suite across GitLab `parallel:` jobs.
 //
-//   yarn test:e2e:parallel [--workers=N] [any `cypress run` arguments]
+//   yarn test:e2e:parallel [--workers=N] [--clean-db] [any `cypress run` arguments]
+//
+// --workers defaults to 3, one per test user (see WORKER_USERNAMES in tests/cypress/support/auth.js).
+// --clean-db first deletes every proposal from the local minikube database (scripts/cleanLocalDb.sh).
 import { spawn, spawnSync } from 'node:child_process';
 import { globSync, mkdirSync, rmSync } from 'node:fs';
 import { createInterface } from 'node:readline';
@@ -14,8 +17,14 @@ const WORKER_TIMINGS = 'build/cypress-split';
 
 const args = process.argv.slice(2);
 const workersArg = args.find((arg) => arg.startsWith('--workers='));
-const workers = Number(workersArg?.split('=')[1] ?? 4);
-const cypressArgs = ['run', ...args.filter((arg) => arg !== workersArg)];
+const workers = Number(workersArg?.split('=')[1] ?? 3);
+const cleanDb = args.includes('--clean-db');
+const cypressArgs = ['run', ...args.filter((arg) => arg !== workersArg && arg !== '--clean-db')];
+
+if (cleanDb && spawnSync('scripts/cleanLocalDb.sh', { stdio: 'inherit' }).status !== 0) {
+  console.error('Could not clean the local database - not running the tests');
+  process.exit(1);
+}
 
 // Without a display, Cypress starts its own Xvfb on :99, and concurrent workers would clash over it
 const command =

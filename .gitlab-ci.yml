@@ -83,6 +83,8 @@ CHANGELOG:
 .e2e_isolation:
   variables: &e2e_vars
     KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_IID
+    # The deployment's app waits this long (ms) for backend responses, rather than the users' 20s
+    REQUEST_TIMEOUT_MS: "60000"
   environment: &e2e_env
     name: test/$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID
     kubernetes:

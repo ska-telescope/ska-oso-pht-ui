@@ -9,6 +9,7 @@ UNRELEASED
 * Changed: Move token access code used by e2e tests from main codebase into test framework
 * Changed: (temp) local testing of making test branch names consistent in CI
 * Changed: CI splits the e2e tests across GitLab parallel jobs; the local parallel runner is much smaller
+* Added: REQUEST_TIMEOUT_MS runtime setting for how long the app waits for the backend (default 20s, 60s in e2e deployments), and a --clean-db option for local e2e runs
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
 * Bugfix: Keep the automatic-save timer running when page renders update its callback

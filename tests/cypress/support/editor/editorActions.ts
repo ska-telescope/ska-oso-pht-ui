@@ -17,7 +17,9 @@ export const stubDocumentUpload = () => {
 
 const verifyOnLandingPage = () => cy.findByRole('button', { name: 'Submission' });
 
-const PROPOSAL_LIST_TIMEOUT = 30000;
+// For waits on a backend response: longer than the 60s that test deployments let the app wait
+// for one (REQUEST_TIMEOUT_MS), so a slow backend fails as a request timeout, not as a missing element
+const BACKEND_TIMEOUT = 70000;
 
 const verifyOnPage = (page: PageObject) => cy.findByRole('heading', { name: page.heading });
 
@@ -31,13 +33,13 @@ export const createProposal = (
   visitWithAuth(user);
   cy.findByRole('button', { name: 'Submission' }).click();
   cy.findByRole('dialog', { name: 'Cycle Selection' }).within(() => {
-    cy.findByRole('button', { name: cycle.option, timeout: 20000 }).click();
+    cy.findByRole('button', { name: cycle.option, timeout: BACKEND_TIMEOUT }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
   });
   cy.findByRole('textbox', { name: 'Title' }).type(proposal.title);
   cy.findByRole('button', { name: 'Create' }).click();
   // Waits on the real backend creating the proposal, so allow longer than the default
-  cy.findByText(cycle.createdMessage, { timeout: 30000 });
+  cy.findByText(cycle.createdMessage, { timeout: BACKEND_TIMEOUT });
   // The footer shows the new proposal's ID once it has been created
   cy.findByText(/^Submission ID: \S+/)
     .invoke('text')
@@ -89,14 +91,14 @@ export const saveAndExit = () => {
 export const validateAndSubmit = (cycle: Cycle, proposal: ProposalFixture) => {
   cy.findByRole('button', { name: 'Validate / Submit' }).click();
   // Validation and submission run on the backend, so allow longer than the default
-  cy.findByText(cycle.validMessage, { timeout: 30000 });
+  cy.findByText(cycle.validMessage, { timeout: BACKEND_TIMEOUT });
   cy.findByRole('button', { name: 'Confirm Submission' }).click();
-  cy.findByText('Submission was successful', { timeout: 30000 });
+  cy.findByText('Submission was successful', { timeout: BACKEND_TIMEOUT });
   verifyOnLandingPage();
   cy.get<string>('@proposalId').then((id) => {
     cy.findByRole('textbox', { name: 'Search' }).type(id);
   });
-  cy.findByRole('table', { timeout: PROPOSAL_LIST_TIMEOUT }).findByRole('row', {
+  cy.findByRole('table', { timeout: BACKEND_TIMEOUT }).findByRole('row', {
     name: new RegExp(proposal.title)
   });
   // TODO: Enable once the submission logic is revised (around BTN-3270), as the landing page
@@ -114,6 +116,6 @@ export const reopenFromBackend = (cycle: Cycle) => {
   });
   // Proposal IDs are unique, so exactly one proposal is left to edit. The button reads
   // "Edit proposal" or "Edit Science Verification Idea" depending on the landing page's cycle.
-  cy.findByRole('button', { name: /^Edit /, timeout: PROPOSAL_LIST_TIMEOUT }).click();
+  cy.findByRole('button', { name: /^Edit /, timeout: BACKEND_TIMEOUT }).click();
   verifyOnPage(cycle.pageAfterOpen);
 };

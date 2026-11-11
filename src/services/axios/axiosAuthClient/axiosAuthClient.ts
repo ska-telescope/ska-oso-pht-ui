@@ -30,6 +30,15 @@ type MsalInstance = ReturnType<typeof useMsal>['instance'];
 // ReturnType<typeof useAxiosAuthClient>, whose shape now includes refreshAuthToken too.
 export type AxiosAuthClient = AxiosInstance;
 
+const DEFAULT_REQUEST_TIMEOUT_MS = 20000;
+
+// Test deployments raise this through REQUEST_TIMEOUT_MS (the chart's runtimeEnv.requestTimeoutMs),
+// as a backend with a lot of test data can take longer to answer than users should wait
+export const getRequestTimeoutMs = (): number => {
+  const configured = Number(env.REQUEST_TIMEOUT_MS);
+  return configured > 0 ? configured : DEFAULT_REQUEST_TIMEOUT_MS;
+};
+
 // Call after any action known to grant new group membership server-side (e.g. creating a
 // proposal or panel, which calls ska-oso-services' create_membership) - acquireTokenSilent
 // normally serves a cached token until it's near expiry, so without this the next request would
@@ -184,7 +193,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    timeout: 20000
+    timeout: getRequestTimeoutMs()
   });
 
   axiosClient.interceptors.request.use(createRequestInterceptor(instance), (error) =>
