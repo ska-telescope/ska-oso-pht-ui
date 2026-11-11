@@ -6,8 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
-* Bugfix: Only reset DP Parameters if values on the Observation page change.
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
 * Bugfix: The edit target dialog cannot be confirmed while the velocity or redshift is invalid
 * Bugfix: Calibration notes edited while calibrators are being looked up are kept

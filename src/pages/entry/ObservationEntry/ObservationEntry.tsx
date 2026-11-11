@@ -98,7 +98,9 @@ import { useHelp } from '@/utils/help/useHelp';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
-import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
+import updateDataProductsOnObservationChange, {
+  resolvePstMode
+} from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
@@ -252,7 +254,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
     setZoomChannels(ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW);
-    setPstMode(ob?.pstMode ?? PULSAR_TIMING_VALUE);
+    // A saved PST observation without a mode is flow-through (see resolvePstMode); pulsar timing
+    // stays the default for an observation that is switched to PST here
+    setPstMode(
+      ob?.type === TYPE_PST ? resolvePstMode(ob?.pstMode) : (ob?.pstMode ?? PULSAR_TIMING_VALUE)
+    );
   };
 
   // Storing sub-Hz precision doesn't reflect anything a real receiver can tune to, so round to
@@ -303,17 +309,19 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const oldDataProducts = proposal.dataProductSDP ?? [];
 
     // Only reset data products when a field they are derived from has changed, otherwise
-    // revisiting this page would overwrite the user's data product values
+    // revisiting this page would overwrite the user's data product values.
+    // PST data products depend only on the PST mode; images depend on the central frequency
     const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
     const dataProductInputsChanged =
       !oldObservation ||
       oldObservation.type !== newObservation.type ||
-      (newObservation.type === TYPE_PST && oldObservation.pstMode !== newObservation.pstMode) ||
-      oldObservation.centralFrequency !== newObservation.centralFrequency ||
-      oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits;
+      (newObservation.type === TYPE_PST
+        ? resolvePstMode(oldObservation.pstMode) !== resolvePstMode(newObservation.pstMode)
+        : oldObservation.centralFrequency !== newObservation.centralFrequency ||
+          oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
 
     const newDataProducts = dataProductInputsChanged
-      ? updateDataProductsOnObservationChange(oldDataProducts, newObservation)
+      ? updateDataProductsOnObservationChange(oldDataProducts, newObservation, oldObservation)
       : oldDataProducts;
 
     setProposal({
