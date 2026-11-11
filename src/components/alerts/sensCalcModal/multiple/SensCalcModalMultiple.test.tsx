@@ -31,6 +31,22 @@ const CONTINUUM_ROWS: SensCalcRow[] = [
   }
 ];
 
+// The calculator gives only the weighted sensitivity for a custom subarray or a non-Gaussian beam
+const weightedOnly = (weighted: number): SensitivityValues => ({
+  weightedSensitivity: { value: weighted, unit: 'Jy' }
+});
+const WEIGHTED_ONLY_ROWS: SensCalcRow[] = [
+  {
+    id: 't1',
+    title: 'M1',
+    sensitivity: {
+      state: SENSITIVITY_STATE.DONE,
+      continuum: weightedOnly(1),
+      spectral: weightedOnly(5)
+    }
+  }
+];
+
 const ZOOM_ROWS: SensCalcRow[] = [
   { id: 't1', title: 'M1', sensitivity: { state: SENSITIVITY_STATE.DONE, spectral: values(5) } }
 ];
@@ -60,7 +76,7 @@ const observation = (type: string): Observation => ({
 const renderModal = (
   data: SensCalcRow[],
   type: string,
-  { isCustom = false, isNatural = false } = {}
+  { isCustom = false } = {}
 ) =>
   render(
     <StoreProvider>
@@ -73,7 +89,6 @@ const renderModal = (
           level={0}
           levelError={''}
           isCustom={isCustom}
-          isNatural={isNatural}
         />
       </ThemeA11yProvider>
     </StoreProvider>
@@ -110,8 +125,8 @@ describe('<SensCalcModalMultiple />', () => {
     expect(screen.queryByTestId('field-spectralSensitivityWeighted')).not.toBeInTheDocument();
   });
 
-  test('shows the custom array placeholder for the values not valid for one', async () => {
-    renderModal(CONTINUUM_ROWS, TYPE_CONTINUUM, { isCustom: true });
+  test('shows the custom subarray message for the results the calculator did not give', async () => {
+    renderModal(WEIGHTED_ONLY_ROWS, TYPE_CONTINUUM, { isCustom: true });
 
     await waitFor(() => {
       expect(screen.getByTestId('field-continuumConfusionNoise')).toHaveTextContent(
@@ -121,8 +136,8 @@ describe('<SensCalcModalMultiple />', () => {
     });
   });
 
-  test('shows the non-Gaussian placeholder for the values not valid for a natural beam', async () => {
-    renderModal(CONTINUUM_ROWS, TYPE_CONTINUUM, { isNatural: true });
+  test('shows the non-Gaussian message for the results the calculator did not give', async () => {
+    renderModal(WEIGHTED_ONLY_ROWS, TYPE_CONTINUUM);
 
     await waitFor(() => {
       expect(screen.getByTestId('field-spectralTotalSensitivity')).toHaveTextContent(

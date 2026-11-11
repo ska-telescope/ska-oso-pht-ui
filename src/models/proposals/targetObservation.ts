@@ -17,11 +17,11 @@ const quantitySchema = z.object({ value: z.number(), unit: z.string() });
 export function getSensitivityValuesSchema() {
   return z.object({
     weightedSensitivity: quantitySchema,
-    totalSensitivity: quantitySchema,
-    confusionNoise: quantitySchema,
-    surfaceBrightnessSensitivity: quantitySchema,
+    totalSensitivity: quantitySchema.optional(),
+    confusionNoise: quantitySchema.optional(),
+    surfaceBrightnessSensitivity: quantitySchema.optional(),
     // The PDM keeps the beam size as text, e.g. '1.23 x 4.56'
-    synthesizedBeamSize: z.object({ value: z.string(), unit: z.string() })
+    synthesizedBeamSize: z.object({ value: z.string(), unit: z.string() }).optional()
   });
 }
 
@@ -82,23 +82,33 @@ const quantityFromPdm = (quantity: Quantity4 | null | undefined) => ({
   unit: unitFromPdm(quantity?.unit)
 });
 
+// A value the calculator didn't give is null in the PDM, and missing in the form
+const optionalQuantityFromPdm = (quantity: Quantity4 | null | undefined) =>
+  quantity ? quantityFromPdm(quantity) : undefined;
+
 const valuesFromPdm = (
   result: Result,
   integration: Integration,
   part: ResultsPart
-): SensitivityValues => ({
-  weightedSensitivity: quantityFromPdm(integration[`weighted_${part}_sensitivity`]),
-  totalSensitivity: quantityFromPdm(integration[`total_${part}_sensitivity`]),
-  confusionNoise: quantityFromPdm(result[`${part}_confusion_noise`]),
-  surfaceBrightnessSensitivity: {
-    value: integration.surface_brightness_sensitivity?.[part] ?? 0,
-    unit: unitFromPdm(integration.surface_brightness_sensitivity?.unit)
-  },
-  synthesizedBeamSize: {
-    value: result.synthesized_beam_size?.[part] ?? '',
-    unit: result.synthesized_beam_size?.unit ?? ''
-  }
-});
+): SensitivityValues => {
+  const surfaceBrightness = integration.surface_brightness_sensitivity?.[part];
+  const beamSize = result.synthesized_beam_size?.[part];
+  return {
+    weightedSensitivity: quantityFromPdm(integration[`weighted_${part}_sensitivity`]),
+    totalSensitivity: optionalQuantityFromPdm(integration[`total_${part}_sensitivity`]),
+    confusionNoise: optionalQuantityFromPdm(result[`${part}_confusion_noise`]),
+    surfaceBrightnessSensitivity:
+      surfaceBrightness == null
+        ? undefined
+        : {
+            value: surfaceBrightness,
+            unit: unitFromPdm(integration.surface_brightness_sensitivity?.unit)
+          },
+    synthesizedBeamSize: beamSize
+      ? { value: beamSize, unit: result.synthesized_beam_size?.unit ?? '' }
+      : undefined
+  };
+};
 
 // Results calculated for a supplied sensitivity were never possible in the GUI, so they are read
 // as no results, and calculated again
@@ -170,21 +180,27 @@ export const targetObservationToPdm = (links: TargetObservationType): Result[] =
     result.result = {
       supplied_type: 'integration_time',
       weighted_continuum_sensitivity: continuum?.weightedSensitivity ?? NO_QUANTITY,
-      total_continuum_sensitivity: continuum?.totalSensitivity ?? NO_QUANTITY,
+      total_continuum_sensitivity: continuum ? (continuum.totalSensitivity ?? null) : NO_QUANTITY,
       weighted_spectral_sensitivity: spectral.weightedSensitivity,
-      total_spectral_sensitivity: spectral.totalSensitivity,
+      total_spectral_sensitivity: spectral.totalSensitivity ?? null,
       surface_brightness_sensitivity: {
-        continuum: continuum?.surfaceBrightnessSensitivity.value ?? 0,
-        spectral: spectral.surfaceBrightnessSensitivity.value,
-        unit: spectral.surfaceBrightnessSensitivity.unit
+        continuum: continuum ? (continuum.surfaceBrightnessSensitivity?.value ?? null) : 0,
+        spectral: spectral.surfaceBrightnessSensitivity?.value ?? null,
+        unit:
+          spectral.surfaceBrightnessSensitivity?.unit ??
+          continuum?.surfaceBrightnessSensitivity?.unit ??
+          null
       }
     };
-    result.continuum_confusion_noise = continuum?.confusionNoise ?? NO_QUANTITY;
-    result.spectral_confusion_noise = spectral.confusionNoise;
+    result.continuum_confusion_noise = continuum
+      ? (continuum.confusionNoise ?? null)
+      : NO_QUANTITY;
+    result.spectral_confusion_noise = spectral.confusionNoise ?? null;
     result.synthesized_beam_size = {
-      continuum: continuum?.synthesizedBeamSize.value ?? '',
-      spectral: spectral.synthesizedBeamSize.value,
-      unit: spectral.synthesizedBeamSize.unit
+      continuum: continuum ? (continuum.synthesizedBeamSize?.value ?? null) : '',
+      spectral: spectral.synthesizedBeamSize?.value ?? null,
+      unit:
+        spectral.synthesizedBeamSize?.unit ?? continuum?.synthesizedBeamSize?.unit ?? null
     };
     return result;
   });

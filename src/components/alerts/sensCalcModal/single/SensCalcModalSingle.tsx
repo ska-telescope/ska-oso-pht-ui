@@ -10,7 +10,6 @@ interface SensCalcDisplaySingleProps {
   open: boolean;
   onClose: Function;
   targetObservation?: TargetObservation;
-  isNatural: boolean;
 }
 
 const SIZE = 20;
@@ -18,8 +17,7 @@ const SIZE = 20;
 export default function SensCalcModalSingle({
   open,
   onClose,
-  targetObservation,
-  isNatural
+  targetObservation
 }: SensCalcDisplaySingleProps) {
   const handleClose = () => {
     onClose();
@@ -68,7 +66,7 @@ export default function SensCalcModalSingle({
       </Card>
       <CardContent>
         {targetObservation && (
-          <SensCalcContent targetObservation={targetObservation} isNatural={isNatural} />
+          <SensCalcContent targetObservation={targetObservation} />
         )}
       </CardContent>
     </Dialog>

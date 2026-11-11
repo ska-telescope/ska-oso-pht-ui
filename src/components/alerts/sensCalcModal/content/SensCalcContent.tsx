@@ -3,7 +3,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
 import {
-  CUSTOM_VALID_FIELDS,
   FREQUENCY_STR_KHZ,
   FREQUENCY_UNITS,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
@@ -30,7 +29,6 @@ import {
 
 interface SensCalcContentProps {
   targetObservation: TargetObservation;
-  isNatural?: boolean;
   hideSpectralResults?: boolean;
 }
 
@@ -39,7 +37,6 @@ const SPACER_HEIGHT = 30;
 
 export default function SensCalcContent({
   targetObservation,
-  isNatural = false,
   hideSpectralResults = false
 }: SensCalcContentProps) {
   const { t } = useScopedTranslation();
@@ -63,24 +60,19 @@ export default function SensCalcContent({
     (dataProduct) => dataProduct.id === targetObservation.dataProductsSDPId
   );
 
-  const PresentCustomResultValue = (eValue: any, eId: string) => {
-    if (eId === 'targetName') {
-      return eValue;
-    }
-    if (!CUSTOM_VALID_FIELDS.includes(eId)) {
-      if (isNatural) {
-        return t('sensitivityCalculatorResults.nonGaussian');
-      }
-      return t('sensitivityCalculatorResults.customArray');
-    }
-    return `${presentValue(eValue)}`;
-  };
+  // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
+  // which a custom subarray or a non-Gaussian beam has none of
+  const notAvailable = t(
+    observation?.subarray === SA_CUSTOM
+      ? 'sensitivityCalculatorResults.customArray'
+      : 'sensitivityCalculatorResults.nonGaussian'
+  );
 
-  const displayElement = (
-    elementId: string,
-    elementValue?: string | number,
-    elementUnits?: string
-  ) => {
+  // A value with its units, as shown
+  const valueText = (value?: string | number | null, units?: string) =>
+    value == null ? '' : `${presentValue(value)} ${units ? presentUnits(units) : ''}`;
+
+  const displayElement = (elementId: string, text?: string) => {
     return (
       <Grid
         key={elementId}
@@ -104,14 +96,7 @@ export default function SensCalcContent({
             sx={{ align: 'left', fontWeight: 'bold' }}
             variant="body1"
           >
-            {elementId === 'targetName'
-              ? elementValue
-              : observation?.subarray === SA_CUSTOM || isNatural
-                ? PresentCustomResultValue(elementValue, elementId)
-                : presentValue(elementValue)}{' '}
-            {!elementUnits || observation?.subarray === SA_CUSTOM || isNatural
-              ? ''
-              : presentUnits(elementUnits)}
+            {text}
           </Typography>
         </Grid>
       </Grid>
@@ -152,7 +137,9 @@ export default function SensCalcContent({
     <>
       <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
       {SENSITIVITY_FIELDS.map(({ key, label }) =>
-        displayElement(`${part}${label}`, values[key].value, values[key].unit)
+        values[key]
+          ? displayElement(`${part}${label}`, valueText(values[key].value, values[key].unit))
+          : displayElement(`${part}${label}`, notAvailable)
       )}
     </>
   );
@@ -184,12 +171,17 @@ export default function SensCalcContent({
       {displayElement('targetName', target?.name)}
       {displayElement(
         'centralFrequency',
-        observation?.centralFrequency,
-        FREQUENCY_UNITS[observation?.centralFrequencyUnits - 1]?.label
+        valueText(
+          observation?.centralFrequency,
+          FREQUENCY_UNITS[observation?.centralFrequencyUnits - 1]?.label
+        )
       )}
-      {displayElement('bandwidth', bandwidth.value, bandwidth.unit)}
-      {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
-      {displayElement('integrationTime', observation?.supplied.value, 'h')}
+      {displayElement('bandwidth', valueText(bandwidth.value, bandwidth.unit))}
+      {displayElement(
+        'spectralResolution',
+        valueText(spectralResolution?.value, spectralResolution?.unit)
+      )}
+      {displayElement('integrationTime', valueText(observation?.supplied.value, 'h'))}
 
       {sensitivity.state === SENSITIVITY_STATE.CALCULATING && (
         <>

@@ -5,6 +5,8 @@ import {
   MockProposalBackendZoom
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
+import { SENSITIVITY_STATE, TYPE_CONTINUUM } from '@/utils/constants';
+import type { ObservationSets } from '@/generated/models';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import TargetObservation from '@utils/types/targetObservation';
 import {
@@ -106,6 +108,35 @@ describe('target observation PDM mapping', () => {
     expect(
       targetObservationFromPdm(MockProposalBackend.observation_info.result_details as never, [])
     ).toEqual([]);
+  });
+
+  test('saves the results the calculator did not give as null, and reads them back as missing', () => {
+    // For a non-Gaussian beam or a custom subarray, only the weighted sensitivities are calculated
+    const weightedOnly = {
+      ...link,
+      sensitivity: {
+        state: SENSITIVITY_STATE.DONE,
+        continuum: { weightedSensitivity: { value: 1.5, unit: 'μJy/beam' } },
+        spectral: { weightedSensitivity: { value: 2.5, unit: 'mJy/beam' } }
+      }
+    } as const;
+    const sets = [
+      { observation_set_id: 'obs1', observation_type_details: { observation_type: TYPE_CONTINUUM } }
+    ] as ObservationSets[];
+
+    const saved = targetObservationToPdm([weightedOnly]);
+
+    expect(saved[0]).toMatchObject({
+      result: {
+        total_continuum_sensitivity: null,
+        total_spectral_sensitivity: null,
+        surface_brightness_sensitivity: { continuum: null, spectral: null, unit: null }
+      },
+      continuum_confusion_noise: null,
+      spectral_confusion_noise: null,
+      synthesized_beam_size: { continuum: null, spectral: null, unit: null }
+    });
+    expect(targetObservationFromPdm(saved, sets)).toEqual([weightedOnly]);
   });
 
   test('saves a link without sensitivity results with only its references', () => {

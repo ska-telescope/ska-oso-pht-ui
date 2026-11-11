@@ -84,7 +84,6 @@ describe('<SensCalcModalSingle />', () => {
           continuum: values(1),
           spectral: values(200)
         })}
-        isNatural={false}
       />
     );
 
@@ -111,7 +110,6 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={link({ state: SENSITIVITY_STATE.DONE, spectral: values(50) })}
-        isNatural={false}
       />
     );
 
@@ -145,7 +143,6 @@ describe('<SensCalcModalSingle />', () => {
     wrapper(
       <SensCalcContent
         targetObservation={link({ state: SENSITIVITY_STATE.DONE, spectral: values(1052.5) })}
-        isNatural={false}
       />
     );
     await waitFor(() => {
@@ -154,32 +151,47 @@ describe('<SensCalcModalSingle />', () => {
       ).toHaveTextContent('1.1e+3');
     });
   });
-  test('renders correctly ( OK, natural )', async () => {
+  test('renders the non-Gaussian message for the results the calculator did not give', async () => {
+    // For a non-Gaussian beam, the calculator gives only the weighted sensitivities
+    const weightedOnly = (weighted: number): SensitivityValues => ({
+      weightedSensitivity: { value: weighted, unit: 'Jy/beam' }
+    });
     wrapper(
       <SensCalcContent
         targetObservation={link({
           state: SENSITIVITY_STATE.DONE,
-          continuum: values(7.18),
-          spectral: values(1)
+          continuum: weightedOnly(7.18),
+          spectral: weightedOnly(1)
         })}
-        isNatural={true}
       />
     );
     await waitFor(() => {
-      // Only the weighted sensitivities are valid for a non-Gaussian beam
-      expect(
-        screen.getByLabelText('sensitivityCalculatorResults.continuumConfusionNoise')
-      ).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
       expect(
         screen.getByLabelText('sensitivityCalculatorResults.continuumSensitivityWeighted')
       ).toHaveTextContent('7.18');
+      expect(
+        screen.getByLabelText('sensitivityCalculatorResults.spectralSensitivityWeighted')
+      ).toHaveTextContent('1');
+      [
+        'continuumConfusionNoise',
+        'continuumTotalSensitivity',
+        'continuumSynthBeamSize',
+        'continuumSurfaceBrightnessSensitivity',
+        'spectralConfusionNoise',
+        'spectralTotalSensitivity',
+        'spectralSynthBeamSize',
+        'spectralSurfaceBrightnessSensitivity'
+      ].forEach((field) =>
+        expect(screen.getByLabelText(`sensitivityCalculatorResults.${field}`)).toHaveTextContent(
+          'sensitivityCalculatorResults.nonGaussian'
+        )
+      );
     });
   });
   test('renders correctly (error)', () => {
     wrapper(
       <SensCalcContent
         targetObservation={link({ state: SENSITIVITY_STATE.FAILED, error: 'SOME ERROR' })}
-        isNatural={false}
       />
     );
   });

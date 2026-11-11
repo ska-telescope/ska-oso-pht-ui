@@ -88,7 +88,6 @@ import OutputSamplingIntervalField from '@/components/fields/outputSamplingInter
 import TargetObservation from '@/utils/types/targetObservation';
 import Target from '@/utils/types/target';
 import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
-import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import { isDataProductPolarisationsValid } from '@/utils/validation/validation';
 
 const GAP = 5;
@@ -990,13 +989,6 @@ export default function DataProduct({ data }: DataProductProps) {
     return undefined;
   };
 
-  const isNatural = () => {
-    if (!(isSpectral() || isContinuumSpectral() || (isContinuum() && isDataTypeOne()))) {
-      return false;
-    }
-    return isNonGaussianBeamWeighting(weighting, robust);
-  };
-
   const scUnavailable = sensCalcUnavailable();
 
   return (
@@ -1231,7 +1223,6 @@ export default function DataProduct({ data }: DataProductProps) {
               ) : (
                 <SensCalcContent
                   targetObservation={targetObservation() as TargetObservation}
-                  isNatural={isNatural()}
                   hideSpectralResults={hideSpectralSensitivityResults}
                 />
               )}

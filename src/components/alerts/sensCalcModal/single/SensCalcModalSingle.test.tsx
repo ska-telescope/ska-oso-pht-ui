@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import SensCalcModalSingle from './SensCalcModalSingle';
@@ -44,7 +44,6 @@ describe('<SensCalcModalSingle />', () => {
         open={false}
         onClose={vi.fn()}
         targetObservation={link({ state: SENSITIVITY_STATE.CALCULATING })}
-        isNatural={false}
       />
     );
   });
@@ -58,32 +57,11 @@ describe('<SensCalcModalSingle />', () => {
           continuum: values(1),
           spectral: values(200)
         })}
-        isNatural={false}
       />
     );
 
     expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
     expect(screen.getByTestId('field-spectralSensitivityWeighted')).toHaveTextContent('200');
-  });
-  test('renders correctly ( OK, natural )', async () => {
-    wrapper(
-      <SensCalcModalSingle
-        open={true}
-        onClose={vi.fn()}
-        targetObservation={link({
-          state: SENSITIVITY_STATE.DONE,
-          continuum: values(7.18),
-          spectral: values(1)
-        })}
-        isNatural={true}
-      />
-    );
-    await waitFor(() => {
-      expect(screen.getByTestId('field-continuumConfusionNoise')).toHaveTextContent(
-        'sensitivityCalculatorResults.nonGaussian'
-      );
-      expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('7.18');
-    });
   });
   test('renders correctly (error)', () => {
     wrapper(
@@ -91,7 +69,6 @@ describe('<SensCalcModalSingle />', () => {
         open={false}
         onClose={vi.fn()}
         targetObservation={link({ state: SENSITIVITY_STATE.FAILED, error: 'SOME ERROR' })}
-        isNatural={false}
       />
     );
   });

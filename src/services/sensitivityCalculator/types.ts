@@ -80,20 +80,23 @@ export type Quantity = { value: number; unit: string };
 
 export type BeamSize = { beam_maj: Quantity; beam_min: Quantity };
 
+// Only the weighted sensitivities are always given. The others depend on the synthesized beam, so
+// they are null for a non-Gaussian beam (natural weighting, or Briggs with robust 2) and for a
+// custom subarray.
 type SpectralResults = {
   weighted_spectral_sensitivity: Quantity;
-  spectral_confusion_noise: Quantity;
-  total_spectral_sensitivity: Quantity;
-  spectral_synthesized_beam_size: BeamSize;
-  spectral_surface_brightness_sensitivity: Quantity;
+  spectral_confusion_noise: Quantity | null;
+  total_spectral_sensitivity: Quantity | null;
+  spectral_synthesized_beam_size: BeamSize | null;
+  spectral_surface_brightness_sensitivity: Quantity | null;
 };
 
 export type ContinuumResult = SpectralResults & {
   weighted_continuum_sensitivity: Quantity;
-  continuum_confusion_noise: Quantity;
-  total_continuum_sensitivity: Quantity;
-  continuum_synthesized_beam_size: BeamSize;
-  continuum_surface_brightness_sensitivity: Quantity;
+  continuum_confusion_noise: Quantity | null;
+  total_continuum_sensitivity: Quantity | null;
+  continuum_synthesized_beam_size: BeamSize | null;
+  continuum_surface_brightness_sensitivity: Quantity | null;
 };
 
 export type ZoomResult = SpectralResults;

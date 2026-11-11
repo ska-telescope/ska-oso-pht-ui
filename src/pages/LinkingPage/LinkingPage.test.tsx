@@ -2,7 +2,7 @@ import { afterEach, describe, test, expect, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@utils/storage/store';
-import LinkingPage, { isNonGaussianSensitivityCase } from './LinkingPage';
+import LinkingPage from './LinkingPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
@@ -52,12 +52,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 describe('<LinkingPage />', () => {
   test('renders correctly with default values', () => {
     wrapper(<LinkingPage />);
-  });
-
-  test('treats Briggs robust=2 as non-Gaussian while leaving uniform alone', () => {
-    expect(isNonGaussianSensitivityCase({ subarray: 'AA4', weighting: 2, robust: 2 })).toBe(true);
-    expect(isNonGaussianSensitivityCase({ subarray: 'AA4', weighting: 1, robust: 2 })).toBe(false);
-    expect(isNonGaussianSensitivityCase({ subarray: 'AA4', weighting: 0, robust: 0 })).toBe(true);
   });
 });
 
