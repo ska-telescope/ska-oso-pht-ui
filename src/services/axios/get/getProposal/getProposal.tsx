@@ -60,7 +60,6 @@ import type {
   MidArray,
   ObservationSets,
   PstSetup,
-  Result,
   SpecialCoordinates,
   SpectralLineSetup,
   Supplied as SuppliedTransport
@@ -194,18 +193,6 @@ const getDataProductType = (el: any) => {
     default:
       return DP_TYPE_IMAGES;
   }
-};
-
-/**
- * Marks the data products linked to results as selected. Selection is not stored in the backend,
- * so this keeps it in step with the results and keeps it if the target is later removed.
- */
-const markSelectedDataProducts = (
-  dataProducts: DataProductSDPNew[],
-  results: Result[] | null | undefined
-): DataProductSDPNew[] => {
-  const linkedIds = new Set((results ?? []).map((result) => result.data_product_ref));
-  return dataProducts.map((dp) => (linkedIds.has(dp.id) ? { ...dp, selected: true } : dp));
 };
 
 const getDataProductSDP = (
@@ -476,12 +463,9 @@ export function mapping(inRec: ProposalBackend): Proposal {
       : technicalPDF
         ? FileUploadStatus.OK
         : FileUploadStatus.INITIAL,
-    dataProductSDP: inRec?.observation_info?.data_product_sdps
-      ? markSelectedDataProducts(
-          getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPTransport[]),
-          inRec.observation_info?.result_details
-        )
-      : [],
+    dataProductSDP: getDataProductSDP(
+      inRec.observation_info?.data_product_sdps as DataProductSDPTransport[]
+    ),
     dataProducts: dataProductsFromPdm(inRec.observation_info?.data_product_sdps),
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO remove this property from type as not needed

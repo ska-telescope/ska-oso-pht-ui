@@ -20,24 +20,18 @@ export default function AddProposal() {
   const { isSV } = useOSDAccessors();
   const { reset } = useFormContext<ProposalType>();
 
-  // SV proposals have a single observation whose type is the observing mode, so they start with
-  // one in the default mode, which the user can change on the Details page.
-  const defaultObservation = () => {
-    const observation = newObservationForMode(TYPE_CONTINUUM);
-    return { observations: [observation], dataProductSDP: newDataProductsForMode(observation) };
-  };
-
   // SV cycles have no type picker, so a new SV proposal gets its type straight away. The cycle
   // is always selected on the Landing page before this page opens.
   React.useEffect(() => {
     const proposalType = isSV ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined;
-    reset(getProposalFormValues({ ...NEW_PROPOSAL, id: undefined, proposalType }));
+    // SV proposals have a single observation whose type is the observing mode, so they start with
+    // one in the default mode, which the user can change on the Details page.
+    const observations = isSV ? [newObservationForMode(TYPE_CONTINUUM)] : [];
+    const dataProducts = observations.flatMap(newDataProductsForMode);
+    reset(getProposalFormValues({ ...NEW_PROPOSAL, id: undefined, proposalType, dataProducts }));
     updateAppContent1(EMPTY_STATUS);
-    updateAppContent2({
-      ...NEW_PROPOSAL,
-      proposalType,
-      ...(proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION && defaultObservation())
-    });
+    // The store gets the data products too: the form re-seeds from it when the proposal changes
+    updateAppContent2({ ...NEW_PROPOSAL, proposalType, observations, dataProducts });
   }, []);
 
   return (

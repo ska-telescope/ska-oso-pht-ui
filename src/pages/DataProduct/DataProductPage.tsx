@@ -1,22 +1,24 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { useFormContext } from 'react-hook-form';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { presentUnits } from '@utils/present/present';
 import { validateSDPPage } from '@utils/validation/validation.tsx';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
-import { DataProductSDPNew, SDPImageContinuumData } from '@utils/types/dataProduct.tsx';
+import { IMAGE_WEIGHTING, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
+import { DataProductSDPNew } from '@utils/types/dataProduct.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import DataProduct from '../entry/DataProduct/DataProduct';
+import DataProductInPlace from './DataProductInPlace';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TableDataProducts from '@/components/table/tableDataProducts/TableDataProducts';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { ProposalType } from '@/models/proposals/proposal';
+import { isImageDataProduct } from '@/models/proposals/dataProducts';
 
 const PAGE = PAGE_DATA_PRODUCTS;
 const LABEL_WIDTH = 6;
@@ -25,15 +27,15 @@ const GAP = 4;
 export default function DataProductsPage() {
   const { t } = useScopedTranslation();
 
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currentRow, setCurrentRow] = React.useState(0);
+  const [currentRow, setCurrentRow] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
   const { autoLink, osdCyclePolicy } = useOSDAccessors();
   const navigate = useNavigate();
 
+  const form = useFormContext<ProposalType>();
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -59,13 +61,14 @@ export default function DataProductsPage() {
   }, [validateToggle]);
 
   const deleteIconClicked = (e: DataProductSDPNew) => {
-    setCurrentRow(Number(e.id));
+    setCurrentRow(e.id);
     setOpenDialog(true);
   };
 
   const editIconClicked = (e: DataProductSDPNew) => {
-    setCurrentRow(Number(e.id));
-    navigate(PATH[3], { replace: true, state: e });
+    setCurrentRow(e.id);
+    // The entry page edits the proposal form's data product with this id
+    navigate(PATH[3], { replace: true, state: { id: e.id } });
   };
 
   const closeDeleteDialog = () => {
@@ -73,15 +76,18 @@ export default function DataProductsPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().dataProductSDP?.filter((e) => e.id !== String(currentRow));
-    setProposal({ ...getProposal(), dataProductSDP: obs1 });
-    setCurrentRow(0);
+    form.setValue(
+      'dataProducts',
+      form.getValues('dataProducts').filter((dp) => dp.id !== currentRow)
+    );
+    setCurrentRow('');
     closeDeleteDialog();
   };
 
   const alertContent = () => {
-    const rec = getProposal().dataProductSDP?.find((p) => String(p.id) === String(currentRow));
-    const data = rec?.data as SDPImageContinuumData;
+    const dp = form.getValues('dataProducts').find((other) => other.id === currentRow);
+    const image = dp && isImageDataProduct(dp) ? dp : undefined;
+    const weighting = IMAGE_WEIGHTING.find((item) => item.label === image?.weighting)?.value;
     return (
       <Grid
         container
@@ -93,21 +99,26 @@ export default function DataProductsPage() {
         }}
       >
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec?.observationId}</Typography>
+          <Typography variant="body1">{dp?.observationId}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">
-            {data?.imageSizeValue} {presentUnits(String(data?.imageSizeUnits ?? ''))}
-          </Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">
-            {data?.pixelSizeValue} {'arcsec'}
-          </Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t('imageWeighting.' + data?.weighting)}</Typography>
-        </FieldWrapper>
+        {image && (
+          <>
+            <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
+              <Typography variant="body1">
+                {image.imageSize.value} {image.imageSize.unit}
+              </Typography>
+            </FieldWrapper>
+            <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
+              <Typography variant="body1">
+                {image.pixelSize.value} {image.pixelSize.unit}
+              </Typography>
+            </FieldWrapper>
+            <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
+              {/* The weighting translations are keyed by the legacy weighting codes */}
+              <Typography variant="body1">{t('imageWeighting.' + weighting)}</Typography>
+            </FieldWrapper>
+          </>
+        )}
       </Grid>
     );
   };
@@ -187,7 +198,7 @@ export default function DataProductsPage() {
           <>
             {osdCyclePolicy?.maxDataProducts !== 1 && dataProductList()}
             {osdCyclePolicy?.maxDataProducts === 1 && (
-              <DataProduct data={getProposal()?.dataProductSDP?.[0]} />
+              <DataProductInPlace observation={getProposal().observations![0]} />
             )}
           </>
         )}

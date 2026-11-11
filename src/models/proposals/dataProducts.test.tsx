@@ -11,8 +11,19 @@ import {
   dataProductToPdm,
   dataProductsToPdm,
   getDataProductsSchema,
-  getDataProductSchema
+  getDataProductSchema,
+  newDataProduct,
+  pstDataProductKind,
+  STEPPED_FIELD,
+  steppedToPdm,
+  updateImageSizes
 } from './dataProducts';
+import phtTranslations from '../../../public/locales/en/pht.json';
+import {
+  DETECTED_FILTER_BANK_VALUE,
+  FLOW_THROUGH_VALUE,
+  PULSAR_TIMING_VALUE
+} from '@utils/constants';
 
 const continuumImage = dataProductFromPdm(pdmDataProducts[0]);
 
@@ -168,9 +179,96 @@ describe('data product schema', () => {
     expect(valid({ ...flowThrough, bitDepth: 3 })).toBe(false);
   });
 
-  test('rejects visibilities averaging below 1', () => {
+  describe('values the backend stores as a number of steps', () => {
     const visibilities = dataProductFromPdm(pdmDataProducts[1]);
-    expect(valid({ ...visibilities, timeAveraging: 0 })).toBe(false);
-    expect(valid({ ...visibilities, frequencyAveraging: 0 })).toBe(false);
+    const { step } = STEPPED_FIELD.TIME_AVERAGING_S;
+
+    test('holds the physical value, and sends the number of steps', () => {
+      expect(visibilities).toMatchObject({ timeAveragingS: 2 * step });
+      expect(steppedToPdm(2 * step, STEPPED_FIELD.TIME_AVERAGING_S)).toBe(2);
+    });
+
+    test('accepts a value typed as the field shows it', () => {
+      expect(valid({ ...visibilities, timeAveragingS: 0.849 })).toBe(true);
+    });
+
+    test.each([
+      ['below one step', 0],
+      ['between steps', 1.2],
+      ['above twelve steps', 13 * step]
+    ])('rejects a time averaging %s', (_, timeAveragingS) => {
+      expect(valid({ ...visibilities, timeAveragingS })).toBe(false);
+    });
+
+    test('rejects a PST output sampling interval between steps', () => {
+      const filterbank = dataProductFromPdm(pdmDataProducts[5]);
+      expect(valid({ ...filterbank, outputSamplingIntervalMs: 0.3 })).toBe(false);
+    });
+  });
+
+  test.each([
+    [
+      'an image size of zero',
+      { imageSize: { value: 0, unit: 'deg' } },
+      ['imageSize', 'value'],
+      phtTranslations.imageSize.error
+    ],
+    [
+      'no unit',
+      { pixelSize: { value: 1, unit: null } },
+      ['pixelSize', 'unit'],
+      phtTranslations.pixelSize.unitError
+    ],
+    ['too many channels', { channelsOut: 41 }, ['channelsOut'], 'Valid range is 1 - 40'],
+    [
+      'no polarisations',
+      { polarisations: [] },
+      ['polarisations'],
+      phtTranslations.polarisations.error
+    ]
+  ])('gives %s its translated message', (_, change, path, message) => {
+    const issue = schema.safeParse({ ...continuumImage, ...change }).error?.issues[0];
+    expect(issue).toMatchObject({ path, message });
+  });
+});
+
+describe('new data products', () => {
+  test.each(Object.values(DATA_PRODUCT_KIND))('gives a new %s valid defaults', (kind) => {
+    const dp = newDataProduct(kind, 'obs-1');
+    expect(dp).toMatchObject({ kind, observationId: 'obs-1' });
+    expect(getDataProductSchema().safeParse(dp).error).toBeUndefined();
+  });
+
+  test('gives each new data product its own id', () => {
+    const kind = DATA_PRODUCT_KIND.CONTINUUM_IMAGE;
+    expect(newDataProduct(kind, 'obs-1').id).not.toBe(newDataProduct(kind, 'obs-1').id);
+  });
+
+  test.each([
+    [FLOW_THROUGH_VALUE, DATA_PRODUCT_KIND.PST_FLOW_THROUGH],
+    [DETECTED_FILTER_BANK_VALUE, DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK],
+    [PULSAR_TIMING_VALUE, DATA_PRODUCT_KIND.PST_TIMING],
+    [undefined, DATA_PRODUCT_KIND.PST_TIMING]
+  ])('gives PST mode %s the %s kind', (pstMode, kind) => {
+    expect(pstDataProductKind(pstMode)).toBe(kind);
+  });
+});
+
+describe('updateImageSizes', () => {
+  const image = newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1') as Parameters<
+    typeof updateImageSizes
+  >[0];
+
+  test('sizes the image for the central frequency, keeping the other fields', () => {
+    expect(updateImageSizes({ ...image, weighting: 'natural' }, 6000)).toEqual({
+      ...image,
+      weighting: 'natural',
+      imageSize: { value: 0.073, unit: 'deg' },
+      pixelSize: { value: 0.043, unit: 'arcsec' }
+    });
+  });
+
+  test('leaves the sizes without a central frequency', () => {
+    expect(updateImageSizes(image, 0)).toBe(image);
   });
 });

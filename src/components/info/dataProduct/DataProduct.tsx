@@ -1,4 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material';
+import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
@@ -17,7 +18,6 @@ import PolarisationsField from '@/components/fields/polarisations/polarisations'
 import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
 import PixelSizeField from '@/components/fields/pixelSize/pixelSize';
 import RobustField from '@/components/fields/robust/Robust';
-import DataProductTypeField from '@/components/fields/dataProductType/dataProductType';
 import TaperField from '@/components/fields/taper/taper';
 import { DETECTED_FILTER_BANK_VALUE, TYPE_PST } from '@/utils/constants';
 import Observation from '@/utils/types/observation';
@@ -113,9 +113,16 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
 
   const dataProductTypeField = () =>
     fieldWrapper(
-      <DataProductTypeField
+      <DropDown
+        options={[DP_TYPE_IMAGES, DP_TYPE_VISIBLE].map((value) => ({
+          label: t('dataProductType.options.continuum.' + value),
+          value
+        }))}
+        testId="dataProductType"
         value={(sdpData as SDPImageContinuumData | SDPFlowthroughPSTData)?.dataProductType}
+        label={t('dataProductType.label')}
         disabled
+        disabledUnderline
       />
     );
 
@@ -188,7 +195,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
           p: GAP
         }}
       >
-        {t('page.7.group.pst.2')}
+        {t('page.7.group.pstTiming')}
       </Typography>
     );
 

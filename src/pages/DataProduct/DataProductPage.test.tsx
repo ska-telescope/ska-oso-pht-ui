@@ -25,8 +25,8 @@ vi.mock('react-router', () => ({ useNavigate: () => vi.fn() }));
 vi.mock('../../components/layout/Shell/Shell', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
-vi.mock('../entry/DataProduct/DataProduct', () => ({
-  default: () => <div data-testid="dataProductEntryStub" />
+vi.mock('./DataProductInPlace', () => ({
+  default: () => <div data-testid="dataProductInPlaceStub" />
 }));
 
 const renderWithProposal = (proposal: object) => {
@@ -57,7 +57,7 @@ describe('<DataProductPage />', () => {
       dataProductSDP: [{ id: 'sdp-1', observationId: 'obs-1', data: {} }]
     });
 
-    expect(screen.getByTestId('dataProductEntryStub')).toBeInTheDocument();
+    expect(screen.getByTestId('dataProductInPlaceStub')).toBeInTheDocument();
     expect(screen.queryByTestId('noObservationsNotification')).not.toBeInTheDocument();
   });
 
@@ -68,7 +68,7 @@ describe('<DataProductPage />', () => {
       dataProductSDP: []
     });
 
-    expect(screen.queryByTestId('dataProductEntryStub')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dataProductInPlaceStub')).not.toBeInTheDocument();
     expect(screen.getByText('error.noObservations')).toBeInTheDocument();
   });
 });

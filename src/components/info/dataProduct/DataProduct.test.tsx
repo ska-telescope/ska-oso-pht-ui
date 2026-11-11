@@ -33,9 +33,6 @@ vi.mock('@/components/fields/imageWeighting/imageWeighting', () => ({
 vi.mock('@/components/fields/robust/Robust', () => ({
   default: () => <div data-testid="RobustField" />
 }));
-vi.mock('@/components/fields/dataProductType/dataProductType', () => ({
-  default: () => <div data-testid="DataProductTypeField" />
-}));
 vi.mock('@/components/fields/taper/taper', () => ({
   default: () => <div data-testid="TaperField" />
 }));
@@ -139,7 +136,7 @@ describe('DataProduct', () => {
         observation={baseObservation}
       />
     );
-    expect(screen.getByTestId('DataProductTypeField')).toBeInTheDocument();
+    expect(screen.getByTestId('dataProductType')).toBeInTheDocument();
     expect(screen.getByTestId('ImageSizeField')).toBeInTheDocument();
     expect(screen.getByTestId('PixelSizeField')).toBeInTheDocument();
     expect(screen.getByTestId('ImageWeightingField')).toBeInTheDocument();

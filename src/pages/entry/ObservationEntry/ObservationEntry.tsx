@@ -98,7 +98,12 @@ import { useHelp } from '@/utils/help/useHelp';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
-import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
+import {
+  isImageDataProduct,
+  newDataProduct,
+  pstDataProductKind,
+  updateImageSizes
+} from '@/models/proposals/dataProducts';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
@@ -295,32 +300,68 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /*--------------------------------------------------*/
 
+  // A PST observation has one data product, of the kind its PST mode needs
+  const replacePstDataProduct = (observation: Observation) => {
+    const dataProducts = form.getValues('dataProducts');
+    const current = dataProducts.find((dp) => dp.observationId === observation.id);
+    if (!current) {
+      return;
+    }
+    const replacement = newDataProduct(pstDataProductKind(observation.pstMode), observation.id);
+    form.setValue('dataProducts', [
+      ...dataProducts.filter((dp) => dp.observationId !== observation.id),
+      { ...replacement, id: current.id }
+    ]);
+  };
+
+  // The image sizes follow the observation's central frequency
+  const resizeImageDataProducts = (observation: Observation) => {
+    const centralFrequencyMhz = frequencyConversion(
+      observation.centralFrequency,
+      observation.centralFrequencyUnits ?? FREQUENCY_MHZ,
+      FREQUENCY_MHZ
+    );
+    form.setValue(
+      'dataProducts',
+      form
+        .getValues('dataProducts')
+        .map((dp) =>
+          dp.observationId === observation.id && isImageDataProduct(dp)
+            ? updateImageSizes(dp, centralFrequencyMhz)
+            : dp
+        )
+    );
+  };
+
   const updateObservationOnProposal = () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
 
     const oldObservations = proposal.observations ?? [];
-    const oldDataProducts = proposal.dataProductSDP ?? [];
-
-    // Only reset data products when a field they are derived from has changed, otherwise
-    // revisiting this page would overwrite the user's data product values
     const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
-    const dataProductInputsChanged =
-      !oldObservation ||
-      oldObservation.type !== newObservation.type ||
-      (newObservation.type === TYPE_PST && oldObservation.pstMode !== newObservation.pstMode) ||
-      oldObservation.centralFrequency !== newObservation.centralFrequency ||
-      oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits;
-
-    const newDataProducts = dataProductInputsChanged
-      ? updateDataProductsOnObservationChange(oldDataProducts, newObservation)
-      : oldDataProducts;
 
     setProposal({
       ...proposal,
-      observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: newDataProducts
+      observations: updateObservations(oldObservations ?? [], newObservation)
     });
+
+    // Compared with the stored observation, so revisiting this page keeps the user's data product
+    // values. A new observation has no data products yet.
+    if (oldObservation) {
+      const pstModeChanged =
+        newObservation.type === TYPE_PST &&
+        (oldObservation.type !== TYPE_PST || oldObservation.pstMode !== newObservation.pstMode);
+      const frequencyChanged =
+        newObservation.type !== TYPE_PST &&
+        (oldObservation.centralFrequency !== newObservation.centralFrequency ||
+          oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
+      if (pstModeChanged) {
+        replacePstDataProduct(newObservation);
+      }
+      if (frequencyChanged) {
+        resizeImageDataProducts(newObservation);
+      }
+    }
 
     // The calibrators depend on the telescope and the integration time
     const calibratorInputsChanged =

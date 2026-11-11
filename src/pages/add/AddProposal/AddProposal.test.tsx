@@ -159,8 +159,8 @@ describe('new proposal observation', () => {
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.observations[0].type).toBe(TYPE_CONTINUUM);
     // Continuum has an images data product plus a hidden visibilities one
-    expect(proposal.dataProductSDP).toHaveLength(2);
-    proposal.dataProductSDP.forEach((dataProduct: { observationId: string }) =>
+    expect(proposal.dataProducts).toHaveLength(2);
+    proposal.dataProducts.forEach((dataProduct: { observationId: string }) =>
       expect(dataProduct.observationId).toBe(proposal.observations[0].id)
     );
     expect(proposal.scienceCategory).toBeNull();
@@ -172,6 +172,6 @@ describe('new proposal observation', () => {
 
     const proposal = mockStore.updateAppContent2.mock.calls[0][0];
     expect(proposal.observations).toEqual([]);
-    expect(proposal.dataProductSDP).toEqual([]);
+    expect(proposal.dataProducts).toEqual([]);
   });
 });

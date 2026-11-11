@@ -1,21 +1,7 @@
 import { buildCalibrationStrategy } from '@/models/proposals/calibrationOperations';
 import type { ProposalFormAccess } from '@/models/proposals/proposal';
 import {
-  CHANNELS_OUT_DEFAULT,
-  CHANNELS_OUT_MAX_COMBINED,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  IMAGE_SIZE_DEFAULT,
-  IMAGE_SIZE_UNIT_DEFAULT,
-  IMAGE_WEIGHTING_DEFAULT,
-  PIXEL_SIZE_DEFAULT,
-  PIXEL_SIZE_UNIT_DEFAULT,
-  POLARISATIONS_DEFAULT,
-  PULSAR_TIMING_VALUE,
-  ROBUST_DEFAULT,
-  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   SENSITIVITY_STATE,
-  TAPER_DEFAULT,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -24,14 +10,14 @@ import {
 import { generateDataProductId, generateObsSetId, getDefaultObservationLowAA2 } from '../helpers';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
 import {
-  DataProductSDPNew,
-  SDPFilterbankPSTData,
-  SDPFlowthroughPSTData,
-  SDPImageContinuumData,
-  SDPSpectralData,
-  SDPTimingPSTData,
-  SDPVisibilitiesContinuumData
-} from '../types/dataProduct';
+  DATA_PRODUCT_KIND,
+  DataProductInput,
+  DataProductKind,
+  newDataProduct,
+  pstDataProductKind,
+  STEPPED_FIELD,
+  steppedFromPdm
+} from '@/models/proposals/dataProducts';
 import Observation from '../types/observation';
 import Target from '../types/target';
 import Proposal from '@utils/types/proposal.tsx';
@@ -65,114 +51,40 @@ export const newObservationForMode = (
   };
 };
 
-/**
- * Fields shared by every imaging data product default; each mode overrides only what differs.
- */
-const DEFAULT_IMAGING_DATA = {
-  imageSizeValue: IMAGE_SIZE_DEFAULT,
-  imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
-  pixelSizeValue: PIXEL_SIZE_DEFAULT,
-  pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
-  weighting: IMAGE_WEIGHTING_DEFAULT,
-  polarisations: POLARISATIONS_DEFAULT,
-  channelsOut: CHANNELS_OUT_DEFAULT,
-  robust: ROBUST_DEFAULT,
-  taperValue: TAPER_DEFAULT,
-  continuumSubtraction: SET_CONTINUUM_SUBSTRACTION_DEFAULT
-};
-
-/**
- * Builds the default data product for the given observation's mode.
- */
-export const SDPData = (
-  observation: Observation
-):
-  | SDPImageContinuumData
-  | SDPVisibilitiesContinuumData
-  | SDPSpectralData
-  | SDPFilterbankPSTData
-  | SDPTimingPSTData
-  | SDPFlowthroughPSTData => {
+/** The kind of the observation's main data product, the one its link points at. */
+export const mainDataProductKind = (observation: Observation): DataProductKind => {
   switch (observation.type) {
     case TYPE_PST:
-      return {
-        dataProductType: PULSAR_TIMING_VALUE
-      } as SDPFlowthroughPSTData;
+      return pstDataProductKind(observation.pstMode);
     case TYPE_ZOOM:
-      return { ...DEFAULT_IMAGING_DATA } as SDPSpectralData;
+      return DATA_PRODUCT_KIND.SPECTRAL_IMAGE;
     case TYPE_CONTINUUM_SPECTRAL:
-      return {
-        ...DEFAULT_IMAGING_DATA,
-        channelsOut: CHANNELS_OUT_MAX_COMBINED
-      } as SDPSpectralData;
+      return DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE;
     default:
-      return {
-        ...DEFAULT_IMAGING_DATA,
-        dataProductType: DP_TYPE_IMAGES
-      } as SDPImageContinuumData;
+      return DATA_PRODUCT_KIND.CONTINUUM_IMAGE;
   }
 };
 
 /**
- * Builds the hidden companion data product (written to the proposal but not displayed) for the
- * given observation's mode, or null for modes that don't have one.
+ * The default data products for the observation's mode: the main one, which the link points at,
+ * and for imaging modes a hidden visibilities companion (saved but not displayed).
  */
-export const HiddenSDPData = (
-  observation: Observation
-):
-  | SDPImageContinuumData
-  | SDPVisibilitiesContinuumData
-  | SDPSpectralData
-  | SDPFilterbankPSTData
-  | SDPTimingPSTData
-  | SDPFlowthroughPSTData
-  | null => {
-  switch (observation.type) {
-    case TYPE_PST:
-      return null;
-    case TYPE_ZOOM:
-      return {
-        dataProductType: DP_TYPE_VISIBLE,
-        timeAveraging: 4,
-        frequencyAveraging: 1
-      } as SDPVisibilitiesContinuumData;
-    case TYPE_CONTINUUM:
-      return {
-        dataProductType: DP_TYPE_VISIBLE,
-        timeAveraging: 4,
-        frequencyAveraging: 4
-      } as SDPVisibilitiesContinuumData;
-    case TYPE_CONTINUUM_SPECTRAL:
-      return {
-        dataProductType: DP_TYPE_VISIBLE,
-        timeAveraging: 4,
-        frequencyAveraging: 1
-      } as SDPVisibilitiesContinuumData;
-    default:
-      return null;
+export const newDataProductsForMode = (observation: Observation): DataProductInput[] => {
+  const main = newDataProduct(mainDataProductKind(observation), observation.id);
+  if (observation.type === TYPE_PST) {
+    return [main];
   }
-};
-
-export const newDataProductsForMode = (observation: Observation): DataProductSDPNew[] => {
-  const data = SDPData(observation);
-  const newDSP: DataProductSDPNew = {
+  const companion: DataProductInput = {
     id: generateDataProductId(),
     observationId: observation.id,
-    selected: true,
-    data
+    kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+    timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
+    frequencyAveragingKhz: steppedFromPdm(
+      observation.type === TYPE_CONTINUUM ? 4 : 1,
+      STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ
+    )
   };
-
-  const hiddenData = HiddenSDPData(observation);
-  if (hiddenData) {
-    const hiddenDataProduct = {
-      id: generateDataProductId(),
-      observationId: observation.id,
-      data: hiddenData
-    };
-    return [newDSP, hiddenDataProduct];
-  }
-
-  return [newDSP];
+  return [main, companion];
 };
 
 /**
@@ -182,7 +94,7 @@ export const newDataProductsForMode = (observation: Observation): DataProductSDP
 const buildTargetLink = async (
   target: Target,
   observation: Observation,
-  mainDataProduct: DataProductSDPNew,
+  mainDataProduct: DataProductInput,
   form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient
 ): Promise<{ targetObservation: TargetObservation; calibrationStrategy: CalibrationStrategy }> => {
@@ -244,11 +156,8 @@ export async function regenerateForMode(
   );
 
   setTargetLink(form, target, link);
-  setProposal({
-    ...getProposal(),
-    observations: [newObservation],
-    dataProductSDP: newDataProducts
-  });
+  form.setValue('dataProducts', newDataProducts);
+  setProposal({ ...getProposal(), observations: [newObservation] });
 }
 
 /**
@@ -266,21 +175,17 @@ export async function linkTarget(
 ): Promise<void> {
   const proposal: Proposal = getProposal();
   const observation = proposal.observations?.[0] ?? newObservationForMode(TYPE_CONTINUUM);
-  const existingDataProducts = (proposal.dataProductSDP ?? []).filter(
-    (dp) => dp.observationId === observation.id
-  );
-  const newDataProducts = existingDataProducts.length ? [] : newDataProductsForMode(observation);
-  const mainDataProduct =
-    existingDataProducts.find((dp) => dp.selected) ?? existingDataProducts[0] ?? newDataProducts[0];
+  const dataProducts = form.getValues('dataProducts');
+  const observationDataProducts = dataProducts.filter((dp) => dp.observationId === observation.id);
+  const newDataProducts = observationDataProducts.length ? [] : newDataProductsForMode(observation);
+  // The main data product comes first; the others are hidden companions
+  const mainDataProduct = observationDataProducts[0] ?? newDataProducts[0];
 
   const link = await buildTargetLink(target, observation, mainDataProduct, form, authAxiosClient);
 
   setTargetLink(form, target, link);
-  setProposal({
-    ...getProposal(),
-    observations: [observation],
-    dataProductSDP: [...(getProposal().dataProductSDP ?? []), ...newDataProducts]
-  });
+  form.setValue('dataProducts', [...form.getValues('dataProducts'), ...newDataProducts]);
+  setProposal({ ...getProposal(), observations: [observation] });
 }
 
 /**
@@ -313,9 +218,6 @@ export async function setObservingMode(
   }
 
   const newObservation = newObservationForMode(observationMode, maxZoomChannels);
-  setProposal({
-    ...getProposal(),
-    observations: [newObservation],
-    dataProductSDP: newDataProductsForMode(newObservation)
-  });
+  form.setValue('dataProducts', newDataProductsForMode(newObservation));
+  setProposal({ ...getProposal(), observations: [newObservation] });
 }

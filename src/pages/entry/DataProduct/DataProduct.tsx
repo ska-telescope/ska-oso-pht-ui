@@ -1,1245 +1,167 @@
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Grid, Paper, Stack, Typography } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getFormLinks } from '@/models/proposals/formSlices';
 import {
-  Alert,
-  AlertColorTypes,
-  BorderedSection,
-  Spacer,
-  SPACER_VERTICAL
-} from '@ska-telescope/ska-gui-components';
-import { Box } from '@mui/system';
-import RobustField from '@components/fields/robust/Robust.tsx';
-import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
-import { useTheme } from '@mui/material/styles';
-import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
-import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
-import { ValueUnitPair } from '@/utils/types/valueUnitPair';
-import PolarisationsField from '@/components/fields/polarisations/polarisations';
-import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
+  DATA_PRODUCT_KIND,
+  DataProductKind,
+  getDataProductSchema,
+  getDataProductsSchema,
+  newDataProduct
+} from '@/models/proposals/dataProducts';
+import { mainDataProductKind, newDataProductsForMode } from '@/utils/autoLinking/AutoLinking';
 import {
-  BAND_LOW_STR,
-  BIT_DEPTH,
-  BIT_DEPTH_DEFAULT,
-  CHANNELS_OUT_DEFAULT,
-  CHANNELS_OUT_MAX,
-  CHANNELS_OUT_MAX_COMBINED,
-  CHANNELS_OUT_MIN_CONTINUUM,
-  CHANNELS_OUT_MIN_SPECTRAL,
-  DETECTED_FILTER_BANK_VALUE,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
-  FREQUENCY_AVERAGING_DEFAULT,
-  IMAGE_SIZE_DEFAULT,
-  IMAGE_SIZE_UNIT_DEFAULT,
-  IMAGE_WEIGHTING_DEFAULT,
-  IW_BRIGGS,
   NAV,
-  NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DATA_PRODUCTS,
-  PIXEL_SIZE_DEFAULT,
-  PIXEL_SIZE_UNIT_DEFAULT,
-  POLARISATIONS_DEFAULT,
-  PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
-  PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
-  PULSAR_TIMING_VALUE,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  ROBUST_DEFAULT,
-  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
-  SENSITIVITY_STATE,
-  TAPER_DEFAULT,
-  TIME_AVERAGING_DEFAULT,
-  TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
-  TYPE_ZOOM,
-  WRAPPER_HEIGHT
+  TYPE_PST
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
-import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import AddButton from '@/components/button/Add/Add';
-import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import Observation from '@/utils/types/observation';
-import GridObservation from '@/components/grid/observation/GridObservation';
-import ImageSizeField from '@/components/fields/imageSize/imageSize';
-import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
-import DataProductTypeField from '@/components/fields/dataProductType/dataProductType';
-import TaperField from '@/components/fields/taper/taper';
-import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging';
-import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
-import BitDepthField from '@/components/fields/bitDepth/bitDepth';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { generateDataProductId } from '@/utils/helpers';
-import { useHelp } from '@/utils/help/useHelp';
-import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
-import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
-import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
-import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
-import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
-import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
-import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
-import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
-import TargetObservation from '@/utils/types/targetObservation';
-import Target from '@/utils/types/target';
-import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
-import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
-import { isDataProductPolarisationsValid } from '@/utils/validation/validation';
+import DataProductView, { DataProductsForm } from '@/pages/DataProduct/DataProductView';
 
-const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
-const COL = 6;
-const COL_MID = 8;
 
-interface DataProductProps {
-  data?: DataProductSDPNew;
-}
+const getEntrySchema = () => z.object({ dataProducts: getDataProductsSchema().length(1) });
 
-export default function DataProduct({ data }: DataProductProps) {
-  const { t } = useScopedTranslation();
+/**
+ * Adds a data product, or updates the one given, in an entry form of its own. It is written to
+ * the proposal form only when it is valid and the user adds or updates it.
+ */
+function DataProductEntry({
+  observations,
+  editId
+}: {
+  observations: Observation[];
+  editId?: string;
+}) {
   const navigate = useNavigate();
-  const locationProperties = useLocation();
-  const theme = useTheme();
-  const { osdCyclePolicy } = useOSDAccessors();
-  const { setHelp } = useHelp();
+  const proposalForm = useFormContext<ProposalType>();
+  const existing = editId
+    ? proposalForm.getValues('dataProducts').find((dp) => dp.id === editId)
+    : undefined;
+  const defaultObservation =
+    observations.find((obs) => obs.id === existing?.observationId) ??
+    observations.find((obs) => obs.type === TYPE_PST) ??
+    observations[0];
 
-  const isEdit = () => locationProperties.state != null || data !== undefined;
-
-  const { application, updateAppContent2 } = storageObject.useStore();
-
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const hasInitializedDataProductRef = React.useRef(false);
-
-  const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
-  const [id, setId] = React.useState('');
-  const [observationId, setObservationId] = React.useState('');
-  const [dataProductType, setDataProductType] = React.useState(DP_TYPE_IMAGES);
-  const [bitDepth, setBitDepth] = React.useState(BIT_DEPTH_DEFAULT);
-  const pstFlowThroughBitDepthOptions = PST_FLOW_THROUGH_BIT_DEPTH_VALUES.map((value) => ({
-    label: value,
-    lookup: String(value),
-    value
-  }));
-  const pstDedicatedFilterbankBitDepthOptions = PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES.map(
-    (value) => ({
-      label: value,
-      lookup: String(value),
-      value
-    })
-  );
-  const defaultBitDepthOptions = BIT_DEPTH.map((el) => ({
-    label: el.value,
-    lookup: String(el.value),
-    value: el.value
-  }));
-  const [imageSizeValue, setImageSizeValue] = React.useState(IMAGE_SIZE_DEFAULT);
-  const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
-  const [pixelSizeValue, setPixelSizeValue] = React.useState(PIXEL_SIZE_DEFAULT);
-  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(PIXEL_SIZE_UNIT_DEFAULT);
-  const [taperLowValue, setTaperLowValue] = React.useState(TAPER_DEFAULT);
-  const [taperMidValue, setTaperMidValue] = React.useState(TAPER_DEFAULT);
-  const [timeAveraging, setTimeAveraging] = React.useState(TIME_AVERAGING_DEFAULT);
-  const [frequencyAveraging, setFrequencyAveraging] = React.useState(FREQUENCY_AVERAGING_DEFAULT);
-
-  const [weighting, setWeighting] = React.useState(IMAGE_WEIGHTING_DEFAULT);
-  const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
-
-  const getObservation = (obsId = observationId) => {
-    const proposal = getProposal();
-    const proposalObservations = proposal?.observations ?? [];
-    const selectedObservation =
-      baseObservations?.find((obs) => obs.id === obsId) ??
-      proposalObservations.find((obs) => obs.id === obsId);
-
-    if (selectedObservation) {
-      return selectedObservation;
+  const entryForm = useForm<DataProductsForm>({
+    mode: 'all',
+    resolver: zodResolver(getEntrySchema()) as never,
+    defaultValues: {
+      dataProducts: [
+        existing ?? newDataProduct(mainDataProductKind(defaultObservation), defaultObservation.id)
+      ]
     }
+  });
+  const dp = useWatch({ control: entryForm.control, name: 'dataProducts.0' });
+  const observation = observations.find((obs) => obs.id === dp.observationId) ?? defaultObservation;
 
-    const pstObservation = proposalObservations.find((obs) => obs.type === TYPE_PST);
-    if (pstObservation) {
-      return pstObservation;
+  // A data product of another observation starts again with that observation's defaults
+  const selectObservation = (next: Observation) => {
+    if (next.id === dp.observationId) {
+      return;
     }
-
-    return proposalObservations[0];
-  };
-  const isContinuum = () =>
-    getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
-
-  const isSpectral = () => getObservation()?.type === TYPE_ZOOM;
-
-  const isContinuumSpectral = () => getObservation()?.type === TYPE_CONTINUUM_SPECTRAL;
-
-  const isPST = () => getObservation()?.type === TYPE_PST;
-
-  const channelsOutMax = () =>
-    isContinuumSpectral() || isSpectral() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
-  const channelsOutMin = () =>
-    isContinuumSpectral() || isSpectral() ? CHANNELS_OUT_MIN_SPECTRAL : CHANNELS_OUT_MIN_CONTINUUM;
-
-  const [channelsOut, setChannelsOut] = React.useState(channelsOutMax);
-  const [continuumSubtraction, setContinuumSubtraction] = React.useState(
-    SET_CONTINUUM_SUBSTRACTION_DEFAULT
-  );
-  const [polarisations, setPolarisations] = React.useState<string[]>([]);
-  const [outputFrequencyResolution, setOutputFrequencyResolution] = React.useState(1);
-  const [outputSamplingInterval, setOutputSamplingInterval] = React.useState(1);
-  const [dispersionMeasure, setDispersionMeasure] = React.useState(0);
-  const [rotationMeasure, setRotationMeasure] = React.useState(0);
-
-  const [polarisationsError, setPolarisationsError] = React.useState('');
-  const loadedDataProductRef = React.useRef<DataProductSDPNew | null>(null);
-
-  // The form owns the targets and links; observations and data products stay in the store
-  const form = useFormContext<ProposalType>();
-  const links = (useWatch({ control: form.control, name: 'targetObservation' }) ??
-    []) as TargetObservation[];
-  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
-  const getLinks = () => getFormLinks(form);
-
-  const maxObservationsReached = () =>
-    baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
-
-  const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
-
-  const hasRealObservationSelection = () => {
-    if (!observationId) {
-      return false;
-    }
-
-    const proposalObservations = getProposal()?.observations ?? [];
-    return proposalObservations.some((obs) => obs.id === observationId);
-  };
-
-  const getDataProductTypeValue = (dp?: DataProductSDPNew) =>
-    Number(dp?.data?.dataProductType ?? DP_TYPE_IMAGES);
-
-  const getObservationDataProducts = (obsId: string) =>
-    (getProposal()?.dataProductSDP ?? []).filter((dp) => dp.observationId === obsId);
-
-  const getObservationTargetObservations = (obsId: string) =>
-    getLinks().filter((rec) => rec.observationId === obsId);
-
-  // The linked data product is the one in the results, or the selected one while no target is linked
-  const getLinkedDataProductId = (obsId: string, fallbackId = '') =>
-    getObservationTargetObservations(obsId)[0]?.dataProductsSDPId ??
-    getObservationDataProducts(obsId).find((dp) => dp.selected)?.id ??
-    fallbackId;
-
-  const getLinkedDataProduct = (obsId: string, fallbackId = '') => {
-    const observationDataProducts = getObservationDataProducts(obsId);
-    const linkedDataProductId = getLinkedDataProductId(obsId, fallbackId);
-    return (
-      observationDataProducts.find((dp) => dp.id === linkedDataProductId) ??
-      observationDataProducts.find((dp) => dp.id === fallbackId) ??
-      observationDataProducts[0]
+    entryForm.setValue(
+      'dataProducts.0',
+      { ...newDataProduct(mainDataProductKind(next), next.id), id: dp.id },
+      { shouldValidate: true }
     );
   };
 
-  const getSiblingContinuumDataProduct = (
-    obsId: string,
-    currentDataProductId: string,
-    nextType: number
-  ) =>
-    getObservationDataProducts(obsId).find(
-      (dp) => dp.id !== currentDataProductId && getDataProductTypeValue(dp) === nextType
+  const switchContinuumKind = (kind: DataProductKind) =>
+    entryForm.setValue(
+      'dataProducts.0',
+      { ...newDataProduct(kind, observation.id), id: dp.id },
+      { shouldValidate: true }
     );
 
-  const getResolvedPstMode = () => {
-    const observation = getObservation();
-    const pstMode = observation?.pstMode;
-
-    if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
-      return FLOW_THROUGH_VALUE;
-    }
-
-    return Number(pstMode);
-  };
-
-  const isFlowThrough = () => getResolvedPstMode() === FLOW_THROUGH_VALUE;
-  const isDetectedFilterbank = () => getResolvedPstMode() === DETECTED_FILTER_BANK_VALUE;
-  const isPulsarTiming = () => getResolvedPstMode() === PULSAR_TIMING_VALUE;
-  const getPstBitDepthDefault = () => 8;
-  const getDefaultBitDepth = () =>
-    getObservation()?.type === TYPE_PST ? getPstBitDepthDefault() : BIT_DEPTH_DEFAULT;
-
-  const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
-
-  const showSC = osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1;
-  const hideSpectralSensitivityResults =
-    isContinuum() && channelsOut === CHANNELS_OUT_MIN_CONTINUUM;
-
-  const getSuffix = () => {
-    if (isContinuum() || isPST()) {
-      const resolvedType = isPST()
-        ? getDataProductType(getObservation()?.type ?? '', getResolvedPstMode())
-        : dataProductType;
-      return resolvedType.toString();
-    }
-    return '1';
-  };
-
-  const resetContinuumDataProduct = (
-    dp: DataProductSDPNew,
-    observation: Observation
-  ): DataProductSDPNew => {
-    // When the user changes between Images and Visibilities for the data product,
-    // the hidden option still exists within the data model, and we need to set
-    // its values to something sensible.
-    if (getDataProductTypeValue(dp) === DP_TYPE_IMAGES) {
-      const continuumImagesData = {
-        ...dp,
-        data: {
-          ...dp.data,
-          weighting: IMAGE_WEIGHTING_DEFAULT,
-          robust: ROBUST_DEFAULT,
-          polarisations: POLARISATIONS_DEFAULT,
-          channelsOut: CHANNELS_OUT_DEFAULT
-        }
-      };
-      return updateImagesDataProductSizes(continuumImagesData, observation.centralFrequency);
-    }
-
-    const continuumVisibilityData = dp.data as SDPVisibilitiesContinuumData;
-    return {
-      ...dp,
-      data: {
-        ...continuumVisibilityData,
-        dataProductType: DP_TYPE_VISIBLE,
-        timeAveraging: 4,
-        frequencyAveraging: 4
-      }
-    };
-  };
-
-  const updateLinkedDataProductId = (
-    targetObservations: TargetObservation[],
-    obsId: string,
-    dataProductsSDPId: string
-  ): TargetObservation[] =>
-    targetObservations.map((rec) =>
-      rec.observationId === obsId
-        ? {
-            ...rec,
-            dataProductsSDPId,
-            // The results were for the other data product; the sensitivity service calculates them
-            sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
-          }
-        : rec
-    );
-
-  const dataProductIn = (dp: DataProductSDPNew) => {
-    const data = dp.data as any;
-    setId(dp.id);
-    setObservationId(dp.observationId);
-    setDataProductType(data?.dataProductType ?? DP_TYPE_IMAGES);
-    setImageSizeValue(data?.imageSizeValue ?? IMAGE_SIZE_DEFAULT);
-    setImageSizeUnits(data?.imageSizeUnits ?? IMAGE_SIZE_UNIT_DEFAULT);
-    setPixelSizeValue(data?.pixelSizeValue ?? PIXEL_SIZE_DEFAULT);
-    setPixelSizeUnits(data?.pixelSizeUnits ?? PIXEL_SIZE_UNIT_DEFAULT);
-    isLow()
-      ? setTaperLowValue(data?.taperValue ?? TAPER_DEFAULT)
-      : setTaperMidValue(data?.taperValue ?? TAPER_DEFAULT);
-    setWeighting(data?.weighting ?? IMAGE_WEIGHTING_DEFAULT);
-    setRobust(data?.robust ?? ROBUST_DEFAULT);
-    setPolarisations(data?.polarisations ?? []);
-    setChannelsOut(data?.channelsOut ?? channelsOutMax());
-    setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
-    setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
-    setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
-    const parsedBitDepth =
-      typeof data?.bitDepth === 'string' && data.bitDepth.trim() !== ''
-        ? Number(data.bitDepth)
-        : data?.bitDepth;
-    setBitDepth(
-      typeof parsedBitDepth === 'number' && Number.isFinite(parsedBitDepth)
-        ? parsedBitDepth
-        : getDefaultBitDepth()
-    );
-    setOutputFrequencyResolution(data?.outputFrequencyResolution ?? 1);
-    setOutputSamplingInterval(data?.outputSamplingInterval ?? 1);
-    setDispersionMeasure(data?.dispersionMeasure ?? 0);
-    setRotationMeasure(data?.rotationMeasure ?? 0);
-  };
-
-  const dataProductOut = (): DataProductSDPNew | undefined => {
-    if (!id || !hasRealObservationSelection()) {
-      return undefined;
-    }
-
-    const taper = isLow() ? taperLowValue : taperMidValue;
-    const selected = getProposal()?.dataProductSDP?.find((dp) => dp.id === id)?.selected;
-    return {
-      id: id,
-      observationId,
-      selected,
-      data: {
-        dataProductType,
-        imageSizeValue,
-        imageSizeUnits,
-        pixelSizeValue,
-        pixelSizeUnits,
-        weighting,
-        robust,
-        polarisations,
-        channelsOut,
-        taperValue: taper,
-        timeAveraging,
-        frequencyAveraging,
-        bitDepth,
-        continuumSubtraction,
-        outputFrequencyResolution,
-        outputSamplingInterval,
-        dispersionMeasure,
-        rotationMeasure
-      }
-    };
-  };
-
-  /* ------------------------------------------- */
-
-  // Combined mode's hidden visibilities ODP (see HiddenSDPData) is created automatically by the
-  // SV auto-linking flow, but a data product added/edited manually here needs the same companion
-  // - add it if this observation doesn't already have one.
-  const ensureHiddenDataProduct = (
-    dataProducts: DataProductSDPNew[],
-    observation?: Observation
-  ): DataProductSDPNew[] => {
-    if (!observation || observation.type !== TYPE_CONTINUUM_SPECTRAL) {
-      return dataProducts;
-    }
-    const alreadyHasHidden = dataProducts.some(
-      (dp) => dp.observationId === observation.id && getDataProductTypeValue(dp) === DP_TYPE_VISIBLE
-    );
-    if (alreadyHasHidden) {
-      return dataProducts;
-    }
-    const hiddenData = HiddenSDPData(observation);
-    if (!hiddenData) {
-      return dataProducts;
-    }
-    return [
-      ...dataProducts,
-      {
-        id: generateDataProductId(),
-        observationId: observation.id,
-        data: hiddenData
-      }
-    ];
-  };
-
-  /**
-   * Add Observation Data Products (ODPs) for both imaging and visabilities to the proposal.
-   */
-  const addToProposal = () => {
-    if (!hasRealObservationSelection()) {
+  const commit = () => {
+    if (!getDataProductSchema().safeParse(dp).success) {
       return;
     }
-
-    const proposal = getProposal();
-    const observation = getObservation();
-    const newDataProduct = dataProductOut();
-    if (!newDataProduct) {
-      return;
-    }
-
-    const dataProductSDP = ensureHiddenDataProduct(
-      [...(proposal?.dataProductSDP ?? []), newDataProduct],
-      observation
-    );
-    setProposal({
-      ...proposal,
-      dataProductSDP
-    });
-  };
-
-  /**
-   * Update the proposal's Observation Data Products (ODPs) for both imaging and visabilities.
-   */
-  const updateToProposal = () => {
-    if (!hasRealObservationSelection()) {
-      return;
-    }
-    const proposal = getProposal();
-    const observation = getObservation();
-    const newDataProduct = dataProductOut();
-    if (!newDataProduct) {
-      return;
-    }
-    const loaded = loadedDataProductRef.current;
-    const existingDataProduct = (proposal.dataProductSDP ?? []).find(
-      (dp) => dp.id === newDataProduct.id && dp.observationId === newDataProduct.observationId
-    );
-    loadedDataProductRef.current = null;
-    if (
-      loaded?.id === newDataProduct.id &&
-      loaded.observationId === newDataProduct.observationId &&
-      existingDataProduct
-    ) {
-      return;
-    }
-    const oldDataProducts = proposal.dataProductSDP ?? [];
-    const dataProductSDP = ensureHiddenDataProduct(
-      updateDataProducts(oldDataProducts, newDataProduct),
-      observation
-    );
-    // The sensitivity service recalculates the linked results from the stored data product
-    setProposal({
-      ...proposal,
-      dataProductSDP
-    });
-  };
-
-  const updateStorageProposal = () => {
-    if (!hasInitializedDataProductRef.current) {
-      return;
-    }
-    if (osdCyclePolicy?.maxDataProducts === 1) {
-      isEdit() ? updateToProposal() : addToProposal();
-    }
-  };
-
-  // set correct default polarisations depending on data product type & pst mode from obs type
-  const getDefaultPolarisations = (obsType: string, dataProductType: number): string[] => {
-    if (obsType === TYPE_PST) {
-      if (dataProductType === FLOW_THROUGH_VALUE) return ['X', 'Y'];
-      if (dataProductType === DETECTED_FILTER_BANK_VALUE) return ['I'];
-      return [];
-    }
-    return ['I', 'XX'];
-  };
-
-  // set correct data product type depending on pst mode from obs type
-  const getDataProductType = (obsType: string, pstMode?: number): number => {
-    if (obsType === TYPE_PST) {
-      if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
-        return FLOW_THROUGH_VALUE;
-      }
-      return Number(pstMode);
-    }
-    return DP_TYPE_IMAGES; // default for non-pst
-  };
-
-  const handleDataProductTypeChange = (nextType: string | number) => {
-    const newDataProductType = Number(nextType);
-
-    if (!isEdit() || newDataProductType === dataProductType) {
-      setDataProductType(newDataProductType);
-      return;
-    }
-
-    if (!isContinuum()) {
-      setDataProductType(newDataProductType);
-      return;
-    }
-
-    const proposal = getProposal();
-    const observation = getObservation();
-
-    if (!observation) {
-      return;
-    }
-
-    const currentLinkedDataProduct = getLinkedDataProduct(observation.id, id) ?? dataProductOut();
-    const currentDataProduct =
-      currentLinkedDataProduct.id === id ? dataProductOut() : currentLinkedDataProduct;
-
-    if (!currentDataProduct) {
-      return;
-    }
-
-    const nextLinkedDataProduct = getSiblingContinuumDataProduct(
-      observation.id,
-      currentDataProduct.id,
-      newDataProductType
-    );
-
-    if (!nextLinkedDataProduct) {
-      return;
-    }
-
-    const resetUnlinkedDataProduct = resetContinuumDataProduct(currentDataProduct, observation);
-    const dataProductsAfterReset = updateDataProducts(
-      updateDataProducts(proposal.dataProductSDP ?? [], resetUnlinkedDataProduct),
-      nextLinkedDataProduct
-    ).map((dp) =>
-      dp.observationId === observation.id
-        ? { ...dp, selected: dp.id === nextLinkedDataProduct.id }
-        : dp
-    );
-    form.setValue(
-      'targetObservation',
-      updateLinkedDataProductId(getLinks(), observation.id, nextLinkedDataProduct.id)
-    );
-    setProposal({
-      ...proposal,
-      dataProductSDP: dataProductsAfterReset
-    });
-    dataProductIn(nextLinkedDataProduct);
-  };
-
-  /* ------------------------------------------- */
-
-  React.useEffect(() => {
-    setHelp('observations.dp');
-    const proposal = getProposal();
-    const observations = proposal?.observations ?? [];
-
-    setBaseObservations(observations);
-    if (isEdit()) {
-      const selectedDataProduct = data ? data : (locationProperties.state as DataProductSDPNew);
-      const linkedDataProduct = getLinkedDataProduct(
-        selectedDataProduct.observationId,
-        selectedDataProduct.id
+    const dataProducts = proposalForm.getValues('dataProducts');
+    const updated = dataProducts.some((other) => other.id === dp.id)
+      ? dataProducts.map((other) => (other.id === dp.id ? dp : other))
+      : [...dataProducts, dp];
+    // A continuum and spectral observation also needs its hidden visibilities companion
+    const needsCompanion =
+      observation.type === TYPE_CONTINUUM_SPECTRAL &&
+      !updated.some(
+        (other) =>
+          other.observationId === observation.id &&
+          other.kind === DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES
       );
+    proposalForm.setValue('dataProducts', [
+      ...updated,
+      ...(needsCompanion ? newDataProductsForMode(observation).slice(1) : [])
+    ]);
+    navigate(NAV[BACK_PAGE]);
+  };
 
-      const dataProductToLoad = linkedDataProduct ?? selectedDataProduct;
-      loadedDataProductRef.current = dataProductToLoad;
-      dataProductIn(dataProductToLoad);
-    } else {
-      const fallbackObservation =
-        observations.find((obs) => obs.type === TYPE_PST) ?? observations[0];
-      if (fallbackObservation?.id && !observationId) {
-        setObservationId(fallbackObservation.id);
-      }
-      setId(generateDataProductId());
-    }
-    hasInitializedDataProductRef.current = true;
-  }, []);
-
-  React.useEffect(() => {
-    if (!polarisationsError) return;
-    const timeout = setTimeout(() => {
-      setPolarisationsError('');
-    }, NOTIFICATION_DELAY_IN_SECONDS * 1000);
-    return () => clearTimeout(timeout);
-  }, [polarisationsError]);
-
-  React.useEffect(() => {
-    if (!isEdit()) {
-      const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
-      setDataProductType(sdpType);
-      setBitDepth(getDefaultBitDepth());
-      setChannelsOut(channelsOutMax());
-    }
-  }, [observationId]);
-
-  React.useEffect(() => {
-    if (!isEdit()) {
-      const pol = getDefaultPolarisations(getObservation()?.type ?? '', dataProductType);
-      setPolarisations(pol);
-    }
-  }, [dataProductType]);
-
-  React.useEffect(() => {
-    updateStorageProposal();
-  }, [
-    id,
-    observationId,
-    dataProductType,
-    bitDepth,
-    imageSizeValue,
-    imageSizeUnits,
-    pixelSizeValue,
-    pixelSizeUnits,
-    taperLowValue,
-    taperMidValue,
-    timeAveraging,
-    frequencyAveraging,
-    weighting,
-    robust,
-    channelsOut,
-    continuumSubtraction,
-    polarisations,
-    outputFrequencyResolution,
-    outputSamplingInterval,
-    dispersionMeasure,
-    rotationMeasure
-  ]);
-
-  const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
-    <Box
+  const footer = (
+    <Paper
       sx={{
-        p: 0,
-        pt: 1,
-        height: height
+        bgcolor: 'transparent',
+        position: 'fixed',
+        bottom: FOOTER_HEIGHT_PHT,
+        left: 0,
+        right: 0
       }}
-    >
-      {children}
-    </Box>
-  );
-
-  const taperField = () => {
-    return isLow()
-      ? fieldWrapper(
-          <TaperField
-            disabled={isLow()}
-            onFocus={() => setHelp('taper')}
-            required
-            setValue={setTaperLowValue}
-            value={taperLowValue}
-            suffix={t('taper.units')}
-          />
-        )
-      : fieldWrapper(
-          <TaperDropdown
-            onFocus={() => setHelp('taper')}
-            required
-            setValue={setTaperMidValue}
-            value={taperMidValue}
-            suffix={t('taper.units')}
-            centralFrequency={getCentralFrequency()}
-          />
-        );
-  };
-
-  const getCentralFrequency = () => {
-    const obj = baseObservations.find((id) => id.id === observationId);
-    const output: ValueUnitPair = {
-      value: Number(obj?.centralFrequency) ?? 0,
-      unit: obj?.centralFrequencyUnits.toString() ?? ''
-    };
-    return output;
-  };
-
-  const imageSizeField = () =>
-    fieldWrapper(
-      <ImageSizeField
-        onFocus={() => setHelp('imageSize')}
-        required
-        setValue={setImageSizeValue}
-        value={Number(imageSizeValue)}
-        units={imageSizeUnits}
-        setUnits={setImageSizeUnits}
-      />
-    );
-
-  const timeAveragingField = () => {
-    return fieldWrapper(
-      <TimeAveragingField
-        onFocus={() => setHelp('timeAveraging')}
-        required
-        setValue={setTimeAveraging}
-        value={Number(timeAveraging)}
-      />
-    );
-  };
-
-  const frequencyAveragingField = () =>
-    fieldWrapper(
-      <FrequencyAveragingField
-        onFocus={() => setHelp('frequencyAveraging')}
-        required
-        setValue={setFrequencyAveraging}
-        value={Number(frequencyAveraging)}
-      />
-    );
-
-  const pixelSizeField = () =>
-    fieldWrapper(
-      <PixelSizeField
-        onFocus={() => setHelp('pixelSize')}
-        setValue={setPixelSizeValue}
-        required
-        value={pixelSizeValue}
-        units={pixelSizeUnits}
-        setUnits={setPixelSizeUnits}
-      />
-    );
-
-  const imageWeightingField = () =>
-    fieldWrapper(
-      <ImageWeightingField
-        onFocus={() => setHelp('imageWeighting')}
-        required
-        setValue={setWeighting}
-        value={weighting}
-      />
-    );
-
-  const bitDepthField = () =>
-    fieldWrapper(
-      <BitDepthField
-        onFocus={() => setHelp('bitDepth')}
-        required
-        setValue={setBitDepth}
-        value={bitDepth}
-        options={
-          isPST()
-            ? isFlowThrough()
-              ? pstFlowThroughBitDepthOptions
-              : pstDedicatedFilterbankBitDepthOptions
-            : defaultBitDepthOptions
-        }
-      />
-    );
-
-  const dataProductTypeField = () =>
-    fieldWrapper(
-      <DataProductTypeField
-        observationType={getObservation()?.type || TYPE_CONTINUUM}
-        onFocus={() => setHelp('dataProductType')}
-        setValue={handleDataProductTypeChange}
-        value={dataProductType}
-      />
-    );
-
-  const robustField = () =>
-    fieldWrapper(
-      <RobustField
-        label={t('robust.label')}
-        onFocus={() => setHelp('robust')}
-        setValue={setRobust}
-        value={robust}
-      />
-    );
-
-  const channelsOutField = () => {
-    // Spectral mirrors the observation's zoom channels, so there is nothing to show without them
-    const zoomChannels = getObservation()?.zoomChannels;
-    if (isSpectral() && zoomChannels === undefined) {
-      return undefined;
-    }
-    return fieldWrapper(
-      <ChannelsOutField
-        disabled={isSpectral()}
-        maxValue={channelsOutMax()}
-        minValue={channelsOutMin()}
-        onFocus={() => setHelp('channelsOut', { min: channelsOutMin(), max: channelsOutMax() })}
-        required
-        setValue={setChannelsOut}
-        value={isSpectral() ? (zoomChannels as number) : channelsOut}
-      />
-    );
-  };
-
-  const continuumSubtractionField = () =>
-    fieldWrapper(
-      <ContinuumSubtractionField
-        onFocus={() => setHelp('continuumSubtraction')}
-        setValue={setContinuumSubtraction}
-        value={continuumSubtraction}
-      />
-    );
-
-  const polarisationsField = () => {
-    return (
-      <PolarisationsField
-        onFocus={() => setHelp('polarisations')}
-        observationType={getObservation()?.type || TYPE_CONTINUUM}
-        dataProductType={dataProductType}
-        value={polarisations}
-        setError={setPolarisationsError}
-        setValue={setPolarisations}
-        labelWidth={0}
-      />
-    );
-  };
-
-  const outputFrequencyResolutionField = () =>
-    fieldWrapper(
-      <OutputFrequencyResolutionField
-        required
-        setValue={setOutputFrequencyResolution}
-        value={outputFrequencyResolution}
-      />
-    );
-
-  const outputSamplingIntervalField = () =>
-    fieldWrapper(
-      <OutputSamplingIntervalField
-        required
-        setValue={setOutputSamplingInterval}
-        value={outputSamplingInterval}
-      />
-    );
-
-  const dispersionMeasureField = () =>
-    fieldWrapper(
-      <DispersionMeasureField required setValue={setDispersionMeasure} value={dispersionMeasure} />
-    );
-
-  const rotationMeasureField = () =>
-    fieldWrapper(
-      <RotationMeasureField required setValue={setRotationMeasure} value={rotationMeasure} />
-    );
-
-  const imageSizeValid = () => Number(imageSizeValue) > 0;
-  const pixelSizeValid = () => pixelSizeValue > 0;
-  const taperSizeValid = () => taperLowValue >= 0;
-  const taperMidSizeValid = () => taperMidValue >= 0;
-  const channelsOutValid = () =>
-    Number.isInteger(channelsOut) &&
-    channelsOut >= channelsOutMin() &&
-    channelsOut <= channelsOutMax();
-  const polarisationsValid = () => polarisations.length > 0;
-
-  const pageFooter = () => {
-    /**
-     * Update button is only enabled if the details pass basic validation.
-     */
-    const enabled = () => {
-      if (!hasRealObservationSelection()) {
-        return false;
-      }
-
-      const dataProduct = dataProductOut();
-      const polarisationsOk = dataProduct
-        ? isDataProductPolarisationsValid(getProposal(), dataProduct)
-        : polarisationsValid();
-
-      switch (getObservation()?.type) {
-        case TYPE_ZOOM:
-        case TYPE_CONTINUUM_SPECTRAL:
-          return (
-            pixelSizeValid() &&
-            imageSizeValid() &&
-            taperMidSizeValid() &&
-            taperSizeValid() &&
-            channelsOutValid() &&
-            polarisationsOk
-          );
-        case TYPE_PST:
-          return polarisationsOk;
-        case TYPE_CONTINUUM:
-        default:
-          if (isDataTypeOne()) {
-            return (
-              pixelSizeValid() &&
-              imageSizeValid() &&
-              taperSizeValid() &&
-              channelsOutValid() &&
-              polarisationsOk
-            );
-          } else {
-            return true;
-          }
-      }
-    };
-
-    const buttonClicked = () => {
-      isEdit() ? updateToProposal() : addToProposal();
-      if (osdCyclePolicy?.maxDataProducts !== 1) {
-        navigate(NAV[BACK_PAGE]);
-      }
-    };
-
-    return (
-      <Paper
-        sx={{
-          bgcolor: 'transparent',
-          position: 'fixed',
-          bottom: FOOTER_HEIGHT_PHT,
-          left: 0,
-          right: 0
-        }}
-        elevation={0}
-      >
-        <Grid
-          container
-          direction="row"
-          sx={{
-            p: 2,
-            alignItems: 'space-between',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Grid />
-          <Grid />
-          <Grid>
-            <AddButton
-              disabled={!enabled()}
-              primary
-              action={buttonClicked}
-              testId={'addDataProductButtonEntry'}
-              title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
-            />
-          </Grid>
-        </Grid>
-      </Paper>
-    );
-  };
-
-  // TODO These only works for the SV call as it assumes there is only one targetObservation for this observation
-  const targetObservation = (): TargetObservation | undefined =>
-    links.find((rec) => rec.observationId === observationId);
-
-  // Why the sensitivity calculator doesn't apply to this data product, or undefined when it does.
-  // PST is checked first: the observing mode alone rules the calculator out, target or not.
-  const sensCalcUnavailable = ():
-    { message: string; color: AlertColorTypes.Warning | AlertColorTypes.Error } | undefined => {
-    if (isPST()) {
-      return { message: t('page.7.pstUnavailable'), color: AlertColorTypes.Warning };
-    }
-    const link = targetObservation();
-    if (!link) {
-      return { message: t('sensitivityCalculatorResults.noTarget'), color: AlertColorTypes.Error };
-    }
-    const target = targets.find((tgt) => tgt.id === link.targetId);
-    if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
-      return {
-        message: t('sensitivityCalculatorResults.notApplicableForSSO'),
-        color: AlertColorTypes.Warning
-      };
-    }
-    return undefined;
-  };
-
-  const isNatural = () => {
-    if (!(isSpectral() || isContinuumSpectral() || (isContinuum() && isDataTypeOne()))) {
-      return false;
-    }
-    return isNonGaussianBeamWeighting(weighting, robust);
-  };
-
-  const scUnavailable = sensCalcUnavailable();
-
-  return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        width: '100%',
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: 0,
-        minHeight: 0
-      }}
+      elevation={0}
     >
       <Grid
         container
         direction="row"
-        spacing={GAP}
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: 'stretch',
-          m: GAP,
-          mt: 1,
-          flexGrow: 1
-        }}
+        sx={{ p: 2, alignItems: 'space-between', justifyContent: 'space-between' }}
       >
-        <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
-          <BorderedSection title={t('page.7.obsTitle')}>
-            <Box
-              sx={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                border: '1px solid',
-                borderColor: '#ccc',
-                borderRadius: '8px',
-                minHeight: 0,
-                maxHeight: 'calc(100vh - 260px)',
-                overflowY: 'auto',
-                overflowX: 'hidden'
-              }}
-            >
-              {baseObservations && (
-                <GridObservation
-                  data={baseObservations}
-                  autoSelectId={observationId}
-                  rowClick={(e: any) => setObservationId(e.row.id)}
-                  disabled={maxObservationsReached()}
-                />
-              )}
-            </Box>
-          </BorderedSection>
-        </Grid>
-        <Grid size={{ md: 7, lg: 7 }}>
-          <Stack spacing={GAP}>
-            {isContinuum() && <Box sx={{ width: '500px' }}>{dataProductTypeField()}</Box>}
-
-            {isContinuum() && (
-              <BorderedSection title={t('page.7.group.' + TYPE_CONTINUUM + '.' + dataProductType)}>
-                {isDataTypeOne() && (
-                  <Grid
-                    container
-                    spacing={GAP}
-                    sx={{
-                      pb: 1
-                    }}
-                  >
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {fieldWrapper(imageWeightingField())}
-                    </Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {weighting === IW_BRIGGS && fieldWrapper(robustField())}
-                    </Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
-                  </Grid>
-                )}
-                {!isDataTypeOne() && (
-                  <Grid
-                    container
-                    sx={{
-                      pb: 1
-                    }}
-                  >
-                    <Grid size={{ md: COL_MID }}>{fieldWrapper(timeAveragingField())}</Grid>
-                    <Grid size={{ md: COL_MID }}>{fieldWrapper(frequencyAveragingField())}</Grid>
-                  </Grid>
-                )}
-              </BorderedSection>
-            )}
-
-            {(isSpectral() || isContinuumSpectral()) && (
-              <BorderedSection title={t('page.7.group.' + TYPE_ZOOM)}>
-                <Grid
-                  container
-                  spacing={GAP}
-                  sx={{
-                    pb: 1
-                  }}
-                >
-                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>
-                    {weighting === IW_BRIGGS && fieldWrapper(robustField())}
-                  </Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
-                  {isSpectral() && (
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {fieldWrapper(continuumSubtractionField())}
-                    </Grid>
-                  )}
-                </Grid>
-              </BorderedSection>
-            )}
-
-            {isPST() && (
-              <BorderedSection title={t('page.7.group.' + TYPE_PST + '.' + dataProductType)}>
-                {isFlowThrough() && (
-                  <Grid
-                    container
-                    sx={{
-                      pb: 1
-                    }}
-                  >
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(bitDepthField())}</Grid>
-                  </Grid>
-                )}
-                {isPulsarTiming() && (
-                  <Grid
-                    container
-                    sx={{
-                      pb: 1
-                    }}
-                  >
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {<TickIcon onClick={() => {}} />}All set!
-                    </Grid>
-                  </Grid>
-                )}
-                {isDetectedFilterbank() && (
-                  <Grid
-                    container
-                    sx={{
-                      pb: 1
-                    }}
-                  >
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {fieldWrapper(outputFrequencyResolutionField())}
-                    </Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {fieldWrapper(outputSamplingIntervalField())}
-                    </Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(bitDepthField())}</Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {fieldWrapper(dispersionMeasureField())}
-                    </Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {fieldWrapper(rotationMeasureField())}
-                    </Grid>
-                  </Grid>
-                )}
-              </BorderedSection>
-            )}
-
-            {((isContinuum() && isDataTypeOne()) ||
-              isSpectral() ||
-              isContinuumSpectral() ||
-              (isPST() && !isPulsarTiming())) && (
-              <Box
-                sx={{
-                  pb: GAP
-                }}
-              >
-                <BorderedSection
-                  borderColor={
-                    polarisationsValid() && polarisationsError.length === 0
-                      ? 'text.disabled'
-                      : theme.palette.error.main
-                  }
-                  title={
-                    polarisationsError.length > 0 ? polarisationsError : t('polarisations.label')
-                  }
-                >
-                  {fieldWrapper(
-                    polarisationsField(),
-                    (isContinuum() && isDataTypeOne()) || isSpectral() || isContinuumSpectral()
-                      ? '150px'
-                      : undefined
-                  )}
-                </BorderedSection>
-              </Box>
-            )}
-          </Stack>
-        </Grid>
-
-        <Grid size={{ md: 11, lg: 3 }}>
-          <BorderedSection borderColor={theme.palette.info.main} title={t('page.7.descTitle')}>
-            <Typography variant="subtitle1" sx={{ whiteSpace: 'pre-line' }}>
-              {t('page.7.descContent.' + getObservation()?.type + '.' + getSuffix())}
-            </Typography>
-          </BorderedSection>
-          {showSC && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}
-          {showSC && (
-            <BorderedSection
-              borderColor={
-                scUnavailable
-                  ? scUnavailable.color === AlertColorTypes.Error
-                    ? theme.palette.error.main
-                    : theme.palette.warning.main
-                  : targetObservation()?.sensitivity == undefined
-                    ? theme.palette.warning.main
-                    : targetObservation()?.sensitivity?.state === SENSITIVITY_STATE.CALCULATING
-                      ? theme.palette.info.main
-                      : targetObservation()?.sensitivity?.state === SENSITIVITY_STATE.FAILED
-                        ? theme.palette.error.main
-                        : theme.palette.success.main
-              }
-              title={
-                isContinuum()
-                  ? `${t('sensitivityCalculatorResults.title')} (Imaging ODP)`
-                  : t('sensitivityCalculatorResults.title')
-              }
-            >
-              {scUnavailable ? (
-                <Alert testId="alertSensCalResultsId" color={scUnavailable.color}>
-                  <Typography sx={{ p: GAP }}>{scUnavailable.message}</Typography>
-                </Alert>
-              ) : (
-                <SensCalcContent
-                  targetObservation={targetObservation() as TargetObservation}
-                  isNatural={isNatural()}
-                  hideSpectralResults={hideSpectralSensitivityResults}
-                />
-              )}
-            </BorderedSection>
-          )}
+        <Grid />
+        <Grid />
+        <Grid>
+          <AddButton
+            disabled={!entryForm.formState.isValid}
+            primary
+            action={commit}
+            testId={'addDataProductButtonEntry'}
+            title={existing ? 'updateBtn.label' : 'addBtn.label'}
+          />
         </Grid>
       </Grid>
-      {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
-    </Box>
+    </Paper>
   );
+
+  return (
+    <FormProvider {...entryForm}>
+      <DataProductView
+        index={0}
+        observation={observation}
+        observations={observations}
+        onSelectObservation={selectObservation}
+        onContinuumKindChange={switchContinuumKind}
+        footer={footer}
+      />
+    </FormProvider>
+  );
+}
+
+/**
+ * The page to add a data product, or to edit the one passed in the route state, for a proposal
+ * with several data products. An SV proposal's data product is edited in place on the data
+ * products page instead (DataProductInPlace).
+ */
+export default function DataProduct() {
+  const locationProperties = useLocation();
+  const { application } = storageObject.useStore();
+  const observations = (application.content2 as Proposal)?.observations ?? [];
+
+  if (observations.length === 0) {
+    return null;
+  }
+  const editId = (locationProperties.state as { id?: string } | null)?.id;
+  return <DataProductEntry key={editId ?? 'new'} observations={observations} editId={editId} />;
 }

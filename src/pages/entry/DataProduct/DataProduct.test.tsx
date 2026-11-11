@@ -1,65 +1,34 @@
-// DataProduct.test.tsx
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
-import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
-import {
-  IW_BRIGGS,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  SENSITIVITY_STATE,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
-  TYPE_ZOOM
-} from '@/utils/constants.ts';
+import { DATA_PRODUCT_KIND, DataProductInput } from '@/models/proposals/dataProducts';
+import { dataProductToLegacy } from '@/models/proposals/useCopySlicesToStore';
+import { TYPE_CONTINUUM, TYPE_PST } from '@/utils/constants.ts';
 import DataProduct from './DataProduct';
-
-const wrapper = (component: React.ReactElement) => {
-  return render(<TestProposalFormProvider>{component}</TestProposalFormProvider>);
-};
 
 // --- Mocks ---
 vi.mock('@/utils/help/useHelp', () => ({ useHelp: () => ({ setHelp: vi.fn() }) }));
-let mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
+const mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ osdCyclePolicy: mockOsdCyclePolicy })
 }));
 
-let mockStoreReturn: any = {
-  application: { content2: { observations: [], dataProductSDP: [] } },
-  updateAppContent2: vi.fn()
-};
+let mockStoreReturn: any;
 vi.mock('@utils/storage/store', () => ({
   storageObject: { useStore: () => mockStoreReturn }
 }));
 
+let mockId = 0;
 vi.mock('@/utils/helpers', () => ({
   generateId: () => 'SDP000001',
+  generateDataProductId: () => `new-dp-${++mockId}`,
   convertFrequencyToDisplayUnits: (value: number, unit: string) => ({ value, unit }),
   getSpectralResolutionHz: () => 1000000,
   frequencyConversion: (value: number) => value
 }));
 
 // Lightweight mocks for child components
-vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
-  default: ({ value, options }: { value: number; options?: Array<{ value: number }> }) => (
-    <div
-      data-testid="BitDepthField"
-      data-value={String(value)}
-      data-options={JSON.stringify((options ?? []).map((option) => option.value))}
-    />
-  )
-}));
-vi.mock('@/components/fields/dataProductType/dataProductType', () => ({
-  default: (props: any) => (
-    <div data-testid="DataProductTypeField" data-value={String(props.value)}>
-      {/* 2 = DP_TYPE_VISIBLE */}
-      <button data-testid="selectVisibilities" onClick={() => props.setValue(2)} />
-    </div>
-  )
-}));
 vi.mock('@/components/grid/observation/GridObservation', () => ({
   default: (props: any) => (
     <div data-testid="GridObservation">
@@ -79,554 +48,109 @@ vi.mock('@/components/button/Add/Add', () => ({
   )
 }));
 
-const values = ({
-  weighted,
-  beamSize = '1.00 x 2.00'
-}: {
-  weighted: number;
-  beamSize?: string;
-}): SensitivityValues => ({
-  weightedSensitivity: { value: weighted, unit: 'Jy/beam' },
-  totalSensitivity: { value: 3, unit: 'Jy/beam' },
-  confusionNoise: { value: 2, unit: 'Jy/beam' },
-  surfaceBrightnessSensitivity: { value: 4, unit: 'K' },
-  synthesizedBeamSize: { value: beamSize, unit: 'arcsec2' }
+const theme = createTheme();
+
+// The images or visibilities choice of a continuum observation
+const productType = () => screen.getByRole('combobox', { name: 'dataProductType.label' });
+const IMAGES = 'dataProductType.options.continuum.1';
+
+const observation = (type: string, extra: object = {}) => ({
+  id: 'OBS1',
+  type,
+  observingBand: 'low',
+  centralFrequency: 1,
+  centralFrequencyUnits: 'Hz',
+  supplied: { value: 1 },
+  continuumBandwidth: 1,
+  continuumBandwidthUnits: 2,
+  bandwidth: 1,
+  ...extra
 });
 
-describe('DataProduct component', () => {
-  const theme = createTheme();
-  const existingDataProduct = {
-    id: 'DP1',
-    observationId: 'OBS1',
-    data: { dataProductType: 1 }
-  } as DataProductSDPNew;
-
-  const renderExistingDataProduct = (
-    sensitivity?: Sensitivity,
-    observationType: string = TYPE_CONTINUUM,
-    targets: { id: string; kind: number }[] = []
-  ) => {
-    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [
-            {
-              id: 'OBS1',
-              type: observationType,
-              centralFrequency: 1,
-              centralFrequencyUnits: 'Hz',
-              supplied: { value: 1 },
-              continuumBandwidth: 1,
-              continuumBandwidthUnits: 2,
-              bandwidth: 1
-            }
-          ],
-          dataProductSDP: [existingDataProduct],
-          targets,
-          targetObservation: sensitivity
-            ? [
-                {
-                  observationId: 'OBS1',
-                  dataProductsSDPId: 'DP1',
-                  targetId: 'T1',
-                  sensitivity
-                }
-              ]
-            : []
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct data={existingDataProduct} />
-      </ThemeProvider>
-    );
+// The store the form is seeded from. The sensitivity results still read the data products' legacy
+// copy from it, so it holds that too.
+const openProposal = (proposal: {
+  observations: object[];
+  dataProducts: DataProductInput[];
+  targetObservation?: object[];
+  targets?: object[];
+}) => {
+  mockStoreReturn = {
+    application: {
+      content2: {
+        id: 'prsl-1',
+        targets: [],
+        targetObservation: [],
+        ...proposal,
+        dataProductSDP: proposal.dataProducts.map(dataProductToLegacy)
+      }
+    },
+    updateAppContent2: vi.fn()
   };
+};
 
-  beforeEach(() => {
-    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
-    mockStoreReturn = {
-      application: { content2: { observations: [], dataProductSDP: [] } },
-      updateAppContent2: vi.fn()
-    };
-  });
+// The proposal the form last copied into the store
+const storedProposal = () => mockStoreReturn.updateAppContent2.mock.calls.at(-1)?.[0];
 
-  it('renders key input fields', () => {
-    wrapper(
+const renderPage = () =>
+  render(
+    <TestProposalFormProvider>
       <ThemeProvider theme={theme}>
         <DataProduct />
       </ThemeProvider>
-    );
-    // expect(screen.getByTestId('taper')).toBeInTheDocument();
-    // expect(screen.getByTestId('imageSize')).toBeInTheDocument();
-    // expect(screen.getByTestId('pixelSize')).toBeInTheDocument();
-    // expect(screen.getByTestId('imageWeighting')).toBeInTheDocument();
-  });
-
-  it('hides continuum sensitivity results when only one output channel is selected', () => {
-    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
-    const singleChannelDataProduct = {
-      ...existingDataProduct,
-      data: { ...existingDataProduct.data, channelsOut: 1 }
-    } as DataProductSDPNew;
-    const sensitivity: Sensitivity = {
-      state: SENSITIVITY_STATE.DONE,
-      continuum: values({ weighted: 1 }),
-      spectral: values({ weighted: 2 })
-    };
-
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [
-            {
-              id: 'OBS1',
-              type: TYPE_CONTINUUM,
-              centralFrequency: 1,
-              centralFrequencyUnits: 'Hz',
-              supplied: { value: 1 },
-              continuumBandwidth: 1,
-              continuumBandwidthUnits: 2
-            }
-          ],
-          dataProductSDP: [singleChannelDataProduct],
-          targetObservation: [
-            {
-              observationId: 'OBS1',
-              dataProductsSDPId: 'DP1',
-              targetId: 'T1',
-              sensitivity
-            }
-          ]
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
-
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct data={singleChannelDataProduct} />
-      </ThemeProvider>
-    );
-
-    expect(
-      screen.getByText('sensitivityCalculatorResults.title (Imaging ODP)')
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toBeInTheDocument();
-    expect(screen.queryByTestId('field-spectralSensitivityWeighted')).not.toBeInTheDocument();
-  });
-
-  it('updates taper value when user types', () => {
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
-    // const taperInput = screen.getByTestId('taper');
-    // fireEvent.change(taperInput, { target: { value: '42' } });
-    // expect((taperInput as HTMLInputElement).value).toBe('42');
-  });
-
-  it('updates image size units via DropDown', () => {
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
-    // const dropdown = screen.getByTestId('frequencyUnits');
-    // fireEvent.change(dropdown, { target: { value: '2' } });
-    // expect((dropdown as HTMLSelectElement).value).toBe('2');
-  });
-
-  it('renders GridObservation when observations exist', () => {
-    mockStoreReturn = {
-      application: { content2: { observations: [{ id: 'OBS1' }], dataProductSDP: [] } },
-      updateAppContent2: vi.fn()
-    };
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
-    expect(screen.getByTestId('GridObservation')).toBeInTheDocument();
-    expect(screen.getByText(/Observation OBS1/)).toBeInTheDocument();
-  });
-
-  it('renders AddButton in footer and is disabled initially', () => {
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
-    const addButton = screen.getByTestId('addDataProductButtonEntry');
-    expect(addButton).toBeInTheDocument();
-    expect(addButton).toHaveAttribute('disabled');
-  });
-
-  it('uses the correct bit-depth options and default for PST flow-through mode', () => {
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [{ id: 'OBS1', type: 'pst', pstMode: 0, observingBand: 'low' }],
-          dataProductSDP: []
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
-
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
-
-    const bitDepthField = screen.getByTestId('BitDepthField');
-    expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8,16]');
-    expect(bitDepthField).toHaveAttribute('data-value', '8');
-  });
-
-  it('uses the correct bit-depth options and default for PST detected-filterbank mode', () => {
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1, observingBand: 'low' }],
-          dataProductSDP: []
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
-
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
-
-    const bitDepthField = screen.getByTestId('BitDepthField');
-    expect(bitDepthField).toHaveAttribute('data-options', '[1,2,4,8]');
-    expect(bitDepthField).toHaveAttribute('data-value', '8');
-  });
-
-  it('does not persist a data product when no real observation has been selected', () => {
-    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [],
-          dataProductSDP: []
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
-
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
-
-    expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
-  });
-
-  it('shows persisted sensitivity results without changing the proposal when the edit page loads', () => {
-    renderExistingDataProduct({
-      state: SENSITIVITY_STATE.DONE,
-      continuum: values({ weighted: 1 }),
-      spectral: values({ weighted: 2 })
-    });
-
-    expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
-    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
-  });
-
-  describe('when the sensitivity calculator does not apply', () => {
-    it('reports PST as unsupported', () => {
-      renderExistingDataProduct(undefined, TYPE_PST);
-
-      expect(screen.getByText('page.7.pstUnavailable')).toBeInTheDocument();
-    });
-
-    it('asks for a target when none is linked', () => {
-      renderExistingDataProduct();
-
-      expect(screen.getByText('sensitivityCalculatorResults.noTarget')).toBeInTheDocument();
-    });
-
-    it('reports SSO targets as unsupported', () => {
-      renderExistingDataProduct({ state: SENSITIVITY_STATE.CALCULATING }, TYPE_CONTINUUM, [
-        { id: 'T1', kind: REFERENCE_COORDINATE_TYPE_SSO.value }
-      ]);
-
-      expect(
-        screen.getByText('sensitivityCalculatorResults.notApplicableForSSO')
-      ).toBeInTheDocument();
-    });
-  });
-
-  it('persists a data product when a valid observation is explicitly selected', async () => {
-    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
-    const updateAppContent2 = vi.fn((proposal: any) => {
-      mockStoreReturn.application.content2 = proposal;
-    });
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [
-            {
-              id: 'OBS1',
-              type: 'continuum',
-              centralFrequency: 1,
-              centralFrequencyUnits: 'Hz'
-            },
-            {
-              id: 'OBS2',
-              type: 'continuum',
-              centralFrequency: 2,
-              centralFrequencyUnits: 'Hz'
-            }
-          ],
-          dataProductSDP: []
-        }
-      },
-      updateAppContent2
-    };
-
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
-
-    fireEvent.click(screen.getByText(/Observation OBS2/));
-
-    await waitFor(() => {
-      expect(mockStoreReturn.application.content2.dataProductSDP?.at(-1)?.observationId).toBe(
-        'OBS2'
-      );
-    });
-  });
-
-  it.each([TYPE_CONTINUUM, TYPE_ZOOM, TYPE_CONTINUUM_SPECTRAL])(
-    'shows the robust field by default for a %s data product with no saved weighting',
-    (observationType) => {
-      renderExistingDataProduct(undefined, observationType);
-
-      expect(screen.getByLabelText('robust.label')).toBeInTheDocument();
-    }
+    </TestProposalFormProvider>
   );
 
-  it('falls back to the PST observation for the description when no observation is selected', () => {
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [{ id: 'OBS1', type: 'pst' }],
-          dataProductSDP: []
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
+beforeEach(() => {
+  mockId = 0;
+  openProposal({ observations: [], dataProducts: [] });
+});
 
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
+describe('DataProduct entry', () => {
+  it('shows nothing until the proposal has an observation', () => {
+    renderPage();
 
-    expect(screen.getByText('page.7.descContent.pst.0')).toBeInTheDocument();
+    expect(screen.queryByTestId('GridObservation')).not.toBeInTheDocument();
   });
 
-  it('uses the detected-filterbank PST description when the observation has that mode', () => {
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1 }],
-          dataProductSDP: []
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
+  const observations = [
+    observation(TYPE_CONTINUUM),
+    observation(TYPE_PST, { id: 'OBS2', pstMode: 1 })
+  ];
 
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct />
-      </ThemeProvider>
-    );
+  it('starts with the defaults for the PST observation', () => {
+    openProposal({ observations, dataProducts: [] });
+    renderPage();
 
-    expect(screen.getByText('page.7.descContent.pst.1')).toBeInTheDocument();
+    expect(screen.getByText(/Observation OBS1/)).toBeInTheDocument();
+    expect(screen.getByText('page.7.descContent.pstDetectedFilterbank')).toBeInTheDocument();
   });
 
-  it('treats Briggs robust=2 as non-Gaussian sensitivity output', async () => {
-    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [
-            {
-              id: 'OBS1',
-              type: 'continuum',
-              observingBand: 'low',
-              centralFrequency: 1,
-              centralFrequencyUnits: 'Hz',
-              supplied: { value: 1 },
-              continuumBandwidth: 1,
-              continuumBandwidthUnits: 2,
-              bandwidth: 1
-            }
-          ],
-          dataProductSDP: [
-            {
-              id: 'DP1',
-              observationId: 'OBS1',
-              data: {
-                dataProductType: 1,
-                weighting: IW_BRIGGS,
-                robust: 2,
-                polarisations: ['I']
-              }
-            }
-          ],
-          targetObservation: [
-            {
-              observationId: 'OBS1',
-              dataProductsSDPId: 'DP1',
-              targetId: 'T1',
-              sensitivity: {
-                state: SENSITIVITY_STATE.DONE,
-                continuum: values({ weighted: 7.18, beamSize: '0' }),
-                spectral: values({ weighted: 1 })
-              }
-            }
-          ]
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
+  it('starts again with the defaults of another observation when the user picks it', async () => {
+    openProposal({ observations, dataProducts: [] });
+    renderPage();
 
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct data={mockStoreReturn.application.content2.dataProductSDP[0] as any} />
-      </ThemeProvider>
-    );
+    fireEvent.click(screen.getByText(/Observation OBS1/));
 
-    await waitFor(() => {
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent(
-        'sensitivityCalculatorResults.nonGaussian'
-      );
-      expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('7.18');
-    });
+    await waitFor(() => expect(productType()).toHaveTextContent(IMAGES));
   });
 
-  it('keeps uniform weighting out of the non-Gaussian sensitivity path', async () => {
-    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [
-            {
-              id: 'OBS1',
-              type: 'continuum',
-              observingBand: 'low',
-              centralFrequency: 1,
-              centralFrequencyUnits: 'Hz',
-              supplied: { value: 1 },
-              continuumBandwidth: 1,
-              continuumBandwidthUnits: 2,
-              bandwidth: 1
-            }
-          ],
-          dataProductSDP: [
-            {
-              id: 'DP1',
-              observationId: 'OBS1',
-              data: {
-                dataProductType: 1,
-                weighting: 1,
-                robust: 2,
-                polarisations: ['I']
-              }
-            }
-          ],
-          targetObservation: [
-            {
-              observationId: 'OBS1',
-              dataProductsSDPId: 'DP1',
-              targetId: 'T1',
-              sensitivity: {
-                state: SENSITIVITY_STATE.DONE,
-                continuum: values({ weighted: 7.18, beamSize: '0' }),
-                spectral: values({ weighted: 1 })
-              }
-            }
-          ]
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
+  it('adds the data product to the proposal only when the user adds it', async () => {
+    openProposal({ observations, dataProducts: [] });
+    renderPage();
+    const add = screen.getByTestId('addDataProductButtonEntry');
+    await waitFor(() => expect(add).toBeEnabled());
+    expect(storedProposal()?.dataProducts ?? []).toEqual([]);
 
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct data={mockStoreReturn.application.content2.dataProductSDP[0] as any} />
-      </ThemeProvider>
+    fireEvent.click(add);
+
+    await waitFor(() =>
+      expect(storedProposal().dataProducts).toEqual([
+        expect.objectContaining({
+          observationId: 'OBS2',
+          kind: DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK
+        })
+      ])
     );
-
-    await waitFor(() => {
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).not.toHaveTextContent(
-        'sensitivityCalculatorResults.nonGaussian'
-      );
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent('0');
-    });
-  });
-
-  it('loads and saves legacy string bit depths in edit mode', async () => {
-    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
-    const updateAppContent2 = vi.fn((proposal: any) => {
-      mockStoreReturn.application.content2 = proposal;
-    });
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1, observingBand: 'low' }],
-          dataProductSDP: []
-        }
-      },
-      updateAppContent2
-    };
-
-    const legacyBitDepth = '8';
-    const legacyData = {
-      id: 'DP-LEGACY-8',
-      observationId: 'OBS1',
-      data: {
-        dataProductType: 1,
-        bitDepth: legacyBitDepth,
-        polarisations: ['I'],
-        outputFrequencyResolution: 1,
-        outputSamplingInterval: 1,
-        dispersionMeasure: 1,
-        rotationMeasure: 1
-      }
-    };
-
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct data={legacyData as any} />
-      </ThemeProvider>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId('BitDepthField')).toHaveAttribute(
-        'data-value',
-        String(Number(legacyBitDepth))
-      );
-    });
-
-    await waitFor(() => {
-      expect(updateAppContent2).toHaveBeenCalled();
-      const savedProposal = updateAppContent2.mock.calls.at(-1)[0];
-      const savedDataProduct = savedProposal.dataProductSDP.at(-1);
-      expect(savedDataProduct.data.bitDepth).toBe(Number(legacyBitDepth));
-    });
   });
 });

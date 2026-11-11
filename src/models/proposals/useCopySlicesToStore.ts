@@ -12,7 +12,13 @@ import {
   PULSAR_TIMING_VALUE
 } from '@utils/constants';
 import { ProposalType, STORE_COPIED_SLICES } from './proposal';
-import { ANGLE_UNIT, DATA_PRODUCT_KIND, DataProductInput } from './dataProducts';
+import {
+  ANGLE_UNIT,
+  DATA_PRODUCT_KIND,
+  DataProductInput,
+  STEPPED_FIELD,
+  steppedToPdm
+} from './dataProducts';
 
 const pickSlices = (values: Partial<ProposalType>) =>
   Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])) as ProposalType;
@@ -51,8 +57,11 @@ export const dataProductToLegacy = (dp: DataProductInput): DataProductSDPNew => 
         ...ids,
         data: {
           dataProductType: DP_TYPE_VISIBLE,
-          timeAveraging: dp.timeAveraging,
-          frequencyAveraging: dp.frequencyAveraging
+          timeAveraging: steppedToPdm(dp.timeAveragingS, STEPPED_FIELD.TIME_AVERAGING_S),
+          frequencyAveraging: steppedToPdm(
+            dp.frequencyAveragingKhz,
+            STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ
+          )
         }
       };
     case DATA_PRODUCT_KIND.PST_FLOW_THROUGH:
@@ -71,8 +80,14 @@ export const dataProductToLegacy = (dp: DataProductInput): DataProductSDPNew => 
           dataProductType: DETECTED_FILTER_BANK_VALUE,
           polarisations: dp.polarisations,
           bitDepth: dp.bitDepth,
-          outputFrequencyResolution: dp.outputFrequencyResolution,
-          outputSamplingInterval: dp.outputSamplingInterval,
+          outputFrequencyResolution: steppedToPdm(
+            dp.outputFrequencyResolutionKhz,
+            STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ
+          ),
+          outputSamplingInterval: steppedToPdm(
+            dp.outputSamplingIntervalMs,
+            STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS
+          ),
           dispersionMeasure: dp.dispersionMeasure,
           rotationMeasure: dp.rotationMeasure
         }

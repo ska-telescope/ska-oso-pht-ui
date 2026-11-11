@@ -1,12 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
+  CHANNELS_OUT_DEFAULT,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
-  DP_TYPE_VISIBLE,
-  IW_BRIGGS,
+  IMAGE_SIZE_DEFAULT,
+  PIXEL_SIZE_DEFAULT,
   REFERENCE_COORDINATE_TYPE_SSO,
+  ROBUST_DEFAULT,
   SENSITIVITY_STATE,
+  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
+  TAPER_DEFAULT,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -15,7 +19,12 @@ import {
 import * as helpers from '../helpers';
 import Proposal from '../types/proposal';
 import type { ProposalFormAccess } from '@/models/proposals/proposal';
-import { SDPImageContinuumData, SDPSpectralData } from '../types/dataProduct';
+import {
+  DATA_PRODUCT_KIND,
+  DataProductInput,
+  STEPPED_FIELD,
+  steppedFromPdm
+} from '@/models/proposals/dataProducts';
 import { getDefaultObservationLowAA2 } from '../helpers';
 import Observation from '../types/observation';
 import {
@@ -25,13 +34,42 @@ import {
   regenerateForMode,
   setObservingMode
 } from './AutoLinking';
-import {
-  CONTINUUM_IMAGE_DATA_PRODUCT,
-  PST_TIMING_DATA_PRODUCT,
-  SPECTRAL_DATA_PRODUCT
-} from './mockSDP';
 import { mockTarget } from './mockTarget';
 import { mockCalibration } from './mockCalibration';
+
+// The default data products, as the mocked id generator names them
+const imageFields = {
+  imageSize: { value: IMAGE_SIZE_DEFAULT, unit: 'deg' },
+  pixelSize: { value: PIXEL_SIZE_DEFAULT, unit: 'arcsec' },
+  weighting: 'briggs',
+  robust: ROBUST_DEFAULT,
+  taper: TAPER_DEFAULT,
+  polarisations: ['I'],
+  channelsOut: CHANNELS_OUT_DEFAULT
+} as const;
+
+const PST_TIMING_DATA_PRODUCT: DataProductInput = {
+  id: 'SDP-0000000',
+  observationId: 'obs-123',
+  kind: DATA_PRODUCT_KIND.PST_TIMING
+};
+
+const CONTINUUM_IMAGE_DATA_PRODUCT: DataProductInput = {
+  id: 'SDP-0000000',
+  observationId: 'obs-123',
+  kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE,
+  ...imageFields,
+  polarisations: ['I']
+};
+
+const SPECTRAL_DATA_PRODUCT: DataProductInput = {
+  id: 'SDP-0000000',
+  observationId: 'obs-123',
+  kind: DATA_PRODUCT_KIND.SPECTRAL_IMAGE,
+  ...imageFields,
+  polarisations: ['I'],
+  continuumSubtraction: SET_CONTINUUM_SUBSTRACTION_DEFAULT
+};
 
 // The tests keep one proposal object as the store; this form reads and writes its slices on that
 // same object, so each test can check every slice in one place
@@ -94,11 +132,15 @@ describe('AutoLinking, newDataProductsForMode', () => {
     };
     const sdps = newDataProductsForMode(obs);
     expect(sdps).toHaveLength(2);
-    // The main data product is selected; the hidden visibilities one is not
-    expect(sdps[0]).to.deep.equal({ ...CONTINUUM_IMAGE_DATA_PRODUCT, selected: true });
-    expect(sdps[1].observationId).toBe('obs-123');
-    expect(sdps[1].data?.dataProductType).toBe(DP_TYPE_VISIBLE);
-    expect(sdps[1].selected).toBeUndefined();
+    // The main data product comes first, then the hidden visibilities one
+    expect(sdps[0]).to.deep.equal(CONTINUUM_IMAGE_DATA_PRODUCT);
+    expect(sdps[1]).toEqual({
+      id: 'SDP-0000001',
+      observationId: 'obs-123',
+      kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+      timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
+      frequencyAveragingKhz: steppedFromPdm(4, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
+    });
   });
 
   test('SDP default spectral', () => {
@@ -111,11 +153,13 @@ describe('AutoLinking, newDataProductsForMode', () => {
     };
     const sdps = newDataProductsForMode(obs);
     expect(sdps).toHaveLength(2);
-    // The main data product is selected; the hidden visibilities one is not
-    expect(sdps[0]).to.deep.equal({ ...SPECTRAL_DATA_PRODUCT, selected: true });
-    expect(sdps[1].observationId).toBe('obs-123');
-    expect(sdps[1].data?.dataProductType).toBe(DP_TYPE_VISIBLE);
-    expect(sdps[1].selected).toBeUndefined();
+    // The main data product comes first, then the hidden visibilities one
+    expect(sdps[0]).to.deep.equal(SPECTRAL_DATA_PRODUCT);
+    expect(sdps[1]).toMatchObject({
+      observationId: 'obs-123',
+      kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+      frequencyAveragingKhz: steppedFromPdm(1, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
+    });
   });
 
   test('SDP default PST', () => {
@@ -126,7 +170,7 @@ describe('AutoLinking, newDataProductsForMode', () => {
     };
     const sdps = newDataProductsForMode(obs);
     expect(sdps).toHaveLength(1);
-    expect(sdps[0]).to.deep.equal({ ...PST_TIMING_DATA_PRODUCT, selected: true });
+    expect(sdps[0]).to.deep.equal(PST_TIMING_DATA_PRODUCT);
   });
 
   // Continuum and spectral weighting is already covered by the deep-equal fixture tests above;
@@ -137,9 +181,11 @@ describe('AutoLinking, newDataProductsForMode', () => {
       id: 'obs-123',
       type: TYPE_CONTINUUM_SPECTRAL
     };
-    const data = newDataProductsForMode(obs)[0].data as SDPImageContinuumData;
-    expect(data.weighting).toBe(IW_BRIGGS);
-    expect(data.robust).toBe(0);
+    expect(newDataProductsForMode(obs)[0]).toMatchObject({
+      kind: DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE,
+      weighting: 'briggs',
+      robust: 0
+    });
   });
 });
 
@@ -162,7 +208,7 @@ describe('regenerateForMode()', () => {
     proposal = {
       targets: [mockTarget],
       observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'existing-obs' }],
-      dataProductSDP: [
+      dataProducts: [
         { ...CONTINUUM_IMAGE_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' }
       ],
       targetObservation: [
@@ -209,14 +255,14 @@ describe('regenerateForMode()', () => {
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.targets?.[0]).toEqual(mockTarget);
 
-    expect(proposal.dataProductSDP).toHaveLength(2);
-    expect(proposal.dataProductSDP?.[0].observationId).toBe('mock-0000000');
+    expect(proposal.dataProducts).toHaveLength(2);
+    expect(proposal.dataProducts?.[0].observationId).toBe('mock-0000000');
 
     expect(proposal.calibrationStrategy).toHaveLength(1);
 
     expect(proposal.targetObservation).toHaveLength(1);
     expect(proposal.targetObservation?.[0].observationId).toBe('mock-0000000');
-    expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe(proposal.dataProductSDP?.[0].id);
+    expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe(proposal.dataProducts?.[0].id);
     expect(proposal.targetObservation?.[0].sensitivity).toEqual(PARTIAL_RESULTS);
   });
 
@@ -234,11 +280,11 @@ describe('regenerateForMode()', () => {
 
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(2);
+    expect(proposal.dataProducts).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
 
     expect(proposal.observations?.[0].id).not.toBe('existing-obs');
-    expect(proposal.dataProductSDP?.[0].id).not.toBe('existing-sdp');
+    expect(proposal.dataProducts?.[0].id).not.toBe('existing-sdp');
     expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
   });
 
@@ -257,18 +303,18 @@ describe('regenerateForMode()', () => {
 
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProducts).toHaveLength(1);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
     expect(proposal.observations?.[0].id).not.toBe('existing-obs');
-    expect(proposal.dataProductSDP?.[0].id).not.toBe('existing-sdp');
+    expect(proposal.dataProducts?.[0].id).not.toBe('existing-sdp');
     expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
 
     const obs = proposal.observations?.[0];
     expect(obs?.type).toBe(TYPE_PST);
 
-    const sdp = proposal.dataProductSDP?.[0];
+    const sdp = proposal.dataProducts?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
 
     const link = proposal.targetObservation?.[0];
@@ -295,23 +341,21 @@ describe('regenerateForMode()', () => {
 
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(2);
+    expect(proposal.dataProducts).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
     expect(proposal.observations?.[0].id).not.toBe('existing-obs');
-    expect(proposal.dataProductSDP?.[0].id).not.toBe('existing-sdp');
+    expect(proposal.dataProducts?.[0].id).not.toBe('existing-sdp');
     expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
 
     const obs = proposal.observations?.[0];
     expect(obs?.type).toBe(TYPE_ZOOM);
 
-    const sdp = proposal.dataProductSDP?.[0];
+    const sdp = proposal.dataProducts?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
 
-    expect((sdp?.data as SDPSpectralData)?.polarisations).toEqual(
-      (SPECTRAL_DATA_PRODUCT.data as SDPSpectralData).polarisations
-    );
+    expect(sdp).toMatchObject({ kind: DATA_PRODUCT_KIND.SPECTRAL_IMAGE, polarisations: ['I'] });
 
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
@@ -327,16 +371,8 @@ describe('regenerateForMode()', () => {
     proposal = {
       targets: [mockTarget],
       observations: [{ ...DEFAULT_PST_OBSERVATION_LOW, id: 'existing-pst-obs' }],
-      dataProductSDP: [
-        {
-          ...PST_TIMING_DATA_PRODUCT,
-          id: 'existing-pst-sdp',
-          observationId: 'existing-pst-obs',
-          data: {
-            ...PST_TIMING_DATA_PRODUCT.data,
-            polarisations: ['XX']
-          } as SDPImageContinuumData
-        }
+      dataProducts: [
+        { ...PST_TIMING_DATA_PRODUCT, id: 'existing-pst-sdp', observationId: 'existing-pst-obs' }
       ],
       targetObservation: [
         {
@@ -365,22 +401,20 @@ describe('regenerateForMode()', () => {
 
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(2);
+    expect(proposal.dataProducts).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
     expect(proposal.observations?.[0].id).not.toBe('existing-pst-obs');
-    expect(proposal.dataProductSDP?.[0].id).not.toBe('existing-pst-sdp');
+    expect(proposal.dataProducts?.[0].id).not.toBe('existing-pst-sdp');
     expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-pst-cal');
 
     const obs = proposal.observations?.[0];
     expect(obs?.type).toBe(TYPE_CONTINUUM);
 
-    const sdp = proposal.dataProductSDP?.[0];
+    const sdp = proposal.dataProducts?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
-    expect((sdp?.data as SDPImageContinuumData)?.polarisations).toEqual(
-      (CONTINUUM_IMAGE_DATA_PRODUCT?.data as SDPImageContinuumData)?.polarisations
-    );
+    expect(sdp).toMatchObject({ kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE, polarisations: ['I'] });
 
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
@@ -419,7 +453,7 @@ describe('regenerateForMode()', () => {
     // The function should populate the required arrays even if they were missing
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(2);
+    expect(proposal.dataProducts).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
   });
@@ -440,7 +474,7 @@ describe('regenerateForMode()', () => {
     // the link is still created — that's the whole point of SSO support
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(2);
+    expect(proposal.dataProducts).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
@@ -464,7 +498,7 @@ describe('setObservingMode()', () => {
       abstract: 'An abstract',
       targets: [],
       observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'existing-obs' }],
-      dataProductSDP: [
+      dataProducts: [
         { ...CONTINUUM_IMAGE_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' }
       ],
       targetObservation: [],
@@ -491,8 +525,8 @@ describe('setObservingMode()', () => {
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.observations?.[0].type).toBe(TYPE_PST);
     expect(proposal.observations?.[0].id).toBe('mock-0000000');
-    expect(proposal.dataProductSDP).toHaveLength(1);
-    expect(proposal.dataProductSDP?.[0].observationId).toBe('mock-0000000');
+    expect(proposal.dataProducts).toHaveLength(1);
+    expect(proposal.dataProducts?.[0].observationId).toBe('mock-0000000');
 
     // The link and calibration need a target, so nothing is created for them
     expect(proposal.targetObservation).toEqual([]);
@@ -543,13 +577,15 @@ describe('linkTarget()', () => {
       abstract: 'An abstract',
       targets: [],
       observations: [editedObservation],
-      dataProductSDP: [
+      dataProducts: [
         { ...SPECTRAL_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' },
         {
           id: 'existing-hidden-sdp',
           observationId: 'existing-obs',
-          data: { dataProductType: DP_TYPE_VISIBLE }
-        } as any
+          kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+          timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
+          frequencyAveragingKhz: steppedFromPdm(1, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
+        }
       ],
       targetObservation: [],
       calibrationStrategy: [
@@ -581,7 +617,7 @@ describe('linkTarget()', () => {
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     expect(proposal.observations).toEqual([editedObservation]);
-    expect(proposal.dataProductSDP?.map((dp) => dp.id)).toEqual([
+    expect(proposal.dataProducts?.map((dp) => dp.id)).toEqual([
       'existing-sdp',
       'existing-hidden-sdp'
     ]);
@@ -598,23 +634,18 @@ describe('linkTarget()', () => {
     ]);
   });
 
-  it('links the selected data product rather than the first one', async () => {
+  it("links the observation's main data product, not another observation's", async () => {
     proposal = {
       ...proposal,
-      dataProductSDP: [
-        { ...SPECTRAL_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' },
-        {
-          id: 'existing-hidden-sdp',
-          observationId: 'existing-obs',
-          selected: true,
-          data: { dataProductType: DP_TYPE_VISIBLE }
-        } as any
+      dataProducts: [
+        { ...CONTINUUM_IMAGE_DATA_PRODUCT, id: 'other-sdp', observationId: 'other-obs' },
+        ...(proposal.dataProducts ?? [])
       ]
     };
 
     await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
-    expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('existing-hidden-sdp');
+    expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('existing-sdp');
   });
 
   it('creates a calibration strategy for the existing observation, keeping existing notes', async () => {
@@ -626,7 +657,7 @@ describe('linkTarget()', () => {
   });
 
   it('creates a default continuum observation and data products when there is no observation', async () => {
-    proposal = { ...proposal, observations: [], dataProductSDP: [] };
+    proposal = { ...proposal, observations: [], dataProducts: [] };
 
     await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
@@ -634,19 +665,19 @@ describe('linkTarget()', () => {
     expect(proposal.observations?.[0].id).toBe('mock-obs');
     expect(proposal.observations?.[0].type).toBe(TYPE_CONTINUUM);
     // Continuum has an images data product plus a hidden visibilities one
-    expect(proposal.dataProductSDP).toHaveLength(2);
-    proposal.dataProductSDP?.forEach((dp) => expect(dp.observationId).toBe('mock-obs'));
+    expect(proposal.dataProducts).toHaveLength(2);
+    proposal.dataProducts?.forEach((dp) => expect(dp.observationId).toBe('mock-obs'));
     expect(proposal.targetObservation?.[0].observationId).toBe('mock-obs');
   });
 
   it('creates default data products when the observation has none', async () => {
-    proposal = { ...proposal, dataProductSDP: [] };
+    proposal = { ...proposal, dataProducts: [] };
 
     await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
     expect(proposal.observations).toEqual([editedObservation]);
-    expect(proposal.dataProductSDP?.length).toBeGreaterThan(0);
-    proposal.dataProductSDP?.forEach((dp) => expect(dp.observationId).toBe('existing-obs'));
+    expect(proposal.dataProducts?.length).toBeGreaterThan(0);
+    proposal.dataProducts?.forEach((dp) => expect(dp.observationId).toBe('existing-obs'));
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('mock-sdp');
   });
 });
