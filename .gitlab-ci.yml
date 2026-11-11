@@ -103,11 +103,19 @@ js-e2e-deploy:
     - kubectl get namespace "$KUBE_NAMESPACE" --show-labels || echo "namespace lookup failed"
 
 js-e2e-test:
+  # SPLIT: "true" makes cypress-split (cypress.config.mjs) read GitLab's CI_NODE_INDEX/
+  # CI_NODE_TOTAL to give each job its share of the specs, balanced by the durations in SPLIT_FILE
+  parallel: 3
   variables:
     <<: *e2e_vars
-    JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
-    CYPRESS_PARALLEL_WORKERS: "3"
-  environment: *e2e_env
+    SPLIT: "true"
+    SPLIT_FILE: scripts/cypress-timings.json
+  environment:
+    <<: *e2e_env
+    # The template makes this job a deployment with auto_stop_in: 1 minute, so the first job to
+    # finish could stop the environment while the others are still running. Accessing it
+    # instead leaves stopping to js-e2e-deploy's auto_stop_in.
+    action: access
   after_script:
     - *e2e_expansion_log
 

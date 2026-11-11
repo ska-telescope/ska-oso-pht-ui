@@ -94,20 +94,21 @@ can stop animating, and tests fail with elements that "exist but are not visible
     elements are visible using the helpers in ``common.js``. Remove this advice once those tests
     have been replaced.
 
-To run the whole suite headless across several workers, as CI does:
+To run the whole suite headless across several workers (4 unless you pass ``--workers=N``):
 
 .. code-block:: bash
 
     yarn test:e2e:parallel --browser chromium
 
-On Linux, this needs ``xvfb-run`` to give each worker its own virtual display. On Ubuntu or
-Debian, install it with ``sudo apt-get install xvfb``.
+On Linux without a display, this needs ``xvfb-run`` to give each worker its own virtual display.
+On Ubuntu or Debian, install it with ``sudo apt-get install xvfb``.
 
 Specs are shared between the workers by how long each took last time, from
-``scripts/cypress-timings.json``. Each run rewrites that file, so commit it when specs have been
-added or removed, or their durations have changed a lot.
+``scripts/cypress-timings.json``. Each local run rewrites that file, so commit it when specs have
+been added or removed, or their durations have changed a lot.
 
-CI runs it through ``make js-e2e-test`` against a fresh deployment with an empty database.
+CI runs ``make js-e2e-test`` in three parallel jobs, which share the specs in the same way,
+against a fresh deployment with an empty database.
 Failing tests are retried twice in headless runs.
 
 Test Structure

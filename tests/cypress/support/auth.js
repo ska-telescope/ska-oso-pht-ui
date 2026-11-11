@@ -52,7 +52,7 @@ const ENV_KEYS = [
   'INDIGO_TEST_AUDIENCE',
   'INDIGO_OPS_USERNAME',
   'INDIGO_OPS_PASSWORD',
-  // Set per worker by scripts/cypressParallel.mjs
+  // Set per worker in cypress.config.mjs
   'WORKER_INDEX'
 ];
 
