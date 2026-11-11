@@ -119,10 +119,12 @@ stop-js-e2e-test:
     - *e2e_expansion_log
     - |
       api="$CI_API_V4_URL/projects/$CI_PROJECT_ID/environments"
-      curl -sf --header "PRIVATE-TOKEN: $ENV_CLEANUP_TOKEN" \
+      [ -n "$ENV_CLEANUP_TOKEN" ] || echo "environment cleanup: ENV_CLEANUP_TOKEN is not set for this job"
+      command -v jq >/dev/null || echo "environment cleanup: jq is not installed in this image"
+      curl -sSf --header "PRIVATE-TOKEN: $ENV_CLEANUP_TOKEN" \
         "$api?states=stopped&search=test/$CI_COMMIT_REF_SLUG-&per_page=100" \
       | jq -r --arg re "^test/${CI_COMMIT_REF_SLUG}-[0-9]+$" '.[] | select(.name | test($re)) | .id' \
-      | xargs -r -I{} curl -sf -X DELETE --header "PRIVATE-TOKEN: $ENV_CLEANUP_TOKEN" "$api/{}" \
+      | xargs -r -I{} curl -sSf -X DELETE --header "PRIVATE-TOKEN: $ENV_CLEANUP_TOKEN" "$api/{}" \
       || echo "environment cleanup failed (non-fatal)"
 
 info-dev-environment:
