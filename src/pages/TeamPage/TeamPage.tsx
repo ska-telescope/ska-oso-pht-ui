@@ -26,7 +26,7 @@ import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess
 import { accessPI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { useController, useFormState } from 'react-hook-form';
+import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';
 import { getTeamValues } from '@/models/proposals/team';
 
@@ -60,9 +60,8 @@ export default function TeamPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const {
-    field: { value: investigators, onChange: setInvestigators }
-  } = useController<ProposalFormValues, 'investigators'>({
+  const { setValue } = useFormContext<ProposalFormValues>();
+  const investigators = useWatch<ProposalFormValues, 'investigators'>({
     name: 'investigators',
     defaultValue: []
   });
@@ -164,7 +163,14 @@ export default function TeamPage() {
   const deleteConfirmed = () => {
     const updatedInvestigators = currentInvestigators.filter((e) => e.id !== currentMember);
 
-    setInvestigators(getTeamValues({ investigators: updatedInvestigators }).investigators);
+    setValue(
+      'investigators',
+      getTeamValues({ investigators: updatedInvestigators }).investigators,
+      {
+        shouldDirty: true,
+        shouldValidate: true
+      }
+    );
     setProposal({ ...getProposal(), investigators: updatedInvestigators });
     setCurrentMember('');
     closeDeleteDialog();
