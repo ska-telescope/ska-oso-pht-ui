@@ -73,11 +73,7 @@ const observation = (type: string): Observation => ({
   numStations: undefined
 });
 
-const renderModal = (
-  data: SensCalcRow[],
-  type: string,
-  { isCustom = false } = {}
-) =>
+const renderModal = (data: SensCalcRow[], type: string, { isCustom = false } = {}) =>
   render(
     <StoreProvider>
       <ThemeA11yProvider>

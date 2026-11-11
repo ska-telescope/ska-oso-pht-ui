@@ -192,15 +192,12 @@ export const targetObservationToPdm = (links: TargetObservationType): Result[] =
           null
       }
     };
-    result.continuum_confusion_noise = continuum
-      ? (continuum.confusionNoise ?? null)
-      : NO_QUANTITY;
+    result.continuum_confusion_noise = continuum ? (continuum.confusionNoise ?? null) : NO_QUANTITY;
     result.spectral_confusion_noise = spectral.confusionNoise ?? null;
     result.synthesized_beam_size = {
       continuum: continuum ? (continuum.synthesizedBeamSize?.value ?? null) : '',
       spectral: spectral.synthesizedBeamSize?.value ?? null,
-      unit:
-        spectral.synthesizedBeamSize?.unit ?? continuum?.synthesizedBeamSize?.unit ?? null
+      unit: spectral.synthesizedBeamSize?.unit ?? continuum?.synthesizedBeamSize?.unit ?? null
     };
     return result;
   });

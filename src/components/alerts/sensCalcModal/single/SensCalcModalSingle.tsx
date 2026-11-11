@@ -65,9 +65,7 @@ export default function SensCalcModalSingle({
         />
       </Card>
       <CardContent>
-        {targetObservation && (
-          <SensCalcContent targetObservation={targetObservation} />
-        )}
+        {targetObservation && <SensCalcContent targetObservation={targetObservation} />}
       </CardContent>
     </Dialog>
   );

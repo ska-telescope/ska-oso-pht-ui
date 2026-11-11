@@ -2,12 +2,7 @@ import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
-import {
-  SENSITIVITY_STATE,
-  TIME_UNITS,
-  TYPE_CONTINUUM,
-  TYPE_PST
-} from '@utils/constants.ts';
+import { SENSITIVITY_STATE, TIME_UNITS, TYPE_CONTINUUM, TYPE_PST } from '@utils/constants.ts';
 import { sensitivityStatusLevel } from '@utils/helpersSensCalc';
 import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
 import type { Sensitivity } from '@/models/proposals/targetObservation';

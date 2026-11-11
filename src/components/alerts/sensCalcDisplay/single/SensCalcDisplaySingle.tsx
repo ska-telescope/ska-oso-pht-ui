@@ -75,11 +75,7 @@ export default function SensCalcDisplaySingle({
           level={level}
         />
       )}
-      {show && field !== 'icon' && (
-        <div data-testid={`field-${field}`}>
-          {shownText()}
-        </div>
-      )}
+      {show && field !== 'icon' && <div data-testid={`field-${field}`}>{shownText()}</div>}
       {show && field === 'icon' && openDialog && (
         <SensCalcModalSingle
           open={openDialog}
