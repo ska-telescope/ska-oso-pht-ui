@@ -20,14 +20,10 @@ ODA_DATABASE=${ODA_DATABASE:-ska_oso_pht_ui}
 kubectl exec -i -n "$ODA_NAMESPACE" "$ODA_POD" -c patroni -- \
   psql -qAt -U postgres -d "$ODA_DATABASE" -v ON_ERROR_STOP=1 <<'SQL'
 SELECT 'cleanLocalDb: deleting ' || count(*) || ' proposal(s)' FROM proposal.proposals;
--- Every table in the proposal schema, plus the status rows that point at proposals
-DO $$
-BEGIN
-  EXECUTE (
-    SELECT 'TRUNCATE ' || string_agg(format('%I.%I', schemaname, tablename), ', ') || ' CASCADE'
-    FROM pg_tables
-    WHERE schemaname = 'proposal'
-       OR (schemaname = 'status' AND tablename IN ('entity_paths', 'status_entries'))
-  );
-END $$;
+-- Data tables only. The proposal schema also holds lookup tables (proposal_roles and the
+-- pm_*_statuses tables) that the migrations fill in, and creating a proposal fails without them.
+-- CASCADE only reaches tables that reference these, which lookup tables never do.
+TRUNCATE proposal.proposals, proposal.access_tmp, proposal.reviews, proposal.panels,
+  proposal.panel_decisions, status.entity_paths, status.status_entries CASCADE;
+SELECT 'cleanLocalDb: ' || count(*) || ' proposal role(s) kept' FROM proposal.proposal_roles;
 SQL
