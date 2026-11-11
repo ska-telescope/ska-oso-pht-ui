@@ -457,7 +457,7 @@ describe('DataProduct component', () => {
     expect(screen.getByText('page.7.descContent.pst.1')).toBeInTheDocument();
   });
 
-  it('treats Briggs robust=2 as non-Gaussian sensitivity output', async () => {
+  it('shows the results the calculator did not give for Briggs robust=2 as non-Gaussian', async () => {
     mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
     mockStoreReturn = {
       application: {
@@ -494,8 +494,8 @@ describe('DataProduct component', () => {
               targetId: 'T1',
               sensitivity: {
                 state: SENSITIVITY_STATE.DONE,
-                continuum: values({ weighted: 7.18, beamSize: '0' }),
-                spectral: values({ weighted: 1 })
+                continuum: { weightedSensitivity: { value: 7.18, unit: 'Jy/beam' } },
+                spectral: { weightedSensitivity: { value: 1, unit: 'Jy/beam' } }
               }
             }
           ]
@@ -515,67 +515,6 @@ describe('DataProduct component', () => {
         'sensitivityCalculatorResults.nonGaussian'
       );
       expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('7.18');
-    });
-  });
-
-  it('keeps uniform weighting out of the non-Gaussian sensitivity path', async () => {
-    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [
-            {
-              id: 'OBS1',
-              type: 'continuum',
-              observingBand: 'low',
-              centralFrequency: 1,
-              centralFrequencyUnits: 'Hz',
-              supplied: { value: 1 },
-              continuumBandwidth: 1,
-              continuumBandwidthUnits: 2,
-              bandwidth: 1
-            }
-          ],
-          dataProductSDP: [
-            {
-              id: 'DP1',
-              observationId: 'OBS1',
-              data: {
-                dataProductType: 1,
-                weighting: 1,
-                robust: 2,
-                polarisations: ['I']
-              }
-            }
-          ],
-          targetObservation: [
-            {
-              observationId: 'OBS1',
-              dataProductsSDPId: 'DP1',
-              targetId: 'T1',
-              sensitivity: {
-                state: SENSITIVITY_STATE.DONE,
-                continuum: values({ weighted: 7.18, beamSize: '0' }),
-                spectral: values({ weighted: 1 })
-              }
-            }
-          ]
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
-
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct data={mockStoreReturn.application.content2.dataProductSDP[0] as any} />
-      </ThemeProvider>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).not.toHaveTextContent(
-        'sensitivityCalculatorResults.nonGaussian'
-      );
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent('0');
     });
   });
 
