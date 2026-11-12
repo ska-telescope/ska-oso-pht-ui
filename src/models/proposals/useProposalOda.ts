@@ -7,6 +7,7 @@ import PutProposal from '@services/axios/put/putProposal/putProposal';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { ProposalType } from './proposal';
 import { mapPdmToForm } from './pdmMapper';
+import { relinkSvTarget } from '@/utils/autoLinking/AutoLinking';
 
 /**
  * Moves the proposal between the ODA (PDM) and the global proposal form (RHF).
@@ -27,7 +28,7 @@ export function useProposalOda() {
       let values: ProposalType;
       try {
         proposal = mapping(pdm);
-        values = mapPdmToForm(pdm);
+        values = relinkSvTarget(mapPdmToForm(pdm), proposal.observations ?? []);
       } catch (error) {
         return error instanceof Error ? error.message : 'error.API_UNKNOWN_ERROR';
       }

@@ -6,6 +6,7 @@ import {
   DEFAULT_ZOOM_OBSERVATION_LOW,
   IMAGE_SIZE_DEFAULT,
   PIXEL_SIZE_DEFAULT,
+  PROPOSAL_TYPE,
   REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SENSITIVITY_STATE,
@@ -32,8 +33,10 @@ import {
   newDataProductsForMode,
   newObservationForMode,
   regenerateForMode,
+  relinkSvTarget,
   setObservingMode
 } from './AutoLinking';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { mockTarget } from './mockTarget';
 import { mockCalibration } from './mockCalibration';
 
@@ -679,5 +682,83 @@ describe('linkTarget()', () => {
     expect(proposal.dataProducts?.length).toBeGreaterThan(0);
     proposal.dataProducts?.forEach((dp) => expect(dp.observationId).toBe('existing-obs'));
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('mock-sdp');
+  });
+});
+
+describe('relinkSvTarget()', () => {
+  const observation: Observation = { ...getDefaultObservationLowAA2(TYPE_CONTINUUM), id: 'obs-1' };
+  const target = { ...mockTarget, id: 'target-1' } as never;
+  // As loaded when the main data product was invalid at the last save: only its companion is left
+  const leftover: DataProductInput = {
+    id: 'SDP-old',
+    observationId: 'obs-1',
+    kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+    timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
+    frequencyAveragingKhz: steppedFromPdm(4, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
+  };
+  const svValues = {
+    ...getProposalFormDefaults(),
+    proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+    targets: [target],
+    dataProducts: [leftover]
+  };
+
+  beforeEach(() => {
+    vi.spyOn(helpers, 'generateDataProductId')
+      .mockReturnValueOnce('SDP-0000000')
+      .mockReturnValueOnce('SDP-0000001');
+  });
+
+  it('gives an SV target without a link the default data products, linked to it', () => {
+    const relinked = relinkSvTarget(svValues, [observation]);
+
+    // The leftover companion is replaced by the full default set
+    expect(relinked.dataProducts).toEqual([
+      expect.objectContaining({
+        id: 'SDP-0000000',
+        observationId: 'obs-1',
+        kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE
+      }),
+      expect.objectContaining({
+        id: 'SDP-0000001',
+        observationId: 'obs-1',
+        kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES
+      })
+    ]);
+    expect(relinked.targetObservation).toEqual([
+      {
+        targetId: 'target-1',
+        observationId: 'obs-1',
+        dataProductsSDPId: 'SDP-0000000',
+        sensitivity: PARTIAL_RESULTS
+      }
+    ]);
+    expect(relinked.calibrationStrategy).toBe(svValues.calibrationStrategy);
+  });
+
+  it('gives a PST observation its one default data product', () => {
+    const pst: Observation = { ...getDefaultObservationLowAA2(TYPE_PST), id: 'obs-1' };
+
+    const relinked = relinkSvTarget(svValues, [pst]);
+
+    expect(relinked.dataProducts).toHaveLength(1);
+    expect(relinked.targetObservation[0].dataProductsSDPId).toBe(relinked.dataProducts[0].id);
+  });
+
+  it.each([
+    [
+      'a link',
+      {
+        targetObservation: [
+          { targetId: 'target-1', observationId: 'obs-1', dataProductsSDPId: 'SDP-old' }
+        ]
+      }
+    ],
+    ['no target', { targets: [] }],
+    ['another proposal type', { proposalType: PROPOSAL_TYPE.STANDARD }]
+  ])('leaves a proposal with %s as it is', (_, change) => {
+    const values = { ...svValues, ...change } as typeof svValues;
+
+    expect(relinkSvTarget(values, [observation])).toBe(values);
   });
 });

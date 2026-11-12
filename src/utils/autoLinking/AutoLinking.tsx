@@ -1,6 +1,7 @@
 import { buildCalibrationStrategy } from '@/models/proposals/calibrationOperations';
-import type { ProposalFormAccess } from '@/models/proposals/proposal';
+import type { ProposalFormAccess, ProposalType } from '@/models/proposals/proposal';
 import {
+  PROPOSAL_TYPE,
   SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -187,6 +188,42 @@ export async function linkTarget(
   form.setValue('dataProducts', [...form.getValues('dataProducts'), ...newDataProducts]);
   setProposal({ ...getProposal(), observations: [observation] });
 }
+
+/**
+ * An SV proposal loaded with a target but no link gets its observation's default data products
+ * back, linked to the target. This happens when its main data product was invalid when it was
+ * last saved, so it and its link were left out. The calibration belongs to the observation, so it
+ * is kept. The sensitivity service calculates the new link's results.
+ */
+export const relinkSvTarget = (values: ProposalType, observations: Observation[]): ProposalType => {
+  const [target] = values.targets;
+  if (
+    values.proposalType !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
+    observations.length !== 1 ||
+    !target ||
+    values.targetObservation.length > 0
+  ) {
+    return values;
+  }
+  const [observation] = observations;
+  // Any data product left from the save is replaced too, with the full default set
+  const dataProducts = newDataProductsForMode(observation);
+  return {
+    ...values,
+    dataProducts: [
+      ...values.dataProducts.filter((dp) => dp.observationId !== observation.id),
+      ...dataProducts
+    ],
+    targetObservation: [
+      {
+        targetId: target.id,
+        observationId: observation.id,
+        dataProductsSDPId: dataProducts[0].id,
+        sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
+      }
+    ]
+  };
+};
 
 /**
  * Sets the observing mode of a proposal with a single observation (e.g. SV).
