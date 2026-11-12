@@ -8,6 +8,7 @@ import {
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
   SA_CUSTOM,
   SENSITIVITY_STATE,
+  TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG
@@ -143,10 +144,15 @@ export default function SensCalcContent({
     </>
   );
 
-  const spectralResolution = convertFrequencyToDisplayUnits(
+  const isLowContinuum =
+    observation.telescope === TELESCOPE_LOW_NUM &&
     [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
       observation.type
-    )
+    );
+
+  const spectralResolution = convertFrequencyToDisplayUnits(
+    // Only LOW continuum averages channels; MID sends a factor of 1 and zoom has no averaging
+    isLowContinuum
       ? getLowSpectralAveragingFactor(observation, dataProduct) *
           LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
       : getSpectralResolutionHz(observation) * 1e-3,
