@@ -10,6 +10,9 @@ import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 import { DATA_PRODUCT_KIND } from '@/models/proposals/dataProducts';
 
+// TODO Remove the legacy `dataProductSDP` from these mocks once nothing reads it from the store
+//  (the data products table, linking, validation, the observation summary, the sensitivity
+//  service and the legacy save mapping) and it is removed from the Proposal type.
 export const MockProposalFrontend: Proposal = {
   metadata: {
     version: 10,

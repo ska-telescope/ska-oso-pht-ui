@@ -5,9 +5,12 @@ import { mapping } from '@services/axios/get/getProposal/getProposal';
 import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { getProposalSchema } from './proposal';
+import { DataProductInput } from './dataProducts';
 import { PROPOSAL_STATUS, PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
+// A base from the legacy mapper, as on a real save, so the form's slices map back to it exactly
+const base = MappingPutProposal(mapping(pdm), PROPOSAL_STATUS.DRAFT);
 const emptySlices = {
   targets: [],
   targetObservation: [],
@@ -75,9 +78,7 @@ describe('mapFormToPdm', () => {
     expect(pdm.proposal_info.title).toBe(originalTitle);
   });
 
-  // A base from the legacy mapper, as on a real save, so the form's slices map back to it exactly
   test('round-trips through the form unchanged', () => {
-    const base = MappingPutProposal(mapping(pdm), PROPOSAL_STATUS.DRAFT);
     expect(mapFormToPdm(mapPdmToForm(base), base)).toEqual(base);
   });
 
@@ -87,6 +88,48 @@ describe('mapFormToPdm', () => {
     expect(result.observation_info.result_details).toEqual([]);
     expect(result.observation_info.calibration_strategy).toEqual([]);
     expect(result.observation_info.observation_sets).toEqual(pdm.observation_info.observation_sets);
+  });
+
+  test('saves the valid data products and their links', () => {
+    const result = mapFormToPdm(mapPdmToForm(base), base);
+
+    expect(result.observation_info.data_product_sdps).toEqual(
+      base.observation_info.data_product_sdps
+    );
+    expect(result.observation_info.result_details).toEqual(base.observation_info.result_details);
+  });
+
+  test('leaves out an invalid data product and the links to it, but keeps the others', () => {
+    const form = mapPdmToForm(base);
+    const [valid] = form.dataProducts;
+    const [validLink] = form.targetObservation;
+    // Being edited: the image size has no unit yet
+    const invalid = {
+      ...valid,
+      id: 'SDP-invalid',
+      imageSize: { value: 1, unit: null }
+    } as DataProductInput;
+
+    const result = mapFormToPdm(
+      {
+        ...form,
+        dataProducts: [valid, invalid],
+        targetObservation: [validLink, { ...validLink, dataProductsSDPId: invalid.id }]
+      },
+      base
+    );
+
+    expect(result.observation_info.data_product_sdps).toEqual(
+      base.observation_info.data_product_sdps
+    );
+    expect(result.observation_info.result_details).toEqual(base.observation_info.result_details);
+  });
+
+  test('saves no data products or links when there are none', () => {
+    const result = mapFormToPdm({ ...mapPdmToForm(base), dataProducts: [] }, base);
+
+    expect(result.observation_info.data_product_sdps).toEqual([]);
+    expect(result.observation_info.result_details).toEqual([]);
   });
 
   test('rejects an unsupported proposal type from the PDM', () => {

@@ -9,7 +9,11 @@ import {
 import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 import { SDPImageContinuumData } from '@/utils/types/dataProduct';
+import { DATA_PRODUCT_KIND } from '@/models/proposals/dataProducts';
 
+// TODO Remove the legacy `dataProductSDP` from these mocks once nothing reads it from the store
+//  (the data products table, linking, validation, the observation summary, the sensitivity
+//  service and the legacy save mapping) and it is removed from the Proposal type.
 export const MockProposalFrontend: Proposal = {
   metadata: {
     version: 10,
@@ -157,6 +161,20 @@ export const MockProposalFrontend: Proposal = {
         robust: 0,
         taperValue: 1
       } as SDPImageContinuumData
+    }
+  ],
+  dataProducts: [
+    {
+      id: 'SDP-2',
+      observationId: 'obs-obR1Ej',
+      kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE,
+      imageSize: { value: 15, unit: 'deg' },
+      pixelSize: { value: 1.007, unit: 'arcsec' },
+      weighting: 'uniform',
+      robust: 0,
+      taper: 1,
+      polarisations: ['I'],
+      channelsOut: 1
     }
   ],
   dataProductSRC: [],
