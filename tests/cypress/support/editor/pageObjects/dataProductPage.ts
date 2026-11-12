@@ -19,17 +19,17 @@ import type {
 const IMAGE_POLARISATIONS = ['I', 'Q', 'U', 'V', 'XX', 'XY', 'YX', 'YY'];
 const PST_POLARISATIONS = ['I', 'Q', 'U', 'V'];
 
-const imageSizeField = () => cy.findByRole('textbox', { name: 'Image Size' });
-const pixelSizeField = () => cy.findByRole('textbox', { name: 'Pixel Size' });
-const robustField = () => cy.findByRole('textbox', { name: 'Robust' });
-const channelsOutField = () => cy.findByRole('textbox', { name: 'Channels Out' });
+const imageSizeField = () => cy.findByRole('spinbutton', { name: 'Image Size' });
+const pixelSizeField = () => cy.findByRole('spinbutton', { name: 'Pixel Size' });
+const robustField = () => cy.findByRole('spinbutton', { name: 'Robust' });
+const channelsOutField = () => cy.findByRole('spinbutton', { name: 'Channels Out' });
 
 const outputFrequencyResolutionField = () =>
   cy.findByRole('spinbutton', { name: 'Output frequency resolution' });
 const outputSamplingIntervalField = () =>
   cy.findByRole('spinbutton', { name: 'Output sampling interval' });
-const dispersionMeasureField = () => cy.findByRole('textbox', { name: 'Dispersion Measure' });
-const rotationMeasureField = () => cy.findByRole('textbox', { name: 'Rotation Measure' });
+const dispersionMeasureField = () => cy.findByRole('spinbutton', { name: 'Dispersion Measure' });
+const rotationMeasureField = () => cy.findByRole('spinbutton', { name: 'Rotation Measure' });
 
 const setPolarisations = (options: string[], selected: string[]) =>
   options.forEach((p) => setChecked(p, selected.includes(p)));
@@ -45,9 +45,9 @@ const fillImage = (mode: ObservingMode, image: ImageDataProduct) => {
     select('Product type', 'Images');
   }
   enter(imageSizeField(), image.imageSize.value);
-  selectUnit('Image Size', image.imageSize.unit);
+  selectUnit(imageSizeField(), image.imageSize.unit);
   enter(pixelSizeField(), image.pixelSize.value);
-  selectUnit('Pixel Size', image.pixelSize.unit);
+  selectUnit(pixelSizeField(), image.pixelSize.unit);
   select('Image Weighting', image.weighting);
   if (image.weighting === 'Briggs') {
     enter(robustField(), image.robust ?? '');
@@ -66,9 +66,9 @@ const verifyImage = (mode: ObservingMode, image: ImageDataProduct) => {
     verifySelected('Product type', 'Images');
   }
   imageSizeField().should('have.value', image.imageSize.value);
-  verifySelectedUnit('Image Size', image.imageSize.unit);
+  verifySelectedUnit(imageSizeField(), image.imageSize.unit);
   pixelSizeField().should('have.value', image.pixelSize.value);
-  verifySelectedUnit('Pixel Size', image.pixelSize.unit);
+  verifySelectedUnit(pixelSizeField(), image.pixelSize.unit);
   verifySelected('Image Weighting', image.weighting);
   if (image.weighting === 'Briggs') {
     robustField().should('have.value', image.robust);

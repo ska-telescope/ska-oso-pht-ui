@@ -30,22 +30,18 @@ export const select = (label: string, option: string) => {
 export const verifySelected = (label: string, option: string) =>
   dropdown(label).should('have.text', option);
 
-// A unit dropdown has no label of its own, so it's found from the labelled value field it sits
-// next to: the closest container of the field that also holds a dropdown
-const unitDropdown = (label: string) =>
-  cy
-    .findByRole('textbox', { name: label })
-    .parents(':has([role="combobox"])')
-    .first()
-    .find('[role="combobox"]');
+// A unit dropdown has no label of its own, so it's found from the value field it sits next to:
+// the closest container of the field that also holds a dropdown
+const unitDropdown = (valueField: Cypress.Chainable<JQuery>) =>
+  valueField.parents(':has([role="combobox"])').first().find('[role="combobox"]');
 
-export const selectUnit = (label: string, option: string) => {
-  unitDropdown(label).click();
+export const selectUnit = (valueField: Cypress.Chainable<JQuery>, option: string) => {
+  unitDropdown(valueField).click();
   cy.findByRole('option', { name: option }).click();
 };
 
-export const verifySelectedUnit = (label: string, option: string) =>
-  unitDropdown(label).should('have.text', option);
+export const verifySelectedUnit = (valueField: Cypress.Chainable<JQuery>, option: string) =>
+  unitDropdown(valueField).should('have.text', option);
 
 const checkbox = (label: string) => {
   return cy.findByRole('checkbox', { name: label });

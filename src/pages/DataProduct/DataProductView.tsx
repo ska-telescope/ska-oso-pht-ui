@@ -223,6 +223,7 @@ export default function DataProductView({
           {isSpectral ? (
             zoomChannels !== undefined && (
               <TextField
+                type="number"
                 variant="standard"
                 fullWidth
                 disabled
@@ -329,6 +330,7 @@ export default function DataProductView({
                 name={`${path}.outputFrequencyResolutionKhz`}
                 label={t('outputFrequencyResolution.label')}
                 stepSize={STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ.step}
+                decimalPlaces={STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ.decimalPlaces}
                 showArrows
                 min={
                   STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ.minSteps *
@@ -343,6 +345,7 @@ export default function DataProductView({
                 name={`${path}.outputSamplingIntervalMs`}
                 label={t('outputSamplingInterval.label')}
                 stepSize={STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS.step}
+                decimalPlaces={STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS.decimalPlaces}
                 showArrows
                 min={
                   STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS.minSteps *

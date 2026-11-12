@@ -341,6 +341,37 @@ describe('DataProductInPlace', () => {
     }
   );
 
+  // A whole number of steps from the backend is shown to the field's decimal places
+  it('shows the detected filterbank resolution and sampling interval rounded', () => {
+    openProposal({
+      observations: [observation(TYPE_PST, { pstMode: 1 })],
+      dataProducts: [
+        {
+          id: 'DP1',
+          observationId: 'OBS1',
+          kind: DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK,
+          polarisations: ['I'],
+          bitDepth: 8,
+          outputFrequencyResolutionKhz: steppedFromPdm(
+            1,
+            STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ
+          ),
+          outputSamplingIntervalMs: steppedFromPdm(1, STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS),
+          dispersionMeasure: 0,
+          rotationMeasure: 0
+        } as DataProductInput
+      ]
+    });
+    renderPage();
+
+    expect(screen.getByRole('spinbutton', { name: 'outputFrequencyResolution.label' })).toHaveValue(
+      3.62
+    );
+    expect(screen.getByRole('spinbutton', { name: 'outputSamplingInterval.label' })).toHaveValue(
+      0.207
+    );
+  });
+
   it.each([
     [DATA_PRODUCT_KIND.PST_FLOW_THROUGH, 0, ['1', '2', '4', '8', '16'], ['X', 'Y']],
     [DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK, 1, ['1', '2', '4', '8'], ['I', 'Q', 'U', 'V']]
