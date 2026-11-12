@@ -12,7 +12,7 @@ const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
 const mockNotifyWarning = vi.hoisted(() => vi.fn());
-import { PROPOSAL_STATUS, TMP_REVIEWER_ID } from '@/utils/constants';
+import { NAV, PROPOSAL_STATUS, TMP_REVIEWER_ID } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
@@ -106,11 +106,16 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 
 // Stub TableSubmissions so the clone button reliably calls cloneFunction(id)
 vi.mock('@/components/table/tableSubmissions/TableSubmissions', () => ({
-  default: ({ cloneFunction, data }: any) =>
+  default: ({ cloneFunction, editFunction, data }: any) =>
     data.map((item: any) => (
-      <button key={item.id} data-testid="cloneIcon" onClick={() => cloneFunction(item.id)}>
-        Clone
-      </button>
+      <div key={item.id}>
+        <button data-testid="cloneIcon" onClick={() => cloneFunction(item.id)}>
+          Clone
+        </button>
+        <button data-testid="editIcon" onClick={() => editFunction(item.id)}>
+          Edit
+        </button>
+      </div>
     ))
 }));
 
@@ -252,7 +257,33 @@ describe('clone proposal', () => {
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
+  });
+
+  test('scrolls to the top when opening a proposal for editing', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    wrapper(<LandingPage />);
+
+    fireEvent.click(await screen.findByTestId('editIcon'));
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
+    expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID);
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
+  test('does not scroll or navigate when loading the proposal fails', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    const alert = vi.fn();
+    vi.stubGlobal('alert', alert);
+    mockLoadFromOda.mockResolvedValue('Unable to load proposal');
+    wrapper(<LandingPage />);
+
+    fireEvent.click(await screen.findByTestId('editIcon'));
+
+    await waitFor(() => expect(alert).toHaveBeenCalled());
+    expect(scrollTo).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   const triggerCloneConfirm = async () => {

@@ -158,11 +158,11 @@ export default function LandingPage() {
   const editIconClicked = async (id: string) => {
     if (!loggedIn) return;
 
-    const response = await getTheProposal(id);
-    if (typeof response === 'string') {
-      alert(t('error.iconClicked'));
-    } else {
+    if (await getTheProposal(id)) {
+      window.scrollTo(0, 0);
       goToTitlePage();
+    } else {
+      alert(t('error.iconClicked'));
     }
   };
 
