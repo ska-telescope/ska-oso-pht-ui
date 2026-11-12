@@ -54,14 +54,14 @@ CHANGELOG:
 
 # Currently, the dev template uses ci-dev-$CI_PROJECT_NAME which means only one branch can be deployed at a time, so we overwrite this
 .dev_env: &dev_env
-  variables:
+  variables: &dev_env_vars
     KUBE_NAMESPACE: "dev-ska-oso-pht-ui-aaa"
     KUBE_HOST: https://k8s.stfc.skao.int
   environment:
     name: "dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
 
 .staging_env: &staging_env
-  variables:
+  variables: &staging_env_vars
     KUBE_HOST: https://k8s.stfc.skao.int
     KUBE_NAMESPACE: "staging-$CI_PROJECT_NAME"
   rules:
@@ -79,10 +79,51 @@ CHANGELOG:
     - if: $CI_COMMIT_TAG
       when: manual
     
+# TEST: namespace + environment unique per pipeline rather than per commit/ref
+.e2e_isolation:
+  variables: &e2e_vars
+    KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_IID
+    # The deployment's app waits this long (ms) for backend responses, rather than the users' 20s
+    REQUEST_TIMEOUT_MS: "60000"
+  environment: &e2e_env
+    name: test/$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID
+    kubernetes:
+      namespace: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_IID
+
+js-e2e-deploy:
+  variables: *e2e_vars
+  environment: *e2e_env
+
 js-e2e-test:
+  # SPLIT: "true" makes cypress-split (cypress.config.mjs) read GitLab's CI_NODE_INDEX/
+  # CI_NODE_TOTAL to give each job its share of the specs, balanced by the durations in SPLIT_FILE
+  parallel: 3
   variables:
-    JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
-    CYPRESS_PARALLEL_WORKERS: "3"
+    <<: *e2e_vars
+    SPLIT: "true"
+    SPLIT_FILE: scripts/cypress-timings.json
+  environment:
+    <<: *e2e_env
+    # The template makes this job a deployment with auto_stop_in: 1 minute, so the first job to
+    # finish could stop the environment while the others are still running. Accessing it
+    # instead leaves stopping to js-e2e-deploy's auto_stop_in.
+    action: access
+
+stop-js-e2e-test:
+  variables: *e2e_vars
+  environment:
+    name: test/$CI_COMMIT_REF_SLUG-$CI_PIPELINE_IID
+  # after_script, as the template's job already has a before_script and script
+  after_script:
+    - |
+      api="$CI_API_V4_URL/projects/$CI_PROJECT_ID/environments"
+      [ -n "$ENV_CLEANUP_TOKEN" ] || echo "environment cleanup: ENV_CLEANUP_TOKEN is not set for this job"
+      command -v jq >/dev/null || echo "environment cleanup: jq is not installed in this image"
+      curl -sSf --header "PRIVATE-TOKEN: $ENV_CLEANUP_TOKEN" \
+        "$api?states=stopped&search=test/$CI_COMMIT_REF_SLUG-&per_page=100" \
+      | jq -r --arg re "^test/${CI_COMMIT_REF_SLUG}-[0-9]+$" '.[] | select(.name | test($re)) | .id' \
+      | xargs -r -I{} curl -sSf -X DELETE --header "PRIVATE-TOKEN: $ENV_CLEANUP_TOKEN" "$api/{}" \
+      || echo "environment cleanup failed (non-fatal)"
 
 info-dev-environment:
   <<: *dev_env
@@ -103,6 +144,37 @@ test-dev-environment:
 
 stop-dev-environment:
   <<: *dev_env
+
+# Smoke suite (tests/cypress/smoke): logs in through the real Indigo, and checks that it accepts
+# the deployment's redirect URIs (the app URL and <app URL>auth-callback.html). Runs in addition
+# to each environment's own checks, against deployments whose URLs are registered with Indigo -
+# not the per-pipeline e2e namespaces, which aren't.
+.smoke_test:
+  image: ${JS_BUILD_IMAGE}
+  tags:
+    - ${SKA_K8S_RUNNER}
+  before_script:
+    - make js-install
+  script:
+    - >-
+      E2E_SUITE=smoke yarn cypress run --e2e --headless
+      --config baseUrl=$KUBE_HOST/$KUBE_NAMESPACE/pht/
+      --reporter junit --reporter-options "mochaFile=build/reports/smoke-[hash].xml"
+  artifacts:
+    when: always
+    paths:
+      - build/reports/
+      - tests/cypress/artefacts/
+    reports:
+      junit: build/reports/smoke-*.xml
+
+# After test-dev-environment has checked the pods are ready (deploying to dev is manual)
+smoke-test-dev-environment:
+  extends: .smoke_test
+  stage: deploy
+  needs:
+    - test-dev-environment
+  variables: *dev_env_vars
 
 deploy-integration:
   variables:
@@ -127,6 +199,15 @@ info-staging:
 
 stop-staging:
   <<: *staging_env
+
+smoke-test-staging:
+  extends: .smoke_test
+  stage: staging
+  needs:
+    - deploy-staging
+  variables: *staging_env_vars
+  rules:
+    - if: $CI_COMMIT_TAG
 
 deploy-production:
   <<: *production_env
