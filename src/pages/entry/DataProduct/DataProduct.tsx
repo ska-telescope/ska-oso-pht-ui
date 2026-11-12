@@ -971,7 +971,7 @@ export default function DataProduct({ data }: DataProductProps) {
   // Why the sensitivity calculator doesn't apply to this data product, or undefined when it does.
   // PST is checked first: the observing mode alone rules the calculator out, target or not.
   const sensCalcUnavailable = ():
-    { message: string; color: AlertColorTypes.Warning | AlertColorTypes.Error } | undefined => {
+    { message: string; color: typeof AlertColorTypes.Warning | typeof AlertColorTypes.Error } | undefined => {
     if (isPST()) {
       return { message: t('page.7.pstUnavailable'), color: AlertColorTypes.Warning };
     }

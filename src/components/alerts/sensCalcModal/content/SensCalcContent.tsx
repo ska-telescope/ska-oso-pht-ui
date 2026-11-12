@@ -111,33 +111,24 @@ export default function SensCalcContent({
     );
   };
 
-  if (targetObservation.sensitivity?.state === SENSITIVITY_STATE.FAILED) {
-    return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {targetObservation.sensitivity?.error}
-        </Typography>
-      </Alert>
+  const resultsAlert = (message?: string, color?: typeof AlertColorTypes.Error) => (
+    <Alert testId="alertSensCalResultsId" color={color}>
+      <Typography sx={{ p: GAP }}>{message}</Typography>
+    </Alert>
+  );
+
+  if (!observation || !dataProduct) {
+    return resultsAlert(
+      t('sensitivityCalculatorResults.noObservationOrDataProduct'),
+      AlertColorTypes.Error
     );
   }
-
   const sensitivity = targetObservation.sensitivity;
+  if (sensitivity?.state === SENSITIVITY_STATE.FAILED) {
+    return resultsAlert(sensitivity.error, AlertColorTypes.Error);
+  }
   if (sensitivity == undefined) {
-    return (
-      <Alert>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {t('sensitivityCalculatorResults.noData')}
-        </Typography>
-      </Alert>
-    );
+    return resultsAlert(t('sensitivityCalculatorResults.noData'));
   }
 
   // The continuum or spectral results, each labelled by its part, e.g. continuumSensitivityWeighted
@@ -152,25 +143,23 @@ export default function SensCalcContent({
     </>
   );
 
-  const spectralResolution = observation
-    ? convertFrequencyToDisplayUnits(
-        [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
-          observation?.type
-        )
-          ? getLowSpectralAveragingFactor(observation, dataProduct) *
-              LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
-          : getSpectralResolutionHz(observation) * 1e-3,
-        FREQUENCY_STR_KHZ
-      )
-    : undefined;
+  const spectralResolution = convertFrequencyToDisplayUnits(
+    [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
+      observation.type
+    )
+      ? getLowSpectralAveragingFactor(observation, dataProduct) *
+          LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
+      : getSpectralResolutionHz(observation) * 1e-3,
+    FREQUENCY_STR_KHZ
+  );
   const bandwidth = [
     TYPE_CONTINUUM,
     TYPE_CONTINUUM_SPECTRAL,
     TYPE_CONTINUUM_SPECTRAL_LONG
-  ].includes(observation?.type)
+  ].includes(observation.type)
     ? {
-        value: observation?.continuumBandwidth,
-        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits - 1]?.label
+        value: observation.continuumBandwidth,
+        unit: FREQUENCY_UNITS[observation.continuumBandwidthUnits - 1]?.label
       }
     : getBandwidthZoom(observation);
 
@@ -180,8 +169,8 @@ export default function SensCalcContent({
       {displayElement(
         'centralFrequency',
         valueText(
-          observation?.centralFrequency,
-          FREQUENCY_UNITS[observation?.centralFrequencyUnits - 1]?.label
+          observation.centralFrequency,
+          FREQUENCY_UNITS[observation.centralFrequencyUnits - 1]?.label
         )
       )}
       {displayElement('bandwidth', valueText(bandwidth.value, bandwidth.unit))}
@@ -189,7 +178,7 @@ export default function SensCalcContent({
         'spectralResolution',
         valueText(spectralResolution?.value, spectralResolution?.unit)
       )}
-      {displayElement('integrationTime', valueText(observation?.supplied.value, 'h'))}
+      {displayElement('integrationTime', valueText(observation.supplied.value, 'h'))}
 
       {sensitivity.state === SENSITIVITY_STATE.CALCULATING && (
         <>

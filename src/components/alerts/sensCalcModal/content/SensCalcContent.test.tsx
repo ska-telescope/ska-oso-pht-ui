@@ -1,8 +1,10 @@
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormProvider } from 'react-hook-form';
-import { StoreProvider } from '@utils/storage/store';
+import { storageObject, StoreProvider } from '@utils/storage/store';
+import completeMockStore from '@/utils/MockStore';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import SensCalcContent from './SensCalcContent';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
 import type { ProposalType } from '@/models/proposals/proposal';
@@ -17,8 +19,8 @@ vi.mock('i18next', () => ({
 
 const link = (sensitivity: Sensitivity) => ({
   targetId: 't1',
-  observationId: 'obs1',
-  dataProductsSDPId: 'dp1',
+  observationId: 'obs-obR1Ej',
+  dataProductsSDPId: 'SDP-2',
   sensitivity
 });
 
@@ -50,10 +52,22 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<SensCalcModalSingle />', () => {
+  // The linked observation and data product are still read from the store
+  beforeEach(() => {
+    vi.spyOn(storageObject, 'useStore').mockReturnValue({
+      ...completeMockStore,
+      application: { ...completeMockStore.application, content2: MockProposalFrontend }
+    } as unknown as ReturnType<typeof storageObject.useStore>);
+  });
+
   test('renders the no-data state when results have not been calculated', () => {
     wrapper(
       <SensCalcContent
-        targetObservation={{ targetId: 't1', observationId: 'obs1', dataProductsSDPId: 'dp1' }}
+        targetObservation={{
+          targetId: 't1',
+          observationId: 'obs-obR1Ej',
+          dataProductsSDPId: 'SDP-2'
+        }}
       />
     );
 
@@ -65,8 +79,8 @@ describe('<SensCalcModalSingle />', () => {
       <SensCalcContent
         targetObservation={{
           targetId: 'target-1',
-          observationId: 'obs-1',
-          dataProductsSDPId: 'dp-1',
+          observationId: 'obs-obR1Ej',
+          dataProductsSDPId: 'SDP-2',
           sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
         }}
       />
