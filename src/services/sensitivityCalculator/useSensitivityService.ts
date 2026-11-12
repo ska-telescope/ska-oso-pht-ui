@@ -6,7 +6,7 @@ import { storageObject } from '@utils/storage/store';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import type Proposal from '@/utils/types/proposal';
-import { SENS_CALC_ERROR_KIND } from './client';
+import { SENS_CALC_ERROR_KIND, toSensCalcError } from './client';
 import {
   buildSensitivityRequest,
   getSensitivityDataProduct,
@@ -144,19 +144,28 @@ export const useSensitivityService = () => {
 
         const controller = new AbortController();
         recordsRef.current.set(linkId, { requestKey, controller });
-        void sendSensitivityRequest(request, { signal: controller.signal }).then((response) => {
-          const isCurrent = recordsRef.current.get(linkId)?.requestKey === requestKey;
-          if (!isCurrent || (!response.ok && response.kind === SENS_CALC_ERROR_KIND.ABORTED)) {
-            // Ignore stale and aborted responses
-            return;
-          }
-          recordsRef.current.set(linkId, { requestKey });
-          const results = toSensitivity(response);
-          writeResults(linkId, results);
-          if (results?.state === SENSITIVITY_STATE.FAILED) {
-            notifyError(results.error);
-          }
-        });
+        void sendSensitivityRequest(request, { signal: controller.signal })
+          .then((response) => {
+            const isCurrent = recordsRef.current.get(linkId)?.requestKey === requestKey;
+            if (!isCurrent || (!response.ok && response.kind === SENS_CALC_ERROR_KIND.ABORTED)) {
+              // Ignore stale and aborted responses
+              return;
+            }
+            recordsRef.current.set(linkId, { requestKey });
+            const results = toSensitivity(response);
+            writeResults(linkId, results);
+            if (results?.state === SENSITIVITY_STATE.FAILED) {
+              notifyError(results.error);
+            }
+          })
+          // Deal with unexpected responses so link state doesn't get stuck in calculating
+          .catch((e) => {
+            if (recordsRef.current.get(linkId)?.requestKey !== requestKey) return;
+            recordsRef.current.set(linkId, { requestKey });
+            const error = toSensCalcError(e).detail;
+            writeResults(linkId, { state: SENSITIVITY_STATE.FAILED, error });
+            notifyError(error);
+          });
       });
     };
 

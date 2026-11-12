@@ -266,4 +266,18 @@ describe('useSensitivityService', () => {
     });
     expect(notifyError).toHaveBeenCalledWith('Bandwidth too small');
   });
+
+  test('stores an unexpected response as an error instead of calculating forever', async () => {
+    // What a continuum request gives for an HTML page returned with status 200
+    vi.mocked(sendSensitivityRequest).mockResolvedValue({
+      ok: true,
+      data: undefined
+    } as unknown as Response);
+    const { getForm } = renderService(LINK);
+
+    await debounce();
+
+    expect(storedResults(getForm())).toMatchObject({ state: SENSITIVITY_STATE.FAILED });
+    expect(notifyError).toHaveBeenCalledOnce();
+  });
 });

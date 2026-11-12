@@ -314,8 +314,8 @@ export const buildSensitivityRequest = (
 };
 
 /**
- * Sends a request built by buildSensitivityRequest. Never throws: calculator errors and canceled
- * requests are returned as errors.
+ * Sends a request built by buildSensitivityRequest. Calculator errors and canceled requests are
+ * returned as errors; a successful response in an unexpected shape can throw.
  */
 export const sendSensitivityRequest = async (
   request: SensitivityRequest,
