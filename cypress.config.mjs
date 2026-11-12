@@ -36,7 +36,9 @@ export default defineConfig({
         ? ['tests/cypress/smoke/**/*.cy.{js,jsx,ts,tsx}']
         : ['tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}'],
     setupNodeEvents(on, config) {
-      on('file:preprocessor', vitePreprocessor());
+      // Mode 'cypress' leaves the app's extra auth-callback.html page out of the build config
+      // (see vite.config.mjs), as each spec has to be bundled as the only input
+      on('file:preprocessor', vitePreprocessor({ mode: 'cypress' }));
 
       // Runs only this worker's share of the specs: SPLIT/SPLIT_INDEX locally (set by
       // scripts/cypressParallel.mjs), or GitLab's CI_NODE_TOTAL/CI_NODE_INDEX in parallel CI

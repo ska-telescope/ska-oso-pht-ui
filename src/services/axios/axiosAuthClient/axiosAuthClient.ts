@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'ax
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MSENTRA_API_URI } from '@/utils/constants';
-import { getUseIndigo } from '@/utils/authConfig';
+import { getAuthCallbackUri, getUseIndigo } from '@/utils/authConfig';
 import { env } from '@/env';
 import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
 
@@ -85,7 +85,16 @@ type MsalAccount = ReturnType<MsalInstance['getAllAccounts']>[number];
 // on localhost, for the separate non-hook axiosClient) - both just need a silently-acquired
 // access token for the current account.
 const acquireAccessToken = (instance: MsalInstance, account: MsalAccount): Promise<string> =>
-  instance.acquireTokenSilent({ ...loginRequest, account }).then((r) => r.accessToken);
+  instance.acquireTokenSilent(silentRequest(account)).then((r) => r.accessToken);
+
+// With no refresh tokens from Indigo, MSAL gets every silent token from Indigo in a hidden iframe,
+// which Indigo sends to auth-callback.html rather than loading the whole app in it
+export const silentRequest = (account: MsalAccount, forceRefresh = false) => ({
+  ...loginRequest,
+  account,
+  ...(forceRefresh ? { forceRefresh } : {}),
+  ...(getUseIndigo() ? { redirectUri: getAuthCallbackUri() } : {})
+});
 
 // localhost only: no MSAL account snapshot yet - either genuinely not logged in, or MSAL just
 // hasn't finished initializing/processing a redirect if the interceptor fires very early after
@@ -181,9 +190,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
   const refreshAuthToken: RefreshAuthToken = async () => {
     const account = instance.getAllAccounts()?.[0];
     if (account) {
-      await instance
-        .acquireTokenSilent({ ...loginRequest, account, forceRefresh: true })
-        .catch(() => {});
+      await instance.acquireTokenSilent(silentRequest(account, true)).catch(() => {});
     }
   };
 

@@ -122,6 +122,18 @@ CI runs ``make js-e2e-test`` in three parallel jobs, which share the specs in th
 against a fresh deployment with an empty database.
 Failing tests are retried twice in headless runs.
 
+The smoke suite (``tests/cypress/smoke``) logs in through Indigo's real login page, and checks
+that Indigo accepts the deployment's redirect URIs: the app URL, and ``<app URL>auth-callback.html``
+for silent token renewal. Both must be registered on the app's Indigo client, so it only runs
+against deployments with fixed URLs:
+
+.. code-block:: bash
+
+    E2E_SUITE=smoke yarn cypress run --config baseUrl=<deployment's /pht/ URL>
+
+CI runs it as ``smoke-test-dev-environment``, after a (manual) deployment to the dev environment,
+and ``smoke-test-staging``, after each tagged deployment to staging.
+
 Test Structure
 --------------
 

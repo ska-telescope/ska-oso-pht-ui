@@ -54,14 +54,14 @@ CHANGELOG:
 
 # Currently, the dev template uses ci-dev-$CI_PROJECT_NAME which means only one branch can be deployed at a time, so we overwrite this
 .dev_env: &dev_env
-  variables:
+  variables: &dev_env_vars
     KUBE_NAMESPACE: "dev-ska-oso-pht-ui-aaa"
     KUBE_HOST: https://k8s.stfc.skao.int
   environment:
     name: "dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
 
 .staging_env: &staging_env
-  variables:
+  variables: &staging_env_vars
     KUBE_HOST: https://k8s.stfc.skao.int
     KUBE_NAMESPACE: "staging-$CI_PROJECT_NAME"
   rules:
@@ -157,6 +157,37 @@ test-dev-environment:
 stop-dev-environment:
   <<: *dev_env
 
+# Smoke suite (tests/cypress/smoke): logs in through the real Indigo, and checks that it accepts
+# the deployment's redirect URIs (the app URL and <app URL>auth-callback.html). Runs in addition
+# to each environment's own checks, against deployments whose URLs are registered with Indigo -
+# not the per-pipeline e2e namespaces, which aren't.
+.smoke_test:
+  image: ${JS_BUILD_IMAGE}
+  tags:
+    - ${SKA_K8S_RUNNER}
+  before_script:
+    - make js-install
+  script:
+    - >-
+      E2E_SUITE=smoke yarn cypress run --e2e --headless
+      --config baseUrl=$KUBE_HOST/$KUBE_NAMESPACE/pht/
+      --reporter junit --reporter-options "mochaFile=build/reports/smoke-[hash].xml"
+  artifacts:
+    when: always
+    paths:
+      - build/reports/
+      - tests/cypress/artefacts/
+    reports:
+      junit: build/reports/smoke-*.xml
+
+# After test-dev-environment has checked the pods are ready (deploying to dev is manual)
+smoke-test-dev-environment:
+  extends: .smoke_test
+  stage: deploy
+  needs:
+    - test-dev-environment
+  variables: *dev_env_vars
+
 deploy-integration:
   variables:
     KUBE_HOST: https://k8s.stfc.skao.int
@@ -180,6 +211,15 @@ info-staging:
 
 stop-staging:
   <<: *staging_env
+
+smoke-test-staging:
+  extends: .smoke_test
+  stage: staging
+  needs:
+    - deploy-staging
+  variables: *staging_env_vars
+  rules:
+    - if: $CI_COMMIT_TAG
 
 deploy-production:
   <<: *production_env
