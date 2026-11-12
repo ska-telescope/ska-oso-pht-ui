@@ -4,6 +4,7 @@ import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 import { BorderedSection, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import {
   ControlledCheckbox,
+  ControlledCheckboxGroup,
   ControlledNumberField,
   ControlledSelect
 } from '@ska-telescope/ska-gui-components/controlled';
@@ -18,7 +19,6 @@ import {
   isImageDataProduct,
   STEPPED_FIELD
 } from '@/models/proposals/dataProducts';
-import { ControlledCheckboxGroup } from '@/components/controlled/controlledCheckboxGroup';
 import {
   BAND_LOW_STR,
   CHANNELS_OUT_MAX,
@@ -46,10 +46,6 @@ const FIELD_SPACING = 5;
 
 // The form the view edits: the proposal form, or an entry form holding the one data product
 export type DataProductsForm = { dataProducts: DataProductInput[] };
-
-// TODO Every number field sets decimalPlaces only because ControlledNumberField stores the typed
-//  string without it. Once a ska-gui-components release stores numbers, keep decimalPlaces only
-//  for time and frequency averaging, and give the stepped fields showArrows, min and max.
 
 // TODO The data product type, weighting and unit translations are still keyed by the legacy codes
 
@@ -132,7 +128,6 @@ export default function DataProductView({
         <ControlledNumberField
           name={`${path}.${field}.value`}
           label={t(field + '.label')}
-          decimalPlaces={3}
           required
           onFocus={() => setHelp(field)}
         />
@@ -199,7 +194,6 @@ export default function DataProductView({
             <ControlledNumberField
               name={`${path}.robust`}
               label={t('robust.label')}
-              decimalPlaces={1}
               min={-2}
               max={2}
               onFocus={() => setHelp('robust')}
@@ -211,7 +205,6 @@ export default function DataProductView({
             <ControlledNumberField
               name={`${path}.taper`}
               label={t('taper.label')}
-              decimalPlaces={2}
               disabled
               slotProps={unitAdornment(t('taper.units'))}
               onFocus={() => setHelp('taper')}
@@ -242,7 +235,6 @@ export default function DataProductView({
             <ControlledNumberField
               name={`${path}.channelsOut`}
               label={t('channelsOut.label')}
-              decimalPlaces={0}
               min={channelsOutMin}
               max={channelsOutMax}
               required
@@ -271,6 +263,9 @@ export default function DataProductView({
             label={t('timeAveraging.label')}
             stepSize={STEPPED_FIELD.TIME_AVERAGING_S.step}
             decimalPlaces={STEPPED_FIELD.TIME_AVERAGING_S.decimalPlaces}
+            showArrows
+            min={STEPPED_FIELD.TIME_AVERAGING_S.minSteps * STEPPED_FIELD.TIME_AVERAGING_S.step}
+            max={STEPPED_FIELD.TIME_AVERAGING_S.maxSteps * STEPPED_FIELD.TIME_AVERAGING_S.step}
             required
             slotProps={unitAdornment(t('timeAveraging.0'))}
             onFocus={() => setHelp('timeAveraging')}
@@ -282,6 +277,15 @@ export default function DataProductView({
             label={t('frequencyAveraging.label')}
             stepSize={STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ.step}
             decimalPlaces={STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ.decimalPlaces}
+            showArrows
+            min={
+              STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ.minSteps *
+              STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ.step
+            }
+            max={
+              STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ.maxSteps *
+              STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ.step
+            }
             required
             slotProps={unitAdornment(t('frequencyAveraging.0'))}
             onFocus={() => setHelp('frequencyAveraging')}
@@ -325,7 +329,11 @@ export default function DataProductView({
                 name={`${path}.outputFrequencyResolutionKhz`}
                 label={t('outputFrequencyResolution.label')}
                 stepSize={STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ.step}
-                decimalPlaces={STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ.decimalPlaces}
+                showArrows
+                min={
+                  STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ.minSteps *
+                  STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ.step
+                }
                 required
                 slotProps={unitAdornment(t('outputFrequencyResolution.units'))}
               />
@@ -335,7 +343,11 @@ export default function DataProductView({
                 name={`${path}.outputSamplingIntervalMs`}
                 label={t('outputSamplingInterval.label')}
                 stepSize={STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS.step}
-                decimalPlaces={STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS.decimalPlaces}
+                showArrows
+                min={
+                  STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS.minSteps *
+                  STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS.step
+                }
                 required
                 slotProps={unitAdornment(t('outputSamplingInterval.units'))}
               />
@@ -345,7 +357,6 @@ export default function DataProductView({
               <ControlledNumberField
                 name={`${path}.dispersionMeasure`}
                 label={t('dispersionMeasure.label')}
-                decimalPlaces={2}
                 required
                 slotProps={unitAdornment(t('dispersionMeasure.units'))}
               />
@@ -354,7 +365,6 @@ export default function DataProductView({
               <ControlledNumberField
                 name={`${path}.rotationMeasure`}
                 label={t('rotationMeasure.label')}
-                decimalPlaces={2}
                 required
                 slotProps={unitAdornment(t('rotationMeasure.units'))}
               />

@@ -191,8 +191,8 @@ export default function TargetEntry({
             return {
               ...baseTarget,
               velType: velType ?? DEFAULT_VELOCITY_TYPE,
-              l: Number(l),
-              b: Number(b),
+              l: l ?? undefined,
+              b: b ?? undefined,
               redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
               vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
             };
@@ -232,12 +232,13 @@ export default function TargetEntry({
     };
 
     const hasAnyFieldEntered = () => {
-      const hasTextValue = [name, raStr, decStr, l, b, vel, redshift].some(
+      const hasTextValue = [name, raStr, decStr, vel, redshift].some(
         (value) => value.trim().length > 0
       );
+      const hasDegrees = l !== null || b !== null;
       const hasSelectorChange =
         velType !== DEFAULT_VELOCITY_TYPE || velUnit !== DEFAULT_VELOCITY_UNIT;
-      return hasTextValue || hasSelectorChange || kind !== DEFAULT_KIND;
+      return hasTextValue || hasDegrees || hasSelectorChange || kind !== DEFAULT_KIND;
     };
 
     return (
@@ -301,8 +302,8 @@ export default function TargetEntry({
         invalidatePendingResolve();
         if (response.reference_coordinate.kind === 'galactic') {
           setEntryValues({
-            l: String(response.reference_coordinate.l),
-            b: String(response.reference_coordinate.b)
+            l: response.reference_coordinate.l,
+            b: response.reference_coordinate.b
           });
         } else {
           setEntryValues({
@@ -363,7 +364,8 @@ export default function TargetEntry({
     );
   };
 
-  const isRequired = () => [name, raStr, decStr, l, b].some((value) => value !== '');
+  const isRequired = () =>
+    [name, raStr, decStr].some((value) => value !== '') || l !== null || b !== null;
 
   const wrapper = (children?: React.JSX.Element) => (
     <Box
@@ -454,31 +456,30 @@ export default function TargetEntry({
       />
     );
 
-  // The inputs for the chosen coordinate system: text for ICRS, numbers for Galactic, and none for a
-  // solar system object, which is found by name
+  // The inputs for the chosen coordinate system: text for ICRS, degrees for Galactic, and none for
+  // a solar system object, which is found by name
   const coordinateFields = () => {
-    const field = (
-      { name: fieldName, axis }: CoordinateFieldDef,
-      Entry: typeof ControlledTextField | typeof ControlledNumberField
-    ) => (
-      <Grid key={fieldName} size={{ md: 12, lg: 6 }}>
-        {wrapper(
-          <Entry
-            name={fieldName}
-            required={isRequired()}
-            label={t(`skyDirection.label.${axis}.${kind}`)}
-            slotProps={endAdornment(t(`skyDirection.units.${axis}.${kind}`))}
-            onChange={invalidatePendingResolve}
-            onFocus={() => setHelp(`skyDirection.${axis}`)}
-          />
-        )}
-      </Grid>
-    );
+    const fieldProps = ({ name: fieldName, axis }: CoordinateFieldDef) => ({
+      name: fieldName,
+      required: isRequired(),
+      label: t(`skyDirection.label.${axis}.${kind}`),
+      slotProps: endAdornment(t(`skyDirection.units.${axis}.${kind}`)),
+      onChange: invalidatePendingResolve,
+      onFocus: () => setHelp(`skyDirection.${axis}`)
+    });
     switch (kind) {
       case REFERENCE_COORDINATE_TYPE_ICRS.value:
-        return ICRS_FIELDS.map((def) => field(def, ControlledTextField));
+        return ICRS_FIELDS.map((def) => (
+          <Grid key={def.name} size={{ md: 12, lg: 6 }}>
+            {wrapper(<ControlledTextField {...fieldProps(def)} />)}
+          </Grid>
+        ));
       case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
-        return GALACTIC_FIELDS.map((def) => field(def, ControlledNumberField));
+        return GALACTIC_FIELDS.map((def) => (
+          <Grid key={def.name} size={{ md: 12, lg: 6 }}>
+            {wrapper(<ControlledNumberField {...fieldProps(def)} />)}
+          </Grid>
+        ));
       default:
         return null;
     }

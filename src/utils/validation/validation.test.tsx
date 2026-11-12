@@ -14,10 +14,8 @@ import {
 } from '../constants';
 import { timeConversion } from '../helpers';
 import {
-  isValidGalacticLongitude,
   validateDeclination,
   validateDetailsPage,
-  validateGalacticLatitude,
   validateObservationPage,
   validateRightAscension,
   validateTitlePage
@@ -179,26 +177,6 @@ describe('validateRightAscension', () => {
   });
 });
 
-describe('isValidGalacticLongitude', () => {
-  test('validates correct galactic format', () => {
-    expect(isValidGalacticLongitude('12.58')).toBe(true);
-    expect(isValidGalacticLongitude('30')).toBe(true);
-    expect(isValidGalacticLongitude('25.8')).toBe(true);
-  });
-
-  test('rejects incorrect format', () => {
-    expect(isValidGalacticLongitude('')).toBe(false); // Empty string
-    expect(isValidGalacticLongitude('abc.def.ghi')).toBe(false); // Non-numeric input
-    expect(isValidGalacticLongitude('00.ghi')).toBe(false); // Non-numeric input
-    expect(isValidGalacticLongitude('aaa.5')).toBe(false); // Non-numeric input
-  });
-
-  test('rejects out-of-range values', () => {
-    expect(isValidGalacticLongitude('400.0')).toBe(false);
-    expect(isValidGalacticLongitude('-91.0')).toBe(false);
-  });
-});
-
 describe('validateDeclination', () => {
   test('validates correct equatorial format', () => {
     expect(validateDeclination('12:34:56')).toBe(null);
@@ -235,28 +213,5 @@ describe('validateDeclination', () => {
     expect(validateDeclination('-91:00:00')).toBe('1'); // Negative hours out of range
     expect(validateDeclination('12:60:00')).toBe('0'); // Invalid format (60 min has no meaning in context of sky direction)
     expect(validateDeclination('12:34:60')).toBe('0'); // Invalid format (60 sec has no meaning in context of sky direction)
-  });
-});
-
-describe('validateGalacticLatitude', () => {
-  test('validates correct galactic format', () => {
-    expect(validateGalacticLatitude('12.58')).toBe(null);
-    expect(validateGalacticLatitude('30')).toBe(null);
-    expect(validateGalacticLatitude('25.8')).toBe(null);
-    expect(validateGalacticLatitude('-90.0')).toBe(null);
-  });
-
-  test('rejects incorrect format', () => {
-    expect(validateGalacticLatitude('')).toBe('0'); // Empty string
-    expect(validateGalacticLatitude('abc.def.ghi')).toBe('0'); // Non-numeric input
-    expect(validateGalacticLatitude('00.ghi')).toBe('0'); // Non-numeric input
-    expect(validateGalacticLatitude('aaa.5')).toBe('0'); // Non-numeric input
-  });
-
-  test('rejects out-of-range values', () => {
-    expect(validateGalacticLatitude('91.0')).toBe('1');
-    expect(validateGalacticLatitude('-91.0')).toBe('1');
-    expect(validateGalacticLatitude('150')).toBe('1');
-    expect(validateGalacticLatitude('-95.583333')).toBe('1');
   });
 });

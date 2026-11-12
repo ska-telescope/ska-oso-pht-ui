@@ -320,14 +320,6 @@ export function validateRightAscension(value: string): ValueError | null {
   return null;
 }
 
-export function isValidGalacticLongitude(value: string): boolean {
-  if (!/^[0-9]*\.?[0-9]+$/.test(value)) {
-    return false;
-  }
-  const number = parseFloat(value);
-  return number >= 0 && number < 360;
-}
-
 export function validateDeclination(value: string): ValueError | null {
   const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
@@ -354,17 +346,6 @@ export function validateDeclination(value: string): ValueError | null {
   }
   if (seconds > 59) {
     return VALUE_ERROR.FORMAT;
-  }
-  return null;
-}
-
-export function validateGalacticLatitude(value: string): ValueError | null {
-  if (!/^[-+]?[0-9]*\.?[0-9]+$/.test(value)) {
-    return VALUE_ERROR.FORMAT;
-  }
-
-  if (parseFloat(value) < -90 || parseFloat(value) > 90) {
-    return VALUE_ERROR.RANGE;
   }
   return null;
 }
