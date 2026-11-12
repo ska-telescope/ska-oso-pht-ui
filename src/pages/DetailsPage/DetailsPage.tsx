@@ -4,7 +4,10 @@ import { useFormContext } from 'react-hook-form';
 import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { ControlledTextField } from '@ska-telescope/ska-gui-components/controlled';
+import {
+  ControlledSelect,
+  ControlledTextField
+} from '@ska-telescope/ska-gui-components/controlled';
 import {
   DETAILS,
   NOTIFICATION_DELAY_IN_SECONDS,
@@ -29,7 +32,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
-import { useController } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';
 
 const PAGE = PAGE_DETAILS;
@@ -45,16 +48,18 @@ export default function DetailsPage() {
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const { setHelp } = useHelp();
+  const form = useFormContext<ProposalType>();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const {
-    field: { value: abstract }
-  } = useController<ProposalFormValues, 'abstract'>({ name: 'abstract' });
-  const {
-    field: { value: scienceCategory, onChange: setScienceCategory },
-    fieldState: { error: categoryError }
-  } = useController<ProposalFormValues, 'scienceCategory'>({ name: 'scienceCategory' });
+  const abstract = useWatch<ProposalFormValues, 'abstract'>({
+    control: form.control,
+    name: 'abstract'
+  });
+  const scienceCategory = useWatch<ProposalFormValues, 'scienceCategory'>({
+    control: form.control,
+    name: 'scienceCategory'
+  });
   const status = validateDetailsPage({ ...getProposal(), abstract, scienceCategory });
   const proposalState = application.content1 as number[];
   React.useEffect(() => {
@@ -125,8 +130,6 @@ export default function DetailsPage() {
   const isLow = observation ? observation.telescope === TELESCOPE_LOW_NUM : !!osdLOW;
   const observingModeOptions = useObservationTypeOptions(SA_AA2, isLow);
 
-  const form = useFormContext<ProposalType>();
-
   const changeObservingMode = async (mode: string) => {
     if (mode === observation?.type) return;
     const hasTarget = (form.getValues('targets')?.length ?? 0) > 0;
@@ -180,20 +183,12 @@ export default function DetailsPage() {
         maxWidth: 500
       }}
     >
-      {' '}
-      <DropDown
+      <ControlledSelect
+        name="scienceCategory"
         options={DETAILS.ScienceCategory}
-        errorText={
-          categoryError
-            ? t('scienceCategory.error')
-            : scienceCategory == null
-              ? t('scienceCategory.error')
-              : ''
-        }
+        helperText={scienceCategory == null ? t('scienceCategory.error') : undefined}
         required
-        testId="categoryId"
-        value={scienceCategory ?? ''}
-        setValue={setScienceCategory}
+        data-testid="categoryId"
         label={t('scienceCategory.label')}
         onFocus={() => setHelp('scienceCategory.help')}
       />
