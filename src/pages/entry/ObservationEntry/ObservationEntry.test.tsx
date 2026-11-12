@@ -1,6 +1,8 @@
 import React from 'react';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { render, screen, act } from '@testing-library/react';
+import { useFormContext, UseFormReturn } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 import userEvent from '@testing-library/user-event';
 import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
@@ -33,7 +35,7 @@ const mockState = vi.hoisted(() => ({
 
 // The calibrator lookup goes to the backend; these tests only check when it's made
 const mockBuildCalibrationStrategy = vi.hoisted(() =>
-  vi.fn(async ({ observationId }: { observationId: string }) => ({
+  vi.fn(async (_client: unknown, { observationId }: { observationId: string }) => ({
     observatoryDefined: true,
     id: 'cal-1',
     observationIdRef: observationId,
@@ -147,10 +149,23 @@ vi.mock('@/components/fields/bandwidthFields/bandwidth/bandwidth', () => ({
 
 // ---- Helpers ----
 
+// Exposes the global form, which holds the links and calibration
+let formProbe: UseFormReturn<ProposalType>;
+const FormProbe = ({ onForm }: { onForm: (form: UseFormReturn<ProposalType>) => void }) => {
+  onForm(useFormContext<ProposalType>());
+  return null;
+};
+const keepForm = (form: UseFormReturn<ProposalType>) => {
+  formProbe = form;
+};
+
 const wrapper = (component: React.ReactElement) =>
   render(
     <StoreProvider>
-      <TestProposalFormProvider>{component}</TestProposalFormProvider>
+      <TestProposalFormProvider>
+        <FormProbe onForm={keepForm} />
+        {component}
+      </TestProposalFormProvider>
     </StoreProvider>
   );
 
@@ -234,6 +249,52 @@ describe('<ObservationEntry />', () => {
 
       expect(mockUpdateAppContent2).toHaveBeenCalled();
       expect(mockBuildCalibrationStrategy).not.toHaveBeenCalled();
+    });
+
+    describe('when the lookup returns', () => {
+      // Holds the lookup open, so the links can change while it runs
+      let finishLookup: () => void;
+
+      beforeEach(() => {
+        mockState.observations = [
+          {
+            ...DEFAULT_ZOOM_OBSERVATION_LOW,
+            supplied: { ...DEFAULT_ZOOM_OBSERVATION_LOW.supplied, value: 99 }
+          }
+        ];
+        mockBuildCalibrationStrategy.mockImplementationOnce(async (_client, { observationId }) => {
+          await new Promise<void>((resolve) => (finishLookup = resolve));
+          return {
+            observatoryDefined: true,
+            id: 'cal-1',
+            observationIdRef: observationId,
+            calibrators: null,
+            notes: null
+          };
+        });
+      });
+
+      const strategyIds = () =>
+        formProbe.getValues('calibrationStrategy').map((cal) => cal.observationIdRef);
+
+      it('applies the strategy while the target is still linked', async () => {
+        await act(async () => {
+          wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
+        });
+        await act(async () => finishLookup());
+
+        expect(strategyIds()).toEqual([DEFAULT_ZOOM_OBSERVATION_LOW.id]);
+      });
+
+      it('leaves the strategy out when the target was unlinked during the lookup', async () => {
+        await act(async () => {
+          wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
+        });
+        act(() => formProbe.setValue('targetObservation', []));
+        await act(async () => finishLookup());
+
+        expect(strategyIds()).toEqual([]);
+      });
     });
   });
 

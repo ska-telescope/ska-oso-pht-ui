@@ -207,6 +207,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (requestId !== latestCalibratorRequestIdRef.current) {
       return;
     }
+    // The lookup takes time, so the strategy is only applied if the same target is still linked
+    const stillLinked = getLinks().some(
+      (to) => to.observationId === ob.id && to.targetId === linkedTarget.id
+    );
+    if (!stillLinked) {
+      return;
+    }
     form.setValue('calibrationStrategy', withCalibrationFor(getFormCalibration(form), strategy));
   };
 
