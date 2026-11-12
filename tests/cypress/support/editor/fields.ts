@@ -47,17 +47,8 @@ export const selectUnit = (label: string, option: string) => {
 export const verifySelectedUnit = (label: string, option: string) =>
   unitDropdown(label).should('have.text', option);
 
-// TODO: Find by cy.findByRole('checkbox', { name: label }) once the pages use the controlled
-//  components. Current gui-components TickBox renders its label beside the checkbox without
-//  wiring it up, so the checkbox has no accessible name.
 const checkbox = (label: string) => {
-  // cy.findByRole('checkbox', { name: label });
-  const text = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return cy
-    .contains('label', new RegExp(`^${text}( \\*)?$`))
-    .parents(':has(input[type="checkbox"])')
-    .first()
-    .find('input[type="checkbox"]');
+  return cy.findByRole('checkbox', { name: label });
 };
 
 export const setChecked = (label: string, checked: boolean) =>

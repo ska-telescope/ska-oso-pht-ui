@@ -22,7 +22,7 @@ const PST_POLARISATIONS = ['I', 'Q', 'U', 'V'];
 const imageSizeField = () => cy.findByRole('textbox', { name: 'Image Size' });
 const pixelSizeField = () => cy.findByRole('textbox', { name: 'Pixel Size' });
 const robustField = () => cy.findByRole('textbox', { name: 'Robust' });
-const channelsOutField = () => cy.findByRole('spinbutton', { name: 'Channels Out' });
+const channelsOutField = () => cy.findByRole('textbox', { name: 'Channels Out' });
 
 const outputFrequencyResolutionField = () =>
   cy.findByRole('spinbutton', { name: 'Output frequency resolution' });
