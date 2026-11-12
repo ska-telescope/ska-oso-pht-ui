@@ -103,9 +103,11 @@ test user):
 
 Every run creates proposals that the app can't delete, and a test user's proposal list gets slower
 as they pile up, until the app's requests time out. Against a local minikube deployment, add
-``--clean-db`` to delete every proposal from its database before the run (or run
-``scripts/cleanLocalDb.sh`` on its own). It refuses to run unless the kubectl context is
-``minikube``.
+``--clean-db`` to start the run with a new, empty database (or run ``scripts/cleanLocalDb.sh`` on
+its own). It uninstalls the chart, which deletes its ``PGDBInstance`` so the
+``ska-ser-db-instance`` operator drops the database, and installs it again with
+``REQUEST_TIMEOUT_MS=60000``, which creates the database and runs the migrations. It takes a few
+minutes, and refuses to run unless the kubectl context is ``minikube``.
 
 The app gives up on a backend request after 20 seconds. Test deployments wait longer: install
 the chart with ``REQUEST_TIMEOUT_MS=60000`` (CI does), for example

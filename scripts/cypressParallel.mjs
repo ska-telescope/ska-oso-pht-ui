@@ -6,7 +6,7 @@
 //   yarn test:e2e:parallel [--workers=N] [--clean-db] [any `cypress run` arguments]
 //
 // --workers defaults to 3, one per test user (see WORKER_USERNAMES in tests/cypress/support/auth.js).
-// --clean-db first deletes every proposal from the local minikube database (scripts/cleanLocalDb.sh).
+// --clean-db first reinstalls the local minikube chart with a new, empty database (scripts/cleanLocalDb.sh).
 import { spawn, spawnSync } from 'node:child_process';
 import { globSync, mkdirSync, rmSync } from 'node:fs';
 import { createInterface } from 'node:readline';
