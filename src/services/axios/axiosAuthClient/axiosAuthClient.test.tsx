@@ -1,7 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import useAxiosAuthClient, { mapAxiosError } from './axiosAuthClient';
+import { env } from '@/env';
+import useAxiosAuthClient, {
+  getRequestTimeoutMs,
+  mapAxiosError,
+  silentRequest
+} from './axiosAuthClient';
 
 vi.stubGlobal('window', {
   location: { hostname: 'localhost', origin: 'http://localhost:3000' },
@@ -161,6 +166,60 @@ describe('createRequestInterceptor', () => {
       interceptor(asRequestConfig({ baseURL: 'http://localhost:3000', headers: {} as any }))
     ).rejects.toBe(authError);
     expect(mockLoginRedirect).toHaveBeenCalledWith(loginRequest);
+  });
+});
+
+describe('silentRequest', () => {
+  const account = { username: 'testuser' } as any;
+  const original = { USE_INDIGO: env.USE_INDIGO, MSENTRA_REDIRECT_URI: env.MSENTRA_REDIRECT_URI };
+
+  beforeEach(() => {
+    sessionStorage.clear();
+    env.MSENTRA_REDIRECT_URI = '/ns/pht/';
+  });
+
+  afterEach(() => {
+    Object.assign(env, original);
+  });
+
+  it('sends Indigo silent responses to auth-callback.html', () => {
+    env.USE_INDIGO = 'true';
+    expect(silentRequest(account)).toEqual(
+      expect.objectContaining({
+        account,
+        redirectUri: 'http://localhost:3000/ns/pht/auth-callback.html'
+      })
+    );
+  });
+
+  it('leaves the redirect URI to MSAL for Entra', () => {
+    env.USE_INDIGO = 'false';
+    expect(silentRequest(account)).not.toHaveProperty('redirectUri');
+  });
+
+  it('only forces a refresh when asked to', () => {
+    expect(silentRequest(account)).not.toHaveProperty('forceRefresh');
+    expect(silentRequest(account, true)).toHaveProperty('forceRefresh', true);
+  });
+});
+
+describe('getRequestTimeoutMs', () => {
+  afterEach(() => {
+    delete env.REQUEST_TIMEOUT_MS;
+  });
+
+  it('defaults to 20 seconds when REQUEST_TIMEOUT_MS is not set', () => {
+    expect(getRequestTimeoutMs()).toBe(20000);
+  });
+
+  it('uses REQUEST_TIMEOUT_MS when it is set', () => {
+    env.REQUEST_TIMEOUT_MS = '60000';
+    expect(getRequestTimeoutMs()).toBe(60000);
+  });
+
+  it.each(['', 'abc', '0', '-5'])('defaults when REQUEST_TIMEOUT_MS is %j', (value) => {
+    env.REQUEST_TIMEOUT_MS = value;
+    expect(getRequestTimeoutMs()).toBe(20000);
   });
 });
 

@@ -94,21 +94,45 @@ can stop animating, and tests fail with elements that "exist but are not visible
     elements are visible using the helpers in ``common.js``. Remove this advice once those tests
     have been replaced.
 
-To run the whole suite headless across several workers, as CI does:
+To run the whole suite headless across several workers (3 unless you pass ``--workers=N``, one per
+test user):
 
 .. code-block:: bash
 
     yarn test:e2e:parallel --browser chromium
 
-On Linux, this needs ``xvfb-run`` to give each worker its own virtual display. On Ubuntu or
-Debian, install it with ``sudo apt-get install xvfb``.
+Every run creates proposals that the app can't delete, and a test user's proposal list gets slower
+as they pile up, until the app's requests time out. Against a local minikube deployment, add
+``--clean-db`` to start the run with a new, empty database (or run ``scripts/cleanLocalDb.sh`` on
+its own). It uninstalls the chart, which deletes its ``PGDBInstance`` so the
+``ska-ser-db-instance`` operator drops the database, and installs it again with
+``REQUEST_TIMEOUT_MS=60000``, which creates the database and runs the migrations. It takes a few
+minutes, and refuses to run unless the kubectl context is ``minikube``. The reinstall also starts
+new backend pods, whose first requests are slow, so the first run after it can take twice as long
+and hit timeouts. Run ``scripts/cleanLocalDb.sh`` on its own some time before a run, rather than
+``--clean-db``, to avoid that.
+
+The app gives up on a backend request after 20 seconds. Test deployments can wait longer: install
+the chart with ``REQUEST_TIMEOUT_MS``, for example ``make k8s-install-chart REQUEST_TIMEOUT_MS=60000``.
+
+On Linux without a display, this needs ``xvfb-run`` to give each worker its own virtual display.
+On Ubuntu or Debian, install it with ``sudo apt-get install xvfb``.
 
 Specs are shared between the workers by how long each took last time, from
-``scripts/cypress-timings.json``. Each run rewrites that file, so commit it when specs have been
-added or removed, or their durations have changed a lot.
+``scripts/cypress-timings.json``. Each local run rewrites that file, so commit it when specs have
+been added or removed, or their durations have changed a lot.
 
 CI runs it through ``make js-e2e-test`` against a fresh deployment with an empty database.
 Failing tests are retried twice in headless runs.
+
+The smoke suite (``tests/cypress/smoke``) logs in through Indigo's real login page, and checks
+that Indigo accepts the deployment's redirect URIs: the app URL, and ``<app URL>auth-callback.html``
+for silent token renewal. Both must be registered on the app's Indigo client, so it only runs
+against deployments with fixed URLs:
+
+.. code-block:: bash
+
+    E2E_SUITE=smoke yarn cypress run --config baseUrl=<deployment's /pht/ URL>
 
 Test Structure
 --------------

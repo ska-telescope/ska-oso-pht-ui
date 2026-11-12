@@ -16,6 +16,8 @@ runtimeEnv:
   indigoClientId: "d546e462-637c-44ff-b2b9-3345a960ad42"
   indigoScope: "pht:readwrite pht:read openid profile"
   indigoAudience: "test:pht"
+  # How long the app waits for a backend response. Test deployments raise it with REQUEST_TIMEOUT_MS
+  requestTimeoutMs: 20000
 
 component: pht-ui
 function: ui

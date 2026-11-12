@@ -46,18 +46,32 @@ export function buildLoginRequest(): { scopes: string[] } | undefined {
   };
 }
 
+// Where Indigo sends full-page login responses: the app itself.
+// Kept the MSENTRA_ env var name for backwards-compatibility.
+// TODO: Remove when we're done with Entra.
+// Resolve to an absolute URL: deployed envs may set this to a relative path (see
+// ska-oso-pht-ui.urls-redirectUri helper), and MSAL mishandles a relative/trailing-slash
+// redirect_uri during its redirect-state matching (BTN-3402).
+export const getRedirectUri = (): string =>
+  new URL(env.MSENTRA_REDIRECT_URI, window.location.origin).href;
+
+// Where Indigo sends silent (hidden iframe) and popup responses: auth-callback.html next to the
+// app, which only hands the response back to MSAL (see src/authCallback.ts). Must be registered
+// with Indigo as a redirect URI, as well as getRedirectUri().
+export const getAuthCallbackUri = (): string => {
+  const appUrl = new URL(getRedirectUri());
+  if (!appUrl.pathname.endsWith('/')) {
+    appUrl.pathname += '/';
+  }
+  return new URL('auth-callback.html', appUrl).href;
+};
+
 export function buildAuthConfig() {
   if (getUseIndigo()) {
-    // Kept the MSENTRA_ env var name for backwards-compatibility.
-    // TODO: Remove when we're done with Entra.
-    // Resolve to an absolute URL: deployed envs may set this to a relative path (see
-    // ska-oso-pht-ui.urls-redirectUri helper), and MSAL mishandles a relative/trailing-slash
-    // redirect_uri during its redirect-state matching (BTN-3402).
-    const redirectUri = new URL(env.MSENTRA_REDIRECT_URI, window.location.origin).href;
     return {
       authority: env.INDIGO_AUTHORITY,
       clientId: env.INDIGO_CLIENT_ID,
-      redirectUri,
+      redirectUri: getRedirectUri(),
       scope: env.INDIGO_SCOPE,
       audience: env.INDIGO_AUDIENCE
     };

@@ -6,6 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: Move token access code used by e2e tests from main codebase into test framework
+* Changed: The local parallel e2e runner (scripts/cypressParallel.mjs) is much smaller
+* Changed: Indigo sends silent token renewals to a dedicated callback.html page. (Note URL>auth-callback.html` must be registered as a redirect URI on Indigo)
+* Added: Indigo smoke tests
+* Added: REQUEST_TIMEOUT_MS runtime setting for how long the app waits for the backend (default 20s), and a --clean-db option for local e2e runs
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
 * Bugfix: Keep the automatic-save timer running when page renders update its callback

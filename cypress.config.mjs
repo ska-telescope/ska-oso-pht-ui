@@ -29,15 +29,25 @@ export default defineConfig({
     //
     experimentalRunAllSpecs: true,
     supportFile: 'tests/cypress/support/e2e.ts',
-    specPattern: ['tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}'],
+    // E2E_SUITE=smoke runs only the real Indigo login specs (see tests/cypress/smoke), which need
+    // a deployment whose redirect URI is registered with Indigo
+    specPattern:
+      process.env.E2E_SUITE === 'smoke'
+        ? ['tests/cypress/smoke/**/*.cy.{js,jsx,ts,tsx}']
+        : ['tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}'],
     setupNodeEvents(on, config) {
-      on('file:preprocessor', vitePreprocessor());
+      // Mode 'cypress' leaves the app's extra auth-callback.html page out of the build config
+      // (see vite.config.mjs), as each spec has to be bundled as the only input
+      on('file:preprocessor', vitePreprocessor({ mode: 'cypress' }));
 
-      // Lets scripts/cypressParallel.mjs hand each worker a slice of the spec list via the
-      // SPLIT/SPLIT_INDEX env vars instead of the orchestrator computing `--spec` itself. Only
-      // takes effect when those env vars are set, so `cypress open`/a plain `cypress run` are
-      // unaffected.
+      // Runs only this worker's share of the specs: SPLIT/SPLIT_INDEX locally (set by
+      // scripts/cypressParallel.mjs), or GitLab's CI_NODE_TOTAL/CI_NODE_INDEX in parallel CI
+      // jobs. With neither set, every spec runs.
       cypressSplit(on, config);
+
+      // Lets each worker log in as a different test user (see tests/cypress/support/auth.js)
+      config.env.WORKER_INDEX =
+        process.env.SPLIT_INDEX ?? String(Number(process.env.CI_NODE_INDEX ?? 1) - 1);
 
       return config;
     }

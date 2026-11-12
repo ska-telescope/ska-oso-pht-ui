@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'ax
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MSENTRA_API_URI } from '@/utils/constants';
-import { getUseIndigo } from '@/utils/authConfig';
+import { getAuthCallbackUri, getUseIndigo } from '@/utils/authConfig';
 import { env } from '@/env';
 import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
 
@@ -29,6 +29,15 @@ type MsalInstance = ReturnType<typeof useMsal>['instance'];
 // typing (e.g. postProposal.tsx, which takes it as a parameter) don't have to reach for
 // ReturnType<typeof useAxiosAuthClient>, whose shape now includes refreshAuthToken too.
 export type AxiosAuthClient = AxiosInstance;
+
+const DEFAULT_REQUEST_TIMEOUT_MS = 20000;
+
+// Test deployments raise this through REQUEST_TIMEOUT_MS (the chart's runtimeEnv.requestTimeoutMs),
+// as a backend with a lot of test data can take longer to answer than users should wait
+export const getRequestTimeoutMs = (): number => {
+  const configured = Number(env.REQUEST_TIMEOUT_MS);
+  return configured > 0 ? configured : DEFAULT_REQUEST_TIMEOUT_MS;
+};
 
 // Call after any action known to grant new group membership server-side (e.g. creating a
 // proposal or panel, which calls ska-oso-services' create_membership) - acquireTokenSilent
@@ -76,7 +85,16 @@ type MsalAccount = ReturnType<MsalInstance['getAllAccounts']>[number];
 // on localhost, for the separate non-hook axiosClient) - both just need a silently-acquired
 // access token for the current account.
 const acquireAccessToken = (instance: MsalInstance, account: MsalAccount): Promise<string> =>
-  instance.acquireTokenSilent({ ...loginRequest, account }).then((r) => r.accessToken);
+  instance.acquireTokenSilent(silentRequest(account)).then((r) => r.accessToken);
+
+// With no refresh tokens from Indigo, MSAL gets every silent token from Indigo in a hidden iframe,
+// which Indigo sends to auth-callback.html rather than loading the whole app in it
+export const silentRequest = (account: MsalAccount, forceRefresh = false) => ({
+  ...loginRequest,
+  account,
+  ...(forceRefresh ? { forceRefresh } : {}),
+  ...(getUseIndigo() ? { redirectUri: getAuthCallbackUri() } : {})
+});
 
 // localhost only: no MSAL account snapshot yet - either genuinely not logged in, or MSAL just
 // hasn't finished initializing/processing a redirect if the interceptor fires very early after
@@ -172,9 +190,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
   const refreshAuthToken: RefreshAuthToken = async () => {
     const account = instance.getAllAccounts()?.[0];
     if (account) {
-      await instance
-        .acquireTokenSilent({ ...loginRequest, account, forceRefresh: true })
-        .catch(() => {});
+      await instance.acquireTokenSilent(silentRequest(account, true)).catch(() => {});
     }
   };
 
@@ -184,7 +200,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    timeout: 20000
+    timeout: getRequestTimeoutMs()
   });
 
   axiosClient.interceptors.request.use(createRequestInterceptor(instance), (error) =>
