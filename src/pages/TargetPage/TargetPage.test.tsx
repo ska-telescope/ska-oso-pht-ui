@@ -11,6 +11,7 @@ import {
   PAGE_LINKING,
   PAGE_TARGET,
   PAGE_TITLE_ADD,
+  PROPOSAL_TYPE,
   STATUS_ERROR,
   STATUS_PARTIAL
 } from '@/utils/constants';
@@ -56,6 +57,7 @@ describe('<TargetPage />>', () => {
         content1: Array(10).fill(STATUS_PARTIAL),
         content2: {
           ...completeMockStore.application.content2,
+          proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
           targets: [],
           targetObservation: [],
           calibrationStrategy: []

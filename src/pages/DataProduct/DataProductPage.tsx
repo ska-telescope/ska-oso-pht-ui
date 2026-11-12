@@ -1,10 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { validateSDPPage } from '@utils/validation/validation.tsx';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { IMAGE_WEIGHTING, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
 import { DataProductSDPNew } from '@utils/types/dataProduct.tsx';
@@ -19,6 +18,7 @@ import TableDataProducts from '@/components/table/tableDataProducts/TableDataPro
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ProposalType } from '@/models/proposals/proposal';
 import { isImageDataProduct } from '@/models/proposals/dataProducts';
+import { getSubmitPageStatuses } from '@/models/proposals/submit';
 
 const PAGE = PAGE_DATA_PRODUCTS;
 const LABEL_WIDTH = 6;
@@ -28,37 +28,24 @@ export default function DataProductsPage() {
   const { t } = useScopedTranslation();
 
   const { application, updateAppContent1 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentRow, setCurrentRow] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
-  const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const { osdCyclePolicy } = useOSDAccessors();
   const navigate = useNavigate();
 
   const form = useFormContext<ProposalType>();
   const getProposal = () => application.content2 as Proposal;
 
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
-    const temp: number[] = [];
-    for (let i = 0; i < getProposalState()?.length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
+  // Write submit status checks into the status store (to be deleted in future refactor)
+  useWatch({ control: form.control, name: ['proposalType', 'dataProducts', 'targetObservation'] });
+  const status = getSubmitPageStatuses(form.getValues()).dataProducts;
+  React.useEffect(() => {
+    const statuses = application.content1 as number[];
+    if (!statuses || statuses.length <= PAGE || statuses[PAGE] === status) {
+      return;
     }
-    updateAppContent1(temp);
-  };
-
-  // on page load
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, []);
-
-  //re-validate when data changes
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, [getProposal()]);
-
-  React.useEffect(() => {
-    setTheProposalState(validateSDPPage(getProposal(), autoLink));
-  }, [validateToggle]);
+    updateAppContent1(statuses.map((value, i) => (i === PAGE ? status : value)));
+  }, [status, application.content1, updateAppContent1]);
 
   const deleteIconClicked = (e: DataProductSDPNew) => {
     setCurrentRow(e.id);

@@ -1,32 +1,14 @@
 import { getSubmitPageStatuses } from '@/models/proposals/submit';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
-import {
-  DataProductSDPNew,
-  SDPFilterbankPSTData,
-  SDPFlowthroughPSTData,
-  SDPImageContinuumData,
-  SDPSpectralData,
-  SDPVisibilitiesContinuumData
-} from '../types/dataProduct';
 import { z } from 'zod';
 import Observation from '../types/observation';
 import {
-  CHANNELS_OUT_MAX,
-  CHANNELS_OUT_MAX_COMBINED,
-  CHANNELS_OUT_MIN_CONTINUUM,
-  CHANNELS_OUT_MIN_SPECTRAL,
-  DETECTED_FILTER_BANK_VALUE,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  FLOW_THROUGH_VALUE,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
   INTEGRATION_TIME_UNITS,
-  IW_BRIGGS,
   PROPOSAL_TYPE,
   SENSITIVITY_UNITS,
-  SENSITIVITY_STATE,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
@@ -35,9 +17,6 @@ import {
   SUPPLIED_TYPE_SENSITIVITY,
   TELESCOPE_LOW_NUM,
   TIME_HOURS,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
   TYPE_ZOOM,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
   ZOOM_CHANNELS_DEFAULT_LOW
@@ -50,15 +29,6 @@ import {
   timeConversion
 } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
-import { robustSchema } from '../../components/fields/robust/Robust';
-import { imageSizeSchema } from '../../components/fields/imageSize/imageSize';
-import { pixelSizeSchema } from '../../components/fields/pixelSize/pixelSize';
-import { timeAveragingSchema } from '../../components/fields/timeAveraging/timeAveraging';
-import { frequencyAveragingSchema } from '../../components/fields/frequencyAveraging/frequencyAveraging';
-import { dispersionMeasureSchema } from '../../components/fields/dispersionMeasure/dispersionMeasure';
-import { rotationMeasureSchema } from '../../components/fields/rotationMeasure/rotationMeasure';
-import { outputFrequencyResolutionSchema } from '../../components/fields/outputFrequencyResolution/outputFrequencyResolution';
-import { outputSamplingIntervalSchema } from '../../components/fields/outputSamplingInterval/outputSamplingInterval';
 import { getTitleSchema } from '../../models/proposals/title';
 import {
   channelsToBandwidthHz,
@@ -292,198 +262,9 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
-/**
- * Checks whether a single data product has valid polarisations for its own observation's type
- * (keyed on the observation actually driving that data product, not the proposal-wide
- * scienceCategory, since a proposal can have data products against different observation types).
- * Only image-continuum, zoom/combined-continuum-spectral, and PST flow-through/detected-filterbank
- * data products require at least one polarisation selected. Shared by validateSDPPage and
- * DataProduct.tsx's pageFooter().enabled() so both stay in sync.
- */
-export const isDataProductPolarisationsValid = (
-  proposal: Proposal,
-  dataProduct: DataProductSDPNew
-): boolean => {
-  const validatePolarisations = (
-    data: SDPSpectralData | SDPImageContinuumData | SDPFilterbankPSTData | SDPFlowthroughPSTData
-  ): boolean => (data?.polarisations?.length ?? 0) > 0;
-
-  const observation = proposal.observations?.find(
-    (candidate) => candidate.id === dataProduct.observationId
-  );
-
-  // Similar validation rules return true for orphaned data product (i.e. observation was deleted but the product itself wasn't).
-  if (!observation) return true;
-
-  switch (observation.type) {
-    case TYPE_PST:
-      return observation?.pstMode === FLOW_THROUGH_VALUE ||
-        observation?.pstMode === DETECTED_FILTER_BANK_VALUE
-        ? validatePolarisations(dataProduct.data as SDPFlowthroughPSTData | SDPFilterbankPSTData)
-        : true;
-    case TYPE_ZOOM:
-    case TYPE_CONTINUUM_SPECTRAL:
-    case TYPE_CONTINUUM:
-    default: {
-      // Visibilities data - whether the user-selected option under plain Continuum, or the
-      // hidden companion HiddenSDPData silently creates alongside a Zoom/combined spectral
-      // product for auto-linking/sens-calc (see DataProduct.tsx's ensureHiddenDataProduct) -
-      // never carries polarisations and must not be validated as the displayed data product.
-      // SDPSpectralData has no dataProductType field at all, so it falls back to DP_TYPE_IMAGES
-      // here (same fallback isDataProductRobustValid uses) and is always checked.
-      const dataProductType = Number(
-        (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData | undefined)
-          ?.dataProductType ?? DP_TYPE_IMAGES
-      );
-      return dataProductType === DP_TYPE_VISIBLE
-        ? true
-        : validatePolarisations(dataProduct.data as SDPSpectralData | SDPImageContinuumData);
-    }
-  }
-};
-
-const isRobustInRange = (value: unknown): boolean =>
-  typeof value === 'number' && Number.isFinite(value) && robustSchema.safeParse(value).success;
-
-export const isDataProductRobustValid = (dataProduct: DataProductSDPNew): boolean => {
-  const data = dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined;
-  const dataProductType = Number(
-    (data as SDPImageContinuumData | undefined)?.dataProductType ?? DP_TYPE_IMAGES
-  );
-  const usesRobust = Number(data?.weighting) === IW_BRIGGS && dataProductType === DP_TYPE_IMAGES;
-  // Mirrors RobustField constraints in UI: robust is only active/required for BRIGGS image modes.
-  if (!usesRobust) return true;
-  return isRobustInRange(data?.robust);
-};
-
-export const isDataProductPstDetectedFilterbankValid = (
-  proposal: Proposal,
-  dataProduct: DataProductSDPNew
-): boolean => {
-  const observation = proposal.observations?.find(
-    (candidate) => candidate.id === dataProduct.observationId
-  );
-  const usesDetectedFilterbankMeasures =
-    observation?.type === TYPE_PST && Number(observation.pstMode) === DETECTED_FILTER_BANK_VALUE;
-  if (!usesDetectedFilterbankMeasures) return true;
-
-  const data = dataProduct.data as SDPFilterbankPSTData;
-  return (
-    outputFrequencyResolutionSchema.safeParse(data?.outputFrequencyResolution).success &&
-    outputSamplingIntervalSchema.safeParse(data?.outputSamplingInterval).success &&
-    dispersionMeasureSchema.safeParse(data?.dispersionMeasure).success &&
-    rotationMeasureSchema.safeParse(data?.rotationMeasure).success
-  );
-};
-
-export const isContinuumImageConfigurationValid = (
-  proposal: Proposal,
-  dataProduct: DataProductSDPNew
-): boolean => {
-  const observation = proposal.observations?.find(
-    (candidate) => candidate.id === dataProduct.observationId
-  );
-  const data = dataProduct.data as SDPImageContinuumData | SDPSpectralData;
-  const usesImageParameters =
-    ((observation?.type === TYPE_ZOOM || observation?.type === TYPE_CONTINUUM_SPECTRAL) &&
-      Number(data?.dataProductType) !== DP_TYPE_VISIBLE) ||
-    (observation?.type === TYPE_CONTINUUM && Number(data?.dataProductType) === DP_TYPE_IMAGES);
-
-  if (!usesImageParameters) return true;
-
-  return (
-    isDataProductRobustValid(dataProduct) &&
-    imageSizeSchema.safeParse(data?.imageSizeValue).success &&
-    pixelSizeSchema.safeParse(data?.pixelSizeValue).success
-  );
-};
-
-export const isContinuumVisibilitiesConfigurationValid = (
-  proposal: Proposal,
-  dataProduct: DataProductSDPNew
-): boolean => {
-  const observation = proposal.observations?.find(
-    (candidate) => candidate.id === dataProduct.observationId
-  );
-  const data = dataProduct.data as SDPVisibilitiesContinuumData;
-  const usesContinuumVisibilities =
-    (observation?.type === TYPE_CONTINUUM || observation?.type === TYPE_CONTINUUM_SPECTRAL) &&
-    Number(data?.dataProductType) === DP_TYPE_VISIBLE;
-
-  if (!usesContinuumVisibilities) return true;
-
-  return (
-    timeAveragingSchema.safeParse(data?.timeAveraging).success &&
-    frequencyAveragingSchema.safeParse(data?.frequencyAveraging).success
-  );
-};
-
-export const isDataProductChannelsOutValid = (
-  dataProduct: DataProductSDPNew,
-  proposal: Proposal
-): boolean => {
-  const dataProductType = Number(
-    (dataProduct?.data as SDPImageContinuumData | undefined)?.dataProductType ?? DP_TYPE_IMAGES
-  );
-
-  const observation = proposal?.observations?.find((obs) => obs.id === dataProduct.observationId);
-  const matchesMode = (type: string) => observation?.type === type;
-  const isContinuumSpectral = matchesMode(TYPE_CONTINUUM_SPECTRAL);
-  const isSpectral = matchesMode(TYPE_ZOOM);
-  const isRelevantMode = isSpectral || isContinuumSpectral || matchesMode(TYPE_CONTINUUM);
-
-  // channelsOut is only ever shown/edited for a continuum/spectral image-type data product
-  if (!isRelevantMode || dataProductType === DP_TYPE_VISIBLE) return true;
-
-  const channelsOut = (dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined)
-    ?.channelsOut;
-
-  // TODO deduplicate this from the component, and tidy up all the isX checks
-  const max = isContinuumSpectral ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX;
-  const min =
-    isContinuumSpectral || isSpectral ? CHANNELS_OUT_MIN_SPECTRAL : CHANNELS_OUT_MIN_CONTINUUM;
-
-  return (
-    typeof channelsOut === 'number' &&
-    Number.isInteger(channelsOut) &&
-    channelsOut >= min &&
-    channelsOut <= max
-  );
-};
-
-// Auto-linked proposals have no Linking page, so each observation's link to the target and its
-// sensitivity results are checked with the data products instead. A link without results can be
-// valid, as the sensitivity calculator does not support SSO targets or PST.
-const hasUsableTargetLinks = (proposal: Proposal) =>
-  (proposal?.observations ?? []).every((obs) => {
-    const link = proposal?.targetObservation?.find((to) => to.observationId === obs.id);
-    return !!link && link.sensitivity?.state !== SENSITIVITY_STATE.FAILED;
-  });
-
-export const validateSDPPage = (proposal: Proposal, autoLink = false) => {
-  const dataProducts = proposal?.dataProductSDP;
-  if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
-    return STATUS_ERROR;
-  }
-  if (autoLink && !hasUsableTargetLinks(proposal)) {
-    return STATUS_ERROR;
-  }
-  const hasInvalidDataProduct = dataProducts.some(
-    (dataProduct) =>
-      !isDataProductRobustValid(dataProduct) ||
-      !isDataProductPstDetectedFilterbankValid(proposal, dataProduct) ||
-      !isContinuumImageConfigurationValid(proposal, dataProduct) ||
-      !isContinuumVisibilitiesConfigurationValid(proposal, dataProduct) ||
-      !isDataProductPolarisationsValid(proposal, dataProduct) ||
-      !isDataProductChannelsOutValid(dataProduct, proposal)
-  );
-  return hasInvalidDataProduct ? STATUS_ERROR : STATUS_OK;
-};
-
 export const validateSRCPage = () => STATUS_OK;
 
 export const useValidateProposal = () => {
-  const { autoLink } = useOSDAccessors();
   const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
 
   return (proposal: Proposal) => {
@@ -491,9 +272,9 @@ export const useValidateProposal = () => {
     const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
       isObservationFrequencyOutOfRange(obs)
     );
-    // The Target, Linking and Calibration pages are checked by the submit
-    // schema, over the given proposal's values for them (which may not be the
-    // proposal open in the form)
+    // The Target, Linking, Calibration and Data Products pages are checked by the
+    // submit schema, over the given proposal's values for them (which may not be
+    // the proposal open in the form)
     const submitStatuses = getSubmitPageStatuses(getProposalFormValues(proposal));
     return [
       validateTitlePage(proposal),
@@ -503,7 +284,7 @@ export const useValidateProposal = () => {
       submitStatuses.target,
       obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
       validateTechnicalPage(proposal),
-      validateSDPPage(proposal, autoLink),
+      submitStatuses.dataProducts,
       submitStatuses.linking,
       submitStatuses.calibration
       /* See SRCNet INACTIVE - validateSRCPage() */

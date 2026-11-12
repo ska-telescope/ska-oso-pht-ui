@@ -4,13 +4,24 @@ import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import DataProductPage from './DataProductPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE } from '@/utils/constants';
+import {
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  PAGE_DATA_PRODUCTS,
+  PROPOSAL_TYPE,
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL
+} from '@/utils/constants';
 import completeMockStore from '@/utils/MockStore';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
+import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <ThemeA11yProvider>
+        <TestProposalFormProvider>{component}</TestProposalFormProvider>
+      </ThemeA11yProvider>
     </StoreProvider>
   );
 };
@@ -29,12 +40,15 @@ vi.mock('./DataProductInPlace', () => ({
   default: () => <div data-testid="dataProductInPlaceStub" />
 }));
 
-const renderWithProposal = (proposal: object) => {
+const renderWithProposal = (
+  proposal: object,
+  statuses = Array(PAGE_DATA_PRODUCTS + 1).fill(STATUS_PARTIAL)
+) => {
   vi.spyOn(storageObject, 'useStore').mockReturnValue({
     ...completeMockStore,
     application: {
       ...completeMockStore.application,
-      content1: [],
+      content1: statuses,
       content2: { id: 'prsl-1', targets: [], targetObservation: [], ...proposal }
     }
   } as any);
@@ -70,5 +84,48 @@ describe('<DataProductPage />', () => {
 
     expect(screen.queryByTestId('dataProductInPlaceStub')).not.toBeInTheDocument();
     expect(screen.getByText('error.noObservations')).toBeInTheDocument();
+  });
+
+  // The status of the Data Products page the page last wrote
+  const pageStatus = () =>
+    vi.mocked(completeMockStore.updateAppContent1).mock.calls.at(-1)?.[0][PAGE_DATA_PRODUCTS];
+
+  test.each([
+    [
+      'with the link to its data product',
+      [{ targetId: 't1', observationId: 'obs-1', dataProductsSDPId: 'sdp-1' }],
+      STATUS_OK
+    ],
+    ['without a link', [], STATUS_ERROR]
+  ])(
+    'sets its status from the submit schema for an SV proposal %s',
+    (_, targetObservation, status) => {
+      vi.mocked(completeMockStore.updateAppContent1).mockClear();
+      renderWithProposal({
+        proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+        observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
+        dataProducts: [
+          { ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'sdp-1' }
+        ],
+        targetObservation
+      });
+
+      expect(pageStatus()).toBe(status);
+    }
+  );
+
+  test('leaves the statuses alone when its own is already right', () => {
+    vi.mocked(completeMockStore.updateAppContent1).mockClear();
+    renderWithProposal(
+      {
+        proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+        observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
+        dataProducts: [],
+        targetObservation: []
+      },
+      Array(PAGE_DATA_PRODUCTS + 1).fill(STATUS_ERROR)
+    );
+
+    expect(completeMockStore.updateAppContent1).not.toHaveBeenCalled();
   });
 });
