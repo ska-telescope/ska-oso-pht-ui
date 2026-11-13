@@ -12,7 +12,7 @@ import { Box } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import {
-  ANGLE_UNIT,
+  ANGLE_UNITS,
   DATA_PRODUCT_KIND,
   DataProductInput,
   DataProductKind,
@@ -50,9 +50,6 @@ const FIELD_SPACING = 5;
 export type DataProductsForm = { dataProducts: DataProductInput[] };
 
 // TODO The data product type, weighting and unit translations are still keyed by the legacy codes
-
-// The unit translations are keyed by their position in this list
-const ANGLE_UNITS = [ANGLE_UNIT.DEG, ANGLE_UNIT.ARCMIN, ANGLE_UNIT.ARCSEC];
 
 // The polarisations a data product of each kind can have
 const POLARISATION_OPTIONS: Partial<Record<DataProductKind, string[]>> = {

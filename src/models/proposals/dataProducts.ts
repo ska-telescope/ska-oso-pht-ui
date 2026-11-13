@@ -46,6 +46,9 @@ export const ANGLE_UNIT = {
   ARCSEC: 'arcsec'
 } as const;
 
+// The unit translations are keyed by a unit's position in this list
+export const ANGLE_UNITS = [ANGLE_UNIT.DEG, ANGLE_UNIT.ARCMIN, ANGLE_UNIT.ARCSEC];
+
 // Fills in a translation's {{placeholders}}. The schema messages don't go through i18next.
 const fill = (message: string, values: Record<string, string | number>) =>
   Object.entries(values).reduce(

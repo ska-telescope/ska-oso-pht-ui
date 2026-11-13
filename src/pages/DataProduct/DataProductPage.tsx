@@ -6,7 +6,6 @@ import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { IMAGE_WEIGHTING, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
-import { DataProductSDPNew } from '@utils/types/dataProduct.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -17,7 +16,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TableDataProducts from '@/components/table/tableDataProducts/TableDataProducts';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ProposalType } from '@/models/proposals/proposal';
-import { isImageDataProduct } from '@/models/proposals/dataProducts';
+import { DataProductInput, isImageDataProduct } from '@/models/proposals/dataProducts';
 import { getSubmitPageStatuses } from '@/models/proposals/submit';
 
 const PAGE = PAGE_DATA_PRODUCTS;
@@ -47,12 +46,12 @@ export default function DataProductsPage() {
     updateAppContent1(statuses.map((value, i) => (i === PAGE ? status : value)));
   }, [status, application.content1, updateAppContent1]);
 
-  const deleteIconClicked = (e: DataProductSDPNew) => {
+  const deleteIconClicked = (e: DataProductInput) => {
     setCurrentRow(e.id);
     setOpenDialog(true);
   };
 
-  const editIconClicked = (e: DataProductSDPNew) => {
+  const editIconClicked = (e: DataProductInput) => {
     setCurrentRow(e.id);
     // The entry page edits the proposal form's data product with this id
     navigate(PATH[3], { replace: true, state: { id: e.id } });
@@ -157,7 +156,7 @@ export default function DataProductsPage() {
             testId="addDataProductButton"
           />
           <TableDataProducts
-            data={getProposal().dataProductSDP ?? []}
+            data={form.getValues('dataProducts')}
             deleteFunction={deleteIconClicked}
             updateFunction={editIconClicked}
           />
