@@ -194,7 +194,6 @@ describe('<DetailsPage /> observing mode', () => {
         ...proposal,
         observations: [{ ...proposal.observations[0], type: mode }]
       });
-      return { success: true };
     });
   });
 
