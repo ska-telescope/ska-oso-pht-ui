@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { ProposalType } from '@/models/proposals/proposal';
-import type { Sensitivity, TargetObservationLink } from '@/models/proposals/targetObservation';
+import type { Sensitivity } from '@/models/proposals/targetObservation';
 import { storageObject } from '@utils/storage/store';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -26,18 +26,14 @@ type LinkRecords = Map<string, { requestKey: string; controller?: AbortControlle
 const getLinkId = (link: { targetId: string; observationId: string; dataProductsSDPId: string }) =>
   `${link.targetId}|${link.observationId}|${link.dataProductsSDPId}`;
 
-// A link with no results, or with results still to be calculated (a new or cloned link)
-const needsResults = (link: TargetObservationLink) =>
-  !link.sensitivity || link.sensitivity.state === SENSITIVITY_STATE.CALCULATING;
-
 /**
  * Keeps the sensitivity results of every target–observation link up to date. Runs for the whole
  * proposal editor, so a calculation finishes even if the user leaves the page that started it.
  *
- * Each link is recalculated when the request its inputs give changes, after a short debounce. A
- * superseded request is canceled, and a result is only applied while its request is still the
- * link's current one. Results stored with a proposal are taken as current when it is opened. A
- * calculator error is shown as a notification, as well as stored on the link.
+ * Each link is recalculated on proposal load and when the request its inputs give changes, after
+ * a short debounce. A superseded request is canceled, and a result is only applied while its
+ * request is still the link's current one. A calculator error is shown as a notification, as well
+ * as stored on the link.
  */
 export const useSensitivityService = () => {
   const { control, getValues, setValue } = useFormContext<ProposalType>();
@@ -51,7 +47,7 @@ export const useSensitivityService = () => {
 
   const recordsRef = React.useRef<LinkRecords>(new Map());
 
-  // A different proposal starts again: its stored results are taken as current
+  // A different proposal starts again: all of its links are calculated
   React.useEffect(() => {
     recordsRef.current.forEach((record) => record.controller?.abort());
     recordsRef.current.clear();
@@ -121,9 +117,8 @@ export const useSensitivityService = () => {
         const requestKey = request ? request.path + JSON.stringify(request.body) : '';
 
         const record = recordsRef.current.get(linkId);
-        if (record ? record.requestKey === requestKey : !needsResults(link)) {
-          // Unchanged, or seen for the first time with results that are taken as current
-          if (!record) recordsRef.current.set(linkId, { requestKey });
+        if (record?.requestKey === requestKey) {
+          // Unchanged since its results were calculated
           return;
         }
 
