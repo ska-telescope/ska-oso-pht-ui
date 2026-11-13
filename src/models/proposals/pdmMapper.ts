@@ -1,6 +1,8 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
+import { detailsFromPdm, detailsToPdm } from './details';
+import { teamFromPdm, teamToPdm } from './team';
 import { targetsFromPdm, targetsToPdm } from './targets';
 import { targetObservationFromPdm, targetObservationToPdm } from './targetObservation';
 import { calibrationStrategyFromPdm, calibrationStrategyToPdm } from './calibrationStrategy';
@@ -15,6 +17,8 @@ export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
     proposalType:
       getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ??
       null,
+    ...detailsFromPdm(pdm?.proposal_info),
+    ...teamFromPdm(pdm?.proposal_info?.investigators),
     targets: targetsFromPdm(pdm?.observation_info?.targets),
     targetObservation: targetObservationFromPdm(
       pdm?.observation_info?.result_details,
@@ -44,11 +48,14 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
     proposal_info: {
       ...base.proposal_info,
       ...titleToPdm(form.title),
+      ...detailsToPdm(form),
+      investigators: teamToPdm(form.investigators ?? []),
       proposal_type: {
         ...base.proposal_info.proposal_type,
         main_type: getProposalTypeSchema().parse(form.proposalType)
       }
     },
+    investigator_refs: (form.investigators ?? []).map(({ id }) => id),
     observation_info: {
       ...base.observation_info,
       targets: targetsToPdm(form.targets),

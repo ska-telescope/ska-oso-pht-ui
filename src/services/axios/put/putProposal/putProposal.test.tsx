@@ -57,6 +57,31 @@ describe('Helper Functions', () => {
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
   });
 
+  test('mappingPutProposal omits empty investigator fields and preserves populated fields', () => {
+    const investigator = {
+      id: 'user-1',
+      status: 'accepted',
+      firstName: '',
+      lastName: 'Lovelace',
+      email: '',
+      phdThesis: false,
+      pi: true
+    };
+    const result = MappingPutProposal(
+      { ...MockProposalFrontend, investigators: [investigator] },
+      PROPOSAL_STATUS.DRAFT
+    );
+    expect(result.proposal_info.investigators).toEqual([
+      {
+        user_id: 'user-1',
+        status: 'accepted',
+        family_name: 'Lovelace',
+        for_phd: false,
+        principal_investigator: true
+      }
+    ]);
+  });
+
   test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
       MockProposalFrontendZoom,
@@ -133,7 +158,9 @@ describe('PutProposal Service', () => {
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
         ...formSlices,
         title: 'Title from RHF',
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        abstract: 'Abstract from RHF',
+        scienceCategory: 7
       });
 
       expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
@@ -141,6 +168,8 @@ describe('PutProposal Service', () => {
         proposal_info: {
           ...base.proposal_info,
           title: 'Title from RHF',
+          abstract: 'Abstract from RHF',
+          science_category: 'High Energy Cosmic Particles',
           proposal_type: {
             ...base.proposal_info.proposal_type,
             main_type: PROPOSAL_TYPE.KEY_SCIENCE
@@ -157,7 +186,9 @@ describe('PutProposal Service', () => {
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
       ...formSlices,
       title: '',
-      proposalType: PROPOSAL_TYPE.STANDARD
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      abstract: '',
+      scienceCategory: null
     });
 
     expect(mockedAuthClient.put).toHaveBeenCalledWith(

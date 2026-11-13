@@ -15,6 +15,7 @@ import {
   getDataProductSchema
 } from './dataProducts';
 import { legacyObservations, pdmDataProducts } from './testing/pdmDataProducts';
+import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 
 const target = (id: string): Target => ({
   id,
@@ -64,6 +65,34 @@ describe('useCopySlicesToStore', () => {
 
     expect(storedProposal(result).targets).toEqual([target('a'), target('b')]);
     expect(storedProposal(result).title).toBe('First');
+  });
+
+  test('copies Details and Team edits to the store', () => {
+    const { result } = renderHarness();
+    const investigator = MockUserFrontendList[0];
+    open(result, {
+      id: 'p1',
+      abstract: 'First abstract',
+      scienceCategory: 1,
+      scienceSubCategory: [2],
+      investigators: [investigator]
+    });
+
+    act(() => {
+      result.current.form.setValue('abstract', 'word '.repeat(251));
+      result.current.form.setValue('scienceCategory', 7);
+      result.current.form.setValue('investigators.0.firstName', 'Edited name');
+    });
+
+    expect(storedProposal(result)).toEqual(
+      expect.objectContaining({
+        abstract: 'word '.repeat(251),
+        scienceCategory: 7,
+        scienceSubCategory: [1],
+        investigators: [{ ...investigator, firstName: 'Edited name' }]
+      })
+    );
+    expect(result.current.form.getValues('investigators')[0]).not.toHaveProperty('affiliation');
   });
 
   test('gives the store its own copy, so the form stays editable', () => {

@@ -22,7 +22,7 @@ import {
   steppedToPdm
 } from './dataProducts';
 
-const pickSlices = (values: Partial<ProposalType>) =>
+const pickSlices = (values: Partial<ProposalType> | Proposal) =>
   Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])) as ProposalType;
 
 // The legacy shape stores units and weighting as indexes into these lists
@@ -160,6 +160,10 @@ export function useCopySlicesToStore(
       return;
     }
     // The store freezes what it is given, and the form must stay mutable
-    updateAppContent2({ ...proposal, ...structuredClone(copy) });
+    updateAppContent2({
+      ...proposal,
+      ...structuredClone(copy),
+      ...(proposal.scienceCategory !== copy.scienceCategory && { scienceSubCategory: [1] })
+    });
   }, [...watched, proposal]);
 }

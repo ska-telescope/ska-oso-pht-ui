@@ -1,25 +1,42 @@
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { cloneElement, useReducer } from 'react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import DetailsPage from './DetailsPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE, TYPE_PST } from '@/utils/constants';
+import {
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  PAGE_DETAILS,
+  PROPOSAL_TYPE,
+  STATUS_ERROR,
+  STATUS_OK,
+  TYPE_PST
+} from '@/utils/constants';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
-import { FormProvider, useForm } from 'react-hook-form';
-import { ProposalType } from '@/models/proposals/proposal';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { getProposalResolver, ProposalType } from '@/models/proposals/proposal';
+import phtTranslations from '../../../public/locales/en/pht.json';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
 // ---- Module mocks ----
 
-const mockState = vi.hoisted(() => ({ proposal: {} as Record<string, unknown> }));
+const mockState = vi.hoisted(() => ({
+  proposal: {} as Record<string, unknown>,
+  updateProposal: vi.fn(),
+  updatePageStatus: vi.fn()
+}));
 
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
-      application: { content1: [], content2: mockState.proposal },
-      updateAppContent1: vi.fn(),
-      updateAppContent2: vi.fn(),
+      application: {
+        content1: Array(PAGE_DETAILS + 1).fill(STATUS_ERROR),
+        content2: mockState.proposal
+      },
+      updateAppContent1: mockState.updatePageStatus,
+      updateAppContent2: mockState.updateProposal,
       helpComponent: vi.fn(),
       helpComponentURL: vi.fn()
     })
@@ -47,16 +64,37 @@ vi.mock('@/utils/autoLinking/AutoLinking', () => ({
   setObservingMode: vi.fn()
 }));
 
+vi.mock('@/services/i18n/useScopedTranslation', () => ({
+  useScopedTranslation: () => ({
+    t: (key: string) => {
+      if (key === 'abstract.maxChar') return '2300';
+      if (key === 'abstract.maxWord') return '250';
+      if (key === 'abstract.minDisplayRows') return '10';
+      return key;
+    }
+  })
+}));
+
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
+    const [, rerender] = useReducer((count: number) => count + 1, 0);
+    mockState.updateProposal.mockImplementation((proposal) => {
+      mockState.proposal = proposal;
+      rerender();
+    });
     const methods = useForm<ProposalType>({
-      // Seeded from the store, as useProposalForm seeds the global form
+      mode: 'all',
+      resolver: getProposalResolver(),
       defaultValues: getProposalFormValues(mockState.proposal)
     });
+    const formValues = useWatch({ control: methods.control });
     return (
       <StoreProvider>
         <FormProvider {...methods}>
-          <ThemeA11yProvider>{component}</ThemeA11yProvider>
+          <ThemeA11yProvider>
+            {cloneElement(component)}
+            <output data-testid="detailsFormValues">{JSON.stringify(formValues)}</output>
+          </ThemeA11yProvider>
         </FormProvider>
       </StoreProvider>
     );
@@ -65,35 +103,10 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<DetailsPage />', () => {
-  test('renders correctly', () => {
-    wrapper(<DetailsPage />);
-  });
-});
-
-describe('setValue function', () => {
-  const MAX_CHAR = 50;
-  const mockSetProposal = vi.fn();
-  const mockGetProposal = vi.fn(() => ({ abstract: '' }));
-
-  const setValue = (e: string) => {
-    mockSetProposal({ ...mockGetProposal(), abstract: e.substring(0, MAX_CHAR) });
-  };
-
-  test('updates proposal when word count is below the maximum', () => {
-    setValue('This is a valid abstract.');
-    expect(mockSetProposal).toHaveBeenCalledWith({ abstract: 'This is a valid abstract.' });
-  });
-
-  test('updates proposal even when word count exceeds the maximum', () => {
-    const overLimitAbstract = 'one two three four five six seven eight nine ten x';
-    setValue(overLimitAbstract);
-    expect(mockSetProposal).toHaveBeenCalledWith({ abstract: overLimitAbstract });
-  });
-
-  test('truncates abstract at MAX_CHAR characters', () => {
-    const longAbstract = 'a'.repeat(60);
-    setValue(longAbstract);
-    expect(mockSetProposal).toHaveBeenCalledWith({ abstract: 'a'.repeat(MAX_CHAR) });
+  test('renders correctly', async () => {
+    await act(async () => {
+      wrapper(<DetailsPage />);
+    });
   });
 });
 
@@ -134,8 +147,8 @@ describe('Abstract helperFunction', () => {
 
   test('appends word limit exceeded message when word count exceeds max', () => {
     countWords.mockReturnValue(11);
-    const { container } = wrapper(
-      helperFunction('This abstract has a word count that exceeds the ten word limit here')
+    const { container } = render(
+      <>{helperFunction('This abstract has a word count that exceeds the ten word limit here')}</>
     );
     expect(container.textContent).toContain('Current: 11, Max: 10');
     expect(container.textContent).toContain('(WORD LIMIT EXCEEDED)');
@@ -174,7 +187,14 @@ const selectObservingMode = async (label: string) => {
 describe('<DetailsPage /> observing mode', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(setObservingMode).mockResolvedValue();
+    mockState.updateProposal.mockClear();
+    vi.mocked(setObservingMode).mockImplementation(async (mode, getProposal, setProposal) => {
+      const proposal = getProposal();
+      setProposal({
+        ...proposal,
+        observations: [{ ...proposal.observations[0], type: mode }]
+      });
+    });
   });
 
   it('shows the science category and no observing mode for standard proposals', async () => {
@@ -187,6 +207,137 @@ describe('<DetailsPage /> observing mode', () => {
 
     expect(screen.getByTestId('categoryId')).toBeInTheDocument();
     expect(screen.queryByTestId('observationType')).not.toBeInTheDocument();
+  });
+
+  it('stores abstract edits in RHF without writing to the legacy store', async () => {
+    mockState.proposal = {
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      scienceCategory: null,
+      abstract: ''
+    };
+    await renderPage();
+
+    const abstractInput = screen.getAllByRole('textbox')[0];
+    await userEvent.clear(abstractInput);
+    await userEvent.type(abstractInput, 'A new scientific summary');
+    await waitFor(() =>
+      expect(JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').abstract).toBe(
+        'A new scientific summary'
+      )
+    );
+
+    fireEvent.blur(abstractInput);
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
+  });
+
+  it('stores a selected science category in RHF without writing to the legacy store', async () => {
+    mockState.proposal = {
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      scienceCategory: null,
+      abstract: ''
+    };
+    await renderPage();
+
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    fireEvent.click(await screen.findByRole('option', { name: 'High Energy Cosmic Particles' }));
+
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').scienceCategory
+    ).toBe(7);
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
+  });
+
+  it('updates the breadcrumb from RHF without writing to the legacy store', async () => {
+    mockState.proposal = {
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      scienceCategory: 1,
+      abstract: ''
+    };
+    await renderPage();
+    const input = screen.getByTestId('abstractId');
+    fireEvent.change(input, { target: { value: 'A scientific summary' } });
+    await waitFor(() => {
+      expect(mockState.updatePageStatus.mock.lastCall?.[0][PAGE_DETAILS]).toBe(STATUS_OK);
+    });
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
+  });
+
+  it('validates the character limit without truncating the abstract', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    const abstractInput = screen.getByTestId('abstractId');
+    expect(abstractInput.tagName).toBe('TEXTAREA');
+    expect(abstractInput).not.toHaveAttribute('maxlength');
+    fireEvent.change(abstractInput, { target: { value: 'a'.repeat(2301) } });
+
+    expect(abstractInput).toHaveValue('a'.repeat(2301));
+    expect(JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').abstract).toBe(
+      'a'.repeat(2301)
+    );
+    expect(
+      await screen.findByText('Too big: expected string to have <=2300 characters')
+    ).toBeInTheDocument();
+    expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
+    fireEvent.blur(abstractInput);
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
+    fireEvent.change(abstractInput, { target: { value: 'a'.repeat(2300) } });
+    await waitFor(() => expect(abstractInput).toHaveAttribute('aria-invalid', 'false'));
+  });
+
+  it('displays the abstract validation error from the form', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    const wordLimit = Number(phtTranslations.abstract.maxWord);
+    const abstractInput = screen.getByTestId('abstractId');
+    fireEvent.change(abstractInput, {
+      target: {
+        value: Array(wordLimit + 1)
+          .fill('a')
+          .join(' ')
+      }
+    });
+
+    expect(
+      await screen.findByText(
+        `${phtTranslations.specialCharacters.numWord} ${wordLimit + 1} / ${wordLimit}`
+      )
+    ).toBeInTheDocument();
+    expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('displays a required error on blur and clears it when an abstract is entered', async () => {
+    const requiredError = 'Too small: expected string to have >=1 characters';
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    const abstractInput = screen.getByTestId('abstractId');
+    fireEvent.blur(abstractInput);
+
+    expect(await screen.findByText(requiredError)).toBeInTheDocument();
+    expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
+
+    fireEvent.change(abstractInput, { target: { value: 'A scientific summary' } });
+    await waitFor(() => {
+      expect(screen.queryByText(requiredError)).not.toBeInTheDocument();
+      expect(abstractInput).toHaveAttribute('aria-invalid', 'false');
+    });
+
+    fireEvent.change(abstractInput, { target: { value: '' } });
+    expect(await screen.findByText(requiredError)).toBeInTheDocument();
+  });
+
+  it('previews the current abstract as LaTeX', async () => {
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    fireEvent.change(screen.getByTestId('abstractId'), {
+      target: { value: 'Updated scientific summary' }
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'preview latex' }));
+
+    expect(await screen.findByRole('dialog')).toHaveTextContent('Updated scientific summary');
   });
 
   it('shows the observing mode of the observation and no science category for SV proposals', async () => {
@@ -210,6 +361,15 @@ describe('<DetailsPage /> observing mode', () => {
 
     await selectObservingMode('observationType.pst');
 
+    expect(observingModeCombobox()).toHaveTextContent('observationType.pst');
+    expect(mockState.updateProposal).toHaveBeenCalledWith(
+      expect.objectContaining({
+        observations: [expect.objectContaining({ type: TYPE_PST })]
+      })
+    );
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '')
+    ).not.toHaveProperty('observingMode');
     expect(setObservingMode).toHaveBeenCalledWith(
       TYPE_PST,
       expect.any(Function),
@@ -218,5 +378,38 @@ describe('<DetailsPage /> observing mode', () => {
       {},
       42
     );
+  });
+
+  it('only updates the selected mode after the observation update succeeds', async () => {
+    let completeUpdate!: () => void;
+    vi.mocked(setObservingMode).mockImplementation(
+      (mode, getProposal, setProposal) =>
+        new Promise((resolve) => {
+          completeUpdate = () => {
+            const proposal = getProposal();
+            setProposal({
+              ...proposal,
+              observations: [{ ...proposal.observations[0], type: mode }]
+            });
+            resolve();
+          };
+        })
+    );
+    mockState.proposal = svProposal();
+    await renderPage();
+
+    await selectObservingMode('observationType.pst');
+
+    expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
+    expect(mockState.updateProposal).not.toHaveBeenCalled();
+
+    await act(async () => {
+      completeUpdate();
+    });
+
+    expect(observingModeCombobox()).toHaveTextContent('observationType.pst');
+    expect(
+      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '')
+    ).not.toHaveProperty('observingMode');
   });
 });

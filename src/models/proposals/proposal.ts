@@ -9,6 +9,8 @@ import { getDocumentRefSchema } from './documents';
 import { getDataProductsSchema } from './dataProducts';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
+import { getDetailsSchema } from './details';
+import { getTeamSchema } from './team';
 
 export function getProposalTypeSchema() {
   return z.enum(PROPOSAL_TYPE);
@@ -22,6 +24,11 @@ export function getProposalSchema() {
       .nullable()
       // Returns a plain boolean so the type is not narrowed to non-null
       .refine((value): boolean => value != null, { message: phtTranslations.proposalType.help }),
+    abstract: getDetailsSchema().shape.abstract,
+    scienceCategory: getDetailsSchema().shape.scienceCategory,
+    // Without the subgroup's own default: the form's defaults are in getProposalFormDefaults, and
+    // the form is typed as the schema's input, where a defaulted field would be optional
+    investigators: getTeamSchema().shape.investigators.unwrap(),
     targets: getTargetsSchema(),
     targetObservation: getTargetObservationSchema(),
     calibrationStrategy: getCalibrationStrategySchema(),

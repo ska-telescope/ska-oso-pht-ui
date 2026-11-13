@@ -122,6 +122,14 @@ const storedResults = (form: { getValues: (name: 'targetObservation') => unknown
 
 const debounce = () => act(() => vi.advanceTimersByTimeAsync(SENS_CALC_DEBOUNCE_MS));
 
+/** Opens a proposal whose link has stored results, and lets the calculation on opening finish. */
+const renderOpenedService = async () => {
+  const service = renderService({ ...LINK, sensitivity: STORED_RESULTS });
+  await debounce();
+  vi.mocked(sendSensitivityRequest).mockClear();
+  return service;
+};
+
 /** Makes the next request wait until the returned function resolves it. */
 const holdNextRequest = () => {
   let resolve: (response: Response) => void = () => {};
@@ -186,18 +194,33 @@ describe('useSensitivityService', () => {
     });
   });
 
-  test('takes stored results as current when a proposal is opened', async () => {
+  test('recalculates stored results when a proposal is opened', async () => {
+    const resolve = holdNextRequest();
     const { getForm } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
 
     await debounce();
 
-    expect(sendSensitivityRequest).not.toHaveBeenCalled();
-    expect(storedResults(getForm())).toEqual(STORED_RESULTS);
+    expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
+    expect(storedResults(getForm())).toEqual({ state: SENSITIVITY_STATE.CALCULATING });
+
+    await resolve(SUCCESS);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
+  });
+
+  test('calculates from the current inputs when they change before the first debounce', async () => {
+    const { setProposal } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
+
+    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    await debounce();
+
+    expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(sendSensitivityRequest).mock.calls[0][0].body).toMatchObject({
+      elevation_limit: 30
+    });
   });
 
   test('recalculates when a change alters the request', async () => {
-    const { setProposal } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
-    await debounce();
+    const { setProposal } = await renderOpenedService();
 
     setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
     await debounce();
@@ -206,8 +229,7 @@ describe('useSensitivityService', () => {
   });
 
   test('makes no request for a change that leaves the request the same', async () => {
-    const { setProposal } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
-    await debounce();
+    const { setProposal } = await renderOpenedService();
 
     setProposal(
       proposalWith(OBSERVATION, {
@@ -239,9 +261,26 @@ describe('useSensitivityService', () => {
     expect(notifyError).not.toHaveBeenCalled();
   });
 
-  test('marks a link as calculating, without its previous results, while its request runs', async () => {
-    const { getForm, setProposal } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
+  test('ignores a response that arrives after its inputs change, before the debounce', async () => {
+    const resolveFirst = holdNextRequest();
+    const { getForm, setProposal } = renderService(LINK);
     await debounce();
+    const firstSignal = vi.mocked(sendSensitivityRequest).mock.calls[0][1]?.signal;
+
+    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    expect(firstSignal?.aborted).toBe(true);
+    await resolveFirst(FAILURE);
+
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.CALCULATING);
+    expect(notifyError).not.toHaveBeenCalled();
+
+    await debounce();
+    expect(sendSensitivityRequest).toHaveBeenCalledTimes(2);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
+  });
+
+  test('marks a link as calculating, without its previous results, while its request runs', async () => {
+    const { getForm, setProposal } = await renderOpenedService();
 
     const resolve = holdNextRequest();
     setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
