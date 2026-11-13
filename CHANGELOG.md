@@ -12,6 +12,7 @@ UNRELEASED
 * Bugfix: The edit target dialog cannot be confirmed while the velocity or redshift is invalid
 * Bugfix: Calibration notes edited while calibrators are being looked up are kept
 * Dependency update: Sensitivity Calculator v12.0.2
+* Library update: SKA GUI Components v4.0.0
 * Changed: Target name resolution error improved and shown in a pop-up
 * Changed: Do not allow duplicate target names when adding multiple targets
 
