@@ -186,13 +186,9 @@ export default function PHT({
       isProposalPageTransition && loggedIn && proposal?.id != null && proposal.id !== '';
 
     if (canAutoSave) {
+      const values = getValues();
       void (async () => {
-        const response = await PutProposal(
-          authClient,
-          proposal,
-          PROPOSAL_STATUS.DRAFT,
-          getValues()
-        );
+        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT, values);
         if ('error' in response) {
           notifyError(response.error);
         }

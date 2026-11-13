@@ -8,6 +8,8 @@ import { getCalibrationStrategySchema } from './calibrationStrategy';
 import { getDocumentRefSchema } from './documents';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
+import { getDetailsSchema } from './details';
+import { getTeamSchema } from './team';
 
 export function getProposalTypeSchema() {
   return z.enum(PROPOSAL_TYPE);
@@ -25,6 +27,9 @@ export function getProposalSchema() {
       .refine((value): boolean => value != null, { message: phtTranslations.proposalType.help })
       // Controlled fields need null to clear a previous selection on reset
       .default(null),
+    abstract: getDetailsSchema().shape.abstract.default(''),
+    scienceCategory: getDetailsSchema().shape.scienceCategory.default(null),
+    ...getTeamSchema().shape,
     // These slices check structure only. Proposals loaded through the legacy mapper can contain
     // invalid or missing data. The validation of that data against the rules for content is done
     // in the submit validation.

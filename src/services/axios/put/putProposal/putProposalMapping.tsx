@@ -41,6 +41,7 @@ import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { referenceCoordinateToPdm, targetsToPdm } from '@/models/proposals/targets';
 import { targetObservationToPdm } from '@/models/proposals/targetObservation';
 import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
+import { investigatorToPdm } from '@/models/proposals/team';
 import type {
   ContinuumVisibilities,
   DataProductSDP as DataProductSDPTransport,
@@ -369,20 +370,9 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         (category) => category.value === proposal?.scienceCategory
       )?.label as string,
       investigators: proposal?.investigators
-        ? proposal.investigators.map((investigator) => {
-            return {
-              user_id: investigator?.id?.toString(),
-              status: investigator.status,
-              given_name: investigator.firstName,
-              family_name: investigator.lastName,
-              email: investigator.email,
-              organization: investigator.affiliation,
-              for_phd: investigator.phdThesis,
-              principal_investigator: investigator.pi,
-              officeLocation: investigator.officeLocation,
-              jobTitle: investigator.jobTitle
-            };
-          })
+        ? proposal.investigators.map((investigator) =>
+            investigatorToPdm({ ...investigator, id: investigator?.id?.toString() })
+          )
         : (null as unknown as undefined) // still sent as null; the PDM type has no null here
     },
     observation_info: {

@@ -22,7 +22,6 @@ describe('<GridMembers />', () => {
             lastName: '',
             email: '',
             country: '',
-            affiliation: '',
             phdThesis: true,
             status: '',
             pi: true
@@ -42,7 +41,6 @@ describe('<GridMembers />', () => {
             lastName: '',
             email: '',
             country: '',
-            affiliation: '',
             phdThesis: true,
             status: '',
             pi: true
