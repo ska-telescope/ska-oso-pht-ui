@@ -24,7 +24,12 @@ vi.mock('@services/axios/get/getCalibratorList/getCalibratorList', () => ({
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: { title: '', proposalType: null }
+      defaultValues: {
+        title: '',
+        proposalType: null,
+        abstract: '',
+        scienceCategory: null
+      }
     });
     return (
       <StoreProvider>

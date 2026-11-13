@@ -4,7 +4,7 @@ import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import { ProposalType, STORE_COPIED_SLICES } from './proposal';
 
-const pickSlices = (values: Partial<ProposalType>) =>
+const pickSlices = (values: Partial<ProposalType> | Proposal) =>
   Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])) as ProposalType;
 
 /**
@@ -58,6 +58,10 @@ export function useCopySlicesToStore(
       return;
     }
     // The store freezes what it is given, and the form must stay mutable
-    updateAppContent2({ ...proposal, ...structuredClone(slices) });
+    updateAppContent2({
+      ...proposal,
+      ...structuredClone(slices),
+      ...(proposal.scienceCategory !== slices.scienceCategory && { scienceSubCategory: [1] })
+    });
   }, [...watched, proposal]);
 }

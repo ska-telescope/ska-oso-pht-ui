@@ -67,8 +67,8 @@ export default function GridMembers({
     renderHeader: () => headerDisplay('lastName.label'),
     flex: 2,
     minWidth: 150,
-    renderCell: (e: { row: { lastName: string } }) =>
-      dataDisplay(e.row.lastName, e.row.lastName, 'lastName')
+    renderCell: (e: { row: { lastName?: string } }) =>
+      dataDisplay(e.row.lastName ?? '', e.row.lastName ?? '', 'lastName')
   };
 
   const colFirstName = {
@@ -76,8 +76,8 @@ export default function GridMembers({
     renderHeader: () => headerDisplay('firstName.label'),
     flex: 2,
     minWidth: 150,
-    renderCell: (e: { row: { firstName: string } }) =>
-      dataDisplay(e.row.firstName, e.row.firstName, 'firstName')
+    renderCell: (e: { row: { firstName?: string } }) =>
+      dataDisplay(e.row.firstName ?? '', e.row.firstName ?? '', 'firstName')
   };
 
   const colStatus = {

@@ -24,6 +24,9 @@ const strategy = {
 const values = (slices: Partial<ProposalType> = {}): ProposalType => ({
   title: 'A valid title',
   proposalType: PROPOSAL_TYPE.STANDARD,
+  abstract: 'A valid abstract',
+  scienceCategory: null,
+  investigators: [],
   targets: [target],
   targetObservation: [link],
   calibrationStrategy: [strategy],
