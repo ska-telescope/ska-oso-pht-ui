@@ -32,11 +32,12 @@ const values = (weighted: number): SensitivityValues => ({
   synthesizedBeamSize: { value: '1.00 x 2.00', unit: 'arcsec²' }
 });
 
-// The linked target lives in the form, which owns the targets
+// The linked target and data product live in the form, which owns them
 const FormWithTarget = ({ children }: { children: React.ReactNode }) => {
   const form = useProposalForm({
     id: 'p1',
-    targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets']
+    targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets'],
+    dataProducts: MockProposalFrontend.dataProducts
   });
   return <FormProvider {...form}>{children}</FormProvider>;
 };
@@ -52,7 +53,7 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<SensCalcModalSingle />', () => {
-  // The linked observation and data product are still read from the store
+  // The linked observation is still read from the store
   beforeEach(() => {
     vi.spyOn(storageObject, 'useStore').mockReturnValue({
       ...completeMockStore,

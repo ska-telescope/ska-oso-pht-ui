@@ -51,9 +51,10 @@ export default function SensCalcContent({
 
   const proposal = getProposal();
 
-  // TODO: The form owns the targets; observations and data products are still read from the store
+  // TODO: The form owns the targets and data products; observations are still read from the store
   const form = useFormContext<ProposalType>();
   const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const dataProducts = useWatch({ control: form.control, name: 'dataProducts' }) ?? [];
   const target = targets.find((target) => target.id === targetObservation.targetId);
 
   const observation = proposal.observations?.find(
@@ -63,11 +64,7 @@ export default function SensCalcContent({
   // The data product the results were calculated from, which can differ from the linked one
   const dataProduct =
     observation &&
-    getSensitivityDataProduct(
-      observation,
-      targetObservation.dataProductsSDPId,
-      proposal.dataProductSDP ?? []
-    );
+    getSensitivityDataProduct(observation, targetObservation.dataProductsSDPId, dataProducts);
 
   // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
   // which a custom subarray or a non-Gaussian beam has none of

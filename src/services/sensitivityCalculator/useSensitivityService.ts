@@ -13,6 +13,7 @@ import {
   sendSensitivityRequest
 } from './calculate';
 import { toSensitivity } from './results';
+import { getDataProductSchema } from '@/models/proposals/dataProducts';
 
 export const SENS_CALC_DEBOUNCE_MS = 500;
 
@@ -37,13 +38,15 @@ const getLinkId = (link: { targetId: string; observationId: string; dataProducts
  */
 export const useSensitivityService = () => {
   const { control, getValues, setValue } = useFormContext<ProposalType>();
-  // TODO BTN-3595 Read observations and data products from the form once they are migrated to it
+  // TODO BTN-3595 Read the observations from the form once they are migrated to it
   const { application } = storageObject.useStore();
   const proposal = application.content2 as Proposal | undefined;
   const observations = proposal?.observations;
-  const dataProducts = proposal?.dataProductSDP;
   const { notifyError } = useNotify();
-  const [targets, links] = useWatch({ control, name: ['targets', 'targetObservation'] });
+  const [targets, links, dataProducts] = useWatch({
+    control,
+    name: ['targets', 'targetObservation', 'dataProducts']
+  });
 
   const recordsRef = React.useRef<LinkRecords>(new Map());
 
@@ -78,23 +81,14 @@ export const useSensitivityService = () => {
         return [];
       }
 
-      // TODO BTN-3595 Once observations and data products are in the form, check them against
-      //  their item schemas before building the request: the same rules that decide what is
-      //  saved. SV proposals edit their one observation and data product in place, so the form
-      //  can hold values that aren't valid yet, which the calculator would reject. Until then,
-      //  half-edited values are sent and come back as calculator errors. Something like:
-      //
-      //    const inputsValid =
-      //      getObservationSchema().safeParse(observation).success &&
-      //      getDataProductSchema().safeParse(dataProduct).success;
-      //    const request = inputsValid
-      //      ? buildSensitivityRequest(observation, target, dataProduct)
-      //      : null;
-      //
-      //  Invalid inputs then give no request, so they share the empty request key: further
-      //  invalid edits change nothing, a valid edit recalculates, and the no-request branch below
-      //  clears the link's results without sending anything.
-      const request = buildSensitivityRequest(observation, target, dataProduct);
+      // SV proposals edit their data product in place, so it can hold values that aren't valid
+      // yet, which the calculator would reject. An invalid one gives no request, the same rule
+      // that decides what is saved: further invalid edits change nothing, a valid edit
+      // recalculates, and the no-request branch below clears the link's results.
+      // TODO BTN-3595 Check the observation against its item schema too, once it is in the form
+      const request = getDataProductSchema().safeParse(dataProduct).success
+        ? buildSensitivityRequest(observation, target, dataProduct)
+        : null;
       const requestKey = request ? request.path + JSON.stringify(request.body) : '';
       return [{ link, linkId: getLinkId(link), request, requestKey }];
     });
@@ -124,7 +118,8 @@ export const useSensitivityService = () => {
         }
 
         if (!request) {
-          // The calculator doesn't apply (SSO targets and PST), so the link has no results
+          // The calculator doesn't apply (SSO targets and PST), or the data product isn't valid yet,
+          // so the link has no results
           recordsRef.current.set(linkId, { requestKey });
           if (!link.sensitivity) return;
           writeResults(linkId, undefined);

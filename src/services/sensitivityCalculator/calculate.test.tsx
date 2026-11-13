@@ -6,12 +6,8 @@ import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
   FREQUENCY_GHZ,
   FREQUENCY_MHZ,
-  IW_BRIGGS,
-  IW_NATURAL,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
@@ -27,7 +23,7 @@ import {
 } from '@/utils/constants';
 import type Observation from '@/utils/types/observation';
 import type { TargetType } from '@/models/proposals/targets';
-import type { DataProductSDPNew } from '@/utils/types/dataProduct';
+import { DATA_PRODUCT_KIND, type DataProductInput } from '@/models/proposals/dataProducts';
 import {
   buildSensitivityRequest,
   getSensitivityDataProduct,
@@ -62,23 +58,27 @@ const SSO_TARGET: TargetType = {
   kind: REFERENCE_COORDINATE_TYPE_SSO.value
 };
 
-const imageDataProduct = (overrides: Record<string, unknown> = {}): DataProductSDPNew => ({
-  id: 'dp-1',
-  observationId: 'obs-1',
-  data: {
-    dataProductType: DP_TYPE_IMAGES,
-    imageSizeValue: 2.2,
-    imageSizeUnits: 0,
-    pixelSizeValue: 1,
-    pixelSizeUnits: 0,
-    weighting: IW_NATURAL,
-    robust: 0,
-    taperValue: 0,
+const imageDataProduct = (overrides: Record<string, unknown> = {}): DataProductInput =>
+  ({
+    id: 'dp-1',
+    observationId: 'obs-1',
+    kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE,
+    imageSize: { value: 2.2, unit: 'deg' },
+    pixelSize: { value: 1, unit: 'deg' },
+    weighting: { type: 'natural' },
+    taper: 0,
     channelsOut: 40,
     polarisations: ['I'],
     ...overrides
-  }
-});
+  }) as DataProductInput;
+
+const VISIBILITIES: DataProductInput = {
+  id: 'dp-2',
+  observationId: 'obs-1',
+  kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+  timeAveragingS: 3.4,
+  frequencyAveragingKhz: 21.7
+};
 
 const MID_CONTINUUM_OBSERVATION: Observation = {
   id: 'obs-mid',
@@ -182,7 +182,7 @@ describe('buildSensitivityRequest', () => {
     const request = build(
       MID_CONTINUUM_OBSERVATION,
       ICRS_TARGET,
-      imageDataProduct({ taperValue: 0.25 })
+      imageDataProduct({ taper: 0.25 })
     );
 
     expect(request.mode).toBe(SENS_CALC_MODE.CONTINUUM);
@@ -233,7 +233,7 @@ describe('buildSensitivityRequest', () => {
     const request = build(
       DEFAULT_CONTINUUM_OBSERVATION_LOW,
       ICRS_TARGET,
-      imageDataProduct({ weighting: IW_BRIGGS, robust: -1 })
+      imageDataProduct({ weighting: { type: 'briggs', robust: -1 } })
     );
 
     expect(request.body).toMatchObject({ weighting_mode: 'robust', robustness: -1 });
@@ -265,7 +265,7 @@ describe('buildSensitivityRequest', () => {
     const request = build(
       { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, type: TYPE_CONTINUUM_SPECTRAL },
       ICRS_TARGET,
-      imageDataProduct({ dataProductType: undefined, channelsOut: 4000 })
+      imageDataProduct({ kind: DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE, channelsOut: 4000 })
     );
 
     expect(request.mode).toBe(SENS_CALC_MODE.CONTINUUM);
@@ -274,11 +274,7 @@ describe('buildSensitivityRequest', () => {
   });
 
   test('continuum visibilities average over the default number of channels', () => {
-    const request = build(
-      DEFAULT_CONTINUUM_OBSERVATION_LOW,
-      ICRS_TARGET,
-      imageDataProduct({ dataProductType: DP_TYPE_VISIBLE })
-    );
+    const request = build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, VISIBILITIES);
 
     // 27648 channels / CHANNELS_OUT_DEFAULT (10)
     expect(request.body).toMatchObject({ spectral_averaging_factor: 2764 });
@@ -308,13 +304,8 @@ describe('buildSensitivityRequest', () => {
 describe('getSensitivityDataProduct', () => {
   const CONTINUUM_OBSERVATION = { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' };
   const IMAGES = imageDataProduct();
-  const VISIBILITIES: DataProductSDPNew = {
-    id: 'dp-2',
-    observationId: 'obs-1',
-    data: { dataProductType: DP_TYPE_VISIBLE, timeAveraging: 4, frequencyAveraging: 4 }
-  };
   // Another observation's images data product, which must never be used
-  const OTHER_IMAGES: DataProductSDPNew = { ...imageDataProduct(), id: 'dp-3', observationId: 'x' };
+  const OTHER_IMAGES = imageDataProduct({ id: 'dp-3', observationId: 'x' });
 
   test('gives the linked images data product', () => {
     expect(getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'dp-1', [VISIBILITIES, IMAGES])).toBe(
