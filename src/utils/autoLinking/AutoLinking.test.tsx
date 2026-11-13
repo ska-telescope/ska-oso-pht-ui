@@ -155,8 +155,9 @@ describe('AutoLinking, newDataProductsForMode', () => {
     };
     const sdps = newDataProductsForMode(obs);
     expect(sdps).toHaveLength(2);
-    // The main data product comes first, then the hidden visibilities one
-    expect(sdps[0]).to.deep.equal(SPECTRAL_DATA_PRODUCT);
+    // The main data product comes first, then the hidden visibilities one. Its output channels
+    // are the observation's zoom channels.
+    expect(sdps[0]).to.deep.equal({ ...SPECTRAL_DATA_PRODUCT, channelsOut: obs.zoomChannels });
     expect(sdps[1]).toMatchObject({
       observationId: 'obs-123',
       kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,

@@ -300,6 +300,18 @@ describe('DataProductInPlace', () => {
     expect(screen.getByLabelText('robust.label')).toBeInTheDocument();
   });
 
+  it("shows a spectral data product's own channels out, which the user can't edit", () => {
+    openProposal({
+      observations: [observation(TYPE_ZOOM, { zoomChannels: 40 })],
+      dataProducts: [image(DATA_PRODUCT_KIND.SPECTRAL_IMAGE, { channelsOut: 40 })]
+    });
+    renderPage();
+
+    const channelsOut = screen.getByRole('spinbutton', { name: 'channelsOut.label' });
+    expect(channelsOut).toBeDisabled();
+    expect(channelsOut).toHaveValue(40);
+  });
+
   it('hides the robust field for other weightings', () => {
     openProposal({
       observations: [observation(TYPE_CONTINUUM)],

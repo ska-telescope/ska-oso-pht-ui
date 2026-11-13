@@ -165,7 +165,7 @@ describe('data product schema', () => {
   // The limits follow the observation type the kind belongs to
   test.each([
     [DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 1, 40],
-    [DATA_PRODUCT_KIND.SPECTRAL_IMAGE, 2, 40],
+    [DATA_PRODUCT_KIND.SPECTRAL_IMAGE, 2, 4000],
     [DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE, 2, 4000]
   ])('limits the channels out of a %s to %i–%i', (kind, min, max) => {
     const dp = { ...continuumImage, kind, continuumSubtraction: false };

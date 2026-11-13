@@ -551,6 +551,26 @@ describe('<ObservationEntry />', () => {
       );
     });
 
+    it("sets a spectral data product's channels out to the observation's zoom channels", async () => {
+      const saved = { ...DEFAULT_ZOOM_OBSERVATION_LOW, zoomChannels: 100 };
+      mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
+      mockState.observationTypes = [saved.type];
+      mockState.observations = [saved];
+      mockState.dataProducts = [
+        {
+          ...newDataProduct(DATA_PRODUCT_KIND.SPECTRAL_IMAGE, saved.id),
+          id: 'SDP-SPECTRAL',
+          channelsOut: 100
+        }
+      ];
+      // The page holds other zoom channels than the stored observation, as after an edit
+      await act(async () => {
+        wrapper(<ObservationEntry data={{ ...saved, zoomChannels: 200 }} />);
+      });
+
+      expect(savedDataProduct('SDP-SPECTRAL')).toMatchObject({ channelsOut: 200 });
+    });
+
     describe('for a PST observation saved without a mode', () => {
       const saved = { ...DEFAULT_PST_OBSERVATION_LOW, pstMode: undefined };
       // The user's values, which differ from the flow-through defaults

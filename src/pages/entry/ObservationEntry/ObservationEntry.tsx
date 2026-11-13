@@ -105,6 +105,7 @@ import {
   pstDataProductKind,
   updateImageSizes
 } from '@/models/proposals/dataProducts';
+import { withZoomChannels } from '@/utils/autoLinking/AutoLinking';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
@@ -350,6 +351,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
   };
 
+  // A spectral image's output channels follow the observation's zoom channels
+  const setChannelsOutFromZoomChannels = (observation: Observation) =>
+    form.setValue(
+      'dataProducts',
+      form
+        .getValues('dataProducts')
+        .map((dp) => (dp.observationId === observation.id ? withZoomChannels(dp, observation) : dp))
+    );
+
   const updateObservationOnProposal = () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
@@ -379,6 +389,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       }
       if (frequencyChanged) {
         resizeImageDataProducts(newObservation);
+      }
+      if (oldObservation.zoomChannels !== newObservation.zoomChannels) {
+        setChannelsOutFromZoomChannels(newObservation);
       }
     }
 

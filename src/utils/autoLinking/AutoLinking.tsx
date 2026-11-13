@@ -67,11 +67,26 @@ export const mainDataProductKind = (observation: Observation): DataProductKind =
 };
 
 /**
+ * A spectral image's output channels are the observation's zoom channels, which the page shows and
+ * the backend is sent. Other data products are left as they are.
+ */
+export const withZoomChannels = (
+  dataProduct: DataProductInput,
+  observation: Observation
+): DataProductInput =>
+  dataProduct.kind === DATA_PRODUCT_KIND.SPECTRAL_IMAGE && observation.zoomChannels !== undefined
+    ? { ...dataProduct, channelsOut: observation.zoomChannels }
+    : dataProduct;
+
+/**
  * The default data products for the observation's mode: the main one, which the link points at,
  * and for imaging modes a hidden visibilities companion (saved but not displayed).
  */
 export const newDataProductsForMode = (observation: Observation): DataProductInput[] => {
-  const main = newDataProduct(mainDataProductKind(observation), observation.id);
+  const main = withZoomChannels(
+    newDataProduct(mainDataProductKind(observation), observation.id),
+    observation
+  );
   if (observation.type === TYPE_PST) {
     return [main];
   }

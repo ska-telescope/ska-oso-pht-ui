@@ -182,7 +182,7 @@ export function getDataProductSchema() {
     }),
     imageDataProductSchema.extend({
       kind: z.literal(DATA_PRODUCT_KIND.SPECTRAL_IMAGE),
-      channelsOut: channelsOutSchema(CHANNELS_OUT_MIN_SPECTRAL, CHANNELS_OUT_MAX),
+      channelsOut: channelsOutSchema(CHANNELS_OUT_MIN_SPECTRAL, CHANNELS_OUT_MAX_COMBINED),
       continuumSubtraction: z.boolean()
     }),
     imageDataProductSchema.extend({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Grid, InputAdornment, Stack, Typography } from '@mui/material';
 import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 import { BorderedSection, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import {
@@ -167,8 +167,6 @@ export default function DataProductView({
       dp.kind === DATA_PRODUCT_KIND.CONTINUUM_IMAGE ? CHANNELS_OUT_MAX : CHANNELS_OUT_MAX_COMBINED;
     const channelsOutHelp = () =>
       setHelp('channelsOut', { min: channelsOutMin, max: channelsOutMax });
-    // Spectral mirrors the observation's zoom channels, so there is nothing to show without them
-    const zoomChannels = observation.zoomChannels;
     return (
       <Grid container spacing={FIELD_SPACING} sx={{ py: 1 }}>
         <Grid size={6}>{angleField('imageSize')}</Grid>
@@ -223,28 +221,15 @@ export default function DataProductView({
           )}
         </Grid>
         <Grid size={6}>
-          {isSpectral ? (
-            zoomChannels !== undefined && (
-              <TextField
-                type="number"
-                variant="standard"
-                fullWidth
-                disabled
-                label={t('channelsOut.label')}
-                value={zoomChannels}
-                onFocus={channelsOutHelp}
-              />
-            )
-          ) : (
-            <ControlledNumberField
-              name={`${path}.channelsOut`}
-              label={t('channelsOut.label')}
-              min={channelsOutMin}
-              max={channelsOutMax}
-              required
-              onFocus={channelsOutHelp}
-            />
-          )}
+          <ControlledNumberField
+            name={`${path}.channelsOut`}
+            label={t('channelsOut.label')}
+            min={channelsOutMin}
+            max={channelsOutMax}
+            disabled={isSpectral}
+            required
+            onFocus={channelsOutHelp}
+          />
         </Grid>
         {isSpectral && (
           <Grid size={6}>
