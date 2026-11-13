@@ -126,6 +126,7 @@ export default function LandingPage() {
   const getTheProposal = async (id: string) => {
     setHelp('');
     updateAppContent5({});
+    setAxiosViewError('');
 
     const response = await loadFromOda(id);
     if (typeof response === 'string') {
@@ -423,7 +424,7 @@ export default function LandingPage() {
           {!axiosViewError && loggedIn && (!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
-          {!axiosViewError && filteredData.length > 0 && (
+          {filteredData.length > 0 && (
             <Box
               sx={{
                 pt: 5

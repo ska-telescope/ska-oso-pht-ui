@@ -286,6 +286,31 @@ describe('clone proposal', () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
+  test('keeps proposals available after a failed load and clears the error on retry', async () => {
+    const secondProposal = { ...mockRichOriginalProposal, id: 'prp-2' };
+    (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal, secondProposal]);
+    mockLoadFromOda
+      .mockResolvedValueOnce('Unable to load proposal')
+      .mockResolvedValueOnce(secondProposal);
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.stubGlobal('alert', vi.fn());
+    wrapper(<LandingPage />);
+
+    const editButtons = await screen.findAllByTestId('editIcon');
+    fireEvent.click(editButtons[0]);
+
+    expect(await screen.findByTestId('axiosViewErrorTestId')).toHaveTextContent(
+      'Unable to load proposal'
+    );
+    expect(screen.getAllByTestId('editIcon')).toHaveLength(2);
+
+    fireEvent.click(screen.getAllByTestId('editIcon')[1]);
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
+    expect(mockLoadFromOda).toHaveBeenLastCalledWith('prp-2');
+    expect(screen.queryByTestId('axiosViewErrorTestId')).not.toBeInTheDocument();
+  });
+
   const triggerCloneConfirm = async () => {
     wrapper(<LandingPage />);
 
