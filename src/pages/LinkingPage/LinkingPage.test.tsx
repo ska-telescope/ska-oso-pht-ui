@@ -14,6 +14,8 @@ import {
   SENSITIVITY_STATE
 } from '@/utils/constants';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
 vi.mock('@services/axios/get/getCalibratorList/getCalibratorList', () => ({
@@ -23,12 +25,7 @@ vi.mock('@services/axios/get/getCalibratorList/getCalibratorList', () => ({
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: {
-        title: '',
-        proposalType: null,
-        abstract: '',
-        scienceCategory: null
-      }
+      defaultValues: getProposalFormDefaults()
     });
     return (
       <StoreProvider>
@@ -74,7 +71,7 @@ const linkingProposal = {
   id: 'prsl-1',
   proposalType: PROPOSAL_TYPE.STANDARD,
   observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
-  dataProductSDP: [{ id: 'sdp-1', observationId: 'obs-1', data: {} }],
+  dataProducts: [{ ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'sdp-1' }],
   targets: [{ id: 't1', name: 'M2', kind: 0, raStr: '21:33:27.020', decStr: '-00:49:23.700' }],
   targetObservation: [],
   calibrationStrategy: []
