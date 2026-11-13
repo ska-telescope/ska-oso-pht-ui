@@ -1268,6 +1268,7 @@
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "noObservationOrDataProduct": "No observation or data product found for this sensitivity result",
     "noTarget": "Define a target to see sensitivity results",
     "notApplicableForSSO": "Currently unavailable for non-sidereal objects",
     "sensitivity": "Sensitivity",

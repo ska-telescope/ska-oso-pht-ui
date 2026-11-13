@@ -6,7 +6,6 @@ import { ProposalType } from '@/models/proposals/proposal';
 import {
   DATA_PRODUCT_KIND,
   DataProductKind,
-  isImageDataProduct,
   newDataProduct,
   STEPPED_FIELD,
   steppedFromPdm,
@@ -26,8 +25,7 @@ import { frequencyConversion } from '@/utils/helpers';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import TargetObservation from '@/utils/types/targetObservation';
 import Target from '@/utils/types/target';
-import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
-import DataProductView, { legacyWeighting } from './DataProductView';
+import DataProductView from './DataProductView';
 
 const GAP = 5;
 
@@ -113,7 +111,8 @@ export default function DataProductInPlace({ observation }: { observation: Obser
   // Why the sensitivity calculator doesn't apply to this data product, or undefined when it does.
   // PST is checked first: the observing mode alone rules the calculator out, target or not.
   const sensCalcUnavailable = ():
-    { message: string; color: AlertColorTypes.Warning | AlertColorTypes.Error } | undefined => {
+    | { message: string; color: typeof AlertColorTypes.Warning | typeof AlertColorTypes.Error }
+    | undefined => {
     if (observation.type === TYPE_PST) {
       return { message: t('page.7.pstUnavailable'), color: AlertColorTypes.Warning };
     }
@@ -149,8 +148,6 @@ export default function DataProductInPlace({ observation }: { observation: Obser
     }
   };
 
-  const isNatural =
-    isImageDataProduct(dp) && isNonGaussianBeamWeighting(legacyWeighting(dp.weighting), dp.robust);
   const hideSpectralResults =
     dp.kind === DATA_PRODUCT_KIND.CONTINUUM_IMAGE && dp.channelsOut === CHANNELS_OUT_MIN_CONTINUUM;
 
@@ -170,7 +167,6 @@ export default function DataProductInPlace({ observation }: { observation: Obser
       ) : (
         <SensCalcContent
           targetObservation={link as TargetObservation}
-          isNatural={isNatural}
           hideSpectralResults={hideSpectralResults}
         />
       )}

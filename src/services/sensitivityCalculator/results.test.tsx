@@ -58,6 +58,28 @@ describe('toSensitivity', () => {
     });
   });
 
+  test('values the calculator gives as null are left out', () => {
+    // For a non-Gaussian beam or a custom subarray, the calculator gives only the weighted
+    // sensitivities: the other values depend on the synthesized beam
+    const weightedOnly: ContinuumResult = {
+      weighted_continuum_sensitivity: jyPerBeam(0.0000123),
+      continuum_confusion_noise: null,
+      total_continuum_sensitivity: null,
+      continuum_synthesized_beam_size: null,
+      continuum_surface_brightness_sensitivity: null,
+      weighted_spectral_sensitivity: jyPerBeam(0.0012345),
+      spectral_confusion_noise: null,
+      total_spectral_sensitivity: null,
+      spectral_synthesized_beam_size: null,
+      spectral_surface_brightness_sensitivity: null
+    };
+    expect(toSensitivity({ ok: true, data: weightedOnly })).toEqual({
+      state: SENSITIVITY_STATE.DONE,
+      continuum: { weightedSensitivity: { value: 12.3, unit: 'μJy/beam' } },
+      spectral: { weightedSensitivity: { value: 1.2345, unit: 'mJy/beam' } }
+    });
+  });
+
   test('an error stores the detail', () => {
     const error = {
       ok: false as const,

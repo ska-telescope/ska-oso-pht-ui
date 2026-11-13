@@ -313,33 +313,31 @@ describe('DataProductInPlace', () => {
     expect(screen.queryByLabelText('robust.label')).not.toBeInTheDocument();
   });
 
+  // The calculator gives no beam results for a non-Gaussian beam (Briggs robust 2, say), whatever
+  // the weighting the data product has
   it.each([
-    ['briggs', 2, true],
-    ['uniform', 2, false]
-  ])(
-    'shows non-Gaussian results for %s weighting with robust %i: %s',
-    (weighting, robust, shown) => {
-      openProposal({
-        observations: [observation(TYPE_CONTINUUM)],
-        dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { weighting, robust })],
-        targetObservation: [
-          link({
-            state: SENSITIVITY_STATE.DONE,
-            continuum: values({ weighted: 7.18, beamSize: '0' }),
-            spectral: values({ weighted: 1 })
-          })
-        ]
-      });
-      renderPage();
+    [
+      'shows a beam result the calculator did not give as non-Gaussian',
+      { weightedSensitivity: { value: 7.18, unit: 'Jy/beam' } },
+      'sensitivityCalculatorResults.nonGaussian'
+    ],
+    ['shows a beam result the calculator gave', values({ weighted: 7.18 }), '1.00 x 2.00']
+  ])('%s', (_, continuum, beamSize) => {
+    openProposal({
+      observations: [observation(TYPE_CONTINUUM)],
+      dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE)],
+      targetObservation: [
+        link({
+          state: SENSITIVITY_STATE.DONE,
+          continuum,
+          spectral: values({ weighted: 1 })
+        } as Sensitivity)
+      ]
+    });
+    renderPage();
 
-      const beamSize = screen.getByTestId('field-continuumSynthBeamSize');
-      if (shown) {
-        expect(beamSize).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-      } else {
-        expect(beamSize).not.toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-      }
-    }
-  );
+    expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent(beamSize);
+  });
 
   // A whole number of steps from the backend is shown to the field's decimal places
   it('shows the detected filterbank resolution and sampling interval rounded', () => {

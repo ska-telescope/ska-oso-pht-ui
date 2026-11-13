@@ -1,7 +1,9 @@
-import { describe, expect, test } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@utils/storage/store';
+import { storageObject, StoreProvider } from '@utils/storage/store';
+import completeMockStore from '@/utils/MockStore';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import SensCalcModalSingle from './SensCalcModalSingle';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { SENSITIVITY_STATE } from '@/utils/constants';
@@ -14,8 +16,8 @@ vi.mock('i18next', () => ({
 
 const link = (sensitivity: Sensitivity) => ({
   targetId: 't1',
-  observationId: 'obs1',
-  dataProductsSDPId: 'dp1',
+  observationId: 'obs-obR1Ej',
+  dataProductsSDPId: 'SDP-2',
   sensitivity
 });
 
@@ -38,13 +40,20 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<SensCalcModalSingle />', () => {
+  // The linked observation and data product are still read from the store
+  beforeEach(() => {
+    vi.spyOn(storageObject, 'useStore').mockReturnValue({
+      ...completeMockStore,
+      application: { ...completeMockStore.application, content2: MockProposalFrontend }
+    } as unknown as ReturnType<typeof storageObject.useStore>);
+  });
+
   test('renders correctly ( calculating )', () => {
     wrapper(
       <SensCalcModalSingle
         open={false}
         onClose={vi.fn()}
         targetObservation={link({ state: SENSITIVITY_STATE.CALCULATING })}
-        isNatural={false}
       />
     );
   });
@@ -58,32 +67,11 @@ describe('<SensCalcModalSingle />', () => {
           continuum: values(1),
           spectral: values(200)
         })}
-        isNatural={false}
       />
     );
 
     expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
     expect(screen.getByTestId('field-spectralSensitivityWeighted')).toHaveTextContent('200');
-  });
-  test('renders correctly ( OK, natural )', async () => {
-    wrapper(
-      <SensCalcModalSingle
-        open={true}
-        onClose={vi.fn()}
-        targetObservation={link({
-          state: SENSITIVITY_STATE.DONE,
-          continuum: values(7.18),
-          spectral: values(1)
-        })}
-        isNatural={true}
-      />
-    );
-    await waitFor(() => {
-      expect(screen.getByTestId('field-continuumConfusionNoise')).toHaveTextContent(
-        'sensitivityCalculatorResults.nonGaussian'
-      );
-      expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('7.18');
-    });
   });
   test('renders correctly (error)', () => {
     wrapper(
@@ -91,7 +79,6 @@ describe('<SensCalcModalSingle />', () => {
         open={false}
         onClose={vi.fn()}
         targetObservation={link({ state: SENSITIVITY_STATE.FAILED, error: 'SOME ERROR' })}
-        isNatural={false}
       />
     );
   });

@@ -36,6 +36,7 @@ import {
   FREQUENCY_MHZ,
   FREQUENCY_GHZ,
   FOOTER_SPACER,
+  FLOW_THROUGH_VALUE,
   WRAPPER_HEIGHT,
   TYPE_ZOOM,
   TELESCOPE_LOW_NUM,
@@ -116,6 +117,11 @@ const BACK_PAGE = PAGE_OBSERVATION;
 interface ObservationEntryProps {
   data?: Observation;
 }
+
+export const resolvePstMode = (pstMode?: number | null): number =>
+  pstMode === undefined || pstMode === null || Number.isNaN(pstMode)
+    ? FLOW_THROUGH_VALUE
+    : Number(pstMode);
 
 export default function ObservationEntry({ data }: ObservationEntryProps) {
   const { t } = useScopedTranslation();
@@ -210,6 +216,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (requestId !== latestCalibratorRequestIdRef.current) {
       return;
     }
+    // The lookup takes time, so the strategy is only applied if the same target is still linked
+    const stillLinked = getLinks().some(
+      (to) => to.observationId === ob.id && to.targetId === linkedTarget.id
+    );
+    if (!stillLinked) {
+      return;
+    }
     form.setValue('calibrationStrategy', withCalibrationFor(getFormCalibration(form), strategy));
   };
 
@@ -257,7 +270,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
     setZoomChannels(ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW);
-    setPstMode(ob?.pstMode ?? PULSAR_TIMING_VALUE);
+    // A saved PST observation without a mode is flow-through (see resolvePstMode); pulsar timing
+    // stays the default for an observation that is switched to PST here
+    setPstMode(
+      ob?.type === TYPE_PST ? resolvePstMode(ob?.pstMode) : (ob?.pstMode ?? PULSAR_TIMING_VALUE)
+    );
   };
 
   // Storing sub-Hz precision doesn't reflect anything a real receiver can tune to, so round to
@@ -348,9 +365,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     // Compared with the stored observation, so revisiting this page keeps the user's data product
     // values. A new observation has no data products yet.
     if (oldObservation) {
+      // A PST observation saved without a mode is flow-through, so loading one isn't a change
       const pstModeChanged =
         newObservation.type === TYPE_PST &&
-        (oldObservation.type !== TYPE_PST || oldObservation.pstMode !== newObservation.pstMode);
+        (oldObservation.type !== TYPE_PST ||
+          resolvePstMode(oldObservation.pstMode) !== resolvePstMode(newObservation.pstMode));
       const frequencyChanged =
         newObservation.type !== TYPE_PST &&
         (oldObservation.centralFrequency !== newObservation.centralFrequency ||

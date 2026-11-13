@@ -2,13 +2,7 @@ import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
-import {
-  CUSTOM_VALID_FIELDS,
-  SENSITIVITY_STATE,
-  TIME_UNITS,
-  TYPE_CONTINUUM,
-  TYPE_PST
-} from '@utils/constants.ts';
+import { SENSITIVITY_STATE, TIME_UNITS, TYPE_CONTINUUM, TYPE_PST } from '@utils/constants.ts';
 import { sensitivityStatusLevel } from '@utils/helpersSensCalc';
 import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
 import type { Sensitivity } from '@/models/proposals/targetObservation';
@@ -29,7 +23,6 @@ interface SensCalcModalMultipleProps {
   level: number;
   levelError: string;
   isCustom: boolean;
-  isNatural: boolean;
 }
 
 const SIZE = 20;
@@ -41,8 +34,7 @@ export default function SensCalcModalMultiple({
   observation,
   level,
   levelError,
-  isCustom,
-  isNatural
+  isCustom
 }: SensCalcModalMultipleProps) {
   const handleClose = () => {
     onClose();
@@ -53,15 +45,13 @@ export default function SensCalcModalMultiple({
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
   const isPST = () => observation.type === TYPE_PST;
 
-  const PresentCustomResultValue = (field: string, shown: Shown) => {
-    if (!CUSTOM_VALID_FIELDS.includes(field)) {
-      if (isNatural) {
-        return t('sensitivityCalculatorResults.nonGaussian');
-      }
-      return t('sensitivityCalculatorResults.customArray');
-    }
-    return `${presentValue(shown.value)} ${presentUnits(shown.unit)}`;
-  };
+  // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
+  // which a custom subarray or a non-Gaussian beam has none of
+  const notAvailable = t(
+    isCustom
+      ? 'sensitivityCalculatorResults.customArray'
+      : 'sensitivityCalculatorResults.nonGaussian'
+  );
 
   let i = 0; // Just here so that the key warning is dealt with
 
@@ -81,15 +71,7 @@ export default function SensCalcModalMultiple({
     );
   };
 
-  const presentation = (field: string, shown: Shown | undefined) => {
-    if (shown) {
-      return isCustom || isNatural
-        ? PresentCustomResultValue(field, shown) + ' '
-        : presentValue(shown.value) + ' ' + presentUnits(shown.unit);
-    } else {
-      return '';
-    }
-  };
+  const presentation = (shown: Shown) => presentValue(shown.value) + ' ' + presentUnits(shown.unit);
 
   const colTitle = {
     field: 'title',
@@ -109,9 +91,10 @@ export default function SensCalcModalMultiple({
       renderCell: (e: { row: SensCalcRow }) => {
         const sensitivity = e.row.sensitivity;
         const values = sensitivity.state === SENSITIVITY_STATE.DONE ? sensitivity[part] : undefined;
+        const shown = values?.[key];
         return (
           <div data-testid={`field-${part}${label}`}>
-            {presentation(`${part}${label}`, values?.[key])}
+            {values ? (shown ? presentation(shown) : notAvailable) : ''}
           </div>
         );
       }
@@ -126,7 +109,7 @@ export default function SensCalcModalMultiple({
     renderCell: (e: { row: SensCalcRow }) => (
       <div data-testid="field-integrationTime">
         {e.row.sensitivity.state === SENSITIVITY_STATE.DONE &&
-          presentation('integrationTime', {
+          presentation({
             value: observation.supplied.value,
             unit: TIME_UNITS.find((u) => u.id === observation.supplied.units)?.value ?? ''
           })}

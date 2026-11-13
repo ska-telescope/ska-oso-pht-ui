@@ -45,23 +45,10 @@ import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
-import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
-
-export const isNonGaussianSensitivityCase = ({
-  subarray,
-  weighting,
-  robust
-}: {
-  subarray?: string;
-  weighting?: number | string | null;
-  robust?: number | string | null;
-}) => {
-  return subarray !== SA_CUSTOM && isNonGaussianBeamWeighting(weighting, robust);
-};
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
@@ -314,14 +301,6 @@ export default function LinkingPage() {
     getLinks()?.find((p) => p.observationId === currRec?.id2 && p.targetId === targetId);
 
   const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
-  const isNatural = () => {
-    const selectedDp = currRec?.dp ?? elementsO.find((e) => e.id2 === currRec?.id2)?.dp;
-    return isNonGaussianSensitivityCase({
-      subarray: currRec?.subarray ?? currRec?.rec?.subarray,
-      weighting: selectedDp?.data?.weighting,
-      robust: selectedDp?.data?.robust
-    });
-  };
 
   const getSensCalcSingle = (id: string, field: string) => {
     return (
@@ -330,7 +309,6 @@ export default function LinkingPage() {
         show={isTargetSelected(id)}
         field={field}
         isCustom={isCustom()}
-        isNatural={isNatural()}
       />
     );
   };
@@ -659,7 +637,6 @@ export default function LinkingPage() {
             level={getLevel(currRec?.rec)}
             levelError={getError(currRec?.rec)}
             isCustom={isCustom()}
-            isNatural={isNatural()}
           />
         )}
       </>

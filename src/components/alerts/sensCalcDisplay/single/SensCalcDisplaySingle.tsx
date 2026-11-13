@@ -13,15 +13,13 @@ interface SensCalcDisplaySingleProps {
   show?: boolean;
   field: string;
   isCustom?: boolean;
-  isNatural?: boolean;
 }
 
 export default function SensCalcDisplaySingle({
   targetObservation,
   show = false,
   field,
-  isCustom = false,
-  isNatural = false
+  isCustom = false
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -48,11 +46,20 @@ export default function SensCalcDisplaySingle({
 
   const isDisabled = () => results?.state !== SENSITIVITY_STATE.DONE;
 
-  const PresentCustomResultValue = () => {
-    if (isNatural) {
-      return t('sensitivityCalculatorResults.nonGaussian');
+  // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
+  // which a custom subarray or a non-Gaussian beam has none of
+  const notAvailable = t(
+    isCustom
+      ? 'sensitivityCalculatorResults.customArray'
+      : 'sensitivityCalculatorResults.nonGaussian'
+  );
+  const shownText = () => {
+    if (!values || !shownField) {
+      return '';
     }
-    return t('sensitivityCalculatorResults.customArray');
+    return shownValue
+      ? presentValue(shownValue.value) + ' ' + presentUnits(shownValue.unit)
+      : notAvailable;
   };
 
   return (
@@ -68,19 +75,12 @@ export default function SensCalcDisplaySingle({
           level={level}
         />
       )}
-      {show && field !== 'icon' && (
-        <div data-testid={`field-${field}`}>
-          {(isNatural || isCustom) && field === 'SynthBeamSize'
-            ? PresentCustomResultValue()
-            : presentValue(shownValue?.value ?? '') + ' ' + presentUnits(shownValue?.unit ?? '')}
-        </div>
-      )}
+      {show && field !== 'icon' && <div data-testid={`field-${field}`}>{shownText()}</div>}
       {show && field === 'icon' && openDialog && (
         <SensCalcModalSingle
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           targetObservation={targetObservation}
-          isNatural={isNatural}
         />
       )}
     </>

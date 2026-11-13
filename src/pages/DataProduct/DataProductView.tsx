@@ -49,9 +49,6 @@ export type DataProductsForm = { dataProducts: DataProductInput[] };
 
 // TODO The data product type, weighting and unit translations are still keyed by the legacy codes
 
-export const legacyWeighting = (weighting: string) =>
-  IMAGE_WEIGHTING.find((item) => item.label === weighting)?.value;
-
 // The unit translations are keyed by their position in this list
 const ANGLE_UNITS = [ANGLE_UNIT.DEG, ANGLE_UNIT.ARCMIN, ANGLE_UNIT.ARCSEC];
 

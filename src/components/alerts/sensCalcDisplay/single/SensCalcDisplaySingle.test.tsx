@@ -33,6 +33,13 @@ const values = (weighted: number): SensitivityValues => ({
 
 const DONE: Sensitivity = { state: SENSITIVITY_STATE.DONE, spectral: values(1) };
 
+// The calculator gives only the weighted sensitivity
+// for a custom subarray or a non-Gaussian beam
+const NO_BEAM: Sensitivity = {
+  state: SENSITIVITY_STATE.DONE,
+  spectral: { weightedSensitivity: { value: 1, unit: 'Jy' } }
+};
+
 describe('<SensCalcDisplaySingle />', () => {
   test('renders nothing when show is false', () => {
     render(
@@ -107,7 +114,7 @@ describe('<SensCalcDisplaySingle />', () => {
     expect(screen.getByTestId('field-SensitivityWeighted')).toHaveTextContent('42.50 Jy');
   });
 
-  test('renders blank for a field the results do not have', () => {
+  test('renders blank for a field that is not a result', () => {
     render(
       <SensCalcDisplaySingle
         targetObservation={buildTargetObservation(DONE)}
@@ -115,13 +122,13 @@ describe('<SensCalcDisplaySingle />', () => {
         field="testField"
       />
     );
-    expect(screen.getByTestId('field-testField')).toHaveTextContent('0');
+    expect(screen.getByTestId('field-testField')).toHaveTextContent(/^$/);
   });
 
-  test('renders the custom placeholder instead of the value for SynthBeamSize when isCustom', () => {
+  test('renders the custom subarray message for a result the calculator did not give', () => {
     render(
       <SensCalcDisplaySingle
-        targetObservation={buildTargetObservation(DONE)}
+        targetObservation={buildTargetObservation(NO_BEAM)}
         show
         field="SynthBeamSize"
         isCustom
@@ -132,17 +139,28 @@ describe('<SensCalcDisplaySingle />', () => {
     );
   });
 
-  test('renders the non-Gaussian placeholder instead of the value for SynthBeamSize when isNatural', () => {
+  test('renders the non-Gaussian message for a result the calculator did not give', () => {
     render(
       <SensCalcDisplaySingle
-        targetObservation={buildTargetObservation(DONE)}
+        targetObservation={buildTargetObservation(NO_BEAM)}
         show
         field="SynthBeamSize"
-        isNatural
       />
     );
     expect(screen.getByTestId('field-SynthBeamSize')).toHaveTextContent(
       'sensitivityCalculatorResults.nonGaussian'
     );
+  });
+
+  test('renders the value of a result the calculator gave, whatever the subarray', () => {
+    render(
+      <SensCalcDisplaySingle
+        targetObservation={buildTargetObservation(DONE)}
+        show
+        field="SynthBeamSize"
+        isCustom
+      />
+    );
+    expect(screen.getByTestId('field-SynthBeamSize')).toHaveTextContent('1.00 x 2.00');
   });
 });

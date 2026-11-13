@@ -1,6 +1,4 @@
 import {
-  IW_BRIGGS,
-  IW_NATURAL,
   SENSITIVITY_STATE,
   SensitivityState,
   STATUS_ERROR,
@@ -26,20 +24,6 @@ export const sensitivityStatusLevel = (state: SensitivityState) =>
 
 export const getImageWeightingMapping = (value: number) => {
   return IMAGE_WEIGHTING.find((e) => e.value === value)?.lookup;
-};
-
-export const isNonGaussianBeamWeighting = (
-  weighting?: number | string | null,
-  robust?: number | string | null
-) => {
-  const weightingValue =
-    typeof weighting === 'string' ? Number(weighting) : Number(weighting ?? -1);
-  const robustValue = Number(robust ?? 0);
-
-  return (
-    weightingValue === IW_NATURAL ||
-    (weightingValue === IW_BRIGGS && Number.isFinite(robustValue) && robustValue === 2)
-  );
 };
 
 export const getBeamSize = (obj: any, fraction: number = 1) => {

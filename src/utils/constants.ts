@@ -194,14 +194,6 @@ export const NAV = [
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
-export const CUSTOM_VALID_FIELDS = [
-  'continuumSensitivityWeighted',
-  'spectralSensitivityWeighted',
-  'integrationTime',
-  'sensitivity',
-  'continuumIntegrationTime',
-  'spectralIntegrationTime'
-];
 
 export const TIME_DAYS = 1;
 export const TIME_HOURS = 2;

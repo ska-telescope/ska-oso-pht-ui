@@ -6,6 +6,7 @@ import {
   BAND_5A_STR,
   BAND_5B_STR,
   CHANNELS_OUT_DEFAULT,
+  DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
   FREQUENCY_HZ,
   FREQUENCY_KHZ,
@@ -264,6 +265,26 @@ const zoomRequest = (
       };
 
 /**
+ * The sensitivity should always be calculated based on the images data product.
+ * Fall back to the linked (selected) data product if no images one is available.
+ * TODO: revisit once the PDM's result_details model is corrected.
+ */
+export const getSensitivityDataProduct = (
+  observation: Observation,
+  linkedId: string,
+  dataProducts: DataProductSDPNew[]
+): DataProductSDPNew | undefined => {
+  const linked = dataProducts.find((dp) => dp.id === linkedId);
+  if (!linked || linked.data.dataProductType !== DP_TYPE_VISIBLE) {
+    return linked;
+  }
+  const images = dataProducts.find(
+    (dp) => dp.observationId === observation.id && dp.data.dataProductType === DP_TYPE_IMAGES
+  );
+  return images ?? linked;
+};
+
+/**
  * Builds the calculator request for one target, observation and data product.
  *
  * Returns null when the calculator doesn't apply: SSO targets, PST observing mode, and any
@@ -293,8 +314,8 @@ export const buildSensitivityRequest = (
 };
 
 /**
- * Sends a request built by buildSensitivityRequest. Never throws: calculator errors and canceled
- * requests are returned as errors.
+ * Sends a request built by buildSensitivityRequest. Calculator errors and canceled requests are
+ * returned as errors; a successful response in an unexpected shape can throw.
  */
 export const sendSensitivityRequest = async (
   request: SensitivityRequest,

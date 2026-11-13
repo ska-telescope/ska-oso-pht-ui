@@ -6,8 +6,12 @@ import { storageObject } from '@utils/storage/store';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import type Proposal from '@/utils/types/proposal';
-import { SENS_CALC_ERROR_KIND } from './client';
-import { buildSensitivityRequest, sendSensitivityRequest } from './calculate';
+import { SENS_CALC_ERROR_KIND, toSensCalcError } from './client';
+import {
+  buildSensitivityRequest,
+  getSensitivityDataProduct,
+  sendSensitivityRequest
+} from './calculate';
 import { toSensitivity } from './results';
 
 export const SENS_CALC_DEBOUNCE_MS = 500;
@@ -80,7 +84,9 @@ export const useSensitivityService = () => {
         const linkId = getLinkId(link);
         const target = formTargets.find((t) => t.id === link.targetId);
         const observation = observations?.find((o) => o.id === link.observationId);
-        const dataProduct = dataProducts?.find((d) => d.id === link.dataProductsSDPId);
+        const dataProduct =
+          observation &&
+          getSensitivityDataProduct(observation, link.dataProductsSDPId, dataProducts ?? []);
         if (!target || !observation || !dataProduct) {
           return;
         }
@@ -138,19 +144,28 @@ export const useSensitivityService = () => {
 
         const controller = new AbortController();
         recordsRef.current.set(linkId, { requestKey, controller });
-        void sendSensitivityRequest(request, { signal: controller.signal }).then((response) => {
-          const isCurrent = recordsRef.current.get(linkId)?.requestKey === requestKey;
-          if (!isCurrent || (!response.ok && response.kind === SENS_CALC_ERROR_KIND.ABORTED)) {
-            // Ignore stale and aborted responses
-            return;
-          }
-          recordsRef.current.set(linkId, { requestKey });
-          const results = toSensitivity(response);
-          writeResults(linkId, results);
-          if (results?.state === SENSITIVITY_STATE.FAILED) {
-            notifyError(results.error);
-          }
-        });
+        void sendSensitivityRequest(request, { signal: controller.signal })
+          .then((response) => {
+            const isCurrent = recordsRef.current.get(linkId)?.requestKey === requestKey;
+            if (!isCurrent || (!response.ok && response.kind === SENS_CALC_ERROR_KIND.ABORTED)) {
+              // Ignore stale and aborted responses
+              return;
+            }
+            recordsRef.current.set(linkId, { requestKey });
+            const results = toSensitivity(response);
+            writeResults(linkId, results);
+            if (results?.state === SENSITIVITY_STATE.FAILED) {
+              notifyError(results.error);
+            }
+          })
+          // Deal with unexpected responses so link state doesn't get stuck in calculating
+          .catch((e) => {
+            if (recordsRef.current.get(linkId)?.requestKey !== requestKey) return;
+            recordsRef.current.set(linkId, { requestKey });
+            const error = toSensCalcError(e).detail;
+            writeResults(linkId, { state: SENSITIVITY_STATE.FAILED, error });
+            notifyError(error);
+          });
       });
     };
 
