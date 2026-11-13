@@ -31,9 +31,9 @@ const getLinkId = (link: { targetId: string; observationId: string; dataProducts
  * proposal editor, so a calculation finishes even if the user leaves the page that started it.
  *
  * Each link is recalculated on proposal load and when the request its inputs give changes, after
- * a short debounce. A superseded request is canceled, and a result is only applied while its
- * request is still the link's current one. A calculator error is shown as a notification, as well
- * as stored on the link.
+ * a short debounce. A request is canceled as soon as its link's inputs change, and a result is
+ * only applied while its request is still the link's current one. A calculator error is shown as
+ * a notification, as well as stored on the link.
  */
 export const useSensitivityService = () => {
   const { control, getValues, setValue } = useFormContext<ProposalType>();
@@ -63,66 +63,65 @@ export const useSensitivityService = () => {
         )
       );
 
+    const formLinks = links ?? [];
+    const formTargets = targets ?? [];
+
+    // The request each link's inputs give now. Links whose target, observation or data product
+    // can't be found yet are left out, and keep any results they have.
+    const linkRequests = formLinks.flatMap((link) => {
+      const target = formTargets.find((t) => t.id === link.targetId);
+      const observation = observations?.find((o) => o.id === link.observationId);
+      const dataProduct =
+        observation &&
+        getSensitivityDataProduct(observation, link.dataProductsSDPId, dataProducts ?? []);
+      if (!target || !observation || !dataProduct) {
+        return [];
+      }
+
+      // TODO BTN-3595 Once observations and data products are in the form, check them against
+      //  their item schemas before building the request: the same rules that decide what is
+      //  saved. SV proposals edit their one observation and data product in place, so the form
+      //  can hold values that aren't valid yet, which the calculator would reject. Until then,
+      //  half-edited values are sent and come back as calculator errors. Something like:
+      //
+      //    const inputsValid =
+      //      getObservationSchema().safeParse(observation).success &&
+      //      getDataProductSchema().safeParse(dataProduct).success;
+      //    const request = inputsValid
+      //      ? buildSensitivityRequest(observation, target, dataProduct)
+      //      : null;
+      //
+      //  Invalid inputs then give no request, so they share the empty request key: further
+      //  invalid edits change nothing, a valid edit recalculates, and the no-request branch below
+      //  clears the link's results without sending anything.
+      const request = buildSensitivityRequest(observation, target, dataProduct);
+      const requestKey = request ? request.path + JSON.stringify(request.body) : '';
+      return [{ link, linkId: getLinkId(link), request, requestKey }];
+    });
+
+    // Forget links that no longer exist and links whose inputs changed, canceling their requests.
+    const linkIds = new Set(formLinks.map(getLinkId));
+    recordsRef.current.forEach((record, linkId) => {
+      if (!linkIds.has(linkId)) {
+        record.controller?.abort();
+        recordsRef.current.delete(linkId);
+      }
+    });
+    linkRequests.forEach(({ linkId, requestKey }) => {
+      const record = recordsRef.current.get(linkId);
+      if (record && record.requestKey !== requestKey) {
+        record.controller?.abort();
+        recordsRef.current.delete(linkId);
+      }
+    });
+
+    // After the debounce, calculate the links without a record: new, changed or just opened
     const update = () => {
-      const formLinks = links ?? [];
-      const formTargets = targets ?? [];
-
-      // Forget links that no longer exist, canceling their requests
-      const linkIds = new Set(formLinks.map(getLinkId));
-      recordsRef.current.forEach((record, linkId) => {
-        if (!linkIds.has(linkId)) {
-          record.controller?.abort();
-          recordsRef.current.delete(linkId);
-        }
-      });
-
-      formLinks.forEach((link) => {
-        const linkId = getLinkId(link);
-        const target = formTargets.find((t) => t.id === link.targetId);
-        const observation = observations?.find((o) => o.id === link.observationId);
-        const dataProduct =
-          observation &&
-          getSensitivityDataProduct(observation, link.dataProductsSDPId, dataProducts ?? []);
-        if (!target || !observation || !dataProduct) {
+      linkRequests.forEach(({ link, linkId, request, requestKey }) => {
+        if (recordsRef.current.has(linkId)) {
+          // Unchanged since its results were calculated, or still being calculated
           return;
         }
-
-        // TODO BTN-3595 Once observations and data products are in the form, check them against
-        //  their item schemas before building the request: the same rules that decide what is
-        //  saved. SV proposals edit their one observation and data product in place, so the form
-        //  can hold values that aren't valid yet, which the calculator would reject. Until then,
-        //  half-edited values are sent and come back as calculator errors. Something like:
-        //
-        //    const inputsValid =
-        //      getObservationSchema().safeParse(observation).success &&
-        //      getDataProductSchema().safeParse(dataProduct).success;
-        //    const request = inputsValid
-        //      ? buildSensitivityRequest(observation, target, dataProduct)
-        //      : null;
-        //    // One key for all invalid inputs: further invalid edits change nothing, and a valid
-        //    // edit recalculates
-        //    const requestKey = !inputsValid
-        //      ? 'invalid'
-        //      : request ? request.path + JSON.stringify(request.body) : '';
-        //
-        //  and after the superseded request is canceled below, an invalid link is not calculated:
-        //
-        //    if (!inputsValid) {
-        //      recordsRef.current.set(linkId, { requestKey });
-        //      // Not calculated: no results until the inputs are valid
-        //      if (link.sensitivity) writeResults(linkId, undefined);
-        //      return;
-        //    }
-        const request = buildSensitivityRequest(observation, target, dataProduct);
-        const requestKey = request ? request.path + JSON.stringify(request.body) : '';
-
-        const record = recordsRef.current.get(linkId);
-        if (record?.requestKey === requestKey) {
-          // Unchanged since its results were calculated
-          return;
-        }
-
-        record?.controller?.abort();
 
         if (!request) {
           // The calculator doesn't apply (SSO targets and PST), so the link has no results

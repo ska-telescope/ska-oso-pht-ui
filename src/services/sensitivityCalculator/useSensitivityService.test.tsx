@@ -261,6 +261,24 @@ describe('useSensitivityService', () => {
     expect(notifyError).not.toHaveBeenCalled();
   });
 
+  test('ignores a response that arrives after its inputs change, before the debounce', async () => {
+    const resolveFirst = holdNextRequest();
+    const { getForm, setProposal } = renderService(LINK);
+    await debounce();
+    const firstSignal = vi.mocked(sendSensitivityRequest).mock.calls[0][1]?.signal;
+
+    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    expect(firstSignal?.aborted).toBe(true);
+    await resolveFirst(FAILURE);
+
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.CALCULATING);
+    expect(notifyError).not.toHaveBeenCalled();
+
+    await debounce();
+    expect(sendSensitivityRequest).toHaveBeenCalledTimes(2);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
+  });
+
   test('marks a link as calculating, without its previous results, while its request runs', async () => {
     const { getForm, setProposal } = await renderOpenedService();
 
