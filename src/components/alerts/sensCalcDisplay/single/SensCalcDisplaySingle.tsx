@@ -1,28 +1,25 @@
 import React from 'react';
 import { t } from 'i18next';
-import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
+import { presentUnits, presentValue } from '@utils/present/present';
 import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
-import { STATUS_OK, TYPE_ZOOM, TYPE_CONTINUUM, STATUS_ERROR } from '../../../../utils/constants';
+import { SENSITIVITY_STATE, STATUS_ERROR } from '../../../../utils/constants';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-
-const VALUE = 'value';
-const UNITS = 'units';
+import { sensitivityStatusLevel } from '@utils/helpersSensCalc';
+import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
 
 interface SensCalcDisplaySingleProps {
   targetObservation?: TargetObservation;
   show?: boolean;
   field: string;
   isCustom?: boolean;
-  isNatural?: boolean;
 }
 
 export default function SensCalcDisplaySingle({
   targetObservation,
   show = false,
   field,
-  isCustom = false,
-  isNatural = false
+  isCustom = false
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -30,62 +27,60 @@ export default function SensCalcDisplaySingle({
     setOpenDialog(true);
   };
 
-  const ariaStatusMessage = (sensitivityResults?: { statusGUI: string; error: string }) => {
-    const status = t('statusLoading.' + sensitivityResults?.statusGUI);
-    const error = sensitivityResults?.error?.length
-      ? t(presentSensCalcError(sensitivityResults?.error))
-      : '';
-    return t('sensitivityCalculatorResults.status', { status: status, error: error });
-  };
+  const results = targetObservation?.sensitivity;
+  // Shown as an error when the link has no results
+  const level = results ? sensitivityStatusLevel(results.state) : STATUS_ERROR;
 
-  const FieldFetch: any = (type: string, field: string) => {
-    const observationTypeLabel: string =
-      targetObservation?.sensitivityResults?.section2?.length > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
-    if (targetObservation?.sensitivityResults?.section1) {
-      const result = targetObservation?.sensitivityResults?.section1.find(
-        (item: { field: string }) => item.field === `${observationTypeLabel}${field}`
-      );
-      return result ? result[type] : '';
+  const ariaStatusMessage = () =>
+    t('sensitivityCalculatorResults.status', {
+      status: t('statusLoading.' + level),
+      error: results?.state === SENSITIVITY_STATE.FAILED ? results.error : ''
+    });
+
+  // The field's value from the continuum results of a continuum observation, otherwise from the
+  // spectral ones. The field is the label of one of SENSITIVITY_FIELDS, e.g. SensitivityWeighted.
+  const values =
+    results?.state === SENSITIVITY_STATE.DONE ? (results.continuum ?? results.spectral) : undefined;
+  const shownField = SENSITIVITY_FIELDS.find((f) => f.label === field);
+  const shownValue = values && shownField ? values[shownField.key] : undefined;
+
+  const isDisabled = () => results?.state !== SENSITIVITY_STATE.DONE;
+
+  // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
+  // which a custom subarray or a non-Gaussian beam has none of
+  const notAvailable = t(
+    isCustom
+      ? 'sensitivityCalculatorResults.customArray'
+      : 'sensitivityCalculatorResults.nonGaussian'
+  );
+  const shownText = () => {
+    if (!values || !shownField) {
+      return '';
     }
-    return '';
-  };
-
-  const isDisabled = () => targetObservation?.sensitivityResults?.statusGUI !== STATUS_OK;
-
-  const PresentCustomResultValue = () => {
-    if (isNatural) {
-      return t('sensitivityCalculatorResults.nonGaussian');
-    }
-    return t('sensitivityCalculatorResults.customArray');
+    return shownValue
+      ? presentValue(shownValue.value) + ' ' + presentUnits(shownValue.unit)
+      : notAvailable;
   };
 
   return (
     <>
       {show && field === 'icon' && (
         <StatusIconDisplay
-          ariaDescription={ariaStatusMessage(targetObservation?.sensitivityResults)}
-          ariaTitle={ariaStatusMessage(targetObservation?.sensitivityResults)}
+          ariaTitle={ariaStatusMessage()}
           disabled={isDisabled()}
           text={''}
           onClick={isDisabled() ? undefined : IconClicked}
           testId="statusId"
-          toolTip={ariaStatusMessage(targetObservation?.sensitivityResults)}
-          level={targetObservation?.sensitivityResults?.statusGUI ?? STATUS_ERROR}
+          toolTip={ariaStatusMessage()}
+          level={level}
         />
       )}
-      {show && field !== 'icon' && (
-        <div data-testid={`field-${field}`}>
-          {(isNatural || isCustom) && field === 'SynthBeamSize'
-            ? PresentCustomResultValue()
-            : presentValue(FieldFetch(VALUE, field)) + ' ' + presentUnits(FieldFetch(UNITS, field))}
-        </div>
-      )}
+      {show && field !== 'icon' && <div data-testid={`field-${field}`}>{shownText()}</div>}
       {show && field === 'icon' && openDialog && (
         <SensCalcModalSingle
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           targetObservation={targetObservation}
-          isNatural={isNatural}
         />
       )}
     </>

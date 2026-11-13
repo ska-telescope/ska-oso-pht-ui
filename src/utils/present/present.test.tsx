@@ -6,7 +6,6 @@ import {
   presentDate,
   presentDateTime,
   presentLatex,
-  presentSensCalcError,
   presentTime,
   presentUnits,
   presentValue
@@ -17,13 +16,6 @@ const RealDateTimeFormat = Intl.DateTimeFormat;
 describe('Present', () => {
   test('presentLatex : Dummy string', () => {
     expect(presentLatex('Dummy string')).toStrictEqual(<Latex>Dummy string</Latex>);
-  });
-
-  test('presentSensCalcError : Entry string', () => {
-    expect(presentSensCalcError('')).toStrictEqual('');
-  });
-  test('presentSensCalcError : Entry string', () => {
-    expect(presentSensCalcError('string 1')).toStrictEqual('string 1');
   });
 
   test('presentUnits : kHz', () => {

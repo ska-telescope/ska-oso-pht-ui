@@ -4,18 +4,17 @@ import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
-import { SensCalcResults } from '@/utils/types/sensCalcResults';
+import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 import {
   IW_BRIGGS,
+  REFERENCE_COORDINATE_TYPE_SSO,
+  SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
+  TYPE_PST,
   TYPE_ZOOM
 } from '@/utils/constants.ts';
 import DataProduct from './DataProduct';
-
-const { mockFetchSensCalcPatches } = vi.hoisted(() => ({
-  mockFetchSensCalcPatches: vi.fn(async () => [])
-}));
 
 const wrapper = (component: React.ReactElement) => {
   return render(<TestProposalFormProvider>{component}</TestProposalFormProvider>);
@@ -34,10 +33,6 @@ let mockStoreReturn: any = {
 };
 vi.mock('@utils/storage/store', () => ({
   storageObject: { useStore: () => mockStoreReturn }
-}));
-vi.mock('@/utils/update/sensCalc/updateSensCalc', () => ({
-  default: mockFetchSensCalcPatches,
-  applySensCalcPatches: (existing: any[] = []) => existing
 }));
 
 vi.mock('@/utils/helpers', () => ({
@@ -84,6 +79,20 @@ vi.mock('@/components/button/Add/Add', () => ({
   )
 }));
 
+const values = ({
+  weighted,
+  beamSize = '1.00 x 2.00'
+}: {
+  weighted: number;
+  beamSize?: string;
+}): SensitivityValues => ({
+  weightedSensitivity: { value: weighted, unit: 'Jy/beam' },
+  totalSensitivity: { value: 3, unit: 'Jy/beam' },
+  confusionNoise: { value: 2, unit: 'Jy/beam' },
+  surfaceBrightnessSensitivity: { value: 4, unit: 'K' },
+  synthesizedBeamSize: { value: beamSize, unit: 'arcsec2' }
+});
+
 describe('DataProduct component', () => {
   const theme = createTheme();
   const existingDataProduct = {
@@ -93,8 +102,9 @@ describe('DataProduct component', () => {
   } as DataProductSDPNew;
 
   const renderExistingDataProduct = (
-    sensitivityResults?: SensCalcResults,
-    observationType: string = TYPE_CONTINUUM
+    sensitivity?: Sensitivity,
+    observationType: string = TYPE_CONTINUUM,
+    targets: { id: string; kind: number }[] = []
   ) => {
     mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
     mockStoreReturn = {
@@ -113,13 +123,14 @@ describe('DataProduct component', () => {
             }
           ],
           dataProductSDP: [existingDataProduct],
-          targetObservation: sensitivityResults
+          targets,
+          targetObservation: sensitivity
             ? [
                 {
                   observationId: 'OBS1',
                   dataProductsSDPId: 'DP1',
                   targetId: 'T1',
-                  sensitivityResults
+                  sensitivity
                 }
               ]
             : []
@@ -135,7 +146,6 @@ describe('DataProduct component', () => {
   };
 
   beforeEach(() => {
-    mockFetchSensCalcPatches.mockClear();
     mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
     mockStoreReturn = {
       application: { content2: { observations: [], dataProductSDP: [] } },
@@ -161,11 +171,11 @@ describe('DataProduct component', () => {
       ...existingDataProduct,
       data: { ...existingDataProduct.data, channelsOut: 1 }
     } as DataProductSDPNew;
-    const sensitivityResults = {
-      section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }],
-      section2: [{ field: 'spectralSensitivityWeighted', value: '2', units: 'Jy' }],
-      statusGUI: 0
-    } as SensCalcResults;
+    const sensitivity: Sensitivity = {
+      state: SENSITIVITY_STATE.DONE,
+      continuum: values({ weighted: 1 }),
+      spectral: values({ weighted: 2 })
+    };
 
     mockStoreReturn = {
       application: {
@@ -187,7 +197,7 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               dataProductsSDPId: 'DP1',
               targetId: 'T1',
-              sensitivityResults
+              sensitivity
             }
           ]
         }
@@ -320,32 +330,39 @@ describe('DataProduct component', () => {
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
   });
 
-  it('uses persisted sensitivity results without recalculating when the edit page loads', () => {
+  it('shows persisted sensitivity results without changing the proposal when the edit page loads', () => {
     renderExistingDataProduct({
-      statusGUI: 0,
-      section1: [{ field: 'continuumSensitivityWeighted', value: '1', units: 'Jy' }]
+      state: SENSITIVITY_STATE.DONE,
+      continuum: values({ weighted: 1 }),
+      spectral: values({ weighted: 2 })
     });
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
-    expect(mockFetchSensCalcPatches).not.toHaveBeenCalled();
     expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
   });
 
-  it('immediately calculates missing sensitivity results when the edit page loads', () => {
-    renderExistingDataProduct({
-      statusGUI: 3,
-      error: ''
+  describe('when the sensitivity calculator does not apply', () => {
+    it('reports PST as unsupported', () => {
+      renderExistingDataProduct(undefined, TYPE_PST);
+
+      expect(screen.getByText('page.7.pstUnavailable')).toBeInTheDocument();
     });
 
-    expect(mockFetchSensCalcPatches).toHaveBeenCalledWith(
-      expect.objectContaining({
-        observations: expect.any(Array),
-        dataProductSDP: expect.any(Array),
-        targetObservation: expect.any(Array)
-      }),
-      expect.objectContaining({ id: 'OBS1' }),
-      expect.objectContaining({ id: 'DP1' })
-    );
+    it('asks for a target when none is linked', () => {
+      renderExistingDataProduct();
+
+      expect(screen.getByText('sensitivityCalculatorResults.noTarget')).toBeInTheDocument();
+    });
+
+    it('reports SSO targets as unsupported', () => {
+      renderExistingDataProduct({ state: SENSITIVITY_STATE.CALCULATING }, TYPE_CONTINUUM, [
+        { id: 'T1', kind: REFERENCE_COORDINATE_TYPE_SSO.value }
+      ]);
+
+      expect(
+        screen.getByText('sensitivityCalculatorResults.notApplicableForSSO')
+      ).toBeInTheDocument();
+    });
   });
 
   it('persists a data product when a valid observation is explicitly selected', async () => {
@@ -440,7 +457,7 @@ describe('DataProduct component', () => {
     expect(screen.getByText('page.7.descContent.pst.1')).toBeInTheDocument();
   });
 
-  it('treats Briggs robust=2 as non-Gaussian sensitivity output', async () => {
+  it('shows the results the calculator did not give for Briggs robust=2 as non-Gaussian', async () => {
     mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
     mockStoreReturn = {
       application: {
@@ -475,24 +492,10 @@ describe('DataProduct component', () => {
               observationId: 'OBS1',
               dataProductsSDPId: 'DP1',
               targetId: 'T1',
-              sensitivityResults: {
-                title: 'Target 1',
-                statusGUI: 0,
-                error: '',
-                section1: [
-                  {
-                    field: 'continuumSynthBeamSize',
-                    value: '0',
-                    units: 'arcsec2'
-                  },
-                  {
-                    field: 'continuumSensitivityWeighted',
-                    value: '7.18',
-                    units: 'Jy/beam'
-                  }
-                ],
-                section2: [],
-                section3: []
+              sensitivity: {
+                state: SENSITIVITY_STATE.DONE,
+                continuum: { weightedSensitivity: { value: 7.18, unit: 'Jy/beam' } },
+                spectral: { weightedSensitivity: { value: 1, unit: 'Jy/beam' } }
               }
             }
           ]
@@ -512,81 +515,6 @@ describe('DataProduct component', () => {
         'sensitivityCalculatorResults.nonGaussian'
       );
       expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('7.18');
-    });
-  });
-
-  it('keeps uniform weighting out of the non-Gaussian sensitivity path', async () => {
-    mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
-    mockStoreReturn = {
-      application: {
-        content2: {
-          observations: [
-            {
-              id: 'OBS1',
-              type: 'continuum',
-              observingBand: 'low',
-              centralFrequency: 1,
-              centralFrequencyUnits: 'Hz',
-              supplied: { value: 1 },
-              continuumBandwidth: 1,
-              continuumBandwidthUnits: 2,
-              bandwidth: 1
-            }
-          ],
-          dataProductSDP: [
-            {
-              id: 'DP1',
-              observationId: 'OBS1',
-              data: {
-                dataProductType: 1,
-                weighting: 1,
-                robust: 2,
-                polarisations: ['I']
-              }
-            }
-          ],
-          targetObservation: [
-            {
-              observationId: 'OBS1',
-              dataProductsSDPId: 'DP1',
-              targetId: 'T1',
-              sensitivityResults: {
-                title: 'Target 1',
-                statusGUI: 0,
-                error: '',
-                section1: [
-                  {
-                    field: 'continuumSynthBeamSize',
-                    value: '0',
-                    units: 'arcsec2'
-                  },
-                  {
-                    field: 'continuumSensitivityWeighted',
-                    value: '7.18',
-                    units: 'Jy/beam'
-                  }
-                ],
-                section2: [],
-                section3: []
-              }
-            }
-          ]
-        }
-      },
-      updateAppContent2: vi.fn()
-    };
-
-    wrapper(
-      <ThemeProvider theme={theme}>
-        <DataProduct data={mockStoreReturn.application.content2.dataProductSDP[0] as any} />
-      </ThemeProvider>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).not.toHaveTextContent(
-        'sensitivityCalculatorResults.nonGaussian'
-      );
-      expect(screen.getByTestId('field-continuumSynthBeamSize')).toHaveTextContent('0');
     });
   });
 

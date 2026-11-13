@@ -1,9 +1,15 @@
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@utils/storage/store';
+import { FormProvider } from 'react-hook-form';
+import { storageObject, StoreProvider } from '@utils/storage/store';
+import completeMockStore from '@/utils/MockStore';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import SensCalcContent from './SensCalcContent';
-import { STATUS_ERROR, STATUS_INITIAL } from '@/utils/constants';
+import { useProposalForm } from '@/models/proposals/useProposalForm';
+import type { ProposalType } from '@/models/proposals/proposal';
+import { SENSITIVITY_STATE } from '@/utils/constants';
+import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
@@ -11,171 +17,195 @@ vi.mock('i18next', () => ({
   t: (key: string) => key
 }));
 
+const link = (sensitivity: Sensitivity) => ({
+  targetId: 't1',
+  observationId: 'obs-obR1Ej',
+  dataProductsSDPId: 'SDP-2',
+  sensitivity
+});
+
+const values = (weighted: number): SensitivityValues => ({
+  weightedSensitivity: { value: weighted, unit: 'Jy/beam' },
+  totalSensitivity: { value: 3, unit: 'Jy/beam' },
+  confusionNoise: { value: 2, unit: 'Jy/beam' },
+  surfaceBrightnessSensitivity: { value: 4, unit: 'K' },
+  synthesizedBeamSize: { value: '1.00 x 2.00', unit: 'arcsec²' }
+});
+
+// The linked target lives in the form, which owns the targets
+const FormWithTarget = ({ children }: { children: React.ReactNode }) => {
+  const form = useProposalForm({
+    id: 'p1',
+    targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets']
+  });
+  return <FormProvider {...form}>{children}</FormProvider>;
+};
+
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <FormWithTarget>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </FormWithTarget>
     </StoreProvider>
   );
 };
 
 describe('<SensCalcModalSingle />', () => {
-  test('renders the no-target state when there is no target observation', () => {
-    wrapper(<SensCalcContent />);
-
-    expect(screen.getByText('sensitivityCalculatorResults.noTarget')).toBeInTheDocument();
+  // The linked observation and data product are still read from the store
+  beforeEach(() => {
+    vi.spyOn(storageObject, 'useStore').mockReturnValue({
+      ...completeMockStore,
+      application: { ...completeMockStore.application, content2: MockProposalFrontend }
+    } as unknown as ReturnType<typeof storageObject.useStore>);
   });
 
   test('renders the no-data state when results have not been calculated', () => {
-    wrapper(<SensCalcContent targetObservation={{}} />);
+    wrapper(
+      <SensCalcContent
+        targetObservation={{
+          targetId: 't1',
+          observationId: 'obs-obR1Ej',
+          dataProductsSDPId: 'SDP-2'
+        }}
+      />
+    );
 
     expect(screen.getByText('sensitivityCalculatorResults.noData')).toBeInTheDocument();
   });
 
-  test('renders correctly ( INITIAL )', () => {
+  test('renders the calculating state, without results, while results are being calculated', () => {
     wrapper(
       <SensCalcContent
         targetObservation={{
-          sensitivityResults: {
-            statusGUI: STATUS_INITIAL,
-            error: undefined,
-            section1: undefined,
-            section2: undefined
-          }
+          targetId: 'target-1',
+          observationId: 'obs-obR1Ej',
+          dataProductsSDPId: 'SDP-2',
+          sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
         }}
-        isNatural={false}
       />
     );
+
+    expect(screen.getByText('sensitivityCalculatorResults.calculating')).toBeInTheDocument();
+    expect(screen.queryByText('sensitivityCalculatorResults.noData')).not.toBeInTheDocument();
   });
+
   test('renders correctly ( OK )', () => {
     wrapper(
       <SensCalcContent
-        targetObservation={{
-          sensitivityResults: {
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'testField1',
-                value: '1',
-                units: 'testUnits1'
-              }
-            ],
-            section2: [
-              {
-                field: 'sensitivity',
-                value: '200',
-                units: 'testUnits2'
-              },
-              {
-                field: 'testField2',
-                value: '50',
-                units: 'testUnits2'
-              }
-            ]
-          }
-        }}
-        isNatural={false}
+        targetObservation={link({
+          state: SENSITIVITY_STATE.DONE,
+          continuum: values(1),
+          spectral: values(200)
+        })}
       />
     );
 
-    const element1 = screen.getByTestId('field-testField1');
-    expect(element1).toBeInTheDocument();
-    expect(element1).toHaveTextContent('1');
-
-    const element2 = screen.getByTestId('field-sensitivity');
-    expect(element2).toBeInTheDocument();
-    expect(element2).toHaveTextContent('200');
-
-    const element3 = screen.getByTestId('field-testField2');
-    expect(element3).toBeInTheDocument();
-    expect(element3).toHaveTextContent('50');
+    expect(
+      screen.getByLabelText('sensitivityCalculatorResults.continuumSensitivityWeighted')
+    ).toHaveTextContent('1');
+    expect(
+      screen.getByLabelText('sensitivityCalculatorResults.spectralSensitivityWeighted')
+    ).toHaveTextContent('200');
+    expect(
+      screen.getByLabelText('sensitivityCalculatorResults.spectralSynthBeamSize')
+    ).toHaveTextContent('1.00 x 2.00');
   });
-  test('renders correctly ( OK, custom )', async () => {
+  test('shows the name of the linked target from the form', () => {
     wrapper(
       <SensCalcContent
-        targetObservation={{
-          sensitivityResults: {
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'customField1',
-                value: 'customValue1',
-                units: 'testUnits'
-              }
-            ],
-            section2: [
-              {
-                field: 'sensitivity',
-                value: '1052.5',
-                units: 'Jy/beam'
-              }
-            ]
-          }
-        }}
-        isNatural={false}
+        targetObservation={link({ state: SENSITIVITY_STATE.DONE, spectral: values(50) })}
+      />
+    );
+
+    expect(screen.getByTestId('field-targetName')).toHaveTextContent('Target A');
+  });
+  test('renders correctly ( OK, zoom )', () => {
+    wrapper(
+      <SensCalcContent
+        targetObservation={link({ state: SENSITIVITY_STATE.DONE, spectral: values(50) })}
+      />
+    );
+
+    expect(
+      screen.getByLabelText('sensitivityCalculatorResults.spectralSensitivityWeighted')
+    ).toHaveTextContent('50');
+    expect(
+      screen.queryByText('sensitivityCalculatorResults.continuumSensitivityWeighted')
+    ).not.toBeInTheDocument();
+  });
+  test('hides the spectral part of continuum results when asked', () => {
+    wrapper(
+      <SensCalcContent
+        targetObservation={link({
+          state: SENSITIVITY_STATE.DONE,
+          continuum: values(1),
+          spectral: values(200)
+        })}
+        hideSpectralResults
+      />
+    );
+
+    expect(
+      screen.getByLabelText('sensitivityCalculatorResults.continuumSensitivityWeighted')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('sensitivityCalculatorResults.spectralSensitivityWeighted')
+    ).not.toBeInTheDocument();
+  });
+  test('renders correctly ( OK, large value )', async () => {
+    wrapper(
+      <SensCalcContent
+        targetObservation={link({ state: SENSITIVITY_STATE.DONE, spectral: values(1052.5) })}
       />
     );
     await waitFor(() => {
-      const element2 = screen.getByTestId('field-sensitivity');
-      expect(element2).toBeInTheDocument();
-      expect(element2).toHaveTextContent('1.1e+3');
+      expect(
+        screen.getByLabelText('sensitivityCalculatorResults.spectralSensitivityWeighted')
+      ).toHaveTextContent('1.1e+3');
     });
   });
-  test('renders correctly ( OK, natural )', async () => {
+  test('renders the non-Gaussian message for the results the calculator did not give', async () => {
+    // For a non-Gaussian beam, the calculator gives only the weighted sensitivities
+    const weightedOnly = (weighted: number): SensitivityValues => ({
+      weightedSensitivity: { value: weighted, unit: 'Jy/beam' }
+    });
     wrapper(
       <SensCalcContent
-        targetObservation={{
-          sensitivityResults: {
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'naturalField1',
-                value: 'naturalValue1',
-                units: 'testUnits'
-              }
-            ],
-            section2: [
-              {
-                field: 'integrationTime',
-                value: '1',
-                units: 'h'
-              },
-              {
-                field: 'continuumSensitivityWeighted',
-                value: '7.18',
-                units: 'Jy/beam'
-              }
-            ]
-          }
-        }}
-        isNatural={true}
+        targetObservation={link({
+          state: SENSITIVITY_STATE.DONE,
+          continuum: weightedOnly(7.18),
+          spectral: weightedOnly(1)
+        })}
       />
     );
     await waitFor(() => {
-      const element1 = screen.getByTestId('field-naturalField1');
-      expect(element1).toBeInTheDocument();
-      expect(element1).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element3 = screen.getByTestId('field-continuumSensitivityWeighted');
-      expect(element3).toBeInTheDocument();
-      expect(element3).toHaveTextContent('7.18');
+      expect(
+        screen.getByLabelText('sensitivityCalculatorResults.continuumSensitivityWeighted')
+      ).toHaveTextContent('7.18');
+      expect(
+        screen.getByLabelText('sensitivityCalculatorResults.spectralSensitivityWeighted')
+      ).toHaveTextContent('1');
+      [
+        'continuumConfusionNoise',
+        'continuumTotalSensitivity',
+        'continuumSynthBeamSize',
+        'continuumSurfaceBrightnessSensitivity',
+        'spectralConfusionNoise',
+        'spectralTotalSensitivity',
+        'spectralSynthBeamSize',
+        'spectralSurfaceBrightnessSensitivity'
+      ].forEach((field) =>
+        expect(screen.getByLabelText(`sensitivityCalculatorResults.${field}`)).toHaveTextContent(
+          'sensitivityCalculatorResults.nonGaussian'
+        )
+      );
     });
   });
   test('renders correctly (error)', () => {
     wrapper(
       <SensCalcContent
-        targetObservation={{
-          sensitivityResults: {
-            statusGUI: STATUS_ERROR,
-            error: 'SOME ERROR',
-            section1: undefined,
-            section2: undefined
-          }
-        }}
-        isNatural={false}
+        targetObservation={link({ state: SENSITIVITY_STATE.FAILED, error: 'SOME ERROR' })}
       />
     );
   });

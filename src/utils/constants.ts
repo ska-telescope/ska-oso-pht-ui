@@ -250,14 +250,6 @@ export const NAV = [
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
-export const CUSTOM_VALID_FIELDS = [
-  'continuumSensitivityWeighted',
-  'spectralSensitivityWeighted',
-  'integrationTime',
-  'sensitivity',
-  'continuumIntegrationTime',
-  'spectralIntegrationTime'
-];
 
 export const TIME_DAYS = 1;
 export const TIME_HOURS = 2;
@@ -566,8 +558,14 @@ export const STATUS_ERROR = 1;
 export const STATUS_ERROR_SYMBOL = '!';
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
-export type STATUS =
-  typeof STATUS_OK | typeof STATUS_ERROR | typeof STATUS_PARTIAL | typeof STATUS_INITIAL;
+
+/** The state of a target–observation link's sensitivity results. */
+export const SENSITIVITY_STATE = {
+  CALCULATING: 'calculating',
+  FAILED: 'failed',
+  DONE: 'done'
+} as const;
+export type SensitivityState = (typeof SENSITIVITY_STATE)[keyof typeof SENSITIVITY_STATE];
 export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;

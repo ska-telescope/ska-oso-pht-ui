@@ -8,7 +8,6 @@ import DetailsPage from './DetailsPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DETAILS,
   PROPOSAL_TYPE,
   STATUS_ERROR,
@@ -28,8 +27,6 @@ const mockState = vi.hoisted(() => ({
   updateProposal: vi.fn(),
   updatePageStatus: vi.fn()
 }));
-const mockNotifyError = vi.hoisted(() => vi.fn());
-const mockNotifySuccess = vi.hoisted(() => vi.fn());
 
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
@@ -61,10 +58,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => ({ axiosClient: {} })
-}));
-
-vi.mock('@/utils/notify/useNotify', () => ({
-  useNotify: () => ({ notifyError: mockNotifyError, notifySuccess: mockNotifySuccess })
 }));
 
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({
@@ -201,7 +194,6 @@ describe('<DetailsPage /> observing mode', () => {
         ...proposal,
         observations: [{ ...proposal.observations[0], type: mode }]
       });
-      return { success: true };
     });
   });
 
@@ -363,26 +355,7 @@ describe('<DetailsPage /> observing mode', () => {
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
   });
 
-  it('reflects observation changes without storing the mode in RHF', async () => {
-    mockState.proposal = svProposal();
-    await renderPage();
-
-    act(() => {
-      mockState.updateProposal(
-        svProposal({
-          observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1', type: TYPE_PST }]
-        })
-      );
-    });
-
-    expect(observingModeCombobox()).toHaveTextContent('observationType.pst');
-    expect(
-      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '')
-    ).not.toHaveProperty('observingMode');
-    expect(setObservingMode).not.toHaveBeenCalled();
-  });
-
-  it('sets the observing mode on the observation when changed, without a notification if there is no target', async () => {
+  it('sets the observing mode on the observation when changed', async () => {
     mockState.proposal = svProposal();
     await renderPage();
 
@@ -405,20 +378,6 @@ describe('<DetailsPage /> observing mode', () => {
       {},
       42
     );
-    expect(mockNotifySuccess).not.toHaveBeenCalled();
-    expect(mockNotifyError).not.toHaveBeenCalled();
-  });
-
-  it('notifies of the auto-link success when changed with a target', async () => {
-    mockState.proposal = svProposal({ targets: [{ id: 1, name: 'M2' }] });
-    await renderPage();
-
-    await selectObservingMode('observationType.pst');
-
-    expect(mockNotifySuccess).toHaveBeenCalledWith(
-      'autoLink.success',
-      NOTIFICATION_DELAY_IN_SECONDS
-    );
   });
 
   it('only updates the selected mode after the observation update succeeds', async () => {
@@ -432,7 +391,7 @@ describe('<DetailsPage /> observing mode', () => {
               ...proposal,
               observations: [{ ...proposal.observations[0], type: mode }]
             });
-            resolve({ success: true });
+            resolve();
           };
         })
     );
@@ -452,18 +411,5 @@ describe('<DetailsPage /> observing mode', () => {
     expect(
       JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '')
     ).not.toHaveProperty('observingMode');
-  });
-
-  it('notifies of the error when setting the observing mode fails', async () => {
-    vi.mocked(setObservingMode).mockResolvedValue({ success: false, error: 'bad' });
-    mockState.proposal = svProposal({ targets: [{ id: 1, name: 'M2' }] });
-    await renderPage();
-
-    await selectObservingMode('observationType.pst');
-
-    expect(mockNotifyError).toHaveBeenCalledWith('bad', NOTIFICATION_DELAY_IN_SECONDS);
-    expect(mockNotifySuccess).not.toHaveBeenCalled();
-    expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
-    expect(mockState.updateProposal).not.toHaveBeenCalled();
   });
 });

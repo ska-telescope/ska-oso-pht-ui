@@ -39,10 +39,7 @@ import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { referenceCoordinateToPdm, targetsToPdm } from '@/models/proposals/targets';
-import {
-  getSuppliedFieldsIntegrationTime,
-  targetObservationToPdm
-} from '@/models/proposals/targetObservation';
+import { targetObservationToPdm } from '@/models/proposals/targetObservation';
 import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
 import { investigatorToPdm } from '@/models/proposals/team';
 import type {
@@ -66,7 +63,6 @@ const isPST = (type: string) => type === TYPE_PST;
 export const getReferenceCoordinate = referenceCoordinateToPdm;
 export const getTargets = targetsToPdm;
 export const mapCalibrationStrategyToBackend = calibrationStrategyToPdm;
-export { getSuppliedFieldsIntegrationTime };
 
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const getDocuments = (
@@ -398,10 +394,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0
           ? getDataProductSRC(proposal.dataProductSRC as DataProductSRC[])
           : [],
-      result_details: targetObservationToPdm(
-        proposal.targetObservation as TargetObservation[],
-        Object.fromEntries((proposal.observations ?? []).map((obs) => [obs.id, obs.type]))
-      )
+      result_details: targetObservationToPdm(proposal.targetObservation as TargetObservation[])
     }
   };
   helpers.transform.trimObject(transformedProposal);

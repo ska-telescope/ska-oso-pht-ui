@@ -202,47 +202,10 @@ describe('<TargetEntry /> name validation', () => {
   }, 15000);
 });
 
-describe('<TargetEntry /> form preservation on auto-linking error', { timeout: 10000 }, () => {
+describe('<TargetEntry /> resolving and clearing', { timeout: 10000 }, () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-
-  it('retains field values when the sensitivity calculator returns an error', async () => {
-    const mockedAutoLinking = vi.mocked(linkTarget);
-
-    mockedAutoLinking.mockResolvedValue({
-      success: false,
-      error: 'Declination not supported by sensitivity calculator'
-    } as never);
-
-    const user = userEvent.setup();
-
-    await act(async () => {
-      wrapper(<TargetEntry />);
-    });
-
-    const nameField = nameInput();
-    const raField = raInput();
-    const decField = decInput();
-
-    await user.type(nameField, 'My Target');
-    await user.type(raField, '12:34:56');
-    await user.type(decField, '45:00:00');
-
-    await waitFor(() => {
-      expect(addButton()).not.toBeDisabled();
-    });
-
-    await user.click(addButton());
-
-    await waitFor(() => {
-      expect(mockedAutoLinking).toHaveBeenCalled();
-    });
-
-    expect(nameField).toHaveValue('My Target');
-    expect(raField).toHaveValue('12:34:56');
-    expect(decField).toHaveValue('45:00:00');
-  }, 15000);
 
   it('shows a loading state and disables editing and clearing while coordinates are resolving', async () => {
     const mockedGetCoordinates = vi.mocked(GetCoordinates);
@@ -350,7 +313,7 @@ describe('<TargetEntry /> form preservation on auto-linking error', { timeout: 1
 describe('<TargetEntry /> auto-linking route', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(linkTarget).mockResolvedValue({ success: true });
+    vi.mocked(linkTarget).mockResolvedValue();
   });
 
   afterEach(() => {
@@ -380,6 +343,9 @@ describe('<TargetEntry /> auto-linking route', () => {
 
     await waitFor(() => {
       expect(linkTarget).toHaveBeenCalledTimes(1);
+    });
+    await waitFor(() => {
+      expect(nameInput()).toHaveValue('');
     });
   }, 15000);
 

@@ -2,21 +2,20 @@ import { afterEach, describe, test, expect, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@utils/storage/store';
-import LinkingPage, { isNonGaussianSensitivityCase } from './LinkingPage';
+import LinkingPage from './LinkingPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import completeMockStore from '@/utils/MockStore';
-import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE, STATUS_OK } from '@/utils/constants';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import {
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  PROPOSAL_TYPE,
+  SENSITIVITY_STATE
+} from '@/utils/constants';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
-vi.mock(
-  '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts',
-  () => ({ default: vi.fn(async () => ({ statusGUI: STATUS_OK, error: '' })) })
-);
 vi.mock('@services/axios/get/getCalibratorList/getCalibratorList', () => ({
   default: vi.fn(async () => [])
 }));
@@ -58,12 +57,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 describe('<LinkingPage />', () => {
   test('renders correctly with default values', () => {
     wrapper(<LinkingPage />);
-  });
-
-  test('treats Briggs robust=2 as non-Gaussian while leaving uniform alone', () => {
-    expect(isNonGaussianSensitivityCase({ subarray: 'AA4', weighting: 2, robust: 2 })).toBe(true);
-    expect(isNonGaussianSensitivityCase({ subarray: 'AA4', weighting: 1, robust: 2 })).toBe(false);
-    expect(isNonGaussianSensitivityCase({ subarray: 'AA4', weighting: 0, robust: 0 })).toBe(true);
   });
 });
 
@@ -128,7 +121,9 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
       expect.objectContaining({
         targetId: 't1',
         observationId: 'obs-1',
-        dataProductsSDPId: 'sdp-1'
+        dataProductsSDPId: 'sdp-1',
+        // The page doesn't calculate the link: the sensitivity service does
+        sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
       })
     ]);
     expect(formProbe.getValues('calibrationStrategy')[0]).toEqual(
@@ -142,80 +137,6 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
       expect(formProbe.getValues('targetObservation')).toEqual([]);
     });
     expect(formProbe.getValues('calibrationStrategy')).toEqual([]);
-  });
-
-  test('requests the sensitivity of a new link once while the page re-renders', async () => {
-    vi.mocked(getSensCalc).mockClear();
-    let resolveSensCalc: (value: Awaited<ReturnType<typeof getSensCalc>>) => void = () => {};
-    vi.mocked(getSensCalc).mockImplementationOnce(
-      () => new Promise((resolve) => (resolveSensCalc = resolve))
-    );
-    renderLinking();
-
-    await selectObservationAndTickTarget();
-    await waitFor(() => expect(getSensCalc).toHaveBeenCalledTimes(1));
-
-    // Another change to the watched slices re-runs the effect while the request is pending
-    act(() =>
-      formProbe.setValue(
-        'calibrationStrategy',
-        formProbe.getValues('calibrationStrategy').map((c) => ({ ...c, notes: 'edited' }))
-      )
-    );
-    expect(getSensCalc).toHaveBeenCalledTimes(1);
-
-    await act(async () => resolveSensCalc({ statusGUI: STATUS_OK, error: '' }));
-    await waitFor(() => {
-      expect(formProbe.getValues('targetObservation')[0].sensitivityResults?.statusGUI).toBe(
-        STATUS_OK
-      );
-    });
-    expect(getSensCalc).toHaveBeenCalledTimes(1);
-  });
-
-  test('keeps a link made while the calibrators of a new link are being looked up', async () => {
-    vi.mocked(getSensCalc).mockClear();
-    vi.mocked(GetCalibratorList).mockClear();
-    let resolveSensCalc: (value: Awaited<ReturnType<typeof getSensCalc>>) => void = () => {};
-    vi.mocked(getSensCalc).mockImplementationOnce(
-      () => new Promise((resolve) => (resolveSensCalc = resolve))
-    );
-    renderLinking();
-
-    await selectObservationAndTickTarget();
-    await waitFor(() => expect(getSensCalc).toHaveBeenCalledTimes(1));
-
-    // The calibrator lookup that follows the sensitivity result is held until released below
-    let resolveCalibrators: (
-      value: Awaited<ReturnType<typeof GetCalibratorList>>
-    ) => void = () => {};
-    vi.mocked(GetCalibratorList).mockImplementationOnce(
-      () => new Promise((resolve) => (resolveCalibrators = resolve))
-    );
-    await act(async () => resolveSensCalc({ statusGUI: STATUS_OK, error: '' }));
-    await waitFor(() => expect(GetCalibratorList).toHaveBeenCalledTimes(2));
-
-    // Another link is made while that lookup is pending
-    const otherLink = { observationId: 'obs-2', targetId: 't2', dataProductsSDPId: 'sdp-2' };
-    act(() =>
-      formProbe.setValue('targetObservation', [
-        ...formProbe.getValues('targetObservation'),
-        otherLink
-      ])
-    );
-
-    await act(async () => resolveCalibrators([]));
-    await waitFor(() => {
-      expect(formProbe.getValues('targetObservation')).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            targetId: 't1',
-            sensitivityResults: expect.objectContaining({ statusGUI: STATUS_OK })
-          }),
-          expect.objectContaining(otherLink)
-        ])
-      );
-    });
   });
 
   test('leaves the calibration of other observations alone when linking and unlinking', async () => {

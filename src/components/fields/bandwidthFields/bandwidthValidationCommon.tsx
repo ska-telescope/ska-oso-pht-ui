@@ -1,4 +1,3 @@
-import sensCalHelpers from '@/services/axios/get/getSensitivityCalculator/sensitivityCalculator/sensCalHelpers';
 import {
   SA_AA2,
   ANTENNA_13M,
@@ -9,10 +8,6 @@ import {
 
 const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
 const isAA2 = (subarrayConfig: string) => subarrayConfig === SA_AA2;
-
-export const scaleBandwidthOrFrequency = (incValue: number, incUnits: string): number => {
-  return sensCalHelpers.format.convertBandwidthToHz(incValue, incUnits);
-};
 
 // The bandwidth should be greater than the fundamental limit of the bandwidth provided by SKA MID or LOW
 export const checkMinimumChannelWidth = (

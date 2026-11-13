@@ -4,15 +4,21 @@ import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getFormLinks, withFormSlices } from '@/models/proposals/formSlices';
-import { BorderedSection, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { getFormLinks } from '@/models/proposals/formSlices';
+import {
+  Alert,
+  AlertColorTypes,
+  BorderedSection,
+  Spacer,
+  SPACER_VERTICAL
+} from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import { useTheme } from '@mui/material/styles';
 import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
-import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
+import { ValueUnitPair } from '@/utils/types/valueUnitPair';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
 import {
@@ -43,9 +49,10 @@ import {
   PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
   PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
   PULSAR_TIMING_VALUE,
+  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
-  STATUS_INITIAL,
+  SENSITIVITY_STATE,
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
   TYPE_CONTINUUM,
@@ -73,27 +80,20 @@ import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
-import fetchSensCalcPatches from '@/utils/update/sensCalc/updateSensCalc';
-import { patchSensCalcResults } from '@/models/proposals/targetObservationOperations';
 import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
 import TargetObservation from '@/utils/types/targetObservation';
+import Target from '@/utils/types/target';
 import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
-import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
-import {
-  isDataProductPolarisationsValid,
-  isDataProductRobustValid,
-  isSuppliedValueValid
-} from '@/utils/validation/validation';
+import { isDataProductPolarisationsValid } from '@/utils/validation/validation';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 const COL = 6;
 const COL_MID = 8;
-const SENS_CALC_DEBOUNCE_MS = 500;
 
 interface DataProductProps {
   data?: DataProductSDPNew;
@@ -113,10 +113,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const latestProposalRef = React.useRef(getProposal());
   const hasInitializedDataProductRef = React.useRef(false);
-  const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const latestSensCalcRequestIdRef = React.useRef(0);
 
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [id, setId] = React.useState('');
@@ -197,57 +194,12 @@ export default function DataProduct({ data }: DataProductProps) {
   const [polarisationsError, setPolarisationsError] = React.useState('');
   const loadedDataProductRef = React.useRef<DataProductSDPNew | null>(null);
 
-  const persistProposal = (proposal: Proposal) => {
-    latestProposalRef.current = proposal;
-    setProposal(proposal);
-  };
-
   // The form owns the targets and links; observations and data products stay in the store
   const form = useFormContext<ProposalType>();
   const links = (useWatch({ control: form.control, name: 'targetObservation' }) ??
     []) as TargetObservation[];
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
   const getLinks = () => getFormLinks(form);
-
-  const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
-    isSuppliedValueValid({
-      type: ob?.supplied?.type,
-      value: ob?.supplied?.value,
-      units: ob?.supplied?.units
-    }) && isDataProductRobustValid(dp);
-
-  // TODO(BTN-3595): Replace this per-page sensitivity update with the shared sensitivity service,
-  //  as in ObservationEntry, writing its results through patchSensCalcResults.
-  const scheduleLocalSensCalcUpdate = (
-    ob: Observation,
-    dp: DataProductSDPNew,
-    delay = SENS_CALC_DEBOUNCE_MS
-  ) => {
-    if (sensCalcDebounceTimerRef.current) {
-      clearTimeout(sensCalcDebounceTimerRef.current);
-    }
-    const requestId = ++latestSensCalcRequestIdRef.current;
-
-    const applyUpdate = async () => {
-      sensCalcDebounceTimerRef.current = null;
-      const sensCalcPatches = await fetchSensCalcPatches(
-        withFormSlices(latestProposalRef.current, form),
-        ob,
-        dp
-      );
-
-      if (requestId !== latestSensCalcRequestIdRef.current) {
-        return;
-      }
-
-      patchSensCalcResults(form, sensCalcPatches);
-    };
-
-    if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
-      sensCalcDebounceTimerRef.current = setTimeout(() => void applyUpdate(), delay);
-    } else {
-      void applyUpdate();
-    }
-  };
 
   const maxObservationsReached = () =>
     baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
@@ -271,17 +223,6 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getObservationTargetObservations = (obsId: string) =>
     getLinks().filter((rec) => rec.observationId === obsId);
-
-  const hasSensCalcResults = (obsId: string) => {
-    const sensitivityResults = getLinks().find(
-      (rec) => rec.observationId === obsId
-    )?.sensitivityResults;
-    return Boolean(
-      sensitivityResults?.section1?.length ||
-      sensitivityResults?.section2?.length ||
-      sensitivityResults?.section3?.length
-    );
-  };
 
   // The linked data product is the one in the results, or the selected one while no target is linked
   const getLinkedDataProductId = (obsId: string, fallbackId = '') =>
@@ -379,9 +320,16 @@ export default function DataProduct({ data }: DataProductProps) {
     targetObservations: TargetObservation[],
     obsId: string,
     dataProductsSDPId: string
-  ) =>
+  ): TargetObservation[] =>
     targetObservations.map((rec) =>
-      rec.observationId === obsId ? { ...rec, dataProductsSDPId } : rec
+      rec.observationId === obsId
+        ? {
+            ...rec,
+            dataProductsSDPId,
+            // The results were for the other data product; the sensitivity service calculates them
+            sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
+          }
+        : rec
     );
 
   const dataProductIn = (dp: DataProductSDPNew) => {
@@ -532,9 +480,6 @@ export default function DataProduct({ data }: DataProductProps) {
       loaded.observationId === newDataProduct.observationId &&
       existingDataProduct
     ) {
-      if (!hasSensCalcResults(newDataProduct.observationId)) {
-        scheduleLocalSensCalcUpdate(observation!, newDataProduct, 0);
-      }
       return;
     }
     const oldDataProducts = proposal.dataProductSDP ?? [];
@@ -542,12 +487,11 @@ export default function DataProduct({ data }: DataProductProps) {
       updateDataProducts(oldDataProducts, newDataProduct),
       observation
     );
-    const proposalForSensCalc = {
+    // The sensitivity service recalculates the linked results from the stored data product
+    setProposal({
       ...proposal,
       dataProductSDP
-    };
-    persistProposal(proposalForSensCalc);
-    scheduleLocalSensCalcUpdate(observation!, newDataProduct);
+    });
   };
 
   const updateStorageProposal = () => {
@@ -631,27 +575,14 @@ export default function DataProduct({ data }: DataProductProps) {
       'targetObservation',
       updateLinkedDataProductId(getLinks(), observation.id, nextLinkedDataProduct.id)
     );
-    persistProposal({
+    setProposal({
       ...proposal,
       dataProductSDP: dataProductsAfterReset
     });
     dataProductIn(nextLinkedDataProduct);
-    scheduleLocalSensCalcUpdate(observation, nextLinkedDataProduct);
   };
 
   /* ------------------------------------------- */
-
-  React.useEffect(() => {
-    latestProposalRef.current = getProposal();
-  }, [application.content2]);
-
-  React.useEffect(() => {
-    return () => {
-      if (sensCalcDebounceTimerRef.current) {
-        clearTimeout(sensCalcDebounceTimerRef.current);
-      }
-    };
-  }, []);
 
   React.useEffect(() => {
     setHelp('observations.dp');
@@ -1037,12 +968,29 @@ export default function DataProduct({ data }: DataProductProps) {
   const targetObservation = (): TargetObservation | undefined =>
     links.find((rec) => rec.observationId === observationId);
 
-  const isNatural = () => {
-    if (!(isSpectral() || isContinuumSpectral() || (isContinuum() && isDataTypeOne()))) {
-      return false;
+  // Why the sensitivity calculator doesn't apply to this data product, or undefined when it does.
+  // PST is checked first: the observing mode alone rules the calculator out, target or not.
+  const sensCalcUnavailable = ():
+    | { message: string; color: typeof AlertColorTypes.Warning | typeof AlertColorTypes.Error }
+    | undefined => {
+    if (isPST()) {
+      return { message: t('page.7.pstUnavailable'), color: AlertColorTypes.Warning };
     }
-    return isNonGaussianBeamWeighting(weighting, robust);
+    const link = targetObservation();
+    if (!link) {
+      return { message: t('sensitivityCalculatorResults.noTarget'), color: AlertColorTypes.Error };
+    }
+    const target = targets.find((tgt) => tgt.id === link.targetId);
+    if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+      return {
+        message: t('sensitivityCalculatorResults.notApplicableForSSO'),
+        color: AlertColorTypes.Warning
+      };
+    }
+    return undefined;
   };
+
+  const scUnavailable = sensCalcUnavailable();
 
   return (
     <Box
@@ -1251,13 +1199,17 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                !targetObservation()
-                  ? theme.palette.error.main
-                  : targetObservation()?.sensitivityResults == undefined
+                scUnavailable
+                  ? scUnavailable.color === AlertColorTypes.Error
+                    ? theme.palette.error.main
+                    : theme.palette.warning.main
+                  : targetObservation()?.sensitivity == undefined
                     ? theme.palette.warning.main
-                    : targetObservation()?.sensitivityResults?.statusGUI !== STATUS_INITIAL
-                      ? theme.palette.success.main
-                      : theme.palette.error.main
+                    : targetObservation()?.sensitivity?.state === SENSITIVITY_STATE.CALCULATING
+                      ? theme.palette.info.main
+                      : targetObservation()?.sensitivity?.state === SENSITIVITY_STATE.FAILED
+                        ? theme.palette.error.main
+                        : theme.palette.success.main
               }
               title={
                 isContinuum()
@@ -1265,11 +1217,16 @@ export default function DataProduct({ data }: DataProductProps) {
                   : t('sensitivityCalculatorResults.title')
               }
             >
-              <SensCalcContent
-                targetObservation={targetObservation()}
-                isNatural={isNatural()}
-                hideSpectralResults={hideSpectralSensitivityResults}
-              />
+              {scUnavailable ? (
+                <Alert testId="alertSensCalResultsId" color={scUnavailable.color}>
+                  <Typography sx={{ p: GAP }}>{scUnavailable.message}</Typography>
+                </Alert>
+              ) : (
+                <SensCalcContent
+                  targetObservation={targetObservation() as TargetObservation}
+                  hideSpectralResults={hideSpectralSensitivityResults}
+                />
+              )}
             </BorderedSection>
           )}
         </Grid>

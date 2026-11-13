@@ -165,21 +165,6 @@ For k8s deployments:
 | `MSENTRA_TENANT_ID`                  | MS Entra tenant ID                 |
 | `MSENTRA_REDIRECT_URI`               | OAuth redirect URI                 |
 
-# Backend Requirements
-
-The UI requires the following services to be reachable:
-
-- `ska-oso-services`
-- `ska-ost-senscalc`
-
-Please refer to their respective documentation for setup instructions.
-
-If the UI fails to load data:
-
-- Verify backend URLs in `.env`
-- Confirm Minikube IP
-- Ensure API versions (`v13`, `v11`) match deployed services
-
 # Testing
 
 ```bash

@@ -27,43 +27,28 @@ import {
   PAGE_CALIBRATION,
   PAGE_LINKING,
   REFERENCE_COORDINATE_TYPE_ICRS,
+  SENSITIVITY_STATE,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
-  STATUS_PARTIAL,
-  SUPPLIED_TYPE_INTEGRATION,
-  NOTIFICATION_DELAY_IN_SECONDS
+  STATUS_PARTIAL
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
-import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
+import SensCalcModalMultiple, {
+  SensCalcRow
+} from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
-import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
-import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
-
-export const isNonGaussianSensitivityCase = ({
-  subarray,
-  weighting,
-  robust
-}: {
-  subarray?: string;
-  weighting?: number | string | null;
-  robust?: number | string | null;
-}) => {
-  return subarray !== SA_CUSTOM && isNonGaussianBeamWeighting(weighting, robust);
-};
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
@@ -101,8 +86,6 @@ export default function LinkingPage() {
   const getLinks = () => getFormLinks(form);
   const getCalibration = () => getFormCalibration(form);
 
-  const { notifyError } = useNotify();
-
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number, valueCalibration: number) => {
     const temp: number[] = [];
@@ -115,25 +98,20 @@ export default function LinkingPage() {
     updateAppContent1(temp);
   };
 
-  const isIntegrationTime = (ob: { supplied: { type: number } }) =>
-    ob?.supplied?.type === SUPPLIED_TYPE_INTEGRATION;
-
   const getLevel = (obs: any) => {
     let result = STATUS_INITIAL;
-    filteredByDataProduct(obs.id)?.forEach((rec) => {
-      if (typeof rec !== 'undefined') {
-        switch (rec.statusGUI) {
-          case STATUS_ERROR:
-            result = STATUS_ERROR;
-            return;
-          case STATUS_PARTIAL:
-            result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
-            return;
-          default:
-            if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
-              result = STATUS_OK;
-            }
-        }
+    filteredByDataProduct(obs.id).forEach(({ sensitivity }) => {
+      switch (sensitivity.state) {
+        case SENSITIVITY_STATE.FAILED:
+          result = STATUS_ERROR;
+          return;
+        case SENSITIVITY_STATE.CALCULATING:
+          result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
+          return;
+        default:
+          if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
+            result = STATUS_OK;
+          }
       }
     });
     return result;
@@ -141,9 +119,9 @@ export default function LinkingPage() {
 
   const getError = (obs: Observation) => {
     let result = '';
-    filteredByDataProduct(obs.id)?.forEach((rec) => {
-      if (typeof rec !== 'undefined' && rec.statusGUI === STATUS_ERROR) {
-        result = rec.error ?? '';
+    filteredByDataProduct(obs.id).forEach(({ sensitivity }) => {
+      if (sensitivity.state === SENSITIVITY_STATE.FAILED) {
+        result = sensitivity.error;
       }
     });
     return result;
@@ -164,37 +142,6 @@ export default function LinkingPage() {
   ) => {
     setTargetObservationAndCalibrationStorage(
       [...getLinks(), targetObs],
-      withCalibrationFor(getCalibration(), calibration)
-    );
-  };
-
-  const updateTargetObservationStorage = async (
-    target: Target,
-    observationId: string,
-    dataProductsSDPId: string,
-    results?: SensCalcResults
-  ) => {
-    const temp = {
-      observationId: observationId,
-      dataProductsSDPId: dataProductsSDPId,
-      targetId: target.id,
-      sensitivityResults: results
-    };
-
-    const calibration = await buildCalibrationStrategy(authAxiosClient, {
-      observationId,
-      observation: getProposal().observations?.find((o) => o.id === observationId),
-      target,
-      notes: calibrationNotesFor(getCalibration(), observationId)
-    });
-
-    // The calibrator lookup takes time, so the links and strategies are read after it to keep any
-    // made meanwhile; only this observation's strategy is replaced
-    const otherLinks = getLinks().filter(
-      (e) => !(e.targetId === target.id && e.observationId === observationId)
-    );
-    setTargetObservationAndCalibrationStorage(
-      [...otherLinks, temp],
       withCalibrationFor(getCalibration(), calibration)
     );
   };
@@ -271,23 +218,6 @@ export default function LinkingPage() {
     };
   };
 
-  // TODO(BTN-3595): Move these sensitivity requests (getSensCalcData and checkPartials) onto the
-  //  shared sensitivity service. They have no protection against stale responses today. The
-  //  calibration they write already comes from buildCalibrationStrategy (BTN-3593).
-  const getSensCalcData = async (
-    observation: Observation,
-    target: Target,
-    dataProductSDP: DataProductSDPNew
-  ) => {
-    const response = await getSensCalc(observation, target, dataProductSDP);
-    if (response?.error) {
-      const errMsg = response.error;
-      notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
-    }
-
-    await updateTargetObservationStorage(target, observation.id, dataProductSDP.id, response);
-  };
-
   const closeDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };
@@ -316,10 +246,7 @@ export default function LinkingPage() {
       observationId: currRec.id2,
       targetId: target.id,
       dataProductsSDPId: currRec.id ?? '',
-      sensitivityResults: {
-        statusGUI: STATUS_PARTIAL,
-        error: ''
-      }
+      sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     };
 
     const calibration = await buildCalibrationStrategy(authAxiosClient, {
@@ -343,29 +270,6 @@ export default function LinkingPage() {
     }
   };
 
-  // The partial link whose request is running. The effect below runs again when the form changes
-  // and again when that change is copied into the store, so skip a link that is already requested.
-  const pendingPartial = React.useRef<string | null>(null);
-
-  const checkPartials = async () => {
-    const proposal = getProposal();
-    const results = getLinks().find((p) => p.sensitivityResults?.statusGUI === STATUS_PARTIAL);
-    if (!results) return;
-    const key = `${results.targetId}|${results.observationId}|${results.dataProductsSDPId}`;
-    if (pendingPartial.current === key) return;
-    const target = getTargets().find((e) => e.id === results.targetId);
-    const observation = proposal.observations?.find((e) => e.id === results.observationId);
-    const dataProductSDP = proposal.dataProductSDP?.find((d) => d.id === results.dataProductsSDPId);
-    if (observation && target && dataProductSDP) {
-      pendingPartial.current = key;
-      try {
-        await getSensCalcData(observation, target, dataProductSDP);
-      } finally {
-        pendingPartial.current = null;
-      }
-    }
-  };
-
   React.useEffect(() => {
     const proposal = getProposal();
     setValidateToggle(!validateToggle);
@@ -382,26 +286,12 @@ export default function LinkingPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    checkPartials();
   }, [getProposal(), ...watchedSlices]);
 
   React.useEffect(() => {
     const statuses = getSubmitPageStatuses(form.getValues());
     setTheProposalState(statuses.linking, statuses.calibration);
   }, [validateToggle]);
-
-  // NOTE : We used to have Groups in the list, so keep this until we are sure we don't need it.
-  // const observationGroupIds = (id: string) => {
-  //   if (
-  //     getProposal()?.groupObservations &&
-  //     getProposal()?.groupObservations?.some(e => e.observationId === id)
-  //   ) {
-  //     const group: GroupObservation[] =
-  //       getProposal().groupObservations?.filter(e => e.observationId === id) ?? [];
-  //     return group[0]?.groupId;
-  //   }
-  //   return '';
-  // };
 
   const hasTargets = () => (elementsT?.length ?? 0) > 0;
 
@@ -411,14 +301,6 @@ export default function LinkingPage() {
     getLinks()?.find((p) => p.observationId === currRec?.id2 && p.targetId === targetId);
 
   const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
-  const isNatural = () => {
-    const selectedDp = currRec?.dp ?? elementsO.find((e) => e.id2 === currRec?.id2)?.dp;
-    return isNonGaussianSensitivityCase({
-      subarray: currRec?.subarray ?? currRec?.rec?.subarray,
-      weighting: selectedDp?.data?.weighting,
-      robust: selectedDp?.data?.robust
-    });
-  };
 
   const getSensCalcSingle = (id: string, field: string) => {
     return (
@@ -427,7 +309,6 @@ export default function LinkingPage() {
         show={isTargetSelected(id)}
         field={field}
         isCustom={isCustom()}
-        isNatural={isNatural()}
       />
     );
   };
@@ -543,7 +424,6 @@ export default function LinkingPage() {
             <>
               {
                 <StatusIconDisplay
-                  ariaDescription=" "
                   ariaTitle={t('sensCalc.' + getLevel(rec))}
                   level={getLevel(rec)}
                   onClick={() =>
@@ -631,28 +511,13 @@ export default function LinkingPage() {
       {
         field: 'vel',
         renderHeader: () =>
-          currRec?.rec ? (
-            <>
-              {t(
-                isIntegrationTime(currRec?.rec as Observation)
-                  ? 'sensitivityCalculatorResults.weightedSensitivity'
-                  : 'sensitivityCalculatorResults.integrationTime'
-              )}
-            </>
-          ) : (
-            <></>
-          ),
+          currRec?.rec ? <>{t('sensitivityCalculatorResults.weightedSensitivity')}</> : <></>,
         sortable: false,
         flex: 2,
         minWidth: 170,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
-          return getSensCalcSingle(
-            e.row.id,
-            isIntegrationTime(currRec?.rec as Observation)
-              ? 'SensitivityWeighted'
-              : 'IntegrationTime'
-          );
+          return getSensCalcSingle(e.row.id, 'SensitivityWeighted');
         }
       },
       {
@@ -679,15 +544,19 @@ export default function LinkingPage() {
     else return [];
   };
 
-  const filteredByDataProduct = (id: string) => {
-    const results: SensCalcResults[] = [];
-    getLinks()?.forEach((rec) => {
-      if (rec.dataProductsSDPId === id && rec.sensitivityResults != undefined) {
-        results.push(rec.sensitivityResults);
-      }
-    });
-    return results;
-  };
+  // The data product's links with results, named by their targets
+  const filteredByDataProduct = (id: string): SensCalcRow[] =>
+    getLinks().flatMap((link) =>
+      link.dataProductsSDPId === id && link.sensitivity
+        ? [
+            {
+              id: link.targetId,
+              title: getTargets().find((target) => target.id === link.targetId)?.name ?? '',
+              sensitivity: link.sensitivity
+            }
+          ]
+        : []
+    );
 
   return (
     <Shell page={PAGE}>
@@ -768,7 +637,6 @@ export default function LinkingPage() {
             level={getLevel(currRec?.rec)}
             levelError={getError(currRec?.rec)}
             isCustom={isCustom()}
-            isNatural={isNatural()}
           />
         )}
       </>

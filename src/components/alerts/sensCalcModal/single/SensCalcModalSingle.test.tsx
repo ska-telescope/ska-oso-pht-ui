@@ -1,39 +1,59 @@
-import { describe, expect, test } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StoreProvider } from '@utils/storage/store';
+import { storageObject, StoreProvider } from '@utils/storage/store';
+import completeMockStore from '@/utils/MockStore';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import SensCalcModalSingle from './SensCalcModalSingle';
-import { STATUS_ERROR, STATUS_INITIAL } from '@/utils/constants';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
+import { SENSITIVITY_STATE } from '@/utils/constants';
+import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 vi.mock('i18next', () => ({
   t: (key: string) => key
 }));
 
+const link = (sensitivity: Sensitivity) => ({
+  targetId: 't1',
+  observationId: 'obs-obR1Ej',
+  dataProductsSDPId: 'SDP-2',
+  sensitivity
+});
+
+const values = (weighted: number): SensitivityValues => ({
+  weightedSensitivity: { value: weighted, unit: 'Jy/beam' },
+  totalSensitivity: { value: 3, unit: 'Jy/beam' },
+  confusionNoise: { value: 2, unit: 'Jy/beam' },
+  surfaceBrightnessSensitivity: { value: 4, unit: 'K' },
+  synthesizedBeamSize: { value: '1.00 x 2.00', unit: 'arcsec²' }
+});
+
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <TestProposalFormProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </TestProposalFormProvider>
     </StoreProvider>
   );
 };
 
 describe('<SensCalcModalSingle />', () => {
-  test('renders correctly ( INITIAL )', () => {
+  // The linked observation and data product are still read from the store
+  beforeEach(() => {
+    vi.spyOn(storageObject, 'useStore').mockReturnValue({
+      ...completeMockStore,
+      application: { ...completeMockStore.application, content2: MockProposalFrontend }
+    } as unknown as ReturnType<typeof storageObject.useStore>);
+  });
+
+  test('renders correctly ( calculating )', () => {
     wrapper(
       <SensCalcModalSingle
         open={false}
         onClose={vi.fn()}
-        targetObservation={{
-          sensitivityResults: {
-            statusGUI: STATUS_INITIAL,
-            error: undefined,
-            section1: undefined,
-            section2: undefined,
-            section3: undefined
-          }
-        }}
-        isNatural={false}
+        targetObservation={link({ state: SENSITIVITY_STATE.CALCULATING })}
       />
     );
   });
@@ -42,107 +62,23 @@ describe('<SensCalcModalSingle />', () => {
       <SensCalcModalSingle
         open={true}
         onClose={vi.fn()}
-        targetObservation={{
-          sensitivityResults: {
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'testField1',
-                value: '1',
-                units: 'testUnits1'
-              }
-            ],
-            section2: [
-              {
-                field: 'sensitivity',
-                value: '200',
-                units: 'testUnits2'
-              },
-              {
-                field: 'testField2',
-                value: '50',
-                units: 'testUnits2'
-              }
-            ],
-            section3: [
-              {
-                field: 'testField3',
-                value: '2',
-                units: 'testUnits3'
-              }
-            ]
-          }
-        }}
-        isNatural={false}
+        targetObservation={link({
+          state: SENSITIVITY_STATE.DONE,
+          continuum: values(1),
+          spectral: values(200)
+        })}
       />
     );
 
-    const element1 = screen.getByTestId('field-testField1');
-    expect(element1).toBeInTheDocument();
-    expect(element1).toHaveTextContent('1');
-
-    screen.debug();
-    const element2 = screen.getByTestId('field-sensitivity');
-    expect(element2).toBeInTheDocument();
-    expect(element2).toHaveTextContent('200');
-
-    const element3 = screen.getByTestId('field-testField2');
-    expect(element3).toBeInTheDocument();
-    expect(element3).toHaveTextContent('50');
-  });
-  test('renders correctly ( OK, natural )', async () => {
-    wrapper(
-      <SensCalcModalSingle
-        open={true}
-        onClose={vi.fn()}
-        targetObservation={{
-          sensitivityResults: {
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'naturalField1',
-                value: 'naturalValue1',
-                units: 'testUnits'
-              }
-            ],
-            section2: [
-              {
-                field: 'continuumSensitivityWeighted',
-                value: '7.18',
-                units: 'Jy/beam'
-              }
-            ]
-          }
-        }}
-        isNatural={true}
-      />
-    );
-    await waitFor(() => {
-      const element1 = screen.getByTestId('field-naturalField1');
-      expect(element1).toBeInTheDocument();
-      expect(element1).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
-
-      const element3 = screen.getByTestId('field-continuumSensitivityWeighted');
-      expect(element3).toBeInTheDocument();
-      expect(element3).toHaveTextContent('7.18');
-    });
+    expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
+    expect(screen.getByTestId('field-spectralSensitivityWeighted')).toHaveTextContent('200');
   });
   test('renders correctly (error)', () => {
     wrapper(
       <SensCalcModalSingle
         open={false}
         onClose={vi.fn()}
-        targetObservation={{
-          sensitivityResults: {
-            statusGUI: STATUS_ERROR,
-            error: 'SOME ERROR',
-            section1: undefined,
-            section2: undefined
-          }
-        }}
-        isNatural={false}
+        targetObservation={link({ state: SENSITIVITY_STATE.FAILED, error: 'SOME ERROR' })}
       />
     );
   });

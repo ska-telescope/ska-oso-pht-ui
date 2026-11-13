@@ -1778,9 +1778,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ska-telescope/ska-gui-components@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@ska-telescope/ska-gui-components@npm:3.1.0"
+"@ska-telescope/ska-gui-components@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@ska-telescope/ska-gui-components@npm:3.2.0"
   dependencies:
     "@base-ui/react": "npm:^1.8.0"
     "@mui/x-data-grid": "npm:^7.28.0"
@@ -1794,7 +1794,7 @@ __metadata:
   peerDependenciesMeta:
     react-hook-form:
       optional: true
-  checksum: 10c0/7db92a73506a46b61d62725f1e50fe1b7f82ac454482964cfdb67c7dcdeddf9331ce86f45ddea1634a09134e7c53201584630bd628c7974f8b35282f70c15efd
+  checksum: 10c0/2a425b4ae89ac6f89517b1243e303b414ae38980248312e17c77ef3f4674338ee142b7b8602a3adf55a41db2ce59058bc452c7f61b3dcdca1e3ee22bf49fa302
   languageName: node
   linkType: hard
 
@@ -8109,7 +8109,7 @@ __metadata:
     "@mui/system": "npm:^7.3.11"
     "@mui/x-data-grid": "npm:^7.29.13"
     "@reduxjs/toolkit": "npm:^2.13.0"
-    "@ska-telescope/ska-gui-components": "npm:^3.1.0"
+    "@ska-telescope/ska-gui-components": "npm:^3.2.0"
     "@ska-telescope/ska-login-page": "npm:^2.0.0"
     "@ska-telescope/skuid": "npm:^3.0.0"
     "@testing-library/cypress": "npm:^10.1.3"

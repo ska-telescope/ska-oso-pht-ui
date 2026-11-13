@@ -50,6 +50,9 @@ export function getTargetsSchema() {
 
 export type TargetsType = z.input<ReturnType<typeof getTargetsSchema>>;
 
+// A saved target as the form holds it
+export type TargetType = z.output<ReturnType<typeof getTargetSchema>>;
+
 /*********************************************************** PDM mapping *********************************************************/
 
 /**************************** PDM → form *****************************/

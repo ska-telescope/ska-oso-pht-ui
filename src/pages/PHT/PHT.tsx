@@ -65,6 +65,7 @@ import { useTheme } from '@mui/material/styles';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
+import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -121,7 +122,7 @@ export default function PHT({
   const location = useLocation();
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { setHelp } = useHelp();
-  const { notifyWarning, notifyError } = useNotify();
+  const { notifyError } = useNotify();
   const theme = useTheme();
   const previousPathRef = React.useRef(location.pathname);
 
@@ -167,11 +168,7 @@ export default function PHT({
       return;
     }
     autoRepairAttemptedForIdRef.current = proposal.id;
-    linkTarget(target, getProposal, setProposal, formMethods, authClient).then((result) => {
-      if (!result?.success) {
-        notifyWarning(result?.error ?? t('autoLink.error'));
-      }
-    });
+    void linkTarget(target, getProposal, setProposal, formMethods, authClient);
   }, [getProposal(), autoLink]);
 
   React.useEffect(() => {
@@ -381,6 +378,7 @@ export default function PHT({
             {/* TODO: REMOVE  */}
             {/* Global form provider for proposal form management */}
             <FormProvider {...formMethods}>
+              <SensitivityService />
               {REQUIRED_WIDTH ? (
                 <Routes>
                   {ROUTES.map((ROUTE) => (

@@ -28,17 +28,14 @@ import type {
   DataProductSRC as DataProductSRCTransport,
   PstDetectedFilterbank
 } from '@/generated/models';
-import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
-  getDataProductRef,
   getDataProductScriptParameters,
   getDataProductSRC,
   getObservationTypeDetails,
   getReferenceCoordinate,
-  getSuppliedFieldsIntegrationTime,
   mapCalibrationStrategyToBackend
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
@@ -612,41 +609,5 @@ describe('getObservationTypeDetails', () => {
     } as any;
     const result = getObservationTypeDetails(obs);
     expect(result.observation_type).toBe(TYPE_PST);
-  });
-});
-
-describe('getSuppliedFieldsIntegrationTime', () => {
-  const mockTarObs = {
-    sensitivityResults: {
-      section3: [{ value: 123, units: 'hr', field: 'integrationTime' }]
-    }
-  } as any;
-
-  test('should return correct values for continuum type', () => {
-    const result = getSuppliedFieldsIntegrationTime('integration_time', TYPE_CONTINUUM, mockTarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: 123, unit: 'hr' },
-      spectral: { value: 123, unit: 'hr' }
-    });
-  });
-
-  test('should return 0 and empty string for non-continuum type', () => {
-    const result = getSuppliedFieldsIntegrationTime('integration_time', 999, mockTarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: 0, unit: '' },
-      spectral: { value: 123, unit: 'hr' }
-    });
-  });
-
-  test('should handle missing section3 gracefully', () => {
-    const tarObs = { sensitivityResults: {} } as any;
-    const result = getSuppliedFieldsIntegrationTime('integration_time', TYPE_CONTINUUM, tarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: NaN, unit: '' },
-      spectral: { value: NaN, unit: '' }
-    });
   });
 });

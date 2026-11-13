@@ -4,12 +4,12 @@ import CancelButton from '../../../button/Cancel/Cancel';
 import SensCalcContent from '../content/SensCalcContent';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
+import { sensitivityStatusLevel } from '@utils/helpersSensCalc';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
   onClose: Function;
   targetObservation?: TargetObservation;
-  isNatural: boolean;
 }
 
 const SIZE = 20;
@@ -17,13 +17,14 @@ const SIZE = 20;
 export default function SensCalcModalSingle({
   open,
   onClose,
-  targetObservation,
-  isNatural
+  targetObservation
 }: SensCalcDisplaySingleProps) {
   const handleClose = () => {
     onClose();
   };
 
+  const results = targetObservation?.sensitivity;
+  const level = results ? sensitivityStatusLevel(results.state) : undefined;
   const { t } = useScopedTranslation();
 
   return (
@@ -42,13 +43,12 @@ export default function SensCalcModalSingle({
           avatar={
             <StatusIcon
               ariaTitle={t('sensitivityCalculatorResults.status', {
-                status: t('statusLoading.' + targetObservation?.sensitivityResults?.statusGUI),
+                status: t('statusLoading.' + level),
                 error: ''
               })}
-              ariaDescription=""
               testId="statusId"
               icon
-              level={targetObservation?.sensitivityResults?.statusGUI}
+              level={level}
               size={SIZE}
               text=""
             />
@@ -65,7 +65,7 @@ export default function SensCalcModalSingle({
         />
       </Card>
       <CardContent>
-        <SensCalcContent targetObservation={targetObservation} isNatural={isNatural} />
+        {targetObservation && <SensCalcContent targetObservation={targetObservation} />}
       </CardContent>
     </Dialog>
   );

@@ -6,8 +6,7 @@ import {
   DP_TYPE_VISIBLE,
   IW_BRIGGS,
   REFERENCE_COORDINATE_TYPE_SSO,
-  STATUS_ERROR,
-  STATUS_OK,
+  SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -33,14 +32,6 @@ import {
 } from './mockSDP';
 import { mockTarget } from './mockTarget';
 import { mockCalibration } from './mockCalibration';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
-
-const validMockSensCal = {
-  id: 1,
-  title: 'Mock Target',
-  statusGUI: STATUS_OK,
-  section1: [{ field: 'continuumSensitivityWeighted', value: '130.33', units: 'uJy / beam' }]
-};
 
 // The tests keep one proposal object as the store; this form reads and writes its slices on that
 // same object, so each test can check every slice in one place
@@ -152,12 +143,8 @@ describe('AutoLinking, newDataProductsForMode', () => {
   });
 });
 
-vi.mock(
-  '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData',
-  () => ({
-    default: vi.fn()
-  })
-);
+// A new link has partial results: the sensitivity service calculates them
+const PARTIAL_RESULTS = { state: SENSITIVITY_STATE.CALCULATING };
 
 describe('regenerateForMode()', () => {
   let proposal: Partial<Proposal>;
@@ -183,7 +170,7 @@ describe('regenerateForMode()', () => {
           targetId: mockTarget.id,
           observationId: 'existing-obs',
           dataProductsSDPId: 'existing-sdp',
-          sensitivityResults: { stub: true } as any
+          sensitivity: { stub: true } as any
         }
       ],
       calibrationStrategy: [
@@ -203,10 +190,8 @@ describe('regenerateForMode()', () => {
     );
   });
 
-  it('returns success and updates proposal when getSensCalc succeeds', async () => {
-    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
-
-    const result = await regenerateForMode(
+  it('replaces the observation and data products and links the target to them', async () => {
+    await regenerateForMode(
       mockTarget,
       getProposal,
       setProposal,
@@ -215,7 +200,6 @@ describe('regenerateForMode()', () => {
       TYPE_CONTINUUM
     );
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     // Verify proposal was updated
@@ -233,13 +217,11 @@ describe('regenerateForMode()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
     expect(proposal.targetObservation?.[0].observationId).toBe('mock-0000000');
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe(proposal.dataProductSDP?.[0].id);
-    expect(proposal.targetObservation?.[0].sensitivityResults).toEqual(validMockSensCal);
+    expect(proposal.targetObservation?.[0].sensitivity).toEqual(PARTIAL_RESULTS);
   });
 
   it('updates existing observations, calibrations, sdps, targets so that there is always only 1 of each', async () => {
-    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
-
-    const result = await regenerateForMode(
+    await regenerateForMode(
       mockTarget,
       getProposal,
       setProposal,
@@ -248,7 +230,6 @@ describe('regenerateForMode()', () => {
       TYPE_CONTINUUM
     );
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     expect(proposal.targets).toHaveLength(1);
@@ -262,17 +243,8 @@ describe('regenerateForMode()', () => {
   });
 
   it('replaces existing entities with a PST observation and PST-specific SDP', async () => {
-    // SensCalc returns a valid result so targetObservation is created
-    const mockSensCal = {
-      id: 1,
-      title: 'Mock Target',
-      statusGUI: STATUS_OK,
-      section1: [{ field: 'continuumSensitivityWeighted', value: '123', units: 'uJy / beam' }]
-    };
-    vi.mocked(getSensCalc as any).mockResolvedValue(mockSensCal);
-
     // Request PST; initial proposal (from beforeEach) contains an existing continuum set
-    const result = await regenerateForMode(
+    await regenerateForMode(
       mockTarget,
       getProposal,
       setProposal,
@@ -281,7 +253,6 @@ describe('regenerateForMode()', () => {
       TYPE_PST
     );
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     expect(proposal.targets).toHaveLength(1);
@@ -303,24 +274,15 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivityResults).toEqual(mockSensCal);
+    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
   });
 
   it('replaces existing entities with a Spectral (Zoom) observation and default SDP', async () => {
-    // SensCalc returns a valid result so targetObservation is created
-    const mockSensCal = {
-      id: 1,
-      title: 'Mock Target',
-      statusGUI: STATUS_OK,
-      section1: [{ field: 'continuumSensitivityWeighted', value: '45', units: 'uJy / beam' }]
-    };
-    vi.mocked(getSensCalc as any).mockResolvedValue(mockSensCal);
-
     // Request Spectral (Zoom); initial proposal (from beforeEach) contains an existing continuum set
-    const result = await regenerateForMode(
+    await regenerateForMode(
       mockTarget,
       getProposal,
       setProposal,
@@ -329,7 +291,6 @@ describe('regenerateForMode()', () => {
       TYPE_ZOOM
     );
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     expect(proposal.targets).toHaveLength(1);
@@ -355,7 +316,7 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivityResults).toEqual(mockSensCal);
+    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
@@ -382,7 +343,7 @@ describe('regenerateForMode()', () => {
           targetId: mockTarget.id,
           observationId: 'existing-pst-obs',
           dataProductsSDPId: 'existing-pst-sdp',
-          sensitivityResults: { stub: true } as any
+          sensitivity: { stub: true } as any
         }
       ],
       calibrationStrategy: [
@@ -390,10 +351,8 @@ describe('regenerateForMode()', () => {
       ]
     };
 
-    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
-
     // Request Continuum to replace PST
-    const result = await regenerateForMode(
+    await regenerateForMode(
       mockTarget,
       getProposal,
       setProposal,
@@ -402,7 +361,6 @@ describe('regenerateForMode()', () => {
       TYPE_CONTINUUM
     );
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     expect(proposal.targets).toHaveLength(1);
@@ -427,35 +385,10 @@ describe('regenerateForMode()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivityResults).toEqual(validMockSensCal);
+    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
 
     // The science category is left untouched
     expect(proposal.scienceCategory).toBeUndefined();
-  });
-
-  it('returns error when getSensCalc returns an object with error', async () => {
-    vi.mocked(getSensCalc as any).mockResolvedValue({
-      id: 1,
-      title: 'Sensitivity Calculator API error',
-      statusGUI: STATUS_ERROR,
-      error: 'Boom!'
-    });
-
-    const result = await regenerateForMode(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient,
-      TYPE_CONTINUUM
-    );
-
-    expect(result).to.deep.equal({ success: false, error: 'Boom!' });
-    expect(setProposal).not.toHaveBeenCalled();
-
-    // proposal should remain unchanged
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.observations?.[0].id).toBe('existing-obs');
   });
 
   it('keeps the existing observation type when no observing mode is passed', async () => {
@@ -463,17 +396,8 @@ describe('regenerateForMode()', () => {
       ...proposal,
       observations: [{ ...DEFAULT_PST_OBSERVATION_LOW, id: 'existing-pst-obs' }]
     };
-    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
+    await regenerateForMode(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
-    const result = await regenerateForMode(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient
-    );
-
-    expect(result).toEqual({ success: true });
     expect(proposal.observations?.[0].type).toBe(TYPE_PST);
   });
 
@@ -481,9 +405,7 @@ describe('regenerateForMode()', () => {
     // Override proposal to an empty object to simulate missing fields
     proposal = {} as unknown as Proposal;
 
-    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
-
-    const result = await regenerateForMode(
+    await regenerateForMode(
       mockTarget,
       getProposal,
       setProposal,
@@ -492,7 +414,6 @@ describe('regenerateForMode()', () => {
       TYPE_CONTINUUM
     );
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     // The function should populate the required arrays even if they were missing
@@ -503,12 +424,9 @@ describe('regenerateForMode()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
   });
 
-  it('creates a link for an SSO target even without sensitivity results', async () => {
+  it('creates a link for an SSO target', async () => {
     const ssoTarget = { ...mockTarget, kind: REFERENCE_COORDINATE_TYPE_SSO.value };
-    // SSO targets skip the sensitivity calculator call — getSensCalc resolves undefined
-    vi.mocked(getSensCalc as any).mockResolvedValue(undefined);
-
-    const result = await regenerateForMode(
+    await regenerateForMode(
       ssoTarget,
       getProposal,
       setProposal,
@@ -517,7 +435,6 @@ describe('regenerateForMode()', () => {
       TYPE_CONTINUUM
     );
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     // the link is still created — that's the whole point of SSO support
@@ -527,8 +444,8 @@ describe('regenerateForMode()', () => {
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
-    // ...but with no sensitivity result attached
-    expect(proposal.targetObservation?.[0].sensitivityResults).toBeUndefined(); // ← verify: may be null
+    // ...as partial, like any new link: the sensitivity service gives an SSO link no results
+    expect(proposal.targetObservation?.[0].sensitivity).toEqual(PARTIAL_RESULTS);
   });
 });
 
@@ -543,8 +460,6 @@ describe('setObservingMode()', () => {
     vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-0000000');
     vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-0000000');
     vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-0000000');
-    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
-
     proposal = {
       abstract: 'An abstract',
       targets: [],
@@ -569,17 +484,9 @@ describe('setObservingMode()', () => {
   });
 
   it('replaces only the observation and data products when there is no target', async () => {
-    const result = await setObservingMode(
-      TYPE_PST,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient
-    );
+    await setObservingMode(TYPE_PST, getProposal, setProposal, form, mockAuthAxiosClient);
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
-    expect(getSensCalc).not.toHaveBeenCalled();
 
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.observations?.[0].type).toBe(TYPE_PST);
@@ -587,7 +494,7 @@ describe('setObservingMode()', () => {
     expect(proposal.dataProductSDP).toHaveLength(1);
     expect(proposal.dataProductSDP?.[0].observationId).toBe('mock-0000000');
 
-    // Results and calibration need a target, so nothing is created for them
+    // The link and calibration need a target, so nothing is created for them
     expect(proposal.targetObservation).toEqual([]);
     expect(proposal.calibrationStrategy).toEqual([]);
     expect(proposal.abstract).toBe('An abstract');
@@ -603,38 +510,14 @@ describe('setObservingMode()', () => {
   it('regenerates everything when there is a target', async () => {
     proposal = { ...proposal, targets: [mockTarget] };
 
-    const result = await setObservingMode(
-      TYPE_ZOOM,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient
-    );
+    await setObservingMode(TYPE_ZOOM, getProposal, setProposal, form, mockAuthAxiosClient);
 
-    expect(result).toEqual({ success: true });
-    expect(getSensCalc).toHaveBeenCalledTimes(1);
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.observations?.[0].type).toBe(TYPE_ZOOM);
     expect(proposal.targetObservation).toHaveLength(1);
     expect(proposal.targetObservation?.[0].targetId).toBe(mockTarget.id);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.abstract).toBe('An abstract');
-  });
-
-  it('returns the regeneration error when there is a target', async () => {
-    proposal = { ...proposal, targets: [mockTarget] };
-    vi.mocked(getSensCalc as any).mockResolvedValue({ statusGUI: STATUS_ERROR, error: 'bad' });
-
-    const result = await setObservingMode(
-      TYPE_ZOOM,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient
-    );
-
-    expect(result).toEqual({ success: false, error: 'bad' });
-    expect(setProposal).not.toHaveBeenCalled();
   });
 });
 
@@ -656,8 +539,6 @@ describe('linkTarget()', () => {
     vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-cal');
     vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-sdp');
     vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-obs');
-    vi.mocked(getSensCalc as any).mockResolvedValue(validMockSensCal);
-
     proposal = {
       abstract: 'An abstract',
       targets: [],
@@ -695,15 +576,8 @@ describe('linkTarget()', () => {
   });
 
   it('keeps the existing observation and data products and links the target to them', async () => {
-    const result = await linkTarget(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient
-    );
+    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
-    expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
     expect(proposal.observations).toEqual([editedObservation]);
@@ -714,17 +588,12 @@ describe('linkTarget()', () => {
     expect(proposal.targets).toEqual([mockTarget]);
     expect(proposal.abstract).toBe('An abstract');
 
-    expect(getSensCalc).toHaveBeenCalledWith(
-      editedObservation,
-      mockTarget,
-      proposal.dataProductSDP?.[0]
-    );
     expect(proposal.targetObservation).toEqual([
       {
         targetId: mockTarget.id,
         observationId: 'existing-obs',
         dataProductsSDPId: 'existing-sdp',
-        sensitivityResults: validMockSensCal
+        sensitivity: PARTIAL_RESULTS
       }
     ]);
   });
@@ -745,11 +614,6 @@ describe('linkTarget()', () => {
 
     await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
-    expect(getSensCalc).toHaveBeenCalledWith(
-      editedObservation,
-      mockTarget,
-      expect.objectContaining({ id: 'existing-hidden-sdp' })
-    );
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('existing-hidden-sdp');
   });
 
@@ -764,15 +628,8 @@ describe('linkTarget()', () => {
   it('creates a default continuum observation and data products when there is no observation', async () => {
     proposal = { ...proposal, observations: [], dataProductSDP: [] };
 
-    const result = await linkTarget(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient
-    );
+    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
 
-    expect(result).toEqual({ success: true });
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.observations?.[0].id).toBe('mock-obs');
     expect(proposal.observations?.[0].type).toBe(TYPE_CONTINUUM);
@@ -791,20 +648,5 @@ describe('linkTarget()', () => {
     expect(proposal.dataProductSDP?.length).toBeGreaterThan(0);
     proposal.dataProductSDP?.forEach((dp) => expect(dp.observationId).toBe('existing-obs'));
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('mock-sdp');
-  });
-
-  it('returns the sensitivity calculator error and leaves the proposal unchanged', async () => {
-    vi.mocked(getSensCalc as any).mockResolvedValue({ statusGUI: STATUS_ERROR, error: 'bad' });
-
-    const result = await linkTarget(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient
-    );
-
-    expect(result).toEqual({ success: false, error: 'bad' });
-    expect(setProposal).not.toHaveBeenCalled();
   });
 });

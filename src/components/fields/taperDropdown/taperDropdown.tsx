@@ -3,7 +3,7 @@ import { FREQUENCY_GHZ } from '@utils/constants.ts';
 import { Box } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { frequencyConversion } from '@utils/helpers.ts';
-import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
+import { ValueUnitPair } from '@/utils/types/valueUnitPair';
 
 interface TaperDropdownProps {
   required?: boolean;

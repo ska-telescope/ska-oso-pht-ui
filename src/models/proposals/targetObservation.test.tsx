@@ -5,11 +5,12 @@ import {
   MockProposalBackendZoom
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
+import { SENSITIVITY_STATE, TYPE_CONTINUUM } from '@/utils/constants';
+import type { ObservationSets } from '@/generated/models';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import TargetObservation from '@utils/types/targetObservation';
 import {
   getTargetObservationSchema,
-  observationTypesFromPdm,
   TargetObservationType,
   targetObservationFromPdm,
   targetObservationToPdm
@@ -42,9 +43,7 @@ describe('target observation schema', () => {
   });
 
   test('rejects an unknown sensitivity status', () => {
-    expect(schema.safeParse([{ ...link, sensitivityResults: { statusGUI: 2 } }]).success).toBe(
-      false
-    );
+    expect(schema.safeParse([{ ...link, sensitivity: { state: 'unknown' } }]).success).toBe(false);
   });
 
   test('legacy links can seed the form', () => {
@@ -55,19 +54,16 @@ describe('target observation schema', () => {
 describe('target observation PDM mapping', () => {
   test.each(mockPdms)('round-trips %s through the form without further change', (_, pdm) => {
     const sets = pdm.observation_info?.observation_sets ?? [];
-    const types = observationTypesFromPdm(sets);
     const saved = targetObservationToPdm(
-      targetObservationFromPdm(pdm.observation_info?.result_details, sets),
-      types
+      targetObservationFromPdm(pdm.observation_info?.result_details, sets)
     );
-    expect(targetObservationToPdm(targetObservationFromPdm(saved, sets), types)).toEqual(saved);
+    expect(targetObservationToPdm(targetObservationFromPdm(saved, sets))).toEqual(saved);
   });
 
   const save = (pdm: ProposalBackend) => {
     const sets = pdm.observation_info.observation_sets ?? [];
     return targetObservationToPdm(
-      targetObservationFromPdm(pdm.observation_info.result_details, sets),
-      observationTypesFromPdm(sets)
+      targetObservationFromPdm(pdm.observation_info.result_details, sets)
     );
   };
 
@@ -76,9 +72,14 @@ describe('target observation PDM mapping', () => {
     const expected = (MockSlicesPdm.observation_info.result_details ?? []).map((r) =>
       structuredClone(r)
     ) as any[];
-    // Results supplied as sensitivity are saved from the observation's supplied sensitivity
-    expected[1].result.continuum = { value: 10, unit: 'uJy/beam' };
-    expected[1].result.spectral = { value: 10, unit: 'uJy/beam' };
+    // Results for a supplied sensitivity are read as no results, so only the references are saved
+    expected[1] = {
+      ...expected[1],
+      result: null,
+      continuum_confusion_noise: null,
+      spectral_confusion_noise: null,
+      synthesized_beam_size: null
+    };
     // A spectral line observation saves no continuum values
     expected[2].result.weighted_continuum_sensitivity = { value: 0, unit: '' };
     expected[2].result.total_continuum_sensitivity = { value: 0, unit: '' };
@@ -105,6 +106,35 @@ describe('target observation PDM mapping', () => {
     expect(
       targetObservationFromPdm(MockProposalBackend.observation_info.result_details as never, [])
     ).toEqual([]);
+  });
+
+  test('saves the results the calculator did not give as null, and reads them back as missing', () => {
+    // For a non-Gaussian beam or a custom subarray, only the weighted sensitivities are calculated
+    const weightedOnly = {
+      ...link,
+      sensitivity: {
+        state: SENSITIVITY_STATE.DONE,
+        continuum: { weightedSensitivity: { value: 1.5, unit: 'μJy/beam' } },
+        spectral: { weightedSensitivity: { value: 2.5, unit: 'mJy/beam' } }
+      }
+    } as const;
+    const sets = [
+      { observation_set_id: 'obs1', observation_type_details: { observation_type: TYPE_CONTINUUM } }
+    ] as ObservationSets[];
+
+    const saved = targetObservationToPdm([weightedOnly]);
+
+    expect(saved[0]).toMatchObject({
+      result: {
+        total_continuum_sensitivity: null,
+        total_spectral_sensitivity: null,
+        surface_brightness_sensitivity: { continuum: null, spectral: null, unit: null }
+      },
+      continuum_confusion_noise: null,
+      spectral_confusion_noise: null,
+      synthesized_beam_size: { continuum: null, spectral: null, unit: null }
+    });
+    expect(targetObservationFromPdm(saved, sets)).toEqual([weightedOnly]);
   });
 
   test('saves a link without sensitivity results with only its references', () => {
