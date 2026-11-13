@@ -19,7 +19,8 @@ vi.mock('@utils/storage/store', () => ({
 }));
 
 let mockId = 0;
-vi.mock('@/utils/helpers', () => ({
+vi.mock('@/utils/helpers', async (importOriginal) => ({
+  ...(await importOriginal()),
   generateId: () => 'SDP000001',
   generateDataProductId: () => `new-dp-${++mockId}`,
   convertFrequencyToDisplayUnits: (value: number, unit: string) => ({ value, unit }),
