@@ -289,9 +289,6 @@ describe('useProposalOda', () => {
       const expectedInvestigator = {
         id: investigator.id,
         status: investigator.status,
-        firstName: '',
-        lastName: '',
-        email: '',
         phdThesis: false,
         pi: false
       };
@@ -300,9 +297,6 @@ describe('useProposalOda', () => {
         {
           id: investigator.id,
           status: investigator.status,
-          firstName: '',
-          lastName: '',
-          email: '',
           phdThesis: false,
           pi: false
         }

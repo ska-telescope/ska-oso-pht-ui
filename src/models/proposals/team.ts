@@ -4,9 +4,9 @@ import { getInvestigators } from '@services/axios/get/getProposal/getProposal';
 
 const investigatorSchema = z.object({
   id: z.string(),
-  firstName: z.string().optional().default(''),
-  lastName: z.string().optional().default(''),
-  email: z.string().optional().default(''),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().optional(),
   phdThesis: z.boolean(),
   status: z.string(),
   pi: z.boolean()
@@ -20,7 +20,7 @@ export function getTeamSchema() {
 
 export const getTeamValues = (proposal?: {
   investigators?: InvestigatorFormValues[] | null;
-}): { investigators: InvestigatorFormOutput[] } => ({
+}): { investigators: InvestigatorFormValues[] } => ({
   investigators: (proposal?.investigators ?? []).map((investigator) =>
     investigatorSchema.parse(investigator)
   )
@@ -28,7 +28,7 @@ export const getTeamValues = (proposal?: {
 
 export const teamFromPdm = (
   investigators?: InvestigatorBackend[] | null
-): { investigators: InvestigatorFormOutput[] } =>
+): { investigators: InvestigatorFormValues[] } =>
   getTeamValues({ investigators: getInvestigators(investigators) });
 
 export const investigatorToPdm = (investigator: InvestigatorFormValues): InvestigatorBackend => ({
@@ -45,5 +45,4 @@ export const teamToPdm = (investigators: InvestigatorFormValues[]): Investigator
   getTeamSchema().parse({ investigators }).investigators.map(investigatorToPdm);
 
 export type InvestigatorFormValues = z.input<typeof investigatorSchema>;
-type InvestigatorFormOutput = z.output<typeof investigatorSchema>;
 export type TeamType = z.input<ReturnType<typeof getTeamSchema>>;

@@ -2,9 +2,9 @@ import type { Investigator as InvestigatorPDM } from '@/generated/models/investi
 
 type Investigator = {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string; // This should always be a SKAO email (@community.skao.int or @skao.int)
+  firstName?: string;
+  lastName?: string;
+  email?: string; // This should always be a SKAO email (@community.skao.int or @skao.int)
   phdThesis: boolean;
   status: string;
   pi: boolean;

@@ -105,7 +105,7 @@ describe('mapPdmToForm', () => {
   );
 
   test.each([undefined, null])(
-    'normalizes optional investigator fields directly from PDM: %s',
+    'leaves optional investigator fields unset when loading from PDM: %s',
     (optionalValue) => {
       const withInvestigator = {
         ...pdm,
@@ -128,9 +128,6 @@ describe('mapPdmToForm', () => {
         {
           id: investigator.id,
           status: investigator.status,
-          firstName: '',
-          lastName: '',
-          email: '',
           phdThesis: false,
           pi: false
         }

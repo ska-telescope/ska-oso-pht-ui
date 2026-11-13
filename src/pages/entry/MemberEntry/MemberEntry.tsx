@@ -266,8 +266,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       } else {
         notifySuccess(t('emailSearch.success'));
         setInvestigator(response);
-        setFirstName(response?.firstName);
-        setLastName(response?.lastName);
+        setFirstName(response?.firstName ?? '');
+        setLastName(response?.lastName ?? '');
         return true;
       }
     }

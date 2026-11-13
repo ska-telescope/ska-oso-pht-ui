@@ -74,9 +74,9 @@ export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefin
     investigators.push({
       id: inValue[i].user_id as string,
       status: inValue[i].status,
-      firstName: inValue[i].given_name ?? '',
-      lastName: inValue[i].family_name ?? '',
-      email: inValue[i].email ?? '',
+      firstName: inValue[i].given_name ?? undefined,
+      lastName: inValue[i].family_name ?? undefined,
+      email: inValue[i].email ?? undefined,
       phdThesis: inValue[i].for_phd ?? false,
       pi: inValue[i].principal_investigator ?? false
     });
