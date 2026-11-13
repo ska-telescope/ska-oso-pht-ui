@@ -170,8 +170,7 @@ export const MockProposalFrontend: Proposal = {
       kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE,
       imageSize: { value: 15, unit: 'deg' },
       pixelSize: { value: 1.007, unit: 'arcsec' },
-      weighting: 'uniform',
-      robust: 0,
+      weighting: { type: 'uniform' },
       taper: 1,
       polarisations: ['I'],
       channelsOut: 1

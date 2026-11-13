@@ -57,8 +57,7 @@ describe('data product PDM mapping', () => {
       kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE,
       imageSize: { value: 2.2, unit: 'deg' },
       pixelSize: { value: 1.3, unit: 'arcsec' },
-      weighting: 'briggs',
-      robust: 0.5,
+      weighting: { type: 'briggs', robust: 0.5 },
       taper: 0,
       polarisations: ['I', 'XX'],
       channelsOut: 1
@@ -78,7 +77,22 @@ describe('data product PDM mapping', () => {
         variant: 'spectral image'
       }
     });
-    expect(dp).toMatchObject({ robust: 0, taper: 0 });
+    expect(dp).toMatchObject({ weighting: { type: 'natural' }, taper: 0 });
+  });
+
+  test('gives briggs without a robust the default, and drops a robust sent with another weighting', () => {
+    const withWeight = (weight: object) =>
+      dataProductFromPdm({
+        ...pdmDataProducts[0],
+        script_parameters: { ...pdmDataProducts[0].script_parameters, weight }
+      } as DataProductSDP);
+    expect(withWeight({ weighting: 'briggs' })).toMatchObject({
+      weighting: { type: 'briggs', robust: 0 }
+    });
+    expect(withWeight({ weighting: 'uniform', robust: 1 })).toMatchObject({
+      weighting: expect.objectContaining({ type: 'uniform' })
+    });
+    expect(withWeight({ weighting: 'uniform', robust: 1 })).not.toHaveProperty('weighting.robust');
   });
 
   test('leaves a missing or unknown unit unchosen', () => {
@@ -99,7 +113,7 @@ describe('data product PDM mapping', () => {
 
   test('sends robust only for briggs weighting', () => {
     const natural = dataProductToPdm(
-      getDataProductSchema().parse({ ...continuumImage, weighting: 'natural' })
+      getDataProductSchema().parse({ ...continuumImage, weighting: { type: 'natural' } })
     );
     expect(natural.script_parameters).toMatchObject({ weight: { weighting: 'natural' } });
     expect(natural.script_parameters).not.toHaveProperty('weight.robust');
@@ -149,13 +163,23 @@ describe('data product schema', () => {
     ['a negative pixel size', { pixelSize: { value: -1, unit: 'arcsec' } }],
     ['an unknown unit', { imageSize: { value: 1, unit: 'rad' } }],
     ['no unit', { pixelSize: { value: 1, unit: null } }],
-    ['an unknown weighting', { weighting: 'robust' }],
-    ['a robust above 2', { robust: 2.5 }],
+    ['an unknown weighting', { weighting: { type: 'robust' } }],
+    ['a robust above 2', { weighting: { type: 'briggs', robust: 2.5 } }],
+    ['briggs without a robust', { weighting: { type: 'briggs' } }],
     ['a negative taper', { taper: -1 }],
     ['no polarisations', { polarisations: [] }],
     ['an unknown polarisation', { polarisations: ['Z'] }]
   ])('rejects an image with %s', (_, change) => {
     expect(valid({ ...continuumImage, ...change })).toBe(false);
+  });
+
+  // The weighting dropdown only changes the type, so a robust entered for briggs stays in the form
+  test('ignores a robust left over from briggs, however invalid, for another weighting', () => {
+    const leftOver = { ...continuumImage, weighting: { type: 'natural', robust: 99 } };
+    const parsed = getDataProductSchema().safeParse(leftOver);
+    expect(parsed.success).toBe(true);
+    expect(parsed.data).toMatchObject({ weighting: { type: 'natural' } });
+    expect(parsed.data).not.toHaveProperty('weighting.robust');
   });
 
   // The limits follow the observation type the kind belongs to
@@ -260,9 +284,9 @@ describe('updateImageSizes', () => {
   >[0];
 
   test('sizes the image for the central frequency, keeping the other fields', () => {
-    expect(updateImageSizes({ ...image, weighting: 'natural' }, 6000)).toEqual({
+    expect(updateImageSizes({ ...image, weighting: { type: 'natural' } }, 6000)).toEqual({
       ...image,
-      weighting: 'natural',
+      weighting: { type: 'natural' },
       imageSize: { value: 0.073, unit: 'deg' },
       pixelSize: { value: 0.043, unit: 'arcsec' }
     });

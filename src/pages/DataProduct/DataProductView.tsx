@@ -31,8 +31,10 @@ import {
   IMAGE_WEIGHTING,
   PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
   PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
+  ROBUST_DEFAULT,
   TYPE_CONTINUUM
 } from '@/utils/constants';
+import { ImageWeighting } from '@/generated/models';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import Observation from '@/utils/types/observation';
 import GridObservation from '@/components/grid/observation/GridObservation';
@@ -176,20 +178,27 @@ export default function DataProductView({
         <Grid size={6}>{angleField('pixelSize')}</Grid>
         <Grid size={6}>
           <ControlledSelect
-            name={`${path}.weighting`}
+            name={`${path}.weighting.type`}
             label={t('imageWeighting.label')}
             options={IMAGE_WEIGHTING.map(({ label, value }) => ({
               label: t('imageWeighting.' + value),
               value: label
             }))}
             required
+            // Briggs needs a robust: the one entered before, else the default
+            onChange={(event) => {
+              const robust = `${path}.weighting.robust` as const;
+              if (event.target.value === ImageWeighting.Briggs && form.getValues(robust) == null) {
+                form.setValue(robust, ROBUST_DEFAULT, { shouldValidate: true });
+              }
+            }}
             onFocus={() => setHelp('imageWeighting')}
           />
         </Grid>
         <Grid size={6}>
-          {dp.weighting === 'briggs' && (
+          {dp.weighting.type === ImageWeighting.Briggs && (
             <ControlledNumberField
-              name={`${path}.robust`}
+              name={`${path}.weighting.robust`}
               label={t('robust.label')}
               min={-2}
               max={2}

@@ -74,7 +74,7 @@ export default function DataProductsPage() {
   const alertContent = () => {
     const dp = form.getValues('dataProducts').find((other) => other.id === currentRow);
     const image = dp && isImageDataProduct(dp) ? dp : undefined;
-    const weighting = IMAGE_WEIGHTING.find((item) => item.label === image?.weighting)?.value;
+    const weighting = IMAGE_WEIGHTING.find((item) => item.label === image?.weighting.type)?.value;
     return (
       <Grid
         container

@@ -142,14 +142,28 @@ const dataProductBaseSchema = z.object({
   observationId: z.string()
 });
 
+// The robust parameter belongs to Briggs weighting only. A robust left in the form after switching
+// to another weighting is dropped, so it can't make the data product invalid while it isn't shown.
+const weightingSchema = z.discriminatedUnion(
+  'type',
+  [
+    z.object({ type: z.literal(ImageWeighting.Natural) }),
+    z.object({ type: z.literal(ImageWeighting.Uniform) }),
+    z.object({
+      type: z.literal(ImageWeighting.Briggs),
+      robust: z
+        .number({ error: phtTranslations.robust.error })
+        .min(ROBUST_RANGE.min, phtTranslations.robust.error)
+        .max(ROBUST_RANGE.max, phtTranslations.robust.error)
+    })
+  ],
+  { error: phtTranslations.imageWeighting.error }
+);
+
 const imageDataProductSchema = dataProductBaseSchema.extend({
   imageSize: angleSchema(phtTranslations.imageSize.error, phtTranslations.imageSize.unitError),
   pixelSize: angleSchema(phtTranslations.pixelSize.error, phtTranslations.pixelSize.unitError),
-  weighting: z.enum(ImageWeighting, { error: phtTranslations.imageWeighting.error }),
-  robust: z
-    .number({ error: phtTranslations.robust.error })
-    .min(ROBUST_RANGE.min, phtTranslations.robust.error)
-    .max(ROBUST_RANGE.max, phtTranslations.robust.error),
+  weighting: weightingSchema,
   taper: z.number({ error: phtTranslations.taper.error }).min(0, phtTranslations.taper.error),
   polarisations: polarisationsSchema,
   channelsOut: z.number().int()
@@ -229,8 +243,7 @@ export type DataProductValues = z.output<ReturnType<typeof getDataProductSchema>
 const NEW_IMAGE_FIELDS = {
   imageSize: { value: IMAGE_SIZE_DEFAULT, unit: ANGLE_UNIT.DEG },
   pixelSize: { value: PIXEL_SIZE_DEFAULT, unit: ANGLE_UNIT.ARCSEC },
-  weighting: ImageWeighting.Briggs,
-  robust: ROBUST_DEFAULT,
+  weighting: { type: ImageWeighting.Briggs, robust: ROBUST_DEFAULT },
   taper: TAPER_DEFAULT,
   polarisations: [Polarisation.I],
   channelsOut: CHANNELS_OUT_DEFAULT
@@ -356,8 +369,11 @@ export const dataProductFromPdm = (dp: DataProductSDP): DataProductInput => {
           value: script.image_cellsize.value,
           unit: angleUnitFromPdm(script.image_cellsize.unit)
         },
-        weighting: script.weight.weighting,
-        robust: script.weight.robust ?? ROBUST_DEFAULT,
+        // A robust sent with another weighting is dropped; Briggs without one gets the default
+        weighting:
+          script.weight.weighting === ImageWeighting.Briggs
+            ? { type: ImageWeighting.Briggs, robust: script.weight.robust ?? ROBUST_DEFAULT }
+            : { type: script.weight.weighting },
         taper: script.gaussian_taper ?? TAPER_DEFAULT,
         polarisations: script.polarisations,
         channelsOut: script.channels_out
@@ -421,10 +437,10 @@ export const dataProductsFromPdm = (dps: DataProductSDP[] = []): DataProductInpu
 const imageToPdm = (dp: ImageDataProductValues) => ({
   image_size: dp.imageSize,
   image_cellsize: dp.pixelSize,
-  weight: {
-    weighting: dp.weighting,
-    ...(dp.weighting === ImageWeighting.Briggs && { robust: dp.robust })
-  },
+  weight:
+    dp.weighting.type === ImageWeighting.Briggs
+      ? { weighting: dp.weighting.type, robust: dp.weighting.robust }
+      : { weighting: dp.weighting.type },
   polarisations: dp.polarisations,
   channels_out: dp.channelsOut,
   gaussian_taper: dp.taper

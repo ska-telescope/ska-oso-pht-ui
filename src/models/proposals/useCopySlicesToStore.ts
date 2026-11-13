@@ -9,8 +9,10 @@ import {
   DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   IMAGE_WEIGHTING,
-  PULSAR_TIMING_VALUE
+  PULSAR_TIMING_VALUE,
+  ROBUST_DEFAULT
 } from '@utils/constants';
+import { ImageWeighting } from '@/generated/models';
 import { ProposalType, STORE_COPIED_SLICES } from './proposal';
 import {
   ANGLE_UNIT,
@@ -41,8 +43,9 @@ export const dataProductToLegacy = (dp: DataProductInput): DataProductSDPNew => 
         imageSizeUnits: legacyAngleUnit(dp.imageSize.unit),
         pixelSizeValue: dp.pixelSize.value,
         pixelSizeUnits: legacyAngleUnit(dp.pixelSize.unit),
-        weighting: IMAGE_WEIGHTING.find((item) => item.label === dp.weighting)!.value,
-        robust: dp.robust,
+        weighting: IMAGE_WEIGHTING.find((item) => item.label === dp.weighting.type)!.value,
+        // The legacy shape always has a robust; it is only used for Briggs
+        robust: dp.weighting.type === ImageWeighting.Briggs ? dp.weighting.robust : ROBUST_DEFAULT,
         taperValue: dp.taper,
         channelsOut: dp.channelsOut,
         polarisations: dp.polarisations

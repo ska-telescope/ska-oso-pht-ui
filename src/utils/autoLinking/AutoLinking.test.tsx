@@ -44,8 +44,7 @@ import { mockCalibration } from './mockCalibration';
 const imageFields = {
   imageSize: { value: IMAGE_SIZE_DEFAULT, unit: 'deg' },
   pixelSize: { value: PIXEL_SIZE_DEFAULT, unit: 'arcsec' },
-  weighting: 'briggs',
-  robust: ROBUST_DEFAULT,
+  weighting: { type: 'briggs', robust: ROBUST_DEFAULT },
   taper: TAPER_DEFAULT,
   polarisations: ['I'],
   channelsOut: CHANNELS_OUT_DEFAULT
@@ -186,8 +185,7 @@ describe('AutoLinking, newDataProductsForMode', () => {
     };
     expect(newDataProductsForMode(obs)[0]).toMatchObject({
       kind: DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE,
-      weighting: 'briggs',
-      robust: 0
+      weighting: { type: 'briggs', robust: 0 }
     });
   });
 });

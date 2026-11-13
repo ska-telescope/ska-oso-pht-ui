@@ -108,8 +108,7 @@ const image = (kind: string, extra: object = {}) =>
     kind,
     imageSize: { value: 1, unit: 'deg' },
     pixelSize: { value: 1, unit: 'arcsec' },
-    weighting: 'briggs',
-    robust: 0,
+    weighting: { type: 'briggs', robust: 0 },
     taper: 0,
     polarisations: ['I'],
     channelsOut: 10,
@@ -306,11 +305,50 @@ describe('DataProductInPlace', () => {
   it('hides the robust field for other weightings', () => {
     openProposal({
       observations: [observation(TYPE_CONTINUUM)],
-      dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { weighting: 'natural' })]
+      dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { weighting: { type: 'natural' } })]
     });
     renderPage();
 
     expect(screen.queryByLabelText('robust.label')).not.toBeInTheDocument();
+  });
+
+  describe('switching the weighting', () => {
+    const weighting = () => screen.getByRole('combobox', { name: 'imageWeighting.label' });
+    const choose = (option: string) => {
+      fireEvent.mouseDown(weighting());
+      fireEvent.click(screen.getByRole('option', { name: option }));
+    };
+    const robust = () => screen.getByRole('spinbutton', { name: 'robust.label' });
+
+    it('gives briggs the default robust when none was entered', async () => {
+      openProposal({
+        observations: [observation(TYPE_CONTINUUM)],
+        dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { weighting: { type: 'natural' } })]
+      });
+      renderPage();
+
+      choose('imageWeighting.2');
+
+      await waitFor(() => expect(robust()).toHaveValue(0));
+    });
+
+    it('keeps the robust entered for briggs when switching away and back', async () => {
+      openProposal({
+        observations: [observation(TYPE_CONTINUUM)],
+        dataProducts: [
+          image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { weighting: { type: 'briggs', robust: 1.5 } })
+        ]
+      });
+      renderPage();
+
+      choose('imageWeighting.0');
+      await waitFor(() =>
+        expect(screen.queryByRole('spinbutton', { name: 'robust.label' })).not.toBeInTheDocument()
+      );
+      choose('imageWeighting.2');
+
+      await waitFor(() => expect(robust()).toHaveValue(1.5));
+    });
   });
 
   // The calculator gives no beam results for a non-Gaussian beam (Briggs robust 2, say), whatever
