@@ -60,6 +60,31 @@ describe('Helper Functions', () => {
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
   });
 
+  test('mappingPutProposal omits empty investigator fields and preserves populated fields', () => {
+    const investigator = {
+      id: 'user-1',
+      status: 'accepted',
+      firstName: '',
+      lastName: 'Lovelace',
+      email: '',
+      phdThesis: false,
+      pi: true
+    };
+    const result = MappingPutProposal(
+      { ...MockProposalFrontend, investigators: [investigator] },
+      PROPOSAL_STATUS.DRAFT
+    );
+    expect(result.proposal_info.investigators).toEqual([
+      {
+        user_id: 'user-1',
+        status: 'accepted',
+        family_name: 'Lovelace',
+        for_phd: false,
+        principal_investigator: true
+      }
+    ]);
+  });
+
   test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
       MockProposalFrontendZoom,

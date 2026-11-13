@@ -63,6 +63,25 @@ describe('team form model', () => {
     ]);
   });
 
+  test.each([undefined, '', '   '])('omits unset investigator fields from PDM: %s', (value) => {
+    const [result] = teamToPdm([
+      { ...formInvestigator, firstName: value, lastName: value, email: value }
+    ]);
+    expect(result).not.toHaveProperty('given_name');
+    expect(result).not.toHaveProperty('family_name');
+    expect(result).not.toHaveProperty('email');
+  });
+
+  test('defaults missing optional fields for display', () => {
+    expect(
+      getTeamValues({
+        investigators: [
+          { ...formInvestigator, firstName: undefined, lastName: undefined, email: undefined }
+        ]
+      }).investigators
+    ).toEqual([{ ...formInvestigator, firstName: '', lastName: '', email: '' }]);
+  });
+
   test('drops unused organization data when loading and saving investigators', () => {
     const form = teamFromPdm([{ ...backendInvestigator, organization: 'Unused institute' }]);
     expect(form.investigators).toEqual([formInvestigator]);

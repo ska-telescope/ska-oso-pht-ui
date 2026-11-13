@@ -326,9 +326,6 @@ describe('useProposalOda', () => {
               {
                 user_id: investigator.id,
                 status: investigator.status,
-                given_name: '',
-                family_name: '',
-                email: '',
                 for_phd: false,
                 principal_investigator: false
               }
