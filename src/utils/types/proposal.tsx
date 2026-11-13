@@ -1,7 +1,6 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { ProposalSubTypeType, ProposalTypeType } from '../constants';
 import { DocumentPDF } from './document';
-import { DataProductSDPNew, DataProductSRC } from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
 import Target from './target';
@@ -43,10 +42,8 @@ export type Proposal = {
   calibrationStrategy: CalibrationStrategy[];
   technicalPDF: DocumentPDF | null;
   technicalLoadStatus?: number;
-  dataProductSDP?: DataProductSDPNew[];
   // The form's data products. The store holds a copy for readers not yet moved to the form
   dataProducts?: DataProductInput[];
-  dataProductSRC?: DataProductSRC[];
   pipeline?: string;
 };
 
@@ -76,9 +73,7 @@ export const NEW_PROPOSAL = {
   targetObservation: [],
   technicalPDF: null,
   technicalLoadStatus: FileUploadStatus.INITIAL,
-  dataProductSDP: [],
   dataProducts: [],
-  dataProductSRC: [],
   pipeline: ''
 };
 

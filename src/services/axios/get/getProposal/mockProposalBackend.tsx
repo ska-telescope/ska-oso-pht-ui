@@ -118,7 +118,6 @@ export const MockProposalBackend = {
         }
       }
     ],
-    data_product_src_nets: [],
     documents: [],
     observation_sets: [
       {
@@ -261,7 +260,6 @@ export const MockProposalBackendZoom = {
   },
   observation_info: {
     documents: [],
-    data_product_src_nets: [],
     targets: [
       {
         target_id: 'target-123',
@@ -345,7 +343,7 @@ export const MockProposalBackendZoom = {
             robust: 0.5
           },
           polarisations: ['I', 'XX'],
-          channels_out: 1,
+          channels_out: 2,
           continuum_subtraction: false,
           kind: 'spectral',
           variant: 'spectral image'

@@ -1,7 +1,6 @@
 import {
   BAND_LOW_STR,
   DEFAULT_USER,
-  DP_TYPE_IMAGES,
   PROPOSAL_STATUS,
   SA_AA2,
   TYPE_CONTINUUM
@@ -10,8 +9,6 @@ import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 import { DATA_PRODUCT_KIND } from '@/models/proposals/dataProducts';
 
-// TODO Remove the legacy `dataProductSDP` from these mocks once the legacy save mapping, used for
-//  validate, withdraw and create, no longer reads it (T8), and it is removed from the Proposal type.
 export const MockProposalFrontend: Proposal = {
   metadata: {
     version: 10,
@@ -149,32 +146,6 @@ export const MockProposalFrontend: Proposal = {
     }
   ],
   technicalLoadStatus: 9,
-  dataProductSDP: [
-    {
-      id: 'SDP-2',
-      observationId: 'obs-obR1Ej',
-      data: {
-        dataProductType: DP_TYPE_IMAGES,
-        dispersionMeasure: 0,
-        imageSizeValue: 15,
-        imageSizeUnits: 0,
-        pixelSizeValue: 1.007,
-        pixelSizeUnits: 2,
-        weighting: 1,
-        polarisations: ['X'],
-        channelsOut: 1,
-        robust: 0,
-        taperValue: 1,
-        timeAveraging: 1,
-        frequencyAveraging: 1,
-        bitDepth: 1,
-        continuumSubtraction: false,
-        outputFrequencyResolution: 0,
-        outputSamplingInterval: 0,
-        rotationMeasure: 0
-      }
-    }
-  ],
   dataProducts: [
     {
       id: 'SDP-2',
@@ -188,7 +159,6 @@ export const MockProposalFrontend: Proposal = {
       channelsOut: 1
     }
   ],
-  dataProductSRC: [],
   pipeline: ''
 };
 
@@ -292,32 +262,6 @@ export const MockProposalFrontendZoom: Proposal = {
     }
   ],
   technicalLoadStatus: 9,
-  dataProductSDP: [
-    {
-      id: 'SDP-1',
-      observationId: 'obs-arMIoY',
-      data: {
-        dataProductType: DP_TYPE_IMAGES,
-        dispersionMeasure: 0,
-        imageSizeValue: 100,
-        imageSizeUnits: 0,
-        pixelSizeValue: 3.7,
-        pixelSizeUnits: 2,
-        outputFrequencyResolution: 0,
-        outputSamplingInterval: 0,
-        rotationMeasure: 0,
-        weighting: 2,
-        polarisations: ['I', 'XX'],
-        channelsOut: 1,
-        robust: 0.5,
-        taperValue: 0,
-        timeAveraging: 1,
-        frequencyAveraging: 1,
-        bitDepth: 1,
-        continuumSubtraction: false
-      }
-    }
-  ],
   dataProducts: [
     {
       id: 'SDP-1',
@@ -328,11 +272,10 @@ export const MockProposalFrontendZoom: Proposal = {
       weighting: { type: 'briggs', robust: 0.5 },
       taper: 0,
       polarisations: ['I', 'XX'],
-      channelsOut: 1,
+      channelsOut: 2,
       continuumSubtraction: false
     }
   ],
-  dataProductSRC: [],
   pipeline: ''
 };
 
@@ -363,8 +306,6 @@ export const MockNullProposalFrontend: Proposal = {
   technicalPDF: null,
   calibrationStrategy: [],
   technicalLoadStatus: 9,
-  dataProductSDP: [],
   dataProducts: [],
-  dataProductSRC: [],
   pipeline: ''
 };

@@ -8,11 +8,8 @@ import {
 } from '@utils/constants.ts';
 import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import { SDPImageContinuumData } from '@/utils/types/dataProduct';
 import { DATA_PRODUCT_KIND } from '@/models/proposals/dataProducts';
 
-// TODO Remove the legacy `dataProductSDP` from these mocks once the legacy save mapping, used for
-//  validate, withdraw and create, no longer reads it (T8), and it is removed from the Proposal type.
 export const MockProposalFrontend: Proposal = {
   metadata: {
     version: 10,
@@ -144,24 +141,6 @@ export const MockProposalFrontend: Proposal = {
   ],
   technicalPDF: null,
   technicalLoadStatus: 9,
-  dataProductSDP: [
-    {
-      id: 'SDP-2',
-      observationId: 'obs-obR1Ej',
-      data: {
-        dataProductType: 1,
-        imageSizeValue: 15,
-        imageSizeUnits: 0,
-        pixelSizeValue: 1.007,
-        pixelSizeUnits: 2,
-        weighting: 1,
-        polarisations: ['I'],
-        channelsOut: 1,
-        robust: 0,
-        taperValue: 1
-      } as SDPImageContinuumData
-    }
-  ],
   dataProducts: [
     {
       id: 'SDP-2',
@@ -175,7 +154,6 @@ export const MockProposalFrontend: Proposal = {
       channelsOut: 1
     }
   ],
-  dataProductSRC: [],
   calibrationStrategy: [
     {
       observatoryDefined: true,
@@ -281,25 +259,20 @@ export const MockProposalFrontendZoom: Proposal = {
     }
   ],
   technicalLoadStatus: 9,
-  dataProductSDP: [
+  dataProducts: [
     {
       id: 'SDP-1',
       observationId: 'obs-arMIoY',
-      data: {
-        dataProductType: 1,
-        imageSizeValue: 100,
-        imageSizeUnits: 0,
-        pixelSizeValue: 3.7,
-        pixelSizeUnits: 2,
-        weighting: 2,
-        polarisations: ['I'],
-        channelsOut: 1,
-        robust: 0.5,
-        taperValue: 1
-      } as SDPImageContinuumData
+      kind: DATA_PRODUCT_KIND.SPECTRAL_IMAGE,
+      imageSize: { value: 100, unit: 'deg' },
+      pixelSize: { value: 3.7, unit: 'arcsec' },
+      weighting: { type: 'briggs', robust: 0.5 },
+      taper: 1,
+      polarisations: ['I'],
+      channelsOut: 2,
+      continuumSubtraction: false
     }
   ],
-  dataProductSRC: [],
   calibrationStrategy: [
     {
       observatoryDefined: true,

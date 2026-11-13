@@ -513,3 +513,22 @@ export const dataProductToPdm = (dp: DataProductValues): DataProductSDP => ({
 
 export const dataProductsToPdm = (dps: DataProductValues[]): DataProductSDP[] =>
   dps.map(dataProductToPdm);
+
+/**
+ * What a save sends: only the valid data products, as the backend takes them, and only the links
+ * to those, as a link needs its data product. The others stay in the form to be finished.
+ */
+export const savedDataProductsAndLinks = <Link extends { dataProductsSDPId: string }>(
+  dataProducts: DataProductInput[],
+  links: Link[]
+) => {
+  const valid = dataProducts.flatMap((dp) => {
+    const parsed = getDataProductSchema().safeParse(dp);
+    return parsed.success ? [parsed.data] : [];
+  });
+  const savedIds = new Set(valid.map((dp) => dp.id));
+  return {
+    dataProducts: dataProductsToPdm(valid),
+    links: links.filter((link) => savedIds.has(link.dataProductsSDPId))
+  };
+};

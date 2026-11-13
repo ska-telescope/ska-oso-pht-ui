@@ -68,7 +68,7 @@ describe('<DataProductPage />', () => {
     renderWithProposal({
       proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
       observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
-      dataProductSDP: [{ id: 'sdp-1', observationId: 'obs-1', data: {} }]
+      dataProducts: [{ ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'sdp-1' }]
     });
 
     expect(screen.getByTestId('dataProductInPlaceStub')).toBeInTheDocument();
@@ -79,7 +79,7 @@ describe('<DataProductPage />', () => {
     renderWithProposal({
       proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
       observations: [],
-      dataProductSDP: []
+      dataProducts: []
     });
 
     expect(screen.queryByTestId('dataProductInPlaceStub')).not.toBeInTheDocument();

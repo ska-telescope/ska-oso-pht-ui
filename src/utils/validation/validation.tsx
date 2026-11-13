@@ -257,8 +257,6 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateSRCPage = () => STATUS_OK;
-
 export const useValidateProposal = () => {
   const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
 
@@ -282,7 +280,6 @@ export const useValidateProposal = () => {
       submitStatuses.dataProducts,
       submitStatuses.linking,
       submitStatuses.calibration
-      /* See SRCNet INACTIVE - validateSRCPage() */
     ];
   };
 };

@@ -86,11 +86,10 @@ describe('getSubmitPageStatuses', () => {
     });
   });
 
-  // The zoom mock's spectral data product has channelsOut 1, below the spectral minimum, and
-  // MockSlicesPdm has no data products, so their Data Products pages are not complete
+  // MockSlicesPdm has no data products, so its Data Products page is not complete
   test.each([
     ['MockProposalBackend', MockProposalBackend, STATUS_OK],
-    ['MockProposalBackendZoom', MockProposalBackendZoom, STATUS_ERROR],
+    ['MockProposalBackendZoom', MockProposalBackendZoom, STATUS_OK],
     ['MockSlicesPdm', MockSlicesPdm, STATUS_ERROR]
   ])('passes the pages for the proposal loaded from %s', (_, pdm, dataProductsStatus) => {
     const proposal = mapping(pdm as unknown as ProposalBackend);

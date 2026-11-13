@@ -1,9 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { getDataProductScriptParameters } from '@services/axios/put/putProposal/putProposalMapping';
-import { mapping } from '@services/axios/get/getProposal/getProposal';
 import type { DataProductSDP } from '@/generated/models';
-import { MockSlicesPdm } from './testing/mockSlicesPdm';
-import { legacyObservations, pdmDataProducts } from './testing/pdmDataProducts';
+import { pdmDataProducts } from './testing/pdmDataProducts';
 import {
   DATA_PRODUCT_KIND,
   dataProductFromPdm,
@@ -118,23 +115,6 @@ describe('data product PDM mapping', () => {
     expect(natural.script_parameters).toMatchObject({ weight: { weighting: 'natural' } });
     expect(natural.script_parameters).not.toHaveProperty('weight.robust');
   });
-
-  test.each(pdmDataProducts.map((dp) => [dp.script_parameters.variant, dp] as const))(
-    'saves %s as the legacy save does',
-    (_, pdmDataProduct) => {
-      const [legacyDataProduct] = mapping({
-        ...MockSlicesPdm,
-        observation_info: { ...MockSlicesPdm.observation_info, data_product_sdps: [pdmDataProduct] }
-      }).dataProductSDP!;
-      const dataProduct = dataProductToPdm(
-        getDataProductSchema().parse(dataProductFromPdm(pdmDataProduct))
-      );
-
-      expect(dataProduct.script_parameters).toEqual(
-        getDataProductScriptParameters(legacyObservations, legacyDataProduct)
-      );
-    }
-  );
 });
 
 describe('data product schema', () => {

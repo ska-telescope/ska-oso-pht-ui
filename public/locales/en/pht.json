@@ -1640,13 +1640,6 @@
       "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
     },
-    "10": {
-      "status": "SRCNet",
-      "title": "SRCNet Resources",
-      "titleShort": "SRCNet",
-      "desc": "This page allows you to request and define SRCNet data products.",
-      "pageError": "The SRCNet page is not complete"
-    },
     "11": {
       "title": "Observation Setup",
       "titleShort": "Observation Setup",

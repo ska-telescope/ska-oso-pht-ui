@@ -3,7 +3,6 @@ import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DATA_PRODUCT_KIND, DataProductInput } from '@/models/proposals/dataProducts';
-import { dataProductToLegacy } from '@/models/proposals/useCopySlicesToStore';
 import { TYPE_CONTINUUM, TYPE_PST } from '@/utils/constants.ts';
 import DataProduct from './DataProduct';
 
@@ -67,8 +66,7 @@ const observation = (type: string, extra: object = {}) => ({
   ...extra
 });
 
-// The store the form is seeded from. The sensitivity results still read the data products' legacy
-// copy from it, so it holds that too.
+// The store the form is seeded from
 const openProposal = (proposal: {
   observations: object[];
   dataProducts: DataProductInput[];
@@ -81,8 +79,7 @@ const openProposal = (proposal: {
         id: 'prsl-1',
         targets: [],
         targetObservation: [],
-        ...proposal,
-        dataProductSDP: proposal.dataProducts.map(dataProductToLegacy)
+        ...proposal
       }
     },
     updateAppContent2: vi.fn()

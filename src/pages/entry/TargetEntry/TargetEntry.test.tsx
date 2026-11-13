@@ -69,7 +69,6 @@ vi.mock('@utils/storage/store', () => ({
         content2: {
           targets: mockStore.targets,
           observations: [],
-          dataProductSDP: [],
           targetObservation: [],
           calibrationStrategy: []
         }

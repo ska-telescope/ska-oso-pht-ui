@@ -27,22 +27,13 @@ import {
   ProposalTypeType,
   TYPE_PST,
   PST_MODES,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  IMAGE_WEIGHTING,
-  IMAGE_WEIGHTING_DEFAULT,
-  ROBUST_DEFAULT,
   FREQUENCY_STR_MHZ,
   BAND_LOW_STR,
   FREQUENCY_STR_GHZ,
-  PULSAR_TIMING_VALUE,
-  DETECTED_FILTER_BANK_VALUE,
-  FLOW_THROUGH_VALUE,
   TYPE_ZOOM_LONG,
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import { DocumentPDF } from '@utils/types/document.tsx';
-import { DataProductSDPNew, DataProductSRC } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
@@ -51,8 +42,6 @@ import { targetObservationFromPdm } from '@/models/proposals/targetObservation';
 import { calibrationStrategyFromPdm } from '@/models/proposals/calibrationStrategy';
 import { dataProductsFromPdm } from '@/models/proposals/dataProducts';
 import type {
-  DataProductSDP as DataProductSDPTransport,
-  DataProductSRC as DataProductSRCTransport,
   Document as DocumentTransport,
   GalacticCoordinates,
   ICRSCoordinates,
@@ -162,105 +151,7 @@ const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => 
   return results;
 };
 
-const getDataProductSRC = (
-  inValue: DataProductSRCTransport[] | null | undefined
-): DataProductSRC[] => {
-  return inValue
-    ? inValue.map((dp) => ({
-        id: dp?.data_products_src_id,
-        dataProductType: 0,
-        observationId: ''
-      }))
-    : [];
-};
-
-// The image/visibilities split is carried on `variant`, not `kind` - `kind` is 'continuum' for
-// both a continuum image and its hidden visibilities companion (see getDataProductScriptParameters
-// in putProposalMapping.tsx), so switching on kind here could never actually match either of them.
-const getDataProductType = (el: any) => {
-  switch ((el.variant ?? '').toLowerCase()) {
-    case 'visibilities':
-      return DP_TYPE_VISIBLE;
-    case 'detected filterbank':
-      return DETECTED_FILTER_BANK_VALUE;
-    case 'pulsar timing':
-      return PULSAR_TIMING_VALUE;
-    case 'flow through':
-      return FLOW_THROUGH_VALUE;
-    default:
-      return DP_TYPE_IMAGES;
-  }
-};
-
-const getDataProductSDP = (
-  inValue: DataProductSDPTransport[] | null | undefined
-): DataProductSDPNew[] => {
-  const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
-  const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
-
-  const getImageSizeUnits = (unit: string | null): number =>
-    unit ? IMAGE_SIZE_UNITS.indexOf(unit) : 0;
-
-  const getPixelSizeUnits = (unit: string | null): number =>
-    unit ? PIXEL_SIZE_UNITS.indexOf(unit) : 0;
-
-  return (
-    inValue?.map((dp) => {
-      const script = dp?.script_parameters ?? {};
-      return {
-        id: dp?.data_product_id ?? '',
-        observationId: dp?.observation_set_ref ?? '',
-        data: {
-          dataProductType: getDataProductType(script) ?? 0,
-          imageSizeValue: 'image_size' in script ? (script.image_size?.value ?? 0) : 0,
-          imageSizeUnits:
-            'image_size' in script ? getImageSizeUnits(script.image_size?.unit ?? null) : 0,
-
-          pixelSizeValue: 'image_cellsize' in script ? (script.image_cellsize?.value ?? 0) : 0,
-          pixelSizeUnits:
-            'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : 0,
-          weighting:
-            getWeighting('weight' in script ? script.weight?.weighting : undefined) ??
-            IMAGE_WEIGHTING_DEFAULT,
-          robust:
-            'weight' in script && script.weight?.weighting === 'briggs'
-              ? Number(script.weight.robust ?? ROBUST_DEFAULT)
-              : ROBUST_DEFAULT,
-          polarisations: 'polarisations' in script ? script.polarisations : undefined,
-          channelsOut: 'channels_out' in script ? (Number(script.channels_out) ?? 0) : 0,
-          taperValue: 'gaussian_taper' in script ? (Number(script.gaussian_taper) ?? 0) : 0,
-          // TODO - we shouldn't need so many conditionals in this function. Fix when we have
-          // refactored with better typing
-          timeAveraging: 'time_averaging' in script ? (script.time_averaging ?? 1) : 1,
-          frequencyAveraging:
-            'frequency_averaging' in script ? (script.frequency_averaging ?? 1) : 1,
-          bitDepth: 'bit_depth' in script ? (Number(script.bit_depth) ?? 1) : 1,
-          continuumSubtraction:
-            'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false,
-          outputFrequencyResolution:
-            'output_frequency_resolution' in script
-              ? (Number(script.output_frequency_resolution) ?? 0)
-              : 0,
-          outputSamplingInterval:
-            'output_sampling_interval' in script
-              ? (Number(script.output_sampling_interval) ?? 0)
-              : 0,
-          dispersionMeasure:
-            'dispersion_measure' in script ? (Number(script.dispersion_measure) ?? 0) : 0,
-          rotationMeasure: 'rotation_measure' in script ? (Number(script.rotation_measure) ?? 0) : 0
-        }
-      };
-    }) ?? []
-  );
-};
-
 /*********************************************************** observation parameters mapping *********************************************************/
-// Returns undefined for a missing label, or one the backend sends that we don't know, leaving the
-// caller to apply the default.
-const getWeighting = (inImageWeighting?: string): number | undefined =>
-  IMAGE_WEIGHTING?.find((item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase())
-    ?.value;
-
 const getSupplied = (inSupplied: SuppliedTransport | null): Supplied => {
   const suppliedType = OSD_CONSTANTS.Supplied?.find(
     (s) => s.mappingLabel === inSupplied?.supplied_type
@@ -460,11 +351,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
       : technicalPDF
         ? FileUploadStatus.OK
         : FileUploadStatus.INITIAL,
-    dataProductSDP: getDataProductSDP(
-      inRec.observation_info?.data_product_sdps as DataProductSDPTransport[]
-    ),
     dataProducts: dataProductsFromPdm(inRec.observation_info?.data_product_sdps),
-    dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO remove this property from type as not needed
   };
   return convertedProposal as Proposal;

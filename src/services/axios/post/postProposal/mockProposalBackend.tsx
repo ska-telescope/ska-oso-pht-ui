@@ -23,7 +23,6 @@ export const MockProposalBackend = {
     documents: [],
     observation_sets: [],
     data_product_sdps: [],
-    data_product_src_nets: [],
     result_details: [],
     calibration_strategy: []
   }

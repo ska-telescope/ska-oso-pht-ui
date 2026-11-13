@@ -7,7 +7,7 @@ import { targetsFromPdm, targetsToPdm } from './targets';
 import { targetObservationFromPdm, targetObservationToPdm } from './targetObservation';
 import { calibrationStrategyFromPdm, calibrationStrategyToPdm } from './calibrationStrategy';
 import { documentsFromPdm, documentsToPdm } from './documents';
-import { dataProductsFromPdm, dataProductsToPdm, getDataProductSchema } from './dataProducts';
+import { dataProductsFromPdm, savedDataProductsAndLinks } from './dataProducts';
 
 /** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
 export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
@@ -35,13 +35,7 @@ export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
  * migrated to the form); the form's slices are laid over it.
  */
 export function mapFormToPdm(form: ProposalType, base: ProposalBackend): ProposalBackend {
-  // Only valid data products and links with a valid data product are saved
-  const dataProducts = form.dataProducts.flatMap((dp) => {
-    const parsed = getDataProductSchema().safeParse(dp);
-    return parsed.success ? [parsed.data] : [];
-  });
-  const savedIds = new Set(dataProducts.map((dp) => dp.id));
-  const links = form.targetObservation.filter((link) => savedIds.has(link.dataProductsSDPId));
+  const saved = savedDataProductsAndLinks(form.dataProducts, form.targetObservation);
 
   return {
     ...base,
@@ -60,8 +54,8 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
       ...base.observation_info,
       targets: targetsToPdm(form.targets),
       calibration_strategy: calibrationStrategyToPdm(form.calibrationStrategy),
-      result_details: targetObservationToPdm(links),
-      data_product_sdps: dataProductsToPdm(dataProducts),
+      result_details: targetObservationToPdm(saved.links),
+      data_product_sdps: saved.dataProducts,
       documents: documentsToPdm(form)
     }
   };

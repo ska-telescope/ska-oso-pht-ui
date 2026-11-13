@@ -9,7 +9,6 @@ import {
   STEPPED_FIELD,
   steppedFromPdm
 } from '@/models/proposals/dataProducts';
-import { dataProductToLegacy } from '@/models/proposals/useCopySlicesToStore';
 import {
   REFERENCE_COORDINATE_TYPE_SSO,
   SENSITIVITY_STATE,
@@ -131,8 +130,7 @@ const link = (sensitivity?: Sensitivity) => ({
   sensitivity
 });
 
-// The store the form is seeded from. The sensitivity results still read the data products' legacy
-// copy from it, so it holds that too.
+// The store the form is seeded from
 const openProposal = (proposal: {
   observations: object[];
   dataProducts: DataProductInput[];
@@ -145,8 +143,7 @@ const openProposal = (proposal: {
         id: 'prsl-1',
         targets: [],
         targetObservation: [],
-        ...proposal,
-        dataProductSDP: proposal.dataProducts.map(dataProductToLegacy)
+        ...proposal
       }
     },
     updateAppContent2: vi.fn()

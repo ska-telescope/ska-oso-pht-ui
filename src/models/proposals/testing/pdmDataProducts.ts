@@ -1,13 +1,3 @@
-import Observation from '@utils/types/observation';
-import {
-  DETECTED_FILTER_BANK_VALUE,
-  FLOW_THROUGH_VALUE,
-  PULSAR_TIMING_VALUE,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
-  TYPE_ZOOM
-} from '@utils/constants';
 import type { ContinuumImage, DataProductSDP } from '@/generated/models';
 
 // One data product of every script variant, as the backend sends them
@@ -95,13 +85,3 @@ export const pdmDataProducts: DataProductSDP[] = [
     script_parameters: { kind: 'pst', variant: 'pulsar timing' }
   }
 ];
-
-// The legacy save picks a data product's script variant from its observation's type and PST mode
-export const legacyObservations = [
-  { id: 'obs-continuum', type: TYPE_CONTINUUM },
-  { id: 'obs-spectral', type: TYPE_ZOOM },
-  { id: 'obs-continuum-spectral', type: TYPE_CONTINUUM_SPECTRAL },
-  { id: 'obs-pst-flow-through', type: TYPE_PST, pstMode: FLOW_THROUGH_VALUE },
-  { id: 'obs-pst-detected-filterbank', type: TYPE_PST, pstMode: DETECTED_FILTER_BANK_VALUE },
-  { id: 'obs-pst-timing', type: TYPE_PST, pstMode: PULSAR_TIMING_VALUE }
-] as Observation[];

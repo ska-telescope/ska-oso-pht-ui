@@ -114,7 +114,6 @@ const { mockProposal, mockUpdateAppContent2 } = vi.hoisted(() => ({
     abstract: 'Test abstract',
     targets: [{ id: 1, name: 'Target 1' }],
     observations: [] as any[],
-    dataProductSDP: [] as any[],
     targetObservation: [] as any[],
     calibrationStrategy: [] as any[]
   },

@@ -60,8 +60,6 @@ describe('<GridObservationSummary />', () => {
           calibrationStrategy: [],
           technicalPDF: null,
           technicalLoadStatus: undefined,
-          dataProductSDP: undefined,
-          dataProductSRC: undefined,
           pipeline: undefined
         }}
       />
@@ -96,8 +94,6 @@ describe('<GridObservationSummary />', () => {
           calibrationStrategy: [],
           technicalPDF: null,
           technicalLoadStatus: undefined,
-          dataProductSDP: undefined,
-          dataProductSRC: undefined,
           pipeline: undefined
         }}
       />
