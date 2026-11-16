@@ -1,10 +1,6 @@
-import { SensCalcResults } from '../../utils/types/sensCalcResults';
+import type { TargetObservationLink } from '@/models/proposals/targetObservation';
 
-type TargetObservation = {
-  targetId: string;
-  observationId: string;
-  dataProductsSDPId: string;
-  sensitivityResults?: SensCalcResults;
-};
+// The link type comes from the form's schema
+type TargetObservation = TargetObservationLink;
 
 export default TargetObservation;

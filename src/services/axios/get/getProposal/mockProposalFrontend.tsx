@@ -116,70 +116,22 @@ export const MockProposalFrontend: Proposal = {
       targetId: 'target-789',
       observationId: 'obs-obR1Ej',
       dataProductsSDPId: 'SDP-2',
-      sensitivityResults: {
-        statusGUI: 0,
-        error: '',
-        section1: [
-          {
-            field: 'continuumSensitivityWeighted',
-            value: '107.53904853211655',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'continuumConfusionNoise',
-            value: '1.0183425082744668',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'continuumTotalSensitivity',
-            value: '107.54387002826836',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'continuumSynthBeamSize',
-            value: '3.85 x 3.02',
-            units: 'arcsec²'
-          },
-          {
-            field: 'continuumSurfaceBrightnessSensitivity',
-            value: '282.72036408677496',
-            units: 'K'
-          }
-        ],
-        section2: [
-          {
-            field: 'spectralSensitivityWeighted',
-            value: '18.72201668513227',
-            units: 'mJy/beam'
-          },
-          {
-            field: 'spectralConfusionNoise',
-            value: '3.52582756374021',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'spectralTotalSensitivity',
-            value: '18.72201701713336',
-            units: 'mJy/beam'
-          },
-          {
-            field: 'spectralSynthBeamSize',
-            value: '5.84 x 5.02',
-            units: 'arcsec²'
-          },
-          {
-            field: 'spectralSurfaceBrightnessSensitivity',
-            value: '19489.22259007647',
-            units: 'K'
-          }
-        ],
-        section3: [
-          {
-            field: 'integrationTime',
-            value: '1',
-            units: 'h'
-          }
-        ]
+      sensitivity: {
+        state: 'done',
+        continuum: {
+          weightedSensitivity: { value: 107.53904853211655, unit: 'μJy/beam' },
+          confusionNoise: { value: 1.0183425082744668, unit: 'μJy/beam' },
+          totalSensitivity: { value: 107.54387002826836, unit: 'μJy/beam' },
+          synthesizedBeamSize: { value: '3.85 x 3.02', unit: 'arcsec²' },
+          surfaceBrightnessSensitivity: { value: 282.72036408677496, unit: 'K' }
+        },
+        spectral: {
+          weightedSensitivity: { value: 18.72201668513227, unit: 'mJy/beam' },
+          confusionNoise: { value: 3.52582756374021, unit: 'μJy/beam' },
+          totalSensitivity: { value: 18.72201701713336, unit: 'mJy/beam' },
+          synthesizedBeamSize: { value: '5.84 x 5.02', unit: 'arcsec²' },
+          surfaceBrightnessSensitivity: { value: 19489.22259007647, unit: 'K' }
+        }
       }
     }
   ],
@@ -312,44 +264,15 @@ export const MockProposalFrontendZoom: Proposal = {
       targetId: 'target-789',
       observationId: 'obs-arMIoY',
       dataProductsSDPId: 'SDP-1',
-      sensitivityResults: {
-        statusGUI: 0,
-        error: '',
-        section1: [
-          {
-            field: 'spectralSensitivityWeighted',
-            value: '29.69626339640881',
-            units: 'mJy/beam'
-          },
-          {
-            field: 'spectralConfusionNoise',
-            value: '22.18293905542935',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'spectralTotalSensitivity',
-            value: '29.696271681672012',
-            units: 'mJy/beam'
-          },
-          {
-            field: 'spectralSynthBeamSize',
-            value: '13.47 x 11.10',
-            units: 'arcsec²'
-          },
-          {
-            field: 'spectralSurfaceBrightnessSensitivity',
-            value: '6071.553983562558',
-            units: 'K'
-          }
-        ],
-        section2: [],
-        section3: [
-          {
-            field: 'integrationTime',
-            value: '1',
-            units: 'h'
-          }
-        ]
+      sensitivity: {
+        state: 'done',
+        spectral: {
+          weightedSensitivity: { value: 29.69626339640881, unit: 'mJy/beam' },
+          confusionNoise: { value: 22.18293905542935, unit: 'μJy/beam' },
+          totalSensitivity: { value: 29.696271681672012, unit: 'mJy/beam' },
+          synthesizedBeamSize: { value: '13.47 x 11.10', unit: 'arcsec²' },
+          surfaceBrightnessSensitivity: { value: 6071.553983562558, unit: 'K' }
+        }
       }
     }
   ],

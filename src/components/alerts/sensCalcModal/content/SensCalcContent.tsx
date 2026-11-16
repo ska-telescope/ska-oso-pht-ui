@@ -1,24 +1,30 @@
 import { Grid, Typography } from '@mui/material';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
 import {
-  CUSTOM_VALID_FIELDS,
   FREQUENCY_STR_KHZ,
   FREQUENCY_UNITS,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
-  REFERENCE_COORDINATE_TYPE_SSO,
   SA_CUSTOM,
-  STATUS_INITIAL,
+  SENSITIVITY_STATE,
+  TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
-  TYPE_CONTINUUM_SPECTRAL_LONG,
-  TYPE_PST
+  TYPE_CONTINUUM_SPECTRAL_LONG
 } from '../../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal.tsx';
-import { getSpectralAveragingFactor } from '@services/axios/get/getSensitivityCalculator/getContinuumData/getContinuumData.tsx';
+import Target from '@utils/types/target';
+import type { ProposalType } from '@/models/proposals/proposal';
+import {
+  getLowSpectralAveragingFactor,
+  getSensitivityDataProduct
+} from '@/services/sensitivityCalculator/calculate';
+import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
+import type { SensitivityValues } from '@/models/proposals/targetObservation';
 import {
   convertFrequencyToDisplayUnits,
   getBandwidthZoom,
@@ -26,8 +32,7 @@ import {
 } from '@utils/helpers.ts';
 
 interface SensCalcContentProps {
-  targetObservation?: TargetObservation;
-  isNatural?: boolean;
+  targetObservation: TargetObservation;
   hideSpectralResults?: boolean;
 }
 
@@ -36,7 +41,6 @@ const SPACER_HEIGHT = 30;
 
 export default function SensCalcContent({
   targetObservation,
-  isNatural = false,
   hideSpectralResults = false
 }: SensCalcContentProps) {
   const { t } = useScopedTranslation();
@@ -47,34 +51,37 @@ export default function SensCalcContent({
 
   const proposal = getProposal();
 
-  const target = proposal.targets?.find((target) => target.id === targetObservation?.targetId);
+  // TODO: The form owns the targets; observations and data products are still read from the store
+  const form = useFormContext<ProposalType>();
+  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const target = targets.find((target) => target.id === targetObservation.targetId);
 
   const observation = proposal.observations?.find(
-    (observation) => observation.id === targetObservation?.observationId
+    (observation) => observation.id === targetObservation.observationId
   );
 
-  const dataProduct = proposal.dataProductSDP?.find(
-    (dataProduct) => dataProduct.id === targetObservation?.dataProductsSDPId
+  // The data product the results were calculated from, which can differ from the linked one
+  const dataProduct =
+    observation &&
+    getSensitivityDataProduct(
+      observation,
+      targetObservation.dataProductsSDPId,
+      proposal.dataProductSDP ?? []
+    );
+
+  // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
+  // which a custom subarray or a non-Gaussian beam has none of
+  const notAvailable = t(
+    observation?.subarray === SA_CUSTOM
+      ? 'sensitivityCalculatorResults.customArray'
+      : 'sensitivityCalculatorResults.nonGaussian'
   );
 
-  const PresentCustomResultValue = (eValue: any, eId: string) => {
-    if (eId === 'targetName') {
-      return eValue;
-    }
-    if (!CUSTOM_VALID_FIELDS.includes(eId)) {
-      if (isNatural) {
-        return t('sensitivityCalculatorResults.nonGaussian');
-      }
-      return t('sensitivityCalculatorResults.customArray');
-    }
-    return `${presentValue(eValue)}`;
-  };
+  // A value with its units, as shown
+  const valueText = (value?: string | number | null, units?: string) =>
+    value == null ? '' : `${presentValue(value)} ${units ? presentUnits(units) : ''}`;
 
-  const displayElement = (
-    elementId: string,
-    elementValue?: string | number,
-    elementUnits?: string
-  ) => {
+  const displayElement = (elementId: string, text?: string) => {
     return (
       <Grid
         key={elementId}
@@ -93,116 +100,72 @@ export default function SensCalcContent({
         <Grid size={{ xs: 6 }}>
           <Typography
             id={`${elementId}-label`}
+            aria-labelledby={elementId}
             data-testid={`field-${elementId}`}
             sx={{ align: 'left', fontWeight: 'bold' }}
             variant="body1"
           >
-            {elementId === 'targetName'
-              ? elementValue
-              : observation?.subarray === SA_CUSTOM || isNatural
-                ? PresentCustomResultValue(elementValue, elementId)
-                : presentValue(elementValue)}{' '}
-            {!elementUnits || observation?.subarray === SA_CUSTOM || isNatural
-              ? ''
-              : presentUnits(elementUnits)}
+            {text}
           </Typography>
         </Grid>
       </Grid>
     );
   };
 
-  if (!targetObservation) {
-    return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {t('sensitivityCalculatorResults.noTarget')}
-        </Typography>
-      </Alert>
+  const resultsAlert = (message?: string, color?: typeof AlertColorTypes.Error) => (
+    <Alert testId="alertSensCalResultsId" color={color}>
+      <Typography sx={{ p: GAP }}>{message}</Typography>
+    </Alert>
+  );
+
+  if (!observation || !dataProduct) {
+    return resultsAlert(
+      t('sensitivityCalculatorResults.noObservationOrDataProduct'),
+      AlertColorTypes.Error
     );
   }
-
-  if (observation?.type === TYPE_PST) {
-    return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {t('page.7.pstUnavailable')}
-        </Typography>
-      </Alert>
-    );
+  const sensitivity = targetObservation.sensitivity;
+  if (sensitivity?.state === SENSITIVITY_STATE.FAILED) {
+    return resultsAlert(sensitivity.error, AlertColorTypes.Error);
+  }
+  if (sensitivity == undefined) {
+    return resultsAlert(t('sensitivityCalculatorResults.noData'));
   }
 
-  if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
-    return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {t('sensitivityCalculatorResults.notApplicableForSSO')}
-        </Typography>
-      </Alert>
-    );
-  }
+  // The continuum or spectral results, each labelled by its part, e.g. continuumSensitivityWeighted
+  const resultsPart = (part: 'continuum' | 'spectral', values: SensitivityValues) => (
+    <>
+      <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
+      {SENSITIVITY_FIELDS.map(({ key, label }) =>
+        values[key]
+          ? displayElement(`${part}${label}`, valueText(values[key].value, values[key].unit))
+          : displayElement(`${part}${label}`, notAvailable)
+      )}
+    </>
+  );
 
-  if (targetObservation?.sensitivityResults?.error) {
-    return (
-      <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {targetObservation?.sensitivityResults?.error}
-        </Typography>
-      </Alert>
+  const isLowContinuum =
+    observation.telescope === TELESCOPE_LOW_NUM &&
+    [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
+      observation.type
     );
-  }
 
-  if (
-    targetObservation?.sensitivityResults?.statusGUI === STATUS_INITIAL ||
-    targetObservation?.sensitivityResults == undefined
-  ) {
-    return (
-      <Alert>
-        <Typography
-          sx={{
-            p: GAP
-          }}
-        >
-          {t('sensitivityCalculatorResults.noData')}
-        </Typography>
-      </Alert>
-    );
-  }
-
-  const spectralResolution = observation
-    ? convertFrequencyToDisplayUnits(
-        [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
-          observation?.type
-        )
-          ? getSpectralAveragingFactor(observation, dataProduct) *
-              LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
-          : getSpectralResolutionHz(observation) * 1e-3,
-        FREQUENCY_STR_KHZ
-      )
-    : undefined;
+  const spectralResolution = convertFrequencyToDisplayUnits(
+    // Only LOW continuum averages channels; MID sends a factor of 1 and zoom has no averaging
+    isLowContinuum
+      ? getLowSpectralAveragingFactor(observation, dataProduct) *
+          LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
+      : getSpectralResolutionHz(observation) * 1e-3,
+    FREQUENCY_STR_KHZ
+  );
   const bandwidth = [
     TYPE_CONTINUUM,
     TYPE_CONTINUUM_SPECTRAL,
     TYPE_CONTINUUM_SPECTRAL_LONG
-  ].includes(observation?.type)
+  ].includes(observation.type)
     ? {
-        value: observation?.continuumBandwidth,
-        unit: FREQUENCY_UNITS[observation?.continuumBandwidthUnits - 1]?.label
+        value: observation.continuumBandwidth,
+        unit: FREQUENCY_UNITS[observation.continuumBandwidthUnits - 1]?.label
       }
     : getBandwidthZoom(observation);
 
@@ -211,26 +174,39 @@ export default function SensCalcContent({
       {displayElement('targetName', target?.name)}
       {displayElement(
         'centralFrequency',
-        observation?.centralFrequency,
-        FREQUENCY_UNITS[observation?.centralFrequencyUnits - 1]?.label
+        valueText(
+          observation.centralFrequency,
+          FREQUENCY_UNITS[observation.centralFrequencyUnits - 1]?.label
+        )
       )}
-      {displayElement('bandwidth', bandwidth.value, bandwidth.unit)}
-      {displayElement('spectralResolution', spectralResolution?.value, spectralResolution?.unit)}
-      {displayElement('integrationTime', observation?.supplied.value, 'h')}
+      {displayElement('bandwidth', valueText(bandwidth.value, bandwidth.unit))}
+      {displayElement(
+        'spectralResolution',
+        valueText(spectralResolution?.value, spectralResolution?.unit)
+      )}
+      {displayElement('integrationTime', valueText(observation.supplied.value, 'h'))}
 
-      {targetObservation?.sensitivityResults?.section1 && (
-        <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
+      {sensitivity.state === SENSITIVITY_STATE.CALCULATING && (
+        <>
+          <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
+          <Typography
+            data-testid="sensCalcCalculating"
+            sx={{ textAlign: 'center' }}
+            variant="body1"
+          >
+            {t('sensitivityCalculatorResults.calculating')}
+          </Typography>
+        </>
       )}
-      {targetObservation?.sensitivityResults?.section1?.map((rec) =>
-        displayElement(rec.field, rec.value, rec.units)
+
+      {sensitivity.state === SENSITIVITY_STATE.DONE && (
+        <>
+          {sensitivity.continuum && resultsPart('continuum', sensitivity.continuum)}
+          {/* A continuum observation's spectral results can be hidden; zoom ones are its only results */}
+          {!(hideSpectralResults && sensitivity.continuum) &&
+            resultsPart('spectral', sensitivity.spectral)}
+        </>
       )}
-      {!hideSpectralResults && targetObservation?.sensitivityResults?.section2 && (
-        <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />
-      )}
-      {!hideSpectralResults &&
-        targetObservation?.sensitivityResults?.section2?.map((rec) =>
-          displayElement(rec.field, rec.value, rec.units)
-        )}
     </>
   );
 }

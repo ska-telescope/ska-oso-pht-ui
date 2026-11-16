@@ -28,17 +28,14 @@ import type {
   DataProductSRC as DataProductSRCTransport,
   PstDetectedFilterbank
 } from '@/generated/models';
-import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
-  getDataProductRef,
   getDataProductScriptParameters,
   getDataProductSRC,
   getObservationTypeDetails,
   getReferenceCoordinate,
-  getSuppliedFieldsIntegrationTime,
   mapCalibrationStrategyToBackend
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
@@ -62,6 +59,31 @@ describe('Helper Functions', () => {
       PROPOSAL_STATUS.DRAFT
     );
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
+  });
+
+  test('mappingPutProposal omits empty investigator fields and preserves populated fields', () => {
+    const investigator = {
+      id: 'user-1',
+      status: 'accepted',
+      firstName: '',
+      lastName: 'Lovelace',
+      email: '',
+      phdThesis: false,
+      pi: true
+    };
+    const result = MappingPutProposal(
+      { ...MockProposalFrontend, investigators: [investigator] },
+      PROPOSAL_STATUS.DRAFT
+    );
+    expect(result.proposal_info.investigators).toEqual([
+      {
+        user_id: 'user-1',
+        status: 'accepted',
+        family_name: 'Lovelace',
+        for_phd: false,
+        principal_investigator: true
+      }
+    ]);
   });
 
   test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
@@ -152,7 +174,9 @@ describe('PutProposal Service', () => {
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
         ...formSlices,
         title: 'Title from RHF',
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        abstract: 'Abstract from RHF',
+        scienceCategory: 7
       });
 
       expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
@@ -160,6 +184,8 @@ describe('PutProposal Service', () => {
         proposal_info: {
           ...base.proposal_info,
           title: 'Title from RHF',
+          abstract: 'Abstract from RHF',
+          science_category: 'High Energy Cosmic Particles',
           proposal_type: {
             ...base.proposal_info.proposal_type,
             main_type: PROPOSAL_TYPE.KEY_SCIENCE
@@ -176,7 +202,9 @@ describe('PutProposal Service', () => {
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
       ...formSlices,
       title: '',
-      proposalType: PROPOSAL_TYPE.STANDARD
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      abstract: '',
+      scienceCategory: null
     });
 
     expect(mockedAuthClient.put).toHaveBeenCalledWith(
@@ -597,41 +625,5 @@ describe('getObservationTypeDetails', () => {
     } as any;
     const result = getObservationTypeDetails(obs);
     expect(result.observation_type).toBe(TYPE_PST);
-  });
-});
-
-describe('getSuppliedFieldsIntegrationTime', () => {
-  const mockTarObs = {
-    sensitivityResults: {
-      section3: [{ value: 123, units: 'hr', field: 'integrationTime' }]
-    }
-  } as any;
-
-  test('should return correct values for continuum type', () => {
-    const result = getSuppliedFieldsIntegrationTime('integration_time', TYPE_CONTINUUM, mockTarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: 123, unit: 'hr' },
-      spectral: { value: 123, unit: 'hr' }
-    });
-  });
-
-  test('should return 0 and empty string for non-continuum type', () => {
-    const result = getSuppliedFieldsIntegrationTime('integration_time', 999, mockTarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: 0, unit: '' },
-      spectral: { value: 123, unit: 'hr' }
-    });
-  });
-
-  test('should handle missing section3 gracefully', () => {
-    const tarObs = { sensitivityResults: {} } as any;
-    const result = getSuppliedFieldsIntegrationTime('integration_time', TYPE_CONTINUUM, tarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: NaN, unit: '' },
-      spectral: { value: NaN, unit: '' }
-    });
   });
 });

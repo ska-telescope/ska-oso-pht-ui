@@ -66,6 +66,7 @@ import { useTheme } from '@mui/material/styles';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
+import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 import { useProposalFormBackup } from '@/models/proposals/useProposalFormBackup';
 import ProposalUrlLoader from '@/models/proposals/ProposalUrlLoader';
 
@@ -124,7 +125,7 @@ export default function PHT({
   const location = useLocation();
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { setHelp } = useHelp();
-  const { notifyWarning, notifyError } = useNotify();
+  const { notifyError } = useNotify();
   const theme = useTheme();
   const previousPathRef = React.useRef(location.pathname);
 
@@ -183,11 +184,7 @@ export default function PHT({
       return;
     }
     autoRepairAttemptedForIdRef.current = proposal.id;
-    linkTarget(target, getProposal, setProposal, formMethods, authClient).then((result) => {
-      if (!result?.success) {
-        notifyWarning(result?.error ?? t('autoLink.error'));
-      }
-    });
+    void linkTarget(target, getProposal, setProposal, formMethods, authClient);
   }, [getProposal(), autoLink]);
 
   React.useEffect(() => {
@@ -205,13 +202,9 @@ export default function PHT({
       isProposalPageTransition && loggedIn && proposal?.id != null && proposal.id !== '';
 
     if (canAutoSave) {
+      const values = getValues();
       void (async () => {
-        const response = await PutProposal(
-          authClient,
-          proposal,
-          PROPOSAL_STATUS.DRAFT,
-          getValues()
-        );
+        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT, values);
         if ('error' in response) {
           notifyError(response.error);
         }
@@ -409,6 +402,7 @@ export default function PHT({
             {/* TODO: REMOVE  */}
             {/* Global form provider for proposal form management */}
             <FormProvider {...formMethods}>
+              <SensitivityService />
               {REQUIRED_WIDTH ? (
                 proposalIdFromUrl ? (
                   <ProposalUrlLoader proposalId={proposalIdFromUrl}>{routes}</ProposalUrlLoader>
