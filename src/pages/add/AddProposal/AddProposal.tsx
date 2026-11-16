@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import { EMPTY_STATUS, PAGE_TITLE_ADD, PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
-import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
+import { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { newDataProductsForMode, newObservationForMode } from '@/utils/autoLinking/AutoLinking';
 import { ProposalType } from '@/models/proposals/proposal';

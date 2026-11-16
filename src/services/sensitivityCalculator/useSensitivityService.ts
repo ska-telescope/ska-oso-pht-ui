@@ -1,0 +1,181 @@
+import React from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
+import type { ProposalType } from '@/models/proposals/proposal';
+import type { Sensitivity } from '@/models/proposals/targetObservation';
+import { storageObject } from '@utils/storage/store';
+import { SENSITIVITY_STATE } from '@/utils/constants';
+import { useNotify } from '@/utils/notify/useNotify';
+import type Proposal from '@/utils/types/proposal';
+import { SENS_CALC_ERROR_KIND, toSensCalcError } from './client';
+import {
+  buildSensitivityRequest,
+  getSensitivityDataProduct,
+  sendSensitivityRequest
+} from './calculate';
+import { toSensitivity } from './results';
+
+export const SENS_CALC_DEBOUNCE_MS = 500;
+
+/**
+ * A record for each link, by link ID: the sensitivity calculator request its current results
+ * were calculated from, and the request's controller while it is still in flight.
+ */
+type LinkRecords = Map<string, { requestKey: string; controller?: AbortController }>;
+
+// TODO BTN-3595 Use link.id once links have their own ID; until then, the three IDs joined
+const getLinkId = (link: { targetId: string; observationId: string; dataProductsSDPId: string }) =>
+  `${link.targetId}|${link.observationId}|${link.dataProductsSDPId}`;
+
+/**
+ * Keeps the sensitivity results of every target–observation link up to date. Runs for the whole
+ * proposal editor, so a calculation finishes even if the user leaves the page that started it.
+ *
+ * Each link is recalculated on proposal load and when the request its inputs give changes, after
+ * a short debounce. A request is canceled as soon as its link's inputs change, and a result is
+ * only applied while its request is still the link's current one. A calculator error is shown as
+ * a notification, as well as stored on the link.
+ */
+export const useSensitivityService = () => {
+  const { control, getValues, setValue } = useFormContext<ProposalType>();
+  // TODO BTN-3595 Read observations and data products from the form once they are migrated to it
+  const { application } = storageObject.useStore();
+  const proposal = application.content2 as Proposal | undefined;
+  const observations = proposal?.observations;
+  const dataProducts = proposal?.dataProductSDP;
+  const { notifyError } = useNotify();
+  const [targets, links] = useWatch({ control, name: ['targets', 'targetObservation'] });
+
+  const recordsRef = React.useRef<LinkRecords>(new Map());
+
+  // A different proposal starts again: all of its links are calculated
+  React.useEffect(() => {
+    recordsRef.current.forEach((record) => record.controller?.abort());
+    recordsRef.current.clear();
+  }, [proposal?.id]);
+
+  React.useEffect(() => {
+    // Writes a link's results to the links as they are now, as a response can arrive after a change
+    const writeResults = (linkId: string, results: Sensitivity | undefined) =>
+      setValue(
+        'targetObservation',
+        getValues('targetObservation').map((link) =>
+          getLinkId(link) === linkId ? { ...link, sensitivity: results } : link
+        )
+      );
+
+    const formLinks = links ?? [];
+    const formTargets = targets ?? [];
+
+    // The request each link's inputs give now. Links whose target, observation or data product
+    // can't be found yet are left out, and keep any results they have.
+    const linkRequests = formLinks.flatMap((link) => {
+      const target = formTargets.find((t) => t.id === link.targetId);
+      const observation = observations?.find((o) => o.id === link.observationId);
+      const dataProduct =
+        observation &&
+        getSensitivityDataProduct(observation, link.dataProductsSDPId, dataProducts ?? []);
+      if (!target || !observation || !dataProduct) {
+        return [];
+      }
+
+      // TODO BTN-3595 Once observations and data products are in the form, check them against
+      //  their item schemas before building the request: the same rules that decide what is
+      //  saved. SV proposals edit their one observation and data product in place, so the form
+      //  can hold values that aren't valid yet, which the calculator would reject. Until then,
+      //  half-edited values are sent and come back as calculator errors. Something like:
+      //
+      //    const inputsValid =
+      //      getObservationSchema().safeParse(observation).success &&
+      //      getDataProductSchema().safeParse(dataProduct).success;
+      //    const request = inputsValid
+      //      ? buildSensitivityRequest(observation, target, dataProduct)
+      //      : null;
+      //
+      //  Invalid inputs then give no request, so they share the empty request key: further
+      //  invalid edits change nothing, a valid edit recalculates, and the no-request branch below
+      //  clears the link's results without sending anything.
+      const request = buildSensitivityRequest(observation, target, dataProduct);
+      const requestKey = request ? request.path + JSON.stringify(request.body) : '';
+      return [{ link, linkId: getLinkId(link), request, requestKey }];
+    });
+
+    // Forget links that no longer exist and links whose inputs changed, canceling their requests.
+    const linkIds = new Set(formLinks.map(getLinkId));
+    recordsRef.current.forEach((record, linkId) => {
+      if (!linkIds.has(linkId)) {
+        record.controller?.abort();
+        recordsRef.current.delete(linkId);
+      }
+    });
+    linkRequests.forEach(({ linkId, requestKey }) => {
+      const record = recordsRef.current.get(linkId);
+      if (record && record.requestKey !== requestKey) {
+        record.controller?.abort();
+        recordsRef.current.delete(linkId);
+      }
+    });
+
+    // After the debounce, calculate the links without a record: new, changed or just opened
+    const update = () => {
+      linkRequests.forEach(({ link, linkId, request, requestKey }) => {
+        if (recordsRef.current.has(linkId)) {
+          // Unchanged since its results were calculated, or still being calculated
+          return;
+        }
+
+        if (!request) {
+          // The calculator doesn't apply (SSO targets and PST), so the link has no results
+          recordsRef.current.set(linkId, { requestKey });
+          if (!link.sensitivity) return;
+          writeResults(linkId, undefined);
+          return;
+        }
+
+        // Shown as calculating until the response arrives, rather than with the previous results
+        if (link.sensitivity?.state !== SENSITIVITY_STATE.CALCULATING) {
+          writeResults(linkId, { state: SENSITIVITY_STATE.CALCULATING });
+        }
+
+        const controller = new AbortController();
+        recordsRef.current.set(linkId, { requestKey, controller });
+        void sendSensitivityRequest(request, { signal: controller.signal })
+          .then((response) => {
+            const isCurrent = recordsRef.current.get(linkId)?.requestKey === requestKey;
+            if (!isCurrent || (!response.ok && response.kind === SENS_CALC_ERROR_KIND.ABORTED)) {
+              // Ignore stale and aborted responses
+              return;
+            }
+            recordsRef.current.set(linkId, { requestKey });
+            const results = toSensitivity(response);
+            writeResults(linkId, results);
+            if (results?.state === SENSITIVITY_STATE.FAILED) {
+              notifyError(results.error);
+            }
+          })
+          // Deal with unexpected responses so link state doesn't get stuck in calculating
+          .catch((e) => {
+            if (recordsRef.current.get(linkId)?.requestKey !== requestKey) return;
+            recordsRef.current.set(linkId, { requestKey });
+            const error = toSensCalcError(e).detail;
+            writeResults(linkId, { state: SENSITIVITY_STATE.FAILED, error });
+            notifyError(error);
+          });
+      });
+    };
+
+    const timer = setTimeout(update, SENS_CALC_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+    // notifyError is a new function on every render, and the service re-renders on any store
+    // change. Any copy of it works, so it isn't a dependency: one would restart the debounce.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targets, links, observations, dataProducts, getValues, setValue]);
+};
+
+/**
+ * Runs useSensitivityService. Render it once, inside the proposal FormProvider and
+ * outside the routes, so it stays mounted for the whole proposal editor.
+ */
+export const SensitivityService = () => {
+  useSensitivityService();
+  return null;
+};

@@ -24,6 +24,9 @@ const strategy = {
 const values = (slices: Partial<ProposalType> = {}): ProposalType => ({
   title: 'A valid title',
   proposalType: PROPOSAL_TYPE.STANDARD,
+  abstract: 'A valid abstract',
+  scienceCategory: null,
+  investigators: [],
   targets: [target],
   targetObservation: [link],
   calibrationStrategy: [strategy],
@@ -86,7 +89,7 @@ describe('getSubmitPageStatuses', () => {
 
 test.each([
   ['target', { targets: [{ ...target, kind: 'not a number' }] }],
-  ['linking', { targetObservation: [{ ...link, sensitivityResults: { statusGUI: 99 } }] }],
+  ['linking', { targetObservation: [{ ...link, sensitivity: { state: 'unknown' } }] }],
   ['calibration', { calibrationStrategy: [{ ...strategy, calibrators: 'not a list' }] }]
 ] as const)(
   'does not check anything the page checks did not, such as a malformed %s entry',

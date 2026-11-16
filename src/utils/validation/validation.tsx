@@ -26,6 +26,7 @@ import {
   IW_BRIGGS,
   PROPOSAL_TYPE,
   SENSITIVITY_UNITS,
+  SENSITIVITY_STATE,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
@@ -42,12 +43,7 @@ import {
   ZOOM_CHANNELS_DEFAULT_LOW
 } from './../constants';
 import Proposal from './../types/proposal';
-import {
-  countWords,
-  frequencyConversion,
-  isFrequencyRangeOutOfBand,
-  timeConversion
-} from '../helpers';
+import { frequencyConversion, isFrequencyRangeOutOfBand, timeConversion } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { robustSchema } from '../../components/fields/robust/Robust';
 import { imageSizeSchema } from '../../components/fields/imageSize/imageSize';
@@ -65,7 +61,7 @@ import {
   isCentralFrequencyDivisible,
   isCentralFrequencyOnChannelGrid
 } from '../zoomWindow';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import { getDetailsSchema } from '@/models/proposals/details';
 
 type SuppliedValueInput = {
   type?: number;
@@ -131,15 +127,15 @@ export const validateTitlePage = (proposal: Pick<Proposal, 'title' | 'proposalTy
   return result[count];
 };
 
-export const validateTeamPage = (proposal: Proposal) => {
+export const validateTeamPage = (proposal: Pick<Proposal, 'investigators'>) => {
   const result = [STATUS_ERROR, STATUS_OK];
   const count = Array.isArray(proposal.investigators) && proposal.investigators.length > 0 ? 1 : 0;
   return result[count];
 };
 
 export const validateDetailsPage = (proposal: Proposal) => {
-  const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
-  if (countWords(proposal?.abstract ?? '') > maxAbstractWords) {
+  const abstract = proposal?.abstract ?? '';
+  if (abstract.length > 0 && !getDetailsSchema().shape.abstract.safeParse(abstract).success) {
     return STATUS_ERROR;
   }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -456,7 +452,7 @@ export const isDataProductChannelsOutValid = (
 const hasUsableTargetLinks = (proposal: Proposal) =>
   (proposal?.observations ?? []).every((obs) => {
     const link = proposal?.targetObservation?.find((to) => to.observationId === obs.id);
-    return !!link && link.sensitivityResults?.statusGUI !== STATUS_ERROR;
+    return !!link && link.sensitivity?.state !== SENSITIVITY_STATE.FAILED;
   });
 
 export const validateSDPPage = (proposal: Proposal, autoLink = false) => {

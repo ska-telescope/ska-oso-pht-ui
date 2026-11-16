@@ -6,9 +6,13 @@ import { OSO_SERVICES_PROPOSAL_PATH, PROPOSAL_STATUS, PROPOSAL_TYPE } from '@uti
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
+import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
 import { ProposalType } from './proposal';
 import { useProposalOda } from './useProposalOda';
+import { getDetailsSchema } from './details';
+import phtTranslations from '../../../public/locales/en/pht.json';
+import { InvestigatorBackend } from '@/utils/types/investigator';
 import { getProposalFormValues } from './useProposalForm';
 
 const { mockGet, mockPut } = vi.hoisted(() => ({
@@ -20,6 +24,7 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 }));
 
 const pdm = MockProposalBackend as ProposalBackend;
+const investigator = MockUserFrontendList[0];
 
 const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) => {
   const { result: form } = renderHook(() =>
@@ -57,6 +62,10 @@ describe('useProposalOda', () => {
 
     expect(form.current.getValues('title')).toBe(pdm.proposal_info.title);
     expect(form.current.getValues('proposalType')).toBe(pdm.proposal_info.proposal_type.main_type);
+    expect(form.current.getValues()).not.toHaveProperty('observingMode');
+    expect(form.current.getValues('abstract')).toBe(pdm.proposal_info.abstract);
+    expect(form.current.getValues('scienceCategory')).toBe(1);
+    expect(form.current.getValues('investigators')).toEqual([]);
     expect(loaded).toEqual(mapping(pdm));
   });
 
@@ -132,6 +141,9 @@ describe('useProposalOda', () => {
         proposal_info: {
           ...expected.proposal_info,
           title: 'Edited title',
+          abstract: pdm.proposal_info.abstract,
+          science_category: pdm.proposal_info.science_category,
+          investigators: [],
           proposal_type: {
             ...expected.proposal_info.proposal_type,
             main_type: PROPOSAL_TYPE.KEY_SCIENCE
@@ -151,6 +163,228 @@ describe('useProposalOda', () => {
       expect.any(String),
       MappingPutProposal(legacy, PROPOSAL_STATUS.DRAFT)
     );
+  });
+
+  test.each([0, Number(phtTranslations.abstract.maxWord) + 1])(
+    'saves a %s-word abstract as a draft and still saves subsequent edits',
+    async (wordCount) => {
+      const abstract = Array(wordCount).fill('a').join(' ');
+      expect(abstract.length).toBeLessThan(Number(phtTranslations.abstract.maxChar));
+      mockPut.mockResolvedValue({ data: pdm });
+      const { form, oda } = renderWithForm('Draft title');
+      const legacy = mapping(pdm);
+      act(() => {
+        form.current.setValue('abstract', abstract);
+      });
+
+      expect(getDetailsSchema().safeParse(form.current.getValues()).success).toBe(false);
+      await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
+      expect(mockPut).toHaveBeenLastCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          status: PROPOSAL_STATUS.DRAFT,
+          proposal_info: expect.objectContaining({ abstract })
+        })
+      );
+
+      act(() => {
+        form.current.setValue('title', 'Edited on another page');
+      });
+      await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
+      expect(mockPut).toHaveBeenCalledTimes(2);
+      expect(mockPut).toHaveBeenLastCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          proposal_info: expect.objectContaining({ abstract, title: 'Edited on another page' })
+        })
+      );
+    }
+  );
+
+  test.each([undefined, null, '', 'Analytical Engines'])(
+    'saves edited details when an investigator organization is %s',
+    async (organization) => {
+      const proposalId = 'prsl-1';
+      const withInvestigator: ProposalBackend = {
+        ...pdm,
+        prsl_id: proposalId,
+        proposal_info: {
+          ...pdm.proposal_info,
+          investigators: [
+            {
+              user_id: investigator.id,
+              given_name: investigator.firstName,
+              family_name: investigator.lastName,
+              email: investigator.email,
+              organization,
+              for_phd: investigator.phdThesis,
+              principal_investigator: investigator.pi,
+              status: investigator.status
+            }
+          ]
+        }
+      };
+      mockGet.mockResolvedValue({ data: withInvestigator });
+      mockPut.mockResolvedValue({ data: withInvestigator });
+      const { form, oda } = renderWithForm();
+
+      await act(async () => {
+        await oda.current.loadFromOda(proposalId);
+      });
+      act(() => {
+        form.current.setValue('abstract', 'Edited details');
+      });
+
+      expect(form.current.getValues('investigators')?.[0]).not.toHaveProperty('affiliation');
+      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual(
+        withInvestigator
+      );
+      expect(mockPut).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining(`${OSO_SERVICES_PROPOSAL_PATH}/${withInvestigator.prsl_id}`),
+        expect.objectContaining({
+          investigator_refs: [investigator.id],
+          proposal_info: expect.objectContaining({
+            abstract: 'Edited details',
+            investigators: [
+              expect.objectContaining({
+                user_id: investigator.id
+              })
+            ]
+          })
+        })
+      );
+      expect(mockPut.mock.calls[0][1].proposal_info.investigators[0]).not.toHaveProperty(
+        'organization'
+      );
+    }
+  );
+
+  test.each([undefined, null])(
+    'saves edits outside Team when investigator names and email are %s and flags are omitted',
+    async (value) => {
+      const proposalId = 'prsl-1';
+      const withInvestigator: ProposalBackend = {
+        ...pdm,
+        prsl_id: proposalId,
+        proposal_info: {
+          ...pdm.proposal_info,
+          investigators: [
+            {
+              user_id: investigator.id,
+              status: investigator.status,
+              given_name: value,
+              family_name: value,
+              email: value
+            }
+          ]
+        }
+      };
+      mockGet.mockResolvedValue({ data: withInvestigator });
+      mockPut.mockResolvedValue({ data: withInvestigator });
+      const { form, oda } = renderWithForm();
+
+      await act(async () => {
+        await oda.current.loadFromOda(proposalId);
+      });
+      const expectedInvestigator = {
+        id: investigator.id,
+        status: investigator.status,
+        phdThesis: false,
+        pi: false
+      };
+      expect(mapping(withInvestigator).investigators).toEqual([expectedInvestigator]);
+      expect(form.current.getValues('investigators')).toEqual([
+        {
+          id: investigator.id,
+          status: investigator.status,
+          phdThesis: false,
+          pi: false
+        }
+      ]);
+      act(() => {
+        form.current.setValue('abstract', 'Edited details');
+        form.current.setValue('title', 'Edited title');
+      });
+
+      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual(
+        withInvestigator
+      );
+      expect(mockPut).toHaveBeenCalledExactlyOnceWith(
+        expect.stringContaining(`${OSO_SERVICES_PROPOSAL_PATH}/${proposalId}`),
+        expect.objectContaining({
+          investigator_refs: [investigator.id],
+          proposal_info: expect.objectContaining({
+            title: 'Edited title',
+            abstract: 'Edited details',
+            investigators: [
+              {
+                user_id: investigator.id,
+                status: investigator.status,
+                for_phd: false,
+                principal_investigator: false
+              }
+            ]
+          })
+        })
+      );
+    }
+  );
+
+  test('saves current team additions, edits, and removals without unused metadata', async () => {
+    const existing: InvestigatorBackend = {
+      user_id: investigator.id,
+      given_name: investigator.firstName,
+      family_name: investigator.lastName,
+      email: investigator.email,
+      status: investigator.status,
+      organization: 'Existing institute',
+      for_phd: false,
+      principal_investigator: true
+    };
+    const withTeam: ProposalBackend = {
+      ...pdm,
+      proposal_info: {
+        ...pdm.proposal_info,
+        investigators: [existing, { ...existing, user_id: 'removed' }]
+      }
+    };
+    mockGet.mockResolvedValue({ data: withTeam });
+    mockPut.mockResolvedValue({ data: withTeam });
+    const { form, oda } = renderWithForm();
+    let loaded = mapping(withTeam);
+    await act(async () => {
+      const result = await oda.current.loadFromOda('prsl-1');
+      if (typeof result === 'string') throw new Error(result);
+      loaded = result;
+    });
+    const [member] = form.current.getValues('investigators') ?? [];
+    act(() => {
+      form.current.setValue('investigators', [
+        { ...member, id: 'new-member', pi: false },
+        { ...member, firstName: 'Edited name' }
+      ]);
+    });
+
+    await oda.current.saveToOda(loaded);
+
+    expect(mockPut).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        investigator_refs: ['new-member', investigator.id],
+        proposal_info: expect.objectContaining({
+          investigators: [
+            expect.objectContaining({
+              user_id: 'new-member'
+            }),
+            expect.objectContaining({
+              user_id: investigator.id,
+              given_name: 'Edited name'
+            })
+          ]
+        })
+      })
+    );
+    expect(form.current.getValues('investigators')?.[0]).not.toHaveProperty('affiliation');
   });
 
   test('Save to ODA returns API errors', async () => {

@@ -25,6 +25,9 @@ import GetUserByEmail from '@/services/axios/get/getUserByEmail/getUserByEmail';
 import ResetButton from '@/components/button/Reset/Reset';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useFormContext, UseFormReturn } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import { getTeamValues } from '@/models/proposals/team';
 
 const GAP = 5;
 
@@ -35,6 +38,7 @@ interface MemberEntryProps {
 export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberEntryProps) {
   const { t } = useScopedTranslation();
   const { application, updateAppContent2 } = storageObject.useStore();
+  const form = useFormContext<ProposalType>() as UseFormReturn<ProposalType> | null;
   const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
@@ -194,6 +198,10 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       ...getProposal(),
       investigators: [...(currentInvestigators ?? []), newInvestigator]
     };
+    form?.setValue('investigators', getTeamValues(record).investigators, {
+      shouldDirty: true,
+      shouldValidate: true
+    });
     setProposal(record);
     // save the proposal with new investigators as email has been sent & access rights have been created
     await updateProposal(record);
@@ -213,17 +221,14 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       firstName: firstName,
       lastName: lastName,
       email: email,
-      affiliation: '',
       phdThesis: phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      pi: pi,
-      officeLocation: null,
-      jobTitle: null
+      pi: pi
     };
   };
 
   async function AddInvestigator() {
-    const currentInvestigators = getProposal().investigators;
+    const currentInvestigators = form?.getValues('investigators') ?? getProposal().investigators;
     const newInvestigator: Investigator = getInvestigator(currentInvestigators);
     // ---------------------------------------------------------------------------------------------------
     // ---PATH 1---: found investigator with valid entra id (search path), should be added once rights are created
@@ -261,8 +266,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       } else {
         notifySuccess(t('emailSearch.success'));
         setInvestigator(response);
-        setFirstName(response?.firstName);
-        setLastName(response?.lastName);
+        setFirstName(response?.firstName ?? '');
+        setLastName(response?.lastName ?? '');
         return true;
       }
     }
