@@ -3,6 +3,7 @@ import { standardUser } from '../../../support/users';
 import { buildSvContinuumProposal } from '../../../support/editor/data/sv';
 import { SV_CYCLE } from '../../../support/editor/cycles';
 import {
+  BACKEND_TIMEOUT,
   createProposal,
   goToPage,
   stubDocumentUpload
@@ -64,7 +65,8 @@ describe('SV Description page', () => {
     chooseDocument(proposal.description.document);
     cy.findByRole('button', { name: 'Upload' }).click();
 
-    cy.findByText(UPLOAD_FAILED);
+    // The app gets the presigned URL from the real backend before the stubbed upload fails
+    cy.findByText(UPLOAD_FAILED, { timeout: BACKEND_TIMEOUT });
     cy.findByRole('button', { name: 'Download' }).should('not.exist');
   });
 

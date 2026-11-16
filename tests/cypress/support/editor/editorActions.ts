@@ -19,7 +19,7 @@ const verifyOnLandingPage = () => cy.findByRole('button', { name: 'Submission' }
 
 // For waits on a backend response: longer than the 60s that test deployments let the app wait
 // for one (REQUEST_TIMEOUT_MS), so a slow backend fails as a request timeout, not as a missing element
-const BACKEND_TIMEOUT = 70000;
+export const BACKEND_TIMEOUT = 70000;
 
 const verifyOnPage = (page: PageObject) => cy.findByRole('heading', { name: page.heading });
 
