@@ -1,4 +1,3 @@
-import { scaleBandwidthOrFrequency } from '@components/fields/bandwidthFields/bandwidthValidationCommon.tsx';
 import {
   FREQUENCY_HZ,
   FREQUENCY_UNITS,
@@ -15,15 +14,12 @@ import {
   TIME_UNITS,
   FREQUENCY_STR_KHZ,
   FREQUENCY_STR_MHZ,
-  FREQUENCY_STR_HZ,
-  TELESCOPE_LOW_NUM
+  FREQUENCY_STR_HZ
 } from './constants';
 import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';
 import { OSD_CONSTANTS } from './OSDConstants';
 import { channelsToBandwidthHz } from '@utils/zoomWindow.ts';
-import { Telescope } from '@utils/types/typesSensCalc';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const arraysAreEqual = (a: any[], b: any[]) => {
   if (a === b) return true;
@@ -54,8 +50,7 @@ export const getScaledBandwidthOrFrequency = (
   incValue: number | undefined,
   inUnits: number | undefined
 ) => {
-  const unitsLabel = getBandwidthOrFrequencyUnitsLabel(inUnits ?? FREQUENCY_HZ);
-  return scaleBandwidthOrFrequency(incValue ?? 0, unitsLabel);
+  return frequencyConversion(incValue ?? 0, inUnits ?? FREQUENCY_HZ, FREQUENCY_HZ);
 };
 
 export const countWords = (text: string) => {
@@ -309,6 +304,3 @@ export const convertFrequencyToDisplayUnits = (
 
   return { value, unit };
 };
-
-export const getTelescope = (telNum: number): Telescope =>
-  telNum === TELESCOPE_LOW_NUM ? TELESCOPE_LOW : TELESCOPE_MID;

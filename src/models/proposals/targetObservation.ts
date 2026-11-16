@@ -1,36 +1,45 @@
 import { z } from 'zod';
 import {
-  STATUS_ERROR,
-  STATUS_INITIAL,
-  STATUS_OK,
-  STATUS_PARTIAL,
+  SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_PST
 } from '@/utils/constants';
-import type { ResultsSection, SensCalcResults } from '@/utils/types/sensCalcResults';
-import type TargetObservation from '@/utils/types/targetObservation';
-import type { ValueUnitPair } from '@/utils/types/valueUnitPair';
-import type { Integration, ObservationSets, Result, Sensitivity } from '@/generated/models';
+import type { Integration, ObservationSets, Quantity4, Result } from '@/generated/models';
 
 // Schema for the links between targets, observations and data products, with their sensitivity
 // results. Structure only: see getProposalSchema.
 
-const resultsSectionSchema = z.object({
-  field: z.string(),
-  value: z.string().optional(),
-  units: z.string().optional()
-});
+const quantitySchema = z.object({ value: z.number(), unit: z.string() });
 
-export function getSensCalcResultsSchema() {
+/** The results for the continuum or the spectral part of an observation, as the PDM keeps them. */
+export function getSensitivityValuesSchema() {
   return z.object({
-    statusGUI: z.literal([STATUS_OK, STATUS_ERROR, STATUS_PARTIAL, STATUS_INITIAL]),
-    error: z.string().optional(),
-    section1: z.array(resultsSectionSchema).optional(),
-    section2: z.array(resultsSectionSchema).optional(),
-    section3: z.array(resultsSectionSchema).optional()
+    weightedSensitivity: quantitySchema,
+    totalSensitivity: quantitySchema.optional(),
+    confusionNoise: quantitySchema.optional(),
+    surfaceBrightnessSensitivity: quantitySchema.optional(),
+    // The PDM keeps the beam size as text, e.g. '1.23 x 4.56'
+    synthesizedBeamSize: z.object({ value: z.string(), unit: z.string() }).optional()
   });
+}
+
+/**
+ * The sensitivity results of a link. A link without them has none: the calculator doesn't apply
+ * (SSO targets and PST), or they haven't been calculated.
+ */
+export function getSensitivitySchema() {
+  return z.discriminatedUnion('state', [
+    z.object({ state: z.literal(SENSITIVITY_STATE.CALCULATING) }),
+    z.object({ state: z.literal(SENSITIVITY_STATE.FAILED), error: z.string() }),
+    z.object({
+      state: z.literal(SENSITIVITY_STATE.DONE),
+      // Only continuum observations have continuum results
+      continuum: getSensitivityValuesSchema().optional(),
+      spectral: getSensitivityValuesSchema()
+    })
+  ]);
 }
 
 export function getTargetObservationLinkSchema() {
@@ -38,7 +47,7 @@ export function getTargetObservationLinkSchema() {
     targetId: z.string(),
     observationId: z.string(),
     dataProductsSDPId: z.string(),
-    sensitivityResults: getSensCalcResultsSchema().optional()
+    sensitivity: getSensitivitySchema().optional()
   });
 }
 
@@ -47,452 +56,148 @@ export function getTargetObservationSchema() {
 }
 
 export type TargetObservationType = z.input<ReturnType<typeof getTargetObservationSchema>>;
+export type TargetObservationLink = z.output<ReturnType<typeof getTargetObservationLinkSchema>>;
+export type Sensitivity = z.output<ReturnType<typeof getSensitivitySchema>>;
+export type SensitivityValues = z.output<ReturnType<typeof getSensitivityValuesSchema>>;
 
 /*********************************************************** PDM mapping *********************************************************/
 
-// The PDM result is a union on supplied_type, but the mapping reads the fields of both variants.
-type ResultsDetailsAnySupplied = Omit<Result, 'result'> & {
-  result?: Partial<Omit<Integration, 'supplied_type'> & Omit<Sensitivity, 'supplied_type'>> | null;
-};
+type ResultsPart = 'continuum' | 'spectral';
+
+// Accepts the legacy store's spelling (continuumSpectral) and the PDM's (continuum and spectral line).
+// PST results are laid out as continuum ones.
+const hasContinuumResults = (type: string | undefined) =>
+  type === TYPE_CONTINUUM ||
+  type === TYPE_CONTINUUM_SPECTRAL ||
+  type === TYPE_CONTINUUM_SPECTRAL_LONG ||
+  type === TYPE_PST;
 
 /**************************** PDM → form *****************************/
 
-const getResultsSection1 = (
-  inResult: ResultsDetailsAnySupplied,
-  isContinuum: boolean,
-  isPST: boolean,
-  isSensitivity: boolean,
-  inObservationSets: ObservationSets[],
-  inResultObservationRef: string | null
-): SensCalcResults['section1'] => {
-  let section1 = [];
-  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
+// The form keeps units without spaces, as they are shown
+const unitFromPdm = (unit: string | null | undefined) => unit?.split(' ').join('') ?? '';
 
-  // for continuum or PST observation
-  if (isContinuum || isPST) {
-    if (!isSensitivity) {
-      section1.push({
-        // This is only saved for supplied sensitivity obs in backend
-        // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
-        // TODO SC -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
-        // => see sensitivity calculator
-        // TODO SC once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
-        field: 'continuumSensitivityWeighted',
-        value: inResult.result?.weighted_continuum_sensitivity?.value.toString(),
-        units: inResult?.result?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
-      } as ResultsSection);
-    }
-    section1.push({
-      field: 'continuumConfusionNoise',
-      value: inResult.continuum_confusion_noise?.value.toString(),
-      units: inResult?.continuum_confusion_noise?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-    if (!isSensitivity) {
-      section1.push({
-        field: 'continuumTotalSensitivity',
-        value: inResult.result?.total_continuum_sensitivity?.value.toString(),
-        units: inResult?.result?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
-      } as ResultsSection);
-    }
-    section1.push({
-      field: 'continuumSynthBeamSize',
-      value: inResult.synthesized_beam_size?.continuum,
-      units: inResult?.synthesized_beam_size?.unit
-    } as ResultsSection);
-    if (isSensitivity) {
-      section1.push({
-        field: 'continuumIntegrationTime',
-        value: obs?.observation_type_details?.supplied?.quantity?.value.toString(),
-        units: obs?.observation_type_details?.supplied?.quantity?.unit
-      } as ResultsSection);
-    } else {
-      section1.push({
-        field: 'continuumSurfaceBrightnessSensitivity',
-        value: inResult.result?.surface_brightness_sensitivity?.continuum?.toString(),
-        units: inResult?.result?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
-      } as ResultsSection);
-    }
-    // for zoom observation
-  } else {
-    section1 = getResultsSection2(
-      inResult,
-      isSensitivity,
-      inObservationSets,
-      inResultObservationRef
-    ) as any[];
-  }
-  return section1;
+const quantityFromPdm = (quantity: Quantity4 | null | undefined) => ({
+  value: quantity?.value ?? 0,
+  unit: unitFromPdm(quantity?.unit)
+});
+
+// A value the calculator didn't give is null in the PDM, and missing in the form
+const optionalQuantityFromPdm = (quantity: Quantity4 | null | undefined) =>
+  quantity ? quantityFromPdm(quantity) : undefined;
+
+const valuesFromPdm = (
+  result: Result,
+  integration: Integration,
+  part: ResultsPart
+): SensitivityValues => {
+  const surfaceBrightness = integration.surface_brightness_sensitivity?.[part];
+  const beamSize = result.synthesized_beam_size?.[part];
+  return {
+    weightedSensitivity: quantityFromPdm(integration[`weighted_${part}_sensitivity`]),
+    totalSensitivity: optionalQuantityFromPdm(integration[`total_${part}_sensitivity`]),
+    confusionNoise: optionalQuantityFromPdm(result[`${part}_confusion_noise`]),
+    surfaceBrightnessSensitivity:
+      surfaceBrightness == null
+        ? undefined
+        : {
+            value: surfaceBrightness,
+            unit: unitFromPdm(integration.surface_brightness_sensitivity?.unit)
+          },
+    synthesizedBeamSize: beamSize
+      ? { value: beamSize, unit: result.synthesized_beam_size?.unit ?? '' }
+      : undefined
+  };
 };
 
-const getResultsSection2 = (
-  inResult: ResultsDetailsAnySupplied,
-  isSensitivity: boolean,
-  inObservationSets: ObservationSets[],
-  inResultObservationRef: string | null
-): SensCalcResults['section2'] => {
-  const section2 = [];
-  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
-
-  if (!isSensitivity) {
-    section2.push({
-      field: 'spectralSensitivityWeighted',
-      value: inResult.result?.weighted_spectral_sensitivity?.value.toString(),
-      units: inResult?.result?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
+// Results calculated for a supplied sensitivity were never possible in the GUI, so they are read
+// as no results, and calculated again
+const sensitivityFromPdm = (
+  result: Result,
+  observationType: string | undefined
+): Sensitivity | undefined => {
+  if (!result.result || result.result.supplied_type === 'sensitivity') {
+    return undefined;
   }
-  section2.push({
-    field: 'spectralConfusionNoise',
-    value: inResult.spectral_confusion_noise?.value.toString(),
-    units: inResult?.spectral_confusion_noise?.unit?.split(' ')?.join('')
-  } as ResultsSection);
-  if (!isSensitivity) {
-    section2.push({
-      field: 'spectralTotalSensitivity',
-      value: inResult.result?.total_spectral_sensitivity?.value.toString(),
-      units: inResult?.result?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-  }
-  section2.push({
-    field: 'spectralSynthBeamSize',
-    value: inResult.synthesized_beam_size?.spectral,
-    units: inResult?.synthesized_beam_size?.unit // unit is the same for spectral or continuum
-  } as ResultsSection);
-  if (isSensitivity) {
-    section2.push({
-      field: 'spectralIntegrationTime',
-      value: obs?.observation_type_details?.supplied?.quantity?.value.toString(),
-      units: obs?.observation_type_details?.supplied?.quantity?.unit
-    } as ResultsSection);
-  } else {
-    section2.push({
-      field: 'spectralSurfaceBrightnessSensitivity',
-      value: inResult.result?.surface_brightness_sensitivity?.spectral?.toString(),
-      units: inResult?.result?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-  }
-  return section2;
-};
-
-const getResultsSection3 = (
-  inResultObservationRef: string | null,
-  inObservationSets: ObservationSets[],
-  _inResult: Result,
-  isSensitivity: boolean
-): SensCalcResults['section3'] => {
-  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
-  const field = isSensitivity ? 'sensitivity' : 'integrationTime';
-  return [
-    {
-      field: field,
-      value: obs?.observation_type_details?.supplied?.quantity?.value?.toString() as string,
-      units: obs?.observation_type_details?.supplied?.quantity?.unit?.split(' ')?.join('')
-    }
-  ];
-};
-
-const getResultObsType = (result: Result, inObservationSets: ObservationSets[]) => {
-  const obsSetRef = result.observation_set_ref;
-  const obs = inObservationSets.find((item) => item.observation_set_id === obsSetRef);
-  return obs?.observation_type_details?.observation_type;
+  const integration = result.result as Integration;
+  return {
+    state: SENSITIVITY_STATE.DONE,
+    ...(hasContinuumResults(observationType) && {
+      continuum: valuesFromPdm(result, integration, 'continuum')
+    }),
+    spectral: valuesFromPdm(result, integration, 'spectral')
+  };
 };
 
 // Each result is a link; the observation sets give each linked observation's type, which decides
-// how its sensitivity results are laid out.
+// whether it has continuum results.
 export const targetObservationFromPdm = (
   inResults: Result[] | null | undefined,
   inObservationSets: ObservationSets[] | null | undefined
-): TargetObservation[] => {
-  const targetObsArray: TargetObservation[] = [];
-  if (
-    !inResults ||
-    inResults.length === 0 ||
-    !inObservationSets ||
-    inObservationSets.length === 0
-  ) {
-    return targetObsArray;
+): TargetObservationLink[] => {
+  if (!inResults?.length || !inObservationSets?.length) {
+    return [];
   }
-  for (const result of inResults) {
-    const resultObsType = getResultObsType(result, inObservationSets);
-    const isContinuum =
-      resultObsType === TYPE_CONTINUUM || resultObsType === TYPE_CONTINUUM_SPECTRAL_LONG;
-    const isPST = resultObsType === TYPE_PST;
-    const isSensitivity = result.result?.supplied_type === 'sensitivity';
-
-    const targetObs: TargetObservation = {
+  return inResults.map((result) => {
+    const observationType = inObservationSets.find(
+      (obs) => obs.observation_set_id === result.observation_set_ref
+    )?.observation_type_details?.observation_type;
+    const link: TargetObservationLink = {
       targetId: result.target_ref,
       observationId: result.observation_set_ref,
       dataProductsSDPId: result?.data_product_ref
     };
-
-    if (result.result != undefined) {
-      targetObs.sensitivityResults = {
-        statusGUI: 0, // only for UI
-        error: '', // only for UI
-        section1: getResultsSection1(
-          result,
-          isContinuum,
-          isPST,
-          isSensitivity,
-          inObservationSets,
-          result.observation_set_ref
-        ),
-        section2:
-          isContinuum || isPST
-            ? getResultsSection2(
-                result,
-                isSensitivity,
-                inObservationSets,
-                result.observation_set_ref
-              )
-            : [], // only used for continuum & PST observation
-        section3: getResultsSection3(
-          result.observation_set_ref,
-          inObservationSets,
-          result,
-          isSensitivity
-        )
-      };
+    const sensitivity = sensitivityFromPdm(result, observationType);
+    if (sensitivity) {
+      link.sensitivity = sensitivity;
     }
-
-    targetObsArray.push(targetObs);
-  }
-  return targetObsArray;
+    return link;
+  });
 };
 
 /**************************** form → PDM *****************************/
 
-type Link = TargetObservationType[number];
-type SpectralSection = 'section1' | 'section2';
+// A spectral line observation has no continuum results, which the PDM keeps as empty values
+const NO_QUANTITY = { value: 0, unit: '' };
 
-/** Observation type by observation ID, which decides how each link's results are laid out. */
-export type ObservationTypes = Record<string, string>;
-
-export const observationTypesFromPdm = (
-  observationSets: ObservationSets[] = []
-): ObservationTypes =>
-  Object.fromEntries(
-    observationSets.map((obs) => [
-      obs.observation_set_id,
-      obs.observation_type_details?.observation_type as string
-    ])
-  );
-
-// Accepts the legacy store's spelling (continuumSpectral) and the PDM's (continuum and spectral line)
-const isContinuum = (type: string) =>
-  type === TYPE_CONTINUUM ||
-  type === TYPE_CONTINUUM_SPECTRAL ||
-  type === TYPE_CONTINUUM_SPECTRAL_LONG;
-const isPST = (type: string) => type === TYPE_PST;
-
-interface SuppliedRelatedFields {
-  supplied_type: string;
-  /* sensitivity fields */
-  weighted_continuum_sensitivity?: ValueUnitPair;
-  weighted_spectral_sensitivity?: ValueUnitPair;
-  total_continuum_sensitivity?: ValueUnitPair;
-  total_spectral_sensitivity?: ValueUnitPair;
-  surface_brightness_sensitivity?: { continuum: number; spectral: number; unit: string };
-  /* integration_time fields */
-  continuum?: ValueUnitPair;
-  spectral?: ValueUnitPair;
-}
-
-const getSuppliedFieldsSensitivity = (
-  suppliedType: string,
-  obsType: string,
-  tarObs: Link,
-  spectralSection: SpectralSection
-) => {
-  if (!tarObs?.sensitivityResults) {
-    return null;
-  }
-
-  const params: SuppliedRelatedFields = {
-    supplied_type: suppliedType
-  };
-  params.weighted_continuum_sensitivity = {
-    value:
-      isContinuum(obsType) || isPST(obsType)
-        ? Number(
-            tarObs?.sensitivityResults?.section1?.find(
-              (o) => o.field === 'continuumSensitivityWeighted'
-            )?.value
-          )
-        : 0,
-    unit:
-      isContinuum(obsType) || isPST(obsType)
-        ? (tarObs?.sensitivityResults?.section1?.find(
-            (o) => o.field === 'continuumSensitivityWeighted'
-          )?.units as string)
-        : ''
-  };
-  params.total_continuum_sensitivity = {
-    value:
-      isContinuum(obsType) || isPST(obsType)
-        ? Number(
-            tarObs?.sensitivityResults?.section1?.find(
-              (o) => o.field === 'continuumTotalSensitivity'
-            )?.value
-          )
-        : 0,
-    unit:
-      isContinuum(obsType) || isPST(obsType)
-        ? (tarObs?.sensitivityResults?.section1?.find(
-            (o) => o.field === 'continuumTotalSensitivity'
-          )?.units as string)
-        : ''
-  };
-
-  params.weighted_spectral_sensitivity = {
-    value: Number(
-      tarObs.sensitivityResults[spectralSection]?.find(
-        (o) => o.field === 'spectralSensitivityWeighted'
-      )?.value
-    ),
-    unit: tarObs.sensitivityResults[spectralSection]?.find(
-      (o) => o.field === 'spectralSensitivityWeighted'
-    )?.units as string
-  };
-  params.total_spectral_sensitivity = {
-    value: Number(
-      tarObs.sensitivityResults[spectralSection]?.find(
-        (o) => o.field === 'spectralTotalSensitivity'
-      )?.value
-    ),
-    unit: tarObs.sensitivityResults[spectralSection]?.find(
-      (o) => o.field === 'spectralTotalSensitivity'
-    )?.units as string
-  };
-  params.surface_brightness_sensitivity = {
-    continuum:
-      isContinuum(obsType) || isPST(obsType)
-        ? Number(
-            tarObs.sensitivityResults.section1?.find(
-              (o) => o.field === 'continuumSurfaceBrightnessSensitivity'
-            )?.value
-          )
-        : 0,
-    spectral: Number(
-      tarObs.sensitivityResults[spectralSection]?.find(
-        (o) => o.field === 'spectralSurfaceBrightnessSensitivity'
-      )?.value
-    ),
-    unit: tarObs.sensitivityResults[spectralSection]?.find(
-      (o) => o.field === 'spectralSurfaceBrightnessSensitivity'
-    )?.units as string
-  };
-  return params;
-};
-
-export const getSuppliedFieldsIntegrationTime = (
-  suppliedType: string,
-  obsType: string,
-  tarObs: Link
-) => {
-  if (!tarObs?.sensitivityResults) {
-    return null;
-  }
-
-  const params: SuppliedRelatedFields = {
-    supplied_type: suppliedType
-  };
-  params.continuum = {
-    value:
-      isContinuum(obsType) || isPST(obsType)
-        ? Number(tarObs.sensitivityResults.section3?.[0]?.value)
-        : 0,
-    unit:
-      isContinuum(obsType) || isPST(obsType)
-        ? (tarObs.sensitivityResults.section3?.[0]?.units ?? '')
-        : ''
-  };
-
-  params.spectral = {
-    value: Number(tarObs.sensitivityResults.section3?.[0]?.value),
-    unit: tarObs.sensitivityResults.section3?.[0]?.units ?? ''
-  };
-  return params;
-};
-
-const getObsType = (incTarObs: Link, observationTypes: ObservationTypes): string =>
-  observationTypes[incTarObs.observationId] ?? TYPE_CONTINUUM;
-
-const getSpectralSection = (obsType: string): SpectralSection =>
-  isContinuum(obsType) || isPST(obsType) ? 'section2' : 'section1';
-
-export const targetObservationToPdm = (
-  incTargetObservations: TargetObservationType,
-  observationTypes: ObservationTypes = {}
-): Result[] => {
-  const resultsArr = [];
-  for (const tarObs of incTargetObservations) {
-    // refs always populate; result/noise blocks are null when there are no sensitivity results (SSO, PST)
+export const targetObservationToPdm = (links: TargetObservationType): Result[] =>
+  links.map((link) => {
+    // The references are always saved; the results are null when there are none (SSO, PST)
     const result: Result = {
-      observation_set_ref: tarObs.observationId,
-      data_product_ref: tarObs.dataProductsSDPId,
-      target_ref: tarObs.targetId,
+      observation_set_ref: link.observationId,
+      data_product_ref: link.dataProductsSDPId,
+      target_ref: link.targetId,
       result: null,
       continuum_confusion_noise: null,
       spectral_confusion_noise: null,
       synthesized_beam_size: null
     };
-
-    const sensitivityResults = tarObs.sensitivityResults;
-
-    if (sensitivityResults != undefined && sensitivityResults.statusGUI == STATUS_OK) {
-      const obsType = getObsType(tarObs, observationTypes);
-      const spectralSection = getSpectralSection(obsType);
-      const suppliedType =
-        sensitivityResults.section3?.[0]?.field === 'sensitivity'
-          ? 'sensitivity'
-          : 'integration_time';
-
-      const suppliedRelatedFields =
-        suppliedType === 'sensitivity'
-          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
-          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
-
-      result.result = {
-        supplied_type: suppliedType,
-        ...suppliedRelatedFields
-      } as unknown as Result['result'];
-
-      result.continuum_confusion_noise = {
-        value:
-          isContinuum(obsType) || isPST(obsType)
-            ? Number(
-                sensitivityResults.section1?.find((o) => o.field === 'continuumConfusionNoise')
-                  ?.value
-              )
-            : 0,
-        unit:
-          isContinuum(obsType) || isPST(obsType)
-            ? sensitivityResults.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
-            : ''
-      };
-
-      result.synthesized_beam_size = {
-        spectral: sensitivityResults[spectralSection]?.find(
-          (o) => o.field === 'spectralSynthBeamSize'
-        )?.value,
-        continuum:
-          isContinuum(obsType) || isPST(obsType)
-            ? sensitivityResults.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
-            : '',
-        unit: sensitivityResults[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
-          ?.units
-      } as Result['synthesized_beam_size'];
-
-      result.spectral_confusion_noise = {
-        value: Number(
-          sensitivityResults[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
-            ?.value
-        ),
-        unit: sensitivityResults[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
-          ?.units
-      };
+    if (link.sensitivity?.state !== SENSITIVITY_STATE.DONE) {
+      return result;
     }
-    resultsArr.push(result);
-  }
-  return resultsArr;
-};
+
+    const { continuum, spectral } = link.sensitivity;
+    result.result = {
+      supplied_type: 'integration_time',
+      weighted_continuum_sensitivity: continuum?.weightedSensitivity ?? NO_QUANTITY,
+      total_continuum_sensitivity: continuum ? (continuum.totalSensitivity ?? null) : NO_QUANTITY,
+      weighted_spectral_sensitivity: spectral.weightedSensitivity,
+      total_spectral_sensitivity: spectral.totalSensitivity ?? null,
+      surface_brightness_sensitivity: {
+        continuum: continuum ? (continuum.surfaceBrightnessSensitivity?.value ?? null) : 0,
+        spectral: spectral.surfaceBrightnessSensitivity?.value ?? null,
+        unit:
+          spectral.surfaceBrightnessSensitivity?.unit ??
+          continuum?.surfaceBrightnessSensitivity?.unit ??
+          null
+      }
+    };
+    result.continuum_confusion_noise = continuum ? (continuum.confusionNoise ?? null) : NO_QUANTITY;
+    result.spectral_confusion_noise = spectral.confusionNoise ?? null;
+    result.synthesized_beam_size = {
+      continuum: continuum ? (continuum.synthesizedBeamSize?.value ?? null) : '',
+      spectral: spectral.synthesizedBeamSize?.value ?? null,
+      unit: spectral.synthesizedBeamSize?.unit ?? continuum?.synthesizedBeamSize?.unit ?? null
+    };
+    return result;
+  });

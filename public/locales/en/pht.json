@@ -96,12 +96,6 @@
   "assignedProposal": {
     "label": "Assigned Proposal"
   },
-  "autoLink": {
-    "targetSuccess": "Target added and auto-linked successfully.",
-    "success": "Observation setup auto-linked successfully.",
-    "error": "Error while auto-linking observation setup ",
-    "errorNoSensCalcResponse": "Error while auto-linking observation setup, no Sensitivity Calculator Response"
-  },
   "authors": {
     "label": "Authors"
   },
@@ -1259,6 +1253,7 @@
   },
   "sensitivityCalculatorResults": {
     "beamSize": "Beam Size",
+    "calculating": "Calculating sensitivity…",
     "continuumSensitivityWeighted": "Weighted continuum sensitivity",
     "continuumConfusionNoise": "Continuum confusion noise",
     "continuumTotalSensitivity": "Total continuum sensitivity",
@@ -1269,6 +1264,7 @@
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "noObservationOrDataProduct": "No observation or data product found for this sensitivity result",
     "noTarget": "Define a target to see sensitivity results",
     "notApplicableForSSO": "Currently unavailable for non-sidereal objects",
     "sensitivity": "Sensitivity",

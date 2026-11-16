@@ -6,14 +6,6 @@ export const presentLatex = (inStr: string) => {
   return <Latex>{inStr}</Latex>;
 };
 
-export const presentSensCalcError = (inArr: string, length = 0) => {
-  if (!inArr) {
-    return '';
-  }
-  const arr = inArr.split('\n');
-  return arr[length];
-};
-
 export const presentUnits = (inUnits: string) => {
   switch (inUnits) {
     case 'arcsec2':
