@@ -1,13 +1,13 @@
 import {
   BAND_LOW_STR,
   DEFAULT_USER,
-  DP_TYPE_IMAGES,
   PROPOSAL_STATUS,
   SA_AA2,
   TYPE_CONTINUUM
 } from '@utils/constants.ts';
 import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
+import { DATA_PRODUCT_KIND } from '@/models/proposals/dataProducts';
 
 export const MockProposalFrontend: Proposal = {
   metadata: {
@@ -146,34 +146,19 @@ export const MockProposalFrontend: Proposal = {
     }
   ],
   technicalLoadStatus: 9,
-  dataProductSDP: [
+  dataProducts: [
     {
       id: 'SDP-2',
       observationId: 'obs-obR1Ej',
-      selected: true,
-      data: {
-        dataProductType: DP_TYPE_IMAGES,
-        dispersionMeasure: 0,
-        imageSizeValue: 15,
-        imageSizeUnits: 0,
-        pixelSizeValue: 1.007,
-        pixelSizeUnits: 2,
-        weighting: 1,
-        polarisations: ['X'],
-        channelsOut: 1,
-        robust: 0,
-        taperValue: 1,
-        timeAveraging: 1,
-        frequencyAveraging: 1,
-        bitDepth: 1,
-        continuumSubtraction: false,
-        outputFrequencyResolution: 0,
-        outputSamplingInterval: 0,
-        rotationMeasure: 0
-      }
+      kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE,
+      imageSize: { value: 15, unit: 'deg' },
+      pixelSize: { value: 1.007, unit: 'arcsec' },
+      weighting: { type: 'uniform' },
+      taper: 1,
+      polarisations: ['X'],
+      channelsOut: 1
     }
   ],
-  dataProductSRC: [],
   pipeline: ''
 };
 
@@ -277,34 +262,20 @@ export const MockProposalFrontendZoom: Proposal = {
     }
   ],
   technicalLoadStatus: 9,
-  dataProductSDP: [
+  dataProducts: [
     {
       id: 'SDP-1',
       observationId: 'obs-arMIoY',
-      selected: true,
-      data: {
-        dataProductType: DP_TYPE_IMAGES,
-        dispersionMeasure: 0,
-        imageSizeValue: 100,
-        imageSizeUnits: 0,
-        pixelSizeValue: 3.7,
-        pixelSizeUnits: 2,
-        outputFrequencyResolution: 0,
-        outputSamplingInterval: 0,
-        rotationMeasure: 0,
-        weighting: 2,
-        polarisations: ['I', 'XX'],
-        channelsOut: 1,
-        robust: 0.5,
-        taperValue: 0,
-        timeAveraging: 1,
-        frequencyAveraging: 1,
-        bitDepth: 1,
-        continuumSubtraction: false
-      }
+      kind: DATA_PRODUCT_KIND.SPECTRAL_IMAGE,
+      imageSize: { value: 100, unit: 'deg' },
+      pixelSize: { value: 3.7, unit: 'arcsec' },
+      weighting: { type: 'briggs', robust: 0.5 },
+      taper: 0,
+      polarisations: ['I', 'XX'],
+      channelsOut: 2,
+      continuumSubtraction: false
     }
   ],
-  dataProductSRC: [],
   pipeline: ''
 };
 
@@ -335,7 +306,6 @@ export const MockNullProposalFrontend: Proposal = {
   technicalPDF: null,
   calibrationStrategy: [],
   technicalLoadStatus: 9,
-  dataProductSDP: [],
-  dataProductSRC: [],
+  dataProducts: [],
   pipeline: ''
 };

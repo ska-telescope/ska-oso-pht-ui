@@ -185,8 +185,7 @@ describe('clone proposal', () => {
         email: 'john@example.com'
       } as any
     ],
-    dataProductSDP: [{ id: 'dp-1' } as any],
-    dataProductSRC: [],
+    dataProducts: [{ id: 'dp-1' } as any],
     calibrationStrategy: [],
     groupObservations: [],
     targetObservation: [],
@@ -206,8 +205,7 @@ describe('clone proposal', () => {
     observations: [],
     investigators: [],
     abstract: '',
-    dataProductSDP: [],
-    dataProductSRC: [],
+    dataProducts: [],
     calibrationStrategy: []
   };
 
@@ -282,7 +280,7 @@ describe('clone proposal', () => {
           targets: mockRichOriginalProposal.targets,
           observations: mockRichOriginalProposal.observations,
           abstract: mockRichOriginalProposal.abstract,
-          dataProductSDP: mockRichOriginalProposal.dataProductSDP
+          dataProducts: mockRichOriginalProposal.dataProducts
         })
       );
     });

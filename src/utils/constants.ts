@@ -76,7 +76,7 @@ export const DP_TYPE_VISIBLE = 2;
 
 export const ERROR_SECS = 2000;
 
-export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // See SRCNet INACTIVE
+export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
 export const FOOTER_HEIGHT_PHT = 60;
 export const FOOTER_SPACER = 130;
@@ -245,8 +245,7 @@ export const NAV = [
   '/proposal/technical',
   '/proposal/data',
   '/proposal/linking',
-  '/proposal/calibration',
-  '/proposal/src'
+  '/proposal/calibration'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
@@ -288,7 +287,6 @@ export const PAGE_TECHNICAL = 6;
 export const PAGE_DATA_PRODUCTS = 7;
 export const PAGE_LINKING = 8;
 export const PAGE_CALIBRATION = 9;
-export const PAGE_SRC_NET = 10;
 export const PAGE_OBSERVATION_ADD = 11;
 export const PAGE_LANDING = 12;
 export const PAGE_CYCLE = 13;
