@@ -47,8 +47,6 @@ describe('<ProposalDisplay />', () => {
           targetObservation: undefined,
           technicalPDF: null,
           technicalLoadStatus: undefined,
-          dataProductSDP: undefined,
-          dataProductSRC: undefined,
           pipeline: undefined,
           calibrationStrategy: []
         }}
@@ -88,8 +86,6 @@ describe('<ProposalDisplay />', () => {
           targetObservation: undefined,
           technicalPDF: null,
           technicalLoadStatus: undefined,
-          dataProductSDP: undefined,
-          dataProductSRC: undefined,
           pipeline: undefined,
           calibrationStrategy: []
         }}
@@ -132,8 +128,6 @@ describe('<ProposalDisplay />', () => {
           targetObservation: undefined,
           technicalPDF: null,
           technicalLoadStatus: undefined,
-          dataProductSDP: undefined,
-          dataProductSRC: undefined,
           pipeline: undefined,
           calibrationStrategy: []
         }}

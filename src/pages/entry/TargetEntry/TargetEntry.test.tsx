@@ -69,7 +69,6 @@ vi.mock('@utils/storage/store', () => ({
         content2: {
           targets: mockStore.targets,
           observations: [],
-          dataProductSDP: [],
           targetObservation: [],
           calibrationStrategy: []
         }
@@ -124,6 +123,15 @@ describe('<TargetEntry /> target limit', () => {
 });
 
 describe('<TargetEntry /> coordinate system', () => {
+  it('does not require the fields of an entry that is still empty', async () => {
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    expect(raInput()).not.toBeRequired();
+    expect(decInput()).not.toBeRequired();
+  });
+
   it("shows the chosen coordinate system's inputs", async () => {
     const user = userEvent.setup();
     await act(async () => {

@@ -30,7 +30,6 @@ import packageJson from '../../../package.json';
 import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
 import AddProposal from '../add/AddProposal/AddProposal';
 import DataProductPage from '../DataProduct/DataProductPage';
-import SrcDataPage from '../SrcDataPage/SrcDataPage';
 import DetailsPage from '../DetailsPage/DetailsPage';
 import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
 import ObservationPage from '../ObservationPage/ObservationPage';
@@ -79,7 +78,6 @@ const ROUTES = [
   { path: NAV[7], element: <DataProductPage /> },
   { path: NAV[8], element: <LinkingPage /> },
   { path: NAV[9], element: <CalibrationPage /> },
-  { path: NAV[10], element: <SrcDataPage /> },
   { path: PATH[1], element: <AddProposal /> },
   { path: PATH[PAGE_OBSERVATION_ENTRY], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> },

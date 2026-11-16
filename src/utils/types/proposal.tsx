@@ -1,7 +1,6 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { ProposalSubTypeType, ProposalTypeType } from '../constants';
 import { DocumentPDF } from './document';
-import { DataProductSDPNew, DataProductSRC } from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
 import Target from './target';
@@ -9,6 +8,7 @@ import TargetObservation from './targetObservation';
 import Investigator from './investigator';
 import { Metadata } from './metadata';
 import { CalibrationStrategy } from './calibrationStrategy';
+import type { DataProductInput } from '@/models/proposals/dataProducts';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 
 // investigator_refs is not part of the PDM, but it is still sent when saving a proposal
@@ -42,8 +42,8 @@ export type Proposal = {
   calibrationStrategy: CalibrationStrategy[];
   technicalPDF: DocumentPDF | null;
   technicalLoadStatus?: number;
-  dataProductSDP?: DataProductSDPNew[];
-  dataProductSRC?: DataProductSRC[];
+  // The form's data products. The store holds a copy for readers not yet moved to the form
+  dataProducts?: DataProductInput[];
   pipeline?: string;
 };
 
@@ -73,8 +73,7 @@ export const NEW_PROPOSAL = {
   targetObservation: [],
   technicalPDF: null,
   technicalLoadStatus: FileUploadStatus.INITIAL,
-  dataProductSDP: [],
-  dataProductSRC: [],
+  dataProducts: [],
   pipeline: ''
 };
 

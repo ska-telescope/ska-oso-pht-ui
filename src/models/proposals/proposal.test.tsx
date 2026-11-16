@@ -10,13 +10,17 @@ const emptySlices = {
   investigators: [],
   targets: [],
   targetObservation: [],
-  calibrationStrategy: []
+  calibrationStrategy: [],
+  sciencePDF: null,
+  technicalPDF: null,
+  dataProducts: []
 };
 
 describe('proposal schema', () => {
   test.each([0, 1])('validates the abstract word limit with %s extra words', (extraWords) => {
     const wordLimit = Number(phtTranslations.abstract.maxWord);
     const result = getProposalSchema().safeParse({
+      ...emptySlices,
       title: 'A valid title',
       proposalType: PROPOSAL_TYPE.STANDARD,
       abstract: Array(wordLimit + extraWords)
@@ -61,19 +65,6 @@ describe('proposal schema', () => {
   );
 
   test.each(['targets', 'targetObservation', 'calibrationStrategy'])(
-    'defaults a missing %s to an empty list',
-    (slice) => {
-      const result = getProposalSchema().safeParse({
-        title: 'A valid title',
-        proposalType: PROPOSAL_TYPE.STANDARD,
-        ...emptySlices,
-        [slice]: undefined
-      });
-      expect(result.data?.[slice as 'targets']).toEqual([]);
-    }
-  );
-
-  test.each(['targets', 'targetObservation', 'calibrationStrategy'])(
     'rejects %s that is not a list',
     (slice) => {
       const result = getProposalSchema().safeParse({
@@ -99,7 +90,7 @@ describe('proposal schema', () => {
 });
 
 describe('proposal form values', () => {
-  test('a new proposal has the schema defaults', () => {
+  test('a new proposal has empty defaults', () => {
     expect(getProposalFormDefaults()).toEqual({
       title: '',
       proposalType: null,
@@ -110,7 +101,8 @@ describe('proposal form values', () => {
       targetObservation: [],
       calibrationStrategy: [],
       sciencePDF: null,
-      technicalPDF: null
+      technicalPDF: null,
+      dataProducts: []
     });
   });
 

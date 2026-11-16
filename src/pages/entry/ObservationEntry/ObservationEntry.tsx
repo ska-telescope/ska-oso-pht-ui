@@ -36,6 +36,7 @@ import {
   FREQUENCY_MHZ,
   FREQUENCY_GHZ,
   FOOTER_SPACER,
+  FLOW_THROUGH_VALUE,
   WRAPPER_HEIGHT,
   TYPE_ZOOM,
   TELESCOPE_LOW_NUM,
@@ -98,9 +99,13 @@ import { useHelp } from '@/utils/help/useHelp';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
-import updateDataProductsOnObservationChange, {
-  resolvePstMode
-} from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
+import {
+  isImageDataProduct,
+  newDataProduct,
+  pstDataProductKind,
+  updateImageSizes
+} from '@/models/proposals/dataProducts';
+import { withZoomChannels } from '@/utils/autoLinking/AutoLinking';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
@@ -113,6 +118,11 @@ const BACK_PAGE = PAGE_OBSERVATION;
 interface ObservationEntryProps {
   data?: Observation;
 }
+
+export const resolvePstMode = (pstMode?: number | null): number =>
+  pstMode === undefined || pstMode === null || Number.isNaN(pstMode)
+    ? FLOW_THROUGH_VALUE
+    : Number(pstMode);
 
 export default function ObservationEntry({ data }: ObservationEntryProps) {
   const { t } = useScopedTranslation();
@@ -308,34 +318,82 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /*--------------------------------------------------*/
 
+  // A PST observation has one data product, of the kind its PST mode needs
+  const replacePstDataProduct = (observation: Observation) => {
+    const dataProducts = form.getValues('dataProducts');
+    const current = dataProducts.find((dp) => dp.observationId === observation.id);
+    if (!current) {
+      return;
+    }
+    const replacement = newDataProduct(pstDataProductKind(observation.pstMode), observation.id);
+    form.setValue('dataProducts', [
+      ...dataProducts.filter((dp) => dp.observationId !== observation.id),
+      { ...replacement, id: current.id }
+    ]);
+  };
+
+  // The image sizes follow the observation's central frequency
+  const resizeImageDataProducts = (observation: Observation) => {
+    const centralFrequencyMhz = frequencyConversion(
+      observation.centralFrequency,
+      observation.centralFrequencyUnits ?? FREQUENCY_MHZ,
+      FREQUENCY_MHZ
+    );
+    form.setValue(
+      'dataProducts',
+      form
+        .getValues('dataProducts')
+        .map((dp) =>
+          dp.observationId === observation.id && isImageDataProduct(dp)
+            ? updateImageSizes(dp, centralFrequencyMhz)
+            : dp
+        )
+    );
+  };
+
+  // A spectral image's output channels follow the observation's zoom channels
+  const setChannelsOutFromZoomChannels = (observation: Observation) =>
+    form.setValue(
+      'dataProducts',
+      form
+        .getValues('dataProducts')
+        .map((dp) => (dp.observationId === observation.id ? withZoomChannels(dp, observation) : dp))
+    );
+
   const updateObservationOnProposal = () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
 
     const oldObservations = proposal.observations ?? [];
-    const oldDataProducts = proposal.dataProductSDP ?? [];
-
-    // Only reset data products when a field they are derived from has changed, otherwise
-    // revisiting this page would overwrite the user's data product values.
-    // PST data products depend only on the PST mode; images depend on the central frequency
     const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
-    const dataProductInputsChanged =
-      !oldObservation ||
-      oldObservation.type !== newObservation.type ||
-      (newObservation.type === TYPE_PST
-        ? resolvePstMode(oldObservation.pstMode) !== resolvePstMode(newObservation.pstMode)
-        : oldObservation.centralFrequency !== newObservation.centralFrequency ||
-          oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
-
-    const newDataProducts = dataProductInputsChanged
-      ? updateDataProductsOnObservationChange(oldDataProducts, newObservation, oldObservation)
-      : oldDataProducts;
 
     setProposal({
       ...proposal,
-      observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: newDataProducts
+      observations: updateObservations(oldObservations ?? [], newObservation)
     });
+
+    // Compared with the stored observation, so revisiting this page keeps the user's data product
+    // values. A new observation has no data products yet.
+    if (oldObservation) {
+      // A PST observation saved without a mode is flow-through, so loading one isn't a change
+      const pstModeChanged =
+        newObservation.type === TYPE_PST &&
+        (oldObservation.type !== TYPE_PST ||
+          resolvePstMode(oldObservation.pstMode) !== resolvePstMode(newObservation.pstMode));
+      const frequencyChanged =
+        newObservation.type !== TYPE_PST &&
+        (oldObservation.centralFrequency !== newObservation.centralFrequency ||
+          oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
+      if (pstModeChanged) {
+        replacePstDataProduct(newObservation);
+      }
+      if (frequencyChanged) {
+        resizeImageDataProducts(newObservation);
+      }
+      if (oldObservation.zoomChannels !== newObservation.zoomChannels) {
+        setChannelsOutFromZoomChannels(newObservation);
+      }
+    }
 
     // The calibrators depend on the telescope and the integration time
     const calibratorInputsChanged =

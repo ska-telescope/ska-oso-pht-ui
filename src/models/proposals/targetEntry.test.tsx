@@ -88,10 +88,20 @@ describe('target entry schema', () => {
 
   test('checks Galactic coordinates as numbers', () => {
     const galactic = { ...validIcrs, kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value };
-    expect(errorsFor({ ...galactic, l: '12.5', b: '-3.25' })).toEqual({});
-    expect(errorsFor({ ...galactic, l: '400', b: '95' })).toEqual({
+    expect(errorsFor({ ...galactic, l: 12.5, b: -3.25 })).toEqual({});
+    expect(errorsFor({ ...galactic, l: 400, b: 95 })).toEqual({
       l: text('skyDirection.error.1.0'),
       b: text('skyDirection.error.2.1')
+    });
+    // Longitude 360 is 0 again, so it is out of range
+    expect(errorsFor({ ...galactic, l: 360, b: 0 })).toEqual({ l: text('skyDirection.error.1.0') });
+  });
+
+  test('requires both Galactic coordinates', () => {
+    const galactic = { ...validIcrs, kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value };
+    expect(errorsFor({ ...galactic, l: null, b: null })).toEqual({
+      l: text('skyDirection.error.1.0'),
+      b: text('skyDirection.error.2.0')
     });
   });
 
@@ -117,8 +127,8 @@ describe('getTargetEntryDefaults', () => {
       name: '',
       raStr: '',
       decStr: '',
-      l: '',
-      b: '',
+      l: null,
+      b: null,
       velType: VELOCITY_TYPE.VELOCITY,
       vel: '',
       velUnit: VELOCITY_UNIT.KM_PER_S,
@@ -136,8 +146,8 @@ describe('getTargetEntryDefaults', () => {
       expect.objectContaining({
         kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
         name: '',
-        l: '',
-        b: '',
+        l: null,
+        b: null,
         velType: VELOCITY_TYPE.REDSHIFT
       })
     );
@@ -165,8 +175,8 @@ describe('targetEntryFromTarget', () => {
       velocityDefinition: VELOCITY_DEFINITION.RADIO
     });
     expect(entry.kind).toBe(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
-    expect(entry.l).toBe('12.5');
-    expect(entry.b).toBe('-3.25');
+    expect(entry.l).toBe(12.5);
+    expect(entry.b).toBe(-3.25);
   });
 });
 
@@ -196,7 +206,7 @@ describe('applyTargetEdit', () => {
       b: -3.25
     };
     const galacticBefore = targetEntryFromTarget(galacticTarget);
-    const edited = applyTargetEdit(galacticTarget, galacticBefore, { ...galacticBefore, b: '4.5' });
+    const edited = applyTargetEdit(galacticTarget, galacticBefore, { ...galacticBefore, b: 4.5 });
     expect(edited).toEqual({ ...galacticTarget, b: 4.5 });
   });
 
