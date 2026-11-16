@@ -105,7 +105,6 @@ export const MockSlicesPdm = {
     ],
     documents: [],
     data_product_sdps: [],
-    data_product_src_nets: [],
     observation_sets: [
       observationSet('obs-continuum', { observation_type: 'continuum' }),
       observationSet('obs-continuum-spectral', {

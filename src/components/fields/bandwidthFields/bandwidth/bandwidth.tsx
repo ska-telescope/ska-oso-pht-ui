@@ -170,7 +170,7 @@ export default function BandwidthField({
             decrementDisabled={disabled || zoomChannels <= 1}
             disabled={disabled}
             required={required}
-            min={1}
+            min={2}
             max={maxZoomChannels}
             step={1}
           />

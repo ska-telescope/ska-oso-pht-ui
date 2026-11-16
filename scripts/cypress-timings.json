@@ -9,10 +9,6 @@
       "duration": 15293
     },
     {
-      "spec": "tests/cypress/e2e/submissions/dataProducts/dataProductsValidation.cy.js",
-      "duration": 32186
-    },
-    {
       "spec": "tests/cypress/e2e/submissions/editSubmission/editSubmission.cy.js",
       "duration": 32
     },

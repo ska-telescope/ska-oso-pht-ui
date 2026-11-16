@@ -3,16 +3,10 @@ import GroupObservation from '@utils/types/groupObservation.tsx';
 import { ValueUnitPair } from '@utils/types/valueUnitPair.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import {
-  DETECTED_FILTER_BANK_VALUE,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
   FREQUENCY_UNITS,
   DETAILS,
-  IMAGE_WEIGHTING,
-  IW_BRIGGS,
   PROPOSAL_STATUS,
   PST_MODES,
-  PULSAR_TIMING_VALUE,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
@@ -24,15 +18,6 @@ import {
   TYPE_ZOOM_LONG,
   SA_AA4
 } from '@utils/constants.ts';
-import {
-  DataProductSDPNew,
-  DataProductSRC,
-  SDPFilterbankPSTData,
-  SDPFlowthroughPSTData,
-  SDPImageContinuumData,
-  SDPSpectralData,
-  SDPVisibilitiesContinuumData
-} from '@utils/types/dataProduct.tsx';
 import { DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
@@ -40,20 +25,15 @@ import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { referenceCoordinateToPdm, targetsToPdm } from '@/models/proposals/targets';
 import { targetObservationToPdm } from '@/models/proposals/targetObservation';
+import { savedDataProductsAndLinks } from '@/models/proposals/dataProducts';
 import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
 import { investigatorToPdm } from '@/models/proposals/team';
 import type {
-  ContinuumVisibilities,
-  DataProductSDP as DataProductSDPTransport,
-  DataProductSRC as DataProductSRCTransport,
   Document as DocumentTransport,
   LowArray,
   MidArray,
   ObservationSets,
-  Polarisation,
-  ScriptParameters,
-  Supplied as SuppliedTransport,
-  Weighting
+  Supplied as SuppliedTransport
 } from '@/generated/models';
 
 const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
@@ -83,136 +63,6 @@ const getDocuments = (
     });
   }
   return documents;
-};
-
-/**
- * Maps a data product to the backend's script_parameters shape for its observation's type.
- */
-export const getDataProductScriptParameters = (
-  obs: Observation[] | null,
-  dp: DataProductSDPNew
-): ScriptParameters => {
-  const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
-  const getWeight = (data: SDPImageContinuumData | SDPSpectralData): Weighting => ({
-    weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
-      ?.label as Weighting['weighting'],
-    ...(Number(data?.weighting) === IW_BRIGGS && {
-      robust: data?.robust != null ? Number(data?.robust) : undefined
-    })
-  });
-  const getVisibilities = (
-    data: SDPVisibilitiesContinuumData
-  ): ContinuumVisibilities & { variant: 'visibilities' } => ({
-    time_averaging: data?.timeAveraging ?? 0,
-    frequency_averaging: data?.frequencyAveraging ?? 0,
-    kind: 'continuum',
-    variant: 'visibilities'
-  });
-  const obType = obs?.find((o) => o?.id === dp.observationId)?.type;
-  switch (obType) {
-    case TYPE_CONTINUUM: {
-      if (
-        (dp?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData)?.dataProductType ===
-        DP_TYPE_IMAGES
-      ) {
-        const data = dp?.data as SDPImageContinuumData;
-        return {
-          image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
-          image_cellsize: {
-            value: data?.pixelSizeValue,
-            unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
-          },
-          weight: getWeight(data),
-          polarisations: data?.polarisations as Polarisation[],
-          channels_out: data?.channelsOut,
-          gaussian_taper: data?.taperValue,
-          kind: 'continuum',
-          variant: 'continuum image'
-        };
-      } else {
-        return getVisibilities(dp?.data as SDPVisibilitiesContinuumData);
-      }
-    }
-    case TYPE_ZOOM:
-    case TYPE_CONTINUUM_SPECTRAL: {
-      // Both modes also produce a hidden visibilities data product (see HiddenSDPData in
-      // AutoLinking.tsx) - the backend only has one "visibilities" script-parameters shape
-      // (kind: continuum / variant: visibilities), regardless of the mode that created it.
-      if ((dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE) {
-        return getVisibilities(dp?.data as SDPVisibilitiesContinuumData);
-      }
-      const data = dp?.data as SDPSpectralData;
-      const common = {
-        image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
-        image_cellsize: {
-          value: data?.pixelSizeValue,
-          unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
-        },
-        weight: getWeight(data),
-        polarisations: (data?.polarisations ?? []) as Polarisation[],
-        channels_out: data?.channelsOut ?? 0,
-        gaussian_taper: data?.taperValue ?? 0
-      };
-      if (obType === TYPE_CONTINUUM_SPECTRAL) {
-        return {
-          ...common,
-          kind: TYPE_CONTINUUM_SPECTRAL_LONG,
-          variant: 'continuum and spectral line image'
-        };
-      }
-      return {
-        ...common,
-        kind: 'spectral',
-        variant: 'spectral image',
-        continuum_subtraction: data?.continuumSubtraction
-      };
-    }
-    case TYPE_PST:
-    default:
-      const pstMode = obs?.find((o) => o?.id === dp.observationId)?.pstMode;
-      if (pstMode === DETECTED_FILTER_BANK_VALUE) {
-        const data = dp?.data as SDPFilterbankPSTData;
-        return {
-          polarisations: data?.polarisations as Polarisation[],
-          bit_depth: Number(data?.bitDepth),
-          output_frequency_resolution: data?.outputFrequencyResolution ?? 0,
-          output_sampling_interval: data?.outputSamplingInterval ?? 0,
-          dispersion_measure: data?.dispersionMeasure ?? 0,
-          rotation_measure: data?.rotationMeasure ?? 0,
-          kind: 'pst',
-          variant: 'detected filterbank'
-        };
-      } else if (pstMode === PULSAR_TIMING_VALUE) {
-        return {
-          kind: 'pst',
-          variant: 'pulsar timing'
-        };
-      } else {
-        const data = dp?.data as SDPFlowthroughPSTData;
-        return {
-          polarisations: data?.polarisations as Polarisation[],
-          bit_depth: data?.bitDepth ?? 1,
-          kind: 'pst',
-          variant: 'flow through'
-        };
-      }
-  }
-};
-
-const getDataProductSDP = (
-  obs: Observation[] | null,
-  dataProducts: DataProductSDPNew[]
-): DataProductSDPTransport[] => {
-  const sdp = dataProducts?.map((dp) => ({
-    data_product_id: dp.id?.toString(),
-    observation_set_ref: dp.observationId,
-    script_parameters: getDataProductScriptParameters(obs, dp)
-  }));
-  return sdp;
-};
-
-export const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCTransport[] => {
-  return dataProducts?.map((dp) => ({ data_products_src_id: dp?.id }));
 };
 
 const getGroupObservation = (obsId: string, observationGroups: GroupObservation[] | undefined) => {
@@ -349,6 +199,11 @@ const getObservationsSets = (
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
   const userId = getUserId();
+  // The same data products and links as a save from the form (see mapFormToPdm)
+  const saved = savedDataProductsAndLinks(
+    proposal.dataProducts ?? [],
+    (proposal.targetObservation ?? []) as TargetObservation[]
+  );
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
@@ -383,18 +238,8 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         proposal.calibrationStrategy && proposal.calibrationStrategy.length > 0
           ? calibrationStrategyToPdm(proposal.calibrationStrategy)
           : [],
-      data_product_sdps:
-        proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0
-          ? getDataProductSDP(
-              proposal.observations as Observation[],
-              proposal.dataProductSDP as DataProductSDPNew[]
-            )
-          : [],
-      data_product_src_nets:
-        proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0
-          ? getDataProductSRC(proposal.dataProductSRC as DataProductSRC[])
-          : [],
-      result_details: targetObservationToPdm(proposal.targetObservation as TargetObservation[])
+      data_product_sdps: saved.dataProducts,
+      result_details: targetObservationToPdm(saved.links)
     }
   };
   helpers.transform.trimObject(transformedProposal);

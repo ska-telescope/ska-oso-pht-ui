@@ -1,6 +1,8 @@
 import { enter, section, select, selectUnit } from '../fields';
 import type { PageObject, Target } from '../types';
 
+const velocityField = () => cy.findByRole('textbox', { name: 'Velocity' });
+
 // Deletes the target with the given name from the target list, confirming the deletion
 export const deleteTarget = (name: string) => {
   cy.findByRole('row', { name: new RegExp(name) })
@@ -17,8 +19,8 @@ const addTarget = (target: Target) => {
   if (target.velocityType === 'Redshift') {
     enter(cy.findByRole('textbox', { name: 'Redshift' }), target.redshift);
   } else {
-    selectUnit('Velocity', target.velocity.unit);
-    enter(cy.findByRole('textbox', { name: 'Velocity' }), target.velocity.value);
+    selectUnit(velocityField(), target.velocity.unit);
+    enter(velocityField(), target.velocity.value);
   }
   cy.findByRole('button', { name: 'Add Target' }).click();
   // Adding the only target links it to the observation; the target is listed once it's linked

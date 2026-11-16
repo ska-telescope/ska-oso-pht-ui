@@ -8,7 +8,6 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
 
@@ -105,17 +104,11 @@ export default function GridObservationSummary({
     }
   };
 
-  const getDataProducts = (rec: { type?: number; id?: string | number }): string[] => {
-    const array = proposal?.dataProductSDP?.filter((e) => e.observationId === rec.id) ?? [];
-    return array.flatMap((item) =>
-      t(
-        'dataProductType.options.' +
-          rec.type +
-          '.' +
-          (item?.data as SDPVisibilitiesContinuumData)?.dataProductType
-      )
-    );
-  };
+  // Each data product of the observation, by the title of its kind
+  const getDataProducts = (rec: { id?: string | number }): string[] =>
+    (proposal?.dataProducts ?? [])
+      .filter((dp) => dp.observationId === rec.id)
+      .map((dp) => t('page.7.group.' + dp.kind));
 
   const colObservationId = {
     field: 'id',
@@ -167,7 +160,7 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('page.7.plural'),
     flex: 1.5,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { type: number } }) => elementArray(getDataProducts(e.row))
+    renderCell: (e: { row: { id: string } }) => elementArray(getDataProducts(e.row))
   };
 
   const basicColumns = [

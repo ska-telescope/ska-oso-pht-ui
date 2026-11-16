@@ -7,6 +7,8 @@ import Target from '@utils/types/target';
 import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
 import { useProposalForm } from './useProposalForm';
 import { useCopySlicesToStore } from './useCopySlicesToStore';
+import { dataProductsFromPdm } from './dataProducts';
+import { pdmDataProducts } from './testing/pdmDataProducts';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 
 const target = (id: string): Target => ({
@@ -150,6 +152,16 @@ describe('useCopySlicesToStore', () => {
         sciencePDF: { documentId: 'science-doc-p1' }
       })
     );
+  });
+
+  test('copies the data products into the store', () => {
+    const { result } = renderHarness();
+    open(result, { id: 'p1', dataProducts: [] });
+    const dataProducts = dataProductsFromPdm(pdmDataProducts.slice(0, 2));
+
+    act(() => result.current.form.setValue('dataProducts', dataProducts));
+
+    expect(storedProposal(result).dataProducts).toEqual(dataProducts);
   });
 
   test('copies into a new proposal before it has an ID', () => {

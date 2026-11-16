@@ -9,11 +9,11 @@ export function getDocumentRefSchema() {
       documentId: z.string().optional(),
       isUploadedPdf: z.boolean().optional()
     })
-    .nullish();
+    .nullable();
 }
 
-// A document reference or null; the form never holds undefined
-export type DocumentRef = Exclude<z.infer<ReturnType<typeof getDocumentRefSchema>>, undefined>;
+// A document reference, or null when there is no document
+export type DocumentRef = z.infer<ReturnType<typeof getDocumentRefSchema>>;
 
 export type DocumentValues = {
   sciencePDF: DocumentRef;

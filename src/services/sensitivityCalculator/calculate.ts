@@ -6,14 +6,9 @@ import {
   BAND_5A_STR,
   BAND_5B_STR,
   CHANNELS_OUT_DEFAULT,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
   FREQUENCY_HZ,
   FREQUENCY_KHZ,
   FREQUENCY_MHZ,
-  IMAGE_WEIGHTING_DEFAULT,
-  IW_BRIGGS,
-  IW_UNIFORM,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_SSO,
@@ -32,14 +27,15 @@ import {
 } from '@/utils/constants';
 import { OSD_CONSTANTS } from '@/utils/OSDConstants';
 import { frequencyConversion, getBandwidthZoom, getSpectralResolutionHz } from '@/utils/helpers';
-import { getImageWeightingMapping, timeConversion } from '@/utils/helpersSensCalc';
+import { timeConversion } from '@/utils/helpersSensCalc';
 import type Observation from '@/utils/types/observation';
 import type { TargetType } from '@/models/proposals/targets';
-import type {
-  DataProductSDPNew,
-  SDPImageContinuumData,
-  SDPSpectralData
-} from '@/utils/types/dataProduct';
+import { ImageWeighting } from '@/generated/models';
+import {
+  DATA_PRODUCT_KIND,
+  type DataProductInput,
+  isImageDataProduct
+} from '@/models/proposals/dataProducts';
 import { post, SensCalcError, SensCalcRequestOptions, SensCalcSuccess } from './client';
 import type {
   ContinuumResponse,
@@ -102,20 +98,28 @@ const midArray = (observation: Observation) =>
     ? { n_ska: observation.num15mAntennas ?? 0, n_meer: observation.num13mAntennas ?? 0 }
     : { subarray_configuration: subarrayConfiguration(observation).toUpperCase() };
 
-const imageData = (dataProduct: DataProductSDPNew) =>
-  dataProduct.data as Partial<SDPImageContinuumData | SDPSpectralData>;
+// The calculator's name for each weighting: it calls Briggs weighting 'robust'
+const WEIGHTING_MODE: Record<ImageWeighting, WeightingMode> = {
+  [ImageWeighting.Natural]: 'natural',
+  [ImageWeighting.Uniform]: 'uniform',
+  [ImageWeighting.Briggs]: 'robust'
+};
 
-const weighting = (dataProduct: DataProductSDPNew, defaultWeighting: number) => {
-  const data = imageData(dataProduct);
-  const weightingValue = data.weighting ?? defaultWeighting;
+// A data product without a weighting of its own (visibilities) uses the mode's default
+const weighting = (dataProduct: DataProductInput, defaultWeighting: ImageWeighting) => {
+  const weight = isImageDataProduct(dataProduct)
+    ? dataProduct.weighting
+    : { type: defaultWeighting };
   return {
-    weighting_mode: getImageWeightingMapping(weightingValue) as WeightingMode,
-    ...(weightingValue === IW_BRIGGS && { robustness: data.robust ?? ROBUST_DEFAULT })
+    weighting_mode: WEIGHTING_MODE[weight.type],
+    ...(weight.type === ImageWeighting.Briggs && {
+      robustness: ('robust' in weight ? weight.robust : undefined) ?? ROBUST_DEFAULT
+    })
   };
 };
 
-const taper = (dataProduct: DataProductSDPNew) =>
-  imageData(dataProduct).taperValue ?? TAPER_DEFAULT;
+const taper = (dataProduct: DataProductInput) =>
+  isImageDataProduct(dataProduct) ? dataProduct.taper : TAPER_DEFAULT;
 
 const integrationTime = (observation: Observation, unit: number) =>
   timeConversion(observation.supplied.value, observation.supplied.units, unit);
@@ -136,16 +140,14 @@ const continuumBandwidth = (observation: Observation, unit: number) =>
  */
 export const getLowSpectralAveragingFactor = (
   observation: Observation,
-  dataProduct: DataProductSDPNew
+  dataProduct: DataProductInput
 ) => {
   const totalChannels =
     continuumBandwidth(observation, FREQUENCY_KHZ) / LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ;
 
-  const data = dataProduct.data as Partial<SDPImageContinuumData>;
-  const channelsOut =
-    observation.type === TYPE_CONTINUUM && data.dataProductType === DP_TYPE_VISIBLE
-      ? CHANNELS_OUT_DEFAULT
-      : Number(data.channelsOut);
+  const channelsOut = isImageDataProduct(dataProduct)
+    ? dataProduct.channelsOut
+    : CHANNELS_OUT_DEFAULT;
 
   // Spectral results are ignored for a single output channel, but the calculator requires a value
   if (channelsOut === 1) {
@@ -161,10 +163,10 @@ const MID_SPECTRAL_AVERAGING_FACTOR = 1;
 const lowContinuumRequest = (
   observation: Observation,
   target: TargetType,
-  dataProduct: DataProductSDPNew
+  dataProduct: DataProductInput
 ): LowContinuumRequest => ({
   ...lowArray(observation),
-  ...weighting(dataProduct, IW_UNIFORM),
+  ...weighting(dataProduct, ImageWeighting.Uniform),
   integration_time_h: integrationTime(observation, TIME_HOURS),
   elevation_limit: Number(observation.elevation),
   freq_centre_mhz: centralFrequency(observation, FREQUENCY_MHZ),
@@ -177,10 +179,10 @@ const lowContinuumRequest = (
 const midContinuumRequest = (
   observation: Observation,
   target: TargetType,
-  dataProduct: DataProductSDPNew
+  dataProduct: DataProductInput
 ): MidContinuumRequest => ({
   ...midArray(observation),
-  ...weighting(dataProduct, IW_UNIFORM),
+  ...weighting(dataProduct, ImageWeighting.Uniform),
   rx_band: MID_RX_BANDS[observation.observingBand],
   integration_time_s: integrationTime(observation, TIME_SECS),
   taper: taper(dataProduct),
@@ -195,10 +197,10 @@ const midContinuumRequest = (
 const lowZoomRequest = (
   observation: Observation,
   target: TargetType,
-  dataProduct: DataProductSDPNew
+  dataProduct: DataProductInput
 ): LowZoomRequest => ({
   ...lowArray(observation),
-  ...weighting(dataProduct, IMAGE_WEIGHTING_DEFAULT),
+  ...weighting(dataProduct, ImageWeighting.Briggs),
   integration_time_h: integrationTime(observation, TIME_HOURS),
   elevation_limit: Number(observation.elevation),
   freq_centres_mhz: [centralFrequency(observation, FREQUENCY_MHZ)],
@@ -212,10 +214,10 @@ const lowZoomRequest = (
 const midZoomRequest = (
   observation: Observation,
   target: TargetType,
-  dataProduct: DataProductSDPNew
+  dataProduct: DataProductInput
 ): MidZoomRequest => ({
   ...midArray(observation),
-  ...weighting(dataProduct, IMAGE_WEIGHTING_DEFAULT),
+  ...weighting(dataProduct, ImageWeighting.Briggs),
   rx_band: MID_RX_BANDS[observation.observingBand],
   integration_time_s: integrationTime(observation, TIME_SECS),
   taper: taper(dataProduct),
@@ -233,7 +235,7 @@ const midZoomRequest = (
 const continuumRequest = (
   observation: Observation,
   target: TargetType,
-  dataProduct: DataProductSDPNew
+  dataProduct: DataProductInput
 ): SensitivityRequest =>
   observation.telescope === TELESCOPE_LOW_NUM
     ? {
@@ -250,7 +252,7 @@ const continuumRequest = (
 const zoomRequest = (
   observation: Observation,
   target: TargetType,
-  dataProduct: DataProductSDPNew
+  dataProduct: DataProductInput
 ): SensitivityRequest =>
   observation.telescope === TELESCOPE_LOW_NUM
     ? {
@@ -272,14 +274,14 @@ const zoomRequest = (
 export const getSensitivityDataProduct = (
   observation: Observation,
   linkedId: string,
-  dataProducts: DataProductSDPNew[]
-): DataProductSDPNew | undefined => {
+  dataProducts: DataProductInput[]
+): DataProductInput | undefined => {
   const linked = dataProducts.find((dp) => dp.id === linkedId);
-  if (!linked || linked.data.dataProductType !== DP_TYPE_VISIBLE) {
+  if (!linked || linked.kind !== DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES) {
     return linked;
   }
   const images = dataProducts.find(
-    (dp) => dp.observationId === observation.id && dp.data.dataProductType === DP_TYPE_IMAGES
+    (dp) => dp.observationId === observation.id && isImageDataProduct(dp)
   );
   return images ?? linked;
 };
@@ -293,7 +295,7 @@ export const getSensitivityDataProduct = (
 export const buildSensitivityRequest = (
   observation: Observation,
   target: TargetType,
-  dataProduct: DataProductSDPNew
+  dataProduct: DataProductInput
 ): SensitivityRequest | null => {
   if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value || observation.type === TYPE_PST) {
     return null;
