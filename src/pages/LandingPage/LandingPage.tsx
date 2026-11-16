@@ -148,32 +148,35 @@ export default function LandingPage() {
     navigate(NAV[0]);
   };
 
-  const viewIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenViewDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
+  const proposalLoadPending = React.useRef(false);
+
+  const openProposal = async (id: string, onSuccess: () => void) => {
+    if (proposalLoadPending.current) return;
+
+    proposalLoadPending.current = true;
+    try {
+      if (await getTheProposal(id)) {
+        onSuccess();
+      } else {
+        alert(t('error.iconClicked'));
+      }
+    } finally {
+      proposalLoadPending.current = false;
     }
   };
 
-  const editIconClicked = async (id: string) => {
+  const viewIconClicked = (id: string) => openProposal(id, () => setOpenViewDialog(true));
+
+  const editIconClicked = (id: string) => {
     if (!loggedIn) return;
 
-    if (await getTheProposal(id)) {
+    return openProposal(id, () => {
       window.scrollTo(0, 0);
       goToTitlePage();
-    } else {
-      alert(t('error.iconClicked'));
-    }
+    });
   };
 
-  const cloneIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenCloneDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
-    }
-  };
+  const cloneIconClicked = (id: string) => openProposal(id, () => setOpenCloneDialog(true));
 
   // The clone keeps the original's target/observation/data-product links (same targets and
   // observations carry over), but not the calculated sensitivity results attached to them - those

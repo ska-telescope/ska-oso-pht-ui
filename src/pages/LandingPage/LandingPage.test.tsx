@@ -106,9 +106,12 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 
 // Stub TableSubmissions so the clone button reliably calls cloneFunction(id)
 vi.mock('@/components/table/tableSubmissions/TableSubmissions', () => ({
-  default: ({ cloneFunction, editFunction, data }: any) =>
+  default: ({ cloneFunction, editFunction, viewFunction, data }: any) =>
     data.map((item: any) => (
       <div key={item.id}>
+        <button data-testid="viewIcon" onClick={() => viewFunction(item.id)}>
+          View
+        </button>
         <button data-testid="cloneIcon" onClick={() => cloneFunction(item.id)}>
           Clone
         </button>
@@ -271,6 +274,36 @@ describe('clone proposal', () => {
     expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID);
     expect(scrollTo).toHaveBeenCalledWith(0, 0);
   });
+
+  test.each(['editIcon', 'viewIcon', 'cloneIcon'])(
+    'rejects overlapping proposal loads while %s is pending',
+    async (firstAction) => {
+      const secondProposal = { ...mockRichOriginalProposal, id: 'prp-2' };
+      (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal, secondProposal]);
+      let finishLoad!: (proposal: Partial<Proposal>) => void;
+      mockLoadFromOda.mockImplementationOnce(
+        () => new Promise<Partial<Proposal>>((resolve) => (finishLoad = resolve))
+      );
+      vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+      const alert = vi.fn();
+      vi.stubGlobal('alert', alert);
+      wrapper(<LandingPage />);
+
+      fireEvent.click((await screen.findAllByTestId(firstAction))[0]);
+      fireEvent.click(screen.getAllByTestId('editIcon')[1]);
+      fireEvent.click(screen.getAllByTestId('viewIcon')[1]);
+      fireEvent.click(screen.getAllByTestId('cloneIcon')[1]);
+
+      expect(mockLoadFromOda).toHaveBeenCalledTimes(1);
+      expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID);
+      expect(alert).not.toHaveBeenCalled();
+
+      finishLoad(mockRichOriginalProposal);
+      await waitFor(() =>
+        expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(mockRichOriginalProposal)
+      );
+    }
+  );
 
   test('does not scroll or navigate when loading the proposal fails', async () => {
     const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
