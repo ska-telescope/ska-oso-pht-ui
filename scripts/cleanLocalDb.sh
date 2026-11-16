@@ -45,8 +45,12 @@ make k8s-uninstall-chart
 # The operator drops the database while the PGDBInstance is being deleted
 kubectl wait --for=delete pgdbinstances --all -n "$KUBE_NAMESPACE" --timeout=180s
 
-# The operator logs a failed drop and lets the PGDBInstance go anyway, so check
-if [ -n "$(psql_in_cluster -c "SELECT 1 FROM pg_database WHERE datname = '$db_name'")" ]; then
+# The operator logs a failed drop and lets the PGDBInstance go anyway, so check. Empty output
+# only means the database is gone if the query itself worked
+db_exists=$(psql_in_cluster -c "SELECT 1 FROM pg_database WHERE datname = '$db_name'") ||
+  fail "could not check whether database $db_name was dropped from $cluster_namespace/$cluster." \
+    "The chart is uninstalled: reinstall it with make k8s-install-chart"
+if [ -n "$db_exists" ]; then
   fail "database $db_name still exists in $cluster_namespace/$cluster - see the logs of the" \
     "ska-ser-db-instance operator. The chart is uninstalled: reinstall it with make k8s-install-chart"
 fi
@@ -55,6 +59,15 @@ log "database $db_name dropped"
 log "reinstalling the chart (KUBE_HOST=$KUBE_HOST REQUEST_TIMEOUT_MS=$REQUEST_TIMEOUT_MS)"
 make k8s-install-chart
 
-log "new database $db_name has $(psql_in_cluster -d "$db_name" \
-  -c 'SELECT count(*) FROM proposal.proposals') proposal(s) and $(psql_in_cluster -d "$db_name" \
-  -c 'SELECT count(*) FROM proposal.proposal_roles') proposal role(s)"
+count_rows() { psql_in_cluster -d "$db_name" -c "SELECT count(*) FROM $1" 2>/dev/null; }
+
+# The migrations may still be running after the install returns, so wait for their tables
+for attempt in $(seq 60); do
+  if proposals=$(count_rows proposal.proposals) && roles=$(count_rows proposal.proposal_roles); then
+    break
+  fi
+  [ "$attempt" -lt 60 ] || fail "new database $db_name has no proposal tables after 5 minutes -" \
+    "see the logs of the chart's Liquibase job"
+  sleep 5
+done
+log "new database $db_name has $proposals proposal(s) and $roles proposal role(s)"
