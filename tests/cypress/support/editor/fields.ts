@@ -30,34 +30,21 @@ export const select = (label: string, option: string) => {
 export const verifySelected = (label: string, option: string) =>
   dropdown(label).should('have.text', option);
 
-// A unit dropdown has no label of its own, so it's found from the labelled value field it sits
-// next to: the closest container of the field that also holds a dropdown
-const unitDropdown = (label: string) =>
-  cy
-    .findByRole('textbox', { name: label })
-    .parents(':has([role="combobox"])')
-    .first()
-    .find('[role="combobox"]');
+// A unit dropdown has no label of its own, so it's found from the value field it sits next to:
+// the closest container of the field that also holds a dropdown
+const unitDropdown = (valueField: Cypress.Chainable<JQuery>) =>
+  valueField.parents(':has([role="combobox"])').first().find('[role="combobox"]');
 
-export const selectUnit = (label: string, option: string) => {
-  unitDropdown(label).click();
+export const selectUnit = (valueField: Cypress.Chainable<JQuery>, option: string) => {
+  unitDropdown(valueField).click();
   cy.findByRole('option', { name: option }).click();
 };
 
-export const verifySelectedUnit = (label: string, option: string) =>
-  unitDropdown(label).should('have.text', option);
+export const verifySelectedUnit = (valueField: Cypress.Chainable<JQuery>, option: string) =>
+  unitDropdown(valueField).should('have.text', option);
 
-// TODO: Find by cy.findByRole('checkbox', { name: label }) once the pages use the controlled
-//  components. Current gui-components TickBox renders its label beside the checkbox without
-//  wiring it up, so the checkbox has no accessible name.
 const checkbox = (label: string) => {
-  // cy.findByRole('checkbox', { name: label });
-  const text = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return cy
-    .contains('label', new RegExp(`^${text}( \\*)?$`))
-    .parents(':has(input[type="checkbox"])')
-    .first()
-    .find('input[type="checkbox"]');
+  return cy.findByRole('checkbox', { name: label });
 };
 
 export const setChecked = (label: string, checked: boolean) =>

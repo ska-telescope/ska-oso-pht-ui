@@ -81,7 +81,6 @@ export const MockProposalBackend = {
         }
       }
     ],
-    data_product_src_nets: [],
     documents: [],
     observation_sets: [
       {
@@ -276,10 +275,10 @@ export const MockProposalBackendZoom = {
         script_parameters: {
           variant: 'spectral image',
           kind: 'spectral',
-          channels_out: 1,
+          channels_out: 2,
           gaussian_taper: 1,
           polarisations: ['I'],
-          continuum_subtraction: undefined,
+          continuum_subtraction: false,
           image_size: {
             value: 100,
             unit: 'deg'
@@ -348,7 +347,6 @@ export const MockProposalBackendZoom = {
         }
       }
     ],
-    documents: [],
-    data_product_src_nets: []
+    documents: []
   }
 } as unknown as ProposalBackend;

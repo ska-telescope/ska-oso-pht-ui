@@ -5,14 +5,14 @@ import type { ProposalType } from '@/models/proposals/proposal';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  IW_BRIGGS,
-  IW_NATURAL,
   REFERENCE_COORDINATE_TYPE_ICRS,
   SENSITIVITY_STATE
 } from '@/utils/constants';
-import type { DataProductSDPNew } from '@/utils/types/dataProduct';
+import {
+  DATA_PRODUCT_KIND,
+  type DataProductInput,
+  newDataProduct
+} from '@/models/proposals/dataProducts';
 import type Proposal from '@/utils/types/proposal';
 import type { Sensitivity } from '@/models/proposals/targetObservation';
 import type { TargetType } from '@/models/proposals/targets';
@@ -30,7 +30,7 @@ vi.mock('./calculate', async (importOriginal) => ({
 const notifyError = vi.fn();
 vi.mock('@/utils/notify/useNotify', () => ({ useNotify: () => ({ notifyError }) }));
 
-// The service reads observations and data products from the store's proposal
+// The service reads the observations from the store's proposal, and the rest from the form
 const store = vi.hoisted(() => ({ proposal: undefined as unknown }));
 vi.mock('@utils/storage/store', () => ({
   storageObject: { useStore: () => ({ application: { content2: store.proposal } }) }
@@ -48,11 +48,12 @@ const TARGET = {
 
 const OBSERVATION = { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' };
 
-const DATA_PRODUCT: DataProductSDPNew = {
+const DATA_PRODUCT = {
+  ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'),
   id: 'dp-1',
-  observationId: 'obs-1',
-  data: { dataProductType: DP_TYPE_IMAGES, weighting: IW_NATURAL, channelsOut: 40 }
-} as DataProductSDPNew;
+  weighting: { type: 'natural' },
+  channelsOut: 40
+} as DataProductInput;
 
 const LINK: TargetObservation = {
   targetId: 'target-1',
@@ -86,18 +87,19 @@ const STORED_VALUES = {
 };
 const STORED_RESULTS: Sensitivity = { state: SENSITIVITY_STATE.DONE, spectral: STORED_VALUES };
 
-const proposalWith = (observation = OBSERVATION, dataProduct = DATA_PRODUCT) =>
-  ({ id: 'proposal-1', observations: [observation], dataProductSDP: [dataProduct] }) as Proposal;
+const proposalWith = (observation = OBSERVATION) =>
+  ({ id: 'proposal-1', observations: [observation] }) as Proposal;
 
-/** Renders the service in a proposal form, with the proposal in the store. */
-const renderService = (link: TargetObservation, proposal = proposalWith()) => {
-  store.proposal = proposal;
+/** Renders the service in a proposal form, with the proposal's observation in the store. */
+const renderService = (link: TargetObservation, dataProducts = [DATA_PRODUCT]) => {
+  store.proposal = proposalWith();
   let form!: UseFormReturn<ProposalType>;
   const Editor = () => {
     form = useForm<ProposalType>({
       defaultValues: getProposalFormValues({
         targets: [TARGET],
-        targetObservation: [link]
+        targetObservation: [link],
+        dataProducts
       } as Partial<ProposalType>)
     });
     return (
@@ -113,7 +115,10 @@ const renderService = (link: TargetObservation, proposal = proposalWith()) => {
     setProposal: (changed: Proposal) => {
       store.proposal = changed;
       rerender(<Editor />);
-    }
+    },
+    /** Changes the data products in the form, as an edit on the data product page would. */
+    setDataProducts: (changed: DataProductInput[]) =>
+      act(() => form.setValue('dataProducts', changed))
   };
 };
 
@@ -173,18 +178,13 @@ describe('useSensitivityService', () => {
   test("calculates a link to visibilities from the observation's images data product", async () => {
     const images = {
       ...DATA_PRODUCT,
-      data: { ...DATA_PRODUCT.data, weighting: IW_BRIGGS, robust: -1 }
-    } as DataProductSDPNew;
+      weighting: { type: 'briggs', robust: -1 }
+    } as DataProductInput;
     const visibilities = {
-      id: 'dp-2',
-      observationId: 'obs-1',
-      data: { dataProductType: DP_TYPE_VISIBLE, timeAveraging: 4, frequencyAveraging: 4 }
-    } as DataProductSDPNew;
-    renderService({ ...LINK, dataProductsSDPId: 'dp-2' }, {
-      id: 'proposal-1',
-      observations: [OBSERVATION],
-      dataProductSDP: [visibilities, images]
-    } as Proposal);
+      ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES, 'obs-1'),
+      id: 'dp-2'
+    };
+    renderService({ ...LINK, dataProductsSDPId: 'dp-2' }, [visibilities, images]);
 
     await debounce();
 
@@ -229,17 +229,30 @@ describe('useSensitivityService', () => {
   });
 
   test('makes no request for a change that leaves the request the same', async () => {
-    const { setProposal } = await renderOpenedService();
+    const { setDataProducts } = await renderOpenedService();
 
-    setProposal(
-      proposalWith(OBSERVATION, {
-        ...DATA_PRODUCT,
-        data: { ...DATA_PRODUCT.data, polarisations: ['I', 'Q'] }
-      } as DataProductSDPNew)
-    );
+    setDataProducts([{ ...DATA_PRODUCT, polarisations: ['I', 'Q'] } as DataProductInput]);
     await debounce();
 
     expect(sendSensitivityRequest).not.toHaveBeenCalled();
+  });
+
+  test('sends nothing for an invalid data product, and clears its results until it is valid', async () => {
+    const { getForm, setDataProducts } = await renderOpenedService();
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
+
+    // Being edited: the image size has no unit yet
+    setDataProducts([{ ...DATA_PRODUCT, imageSize: { value: 1, unit: null } } as DataProductInput]);
+    await debounce();
+
+    expect(sendSensitivityRequest).not.toHaveBeenCalled();
+    expect(storedResults(getForm())).toBeUndefined();
+
+    setDataProducts([DATA_PRODUCT]);
+    await debounce();
+
+    expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
   });
 
   test('cancels a superseded request and ignores its response', async () => {

@@ -7,6 +7,8 @@ import { ProposalType, STORE_COPIED_SLICES } from './proposal';
 const pickSlices = (values: Partial<ProposalType> | Proposal) =>
   Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])) as ProposalType;
 
+/*********************************************************************************************************/
+
 /**
  * Keeps the legacy store's copy of every form-owned slice up to date for code that still reads
  * them from there (page status, the observation summary, the sensitivity modal, clone, and the
