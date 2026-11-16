@@ -21,6 +21,12 @@ const workers = Number(workersArg?.split('=')[1] ?? 3);
 const cleanDb = args.includes('--clean-db');
 const cypressArgs = ['run', ...args.filter((arg) => arg !== workersArg && arg !== '--clean-db')];
 
+// With no workers nothing runs, and the run would still be reported as passing
+if (!Number.isInteger(workers) || workers < 1) {
+  console.error(`--workers must be a positive integer, not '${workersArg.split('=')[1]}'`);
+  process.exit(1);
+}
+
 if (cleanDb && spawnSync('scripts/cleanLocalDb.sh', { stdio: 'inherit' }).status !== 0) {
   console.error('Could not clean the local database - not running the tests');
   process.exit(1);
