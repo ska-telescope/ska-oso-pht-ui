@@ -14,9 +14,7 @@ import {
 import { leadZero } from '@/utils/helpers';
 import {
   validateRadialMotion,
-  isValidGalacticLongitude,
   validateRightAscension,
-  validateGalacticLatitude,
   validateDeclination,
   VALUE_ERROR,
   ValueError
@@ -39,11 +37,6 @@ function coordinateErrorText(axis: SkyDirectionAxis, error: ValueError): string 
   return phtTranslations.skyDirection.error[axis][error];
 }
 
-// The Galactic longitude validator answers yes or no, so a no becomes a format error
-function checkGalacticLongitude(value: string): ValueError | null {
-  return isValidGalacticLongitude(value) ? null : VALUE_ERROR.FORMAT;
-}
-
 /**
  * A coordinate field, typed as text, that `check` validates. A failed check becomes an error on
  * the field, with the text for the axis and the error code as its message.
@@ -61,6 +54,11 @@ function coordinateField(axis: SkyDirectionAxis, check: CoordinateCheck) {
     .default('');
 }
 
+// A Galactic coordinate in degrees is null in the entry until typed, and then required
+const LONGITUDE_FORMAT = coordinateErrorText(SKY_DIRECTION_AXIS.LONGITUDE, VALUE_ERROR.FORMAT);
+const LATITUDE_FORMAT = coordinateErrorText(SKY_DIRECTION_AXIS.LATITUDE, VALUE_ERROR.FORMAT);
+const LATITUDE_RANGE = coordinateErrorText(SKY_DIRECTION_AXIS.LATITUDE, VALUE_ERROR.RANGE);
+
 /** The target's name: required, and not one already in the proposal. */
 function nameField(takenNames: string[]) {
   return z
@@ -77,30 +75,43 @@ function nameField(takenNames: string[]) {
 }
 
 // The entry holds the coordinates of every coordinate system under the target's own names, so it
-// keeps one shape; each coordinate system checks only its own pair. Galactic coordinates are typed
-// as text and become numbers when the target is added.
+// keeps one shape; each coordinate system checks only its own pair.
 const unchecked = z.string().default('');
+const uncheckedDegrees = z.number().nullable().default(null);
 const ICRS_COORDINATES = {
   kind: z.literal(REFERENCE_COORDINATE_TYPE_ICRS.value),
   raStr: coordinateField(SKY_DIRECTION_AXIS.LONGITUDE, validateRightAscension),
   decStr: coordinateField(SKY_DIRECTION_AXIS.LATITUDE, validateDeclination),
-  l: unchecked,
-  b: unchecked
+  l: uncheckedDegrees,
+  b: uncheckedDegrees
 };
 const GALACTIC_COORDINATES = {
   kind: z.literal(REFERENCE_COORDINATE_TYPE_GALACTIC.value),
   raStr: unchecked,
   decStr: unchecked,
-  l: coordinateField(SKY_DIRECTION_AXIS.LONGITUDE, checkGalacticLongitude),
-  b: coordinateField(SKY_DIRECTION_AXIS.LATITUDE, validateGalacticLatitude)
+  // The longitude has no range message of its own, so a value out of range is formatted incorrectly
+  l: z
+    .number({ error: LONGITUDE_FORMAT })
+    .min(0, LONGITUDE_FORMAT)
+    .lt(360, LONGITUDE_FORMAT)
+    .nullable()
+    .refine((value): boolean => value !== null, LONGITUDE_FORMAT)
+    .default(null),
+  b: z
+    .number({ error: LATITUDE_FORMAT })
+    .min(-90, LATITUDE_RANGE)
+    .max(90, LATITUDE_RANGE)
+    .nullable()
+    .refine((value): boolean => value !== null, LATITUDE_FORMAT)
+    .default(null)
 };
 // A solar system object is found by name, so it has no coordinates to check
 const SSO_COORDINATES = {
   kind: z.literal(REFERENCE_COORDINATE_TYPE_SSO.value),
   raStr: unchecked,
   decStr: unchecked,
-  l: unchecked,
-  b: unchecked
+  l: uncheckedDegrees,
+  b: uncheckedDegrees
 };
 
 /**
@@ -180,15 +191,14 @@ export const useTargetEntryForm = (takenNames?: string[]) =>
 
 /** An entry holding an existing target's values, for the edit dialog. */
 export const targetEntryFromTarget = (target: Target): TargetEntryType => {
-  const galactic = (value?: number) => (value != null ? String(value) : '');
   return {
     ...TARGET_ENTRY_DEFAULTS,
     kind: target.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value,
     name: target.name ?? '',
     raStr: target.raStr ?? '',
     decStr: target.decStr ?? '',
-    l: galactic(target.l),
-    b: galactic(target.b),
+    l: target.l ?? null,
+    b: target.b ?? null,
     velType: target.velType ?? TARGET_ENTRY_DEFAULTS.velType,
     vel: target.vel ?? '',
     velUnit: target.velUnit ?? TARGET_ENTRY_DEFAULTS.velUnit,
@@ -211,8 +221,8 @@ export const applyTargetEdit = (
   if (changed('kind')) edited.kind = after.kind;
   if (changed('raStr')) edited.raStr = leadZero(after.raStr).toString();
   if (changed('decStr')) edited.decStr = leadZero(after.decStr).toString();
-  if (changed('l')) edited.l = parseFloat(after.l);
-  if (changed('b')) edited.b = parseFloat(after.b);
+  if (changed('l')) edited.l = after.l ?? undefined;
+  if (changed('b')) edited.b = after.b ?? undefined;
   if (changed('velType')) edited.velType = after.velType;
   if (changed('vel')) edited.vel = after.vel;
   if (changed('velUnit')) edited.velUnit = after.velUnit;

@@ -2,13 +2,19 @@ import React from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { OSO_SERVICES_PROPOSAL_PATH, PROPOSAL_STATUS, PROPOSAL_TYPE } from '@utils/constants.ts';
+import {
+  OSO_SERVICES_PROPOSAL_PATH,
+  PROPOSAL_STATUS,
+  PROPOSAL_TYPE,
+  SENSITIVITY_STATE
+} from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
 import { ProposalType } from './proposal';
+import { DATA_PRODUCT_KIND } from './dataProducts';
 import { useProposalOda } from './useProposalOda';
 import { getDetailsSchema } from './details';
 import phtTranslations from '../../../public/locales/en/pht.json';
@@ -67,6 +73,40 @@ describe('useProposalOda', () => {
     expect(form.current.getValues('scienceCategory')).toBe(1);
     expect(form.current.getValues('investigators')).toEqual([]);
     expect(loaded).toEqual(mapping(pdm));
+  });
+
+  test('Load from ODA links an SV target saved without its link to new default data products', async () => {
+    // Saved when the main data product was invalid, so it and its link were left out
+    mockGet.mockResolvedValue({
+      data: {
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION }
+        },
+        observation_info: { ...pdm.observation_info, data_product_sdps: [], result_details: [] }
+      }
+    });
+    const { form, oda } = renderWithForm();
+
+    await act(async () => {
+      await oda.current.loadFromOda('prsl-1');
+    });
+
+    const [observation] = mapping(pdm).observations ?? [];
+    const dataProducts = form.current.getValues('dataProducts');
+    expect(dataProducts.map((dp) => [dp.observationId, dp.kind])).toEqual([
+      [observation.id, DATA_PRODUCT_KIND.CONTINUUM_IMAGE],
+      [observation.id, DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES]
+    ]);
+    expect(form.current.getValues('targetObservation')).toEqual([
+      {
+        targetId: form.current.getValues('targets')[0].id,
+        observationId: observation.id,
+        dataProductsSDPId: dataProducts[0].id,
+        sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
+      }
+    ]);
   });
 
   test('Load from ODA returns the error and leaves the form alone on failure', async () => {

@@ -170,7 +170,6 @@ const standardObservationInfo = {
   ],
   calibration_strategy: [observatoryCalibration('low-001')],
   data_product_sdps: [continuumImage('low-001')],
-  data_product_src_nets: [{ data_products_src_id: '2' }],
   result_details: [continuumResult('low-001', targetM28.target_id as string)]
 } as unknown as ProposalBackend['observation_info'];
 
@@ -221,7 +220,6 @@ const MockProposalBackendList = [
       observation_sets: [lowObservationSet('low-001', TYPE_CONTINUUM)],
       calibration_strategy: [observatoryCalibration('low-001')],
       data_product_sdps: [continuumImage('low-001')],
-      data_product_src_nets: [],
       result_details: [continuumResult('low-001', targetM28.target_id as string)]
     }
   },

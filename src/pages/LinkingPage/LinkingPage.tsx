@@ -46,7 +46,7 @@ import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import { DataProductInput } from '@/models/proposals/dataProducts';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
 
@@ -186,7 +186,7 @@ export default function LinkingPage() {
     }
   };
 
-  const popElementO = (dp: DataProductSDPNew, obs: Observation) => {
+  const popElementO = (dp: DataProductInput, obs: Observation) => {
     return {
       id: dp.id,
       id2: obs.id,
@@ -274,12 +274,13 @@ export default function LinkingPage() {
     const proposal = getProposal();
     setValidateToggle(!validateToggle);
     setElementsO(
-      (
-        proposal.dataProductSDP?.map((rec) => {
+      form
+        .getValues('dataProducts')
+        .map((rec) => {
           const obs = proposal.observations?.find((o) => o.id === rec.observationId);
           return obs ? popElementO(rec, obs) : null;
-        }) ?? []
-      ).filter((item): item is ReturnType<typeof popElementO> => item !== null)
+        })
+        .filter((item): item is ReturnType<typeof popElementO> => item !== null)
     );
     setElementsT(getTargets().map((rec) => popElementT(rec)));
   }, []);

@@ -18,10 +18,9 @@ import {
   TYPE_PST
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import DataProduct from '@/components/info/dataProduct/DataProduct';
+import DataProductDisplay from '@/components/info/dataProduct/DataProductDisplay';
 import { frequencyConversion, getBandwidthLowZoom, getBandwidthZoom } from '@/utils/helpers';
 import ExpandIcon from '@/components/icon/expandIcon/expandIcon';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 
 interface TableDataProductsRowProps {
@@ -275,9 +274,7 @@ export default function TableDataProductsRow({
         <TableCell sx={{ p: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Box sx={{ overflowX: 'hidden' }}>
-              {observation && (
-                <DataProduct t={t} sdp={item as DataProductSDPNew} observation={observation} />
-              )}
+              {observation && <DataProductDisplay t={t} dataProduct={item} />}
             </Box>
           </Collapse>
         </TableCell>

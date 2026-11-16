@@ -7,6 +7,7 @@ import { targetsFromPdm, targetsToPdm } from './targets';
 import { targetObservationFromPdm, targetObservationToPdm } from './targetObservation';
 import { calibrationStrategyFromPdm, calibrationStrategyToPdm } from './calibrationStrategy';
 import { documentsFromPdm, documentsToPdm } from './documents';
+import { dataProductsFromPdm, savedDataProductsAndLinks } from './dataProducts';
 
 /** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
 export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
@@ -24,7 +25,8 @@ export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
       pdm?.observation_info?.observation_sets
     ),
     calibrationStrategy: calibrationStrategyFromPdm(pdm?.observation_info?.calibration_strategy),
-    ...documents
+    ...documents,
+    dataProducts: dataProductsFromPdm(pdm?.observation_info?.data_product_sdps)
   };
 }
 
@@ -33,6 +35,8 @@ export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
  * migrated to the form); the form's slices are laid over it.
  */
 export function mapFormToPdm(form: ProposalType, base: ProposalBackend): ProposalBackend {
+  const saved = savedDataProductsAndLinks(form.dataProducts, form.targetObservation);
+
   return {
     ...base,
     proposal_info: {
@@ -50,7 +54,8 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
       ...base.observation_info,
       targets: targetsToPdm(form.targets),
       calibration_strategy: calibrationStrategyToPdm(form.calibrationStrategy),
-      result_details: targetObservationToPdm(form.targetObservation),
+      result_details: targetObservationToPdm(saved.links),
+      data_product_sdps: saved.dataProducts,
       documents: documentsToPdm(form)
     }
   };
