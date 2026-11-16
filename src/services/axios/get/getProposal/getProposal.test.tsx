@@ -188,9 +188,7 @@ describe('getInvestigators', () => {
         email: 'john.doe@example.com',
         organization: 'Example Org',
         for_phd: true,
-        principal_investigator: false,
-        officeLocation: 'Building A',
-        jobTitle: 'Researcher'
+        principal_investigator: false
       },
       {
         user_id: 2,
@@ -200,9 +198,7 @@ describe('getInvestigators', () => {
         email: 'jane.smith@example.com',
         organization: 'Another Org',
         for_phd: false,
-        principal_investigator: true,
-        officeLocation: 'Building B',
-        jobTitle: 'Scientist'
+        principal_investigator: true
       }
     ];
 
@@ -213,11 +209,8 @@ describe('getInvestigators', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        affiliation: 'Example Org',
         phdThesis: true,
-        pi: false,
-        officeLocation: 'Building A',
-        jobTitle: 'Researcher'
+        pi: false
       },
       {
         id: 2,
@@ -225,11 +218,8 @@ describe('getInvestigators', () => {
         firstName: 'Jane',
         lastName: 'Smith',
         email: 'jane.smith@example.com',
-        affiliation: 'Another Org',
         phdThesis: false,
-        pi: true,
-        officeLocation: 'Building B',
-        jobTitle: 'Scientist'
+        pi: true
       }
     ];
 

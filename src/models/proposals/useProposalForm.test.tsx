@@ -1,6 +1,9 @@
 import { describe, expect, test } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
+import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import { useProposalForm } from './useProposalForm';
+import Investigator from '@/utils/types/investigator';
+import { getTeamValues } from './team';
 import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
 import Target from '@/utils/types/target';
 import TargetObservation from '@/utils/types/targetObservation';
@@ -11,6 +14,9 @@ type Props = {
   id?: string;
   title: string;
   proposalType?: (typeof PROPOSAL_TYPE)[keyof typeof PROPOSAL_TYPE];
+  abstract?: string;
+  scienceCategory?: number | null;
+  investigators?: Investigator[];
   targets?: Target[];
   targetObservation?: TargetObservation[];
   calibrationStrategy?: CalibrationStrategy[];
@@ -44,6 +50,25 @@ describe('useProposalForm', () => {
     const { result } = renderHook(() => useProposalForm({ id: 'p1', title: 'Saved title' }));
     expect(result.current.getValues('title')).toBe('Saved title');
     expect(result.current.getValues('proposalType')).toBeNull();
+    expect(result.current.getValues('abstract')).toBe('');
+    expect(result.current.getValues('scienceCategory')).toBeNull();
+    expect(result.current.getValues('investigators')).toEqual([]);
+  });
+
+  test('seeds and re-seeds the investigators when switching proposals', () => {
+    const first: Investigator[] = [MockUserFrontendList[0]];
+    const second: Investigator[] = [MockUserFrontendList[1]];
+    const { result, rerender } = renderHook((proposal: Props) => useProposalForm(proposal), {
+      initialProps: { id: 'p1', title: '', investigators: first } as Props
+    });
+
+    expect(result.current.getValues('investigators')).toEqual(
+      getTeamValues({ investigators: first }).investigators
+    );
+    rerender({ id: 'p2', title: '', investigators: second });
+    expect(result.current.getValues('investigators')).toEqual(
+      getTeamValues({ investigators: second }).investigators
+    );
   });
 
   test('seeds and re-seeds document references when switching proposals', () => {
@@ -179,9 +204,14 @@ describe('useProposalForm', () => {
     expect(result.current.getValues('targets')).toEqual(slicesFor('p1').targets);
   });
 
-  test('starts valid with empty slices', async () => {
+  test('starts valid with a completed abstract and empty structural slices', async () => {
     const { result } = renderHook(() =>
-      useProposalForm({ id: 'p1', title: 'A title', proposalType: PROPOSAL_TYPE.STANDARD })
+      useProposalForm({
+        id: 'p1',
+        title: 'A title',
+        proposalType: PROPOSAL_TYPE.STANDARD,
+        abstract: 'A valid abstract'
+      })
     );
     let valid = false;
     await act(async () => {

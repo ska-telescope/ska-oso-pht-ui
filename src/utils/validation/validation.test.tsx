@@ -1,11 +1,11 @@
 import { describe, it, expect, test } from 'vitest';
 import { DataProductSDPNew, SDPFilterbankPSTData } from '../types/dataProduct';
 import {
-  DETECTED_FILTER_BANK_VALUE,
   CHANNELS_OUT_MAX,
   CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN_CONTINUUM,
   CHANNELS_OUT_MIN_SPECTRAL,
+  DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
@@ -13,6 +13,7 @@ import {
   IW_UNIFORM,
   PROPOSAL_TYPE,
   PULSAR_TIMING_VALUE,
+  SENSITIVITY_STATE,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
@@ -443,7 +444,7 @@ describe('validateSDPPage auto-linked sensitivity rules', () => {
   it('is valid when the target is linked with sensitivity results', () => {
     expect(
       validateSDPPage(
-        makeProposal([{ ...link, sensitivityResults: { statusGUI: STATUS_OK } }]),
+        makeProposal([{ ...link, sensitivity: { state: SENSITIVITY_STATE.DONE } }]),
         true
       )
     ).toBe(STATUS_OK);
@@ -452,7 +453,7 @@ describe('validateSDPPage auto-linked sensitivity rules', () => {
   it('is invalid when the sensitivity results are an error', () => {
     expect(
       validateSDPPage(
-        makeProposal([{ ...link, sensitivityResults: { statusGUI: STATUS_ERROR } }]),
+        makeProposal([{ ...link, sensitivity: { state: SENSITIVITY_STATE.FAILED } }]),
         true
       )
     ).toBe(STATUS_ERROR);
@@ -544,6 +545,16 @@ describe('validateObservationPage supplied rules', () => {
 
 describe('validateDetailsPage', () => {
   const observation = { id: 'obs-1', type: TYPE_CONTINUUM };
+
+  it.each([2300, 2301])('checks the Zod character limit at %s characters', (length) => {
+    expect(
+      validateDetailsPage({
+        proposalType: PROPOSAL_TYPE.STANDARD,
+        abstract: 'a'.repeat(length),
+        scienceCategory: 1
+      } as Parameters<typeof validateDetailsPage>[0])
+    ).toBe(length === 2300 ? STATUS_OK : STATUS_ERROR);
+  });
 
   it('requires an abstract and a science category for standard proposals', () => {
     const proposal = { proposalType: PROPOSAL_TYPE.STANDARD, abstract: 'An abstract' };

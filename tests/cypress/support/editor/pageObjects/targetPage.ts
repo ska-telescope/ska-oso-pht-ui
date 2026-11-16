@@ -21,8 +21,8 @@ const addTarget = (target: Target) => {
     enter(cy.findByRole('textbox', { name: 'Velocity' }), target.velocity.value);
   }
   cy.findByRole('button', { name: 'Add Target' }).click();
-  // Adding the only target links it to the observation and runs the sensitivity calculator
-  cy.findByText('Target added and auto-linked successfully.', { timeout: 30000 });
+  // Adding the only target links it to the observation; the target is listed once it's linked
+  cy.findByRole('row', { name: new RegExp(target.name), timeout: 30000 });
 };
 
 // Adds the target by looking up its coordinates by name. Only the Target page spec resolves,

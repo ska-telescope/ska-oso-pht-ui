@@ -72,8 +72,10 @@ describe('SV auto-linking', () => {
       const oldObservationId = before.observation_sets?.[0]?.observation_set_id;
 
       goToPage(detailsPage);
+      // The calibrator lookup is the last request made in relinking the target
+      cy.intercept('POST', '**/calibrators*').as('calibrators');
       select('Observing Mode', 'Spectral');
-      cy.findByText('Observation setup auto-linked successfully.', { timeout: 30000 });
+      cy.wait('@calibrators', { timeout: 30000 });
 
       saveProposal().then((after) => {
         verifyLinked(after);

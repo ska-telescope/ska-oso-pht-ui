@@ -39,11 +39,9 @@ import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { referenceCoordinateToPdm, targetsToPdm } from '@/models/proposals/targets';
-import {
-  getSuppliedFieldsIntegrationTime,
-  targetObservationToPdm
-} from '@/models/proposals/targetObservation';
+import { targetObservationToPdm } from '@/models/proposals/targetObservation';
 import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
+import { investigatorToPdm } from '@/models/proposals/team';
 import type {
   ContinuumVisibilities,
   DataProductSDP as DataProductSDPTransport,
@@ -65,7 +63,6 @@ const isPST = (type: string) => type === TYPE_PST;
 export const getReferenceCoordinate = referenceCoordinateToPdm;
 export const getTargets = targetsToPdm;
 export const mapCalibrationStrategyToBackend = calibrationStrategyToPdm;
-export { getSuppliedFieldsIntegrationTime };
 
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const getDocuments = (
@@ -373,20 +370,9 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         (category) => category.value === proposal?.scienceCategory
       )?.label as string,
       investigators: proposal?.investigators
-        ? proposal.investigators.map((investigator) => {
-            return {
-              user_id: investigator?.id?.toString(),
-              status: investigator.status,
-              given_name: investigator.firstName,
-              family_name: investigator.lastName,
-              email: investigator.email,
-              organization: investigator.affiliation,
-              for_phd: investigator.phdThesis,
-              principal_investigator: investigator.pi,
-              officeLocation: investigator.officeLocation,
-              jobTitle: investigator.jobTitle
-            };
-          })
+        ? proposal.investigators.map((investigator) =>
+            investigatorToPdm({ ...investigator, id: investigator?.id?.toString() })
+          )
         : (null as unknown as undefined) // still sent as null; the PDM type has no null here
     },
     observation_info: {
@@ -408,10 +394,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0
           ? getDataProductSRC(proposal.dataProductSRC as DataProductSRC[])
           : [],
-      result_details: targetObservationToPdm(
-        proposal.targetObservation as TargetObservation[],
-        Object.fromEntries((proposal.observations ?? []).map((obs) => [obs.id, obs.type]))
-      )
+      result_details: targetObservationToPdm(proposal.targetObservation as TargetObservation[])
     }
   };
   helpers.transform.trimObject(transformedProposal);

@@ -325,10 +325,10 @@ export const verifyOsdDataProposalClose = (data) => {
 export const verifyScienceIdeaCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Science Verification Idea added with unique identifier', 30000);
 
-// Same real-backend latency reasoning as verifyScienceIdeaCreatedAlertFooter above - this waits
-// on the real auto-link generation call, not a stub.
-export const verifyAutoLinkAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Target added and auto-linked successfully', 30000);
+// Same real-backend latency reasoning as verifyScienceIdeaCreatedAlertFooter above. An auto-linked
+// target is only listed once linking (and its real calibrator lookup) has finished.
+export const verifyTargetAutoLinked = (name) =>
+  cy.findByRole('row', { name: new RegExp(name), timeout: 30000 });
 
 export const clickEditIconForRow = (tableTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`)
@@ -491,7 +491,7 @@ export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = nu
   pageConfirmed('TARGET');
   addM2Target();
   clickToAddTarget();
-  verifyAutoLinkAlertFooter();
+  verifyTargetAutoLinked('M2');
 };
 
 export const addSubmissionSummary = (value) => {

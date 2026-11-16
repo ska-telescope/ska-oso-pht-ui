@@ -110,6 +110,8 @@ const wrapper = (
         title,
         proposalType: (storageObject.useStore().application.content2 as Partial<ProposalType>)
           .proposalType,
+        abstract: '',
+        scienceCategory: null,
         ...formValues
       }
     });
@@ -141,7 +143,7 @@ describe('PageFooterPPT', () => {
     expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
   });
 
-  it('calls createProposal when pageNo = -1', async () => {
+  it('allows creating a proposal from Title before the required abstract is filled', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />);
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
@@ -169,7 +171,7 @@ describe('PageFooterPPT', () => {
       expect(PostProposal).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
-        { ...newProposal, cycle: 'CYCLE-1' },
+        { ...newProposal, abstract: '', scienceCategory: null, cycle: 'CYCLE-1' },
         'draft'
       );
     });
