@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { MemoryRouter } from 'react-router';
 import PHT from './PHT';
-import { NAV, PATH, PROPOSAL_STATUS } from '@/utils/constants';
+import { NAV, PATH, PROPOSAL_ID_QUERY_PARAM, PROPOSAL_STATUS } from '@/utils/constants';
 import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
@@ -18,7 +18,7 @@ const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } 
 
 vi.mock('react-router', () => ({
   useNavigate: () => mockNavigate,
-  useLocation: () => ({ pathname: mockPathname.current }),
+  useLocation: () => ({ pathname: mockPathname.current, search: '' }),
   MemoryRouter: ({ children }: React.PropsWithChildren) => <>{children}</>,
   Routes: () => null,
   Route: () => null
@@ -171,6 +171,22 @@ describe('<PHT />', () => {
 
   test('renders correctly', () => {
     renderPHT();
+  });
+
+  test('adds the loaded proposal ID to editor URLs', async () => {
+    const { rerenderPHT } = renderPHT();
+    mockPathname.current = NAV[0];
+    rerenderPHT();
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        {
+          pathname: NAV[0],
+          search: `?${PROPOSAL_ID_QUERY_PARAM}=prsl-123`
+        },
+        { replace: true }
+      );
+    });
   });
 
   test('renders the footer notification when a notification message is present', () => {

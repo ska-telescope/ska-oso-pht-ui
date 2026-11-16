@@ -262,6 +262,8 @@ export const PATH = [
   '/editCalibration'
 ];
 
+export const PROPOSAL_ID_QUERY_PARAM = 'proposalId';
+
 export const PMT = [
   '/review/panel',
   '/review/list',

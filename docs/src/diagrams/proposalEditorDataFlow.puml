@@ -8,7 +8,7 @@ skinparam noteBackgroundColor #FEFECE
 
 actor User
 participant "formState\n(ProposalFormInput)" as Form
-database "localStorage\n(backup)" as Backup
+database "localStorage\n(proposal-scoped backup)" as Backup
 database "backend\n(proposal PDM)" as Backend
 
 == Create ==
@@ -29,6 +29,9 @@ note over Form
   RHF validates with ProposalSubmitSchema
 end note
 Form -> Backup : backup ProposalFormInput (debounced)
+note right of Backup
+  Key: skao:proposal-form:v1:<proposal_id>
+end note
 
 == Save ==
 
@@ -37,21 +40,21 @@ Form -> Backup : backup ProposalFormInput\n(immediately, no debounce)
 
 alt ProposalDraftSchema.safeParse(getValues()) OK
   Form -> Backend : toPdm(values), PUT
-  Form -> Backup : mark backup as saved
+  Form -> Backup : clear backup for proposal ID
 else parse or PUT failed
   Form --> User : "not saved" message\n(leaving the editor is never blocked)
 end
 
 == Refresh ==
 
-User -> Form : page refresh
-Backup --> Form : ID of the proposal being edited
-Form -> Backend : GET
+User -> Form : open editor URL with proposal ID
+Form -> Backend : check update access, GET
 
 alt fetched
   Backend --> Form : proposal\nfromPdm(pdm), reset form
-  opt backup has unsaved changes
-    Backup --> Form : apply ProposalFormInput on top
+  opt local backup has unsaved changes
+    Backup --> Form : load backup for proposal ID
+    Form -> Form : apply ProposalFormInput on top
   end
 else fetch failed
   Form --> User : "Something went wrong retrieving\nproposal with ID <prsl_id>"

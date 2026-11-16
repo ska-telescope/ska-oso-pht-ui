@@ -21,6 +21,7 @@ import {
   REVIEW_TYPE,
   SKA_OSO_SERVICES_URL,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
+  PROPOSAL_ID_QUERY_PARAM,
   PAGE_CALIBRATION_ENTRY,
   PAGE_OBSERVATION_ENTRY
 } from '@utils/constants.ts';
@@ -65,6 +66,8 @@ import { useTheme } from '@mui/material/styles';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
+import { useProposalFormBackup } from '@/models/proposals/useProposalFormBackup';
+import ProposalUrlLoader from '@/models/proposals/ProposalUrlLoader';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -130,12 +133,6 @@ export default function PHT({
   const loggedIn = isLoggedIn();
 
   React.useEffect(() => {
-    if (location.pathname !== '/') {
-      navigate(PATH[0]);
-    }
-  }, []);
-
-  React.useEffect(() => {
     setHelp('helpText.notAvailable');
   }, [navigate]);
 
@@ -147,6 +144,25 @@ export default function PHT({
   const formMethods = useProposalForm(getProposal());
   const { getValues } = formMethods;
   useCopySlicesToStore(formMethods);
+  useProposalFormBackup(formMethods, getProposal()?.id);
+
+  const editorProposalId = getProposal()?.id;
+  const proposalIdFromUrl =
+    new URLSearchParams(location.search).get(PROPOSAL_ID_QUERY_PARAM) ??
+    (NAV.includes(location.pathname) ? editorProposalId : null);
+
+  // This  ensures that the URL query parameter for the proposal ID is kept in sync with the currently 
+  // loaded proposal.
+  React.useEffect(() => {
+    const proposalId = editorProposalId;
+    if (!proposalId || !NAV.includes(location.pathname)) return;
+
+    const search = new URLSearchParams(location.search);
+    if (search.get(PROPOSAL_ID_QUERY_PARAM) === proposalId) return;
+
+    search.set(PROPOSAL_ID_QUERY_PARAM, proposalId);
+    navigate({ pathname: location.pathname, search: `?${search.toString()}` }, { replace: true });
+  }, [editorProposalId, location.pathname, location.search, navigate]);
 
   // A target can end up linked with no matching targetObservation entry (e.g. an older
   // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
@@ -345,6 +361,14 @@ export default function PHT({
     ];
   };
 
+  const routes = (
+    <Routes>
+      {ROUTES.map((ROUTE) => (
+        <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
+      ))}
+    </Routes>
+  );
+
   return (
     <CssVarsProvider theme={theme}>
       <CssBaseline enableColorScheme />
@@ -386,11 +410,11 @@ export default function PHT({
             {/* Global form provider for proposal form management */}
             <FormProvider {...formMethods}>
               {REQUIRED_WIDTH ? (
-                <Routes>
-                  {ROUTES.map((ROUTE) => (
-                    <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
-                  ))}
-                </Routes>
+                proposalIdFromUrl ? (
+                  <ProposalUrlLoader proposalId={proposalIdFromUrl}>{routes}</ProposalUrlLoader>
+                ) : (
+                  routes
+                )
               ) : (
                 mediaSizeNotSupported()
               )}

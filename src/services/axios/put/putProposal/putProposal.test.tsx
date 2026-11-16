@@ -42,6 +42,10 @@ import MappingPutProposal, {
   mapCalibrationStrategyToBackend
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
+import {
+  loadProposalFormBackup,
+  saveProposalFormBackup
+} from '@/models/proposals/proposalFormBackupStorage';
 
 // The form's other slices match the proposal being saved, as they do when seeded from the store
 const formSlices = getProposalFormValues(MockProposalFrontend);
@@ -124,6 +128,18 @@ describe('PutProposal Service', () => {
       expect.any(String),
       MappingPutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT)
     );
+  });
+
+  test('clears only the saved proposal backup after a successful update', async () => {
+    window.localStorage.clear();
+    saveProposalFormBackup(MockProposalFrontend.id, formSlices);
+    saveProposalFormBackup('another-proposal', formSlices);
+    mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
+
+    await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+
+    expect(loadProposalFormBackup(MockProposalFrontend.id)).toBeNull();
+    expect(loadProposalFormBackup('another-proposal')).toEqual(formSlices);
   });
 
   test.each([PROPOSAL_STATUS.DRAFT, PROPOSAL_STATUS.SUBMITTED])(
