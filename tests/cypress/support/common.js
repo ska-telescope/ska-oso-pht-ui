@@ -123,8 +123,13 @@ export const clickSubProposalTypeTargetOfOpportunity = () =>
   selectId('proposalAttribute-target_of_opportunity');
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
+// The table appears once the proposal list (GET prsls/mine) has loaded, which a busy test backend
+// can take longer than defaultCommandTimeout to return. Wait as long as test deployments let the
+// app wait for it (REQUEST_TIMEOUT_MS)
+const getSubmissionsTable = () => cy.get('[data-testid="table-submissions"]', { timeout: 60000 });
+
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
+  getSubmissionsTable().should('contain', 'prsl-test');
 };
 export const verifyDataInTable = (tableTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`).find('[role="row"]').filter(`:contains("${text}")`);
@@ -536,5 +541,5 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 };
 
 export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="table-submissions"]').should('contain', 'Science Verification Idea Title');
+  getSubmissionsTable().should('contain', 'Science Verification Idea Title');
 };
