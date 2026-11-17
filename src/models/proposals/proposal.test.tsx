@@ -13,7 +13,8 @@ const emptySlices = {
   calibrationStrategy: [],
   sciencePDF: null,
   technicalPDF: null,
-  dataProducts: []
+  dataProducts: [],
+  observations: []
 };
 
 describe('proposal schema', () => {
@@ -102,7 +103,8 @@ describe('proposal form values', () => {
       calibrationStrategy: [],
       sciencePDF: null,
       technicalPDF: null,
-      dataProducts: []
+      dataProducts: [],
+      observations: []
     });
   });
 

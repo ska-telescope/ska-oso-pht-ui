@@ -43,6 +43,7 @@ const values = (slices: Partial<ProposalType> = {}): ProposalType => ({
   sciencePDF: null,
   technicalPDF: null,
   dataProducts: [dataProduct],
+  observations: [],
   ...slices
 });
 

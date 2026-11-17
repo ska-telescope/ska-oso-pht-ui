@@ -132,7 +132,7 @@ export const getReferenceCoordinate = (
   }
 };
 
-const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => {
+export const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => {
   const results: any = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -255,8 +255,8 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
         observingBand
       ),
       elevation: inValue[i]?.elevation as number,
-      num15mAntennas: num13mAntennas,
-      num13mAntennas: num15mAntennas,
+      num13mAntennas: num13mAntennas,
+      num15mAntennas: num15mAntennas,
       numSubBands: numSubBands ? numSubBands : 1,
       bandwidth:
         type === TYPE_ZOOM

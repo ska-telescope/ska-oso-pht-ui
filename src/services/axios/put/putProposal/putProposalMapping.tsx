@@ -171,7 +171,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
   }
 };
 
-const getObservationsSets = (
+export const getObservationsSets = (
   incObservationsSets: Observation[] | undefined,
   incObservationGroups: GroupObservation[] | undefined
 ): ObservationSets[] => {

@@ -3,9 +3,20 @@ import { useWatch, UseFormReturn } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import { ProposalType, STORE_COPIED_SLICES } from './proposal';
+import { legacyObservationsFromForm } from './legacyObservations';
 
-const pickSlices = (values: Partial<ProposalType> | Proposal) =>
-  Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])) as ProposalType;
+// The store's copy of the form's slices. Observations are in the store's own shape, with their
+// groups in groupObservations, until nothing reads them from there.
+const storeSlices = (proposal: Proposal): Partial<Proposal> => ({
+  ...Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, proposal[key]])),
+  groupObservations: proposal.groupObservations
+});
+
+// The form's slices as the store holds them, in the same key order as storeSlices
+const formSlices = (values: ProposalType): Partial<Proposal> => ({
+  ...Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])),
+  ...legacyObservationsFromForm(values.observations)
+});
 
 /*********************************************************************************************************/
 
@@ -55,8 +66,8 @@ export function useCopySlicesToStore(
     }
     // Read the form now rather than the watched values, which can still be the previous
     // proposal's when the form was re-seeded in this commit
-    const slices = pickSlices(form.getValues());
-    if (JSON.stringify(pickSlices(proposal)) === JSON.stringify(slices)) {
+    const slices = formSlices(form.getValues());
+    if (JSON.stringify(storeSlices(proposal)) === JSON.stringify(slices)) {
       return;
     }
     // The store freezes what it is given, and the form must stay mutable

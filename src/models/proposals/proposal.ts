@@ -7,6 +7,7 @@ import { getTargetObservationSchema } from './targetObservation';
 import { getCalibrationStrategySchema } from './calibrationStrategy';
 import { getDocumentRefSchema } from './documents';
 import { getDataProductsSchema } from './dataProducts';
+import { getObservationsSchema } from './observations';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import { getDetailsSchema } from './details';
@@ -34,7 +35,9 @@ export function getProposalSchema() {
     calibrationStrategy: getCalibrationStrategySchema(),
     sciencePDF: getDocumentRefSchema(),
     technicalPDF: getDocumentRefSchema(),
-    dataProducts: getDataProductsSchema()
+    dataProducts: getDataProductsSchema(),
+    // Without the OSD: its rules are checked by the page and submit schemas
+    observations: getObservationsSchema()
   });
 }
 

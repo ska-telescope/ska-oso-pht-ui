@@ -9,6 +9,7 @@ import MappingPutProposal from '@services/axios/put/putProposal/putProposalMappi
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { getProposalSchema } from './proposal';
 import { DataProductInput } from './dataProducts';
+import { formObservationsFromLegacy } from './legacyObservations';
 import { PROPOSAL_STATUS, PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
@@ -20,7 +21,8 @@ const emptySlices = {
   calibrationStrategy: [],
   sciencePDF: null,
   technicalPDF: null,
-  dataProducts: []
+  dataProducts: [],
+  observations: []
 };
 
 describe('mapPdmToForm', () => {
@@ -37,7 +39,9 @@ describe('mapPdmToForm', () => {
       calibrationStrategy: legacy.calibrationStrategy,
       sciencePDF: null,
       technicalPDF: null,
-      dataProducts: legacy.dataProducts
+      dataProducts: legacy.dataProducts,
+      // The same as seeding the form from the legacy store
+      observations: formObservationsFromLegacy(legacy.observations, legacy.groupObservations)
     });
   });
 

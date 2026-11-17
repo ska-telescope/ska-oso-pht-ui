@@ -100,7 +100,7 @@ const renderService = (link: TargetObservation, dataProducts = [DATA_PRODUCT]) =
         targets: [TARGET],
         targetObservation: [link],
         dataProducts
-      } as Partial<ProposalType>)
+      })
     });
     return (
       <FormProvider {...form}>

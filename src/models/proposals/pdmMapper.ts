@@ -8,6 +8,7 @@ import { targetObservationFromPdm, targetObservationToPdm } from './targetObserv
 import { calibrationStrategyFromPdm, calibrationStrategyToPdm } from './calibrationStrategy';
 import { documentsFromPdm, documentsToPdm } from './documents';
 import { dataProductsFromPdm, savedDataProductsAndLinks } from './dataProducts';
+import { observationsFromPdm } from './observations';
 
 /** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
 export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
@@ -26,7 +27,8 @@ export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
     ),
     calibrationStrategy: calibrationStrategyFromPdm(pdm?.observation_info?.calibration_strategy),
     ...documents,
-    dataProducts: dataProductsFromPdm(pdm?.observation_info?.data_product_sdps)
+    dataProducts: dataProductsFromPdm(pdm?.observation_info?.data_product_sdps),
+    observations: observationsFromPdm(pdm?.observation_info?.observation_sets)
   };
 }
 

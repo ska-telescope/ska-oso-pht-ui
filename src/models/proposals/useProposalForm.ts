@@ -4,11 +4,20 @@ import { ProposalType, getProposalResolver } from './proposal';
 import { getDetailsValues } from './details';
 import { getTeamValues } from './team';
 import Investigator from '@/utils/types/investigator';
+import Observation from '@/utils/types/observation';
+import GroupObservation from '@/utils/types/groupObservation';
+import { formObservationsFromLegacy } from './legacyObservations';
 
-type ProposalSeed = Omit<Partial<ProposalType>, 'scienceCategory' | 'investigators'> & {
+type ProposalSeed = Omit<
+  Partial<ProposalType>,
+  'scienceCategory' | 'investigators' | 'observations'
+> & {
   id?: string | null;
   scienceCategory?: number | string | null;
   investigators?: Investigator[] | null;
+  // The legacy store's shape, until nothing reads observations from there
+  observations?: Observation[] | null;
+  groupObservations?: GroupObservation[] | null;
 };
 
 /** The form values of a new proposal. */
@@ -23,7 +32,8 @@ export const getProposalFormDefaults = (): ProposalType => ({
   calibrationStrategy: [],
   sciencePDF: null,
   technicalPDF: null,
-  dataProducts: []
+  dataProducts: [],
+  observations: []
 });
 
 /**
@@ -41,7 +51,8 @@ export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => 
   return {
     ...slices,
     ...getDetailsValues(proposal),
-    ...getTeamValues(proposal)
+    ...getTeamValues(proposal),
+    observations: formObservationsFromLegacy(proposal?.observations, proposal?.groupObservations)
   };
 };
 
