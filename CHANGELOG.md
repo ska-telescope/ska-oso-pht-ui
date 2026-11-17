@@ -13,6 +13,7 @@ UNRELEASED
 * Added: REQUEST_TIMEOUT_MS runtime setting for how long the app waits for the backend (default 20s), and a --clean-db option for local e2e runs
 * Changed: CI splits the e2e tests across GitLab parallel jobs, and its e2e deployments wait 60s for the backend (REQUEST_TIMEOUT_MS)
 * Added: CI runs the Indigo smoke tests after deployments to the dev and staging environments
+* Changed: CI removes its e2e deployment as soon as the e2e tests finish, and tag pipelines deploy to their own namespace
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
