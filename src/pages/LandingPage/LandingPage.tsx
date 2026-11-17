@@ -82,6 +82,14 @@ export default function LandingPage() {
   const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
   const { loadFromOda } = useProposalOda();
 
+  const pageMounted = React.useRef(true);
+  React.useEffect(() => {
+    pageMounted.current = true;
+    return () => {
+      pageMounted.current = false;
+    };
+  }, []);
+
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
@@ -129,6 +137,8 @@ export default function LandingPage() {
     setAxiosViewError('');
 
     const response = await loadFromOda(id);
+    if (!pageMounted.current) return false;
+
     if (typeof response === 'string') {
       updateAppContent1({});
       updateAppContent2({});
@@ -155,7 +165,10 @@ export default function LandingPage() {
 
     proposalLoadPending.current = true;
     try {
-      if (await getTheProposal(id)) {
+      const loaded = await getTheProposal(id);
+      if (!pageMounted.current) return;
+
+      if (loaded) {
         onSuccess();
       } else {
         alert(t('error.iconClicked'));

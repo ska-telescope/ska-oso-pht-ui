@@ -303,6 +303,30 @@ describe('clone proposal', () => {
     }
   );
 
+  test('ignores a pending proposal load that finishes after leaving the page', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    const alert = vi.fn();
+    vi.stubGlobal('alert', alert);
+    let finishLoad!: (proposal: Partial<Proposal>) => void;
+    mockLoadFromOda.mockImplementationOnce(
+      () => new Promise<Partial<Proposal>>((resolve) => (finishLoad = resolve))
+    );
+    const { unmount } = wrapper(<LandingPage />);
+
+    fireEvent.click(await screen.findByTestId('editIcon'));
+    await waitFor(() => expect(mockLoadFromOda).toHaveBeenCalledTimes(1));
+    mockUpdateAppContent2.mockClear();
+
+    unmount();
+    finishLoad(mockRichOriginalProposal);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(mockUpdateAppContent2).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(scrollTo).not.toHaveBeenCalled();
+    expect(alert).not.toHaveBeenCalled();
+  });
+
   test('does not scroll or navigate when loading the proposal fails', async () => {
     const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
     const alert = vi.fn();
