@@ -358,6 +358,14 @@ describe('clone proposal', () => {
     fireEvent.click(screen.getByTestId('displayConfirmationButton'));
   };
 
+  test('scrolls to the top when the cloned proposal opens', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    await triggerCloneConfirm();
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
   test('preserves original targets, observations, abstract and data products after cloning', async () => {
     await triggerCloneConfirm();
 

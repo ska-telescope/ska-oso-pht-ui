@@ -238,6 +238,7 @@ export default function LandingPage() {
 
       updateAppContent4([...acc, newAcc]);
 
+      window.scrollTo(0, 0);
       goToTitlePage();
     } else {
       notifyError((response as { error: string }).error);
