@@ -136,8 +136,8 @@ export default function LandingPage() {
     updateAppContent5({});
     setAxiosViewError('');
 
-    const response = await loadFromOda(id);
-    if (!pageMounted.current) return false;
+    const response = await loadFromOda(id, () => pageMounted.current);
+    if (response === null || !pageMounted.current) return false;
 
     if (typeof response === 'string') {
       updateAppContent1({});

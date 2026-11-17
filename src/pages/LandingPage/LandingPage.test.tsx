@@ -269,7 +269,7 @@ describe('clone proposal', () => {
     fireEvent.click(await screen.findByTestId('editIcon'));
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
-    expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID);
+    expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID, expect.any(Function));
     expect(scrollTo).toHaveBeenCalledWith(0, 0);
   });
 
@@ -293,7 +293,7 @@ describe('clone proposal', () => {
       fireEvent.click(screen.getAllByTestId('cloneIcon')[1]);
 
       expect(mockLoadFromOda).toHaveBeenCalledTimes(1);
-      expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID);
+      expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID, expect.any(Function));
       expect(alert).not.toHaveBeenCalled();
 
       finishLoad(mockRichOriginalProposal);
@@ -318,6 +318,7 @@ describe('clone proposal', () => {
     mockUpdateAppContent2.mockClear();
 
     unmount();
+    expect(mockLoadFromOda.mock.calls[0][1]()).toBe(false);
     finishLoad(mockRichOriginalProposal);
     await new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -362,7 +363,7 @@ describe('clone proposal', () => {
     fireEvent.click(screen.getAllByTestId('editIcon')[1]);
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
-    expect(mockLoadFromOda).toHaveBeenLastCalledWith('prp-2');
+    expect(mockLoadFromOda).toHaveBeenLastCalledWith('prp-2', expect.any(Function));
     expect(screen.queryByTestId('axiosViewErrorTestId')).not.toBeInTheDocument();
   });
 

@@ -109,6 +109,19 @@ describe('useProposalOda', () => {
     ]);
   });
 
+  test('Load from ODA skips the form reset when the load is no longer wanted', async () => {
+    mockGet.mockResolvedValue({ data: pdm });
+    const { form, oda } = renderWithForm('New title');
+
+    let loaded;
+    await act(async () => {
+      loaded = await oda.current.loadFromOda('prsl-1', () => false);
+    });
+
+    expect(loaded).toBeNull();
+    expect(form.current.getValues('title')).toBe('New title');
+  });
+
   test('Load from ODA returns the error and leaves the form alone on failure', async () => {
     mockGet.mockRejectedValue(new Error('Network Error'));
     const { form, oda } = renderWithForm('Unsaved title');
@@ -394,7 +407,7 @@ describe('useProposalOda', () => {
     let loaded = mapping(withTeam);
     await act(async () => {
       const result = await oda.current.loadFromOda('prsl-1');
-      if (typeof result === 'string') throw new Error(result);
+      if (typeof result === 'string' || result === null) throw new Error(String(result));
       loaded = result;
     });
     const [member] = form.current.getValues('investigators') ?? [];
