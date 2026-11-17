@@ -8,6 +8,7 @@ import {
   BAND_5B_STR,
   BAND_LOW_STR,
   FIRST_COARSE_ZOOM,
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
   FREQUENCY_UNIT_HZ,
   type FrequencyUnit,
   SA_AA2,
@@ -16,7 +17,16 @@ import {
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS
 } from '@/utils/constants';
 import { calculateVelocity, convertFrequency, generateObsSetId } from '@/utils/helpers';
-import { isFineZoomRestricted } from '@/utils/zoomWindow';
+import {
+  isCentralFrequencyDivisible,
+  isCentralFrequencyOnChannelGrid,
+  isFineZoomRestricted
+} from '@/utils/zoomWindow';
+import type {
+  ObservatoryDataCapabilities,
+  subarrayConfigurationLow,
+  subarrayConfigurationMid
+} from '@/utils/types/observatoryData';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import {
   PstMode,
@@ -225,19 +235,170 @@ const observingModeVariants = <Factor extends number>(zoomFactors: readonly Fact
   }
 });
 
-/** The elevation range an observation can have on a telescope, from the OSD. */
-export type ElevationLimits = { minElevationDeg: number; maxElevationDeg: number };
+/** The OSD capabilities the observation rules use. */
+export type ObservationOsd = Partial<ObservatoryDataCapabilities>;
 
-/** The OSD values the observation rules use. A rule is not checked while its values aren't loaded. */
-export type ObservationOsd = {
-  mid?: ElevationLimits | null;
-  low?: ElevationLimits | null;
-};
+// The channel width of MID, which a MID bandwidth is a multiple of
+// TODO: Take it from the OSD once it has it
+const MID_CHANNEL_WIDTH_HZ = 13440;
 
-const elevationSchema = (limits: ElevationLimits | null | undefined) =>
+const elevationSchema = (
+  limits: { minElevationDeg: number; maxElevationDeg: number } | null | undefined
+) =>
   limits
     ? rangeSchema({ min: limits.minElevationDeg, max: limits.maxElevationDeg })
     : required(z.number());
+
+// A frequency in Hz, or null while its value or unit isn't set
+const frequencyHzOf = (frequency: { value: number | null; unit: FrequencyUnit | null }) =>
+  frequency.value !== null && frequency.unit !== null
+    ? convertFrequency(frequency.value, frequency.unit)
+    : null;
+
+/**
+ * The rules that need the OSD: the band, the subarray and the channel widths. Each one is checked
+ * only when the values it needs are set, and shows on the field the user changes to fix it.
+ */
+const osdRules =
+  (osd: ObservationOsd) =>
+  (obs: ObservationInput, ctx: z.RefinementCtx): void => {
+    const isLow = obs.telescope === TELESCOPE.LOW;
+    const capabilities = isLow ? osd.low : osd.mid;
+    if (!capabilities) {
+      return;
+    }
+    const band = isLow
+      ? osd.low?.basicCapabilities
+      : osd.mid?.basicCapabilities.receiverInformation.find((rx) => rx.rxId === obs.observingBand);
+    const subarray = (
+      capabilities.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[]
+    ).find((sub) => sub.subArray === obs.subarray);
+    const coarseChannelWidthHz = osd.low?.basicCapabilities.coarseChannelWidthHz;
+
+    const isSpectral = obs.observingMode === OBSERVING_MODE.SPECTRAL;
+    const zoomChannels = isSpectral ? obs.zoomChannels : null;
+    const channelWidthHz =
+      isSpectral && obs.zoomFactor !== null
+        ? zoomChannelWidthHz(obs.telescope, obs.zoomFactor)
+        : null;
+    const centralHz = frequencyHzOf(obs.centralFrequency);
+    // A spectral line observation's bandwidth is its channels times their width
+    const bandwidthHz = isSpectral
+      ? channelWidthHz !== null && zoomChannels !== null
+        ? zoomChannels * channelWidthHz
+        : null
+      : frequencyHzOf(obs.bandwidth);
+
+    // The whole bandwidth is in the band. Without a bandwidth yet, the central frequency is.
+    if (centralHz !== null && band) {
+      const halfBandwidthHz = (bandwidthHz ?? 0) / 2;
+      if (
+        Math.round(centralHz - halfBandwidthHz) < band.minFrequencyHz ||
+        Math.round(centralHz + halfBandwidthHz) > band.maxFrequencyHz
+      ) {
+        ctx.addIssue({
+          code: 'custom',
+          message: phtTranslations.centralFrequency.error.range,
+          path: ['centralFrequency', 'value']
+        });
+      } else if (isLow && coarseChannelWidthHz !== undefined) {
+        // On LOW the central frequency is on the channel grid: the zoom channels' for a spectral
+        // line observation, the coarse channels' for the others
+        const onGrid = isSpectral
+          ? channelWidthHz === null ||
+            zoomChannels === null ||
+            isCentralFrequencyOnChannelGrid(
+              centralHz,
+              channelWidthHz,
+              zoomChannels * channelWidthHz,
+              band.minFrequencyHz
+            )
+          : isCentralFrequencyDivisible(centralHz, coarseChannelWidthHz);
+        if (!onGrid) {
+          ctx.addIssue({
+            code: 'custom',
+            message: phtTranslations.centralFrequency.error.divisibility,
+            path: ['centralFrequency', 'value']
+          });
+        }
+      }
+    }
+
+    // A bandwidth of its own is a whole number of channels, at most what the subarray has
+    if (!isSpectral && bandwidthHz !== null) {
+      const channelHz = isLow
+        ? coarseChannelWidthHz !== undefined
+          ? coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+          : null
+        : MID_CHANNEL_WIDTH_HZ;
+      const maximumHz = subarray?.availableBandwidthHz;
+      const message = (
+        key: 'minimumChannelWidthError' | 'contMaximumExceededError' | 'divisibilityError',
+        valueHz: number,
+        unit: FrequencyUnit
+      ) =>
+        phtTranslations.bandwidth.range[key].replace(
+          '{{value}}',
+          convertFrequency(valueHz, 'Hz', unit).toFixed(2)
+        );
+      const bandwidthIssue =
+        channelHz !== null && bandwidthHz < channelHz
+          ? message('minimumChannelWidthError', channelHz, 'kHz')
+          : maximumHz !== undefined && bandwidthHz > maximumHz
+            ? message('contMaximumExceededError', maximumHz, 'MHz')
+            : channelHz !== null &&
+                Math.abs(bandwidthHz / channelHz - Math.round(bandwidthHz / channelHz)) > 1e-6
+              ? message('divisibilityError', channelHz, 'kHz')
+              : null;
+      if (bandwidthIssue) {
+        ctx.addIssue({ code: 'custom', message: bandwidthIssue, path: ['bandwidth', 'value'] });
+      }
+    }
+
+    // A spectral line observation has at most the zoom channels of its subarray
+    if (
+      isSpectral &&
+      zoomChannels !== null &&
+      subarray &&
+      zoomChannels > subarray.numberZoomChannels
+    ) {
+      ctx.addIssue({
+        code: 'too_big',
+        origin: 'number',
+        maximum: subarray.numberZoomChannels,
+        inclusive: true,
+        input: zoomChannels,
+        path: ['zoomChannels']
+      });
+    }
+
+    // Each MID continuum sub-band is at least a channel wide
+    const subBands = isLow ? null : obs.numberOfSubBands;
+    if (
+      (obs.observingMode === OBSERVING_MODE.CONTINUUM ||
+        obs.observingMode === OBSERVING_MODE.CONTINUUM_SPECTRAL) &&
+      bandwidthHz !== null &&
+      subBands !== null &&
+      subBands > 0 &&
+      bandwidthHz / subBands < MID_CHANNEL_WIDTH_HZ
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: phtTranslations.subBands.range.bandwidthSubBand,
+        path: ['numberOfSubBands']
+      });
+    }
+  };
+
+// The OSD rules run even when other fields have issues, so each field shows its error at once
+// Typed as the schema it is given, which the rules don't change. Inferring it would go through
+// the rules, which use ObservationInput, the type of this same schema.
+const withOsdRules = <T extends z.ZodType>(schema: T, osd: ObservationOsd): T =>
+  schema.superRefine(
+    // With `when`, the rules also run on values that aren't valid, so they read the form's input
+    (obs, ctx) => osdRules(osd)(obs as ObservationInput, ctx),
+    { when: () => true }
+  );
 
 const midBaseSchema = observationBaseSchema.extend({
   telescope: z.literal(TELESCOPE.MID),
@@ -261,50 +422,52 @@ const lowBaseSchema = observationBaseSchema.extend({
 const midModes = observingModeVariants(MID_ZOOM_RESOLUTIONS);
 const lowModes = observingModeVariants(LOW_ZOOM_RESOLUTIONS);
 
-const midObservationSchema = (elevation: ReturnType<typeof elevationSchema>) => {
-  const base = midBaseSchema.extend({ elevation });
+const midObservationSchema = (osd: ObservationOsd) => {
+  const base = midBaseSchema.extend({
+    elevation: elevationSchema(osd.mid?.basicCapabilities)
+  });
   return z.discriminatedUnion('observingMode', [
-    base.extend(midModes.continuum),
-    base.extend(midModes.continuumSpectral),
-    base.extend(midModes.spectral),
-    base.extend(midModes.pst)
+    withOsdRules(base.extend(midModes.continuum), osd),
+    withOsdRules(base.extend(midModes.continuumSpectral), osd),
+    withOsdRules(base.extend(midModes.spectral), osd),
+    withOsdRules(base.extend(midModes.pst), osd)
   ]);
 };
 
-const lowObservationSchema = (minElevation: ReturnType<typeof elevationSchema>) => {
-  const base = lowBaseSchema.extend({ minElevation });
+const lowObservationSchema = (osd: ObservationOsd) => {
+  const base = lowBaseSchema.extend({
+    minElevation: elevationSchema(osd.low?.basicCapabilities)
+  });
   return z.discriminatedUnion('observingMode', [
-    base.extend(lowModes.continuum),
-    base.extend(lowModes.continuumSpectral),
-    base
-      .extend(lowModes.spectral)
-      // AA2 and AA* have only the coarse zoom factors. Checked even when other fields have
-      // issues, so the field shows it at once.
-      .refine(
-        (obs) =>
-          !isFineZoomRestricted(obs.subarray ?? undefined) ||
-          typeof obs.zoomFactor !== 'number' ||
-          obs.zoomFactor >= FIRST_COARSE_ZOOM,
-        {
-          message: phtTranslations.spectralResolution.restrictedError,
-          path: ['zoomFactor'],
-          when: () => true
-        }
-      ),
-    base.extend(lowModes.pst)
+    withOsdRules(base.extend(lowModes.continuum), osd),
+    withOsdRules(base.extend(lowModes.continuumSpectral), osd),
+    withOsdRules(
+      base
+        .extend(lowModes.spectral)
+        // AA2 and AA* have only the coarse zoom factors. Checked even when other fields have
+        // issues, so the field shows it at once.
+        .refine(
+          (obs) =>
+            !isFineZoomRestricted(obs.subarray ?? undefined) ||
+            typeof obs.zoomFactor !== 'number' ||
+            obs.zoomFactor >= FIRST_COARSE_ZOOM,
+          {
+            message: phtTranslations.spectralResolution.restrictedError,
+            path: ['zoomFactor'],
+            when: () => true
+          }
+        ),
+      osd
+    ),
+    withOsdRules(base.extend(lowModes.pst), osd)
   ]);
 };
 
-// TODO(BTN-3595): The other rules that need the OSD (band frequency ranges, maximum zoom channels,
-//  the channel grid) are added here, and are not checked without it either.
-export function getObservationSchema(osd?: ObservationOsd) {
-  return z.discriminatedUnion('telescope', [
-    midObservationSchema(elevationSchema(osd?.mid)),
-    lowObservationSchema(elevationSchema(osd?.low))
-  ]);
+export function getObservationSchema(osd: ObservationOsd = {}) {
+  return z.discriminatedUnion('telescope', [midObservationSchema(osd), lowObservationSchema(osd)]);
 }
 
-export function getObservationsSchema(osd?: ObservationOsd) {
+export function getObservationsSchema(osd: ObservationOsd = {}) {
   return z.array(getObservationSchema(osd));
 }
 

@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import type { ObservationSets } from '@/generated/models';
 import { OSD_CONSTANTS } from '@/utils/OSDConstants';
+import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import {
   getObservationSchema,
@@ -8,6 +9,7 @@ import {
   LOW_ZOOM_RESOLUTIONS,
   MID_ZOOM_RESOLUTIONS,
   newSvObservation,
+  ObservationInput,
   OBSERVING_MODE,
   observationFromPdm,
   observationsFromPdm,
@@ -100,6 +102,13 @@ const pdmObservations: ObservationSets[] = [
 const schema = getObservationSchema();
 const issues = (obs: object) =>
   schema.safeParse(obs).error?.issues.map(({ path, message }) => ({ path, message })) ?? [];
+
+// The mock OSD: LOW 49.609375-349.609375 MHz in coarse channels of 781.25 kHz, LOW AA2 with up to
+// 150 MHz and 1800 zoom channels, MID band 2 0.95-1.76 GHz, elevations 15-85 (MID) and 15-90 (LOW)
+const osd = MockObservatoryDataFrontend.capabilities;
+const osdSchema = getObservationSchema(osd);
+const osdIssues = (obs: object) =>
+  osdSchema.safeParse(obs).error?.issues.map(({ path, message }) => ({ path, message })) ?? [];
 
 describe('observation PDM mapping', () => {
   test('gives every observation set its telescope and observing mode', () => {
@@ -285,36 +294,157 @@ describe('observation schema', () => {
     ]);
     expect(issues({ ...midContinuum, integrationTime: { value: 4, unit: 'h' } })).toEqual([]);
   });
+});
+
+describe('observation rules from the OSD', () => {
+  const lowContinuum = newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
+  const lowSpectral = newSvObservation(OBSERVING_MODE.SPECTRAL, 15);
+  // MID band 2, with a bandwidth of a whole number of 13.44 kHz channels
+  const midContinuum = {
+    ...observationFromPdm(pdmObservations[4]),
+    subarray: 'aa2_sv',
+    bandwidth: { value: (29760 * 13440) / 1e6, unit: 'MHz' }
+  } as ObservationInput;
+  const bandwidthMessage = (
+    key: 'minimumChannelWidthError' | 'contMaximumExceededError' | 'divisibilityError',
+    value: string
+  ) => phtTranslations.bandwidth.range[key].replace('{{value}}', value);
+
+  test('accepts valid observations', () => {
+    expect(osdIssues(lowContinuum)).toEqual([]);
+    expect(osdIssues(lowSpectral)).toEqual([]);
+    expect(osdIssues(midContinuum)).toEqual([]);
+  });
 
   test('checks the elevation against the range in the OSD', () => {
-    const osd = {
-      mid: { minElevationDeg: 15, maxElevationDeg: 85 },
-      low: { minElevationDeg: 20, maxElevationDeg: 90 }
-    };
-    const withOsd = (obs: object) =>
-      getObservationSchema(osd)
-        .safeParse(obs)
-        .error?.issues.map(({ path, message }) => ({ path, message })) ?? [];
-    expect(withOsd({ ...lowSpectral, minElevation: 20 })).toEqual([]);
-    expect(withOsd({ ...lowSpectral, minElevation: 19 })).toEqual([
+    expect(osdIssues({ ...lowContinuum, minElevation: 90 })).toEqual([]);
+    expect(osdIssues({ ...lowContinuum, minElevation: 14 })).toEqual([
       { path: ['minElevation'], message: expect.any(String) }
     ]);
-    expect(withOsd({ ...midContinuum, elevation: 85 })).toEqual([]);
-    expect(withOsd({ ...midContinuum, elevation: 86 })).toEqual([
+    expect(osdIssues({ ...midContinuum, elevation: 85 })).toEqual([]);
+    expect(osdIssues({ ...midContinuum, elevation: 86 })).toEqual([
       { path: ['elevation'], message: expect.any(String) }
     ]);
   });
 
-  test('does not check the elevation range while the OSD is not loaded', () => {
-    expect(issues({ ...lowSpectral, minElevation: 5 })).toEqual([]);
+  test('keeps the whole bandwidth in the band', () => {
+    const outOfBand = {
+      path: ['centralFrequency', 'value'],
+      message: phtTranslations.centralFrequency.error.range
+    };
+    // 60 MHz +- 75 MHz goes below the LOW band
+    expect(osdIssues({ ...lowContinuum, centralFrequency: { value: 60, unit: 'MHz' } })).toEqual([
+      outOfBand
+    ]);
+    // 1 GHz +- 200 MHz goes below band 2
+    expect(osdIssues({ ...midContinuum, centralFrequency: { value: 1, unit: 'GHz' } })).toEqual([
+      outOfBand
+    ]);
   });
-});
 
-describe('SV default observation', () => {
-  test.each(Object.values(OBSERVING_MODE))('is valid in %s mode', (observingMode) => {
-    const osd = { low: { minElevationDeg: 15, maxElevationDeg: 90 } };
-    expect(
-      getObservationSchema(osd).safeParse(newSvObservation(observingMode, 15)).error
-    ).toBeUndefined();
+  test('keeps a LOW central frequency on the coarse channel grid', () => {
+    expect(osdIssues({ ...lowContinuum, centralFrequency: { value: 200, unit: 'MHz' } })).toEqual([
+      {
+        path: ['centralFrequency', 'value'],
+        message: phtTranslations.centralFrequency.error.divisibility
+      }
+    ]);
   });
+
+  test('keeps a LOW spectral line central frequency on its channel grid, which an odd number of channels moves', () => {
+    expect(osdIssues({ ...lowSpectral, zoomChannels: 1002 })).toEqual([]);
+    expect(osdIssues({ ...lowSpectral, zoomChannels: 1001 })).toEqual([
+      {
+        path: ['centralFrequency', 'value'],
+        message: phtTranslations.centralFrequency.error.divisibility
+      }
+    ]);
+  });
+
+  test('needs a bandwidth of whole channels, up to what the subarray has', () => {
+    const lowBandwidth = (value: number) =>
+      osdIssues({ ...lowContinuum, bandwidth: { value, unit: 'MHz' } });
+    // A LOW bandwidth is a multiple of 8 coarse channels, 6.25 MHz
+    expect(lowBandwidth(5)).toEqual([
+      {
+        path: ['bandwidth', 'value'],
+        message: bandwidthMessage('minimumChannelWidthError', '6250.00')
+      }
+    ]);
+    expect(lowBandwidth(10)).toEqual([
+      { path: ['bandwidth', 'value'], message: bandwidthMessage('divisibilityError', '6250.00') }
+    ]);
+    expect(lowBandwidth(156.25)).toEqual([
+      {
+        path: ['bandwidth', 'value'],
+        message: bandwidthMessage('contMaximumExceededError', '150.00')
+      }
+    ]);
+    // MID AA2 has up to 800 MHz, here 59524 channels of 13.44 kHz in the middle of band 2
+    expect(
+      osdIssues({
+        ...midContinuum,
+        centralFrequency: { value: 1.355, unit: 'GHz' },
+        bandwidth: { value: (59524 * 13440) / 1e6, unit: 'MHz' }
+      })
+    ).toEqual([
+      {
+        path: ['bandwidth', 'value'],
+        message: bandwidthMessage('contMaximumExceededError', '800.00')
+      }
+    ]);
+    expect(osdIssues({ ...midContinuum, bandwidth: { value: 0.4, unit: 'GHz' } })).toEqual([
+      { path: ['bandwidth', 'value'], message: bandwidthMessage('divisibilityError', '13.44') }
+    ]);
+  });
+
+  test('has at most the zoom channels of the subarray', () => {
+    expect(osdIssues({ ...lowSpectral, zoomChannels: 1800 })).toEqual([]);
+    expect(osdIssues({ ...lowSpectral, zoomChannels: 1802 })).toEqual([
+      { path: ['zoomChannels'], message: expect.any(String) }
+    ]);
+  });
+
+  test('needs each MID continuum sub-band to be at least a channel wide', () => {
+    // 20 channels in 32 sub-bands
+    const narrow = { ...midContinuum, bandwidth: { value: (20 * 13440) / 1e6, unit: 'MHz' } };
+    expect(osdIssues({ ...narrow, numberOfSubBands: 1 })).toEqual([]);
+    expect(osdIssues({ ...narrow, numberOfSubBands: 32 })).toEqual([
+      { path: ['numberOfSubBands'], message: phtTranslations.subBands.range.bandwidthSubBand }
+    ]);
+  });
+
+  test('are checked even when other fields are invalid', () => {
+    expect(
+      osdIssues({
+        ...lowContinuum,
+        integrationTime: { value: null, unit: 'h' },
+        centralFrequency: { value: 200, unit: 'MHz' }
+      })
+    ).toEqual([
+      { path: ['integrationTime', 'value'], message: expect.any(String) },
+      {
+        path: ['centralFrequency', 'value'],
+        message: phtTranslations.centralFrequency.error.divisibility
+      }
+    ]);
+  });
+
+  test('are not checked without the OSD', () => {
+    expect(
+      issues({
+        ...lowContinuum,
+        minElevation: 5,
+        centralFrequency: { value: 60, unit: 'MHz' },
+        bandwidth: { value: 5, unit: 'MHz' }
+      })
+    ).toEqual([]);
+  });
+
+  test.each(Object.values(OBSERVING_MODE))(
+    'accept the SV default observation in %s mode',
+    (mode) => {
+      expect(osdIssues(newSvObservation(mode, 15))).toEqual([]);
+    }
+  );
 });
