@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import type { DataProductSDP } from '@/generated/models';
+import { PstMode, type DataProductSDP } from '@/generated/models';
 import { pdmDataProducts } from './testing/pdmDataProducts';
 import {
   DATA_PRODUCT_KIND,
@@ -16,11 +16,6 @@ import {
   updateImageSizes
 } from './dataProducts';
 import phtTranslations from '../../../public/locales/en/pht.json';
-import {
-  DETECTED_FILTER_BANK_VALUE,
-  FLOW_THROUGH_VALUE,
-  PULSAR_TIMING_VALUE
-} from '@utils/constants';
 
 const continuumImage = dataProductFromPdm(pdmDataProducts[0]);
 
@@ -249,10 +244,10 @@ describe('new data products', () => {
   });
 
   test.each([
-    [FLOW_THROUGH_VALUE, DATA_PRODUCT_KIND.PST_FLOW_THROUGH],
-    [DETECTED_FILTER_BANK_VALUE, DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK],
-    [PULSAR_TIMING_VALUE, DATA_PRODUCT_KIND.PST_TIMING],
-    [undefined, DATA_PRODUCT_KIND.PST_TIMING]
+    [PstMode.FlowThrough, DATA_PRODUCT_KIND.PST_FLOW_THROUGH],
+    [PstMode.DetectedFilterbank, DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK],
+    [PstMode.PulsarTiming, DATA_PRODUCT_KIND.PST_TIMING],
+    [null, DATA_PRODUCT_KIND.PST_TIMING]
   ])('gives PST mode %s the %s kind', (pstMode, kind) => {
     expect(pstDataProductKind(pstMode)).toBe(kind);
   });

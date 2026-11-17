@@ -9,7 +9,13 @@ import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposa
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { NAV, PAGE_OBSERVATION, PAGE_TARGET, PROPOSAL_TYPE } from '@/utils/constants';
+import {
+  NAV,
+  PAGE_OBSERVATION,
+  PAGE_TARGET,
+  PROPOSAL_TYPE,
+  TYPE_CONTINUUM
+} from '@/utils/constants';
 import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 
@@ -38,6 +44,7 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
     isSV: mockOSD.isSV,
     osdCycleId: 'CYCLE-1',
+    osdLOW: { basicCapabilities: { minElevationDeg: 15 } },
     osdCyclePolicy: {
       maxTargets: 1,
       maxObservations: 1
@@ -170,15 +177,47 @@ describe('PageFooterPPT', () => {
       expect(PostProposal).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
-        {
+        expect.objectContaining({
           ...newProposal,
           abstract: '',
           scienceCategory: null,
           investigators: [],
           cycle: 'CYCLE-1'
-        },
+        }),
         'draft'
       );
+    });
+  });
+
+  describe('a new proposal observation', () => {
+    const createProposal = async (proposalType: string) => {
+      const newProposal = { id: null, title: 'New idea', proposalType };
+      const store = storageObject.useStore();
+      storageObject.useStore = () =>
+        ({ ...store, application: { ...store.application, content2: newProposal } }) as any;
+      wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title);
+      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+      fireEvent.click(screen.getByTestId('nextButtonTestId'));
+      await waitFor(() => expect(PostProposal).toHaveBeenCalled());
+      return vi.mocked(PostProposal).mock.calls[0][2];
+    };
+
+    it('is a default continuum observation with its data products for an SV proposal', async () => {
+      const proposal = await createProposal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
+
+      expect(proposal.observations).toEqual([expect.objectContaining({ type: TYPE_CONTINUUM })]);
+      // Continuum has an images data product plus a hidden visibilities one
+      expect(proposal.dataProducts).toEqual([
+        expect.objectContaining({ observationId: proposal.observations?.[0].id }),
+        expect.objectContaining({ observationId: proposal.observations?.[0].id })
+      ]);
+    });
+
+    it('is not created for other proposals', async () => {
+      const proposal = await createProposal(PROPOSAL_TYPE.STANDARD);
+
+      expect(proposal.observations).toEqual([]);
+      expect(proposal.dataProducts).toEqual([]);
     });
   });
 

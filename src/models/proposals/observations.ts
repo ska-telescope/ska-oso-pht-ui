@@ -15,7 +15,7 @@ import {
   SA_CUSTOM,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS
 } from '@/utils/constants';
-import { calculateVelocity, convertFrequency } from '@/utils/helpers';
+import { calculateVelocity, convertFrequency, generateObsSetId } from '@/utils/helpers';
 import { isFineZoomRestricted } from '@/utils/zoomWindow';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import {
@@ -459,3 +459,47 @@ export const observationToPdm = (obs: ObservationValues): ObservationSets => ({
 
 export const observationsToPdm = (observations: ObservationValues[]) =>
   observations.map(observationToPdm);
+
+/**
+ * The observation an SV proposal starts with, and gets again when its observing mode changes: a
+ * LOW AA2 observation in the given mode. The minimum elevation is the OSD's lowest, and a spectral
+ * line observation uses all the zoom channels the subarray has.
+ */
+export const newSvObservation = (
+  observingMode: ObservingMode,
+  minElevation: number | null,
+  maxZoomChannels?: number
+): ObservationInput => {
+  const shared = {
+    id: generateObsSetId(),
+    groupId: null,
+    telescope: TELESCOPE.LOW,
+    observingBand: BAND_LOW_STR,
+    subarray: SA_AA2,
+    minElevation,
+    numberOfStations: 68,
+    integrationTime: { value: 1, unit: 'h' }
+  } as const;
+  const centralFrequency = { value: 199.609375, unit: 'MHz' } as const;
+  const bandwidth = { value: 150, unit: 'MHz' } as const;
+  switch (observingMode) {
+    case OBSERVING_MODE.SPECTRAL:
+      return {
+        ...shared,
+        observingMode,
+        centralFrequency: { value: 200, unit: 'MHz' },
+        zoomFactor: 8,
+        zoomChannels: maxZoomChannels ?? 1000
+      };
+    case OBSERVING_MODE.PST:
+      return {
+        ...shared,
+        observingMode,
+        centralFrequency,
+        bandwidth,
+        pstMode: PstMode.PulsarTiming
+      };
+    default:
+      return { ...shared, observingMode, centralFrequency, bandwidth };
+  }
+};

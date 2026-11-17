@@ -113,8 +113,8 @@ export default function PHT({
   setFlatten
 }: PHTPropTypes) {
   const { t } = useScopedTranslation();
-  const { application, help, helpToggle, updateAppContent2 } = storageObject.useStore();
-  const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } =
+  const { application, help, helpToggle } = storageObject.useStore();
+  const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdLOW, osdOpens } =
     useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
@@ -139,7 +139,6 @@ export default function PHT({
   }, [navigate]);
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
 
@@ -166,7 +165,12 @@ export default function PHT({
       return;
     }
     autoRepairAttemptedForIdRef.current = proposal.id;
-    void linkTarget(target, getProposal, setProposal, formMethods, authClient);
+    void linkTarget(
+      target,
+      formMethods,
+      authClient,
+      osdLOW?.basicCapabilities?.minElevationDeg ?? null
+    );
   }, [getProposal(), autoLink]);
 
   React.useEffect(() => {

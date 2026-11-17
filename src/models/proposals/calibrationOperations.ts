@@ -14,7 +14,7 @@ import Target from '@/utils/types/target';
  * Looks up the calibrators for a target observed by an observation. There are none for a solar
  * system object, without an observation, or when the lookup fails.
  */
-const lookupCalibrators = async (
+export const lookupCalibrators = async (
   authAxiosClient: AxiosAuthClient,
   observation: Observation | undefined,
   target: Target

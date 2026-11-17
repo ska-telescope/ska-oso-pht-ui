@@ -13,6 +13,7 @@ import {
   newDataProduct
 } from '@/models/proposals/dataProducts';
 import { mainDataProductKind, newDataProductsForMode } from '@/utils/autoLinking/AutoLinking';
+import { formObservationsFromLegacy } from '@/models/proposals/legacyObservations';
 import {
   FOOTER_HEIGHT_PHT,
   NAV,
@@ -28,6 +29,10 @@ import DataProductView, { DataProductsForm } from '@/pages/DataProduct/DataProdu
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 
 const getEntrySchema = () => z.object({ dataProducts: getDataProductsSchema().length(1) });
+
+// TODO: Remove once this page reads the observations from the form
+const formObservation = (observation: Observation) =>
+  formObservationsFromLegacy([observation], [])[0];
 
 /**
  * Adds a data product, or updates the one given, in an entry form of its own. It is written to
@@ -55,7 +60,11 @@ function DataProductEntry({
     resolver: zodResolver(getEntrySchema()) as never,
     defaultValues: {
       dataProducts: [
-        existing ?? newDataProduct(mainDataProductKind(defaultObservation), defaultObservation.id)
+        existing ??
+          newDataProduct(
+            mainDataProductKind(formObservation(defaultObservation)),
+            defaultObservation.id
+          )
       ]
     }
   });
@@ -69,7 +78,7 @@ function DataProductEntry({
     }
     entryForm.setValue(
       'dataProducts.0',
-      { ...newDataProduct(mainDataProductKind(next), next.id), id: dp.id },
+      { ...newDataProduct(mainDataProductKind(formObservation(next)), next.id), id: dp.id },
       { shouldValidate: true }
     );
   };
@@ -99,7 +108,7 @@ function DataProductEntry({
       );
     proposalForm.setValue('dataProducts', [
       ...updated,
-      ...(needsCompanion ? newDataProductsForMode(observation).slice(1) : [])
+      ...(needsCompanion ? newDataProductsForMode(formObservation(observation)).slice(1) : [])
     ]);
     navigate(NAV[BACK_PAGE]);
   };

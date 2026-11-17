@@ -1,44 +1,47 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   CHANNELS_OUT_DEFAULT,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  DEFAULT_PST_OBSERVATION_LOW,
-  DEFAULT_ZOOM_OBSERVATION_LOW,
   IMAGE_SIZE_DEFAULT,
   PIXEL_SIZE_DEFAULT,
   PROPOSAL_TYPE,
-  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SENSITIVITY_STATE,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
-  TAPER_DEFAULT,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
-  TYPE_ZOOM
+  TAPER_DEFAULT
 } from '../constants';
 import * as helpers from '../helpers';
-import Proposal from '../types/proposal';
-import type { ProposalFormAccess } from '@/models/proposals/proposal';
+import type { ProposalFormAccess, ProposalType } from '@/models/proposals/proposal';
 import {
   DATA_PRODUCT_KIND,
   DataProductInput,
   STEPPED_FIELD,
   steppedFromPdm
 } from '@/models/proposals/dataProducts';
-import { getDefaultObservationLowAA2 } from '../helpers';
-import Observation from '../types/observation';
+import {
+  newSvObservation,
+  ObservationInput,
+  OBSERVING_MODE
+} from '@/models/proposals/observations';
+import { Calibrator } from '../types/calibrationStrategy';
 import {
   linkTarget,
   newDataProductsForMode,
-  newObservationForMode,
-  regenerateForMode,
   relinkSvTarget,
   setObservingMode
 } from './AutoLinking';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { mockTarget } from './mockTarget';
-import { mockCalibration } from './mockCalibration';
+
+// The calibrator lookup goes to the backend. The tests hold it open where it matters.
+const mockLookupCalibrators = vi.hoisted(() =>
+  vi.fn(async (): Promise<Calibrator[] | null> => null)
+);
+vi.mock('@/models/proposals/calibrationOperations', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/models/proposals/calibrationOperations')>()),
+  lookupCalibrators: mockLookupCalibrators
+}));
+
+const MIN_ELEVATION = 15;
 
 // The default data products, as the mocked id generator names them
 const imageFields = {
@@ -49,12 +52,6 @@ const imageFields = {
   polarisations: ['I'],
   channelsOut: CHANNELS_OUT_DEFAULT
 } as const;
-
-const PST_TIMING_DATA_PRODUCT: DataProductInput = {
-  id: 'SDP-0000000',
-  observationId: 'obs-123',
-  kind: DATA_PRODUCT_KIND.PST_TIMING
-};
 
 const CONTINUUM_IMAGE_DATA_PRODUCT: DataProductInput = {
   id: 'SDP-0000000',
@@ -73,523 +70,130 @@ const SPECTRAL_DATA_PRODUCT: DataProductInput = {
   continuumSubtraction: SET_CONTINUUM_SUBSTRACTION_DEFAULT
 };
 
-// The tests keep one proposal object as the store; this form reads and writes its slices on that
-// same object, so each test can check every slice in one place
-const formOver = (get: () => Partial<Proposal>, set: (proposal: Partial<Proposal>) => void) =>
-  ({
-    getValues: (name?: keyof Proposal) => (name ? get()[name] : get()),
-    setValue: (name: keyof Proposal, value: unknown) => set({ ...get(), [name]: value })
-  }) as unknown as ProposalFormAccess;
+// A new link has partial results: the sensitivity service calculates them
+const PARTIAL_RESULTS = { state: SENSITIVITY_STATE.CALCULATING };
 
-const mockAuthAxiosClient = {
-  put: vi.fn(),
-  get: vi.fn(),
-  post: vi.fn(),
-  delete: vi.fn(),
-  interceptors: {
-    request: { clear: vi.fn(), eject: vi.fn(), use: vi.fn() },
-    response: { clear: vi.fn(), eject: vi.fn(), use: vi.fn() }
-  }
-} as any;
+const observation = (
+  observingMode: ObservationInput['observingMode'],
+  id: string
+): ObservationInput => ({ ...newSvObservation(observingMode, MIN_ELEVATION), id });
 
-describe('AutoLinking, newObservationForMode', () => {
-  test('creates continuum observation', () => {
-    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
-    expect(newObservationForMode(TYPE_CONTINUUM)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW);
-  });
-  test('creates zoom observation', () => {
-    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
-    expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
-  });
-  test('creates pst observation', () => {
-    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
-    expect(newObservationForMode(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW);
-  });
-  test('observationOut zoom overrides the static zoomChannels placeholder with the real cap', () => {
-    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
-    const result = newObservationForMode(TYPE_ZOOM, 4000);
-    expect(result.zoomChannels).toBe(4000);
-    expect(result).toEqual({ ...DEFAULT_ZOOM_OBSERVATION_LOW, zoomChannels: 4000 });
-  });
-  test('observationOut zoom keeps the static placeholder when no cap is provided', () => {
-    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
-    expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
-  });
-  test('observationOut continuum ignores maxZoomChannels (not a zoom observation)', () => {
-    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
-    expect(newObservationForMode(TYPE_CONTINUUM, 4000)).deep.equal(
-      DEFAULT_CONTINUUM_OBSERVATION_LOW
-    );
-  });
+// A form over plain values, so each test can check every slice in one place
+const formOver = (initial: Partial<ProposalType>) => {
+  const values = { ...getProposalFormDefaults(), ...initial };
+  const form = {
+    getValues: (name?: keyof ProposalType) => (name ? values[name] : values),
+    setValue: (name: keyof ProposalType, value: never) => {
+      values[name] = value;
+    }
+  } as unknown as ProposalFormAccess;
+  return { form, values };
+};
+
+const mockAuthAxiosClient = {} as never;
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockLookupCalibrators.mockImplementation(async () => null);
 });
 
-describe('AutoLinking, newDataProductsForMode', () => {
-  test('SDP default continuum', () => {
+describe('newDataProductsForMode', () => {
+  beforeEach(() => {
     vi.spyOn(helpers, 'generateDataProductId')
       .mockReturnValueOnce('SDP-0000000')
       .mockReturnValueOnce('SDP-0000001');
-    const obs: Observation = {
-      ...getDefaultObservationLowAA2(TYPE_CONTINUUM),
-      id: 'obs-123'
-    };
-    const sdps = newDataProductsForMode(obs);
-    expect(sdps).toHaveLength(2);
-    // The main data product comes first, then the hidden visibilities one
-    expect(sdps[0]).to.deep.equal(CONTINUUM_IMAGE_DATA_PRODUCT);
-    expect(sdps[1]).toEqual({
-      id: 'SDP-0000001',
-      observationId: 'obs-123',
-      kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
-      timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
-      frequencyAveragingKhz: steppedFromPdm(4, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
-    });
   });
 
-  test('SDP default spectral', () => {
-    vi.spyOn(helpers, 'generateDataProductId')
-      .mockReturnValueOnce('SDP-0000000')
-      .mockReturnValueOnce('SDP-0000001');
-    const obs: Observation = {
-      ...getDefaultObservationLowAA2(TYPE_ZOOM),
-      id: 'obs-123'
-    };
-    const sdps = newDataProductsForMode(obs);
-    expect(sdps).toHaveLength(2);
-    // The main data product comes first, then the hidden visibilities one. Its output channels
-    // are the observation's zoom channels.
-    expect(sdps[0]).to.deep.equal({ ...SPECTRAL_DATA_PRODUCT, channelsOut: obs.zoomChannels });
-    expect(sdps[1]).toMatchObject({
+  it('gives a continuum observation an image and a hidden visibilities data product', () => {
+    expect(newDataProductsForMode(observation(OBSERVING_MODE.CONTINUUM, 'obs-123'))).toEqual([
+      CONTINUUM_IMAGE_DATA_PRODUCT,
+      {
+        id: 'SDP-0000001',
+        observationId: 'obs-123',
+        kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+        timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
+        frequencyAveragingKhz: steppedFromPdm(4, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
+      }
+    ]);
+  });
+
+  it("gives a spectral line observation a spectral image with the observation's channels", () => {
+    const spectral = observation(OBSERVING_MODE.SPECTRAL, 'obs-123');
+
+    const dataProducts = newDataProductsForMode(spectral);
+
+    expect(dataProducts[0]).toEqual({ ...SPECTRAL_DATA_PRODUCT, channelsOut: 1000 });
+    expect(dataProducts[1]).toMatchObject({
       observationId: 'obs-123',
       kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
       frequencyAveragingKhz: steppedFromPdm(1, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
     });
   });
 
-  test('SDP default PST', () => {
-    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('SDP-0000000');
-    const obs: Observation = {
-      ...getDefaultObservationLowAA2(TYPE_PST),
-      id: 'obs-123'
-    };
-    const sdps = newDataProductsForMode(obs);
-    expect(sdps).toHaveLength(1);
-    expect(sdps[0]).to.deep.equal(PST_TIMING_DATA_PRODUCT);
+  it('gives a PST observation one data product for its PST mode', () => {
+    expect(newDataProductsForMode(observation(OBSERVING_MODE.PST, 'obs-123'))).toEqual([
+      { id: 'SDP-0000000', observationId: 'obs-123', kind: DATA_PRODUCT_KIND.PST_TIMING }
+    ]);
   });
 
-  // Continuum and spectral weighting is already covered by the deep-equal fixture tests above;
-  // continuum + spectral has no fixture of its own.
-  test('defaults the continuum + spectral imaging data product to Briggs weighting with robust 0', () => {
-    const obs: Observation = {
-      ...getDefaultObservationLowAA2(TYPE_CONTINUUM_SPECTRAL),
-      id: 'obs-123',
-      type: TYPE_CONTINUUM_SPECTRAL
-    };
-    expect(newDataProductsForMode(obs)[0]).toMatchObject({
+  it('defaults the continuum and spectral line image to Briggs weighting with robust 0', () => {
+    expect(
+      newDataProductsForMode(observation(OBSERVING_MODE.CONTINUUM_SPECTRAL, 'obs-123'))[0]
+    ).toMatchObject({
       kind: DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE,
       weighting: { type: 'briggs', robust: 0 }
     });
   });
 });
 
-// A new link has partial results: the sensitivity service calculates them
-const PARTIAL_RESULTS = { state: SENSITIVITY_STATE.CALCULATING };
-
-describe('regenerateForMode()', () => {
-  let proposal: Partial<Proposal>;
-  let getProposal: ReturnType<typeof vi.fn>;
-  let setProposal: ReturnType<typeof vi.fn>;
-  let form: ProposalFormAccess;
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-0000000');
-    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-0000000');
-    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-0000000');
-
-    // Start with an existing set of entities so we can assert replacement
-    proposal = {
-      targets: [mockTarget],
-      observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'existing-obs' }],
-      dataProducts: [
-        { ...CONTINUUM_IMAGE_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' }
-      ],
-      targetObservation: [
-        {
-          targetId: mockTarget.id,
-          observationId: 'existing-obs',
-          dataProductsSDPId: 'existing-sdp',
-          sensitivity: { stub: true } as any
-        }
-      ],
-      calibrationStrategy: [
-        { ...mockCalibration, id: 'existing-cal', observationIdRef: 'existing-obs' }
-      ]
-    };
-
-    getProposal = vi.fn(() => proposal);
-    setProposal = vi.fn((p: Proposal) => {
-      proposal = p; // update the proposal "store"
-    });
-    form = formOver(
-      () => proposal,
-      (p) => {
-        proposal = p;
-      }
-    );
-  });
-
-  it('replaces the observation and data products and links the target to them', async () => {
-    await regenerateForMode(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient,
-      TYPE_CONTINUUM
-    );
-
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    // Verify proposal was updated
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.observations?.[0].id).toBe('mock-0000000'); // replaced the existing observation
-
-    expect(proposal.targets).toHaveLength(1);
-    expect(proposal.targets?.[0]).toEqual(mockTarget);
-
-    expect(proposal.dataProducts).toHaveLength(2);
-    expect(proposal.dataProducts?.[0].observationId).toBe('mock-0000000');
-
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-
-    expect(proposal.targetObservation).toHaveLength(1);
-    expect(proposal.targetObservation?.[0].observationId).toBe('mock-0000000');
-    expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe(proposal.dataProducts?.[0].id);
-    expect(proposal.targetObservation?.[0].sensitivity).toEqual(PARTIAL_RESULTS);
-  });
-
-  it('updates existing observations, calibrations, sdps, targets so that there is always only 1 of each', async () => {
-    await regenerateForMode(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient,
-      TYPE_CONTINUUM
-    );
-
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    expect(proposal.targets).toHaveLength(1);
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProducts).toHaveLength(2);
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-
-    expect(proposal.observations?.[0].id).not.toBe('existing-obs');
-    expect(proposal.dataProducts?.[0].id).not.toBe('existing-sdp');
-    expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
-  });
-
-  it('replaces existing entities with a PST observation and PST-specific SDP', async () => {
-    // Request PST; initial proposal (from beforeEach) contains an existing continuum set
-    await regenerateForMode(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient,
-      TYPE_PST
-    );
-
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    expect(proposal.targets).toHaveLength(1);
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProducts).toHaveLength(1);
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-    expect(proposal.targetObservation).toHaveLength(1);
-
-    expect(proposal.observations?.[0].id).not.toBe('existing-obs');
-    expect(proposal.dataProducts?.[0].id).not.toBe('existing-sdp');
-    expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
-
-    const obs = proposal.observations?.[0];
-    expect(obs?.type).toBe(TYPE_PST);
-
-    const sdp = proposal.dataProducts?.[0];
-    expect(sdp?.observationId).toBe(obs?.id);
-
-    const link = proposal.targetObservation?.[0];
-    expect(link?.observationId).toBe(obs?.id);
-    expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
-
-    // The science category is left untouched
-    expect(proposal.scienceCategory).toBeUndefined();
-  });
-
-  it('replaces existing entities with a Spectral (Zoom) observation and default SDP', async () => {
-    // Request Spectral (Zoom); initial proposal (from beforeEach) contains an existing continuum set
-    await regenerateForMode(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient,
-      TYPE_ZOOM
-    );
-
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    expect(proposal.targets).toHaveLength(1);
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProducts).toHaveLength(2);
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-    expect(proposal.targetObservation).toHaveLength(1);
-
-    expect(proposal.observations?.[0].id).not.toBe('existing-obs');
-    expect(proposal.dataProducts?.[0].id).not.toBe('existing-sdp');
-    expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
-
-    const obs = proposal.observations?.[0];
-    expect(obs?.type).toBe(TYPE_ZOOM);
-
-    const sdp = proposal.dataProducts?.[0];
-    expect(sdp?.observationId).toBe(obs?.id);
-
-    expect(sdp).toMatchObject({ kind: DATA_PRODUCT_KIND.SPECTRAL_IMAGE, polarisations: ['I'] });
-
-    const link = proposal.targetObservation?.[0];
-    expect(link?.observationId).toBe(obs?.id);
-    expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
-
-    // The science category is left untouched
-    expect(proposal.scienceCategory).toBeUndefined();
-  });
-
-  it('replaces an initial PST observation with a Continuum observation and default SDP', async () => {
-    // Override the initial proposal to start with PST entities
-    proposal = {
-      targets: [mockTarget],
-      observations: [{ ...DEFAULT_PST_OBSERVATION_LOW, id: 'existing-pst-obs' }],
-      dataProducts: [
-        { ...PST_TIMING_DATA_PRODUCT, id: 'existing-pst-sdp', observationId: 'existing-pst-obs' }
-      ],
-      targetObservation: [
-        {
-          targetId: mockTarget.id,
-          observationId: 'existing-pst-obs',
-          dataProductsSDPId: 'existing-pst-sdp',
-          sensitivity: { stub: true } as any
-        }
-      ],
-      calibrationStrategy: [
-        { ...mockCalibration, id: 'existing-pst-cal', observationIdRef: 'existing-pst-obs' }
-      ]
-    };
-
-    // Request Continuum to replace PST
-    await regenerateForMode(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient,
-      TYPE_CONTINUUM
-    );
-
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    expect(proposal.targets).toHaveLength(1);
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProducts).toHaveLength(2);
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-    expect(proposal.targetObservation).toHaveLength(1);
-
-    expect(proposal.observations?.[0].id).not.toBe('existing-pst-obs');
-    expect(proposal.dataProducts?.[0].id).not.toBe('existing-pst-sdp');
-    expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-pst-cal');
-
-    const obs = proposal.observations?.[0];
-    expect(obs?.type).toBe(TYPE_CONTINUUM);
-
-    const sdp = proposal.dataProducts?.[0];
-    expect(sdp?.observationId).toBe(obs?.id);
-    expect(sdp).toMatchObject({ kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE, polarisations: ['I'] });
-
-    const link = proposal.targetObservation?.[0];
-    expect(link?.observationId).toBe(obs?.id);
-    expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensitivity).toEqual(PARTIAL_RESULTS);
-
-    // The science category is left untouched
-    expect(proposal.scienceCategory).toBeUndefined();
-  });
-
-  it('keeps the existing observation type when no observing mode is passed', async () => {
-    proposal = {
-      ...proposal,
-      observations: [{ ...DEFAULT_PST_OBSERVATION_LOW, id: 'existing-pst-obs' }]
-    };
-    await regenerateForMode(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
-
-    expect(proposal.observations?.[0].type).toBe(TYPE_PST);
-  });
-
-  it('handles missing properties in getProposal gracefully', async () => {
-    // Override proposal to an empty object to simulate missing fields
-    proposal = {} as unknown as Proposal;
-
-    await regenerateForMode(
-      mockTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient,
-      TYPE_CONTINUUM
-    );
-
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    // The function should populate the required arrays even if they were missing
-    expect(proposal.targets).toHaveLength(1);
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProducts).toHaveLength(2);
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-    expect(proposal.targetObservation).toHaveLength(1);
-  });
-
-  it('creates a link for an SSO target', async () => {
-    const ssoTarget = { ...mockTarget, kind: REFERENCE_COORDINATE_TYPE_SSO.value };
-    await regenerateForMode(
-      ssoTarget,
-      getProposal,
-      setProposal,
-      form,
-      mockAuthAxiosClient,
-      TYPE_CONTINUUM
-    );
-
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    // the link is still created — that's the whole point of SSO support
-    expect(proposal.targets).toHaveLength(1);
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProducts).toHaveLength(2);
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-    expect(proposal.targetObservation).toHaveLength(1);
-
-    // ...as partial, like any new link: the sensitivity service gives an SSO link no results
-    expect(proposal.targetObservation?.[0].sensitivity).toEqual(PARTIAL_RESULTS);
-  });
-});
-
 describe('setObservingMode()', () => {
-  let proposal: Partial<Proposal>;
-  let getProposal: ReturnType<typeof vi.fn>;
-  let setProposal: ReturnType<typeof vi.fn>;
-  let form: ProposalFormAccess;
+  const existing = observation(OBSERVING_MODE.CONTINUUM, 'existing-obs');
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-0000000');
-    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-0000000');
-    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-0000000');
-    proposal = {
-      abstract: 'An abstract',
-      targets: [],
-      observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'existing-obs' }],
-      dataProducts: [
-        { ...CONTINUUM_IMAGE_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' }
-      ],
-      targetObservation: [],
-      calibrationStrategy: []
-    };
-
-    getProposal = vi.fn(() => proposal);
-    setProposal = vi.fn((p: Proposal) => {
-      proposal = p;
-    });
-    form = formOver(
-      () => proposal,
-      (p) => {
-        proposal = p;
-      }
-    );
-  });
-
-  it('replaces only the observation and data products when there is no target', async () => {
-    await setObservingMode(TYPE_PST, getProposal, setProposal, form, mockAuthAxiosClient);
-
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.observations?.[0].type).toBe(TYPE_PST);
-    expect(proposal.observations?.[0].id).toBe('mock-0000000');
-    expect(proposal.dataProducts).toHaveLength(1);
-    expect(proposal.dataProducts?.[0].observationId).toBe('mock-0000000');
-
-    // The link and calibration need a target, so nothing is created for them
-    expect(proposal.targetObservation).toEqual([]);
-    expect(proposal.calibrationStrategy).toEqual([]);
-    expect(proposal.abstract).toBe('An abstract');
-  });
-
-  it('applies the zoom channel cap to a spectral observation when there is no target', async () => {
-    await setObservingMode(TYPE_ZOOM, getProposal, setProposal, form, mockAuthAxiosClient, 1234);
-
-    expect(proposal.observations?.[0].type).toBe(TYPE_ZOOM);
-    expect(proposal.observations?.[0].zoomChannels).toBe(1234);
-  });
-
-  it('regenerates everything when there is a target', async () => {
-    proposal = { ...proposal, targets: [mockTarget] };
-
-    await setObservingMode(TYPE_ZOOM, getProposal, setProposal, form, mockAuthAxiosClient);
-
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.observations?.[0].type).toBe(TYPE_ZOOM);
-    expect(proposal.targetObservation).toHaveLength(1);
-    expect(proposal.targetObservation?.[0].targetId).toBe(mockTarget.id);
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-    expect(proposal.abstract).toBe('An abstract');
-  });
-});
-
-describe('linkTarget()', () => {
-  let proposal: Partial<Proposal>;
-  let getProposal: ReturnType<typeof vi.fn>;
-  let setProposal: ReturnType<typeof vi.fn>;
-  let form: ProposalFormAccess;
-
-  const editedObservation: Observation = {
-    ...DEFAULT_ZOOM_OBSERVATION_LOW,
-    id: 'existing-obs',
-    type: TYPE_ZOOM,
-    centralFrequency: 123
-  };
-
-  beforeEach(() => {
-    vi.clearAllMocks();
     vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-cal');
     vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-sdp');
     vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-obs');
-    proposal = {
+  });
+
+  it('replaces only the observation and data products when there is no target', async () => {
+    const { form, values } = formOver({
       abstract: 'An abstract',
-      targets: [],
-      observations: [editedObservation],
-      dataProducts: [
-        { ...SPECTRAL_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' },
-        {
-          id: 'existing-hidden-sdp',
-          observationId: 'existing-obs',
-          kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
-          timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
-          frequencyAveragingKhz: steppedFromPdm(1, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
-        }
-      ],
-      targetObservation: [],
+      observations: [existing],
+      dataProducts: [{ ...CONTINUUM_IMAGE_DATA_PRODUCT, observationId: 'existing-obs' }]
+    });
+
+    await setObservingMode(OBSERVING_MODE.PST, form, mockAuthAxiosClient, MIN_ELEVATION);
+
+    expect(values.observations).toEqual([
+      expect.objectContaining({
+        id: 'mock-obs',
+        observingMode: OBSERVING_MODE.PST,
+        minElevation: MIN_ELEVATION
+      })
+    ]);
+    expect(values.dataProducts).toEqual([
+      expect.objectContaining({ observationId: 'mock-obs', kind: DATA_PRODUCT_KIND.PST_TIMING })
+    ]);
+    // The link and calibration need a target, so nothing is created for them
+    expect(values.targetObservation).toEqual([]);
+    expect(values.calibrationStrategy).toEqual([]);
+    expect(values.abstract).toBe('An abstract');
+  });
+
+  it('gives a spectral line observation all the zoom channels of the subarray', async () => {
+    const { form, values } = formOver({ observations: [existing] });
+
+    await setObservingMode(OBSERVING_MODE.SPECTRAL, form, mockAuthAxiosClient, null, 1234);
+
+    expect(values.observations).toEqual([
+      expect.objectContaining({ observingMode: OBSERVING_MODE.SPECTRAL, zoomChannels: 1234 })
+    ]);
+  });
+
+  it('links the target to the new observation and its main data product', async () => {
+    const { form, values } = formOver({
+      targets: [mockTarget],
+      observations: [existing],
       calibrationStrategy: [
         {
           observatoryDefined: true,
@@ -599,34 +203,124 @@ describe('linkTarget()', () => {
           notes: 'Existing notes'
         }
       ]
-    };
-
-    getProposal = vi.fn(() => proposal);
-    setProposal = vi.fn((p: Proposal) => {
-      proposal = p;
     });
-    form = formOver(
-      () => proposal,
-      (p) => {
-        proposal = p;
+
+    await setObservingMode(OBSERVING_MODE.SPECTRAL, form, mockAuthAxiosClient, MIN_ELEVATION);
+
+    expect(values.targets).toEqual([mockTarget]);
+    expect(values.targetObservation).toEqual([
+      {
+        targetId: mockTarget.id,
+        observationId: 'mock-obs',
+        dataProductsSDPId: 'mock-sdp',
+        sensitivity: PARTIAL_RESULTS
       }
-    );
+    ]);
+    expect(values.calibrationStrategy).toEqual([
+      {
+        observatoryDefined: true,
+        id: 'mock-cal',
+        observationIdRef: 'mock-obs',
+        calibrators: null,
+        notes: 'Existing notes'
+      }
+    ]);
+  });
+
+  describe('while the calibrator lookup runs', () => {
+    const calibrators = [{ id: 'cal-1' }] as unknown as Calibrator[];
+    let finishLookup: () => void;
+
+    beforeEach(() => {
+      mockLookupCalibrators.mockImplementationOnce(
+        () => new Promise((resolve) => (finishLookup = () => resolve(calibrators)))
+      );
+    });
+
+    it('has already written the observation, data products, link and calibration', async () => {
+      const { form, values } = formOver({ targets: [mockTarget], observations: [existing] });
+
+      const changing = setObservingMode(OBSERVING_MODE.PST, form, mockAuthAxiosClient, null);
+
+      expect(values.observations).toEqual([expect.objectContaining({ id: 'mock-obs' })]);
+      expect(values.dataProducts).toEqual([expect.objectContaining({ observationId: 'mock-obs' })]);
+      expect(values.targetObservation).toEqual([
+        expect.objectContaining({ observationId: 'mock-obs' })
+      ]);
+      expect(values.calibrationStrategy).toEqual([
+        expect.objectContaining({ observationIdRef: 'mock-obs', calibrators: null })
+      ]);
+      finishLookup();
+      await changing;
+    });
+
+    it('adds the calibrators when it returns, keeping notes edited meanwhile', async () => {
+      const { form, values } = formOver({ targets: [mockTarget], observations: [existing] });
+
+      const changing = setObservingMode(OBSERVING_MODE.PST, form, mockAuthAxiosClient, null);
+      form.setValue('calibrationStrategy', [
+        { ...values.calibrationStrategy[0], notes: 'Edited notes' }
+      ]);
+      finishLookup();
+      await changing;
+
+      expect(values.calibrationStrategy).toEqual([
+        expect.objectContaining({ id: 'mock-cal', calibrators, notes: 'Edited notes' })
+      ]);
+    });
+
+    it("doesn't add them when another mode change has replaced the calibration", async () => {
+      const { form, values } = formOver({ targets: [mockTarget], observations: [existing] });
+
+      const first = setObservingMode(OBSERVING_MODE.PST, form, mockAuthAxiosClient, null);
+      vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('newer-cal');
+      await setObservingMode(OBSERVING_MODE.CONTINUUM, form, mockAuthAxiosClient, null);
+      finishLookup();
+      await first;
+
+      expect(values.calibrationStrategy).toEqual([
+        expect.objectContaining({ id: 'newer-cal', calibrators: null })
+      ]);
+    });
+  });
+});
+
+describe('linkTarget()', () => {
+  const existing: ObservationInput = {
+    ...observation(OBSERVING_MODE.SPECTRAL, 'existing-obs'),
+    centralFrequency: { value: 123, unit: 'MHz' }
+  };
+  const existingDataProducts: DataProductInput[] = [
+    { ...SPECTRAL_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' },
+    {
+      id: 'existing-hidden-sdp',
+      observationId: 'existing-obs',
+      kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+      timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
+      frequencyAveragingKhz: steppedFromPdm(1, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
+    }
+  ];
+
+  beforeEach(() => {
+    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-cal');
+    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-sdp');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-obs');
   });
 
   it('keeps the existing observation and data products and links the target to them', async () => {
-    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
+    const { form, values } = formOver({
+      abstract: 'An abstract',
+      observations: [existing],
+      dataProducts: existingDataProducts
+    });
 
-    expect(setProposal).toHaveBeenCalledTimes(1);
+    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
 
-    expect(proposal.observations).toEqual([editedObservation]);
-    expect(proposal.dataProducts?.map((dp) => dp.id)).toEqual([
-      'existing-sdp',
-      'existing-hidden-sdp'
-    ]);
-    expect(proposal.targets).toEqual([mockTarget]);
-    expect(proposal.abstract).toBe('An abstract');
-
-    expect(proposal.targetObservation).toEqual([
+    expect(values.observations).toEqual([existing]);
+    expect(values.dataProducts).toEqual(existingDataProducts);
+    expect(values.targets).toEqual([mockTarget]);
+    expect(values.abstract).toBe('An abstract');
+    expect(values.targetObservation).toEqual([
       {
         targetId: mockTarget.id,
         observationId: 'existing-obs',
@@ -637,55 +331,72 @@ describe('linkTarget()', () => {
   });
 
   it("links the observation's main data product, not another observation's", async () => {
-    proposal = {
-      ...proposal,
+    const { form, values } = formOver({
+      observations: [existing],
       dataProducts: [
         { ...CONTINUUM_IMAGE_DATA_PRODUCT, id: 'other-sdp', observationId: 'other-obs' },
-        ...(proposal.dataProducts ?? [])
+        ...existingDataProducts
       ]
-    };
+    });
 
-    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
+    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
 
-    expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('existing-sdp');
+    expect(values.targetObservation[0].dataProductsSDPId).toBe('existing-sdp');
   });
 
-  it('creates a calibration strategy for the existing observation, keeping existing notes', async () => {
-    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
+  it('creates a calibration for the existing observation, keeping the notes', async () => {
+    const { form, values } = formOver({
+      observations: [existing],
+      dataProducts: existingDataProducts,
+      calibrationStrategy: [
+        {
+          observatoryDefined: true,
+          id: 'existing-cal',
+          observationIdRef: 'existing-obs',
+          calibrators: null,
+          notes: 'Existing notes'
+        }
+      ]
+    });
 
-    expect(proposal.calibrationStrategy).toHaveLength(1);
-    expect(proposal.calibrationStrategy?.[0].observationIdRef).toBe('existing-obs');
-    expect(proposal.calibrationStrategy?.[0].notes).toBe('Existing notes');
+    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
+
+    expect(values.calibrationStrategy).toEqual([
+      expect.objectContaining({ observationIdRef: 'existing-obs', notes: 'Existing notes' })
+    ]);
   });
 
-  it('creates a default continuum observation and data products when there is no observation', async () => {
-    proposal = { ...proposal, observations: [], dataProducts: [] };
+  it('creates a default continuum observation and data products when there is none', async () => {
+    const { form, values } = formOver({});
 
-    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
+    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
 
-    expect(proposal.observations).toHaveLength(1);
-    expect(proposal.observations?.[0].id).toBe('mock-obs');
-    expect(proposal.observations?.[0].type).toBe(TYPE_CONTINUUM);
+    expect(values.observations).toEqual([
+      expect.objectContaining({
+        id: 'mock-obs',
+        observingMode: OBSERVING_MODE.CONTINUUM,
+        minElevation: MIN_ELEVATION
+      })
+    ]);
     // Continuum has an images data product plus a hidden visibilities one
-    expect(proposal.dataProducts).toHaveLength(2);
-    proposal.dataProducts?.forEach((dp) => expect(dp.observationId).toBe('mock-obs'));
-    expect(proposal.targetObservation?.[0].observationId).toBe('mock-obs');
+    expect(values.dataProducts).toHaveLength(2);
+    values.dataProducts.forEach((dp) => expect(dp.observationId).toBe('mock-obs'));
+    expect(values.targetObservation[0].observationId).toBe('mock-obs');
   });
 
   it('creates default data products when the observation has none', async () => {
-    proposal = { ...proposal, dataProducts: [] };
+    const { form, values } = formOver({ observations: [existing] });
 
-    await linkTarget(mockTarget, getProposal, setProposal, form, mockAuthAxiosClient);
+    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
 
-    expect(proposal.observations).toEqual([editedObservation]);
-    expect(proposal.dataProducts?.length).toBeGreaterThan(0);
-    proposal.dataProducts?.forEach((dp) => expect(dp.observationId).toBe('existing-obs'));
-    expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe('mock-sdp');
+    expect(values.observations).toEqual([existing]);
+    expect(values.dataProducts.length).toBeGreaterThan(0);
+    values.dataProducts.forEach((dp) => expect(dp.observationId).toBe('existing-obs'));
+    expect(values.targetObservation[0].dataProductsSDPId).toBe('mock-sdp');
   });
 });
 
 describe('relinkSvTarget()', () => {
-  const observation: Observation = { ...getDefaultObservationLowAA2(TYPE_CONTINUUM), id: 'obs-1' };
   const target = { ...mockTarget, id: 'target-1' } as never;
   // As loaded when the main data product was invalid at the last save: only its companion is left
   const leftover: DataProductInput = {
@@ -695,10 +406,11 @@ describe('relinkSvTarget()', () => {
     timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
     frequencyAveragingKhz: steppedFromPdm(4, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
   };
-  const svValues = {
+  const svValues: ProposalType = {
     ...getProposalFormDefaults(),
     proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
     targets: [target],
+    observations: [observation(OBSERVING_MODE.CONTINUUM, 'obs-1')],
     dataProducts: [leftover]
   };
 
@@ -709,7 +421,7 @@ describe('relinkSvTarget()', () => {
   });
 
   it('gives an SV target without a link the default data products, linked to it', () => {
-    const relinked = relinkSvTarget(svValues, [observation]);
+    const relinked = relinkSvTarget(svValues);
 
     // The leftover companion is replaced by the full default set
     expect(relinked.dataProducts).toEqual([
@@ -736,9 +448,10 @@ describe('relinkSvTarget()', () => {
   });
 
   it('gives a PST observation its one default data product', () => {
-    const pst: Observation = { ...getDefaultObservationLowAA2(TYPE_PST), id: 'obs-1' };
-
-    const relinked = relinkSvTarget(svValues, [pst]);
+    const relinked = relinkSvTarget({
+      ...svValues,
+      observations: [observation(OBSERVING_MODE.PST, 'obs-1')]
+    });
 
     expect(relinked.dataProducts).toHaveLength(1);
     expect(relinked.targetObservation[0].dataProductsSDPId).toBe(relinked.dataProducts[0].id);
@@ -756,8 +469,8 @@ describe('relinkSvTarget()', () => {
     ['no target', { targets: [] }],
     ['another proposal type', { proposalType: PROPOSAL_TYPE.STANDARD }]
   ])('leaves a proposal with %s as it is', (_, change) => {
-    const values = { ...svValues, ...change } as typeof svValues;
+    const values = { ...svValues, ...change } as ProposalType;
 
-    expect(relinkSvTarget(values, [observation])).toBe(values);
+    expect(relinkSvTarget(values)).toBe(values);
   });
 });

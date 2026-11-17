@@ -59,7 +59,7 @@ export default function LinkingPage() {
   const { t } = useScopedTranslation();
 
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currRec, setCurrRec] = React.useState<any | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -74,7 +74,6 @@ export default function LinkingPage() {
   const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   // The form owns the targets, links and calibration; watching them re-renders the page on change
   const form = useFormContext<ProposalType>();
@@ -223,18 +222,14 @@ export default function LinkingPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().observations?.filter((e) => e.id !== currRec?.id2) ?? [];
-    const obs3 =
-      getProposal().groupObservations?.filter((e) => e.observationId !== currRec?.id2) ?? [];
     form.setValue(
       'targetObservation',
       getLinks().filter((e) => e.observationId !== currRec?.id2)
     );
-    setProposal({
-      ...getProposal(),
-      observations: obs1,
-      groupObservations: obs3
-    });
+    form.setValue(
+      'observations',
+      form.getValues('observations').filter((e) => e.id !== currRec?.id2)
+    );
     setElementsO(elementsO.filter((e) => e.id !== currRec?.id));
     setCurrRec(null);
     closeDeleteDialog();

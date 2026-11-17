@@ -7,6 +7,7 @@ import {
   getObservationsSchema,
   LOW_ZOOM_RESOLUTIONS,
   MID_ZOOM_RESOLUTIONS,
+  newSvObservation,
   OBSERVING_MODE,
   observationFromPdm,
   observationsFromPdm,
@@ -306,5 +307,14 @@ describe('observation schema', () => {
 
   test('does not check the elevation range while the OSD is not loaded', () => {
     expect(issues({ ...lowSpectral, minElevation: 5 })).toEqual([]);
+  });
+});
+
+describe('SV default observation', () => {
+  test.each(Object.values(OBSERVING_MODE))('is valid in %s mode', (observingMode) => {
+    const osd = { low: { minElevationDeg: 15, maxElevationDeg: 90 } };
+    expect(
+      getObservationSchema(osd).safeParse(newSvObservation(observingMode, 15)).error
+    ).toBeUndefined();
   });
 });

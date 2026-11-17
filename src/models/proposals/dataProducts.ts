@@ -8,8 +8,6 @@ import {
   CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN_CONTINUUM,
   CHANNELS_OUT_MIN_SPECTRAL,
-  DETECTED_FILTER_BANK_VALUE,
-  FLOW_THROUGH_VALUE,
   IMAGE_SIZE_DEFAULT,
   PIXEL_SIZE_DEFAULT,
   PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
@@ -24,6 +22,7 @@ import phtTranslations from '../../../public/locales/en/pht.json';
 import {
   ImageWeighting,
   Polarisation,
+  PstMode,
   type DataProductSDP,
   type ScriptParameters
 } from '@/generated/models';
@@ -301,11 +300,11 @@ export const newDataProduct = (kind: DataProductKind, observationId: string): Da
 };
 
 /** The data product kind for an observation's PST mode. */
-export const pstDataProductKind = (pstMode: number | undefined): DataProductKind => {
+export const pstDataProductKind = (pstMode: PstMode | null): DataProductKind => {
   switch (pstMode) {
-    case FLOW_THROUGH_VALUE:
+    case PstMode.FlowThrough:
       return DATA_PRODUCT_KIND.PST_FLOW_THROUGH;
-    case DETECTED_FILTER_BANK_VALUE:
+    case PstMode.DetectedFilterbank:
       return DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK;
     default:
       return DATA_PRODUCT_KIND.PST_TIMING;

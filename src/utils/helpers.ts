@@ -7,12 +7,7 @@ import {
   TEXT_ENTRY_PARAMS,
   VELOCITY_UNIT,
   VELOCITY_UNITS,
-  DEFAULT_PST_OBSERVATION_LOW,
-  DEFAULT_ZOOM_OBSERVATION_LOW,
-  TYPE_ZOOM,
-  TYPE_PST,
   TYPE_CONTINUUM_SPECTRAL,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
   TIME_UNITS,
   FREQUENCY_STR_KHZ,
   FREQUENCY_STR_MHZ,
@@ -272,18 +267,6 @@ export const obTypeTransform = (inData: string[]) => {
  * Returns the default LOW AA2 observation for the given observing mode, falling back to the
  * continuum default for combined or unrecognised modes.
  */
-export const getDefaultObservationLowAA2 = (type: string): Observation => {
-  switch (type) {
-    case TYPE_ZOOM:
-      return DEFAULT_ZOOM_OBSERVATION_LOW;
-    case TYPE_PST:
-      return DEFAULT_PST_OBSERVATION_LOW;
-    case TYPE_CONTINUUM_SPECTRAL:
-    default:
-      return DEFAULT_CONTINUUM_OBSERVATION_LOW;
-  }
-};
-
 export const timeConversion = (inValue: number, from: number, to: number) => {
   const fromUnit = TIME_UNITS.find((u) => u.id === from);
   const toUnit = TIME_UNITS.find((u) => u.id === to);

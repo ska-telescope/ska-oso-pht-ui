@@ -36,14 +36,13 @@ export default function ObservationPage() {
   const { osdCyclePolicy } = useOSDAccessors();
   const validateProposal = useValidateProposal();
 
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currObs, setCurrObs] = React.useState<Observation | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<any[]>([]);
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const form = useFormContext<ProposalType>();
 
   const getProposalState = () => application.content1 as number[];
@@ -94,10 +93,6 @@ export default function ObservationPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = (getProposal().observations ?? []).filter((e) => e.id !== currObs?.id);
-    const obs3 = (getProposal().groupObservations ?? []).filter(
-      (e) => e.observationId !== currObs?.id
-    );
     // The links and calibration for the observation go too; the form owns them
     form.setValue(
       'targetObservation',
@@ -109,11 +104,10 @@ export default function ObservationPage() {
         (e) => e.observationIdRef !== currObs?.id
       )
     );
-    setProposal({
-      ...getProposal(),
-      observations: obs1,
-      groupObservations: obs3
-    });
+    form.setValue(
+      'observations',
+      form.getValues('observations').filter((e) => e.id !== currObs?.id)
+    );
     setElementsO(elementsO.filter((e) => e.id !== currObs?.id));
     setCurrObs(null);
     closeDeleteDialog();

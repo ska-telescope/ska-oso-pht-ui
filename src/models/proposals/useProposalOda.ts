@@ -28,7 +28,7 @@ export function useProposalOda() {
       let values: ProposalType;
       try {
         proposal = mapping(pdm);
-        values = relinkSvTarget(mapPdmToForm(pdm), proposal.observations ?? []);
+        values = relinkSvTarget(mapPdmToForm(pdm));
       } catch (error) {
         return error instanceof Error ? error.message : 'error.API_UNKNOWN_ERROR';
       }

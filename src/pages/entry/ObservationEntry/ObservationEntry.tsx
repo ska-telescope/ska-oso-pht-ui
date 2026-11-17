@@ -102,10 +102,10 @@ import updateObservations from '@/utils/update/observations/updateObservations';
 import {
   isImageDataProduct,
   newDataProduct,
-  pstDataProductKind,
   updateImageSizes
 } from '@/models/proposals/dataProducts';
-import { withZoomChannels } from '@/utils/autoLinking/AutoLinking';
+import { mainDataProductKind, withZoomChannels } from '@/utils/autoLinking/AutoLinking';
+import { formObservationsFromLegacy } from '@/models/proposals/legacyObservations';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
@@ -146,11 +146,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const PAGE = isEdit() ? PAGE_OBSERVATION_UPDATE : PAGE_OBSERVATION_ADD;
 
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application } = storageObject.useStore();
   const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  // TODO: Write the form's observations directly once this page has them
+  const setObservations = (observations: Observation[]) =>
+    form.setValue(
+      'observations',
+      formObservationsFromLegacy(observations, getProposal().groupObservations)
+    );
   // Counts calibrator lookups, so only the latest one is applied
   const latestCalibratorRequestIdRef = React.useRef(0);
 
@@ -325,7 +330,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (!current) {
       return;
     }
-    const replacement = newDataProduct(pstDataProductKind(observation.pstMode), observation.id);
+    const replacement = newDataProduct(
+      mainDataProductKind(formObservationsFromLegacy([observation], [])[0]),
+      observation.id
+    );
     form.setValue('dataProducts', [
       ...dataProducts.filter((dp) => dp.observationId !== observation.id),
       { ...replacement, id: current.id }
@@ -357,7 +365,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       'dataProducts',
       form
         .getValues('dataProducts')
-        .map((dp) => (dp.observationId === observation.id ? withZoomChannels(dp, observation) : dp))
+        .map((dp) =>
+          dp.observationId === observation.id
+            ? withZoomChannels(dp, observation.zoomChannels ?? null)
+            : dp
+        )
     );
 
   const updateObservationOnProposal = () => {
@@ -367,10 +379,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const oldObservations = proposal.observations ?? [];
     const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
 
-    setProposal({
-      ...proposal,
-      observations: updateObservations(oldObservations ?? [], newObservation)
-    });
+    setObservations(updateObservations(oldObservations ?? [], newObservation));
 
     // Compared with the stored observation, so revisiting this page keeps the user's data product
     // values. A new observation has no data products yet.
@@ -408,10 +417,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const addObservationToProposal = () => {
     const newObservation: Observation = observationOut();
-    setProposal({
-      ...getProposal(),
-      observations: [...(getProposal().observations ?? []), newObservation]
-    });
+    setObservations([...(getProposal().observations ?? []), newObservation]);
   };
 
   const updateStorageProposal = () => {

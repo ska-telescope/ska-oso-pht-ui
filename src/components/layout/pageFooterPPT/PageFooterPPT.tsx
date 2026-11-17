@@ -7,6 +7,7 @@ import { storageObject } from '@utils/storage/store';
 import {
   NAV,
   PROPOSAL_STATUS,
+  PROPOSAL_TYPE,
   PAGE_TITLE_ADD,
   PAGE_TARGET,
   PAGE_OBSERVATION,
@@ -24,6 +25,9 @@ import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUt
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
+import { legacyObservationsFromForm } from '@/models/proposals/legacyObservations';
+import { newDataProductsForMode } from '@/utils/autoLinking/AutoLinking';
 
 const createProposalSchema = getProposalSchema().pick({ title: true, proposalType: true });
 
@@ -39,7 +43,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
-  const { isSV, osdCycleId } = useOSDAccessors();
+  const { isSV, osdCycleId, osdLOW } = useOSDAccessors();
   const { trigger, getValues } = useFormContext<ProposalType>();
   const [title, proposalType] = useWatch<ProposalType, ['title', 'proposalType']>({
     name: ['title', 'proposalType']
@@ -74,6 +78,17 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
     // Only the slices a new proposal takes from the form; the rest come from the legacy defaults
     const { title, proposalType, abstract, scienceCategory, investigators } = getValues();
+    // An SV proposal starts with an observation in the default observing mode, which the user can
+    // change on the Details page, and its data products
+    const observations =
+      proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+        ? [
+            newSvObservation(
+              OBSERVING_MODE.CONTINUUM,
+              osdLOW?.basicCapabilities?.minElevationDeg ?? null
+            )
+          ]
+        : [];
     const response = await PostProposal(
       authClient,
       refreshAuthToken,
@@ -83,6 +98,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         abstract,
         scienceCategory,
         investigators,
+        ...legacyObservationsFromForm(observations),
+        dataProducts: observations.flatMap(newDataProductsForMode),
         proposalType: proposalType ?? undefined,
         cycle: osdCycleId ?? null
       },
