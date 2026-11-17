@@ -115,12 +115,11 @@ js-e2e-test:
     SPLIT: "true"
     SPLIT_FILE: scripts/cypress-timings.json
   rules: *e2e_rules
-  environment:
-    name: test/$CI_COMMIT_REF_SLUG
-    # The template makes this job a deployment with auto_stop_in: 1 minute, so the first job to
-    # finish could stop the environment while the others are still running. Accessing it
-    # instead leaves stopping to stop-js-e2e-test.
-    action: access
+  # No environment: the template makes each test job a deployment to it, with its own
+  # auto_stop_in, and GitLab can't start parallel jobs that share one (data-integrity-failure).
+  # They find the deployment through KUBE_NAMESPACE, and js-e2e-deploy and stop-js-e2e-test
+  # look after the environment.
+  environment: null
 
 # Removes the deployment once all the test jobs have finished, whether or not they passed,
 # rather than leaving it to auto_stop_in or someone running this by hand
