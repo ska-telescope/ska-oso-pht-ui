@@ -66,7 +66,6 @@ const observation = (type: string): Observation => ({
   continuumBandwidthUnits: 0,
   supplied: { type: 0, value: 1.5, units: TIME_HOURS },
   spectralResolution: '',
-  effectiveResolution: '',
   numSubBands: undefined,
   num15mAntennas: undefined,
   num13mAntennas: undefined,

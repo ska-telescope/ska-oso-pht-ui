@@ -8,7 +8,6 @@ import {
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_M,
   SUPPLIED_TYPE_INTEGRATION,
-  SUPPLIED_TYPE_SENSITIVITY,
   TIME_HOURS,
   TYPE_CONTINUUM
 } from '../constants';
@@ -66,23 +65,6 @@ describe('validateObservationPage supplied rules', () => {
       targetObservation: []
     };
     expect(validateObservationPage(proposal as any)).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_OK for sensitivity supplied values greater than zero', () => {
-    const proposal = {
-      observations: [
-        {
-          ...baseObservation,
-          supplied: {
-            type: SUPPLIED_TYPE_SENSITIVITY,
-            value: 5,
-            units: 1
-          }
-        }
-      ],
-      targetObservation: []
-    };
-    expect(validateObservationPage(proposal as any)).toBe(STATUS_OK);
   });
 
   it('returns STATUS_ERROR when a linked observation has an invalid supplied value', () => {

@@ -82,7 +82,7 @@ import SubArrayField from '@/components/fields/subArray/SubArray';
 import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '@/components/fields/observationType/ObservationType';
 import { useObservationTypeOptions } from '@/components/fields/observationType/useObservationTypeOptions';
-import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
+import ElevationField from '@/components/fields/elevation/Elevation';
 import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
 import NumStations from '@/components/fields/numStations/NumStations';
 import ContinuumBandwidthField from '@/components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
@@ -157,13 +157,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
   const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
-  const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
+  // The default elevation is the lowest the telescope allows
+  const defaultElevation = (low: boolean) =>
+    (low ? osdLOW : osdMID)?.basicCapabilities?.minElevationDeg;
+  const [elevation, setElevation] = React.useState(() => defaultElevation(true) ?? 0);
   const [weather, setWeather] = React.useState(() => Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
   const [spectralResolution, setSpectralResolution] = React.useState('');
-  const [suppliedType, setSuppliedType] = React.useState(SUPPLIED_TYPE_INTEGRATION);
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
@@ -245,7 +247,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
     setSpectralResolution(ob?.spectralResolution ?? '');
-    setSuppliedType(ob?.supplied?.type);
 
     // If the supplied units are not one of the integration time units,
     // we will convert the value to the default units for the telescope.
@@ -300,12 +301,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       continuumBandwidth: continuumBandwidth,
       continuumBandwidthUnits: continuumBandwidthUnits,
       supplied: {
-        type: suppliedType,
+        type: SUPPLIED_TYPE_INTEGRATION,
         value: suppliedValue,
         units: suppliedUnits
       },
       spectralResolution,
-      effectiveResolution: spectralResolution,
       numSubBands: subBands,
       num15mAntennas: numOf15mAntennas,
       num13mAntennas: numOf13mAntennas,
@@ -448,9 +448,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setContinuumBandwidthUnits(newUnits);
   };
 
-  const setDefaultElevation = () => {
-    if (elevation === ELEVATION_DEFAULT[(isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM) - 1]) {
-      setElevation(ELEVATION_DEFAULT[telescope() - 1]);
+  // Keeps the elevation at the default when the telescope changes, unless the user has changed it
+  const setDefaultElevation = (toLow: boolean) => {
+    const newDefault = defaultElevation(toLow);
+    if (elevation === defaultElevation(isLow()) && newDefault !== undefined) {
+      setElevation(newDefault);
     }
   };
 
@@ -459,13 +461,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
-      setDefaultElevation();
+      setDefaultElevation(false);
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_M);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
     }
     if (isMid() && e === 0) {
-      setDefaultElevation();
-      setSuppliedType(SUPPLIED_TYPE_INTEGRATION);
+      setDefaultElevation(true);
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
@@ -611,7 +612,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     groupObservation,
     elevation,
     weather,
-    suppliedType,
     suppliedValue,
     suppliedUnits,
     centralFrequency,
@@ -1010,74 +1010,27 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       />
     );
 
-  const suppliedTypeField = () => {
-    const getOptions = () => {
-      const supplied = observatoryConstants?.Supplied ?? [];
-      if (supplied.length === 0) return [];
-      const options = isLow() ? [supplied[0]] : supplied;
-      return options.map((opt) => ({
-        ...opt,
-        label: t(`sensitivityCalculatorResults.${opt.sensCalcResultsLabel}`)
-      }));
-    };
-
-    return (
-      <Box
-        sx={{
-          pt: 2
-        }}
-      >
-        <DropDown
-          options={getOptions()}
-          testId="suppliedType"
-          value={suppliedType ?? ''}
-          setValue={setSuppliedType}
-          disabled={getOptions()?.length < 2}
-          label=""
-          onFocus={() => setHelp('suppliedType')}
-        />
-      </Box>
-    );
-  };
-
   const suppliedField = () => {
-    const getUnitOptions = () => {
-      const supplied = observatoryConstants?.Supplied ?? [];
-      if (!suppliedType || suppliedType <= 0) return [];
-      const entry = supplied[suppliedType - 1];
-      if (!entry || !Array.isArray(entry.units)) return [];
-      if (suppliedType === SUPPLIED_TYPE_INTEGRATION)
-        return entry.units.filter((u) =>
-          INTEGRATION_TIME_UNITS.some((allowed) => allowed.id === u.value)
-        );
-      return entry.units;
-    };
+    // The integration time units the editor offers
+    const getUnitOptions = () =>
+      (observatoryConstants?.Supplied?.[0]?.units ?? []).filter((u) =>
+        INTEGRATION_TIME_UNITS.some((allowed) => allowed.id === u.value)
+      );
 
     const FIELD = 'suppliedValue';
     const minValue = 0;
-    const maxValue =
-      suppliedType === SUPPLIED_TYPE_INTEGRATION
-        ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
-        : undefined;
-    const label = '';
+    const maxValue = timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits);
+    const label = t('sensitivityCalculatorResults.integrationTime');
     const currentUnitLabel = getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? '';
 
-    let rangeMessage = '';
-    if (maxValue !== undefined) {
-      rangeMessage = t(`${FIELD}.range.error`, {
-        min: minValue,
-        max: maxValue,
-        units: currentUnitLabel
-      });
-    } else {
-      rangeMessage = t(`${FIELD}.range.minError`, {
-        min: minValue,
-        units: currentUnitLabel
-      });
-    }
+    const rangeMessage = t(`${FIELD}.range.error`, {
+      min: minValue,
+      max: maxValue,
+      units: currentUnitLabel
+    });
     const validateSuppliedValue = (nextValue: number) =>
       isSuppliedValueValid({
-        type: suppliedType,
+        type: SUPPLIED_TYPE_INTEGRATION,
         value: nextValue,
         units: suppliedUnits
       })
@@ -1399,7 +1352,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     {observationsBandField()}
                     {subArrayField()}
                     {!isSV && (isLow() ? numStationsField() : antennasFields())}
-                    {suppliedTypeField()}
                     {suppliedField()}
                   </Stack>
                 </BorderedSection>

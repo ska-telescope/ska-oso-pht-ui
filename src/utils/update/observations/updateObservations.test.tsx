@@ -22,8 +22,7 @@ describe('updateObservations', () => {
       value: 0,
       units: 0
     },
-    spectralResolution: '',
-    effectiveResolution: ''
+    spectralResolution: ''
   };
 
   const obs2: Observation = {
@@ -43,8 +42,7 @@ describe('updateObservations', () => {
       value: 0,
       units: 0
     },
-    spectralResolution: '',
-    effectiveResolution: ''
+    spectralResolution: ''
   };
 
   it('replaces an existing observation when IDs match', () => {
@@ -70,8 +68,7 @@ describe('updateObservations', () => {
       continuumBandwidth: null,
       continuumBandwidthUnits: null,
       supplied: { type: 0, value: 0, units: 0 },
-      spectralResolution: '',
-      effectiveResolution: ''
+      spectralResolution: ''
     };
     const result = updateObservations([], newRec);
 
@@ -93,8 +90,7 @@ describe('updateObservations', () => {
       continuumBandwidth: null,
       continuumBandwidthUnits: null,
       supplied: { type: 0, value: 0, units: 0 },
-      spectralResolution: '',
-      effectiveResolution: ''
+      spectralResolution: ''
     };
     // @ts-expect-error testing null input
     const result = updateObservations(null, newRec);
@@ -117,8 +113,7 @@ describe('updateObservations', () => {
       continuumBandwidth: null,
       continuumBandwidthUnits: null,
       supplied: { type: 0, value: 0, units: 0 },
-      spectralResolution: '',
-      effectiveResolution: ''
+      spectralResolution: ''
     };
     const result = updateObservations([obs1, obs2], newRec);
 

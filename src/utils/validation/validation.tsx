@@ -8,13 +8,11 @@ import {
   FREQUENCY_MHZ,
   INTEGRATION_TIME_UNITS,
   PROPOSAL_TYPE,
-  SENSITIVITY_UNITS,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   SUPPLIED_TYPE_INTEGRATION,
-  SUPPLIED_TYPE_SENSITIVITY,
   TELESCOPE_LOW_NUM,
   TIME_HOURS,
   TYPE_ZOOM,
@@ -49,7 +47,6 @@ const numberLiteralEnum = <T extends number>(values: readonly T[]) => {
 };
 
 const integrationUnitSchema = numberLiteralEnum(INTEGRATION_TIME_UNITS.map((unit) => unit.id));
-const sensitivityUnitSchema = numberLiteralEnum(SENSITIVITY_UNITS.map((unit) => unit.id));
 
 const suppliedValueBaseSchema = z.object({
   value: z.number().gt(0)
@@ -72,15 +69,8 @@ const suppliedIntegrationSchema = suppliedValueBaseSchema
       });
     }
   });
-const suppliedSensitivitySchema = suppliedValueBaseSchema.extend({
-  type: z.literal(SUPPLIED_TYPE_SENSITIVITY),
-  units: sensitivityUnitSchema
-});
-
-export const suppliedValueSchema = z.union([suppliedIntegrationSchema, suppliedSensitivitySchema]);
-
 export const isSuppliedValueValid = (supplied: SuppliedValueInput): boolean =>
-  suppliedValueSchema.safeParse(supplied).success;
+  suppliedIntegrationSchema.safeParse(supplied).success;
 
 export const validateTitlePage = (proposal: Pick<Proposal, 'title' | 'proposalType'>) => {
   if (!getTitleSchema().safeParse(proposal?.title ?? '').success) {

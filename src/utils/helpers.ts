@@ -1,6 +1,8 @@
 import {
   FREQUENCY_HZ,
+  FREQUENCY_UNIT_HZ,
   FREQUENCY_UNITS,
+  type FrequencyUnit,
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
   VELOCITY_UNIT,
@@ -57,6 +59,12 @@ export const countWords = (text: string) => {
   return !text ? 0 : text.trim().split(/\s+/).filter(Boolean).length;
 };
 
+/** Converts a frequency from one unit to another. */
+export const convertFrequency = (value: number, from: FrequencyUnit, to: FrequencyUnit = 'Hz') =>
+  (value * FREQUENCY_UNIT_HZ[from]) / FREQUENCY_UNIT_HZ[to];
+
+// TODO(BTN-3595): Takes the legacy numeric unit codes. Use convertFrequency instead; this is
+// removed once nothing holds the numeric codes.
 export const frequencyConversion = (inValue: any, from: number, to: number = FREQUENCY_HZ) => {
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };

@@ -157,8 +157,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
         supplied: getSupplied(obs) as SuppliedTransport,
         observation_type: TYPE_ZOOM_LONG,
         spectral_resolution: obs.spectralResolution,
-        effective_resolution: obs.effectiveResolution,
-        number_of_channels: obs.zoomChannels?.toString()
+        number_of_channels: obs.zoomChannels
       };
     case TYPE_PST:
     default:

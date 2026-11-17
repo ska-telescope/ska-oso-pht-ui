@@ -19,9 +19,6 @@ interface ElevationFieldProps {
   widthLabel?: number;
 }
 
-export const ELEVATION_DEFAULT = [45, 20];
-export const ELEVATION_MIN_LOW = 15;
-export const ELEVATION_MAX = 59.2;
 export const ELEVATION_UNITS = 'deg';
 
 export default function ElevationField({
@@ -35,17 +32,18 @@ export default function ElevationField({
   value
 }: ElevationFieldProps) {
   const { t } = useScopedTranslation();
-  const { osdMID } = useOSDAccessors();
+  const { osdLOW, osdMID } = useOSDAccessors();
   const FIELD = 'elevation';
   const [fieldValid, setFieldValid] = useAutoClearingState(true, ERROR_SECS);
-  const MIN_ELEVATION = isLow
-    ? ELEVATION_MIN_LOW
-    : (osdMID?.basicCapabilities?.dishElevationLimitDeg ?? ELEVATION_MIN_LOW);
+  // The elevation range from the OSD. It is not checked while the OSD isn't loaded.
+  const limits = (isLow ? osdLOW : osdMID)?.basicCapabilities;
+  const MIN_ELEVATION = limits?.minElevationDeg ?? -Infinity;
+  const MAX_ELEVATION = limits?.maxElevationDeg ?? Infinity;
 
   const checkValue = (e: number) => {
     const num = Number(e);
 
-    if (num >= MIN_ELEVATION && num <= ELEVATION_MAX) {
+    if (num >= MIN_ELEVATION && num <= MAX_ELEVATION) {
       setFieldValid(true);
       if (setValue) {
         setValue(num);
@@ -59,7 +57,7 @@ export default function ElevationField({
     ? ''
     : t(FIELD + '.range.error', {
         min: MIN_ELEVATION,
-        max: ELEVATION_MAX
+        max: MAX_ELEVATION
       });
 
   return (

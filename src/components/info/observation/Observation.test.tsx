@@ -28,8 +28,7 @@ describe('ObservationInfo', () => {
       type: 0,
       value: 0,
       units: 0
-    },
-    effectiveResolution: '0'
+    }
   };
 
   it('renders Continuum Grid', () => {

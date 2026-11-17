@@ -95,7 +95,6 @@ const MID_CONTINUUM_OBSERVATION: Observation = {
   continuumBandwidthUnits: FREQUENCY_MHZ,
   supplied: { type: SUPPLIED_TYPE_INTEGRATION, value: 1, units: TIME_HOURS },
   spectralResolution: '13.44 kHz',
-  effectiveResolution: '13.44 kHz',
   numSubBands: 1
 };
 

@@ -111,7 +111,6 @@ export const MockProposalBackend = {
             }
           }
           // spectral_resolution: '5.43 kHz (8.1 km/s)',
-          // effective_resolution: '5.43 kHz (8.1 km/s)',
           // spectral_averaging: '1'
         }
       }
@@ -263,8 +262,7 @@ export const MockProposalBackendZoom = {
             }
           },
           spectral_resolution: '14.13 Hz (21.2 m/s)',
-          effective_resolution: '14.13 Hz (21.2 m/s)',
-          number_of_channels: '1024'
+          number_of_channels: 1024
         }
       }
     ],

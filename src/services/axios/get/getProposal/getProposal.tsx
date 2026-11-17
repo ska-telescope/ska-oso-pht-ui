@@ -266,9 +266,6 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
       spectralResolution: String(
         (inValue[i].observation_type_details as SpectralLineSetup)?.spectral_resolution
       ),
-      effectiveResolution: String(
-        (inValue[i].observation_type_details as SpectralLineSetup)?.effective_resolution
-      ),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
           ? (inValue[i].observation_type_details?.bandwidth?.value ?? null)
@@ -282,9 +279,9 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
           : null,
       numStations: numStations,
       ...(type === TYPE_ZOOM && {
-        zoomChannels: Number(
-          (inValue[i].observation_type_details as SpectralLineSetup)?.number_of_channels
-        )
+        zoomChannels:
+          (inValue[i].observation_type_details as SpectralLineSetup)?.number_of_channels ??
+          undefined
       }),
       ...(type === TYPE_PST && {
         pstMode: PST_MODES?.find(

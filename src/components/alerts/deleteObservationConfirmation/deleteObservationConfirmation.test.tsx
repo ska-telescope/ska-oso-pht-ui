@@ -57,7 +57,6 @@ describe('<DeleteObservationConfirmation />', () => {
             units: 0
           },
           spectralResolution: '',
-          effectiveResolution: '',
           numSubBands: undefined,
           num15mAntennas: undefined,
           num13mAntennas: undefined,

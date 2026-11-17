@@ -42,8 +42,7 @@ const mockData: Observation[] = [
       value: 0,
       units: 0
     },
-    spectralResolution: '',
-    effectiveResolution: ''
+    spectralResolution: ''
   },
   {
     id: 'OBS002',
@@ -63,8 +62,7 @@ const mockData: Observation[] = [
       value: 0,
       units: 0
     },
-    spectralResolution: '',
-    effectiveResolution: ''
+    spectralResolution: ''
   }
 ];
 
@@ -137,7 +135,6 @@ describe('GridObservation unit label display', () => {
       elevation: 0,
       supplied: { type: 0, value: 0, units: 0 },
       spectralResolution: '',
-      effectiveResolution: '',
       ...overrides
     }
   ];
@@ -213,7 +210,6 @@ describe('GridObservation spectral resolution conditional rendering', () => {
       elevation: 0,
       supplied: { type: 0, value: 10, units: 0 },
       spectralResolution: '',
-      effectiveResolution: '',
       ...overrides
     }
   ];
@@ -253,8 +249,7 @@ describe('GridObservation spectral resolution conditional rendering', () => {
         observingBand: BAND_LOW_STR,
         elevation: 0,
         supplied: { type: 0, value: 10, units: 0 },
-        spectralResolution: '',
-        effectiveResolution: ''
+        spectralResolution: ''
       },
       {
         id: 'ZOOM-OBS',
@@ -270,8 +265,7 @@ describe('GridObservation spectral resolution conditional rendering', () => {
         observingBand: BAND_LOW_STR,
         elevation: 0,
         supplied: { type: 0, value: 10, units: 0 },
-        spectralResolution: '1.0',
-        effectiveResolution: ''
+        spectralResolution: '1.0'
       }
     ];
 
@@ -376,7 +370,6 @@ describe('GridObservation hard-coded spectral resolution fallback', () => {
       elevation: 0,
       supplied: { type: 0, value: 10, units: 0 },
       spectralResolution: '',
-      effectiveResolution: '',
       ...overrides
     }
   ];

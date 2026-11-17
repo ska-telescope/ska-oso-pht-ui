@@ -347,14 +347,12 @@ describe('getObservationTypeDetails', () => {
       ...mockObsBase,
       type: TYPE_ZOOM,
       spectralResolution: '1.2 kHz (2.5 km/s)',
-      effectiveResolution: '2.3 kHz (4.9 km/s)',
       zoomChannels: 2000
     } as any;
     const result = getObservationTypeDetails(obs);
     expect(result.observation_type).toBe(TYPE_ZOOM_LONG);
     expect(result.spectral_resolution).toBe('1.2 kHz (2.5 km/s)');
-    expect(result.effective_resolution).toBe('2.3 kHz (4.9 km/s)');
-    expect(result.number_of_channels).toBe('2000');
+    expect(result.number_of_channels).toBe(2000);
   });
 
   test('should return correct details for TYPE_PST', () => {
