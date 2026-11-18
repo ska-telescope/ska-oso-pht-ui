@@ -29,7 +29,7 @@ const mid = {
   number13mAntennas: 10,
   numberOfSubBands: 1,
   integrationTime: { value: 30, unit: 'min' },
-  centralFrequency: { value: 1.355, unit: 'GHz' }
+  centralFrequency: { value: 1355, unit: 'MHz' }
 } as const;
 
 const observations: ObservationInput[] = [
@@ -61,7 +61,7 @@ const observations: ObservationInput[] = [
     ...mid,
     id: 'mid-continuum-spectral',
     observingMode: OBSERVING_MODE.CONTINUUM_SPECTRAL,
-    bandwidth: { value: 0.4, unit: 'GHz' }
+    bandwidth: { value: 400, unit: 'MHz' }
   }
 ];
 

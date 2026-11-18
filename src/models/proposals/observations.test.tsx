@@ -68,7 +68,7 @@ const midObservation = (id: string, details: object): ObservationSets =>
       number_sub_bands: 2
     },
     observation_type_details: {
-      central_frequency: { value: 1.4, unit: 'GHz' },
+      central_frequency: { value: 1400, unit: 'MHz' },
       supplied: integrationTime(30, 'min'),
       ...details
     }
@@ -96,11 +96,11 @@ const pdmObservations: ObservationSets[] = [
   }),
   midObservation('mid-continuum', {
     observation_type: 'continuum',
-    bandwidth: { value: 0.4, unit: 'GHz' }
+    bandwidth: { value: 400, unit: 'MHz' }
   }),
   midObservation('mid-continuum-spectral', {
     observation_type: 'continuum and spectral line',
-    bandwidth: { value: 0.4, unit: 'GHz' }
+    bandwidth: { value: 400, unit: 'MHz' }
   }),
   midObservation('mid-spectral', {
     observation_type: 'spectral line',
@@ -110,7 +110,7 @@ const pdmObservations: ObservationSets[] = [
   }),
   midObservation('mid-pst', {
     observation_type: 'pst',
-    bandwidth: { value: 0.4, unit: 'GHz' },
+    bandwidth: { value: 400, unit: 'MHz' },
     pst_mode: 'flow through'
   })
 ];
@@ -173,10 +173,10 @@ describe('observation PDM mapping', () => {
       number15mAntennas: 100,
       number13mAntennas: 20,
       numberOfSubBands: 2,
-      centralFrequency: { value: 1.4, unit: 'GHz' },
+      centralFrequency: { value: 1400, unit: 'MHz' },
       integrationTime: { value: 30, unit: 'min' },
       observingMode: OBSERVING_MODE.PST,
-      bandwidth: { value: 0.4, unit: 'GHz' },
+      bandwidth: { value: 400, unit: 'MHz' },
       pstMode: 'flow through'
     });
   });
@@ -201,6 +201,18 @@ describe('observation PDM mapping', () => {
     expect(observationToPdm(schema.parse(observationFromPdm(pdmObservations[4]))).elevation).toBe(
       45
     );
+  });
+});
+
+test('loads a central frequency and bandwidth saved in another unit in MHz', () => {
+  const inGhz = midObservation('obs', {
+    observation_type: 'continuum',
+    central_frequency: { value: 1.4, unit: 'GHz' },
+    bandwidth: { value: 0.4, unit: 'GHz' }
+  });
+  expect(observationFromPdm(inGhz)).toMatchObject({
+    centralFrequency: { value: 1400, unit: 'MHz' },
+    bandwidth: { value: 400, unit: 'MHz' }
   });
 });
 
@@ -317,13 +329,15 @@ describe('observation schema', () => {
     ]);
   });
 
-  test('needs a whole number of channels', () => {
+  test('needs a whole number of channels, shown on the bandwidth that sets them too', () => {
     const message = 'Number of channels must be a whole number of at least 2';
     expect(issues({ ...lowSpectral, zoomChannels: 12.5 })).toEqual([
-      { path: ['zoomChannels'], message }
+      { path: ['zoomChannels'], message },
+      { path: ['bandwidth', 'value'], message }
     ]);
     expect(issues({ ...lowSpectral, zoomChannels: 1 })).toEqual([
-      { path: ['zoomChannels'], message }
+      { path: ['zoomChannels'], message },
+      { path: ['bandwidth', 'value'], message }
     ]);
   });
 
@@ -331,6 +345,7 @@ describe('observation schema', () => {
     const restricted = { ...lowSpectral, zoomFactor: 4, zoomChannels: 1.5 };
     expect(issues(restricted)).toEqual([
       { path: ['zoomChannels'], message: expect.any(String) },
+      { path: ['bandwidth', 'value'], message: expect.any(String) },
       { path: ['zoomFactor'], message: phtTranslations.spectralResolution.restrictedError }
     ]);
     expect(issues({ ...restricted, zoomChannels: 1000, subarray: 'custom' })).toEqual([]);
@@ -459,10 +474,13 @@ describe('observation rules from the OSD', () => {
     ]);
   });
 
-  test('has at most the zoom channels of the subarray', () => {
+  test('has at most the zoom channels of the subarray, and their bandwidth', () => {
     expect(osdIssues({ ...lowSpectral, zoomChannels: 1800 })).toEqual([]);
-    expect(osdIssues({ ...lowSpectral, zoomChannels: 1802 })).toEqual([
-      { path: ['zoomChannels'], message: expect.any(String) }
+    const tooMany = osdSchema.safeParse({ ...lowSpectral, zoomChannels: 1802 }).error?.issues;
+    expect(tooMany).toEqual([
+      expect.objectContaining({ path: ['zoomChannels'], maximum: 1800 }),
+      // 1800 channels of 1808.45 Hz, in the bandwidth's MHz
+      expect.objectContaining({ path: ['bandwidth', 'value'], maximum: expect.closeTo(3.2552, 4) })
     ]);
   });
 

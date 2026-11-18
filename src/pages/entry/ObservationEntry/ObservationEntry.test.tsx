@@ -1,6 +1,7 @@
 import React from 'react';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
@@ -15,6 +16,11 @@ import {
 } from '@/utils/constants';
 import ObservationEntry from './ObservationEntry';
 import ObservationInPlace from '@/pages/ObservationPage/ObservationInPlace';
+import {
+  DATA_PRODUCT_KIND,
+  newDataProduct,
+  updateImageSizes
+} from '@/models/proposals/dataProducts';
 
 const mockState = vi.hoisted(() => ({
   locationState: null as unknown,
@@ -92,6 +98,12 @@ const renderWithProposal = (component: React.ReactElement, proposal: object = {}
 };
 
 const numberField = (label: string) => screen.getByLabelText(label, { exact: false });
+// Typed as a user does: a field with decimal places takes a change without typing as a step
+const typeInto = async (label: string, value: string) => {
+  const user = userEvent.setup();
+  await user.clear(numberField(label));
+  await user.type(numberField(label), value);
+};
 const select = (label: string, option: RegExp | string) => {
   fireEvent.mouseDown(screen.getByRole('combobox', { name: label }));
   fireEvent.click(screen.getByRole('option', { name: option }));
@@ -148,7 +160,7 @@ describe('<ObservationEntry />', () => {
     await waitFor(() => expect(addButton()).toBeEnabled());
 
     // Less than 8 coarse channels
-    fireEvent.change(numberField('bandwidth.label'), { target: { value: '5' } });
+    await typeInto('bandwidth.label', '5');
 
     expect(
       await screen.findByText('Bandwidth must be larger than the channel width (6250.00 kHz)')
@@ -183,19 +195,37 @@ describe('<ObservationEntry />', () => {
 
     // 1000 channels of 1808.45 Hz
     fireEvent.change(channels(), { target: { value: '1000' } });
-    expect(bandwidth().value).toBe('1.80844907');
+    expect(bandwidth().value).toBe('1.808449');
 
     // Half the width keeps the channels and halves the bandwidth
     select('spectralResolution.label', /^904\.22 Hz/);
     expect(channels().value).toBe('1000');
-    expect(bandwidth().value).toBe('0.90422454');
+    expect(bandwidth().value).toBe('0.904225');
 
     // A bandwidth that isn't a whole number of channels
-    fireEvent.change(bandwidth(), { target: { value: '0.9' } });
+    await typeInto('bandwidth.label', '0.9');
     expect(Number(channels().value)).toBeCloseTo(995.33, 2);
-    expect(
-      await screen.findByText('Number of channels must be a whole number of at least 2')
-    ).toBeInTheDocument();
+    // On the channels, and on the bandwidth that set them
+    const notWhole = 'Number of channels must be a whole number of at least 2';
+    expect(await screen.findAllByText(notWhole)).toHaveLength(2);
+
+    // The bandwidth's up arrow steps to the next whole number of channels, which clears both
+    fireEvent.change(bandwidth(), { target: { value: '0.901' } });
+    expect(channels().value).toBe('996');
+    await waitFor(() => expect(screen.queryByText(notWhole)).toBeNull());
+  });
+
+  test('shows the central frequency is off the grid when an odd number of channels moves it', async () => {
+    renderWithProposal(<ObservationEntry />);
+    select('observationType.label', 'observationType.spectral');
+    const offGrid = 'Invalid central frequency - please adjust using the arrows';
+
+    // The default central frequency is on the grid of the default 1800 channels
+    await typeInto('zoomChannels.label', '1798');
+    expect(screen.queryByText(offGrid)).toBeNull();
+
+    await typeInto('zoomChannels.label', '1801');
+    expect(await screen.findByText(offGrid)).toBeInTheDocument();
   });
 
   test('joins a new group', async () => {
@@ -206,6 +236,70 @@ describe('<ObservationEntry />', () => {
     fireEvent.click(addButton());
 
     expect(formProbe.getValues('observations')[0].groupId).toMatch(/^group-/);
+  });
+});
+
+// An image of the observation with the user's sizes
+const image = (observationId: string) =>
+  ({
+    ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, observationId),
+    id: 'dp-1',
+    imageSize: { value: 12.3, unit: 'deg' },
+    pixelSize: { value: 4.5, unit: 'arcsec' }
+  }) as Parameters<typeof updateImageSizes>[0];
+
+describe('the data products of an edited observation', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    mockState.locationState = null;
+  });
+
+  // 249.609375 MHz is on the LOW coarse channel grid
+
+  test('follow each change of the central frequency in place', async () => {
+    renderWithProposal(<ObservationInPlace />, {
+      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      observations: [legacyObservation('obs-1')],
+      dataProducts: [image('obs-1')]
+    });
+
+    await typeInto('centralFrequency.label', '249.609375');
+
+    expect(formProbe.getValues('dataProducts')).toEqual([
+      updateImageSizes(image('obs-1'), 249.609375)
+    ]);
+  });
+
+  test("follow the entry page's observation when it is updated, and not before", async () => {
+    mockState.locationState = { id: 'obs-1' };
+    renderWithProposal(<ObservationEntry />, {
+      observations: [legacyObservation('obs-1')],
+      dataProducts: [image('obs-1')]
+    });
+    const update = screen.getByTestId('updateObservationButtonEntry');
+
+    await typeInto('centralFrequency.label', '249.609375');
+    expect(formProbe.getValues('dataProducts')).toEqual([image('obs-1')]);
+
+    await waitFor(() => expect(update).toBeEnabled());
+    fireEvent.click(update);
+    expect(formProbe.getValues('dataProducts')).toEqual([
+      updateImageSizes(image('obs-1'), 249.609375)
+    ]);
+  });
+
+  test("stay as they are when the entry page's observation is updated without a change", async () => {
+    mockState.locationState = { id: 'obs-1' };
+    renderWithProposal(<ObservationEntry />, {
+      observations: [legacyObservation('obs-1')],
+      dataProducts: [image('obs-1')]
+    });
+    const update = screen.getByTestId('updateObservationButtonEntry');
+
+    await waitFor(() => expect(update).toBeEnabled());
+    fireEvent.click(update);
+
+    expect(formProbe.getValues('dataProducts')).toEqual([image('obs-1')]);
   });
 });
 

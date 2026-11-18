@@ -41,9 +41,19 @@ import {
   subarrayCapabilities,
   TELESCOPE,
   telescopeOfBand,
+  widestBandwidthHz,
   zoomChannelsForBandwidth,
   zoomChannelWidthHz
 } from '@/models/proposals/observations';
+import type { ProposalFormAccess } from '@/models/proposals/proposal';
+import {
+  calibratorInputsChanged,
+  refreshCalibrators,
+  replacePstDataProduct,
+  resizeImageDataProducts,
+  setSpectralChannelsOut
+} from '@/models/proposals/observationUpdates';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { OBSERVING_MODE_BY_LEGACY_TYPE } from '@/models/proposals/legacyObservations';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
@@ -57,11 +67,6 @@ export type ObservationsForm = { observations: ObservationInput[] };
 const GAP = 3;
 const NEW_GROUP = 'new';
 
-// The units offered for a MID frequency. LOW frequencies are always in MHz.
-const MID_FREQUENCY_UNITS = [
-  { label: 'GHz', value: 'GHz' },
-  { label: 'MHz', value: 'MHz' }
-];
 const INTEGRATION_TIME_UNITS = [
   { label: 'h', value: 'h' },
   { label: 'min', value: 'min' }
@@ -81,8 +86,10 @@ interface ObservationViewProps {
   index: number;
   // The groups of the proposal's other observations, which this one can join
   groupIds: string[];
-  // An SV proposal's observation has its observing mode set on the Details page, and fewer fields
-  isSV: boolean;
+  // The proposal form, when the observation is edited in it in place, as an SV proposal's one
+  // observation is: the proposal's data products and calibration then follow each change of a field
+  // they depend on. An entry form's observation changes them when it is added or updated instead.
+  proposalForm?: ProposalFormAccess;
 }
 
 /**
@@ -91,12 +98,16 @@ interface ObservationViewProps {
  * an entry form of its own when it is added or updated (the ObservationEntry page). Changing the
  * band, subarray or observing mode replaces the observation with one that fits the change.
  */
-export default function ObservationView({ index, groupIds, isSV }: ObservationViewProps) {
+export default function ObservationView({ index, groupIds, proposalForm }: ObservationViewProps) {
+  // Only an SV proposal's observation is edited in place. It has its observing mode set on the
+  // Details page, and fewer fields.
+  const isSV = proposalForm !== undefined;
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const { osdLOW, osdMID, selectedPolicy, isCustomAllowed } = useOSDAccessors();
   const osd = { low: osdLOW, mid: osdMID };
   const form = useFormContext<ObservationsForm>();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const path = `observations.${index}` as const;
   const observation = useWatch({ control: form.control, name: path });
 
@@ -109,6 +120,22 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
   const setObservation = (next: ObservationInput) =>
     form.setValue(path, next, { shouldValidate: true });
 
+  // In place, applies the updates the changed observation needs in the rest of the proposal
+  const updateProposal = (
+    ...updates: ((proposal: ProposalFormAccess, changed: ObservationInput) => void)[]
+  ) => {
+    if (proposalForm) {
+      const changed = form.getValues(path);
+      updates.forEach((update) => update(proposalForm, changed));
+    }
+  };
+
+  const refreshCalibratorsInPlace = () => {
+    if (proposalForm) {
+      void refreshCalibrators(proposalForm, observation.id, authAxiosClient);
+    }
+  };
+
   // The observing modes the subarray has
   const modeOptions = (subarray: Subarray | null) =>
     obTypeTransform(subarrayCapabilities(osd, observation.telescope, subarray)?.cbfModes ?? []).map(
@@ -119,16 +146,16 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
     );
 
   const changeBand = (band: ObservingBand) => {
-    if (band !== observation.observingBand) {
-      setObservation(observationForBand(observation, band, osd));
+    const next = observationForBand(observation, band, osd);
+    setObservation(next);
+    updateProposal(resizeImageDataProducts, setSpectralChannelsOut);
+    if (calibratorInputsChanged(observation, next)) {
+      refreshCalibratorsInPlace();
     }
   };
 
   // A mode the new subarray doesn't have becomes its first one
   const changeSubarray = (subarray: Subarray) => {
-    if (subarray === observation.subarray) {
-      return;
-    }
     const next = observationForSubarray(observation, subarray, osd);
     const modes = modeOptions(subarray).map((option) => option.value);
     setObservation(
@@ -136,23 +163,18 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
         ? observationForMode(next, modes[0], osd)
         : next
     );
+    // The subarray can have fewer zoom channels
+    updateProposal(setSpectralChannelsOut);
   };
 
-  const changeMode = (observingMode: ObservingMode) => {
-    if (observingMode !== observation.observingMode) {
-      setObservation(observationForMode(observation, observingMode, osd));
-    }
-  };
+  const changeMode = (observingMode: ObservingMode) =>
+    setObservation(observationForMode(observation, observingMode, osd));
 
   const changeGroup = (value: string) =>
     form.setValue(
       `${path}.groupId`,
       value === '' ? null : value === NEW_GROUP ? generateId('group-') : value
     );
-
-  const unitAdornment = (unit: string) => ({
-    input: { endAdornment: <InputAdornment position="end">{unit}</InputAdornment> }
-  });
 
   /*********************************************************** frequencies ***********************************************************/
 
@@ -173,6 +195,11 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
     observation.subarray
   )?.numberZoomChannels;
 
+  // The LOW channel grid of a spectral line central frequency moves with the channel width and an
+  // odd or even number of channels. A field is validated only when it changes itself, so changes
+  // that move the grid validate the central frequency again, to show it is off the new grid.
+  const revalidateCentralFrequency = () => void form.trigger(`${path}.centralFrequency.value`);
+
   // A spectral line observation's bandwidth is its channels times their width, so it is set again
   // when the zoom factor, the channels or its unit change
   const setSpectralBandwidth = (
@@ -185,18 +212,6 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
       `${path}.bandwidth`,
       spectralBandwidth(spectralObservation.telescope, zoomFactor, zoomChannels, unit),
       { shouldValidate: true }
-    );
-
-  const frequencyUnit = (name: 'centralFrequency' | 'bandwidth', testId: string) =>
-    isLow ? (
-      'MHz'
-    ) : (
-      <ControlledSelect
-        name={`${path}.${name}.unit`}
-        options={MID_FREQUENCY_UNITS}
-        data-testid={testId}
-        onFocus={() => setHelp('frequencyUnits')}
-      />
     );
 
   const spectrumField = () => {
@@ -234,17 +249,15 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
         name={`${path}.centralFrequency.value`}
         label={t('centralFrequency.label')}
         required
+        // To the Hz
+        decimalPlaces={6}
+        onChange={() => updateProposal(resizeImageDataProducts)}
         showArrows={grid !== null}
         stepSize={grid ? convertFrequency(grid.stepHz, 'Hz', 'MHz') : undefined}
         min={grid ? convertFrequency(grid.minHz, 'Hz', 'MHz') : undefined}
+        // In MHz on both telescopes
         slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                {frequencyUnit('centralFrequency', 'frequencyUnits')}
-              </InputAdornment>
-            )
-          }
+          input: { endAdornment: <InputAdornment position="end">MHz</InputAdornment> }
         }}
         onFocus={() => setHelp('centralFrequency')}
       />
@@ -262,6 +275,25 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
       : bandwidthStepHz(observation.telescope, osd);
     const step =
       stepHz !== null && unit !== null ? convertFrequency(stepHz, 'Hz', unit) : undefined;
+    // From two channels to what the subarray has for spectral line, or from one step to the widest
+    // bandwidth of whole steps for the others
+    const widestHz = widestBandwidthHz(
+      observation.telescope,
+      observation.observingBand,
+      observation.subarray,
+      osd
+    );
+    const min = step !== undefined && spectral ? 2 * step : step;
+    const max =
+      step === undefined || unit === null
+        ? undefined
+        : spectral
+          ? maxZoomChannels === undefined
+            ? undefined
+            : maxZoomChannels * step
+          : widestHz === null
+            ? undefined
+            : convertFrequency(widestHz, 'Hz', unit);
     const unitField = spectral ? (
       <ControlledSelect
         name={`${path}.bandwidth.unit`}
@@ -275,28 +307,27 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
             event.target.value as FrequencyUnit
           )
         }
+        // Overwrite default formatting for label space
+        sx={{ '& .MuiInputBase-root': { mt: 0 } }}
         data-testid="bandwidthUnits"
       />
     ) : (
-      frequencyUnit('bandwidth', 'continuumBandwidthUnits')
+      'MHz'
     );
     return (
       <ControlledNumberField
         name={`${path}.bandwidth.value`}
         label={t('bandwidth.label')}
         required
+        decimalPlaces={unit === 'kHz' ? 3 : 6}
         disabled={spectral !== null && step === undefined}
         showArrows={step !== undefined}
         stepSize={step}
-        min={step !== undefined && spectral ? 2 * step : step}
-        max={
-          step !== undefined && spectral && maxZoomChannels !== undefined
-            ? maxZoomChannels * step
-            : undefined
-        }
+        min={min}
+        max={max}
         onChange={
           spectral
-            ? () =>
+            ? () => {
                 form.setValue(
                   `${path}.zoomChannels`,
                   zoomChannelsForBandwidth(
@@ -305,7 +336,12 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
                     form.getValues(`${path}.bandwidth`)
                   ),
                   { shouldValidate: true }
-                )
+                );
+                // The bandwidth was validated before its channels changed, and shows their errors
+                void form.trigger(`${path}.bandwidth.value`);
+                revalidateCentralFrequency();
+                updateProposal(setSpectralChannelsOut);
+              }
             : undefined
         }
         slotProps={{
@@ -351,6 +387,7 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
             spectralObservation.zoomChannels,
             spectralObservation.bandwidth.unit ?? 'MHz'
           );
+          revalidateCentralFrequency();
         }}
         required
         data-testid="spectralResolution"
@@ -368,14 +405,16 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
       stepSize={1}
       min={2}
       max={maxZoomChannels}
-      onChange={() =>
+      onChange={() => {
         setSpectralBandwidth(
           spectralObservation,
           spectralObservation.zoomFactor,
           form.getValues(`${path}.zoomChannels`),
           spectralObservation.bandwidth.unit ?? 'MHz'
-        )
-      }
+        );
+        revalidateCentralFrequency();
+        updateProposal(setSpectralChannelsOut);
+      }}
       onFocus={() => setHelp('zoomChannels', { max: maxZoomChannels })}
     />
   );
@@ -389,6 +428,7 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
         value: mode.mapping
       }))}
       required
+      onChange={() => updateProposal(replacePstDataProduct)}
       data-testid="pstMode"
       onFocus={() => setHelp('pstMode.help')}
     />
@@ -403,21 +443,24 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
     />
   );
 
-  // Every mode has a central frequency and a bandwidth, followed by the fields of its own
+  // Every mode has a central frequency and a bandwidth, with the fields of its own. A spectral line
+  // observation has all four of its fields in one row, with the zoom factor before the bandwidth it
+  // sets, and room for the bandwidth's unit and velocity.
   const frequencyFields = () => (
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: { md: '1fr', lg: '1fr 1fr' },
+        gridTemplateColumns: { md: '1fr', lg: spectral ? '1fr 1fr 1.5fr 1fr' : '1fr 1fr' },
         columnGap: 6,
         rowGap: GAP,
-        alignItems: 'center'
+        // At the top of their row, so an error under one field doesn't move the others down
+        alignItems: 'start'
       }}
     >
       <Box sx={{ gridColumn: '1 / -1', p: 2 }}>{spectrumField()}</Box>
       {centralFrequencyField()}
-      {bandwidthField()}
       {spectral && zoomFactorField(spectral)}
+      {bandwidthField()}
       {spectral && zoomChannelsField(spectral)}
       {observation.observingMode === OBSERVING_MODE.PST && pstModeField()}
       {!isSV &&
@@ -464,6 +507,7 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
           name={`${path}.integrationTime.value`}
           label={t('sensitivityCalculatorResults.integrationTime')}
           required
+          onChange={refreshCalibratorsInPlace}
           onFocus={() => setHelp('suppliedValue')}
         />
       </Grid>
@@ -471,8 +515,8 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
         <ControlledSelect
           name={`${path}.integrationTime.unit`}
           options={INTEGRATION_TIME_UNITS}
-          // LOW integration times are in hours
           disabled={isLow}
+          onChange={refreshCalibratorsInPlace}
           data-testid="suppliedUnits"
           onFocus={() => setHelp('suppliedUnits')}
         />
@@ -583,7 +627,11 @@ export default function ObservationView({ index, groupIds, isSV }: ObservationVi
       name={`${path}.weather`}
       label={t('weather.label')}
       required
-      slotProps={unitAdornment(t('weather.units'))}
+      slotProps={{
+        input: {
+          endAdornment: <InputAdornment position="end">{t('weather.units')}</InputAdornment>
+        }
+      }}
       onFocus={() => setHelp('weather')}
     />
   );

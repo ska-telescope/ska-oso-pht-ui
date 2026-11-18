@@ -19,6 +19,7 @@ import { ProposalType } from '@/models/proposals/proposal';
 import {
   getObservationsSchema,
   newObservation,
+  ObservationInput,
   ObservationOsd,
   ObservingBand,
   OBSERVING_MODE
@@ -28,6 +29,14 @@ import { useHelp } from '@/utils/help/useHelp';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import AddButton from '@/components/button/Add/Add';
+import {
+  calibratorInputsChanged,
+  refreshCalibrators,
+  replacePstDataProduct,
+  resizeImageDataProducts,
+  setSpectralChannelsOut
+} from '@/models/proposals/observationUpdates';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import ObservationView, { ObservationsForm } from '@/pages/ObservationPage/ObservationView';
 
 const BACK_PAGE = PAGE_OBSERVATION;
@@ -47,6 +56,7 @@ export default function ObservationEntry() {
   const { setHelp } = useHelp();
   const { osdLOW, osdMID, selectedPolicy } = useOSDAccessors();
   const proposalForm = useFormContext<ProposalType>();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
 
   // Rebuilt when the OSD changes, as the proposal form's is
   const resolver = React.useMemo(
@@ -94,6 +104,26 @@ export default function ObservationEntry() {
         ? existingObservations.map((obs) => (obs.id === newObservation.id ? newObservation : obs))
         : [...existingObservations, newObservation]
     );
+
+    // The proposal's data products and calibration follow what the update changed. A new
+    // observation has no data products or link yet.
+    const changed = (field: (obs: ObservationInput) => unknown) =>
+      existing !== undefined &&
+      JSON.stringify(field(existing)) !== JSON.stringify(field(newObservation));
+    if (changed((obs) => obs.centralFrequency)) {
+      resizeImageDataProducts(proposalForm, newObservation);
+    }
+    if (
+      changed((obs) => (obs.observingMode === OBSERVING_MODE.SPECTRAL ? obs.zoomChannels : null))
+    ) {
+      setSpectralChannelsOut(proposalForm, newObservation);
+    }
+    if (changed((obs) => (obs.observingMode === OBSERVING_MODE.PST ? obs.pstMode : null))) {
+      replacePstDataProduct(proposalForm, newObservation);
+    }
+    if (calibratorInputsChanged(existing, newObservation)) {
+      void refreshCalibrators(proposalForm, newObservation.id, authAxiosClient);
+    }
     navigate(NAV[BACK_PAGE]);
   };
 
@@ -134,7 +164,7 @@ export default function ObservationEntry() {
       <Box sx={{ pt: 2 }}>
         <PageBannerPPT backPage={BACK_PAGE} pageNo={page} />
         <FormProvider {...entryForm}>
-          <ObservationView index={0} groupIds={groupIds} isSV={false} />
+          <ObservationView index={0} groupIds={groupIds} />
         </FormProvider>
         <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
         {footer}
