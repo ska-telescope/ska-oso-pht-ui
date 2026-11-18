@@ -7,7 +7,7 @@ import { getTargetObservationSchema } from './targetObservation';
 import { getCalibrationStrategySchema } from './calibrationStrategy';
 import { getDocumentRefSchema } from './documents';
 import { getDataProductsSchema } from './dataProducts';
-import { getObservationsSchema } from './observations';
+import { getObservationsSchema, ObservationOsd } from './observations';
 import { PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import { getDetailsSchema } from './details';
@@ -17,7 +17,8 @@ export function getProposalTypeSchema() {
   return z.enum(PROPOSAL_TYPE);
 }
 
-export function getProposalSchema() {
+/** The proposal's rules. The observations' rules that need the OSD are checked only with it. */
+export function getProposalSchema(osd: ObservationOsd = {}) {
   return z.object({
     title: getTitleSchema(),
     proposalType: getProposalTypeSchema()
@@ -36,8 +37,7 @@ export function getProposalSchema() {
     sciencePDF: getDocumentRefSchema(),
     technicalPDF: getDocumentRefSchema(),
     dataProducts: getDataProductsSchema(),
-    // Without the OSD: its rules are checked by the page and submit schemas
-    observations: getObservationsSchema()
+    observations: getObservationsSchema(osd)
   });
 }
 
@@ -49,8 +49,8 @@ export type ProposalType = z.input<ReturnType<typeof getProposalSchema>>;
  * The form's resolver. The form is typed as the schema's input, and its handleSubmit output is not
  * used, so the resolver is cast to the input once here.
  */
-export const getProposalResolver = (): Resolver<ProposalType> =>
-  zodResolver(getProposalSchema()) as unknown as Resolver<ProposalType>;
+export const getProposalResolver = (osd: ObservationOsd = {}): Resolver<ProposalType> =>
+  zodResolver(getProposalSchema(osd)) as unknown as Resolver<ProposalType>;
 
 /** What helpers outside React need from the global form to read and write its slices. */
 export type ProposalFormAccess = Pick<UseFormReturn<ProposalType>, 'getValues' | 'setValue'>;

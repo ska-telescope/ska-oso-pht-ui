@@ -66,6 +66,9 @@ import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 
+// The height AppWrapper leaves above the page for its fixed header (its SPACER_HEADER)
+const HEADER_HEIGHT = 70;
+
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
   { path: NAV[0], element: <TitlePage /> },
@@ -114,8 +117,16 @@ export default function PHT({
 }: PHTPropTypes) {
   const { t } = useScopedTranslation();
   const { application, help, helpToggle } = storageObject.useStore();
-  const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdLOW, osdOpens } =
-    useOSDAccessors();
+  const {
+    autoLink,
+    osdCloses,
+    osdCountdown,
+    osdCycleId,
+    osdCycleDescription,
+    osdLOW,
+    osdMID,
+    osdOpens
+  } = useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
   const { axiosClient: authClient } = useAxiosAuthClient();
@@ -142,7 +153,7 @@ export default function PHT({
 
   const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
 
-  const formMethods = useProposalForm(getProposal());
+  const formMethods = useProposalForm(getProposal(), { low: osdLOW, mid: osdMID });
   const { getValues } = formMethods;
   useCopySlicesToStore(formMethods);
 
@@ -374,7 +385,8 @@ export default function PHT({
               backgroundColor: 'background.default',
               borderRadius: '0px',
               border: '0px solid transparent',
-              minHeight: '100vh'
+              // Down to the bottom of the window, below the header
+              minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`
             }}
           >
             {/* TODO: REMOVE  */}

@@ -199,7 +199,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       investigators: [...(currentInvestigators ?? []), newInvestigator]
     };
     form?.setValue('investigators', getTeamValues(record).investigators, {
-      shouldDirty: true,
       shouldValidate: true
     });
     setProposal(record);

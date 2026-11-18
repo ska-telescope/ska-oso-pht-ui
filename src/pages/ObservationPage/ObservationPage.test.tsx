@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import '@testing-library/jest-dom';
@@ -9,6 +9,7 @@ import ObservationPage from './ObservationPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE } from '@/utils/constants';
 import completeMockStore from '@/utils/MockStore';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
 // Exposes the global form, which holds the links and calibration
 let formProbe: UseFormReturn<ProposalType>;
@@ -45,8 +46,8 @@ vi.mock('react-router', () => ({ useNavigate: () => vi.fn() }));
 vi.mock('../../components/layout/Shell/Shell', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
-vi.mock('../entry/ObservationEntry/ObservationEntry', () => ({
-  default: () => <div data-testid="observationEntryStub" />
+vi.mock('./ObservationInPlace', () => ({
+  default: () => <div data-testid="observationInPlaceStub" />
 }));
 
 const renderWithProposal = (proposal: object) => {
@@ -77,14 +78,29 @@ describe('<ObservationPage />', () => {
       observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }]
     });
 
-    expect(screen.getByTestId('observationEntryStub')).toBeInTheDocument();
+    expect(screen.getByTestId('observationInPlaceStub')).toBeInTheDocument();
     expect(screen.queryByTestId('noObservationsNotification')).not.toBeInTheDocument();
+  });
+
+  test('keeps showing an observation being edited, which the store has no copy of while invalid', async () => {
+    renderWithProposal({ proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, observations: [] });
+
+    act(() =>
+      formProbe.setValue('observations', [
+        {
+          ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
+          integrationTime: { value: null, unit: 'h' }
+        }
+      ])
+    );
+
+    expect(await screen.findByTestId('observationInPlaceStub')).toBeInTheDocument();
   });
 
   test('shows the same no-observation message for every proposal type', () => {
     renderWithProposal({ proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, observations: [] });
 
-    expect(screen.queryByTestId('observationEntryStub')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('observationInPlaceStub')).not.toBeInTheDocument();
     expect(screen.getByText('error.noObservations')).toBeInTheDocument();
   });
 

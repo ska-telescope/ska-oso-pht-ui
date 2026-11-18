@@ -1,21 +1,37 @@
 import { describe, expect, test } from 'vitest';
 import type { ObservationSets } from '@/generated/models';
 import { OSD_CONSTANTS } from '@/utils/OSDConstants';
+import {
+  BAND_1_STR,
+  BAND_2_STR,
+  BAND_5B_STR,
+  BAND_LOW_STR,
+  SA_AA2,
+  SA_AA_STAR,
+  SA_CUSTOM
+} from '@/utils/constants';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import {
+  centralFrequencyGridHz,
   getObservationSchema,
   getObservationsSchema,
   LOW_ZOOM_RESOLUTIONS,
   MID_ZOOM_RESOLUTIONS,
+  newObservation,
   newSvObservation,
   ObservationInput,
+  observationForBand,
+  observationForMode,
+  observationForSubarray,
   OBSERVING_MODE,
   observationFromPdm,
   observationsFromPdm,
   observationToPdm,
+  spectralBandwidth,
   spectralResolutionText,
   TELESCOPE,
+  zoomChannelsForBandwidth,
   zoomFactorFromSpectralResolution
 } from './observations';
 
@@ -138,6 +154,8 @@ describe('observation PDM mapping', () => {
       centralFrequency: { value: 200, unit: 'MHz' },
       integrationTime: { value: 1, unit: 'h' },
       observingMode: OBSERVING_MODE.SPECTRAL,
+      // 1000 channels of 226.06 Hz, to 0.01 Hz
+      bandwidth: { value: 0.22605613, unit: 'MHz' },
       zoomFactor: 5,
       zoomChannels: 1000
     });
@@ -183,6 +201,49 @@ describe('observation PDM mapping', () => {
     expect(observationToPdm(schema.parse(observationFromPdm(pdmObservations[4]))).elevation).toBe(
       45
     );
+  });
+});
+
+describe('spectral line bandwidth', () => {
+  test('is the channels times their width, to 0.01 Hz in its unit', () => {
+    expect(spectralBandwidth(TELESCOPE.LOW, 5, 1000, 'kHz')).toEqual({
+      value: 226.05613,
+      unit: 'kHz'
+    });
+    expect(spectralBandwidth(TELESCOPE.MID, 1, 14880, 'MHz')).toEqual({
+      value: 3.1248,
+      unit: 'MHz'
+    });
+    expect(spectralBandwidth(TELESCOPE.LOW, null, 1000, 'MHz')).toEqual({
+      value: null,
+      unit: 'MHz'
+    });
+  });
+
+  test('gives back its whole number of channels, and a fraction for any other bandwidth', () => {
+    const bandwidth = spectralBandwidth(TELESCOPE.LOW, 5, 1000, 'kHz');
+    expect(zoomChannelsForBandwidth(TELESCOPE.LOW, 5, bandwidth)).toBe(1000);
+    expect(zoomChannelsForBandwidth(TELESCOPE.LOW, 5, { value: 226.2, unit: 'kHz' })).toBeCloseTo(
+      1000.64,
+      2
+    );
+    expect(zoomChannelsForBandwidth(TELESCOPE.LOW, 5, { value: null, unit: 'kHz' })).toBeNull();
+  });
+
+  test('is saved in its own unit, from the channels', () => {
+    const loaded = observationFromPdm(
+      lowObservation('obs', {
+        observation_type: 'spectral line',
+        bandwidth: { value: 226.05613, unit: 'kHz' },
+        spectral_resolution: '226.06 Hz (338.8 m/s)',
+        number_of_channels: 1000
+      })
+    );
+    expect(loaded).toMatchObject({ bandwidth: { value: 226.05613, unit: 'kHz' } });
+    expect(observationToPdm(schema.parse(loaded)).observation_type_details.bandwidth).toEqual({
+      value: 226.05613425925927,
+      unit: 'kHz'
+    });
   });
 });
 
@@ -299,11 +360,11 @@ describe('observation schema', () => {
 describe('observation rules from the OSD', () => {
   const lowContinuum = newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
   const lowSpectral = newSvObservation(OBSERVING_MODE.SPECTRAL, 15);
-  // MID band 2, with a bandwidth of a whole number of 13.44 kHz channels
+  // MID band 2, with a bandwidth of a whole number of 20-channel (268.8 kHz) steps
   const midContinuum = {
     ...observationFromPdm(pdmObservations[4]),
     subarray: 'aa2_sv',
-    bandwidth: { value: (29760 * 13440) / 1e6, unit: 'MHz' }
+    bandwidth: { value: (1488 * 268800) / 1e6, unit: 'MHz' }
   } as ObservationInput;
   const bandwidthMessage = (
     key: 'minimumChannelWidthError' | 'contMaximumExceededError' | 'divisibilityError',
@@ -380,12 +441,12 @@ describe('observation rules from the OSD', () => {
         message: bandwidthMessage('contMaximumExceededError', '150.00')
       }
     ]);
-    // MID AA2 has up to 800 MHz, here 59524 channels of 13.44 kHz in the middle of band 2
+    // MID AA2 has up to 800 MHz, here 2977 steps of 268.8 kHz in the middle of band 2
     expect(
       osdIssues({
         ...midContinuum,
         centralFrequency: { value: 1.355, unit: 'GHz' },
-        bandwidth: { value: (59524 * 13440) / 1e6, unit: 'MHz' }
+        bandwidth: { value: (2977 * 268800) / 1e6, unit: 'MHz' }
       })
     ).toEqual([
       {
@@ -394,7 +455,7 @@ describe('observation rules from the OSD', () => {
       }
     ]);
     expect(osdIssues({ ...midContinuum, bandwidth: { value: 0.4, unit: 'GHz' } })).toEqual([
-      { path: ['bandwidth', 'value'], message: bandwidthMessage('divisibilityError', '13.44') }
+      { path: ['bandwidth', 'value'], message: bandwidthMessage('divisibilityError', '268.80') }
     ]);
   });
 
@@ -406,8 +467,8 @@ describe('observation rules from the OSD', () => {
   });
 
   test('needs each MID continuum sub-band to be at least a channel wide', () => {
-    // 20 channels in 32 sub-bands
-    const narrow = { ...midContinuum, bandwidth: { value: (20 * 13440) / 1e6, unit: 'MHz' } };
+    // One 268.8 kHz step in 32 sub-bands of 8.4 kHz, less than a 13.44 kHz channel
+    const narrow = { ...midContinuum, bandwidth: { value: 268800 / 1e6, unit: 'MHz' } };
     expect(osdIssues({ ...narrow, numberOfSubBands: 1 })).toEqual([]);
     expect(osdIssues({ ...narrow, numberOfSubBands: 32 })).toEqual([
       { path: ['numberOfSubBands'], message: phtTranslations.subBands.range.bandwidthSubBand }
@@ -447,4 +508,183 @@ describe('observation rules from the OSD', () => {
       expect(osdIssues(newSvObservation(mode, 15))).toEqual([]);
     }
   );
+});
+
+describe('central frequency grid', () => {
+  const low = newObservation(BAND_LOW_STR, SA_AA2, OBSERVING_MODE.CONTINUUM, osd);
+  const spectral = (zoomChannels: number) =>
+    ({
+      ...newObservation(BAND_LOW_STR, SA_AA2, OBSERVING_MODE.SPECTRAL, osd),
+      zoomChannels
+    }) as ObservationInput;
+  // A zoom channel of zoom factor 8
+  const zoomChannelHz = (781250 * 32 * 128) / 27 / 4096 / 16;
+
+  test('is two coarse channels from the bottom of the LOW band', () => {
+    expect(centralFrequencyGridHz(low, osd)).toEqual({ stepHz: 1562500, minHz: 49609375 });
+  });
+
+  test('is a zoom channel for spectral line, half a channel up with an odd number of them', () => {
+    expect(centralFrequencyGridHz(spectral(1000), osd)).toEqual({
+      stepHz: zoomChannelHz,
+      minHz: 49609375
+    });
+    expect(centralFrequencyGridHz(spectral(1001), osd)).toEqual({
+      stepHz: zoomChannelHz,
+      minHz: 49609375 + zoomChannelHz / 2
+    });
+  });
+
+  test("isn't there on MID or without the OSD", () => {
+    expect(
+      centralFrequencyGridHz(newObservation(BAND_1_STR, SA_AA2, OBSERVING_MODE.CONTINUUM, osd), osd)
+    ).toBeNull();
+    expect(centralFrequencyGridHz(low, {})).toBeNull();
+  });
+});
+
+describe('observation defaults', () => {
+  // ids aren't compared
+  const withoutId = ({ id: _id, ...rest }: ObservationInput) => rest;
+
+  test.each([
+    [BAND_LOW_STR, OBSERVING_MODE.CONTINUUM],
+    [BAND_LOW_STR, OBSERVING_MODE.CONTINUUM_SPECTRAL],
+    [BAND_LOW_STR, OBSERVING_MODE.SPECTRAL],
+    [BAND_LOW_STR, OBSERVING_MODE.PST],
+    [BAND_1_STR, OBSERVING_MODE.CONTINUUM],
+    [BAND_5B_STR, OBSERVING_MODE.CONTINUUM_SPECTRAL],
+    [BAND_2_STR, OBSERVING_MODE.SPECTRAL],
+    [BAND_1_STR, OBSERVING_MODE.PST]
+  ] as const)('give a valid new observation in %s, %s mode', (band, mode) => {
+    expect(osdIssues(newObservation(band, SA_AA2, mode, osd))).toEqual([]);
+  });
+
+  test('start a MID band 1 observation in the middle of the band, with the widest bandwidth that fits it', () => {
+    // As in the ODT: 700 MHz, and 2604 steps of 268.8 kHz in the 700 MHz wide band
+    expect(newObservation(BAND_1_STR, SA_AA2, OBSERVING_MODE.CONTINUUM, osd)).toMatchObject({
+      centralFrequency: { value: 700, unit: 'MHz' },
+      bandwidth: { value: 699.9552, unit: 'MHz' }
+    });
+  });
+
+  test('start a LOW AA2 observation with the bandwidth of the subarray', () => {
+    expect(withoutId(newObservation(BAND_LOW_STR, SA_AA2, OBSERVING_MODE.PST, osd))).toEqual({
+      groupId: null,
+      telescope: TELESCOPE.LOW,
+      observingBand: BAND_LOW_STR,
+      subarray: SA_AA2,
+      integrationTime: { value: 1, unit: 'h' },
+      minElevation: 15,
+      numberOfStations: 68,
+      observingMode: OBSERVING_MODE.PST,
+      pstMode: 'pulsar timing',
+      centralFrequency: { value: 199.609375, unit: 'MHz' },
+      bandwidth: { value: 150, unit: 'MHz' }
+    });
+  });
+
+  test('use all the zoom channels of the subarray', () => {
+    expect(newObservation(BAND_2_STR, SA_AA2, OBSERVING_MODE.SPECTRAL, osd)).toMatchObject({
+      zoomFactor: 1,
+      zoomChannels: 14880
+    });
+  });
+
+  test('leave the values that need the OSD missing without it', () => {
+    expect(newObservation(BAND_1_STR, SA_AA2, OBSERVING_MODE.CONTINUUM, {})).toMatchObject({
+      elevation: null,
+      number15mAntennas: null,
+      centralFrequency: { value: null, unit: 'MHz' },
+      bandwidth: { value: null, unit: 'MHz' }
+    });
+  });
+});
+
+describe('observation changes', () => {
+  const low = {
+    ...newObservation(BAND_LOW_STR, SA_AA2, OBSERVING_MODE.CONTINUUM, osd),
+    id: 'obs-1',
+    groupId: 'group-1',
+    integrationTime: { value: 3, unit: 'h' },
+    minElevation: 40
+  } as ObservationInput;
+
+  test('on another telescope start again from its defaults, keeping the identifiers, subarray and mode', () => {
+    const mid = observationForBand(low, BAND_1_STR, osd);
+
+    expect(mid).toEqual({
+      ...newObservation(BAND_1_STR, SA_AA2, OBSERVING_MODE.CONTINUUM, osd),
+      id: 'obs-1',
+      groupId: 'group-1'
+    });
+    expect(osdIssues(mid)).toEqual([]);
+  });
+
+  test('in another band of the same telescope keep all but the frequencies', () => {
+    const band1 = {
+      ...observationForBand(low, BAND_1_STR, osd),
+      elevation: 50,
+      weather: 5
+    } as ObservationInput;
+
+    expect(observationForBand(band1, BAND_2_STR, osd)).toEqual({
+      ...band1,
+      observingBand: BAND_2_STR,
+      centralFrequency: { value: 1355, unit: 'MHz' },
+      // Band 2 is 810 MHz wide, so the 800 MHz of AA2 fits: 2976 steps of 268.8 kHz
+      bandwidth: { value: 799.9488, unit: 'MHz' }
+    });
+  });
+
+  test('to a subarray in the OSD take its stations, and keep the entered ones for a custom one', () => {
+    const custom = observationForSubarray(low, SA_CUSTOM, osd);
+    expect(custom).toEqual({ ...low, subarray: SA_CUSTOM });
+
+    const entered = { ...custom, numberOfStations: 100 } as ObservationInput;
+    expect(observationForSubarray(entered, SA_CUSTOM, osd)).toMatchObject({
+      numberOfStations: 100
+    });
+    expect(observationForSubarray(entered, SA_AA_STAR, osd)).toMatchObject({
+      subarray: SA_AA_STAR,
+      numberOfStations: 68
+    });
+  });
+
+  test('to a subarray with fewer zoom channels reduce them to its maximum', () => {
+    const spectral = {
+      ...newObservation(BAND_2_STR, SA_CUSTOM, OBSERVING_MODE.SPECTRAL, osd),
+      zoomChannels: 20000
+    } as ObservationInput;
+
+    expect(observationForSubarray(spectral, SA_AA2, osd)).toMatchObject({
+      zoomChannels: 14880,
+      // 14880 channels of 210 Hz
+      bandwidth: { value: 3.1248, unit: 'MHz' }
+    });
+  });
+
+  test('to another mode keep the shared fields and a bandwidth of its own', () => {
+    const narrow = { ...low, bandwidth: { value: 75, unit: 'MHz' } } as ObservationInput;
+
+    expect(observationForMode(narrow, OBSERVING_MODE.PST, osd)).toEqual({
+      ...narrow,
+      observingMode: OBSERVING_MODE.PST,
+      pstMode: 'pulsar timing'
+    });
+    const spectral = observationForMode(narrow, OBSERVING_MODE.SPECTRAL, osd);
+    expect(spectral).toEqual({
+      ...narrow,
+      observingMode: OBSERVING_MODE.SPECTRAL,
+      // 1800 channels of 1808.45 Hz
+      bandwidth: { value: 3.25520833, unit: 'MHz' },
+      zoomFactor: 8,
+      zoomChannels: 1800
+    });
+    // Back from spectral line, the bandwidth starts again from the default
+    expect(observationForMode(spectral, OBSERVING_MODE.CONTINUUM, osd)).toEqual({
+      ...narrow,
+      bandwidth: { value: 150, unit: 'MHz' }
+    });
+  });
 });

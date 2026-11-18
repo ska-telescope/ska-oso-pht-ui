@@ -7,6 +7,7 @@ import Investigator from '@/utils/types/investigator';
 import Observation from '@/utils/types/observation';
 import GroupObservation from '@/utils/types/groupObservation';
 import { formObservationsFromLegacy } from './legacyObservations';
+import { ObservationOsd } from './observations';
 
 type ProposalSeed = Omit<
   Partial<ProposalType>,
@@ -56,10 +57,16 @@ export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => 
   };
 };
 
-export function useProposalForm(proposal?: ProposalSeed) {
+export function useProposalForm(proposal?: ProposalSeed, osd: ObservationOsd = {}) {
+  // The OSD loads after the form is created. The form takes the resolver it is given on each
+  // render, so this one is rebuilt when the OSD changes.
+  const resolver = React.useMemo(
+    () => getProposalResolver({ low: osd.low, mid: osd.mid }),
+    [osd.low, osd.mid]
+  );
   const formMethods = useForm<ProposalType>({
     mode: 'all',
-    resolver: getProposalResolver(),
+    resolver,
     defaultValues: getProposalFormValues(proposal)
   });
 

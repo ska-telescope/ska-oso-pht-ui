@@ -167,7 +167,6 @@ export default function TeamPage() {
       'investigators',
       getTeamValues({ investigators: updatedInvestigators }).investigators,
       {
-        shouldDirty: true,
         shouldValidate: true
       }
     );

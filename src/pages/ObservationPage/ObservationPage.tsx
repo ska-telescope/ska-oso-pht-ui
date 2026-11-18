@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
@@ -20,7 +20,7 @@ import AddButton from '../../components/button/Add/Add';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
-import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
+import ObservationInPlace from './ObservationInPlace';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -44,6 +44,9 @@ export default function ObservationPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const form = useFormContext<ProposalType>();
+  // The form has every observation; the store only the valid ones, so one being edited could be
+  // missing from it
+  const observations = useWatch({ control: form.control, name: 'observations' });
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number, valueLinking: number, valueCalibration: number) => {
@@ -80,7 +83,7 @@ export default function ObservationPage() {
 
   const editIconClicked = (row: any) => {
     setCurrObs(row.rec);
-    navigate(PATH[2], { replace: true, state: row.rec });
+    navigate(PATH[2], { replace: true, state: { id: row.rec.id } });
   };
 
   const deleteIconClicked = (row: any) => {
@@ -135,7 +138,7 @@ export default function ObservationPage() {
     setTheProposalState(statuses[PAGE], statuses[PAGE_LINKING], statuses[PAGE_CALIBRATION]);
   }, [validateToggle]);
 
-  const hasObservations = () => (getProposal()?.observations?.length ?? 0) > 0;
+  const hasObservations = () => observations.length > 0;
 
   const noObservations = () => {
     return (
@@ -205,13 +208,7 @@ export default function ObservationPage() {
         {osdCyclePolicy?.maxObservations !== 1 && renderAddTheButton()}
         {!hasObservations() && noObservations()}
         {osdCyclePolicy?.maxObservations !== 1 && hasObservations() && observationList()}
-        {osdCyclePolicy?.maxObservations === 1 && hasObservations() && (
-          // Keyed on id so the form reloads when auto-linking replaces the observation
-          <ObservationEntry
-            key={getProposal()?.observations?.[0]?.id}
-            data={getProposal()?.observations?.[0]}
-          />
-        )}
+        {osdCyclePolicy?.maxObservations === 1 && hasObservations() && <ObservationInPlace />}
       </>
     </Shell>
   );

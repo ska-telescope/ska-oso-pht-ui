@@ -39,6 +39,8 @@ const observations: ObservationInput[] = [
     // The fine zoom factors are only available to a custom subarray
     subarray: SA_CUSTOM,
     observingMode: OBSERVING_MODE.SPECTRAL,
+    // 1000 channels of 28.26 Hz
+    bandwidth: { value: 0.02825702, unit: 'MHz' },
     zoomFactor: 2,
     zoomChannels: 1000
   },

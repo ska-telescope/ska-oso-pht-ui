@@ -17,11 +17,7 @@ import {
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS
 } from '@/utils/constants';
 import { calculateVelocity, convertFrequency, generateObsSetId } from '@/utils/helpers';
-import {
-  isCentralFrequencyDivisible,
-  isCentralFrequencyOnChannelGrid,
-  isFineZoomRestricted
-} from '@/utils/zoomWindow';
+import { isFineZoomRestricted, snapCentralFrequencyToChannelGridHz } from '@/utils/zoomWindow';
 import type {
   ObservatoryDataCapabilities,
   subarrayConfigurationLow,
@@ -66,6 +62,8 @@ export const MID_BANDS = [
 export const LOW_BANDS = [BAND_LOW_STR] as const;
 
 export const SUBARRAYS = [SA_AA2, SA_AA_STAR, SA_CUSTOM] as const;
+export type Subarray = (typeof SUBARRAYS)[number];
+export type ObservingBand = (typeof MID_BANDS)[number] | (typeof LOW_BANDS)[number];
 
 const FREQUENCY_UNITS = Object.keys(FREQUENCY_UNIT_HZ) as [FrequencyUnit, ...FrequencyUnit[]];
 
@@ -105,6 +103,48 @@ const SPECTRAL_RESOLUTION_UNIT = {
 } as const satisfies Record<Telescope, FrequencyUnit>;
 
 /** The spectral resolution of a zoom factor as the user sees it, e.g. "14.13 Hz (21.2 m/s)". */
+/**
+ * A spectral line observation's bandwidth: its channels times their width, in the unit given and
+ * to the 0.01 Hz it is shown to. Missing while the zoom factor or channels are.
+ */
+export const spectralBandwidth = (
+  telescope: Telescope,
+  zoomFactor: number | null,
+  zoomChannels: number | null,
+  unit: FrequencyUnit
+) => {
+  if (zoomFactor === null || zoomChannels === null) {
+    return { value: null, unit };
+  }
+  const decimalPlaces = Math.round(Math.log10(FREQUENCY_UNIT_HZ[unit])) + 2;
+  const value = convertFrequency(
+    zoomChannels * zoomChannelWidthHz(telescope, zoomFactor),
+    'Hz',
+    unit
+  );
+  return { value: Number(value.toFixed(decimalPlaces)), unit };
+};
+
+/**
+ * The channels of a spectral line bandwidth. A bandwidth within the 0.01 Hz it is shown to of a
+ * whole number of channels is that number; any other gives a fraction, which is an error until the
+ * user corrects it. Missing while the zoom factor or bandwidth is.
+ */
+export const zoomChannelsForBandwidth = (
+  telescope: Telescope,
+  zoomFactor: number | null,
+  bandwidth: { value: number | null; unit: FrequencyUnit | null }
+): number | null => {
+  if (zoomFactor === null || bandwidth.value === null || bandwidth.unit === null) {
+    return null;
+  }
+  const widthHz = zoomChannelWidthHz(telescope, zoomFactor);
+  const channels = convertFrequency(bandwidth.value, bandwidth.unit) / widthHz;
+  return Math.abs(channels - Math.round(channels)) * widthHz < 0.01
+    ? Math.round(channels)
+    : channels;
+};
+
 export const spectralResolutionText = (
   telescope: Telescope,
   zoomFactor: number,
@@ -201,8 +241,9 @@ const observationBaseSchema = z.object({
   integrationTime: integrationTimeSchema
 });
 
-// The fields each observing mode adds. A spectral line observation has no bandwidth of its own:
-// it is its number of channels times the channel width of its zoom factor.
+// The fields each observing mode adds. A spectral line observation's bandwidth is its number of
+// channels times the channel width of its zoom factor: the form holds it too, so both fields can
+// be edited, and keeps it the same as the channels (see spectralBandwidth).
 const observingModeVariants = <Factor extends number>(zoomFactors: readonly Factor[]) => ({
   continuum: {
     observingMode: z.literal(OBSERVING_MODE.CONTINUUM),
@@ -214,6 +255,7 @@ const observingModeVariants = <Factor extends number>(zoomFactors: readonly Fact
   },
   spectral: {
     observingMode: z.literal(OBSERVING_MODE.SPECTRAL),
+    bandwidth: frequencySchema,
     zoomFactor: required(
       z.literal(zoomFactors, { error: phtTranslations.spectralResolution.error })
     ),
@@ -238,9 +280,69 @@ const observingModeVariants = <Factor extends number>(zoomFactors: readonly Fact
 /** The OSD capabilities the observation rules use. */
 export type ObservationOsd = Partial<ObservatoryDataCapabilities>;
 
-// The channel width of MID, which a MID bandwidth is a multiple of
+// The channel width of MID. A MID sub-band is at least a channel wide.
 // TODO: Take it from the OSD once it has it
 const MID_CHANNEL_WIDTH_HZ = 13440;
+
+/**
+ * The step a bandwidth of its own is a whole number of: 8 coarse channels on LOW, and 20 channels
+ * on MID (as in the ODT), or null while the OSD isn't loaded.
+ */
+export const bandwidthStepHz = (telescope: Telescope, osd: ObservationOsd): number | null =>
+  telescope === TELESCOPE.LOW
+    ? osd.low
+      ? osd.low.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+      : null
+    : osd.mid
+      ? 20 * MID_CHANNEL_WIDTH_HZ
+      : null;
+
+/**
+ * The grid a LOW central frequency is on, as its step and lowest point: two coarse channels, or a
+ * zoom channel for a spectral line observation, whose grid moves by half a channel with an odd
+ * number of channels. MID has no grid. Null while the OSD or the values it needs aren't there.
+ */
+export const centralFrequencyGridHz = (
+  observation: ObservationInput,
+  osd: ObservationOsd
+): { stepHz: number; minHz: number } | null => {
+  if (observation.telescope !== TELESCOPE.LOW || !osd.low) {
+    return null;
+  }
+  const minHz = osd.low.basicCapabilities.minFrequencyHz;
+  if (observation.observingMode !== OBSERVING_MODE.SPECTRAL) {
+    return { stepHz: 2 * osd.low.basicCapabilities.coarseChannelWidthHz, minHz };
+  }
+  if (observation.zoomFactor === null || observation.zoomChannels === null) {
+    return null;
+  }
+  const widthHz = zoomChannelWidthHz(TELESCOPE.LOW, observation.zoomFactor);
+  return {
+    stepHz: widthHz,
+    minHz: minHz + (Math.round(observation.zoomChannels) % 2) * (widthHz / 2)
+  };
+};
+
+/** The frequency range of a band, from the OSD. */
+export const bandRange = (
+  osd: ObservationOsd,
+  telescope: Telescope,
+  observingBand: ObservingBand | null
+): { minFrequencyHz: number; maxFrequencyHz: number } | undefined =>
+  telescope === TELESCOPE.LOW
+    ? osd.low?.basicCapabilities
+    : osd.mid?.basicCapabilities.receiverInformation.find((rx) => rx.rxId === observingBand);
+
+/** What a subarray of a telescope has, from the OSD. A custom subarray isn't in it. */
+export const subarrayCapabilities = (
+  osd: ObservationOsd,
+  telescope: Telescope,
+  subarray: Subarray | null
+): subarrayConfigurationLow | subarrayConfigurationMid | undefined =>
+  (
+    (telescope === TELESCOPE.LOW ? osd.low?.subArrays : osd.mid?.subArrays) as
+      (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
+  )?.find((sub) => sub.subArray === subarray);
 
 const elevationSchema = (
   limits: { minElevationDeg: number; maxElevationDeg: number } | null | undefined
@@ -263,17 +365,11 @@ const osdRules =
   (osd: ObservationOsd) =>
   (obs: ObservationInput, ctx: z.RefinementCtx): void => {
     const isLow = obs.telescope === TELESCOPE.LOW;
-    const capabilities = isLow ? osd.low : osd.mid;
-    if (!capabilities) {
+    if (!(isLow ? osd.low : osd.mid)) {
       return;
     }
-    const band = isLow
-      ? osd.low?.basicCapabilities
-      : osd.mid?.basicCapabilities.receiverInformation.find((rx) => rx.rxId === obs.observingBand);
-    const subarray = (
-      capabilities.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[]
-    ).find((sub) => sub.subArray === obs.subarray);
-    const coarseChannelWidthHz = osd.low?.basicCapabilities.coarseChannelWidthHz;
+    const band = bandRange(osd, obs.telescope, obs.observingBand);
+    const subarray = subarrayCapabilities(osd, obs.telescope, obs.subarray);
 
     const isSpectral = obs.observingMode === OBSERVING_MODE.SPECTRAL;
     const zoomChannels = isSpectral ? obs.zoomChannels : null;
@@ -301,20 +397,11 @@ const osdRules =
           message: phtTranslations.centralFrequency.error.range,
           path: ['centralFrequency', 'value']
         });
-      } else if (isLow && coarseChannelWidthHz !== undefined) {
-        // On LOW the central frequency is on the channel grid: the zoom channels' for a spectral
-        // line observation, the coarse channels' for the others
-        const onGrid = isSpectral
-          ? channelWidthHz === null ||
-            zoomChannels === null ||
-            isCentralFrequencyOnChannelGrid(
-              centralHz,
-              channelWidthHz,
-              zoomChannels * channelWidthHz,
-              band.minFrequencyHz
-            )
-          : isCentralFrequencyDivisible(centralHz, coarseChannelWidthHz);
-        if (!onGrid) {
+      } else {
+        // On LOW, to within 1 Hz, as values are shown and entered to the Hz
+        const grid = centralFrequencyGridHz(obs, osd);
+        const stepsFromMin = grid ? (centralHz - grid.minHz) / grid.stepHz : 0;
+        if (grid && Math.abs(stepsFromMin - Math.round(stepsFromMin)) * grid.stepHz >= 1) {
           ctx.addIssue({
             code: 'custom',
             message: phtTranslations.centralFrequency.error.divisibility,
@@ -326,11 +413,7 @@ const osdRules =
 
     // A bandwidth of its own is a whole number of channels, at most what the subarray has
     if (!isSpectral && bandwidthHz !== null) {
-      const channelHz = isLow
-        ? coarseChannelWidthHz !== undefined
-          ? coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
-          : null
-        : MID_CHANNEL_WIDTH_HZ;
+      const channelHz = bandwidthStepHz(obs.telescope, osd);
       const maximumHz = subarray?.availableBandwidthHz;
       const message = (
         key: 'minimumChannelWidthError' | 'contMaximumExceededError' | 'divisibilityError',
@@ -497,12 +580,22 @@ const integrationTimeFromPdm = (supplied: Supplied | null | undefined) => ({
 
 const observingModeFromPdm = (details: ObservationTypeDetails, telescope: Telescope) => {
   switch (details.observation_type) {
-    case OBSERVING_MODE.SPECTRAL:
+    case OBSERVING_MODE.SPECTRAL: {
+      const zoomFactor = zoomFactorFromSpectralResolution(telescope, details.spectral_resolution);
+      const zoomChannels = details.number_of_channels ?? null;
       return {
         observingMode: OBSERVING_MODE.SPECTRAL,
-        zoomFactor: zoomFactorFromSpectralResolution(telescope, details.spectral_resolution),
-        zoomChannels: details.number_of_channels ?? null
+        // Taken from the channels, which are what counts, in the unit it was saved in
+        bandwidth: spectralBandwidth(
+          telescope,
+          zoomFactor,
+          zoomChannels,
+          frequencyFromPdm(details.bandwidth).unit ?? 'MHz'
+        ),
+        zoomFactor,
+        zoomChannels
       };
+    }
     case OBSERVING_MODE.PST:
       return {
         observingMode: OBSERVING_MODE.PST,
@@ -587,9 +680,10 @@ const observationTypeDetailsToPdm = (
       return {
         ...shared,
         observation_type: OBSERVING_MODE.SPECTRAL,
+        // From the channels, which are what counts, in the bandwidth's unit
         bandwidth: {
-          value: convertFrequency(obs.zoomChannels * widthHz, 'Hz', 'MHz'),
-          unit: 'MHz'
+          value: convertFrequency(obs.zoomChannels * widthHz, 'Hz', obs.bandwidth.unit),
+          unit: obs.bandwidth.unit
         },
         spectral_resolution: spectralResolutionText(
           obs.telescope,
@@ -651,6 +745,7 @@ export const newSvObservation = (
         ...shared,
         observingMode,
         centralFrequency: { value: 200, unit: 'MHz' },
+        bandwidth: spectralBandwidth(TELESCOPE.LOW, 8, maxZoomChannels ?? 1000, 'MHz'),
         zoomFactor: 8,
         zoomChannels: maxZoomChannels ?? 1000
       };
@@ -665,4 +760,236 @@ export const newSvObservation = (
     default:
       return { ...shared, observingMode, centralFrequency, bandwidth };
   }
+};
+
+/*********************************************************** defaults and changes ***********************************************************/
+
+export const telescopeOfBand = (observingBand: ObservingBand): Telescope =>
+  observingBand === BAND_LOW_STR ? TELESCOPE.LOW : TELESCOPE.MID;
+
+// The coarsest zoom factor, which every subarray has
+const DEFAULT_ZOOM_FACTOR = { [TELESCOPE.LOW]: 8, [TELESCOPE.MID]: 1 } as const;
+
+// The fields that depend on the telescope only: the integration time and elevation defaults
+const telescopeDefaults = (telescope: Telescope, osd: ObservationOsd) =>
+  telescope === TELESCOPE.LOW
+    ? {
+        telescope,
+        integrationTime: { value: 1, unit: 'h' as const },
+        minElevation: osd.low?.basicCapabilities.minElevationDeg ?? null
+      }
+    : {
+        telescope,
+        integrationTime: { value: 10, unit: 'min' as const },
+        elevation: osd.mid?.basicCapabilities.minElevationDeg ?? null,
+        weather: phtTranslations.weather.default,
+        numberOfSubBands: 1
+      };
+
+// The stations or antennas of a subarray. A custom one has none until the user enters them.
+const arrayDefaults = (telescope: Telescope, subarray: Subarray | null, osd: ObservationOsd) => {
+  const capabilities = subarrayCapabilities(osd, telescope, subarray);
+  return telescope === TELESCOPE.LOW
+    ? { numberOfStations: (capabilities as subarrayConfigurationLow)?.numberStations ?? null }
+    : {
+        number15mAntennas: (capabilities as subarrayConfigurationMid)?.numberSkaDishes ?? null,
+        number13mAntennas: (capabilities as subarrayConfigurationMid)?.numberMeerkatDishes ?? null
+      };
+};
+
+/**
+ * The frequencies an observation starts with in a band, which are valid for the subarray: the
+ * middle of the band, and the widest bandwidth of whole steps that fits the band and the
+ * subarray. A spectral line observation uses the coarsest zoom factor and all the zoom channels
+ * of the subarray, with its central frequency moved onto their channel grid on LOW.
+ */
+const frequencyDefaults = (
+  telescope: Telescope,
+  observingBand: ObservingBand | null,
+  subarray: Subarray | null,
+  observingMode: ObservingMode,
+  osd: ObservationOsd
+) => {
+  const band = bandRange(osd, telescope, observingBand);
+  const centreHz = band ? (band.minFrequencyHz + band.maxFrequencyHz) / 2 : null;
+  const mhz = (hz: number | null) => ({
+    value: hz === null ? null : convertFrequency(hz, 'Hz', 'MHz'),
+    unit: 'MHz' as const
+  });
+  if (observingMode === OBSERVING_MODE.SPECTRAL) {
+    const zoomFactor = DEFAULT_ZOOM_FACTOR[telescope];
+    const zoomChannels = subarrayCapabilities(osd, telescope, subarray)?.numberZoomChannels ?? null;
+    const centralHz =
+      telescope === TELESCOPE.LOW && band && centreHz !== null && zoomChannels !== null
+        ? snapCentralFrequencyToChannelGridHz(
+            centreHz,
+            zoomChannelWidthHz(telescope, zoomFactor),
+            zoomChannels,
+            band.minFrequencyHz
+          )
+        : centreHz;
+    return {
+      centralFrequency: mhz(centralHz),
+      bandwidth: spectralBandwidth(telescope, zoomFactor, zoomChannels, 'MHz'),
+      zoomFactor,
+      zoomChannels
+    };
+  }
+  const stepHz = bandwidthStepHz(telescope, osd);
+  const maximumHz = Math.min(
+    subarrayCapabilities(osd, telescope, subarray)?.availableBandwidthHz ?? Infinity,
+    band ? band.maxFrequencyHz - band.minFrequencyHz : Infinity
+  );
+  const bandwidthHz =
+    stepHz !== null && Number.isFinite(maximumHz) ? Math.floor(maximumHz / stepHz) * stepHz : null;
+  return { centralFrequency: mhz(centreHz), bandwidth: mhz(bandwidthHz) };
+};
+
+// The fields of an observing mode other than the frequencies
+const modeDefaults = (observingMode: ObservingMode) =>
+  observingMode === OBSERVING_MODE.PST
+    ? { observingMode, pstMode: PstMode.PulsarTiming }
+    : { observingMode };
+
+/** A new observation in a band, with the defaults of its telescope, band, subarray and mode. */
+export const newObservation = (
+  observingBand: ObservingBand,
+  subarray: Subarray,
+  observingMode: ObservingMode,
+  osd: ObservationOsd
+): ObservationInput => {
+  const telescope = telescopeOfBand(observingBand);
+  return {
+    id: generateObsSetId(),
+    groupId: null,
+    observingBand,
+    subarray,
+    ...telescopeDefaults(telescope, osd),
+    ...arrayDefaults(telescope, subarray, osd),
+    ...modeDefaults(observingMode),
+    ...frequencyDefaults(telescope, observingBand, subarray, observingMode, osd)
+  } as ObservationInput;
+};
+
+/**
+ * The observation in another band. Its frequencies start again from the band's defaults. On
+ * another telescope, everything that depends on the telescope does too; the subarray, mode,
+ * identifier and group are kept.
+ */
+export const observationForBand = (
+  observation: ObservationInput,
+  observingBand: ObservingBand,
+  osd: ObservationOsd
+): ObservationInput => {
+  const telescope = telescopeOfBand(observingBand);
+  if (telescope !== observation.telescope) {
+    return {
+      ...newObservation(
+        observingBand,
+        observation.subarray ?? SA_AA2,
+        observation.observingMode,
+        osd
+      ),
+      id: observation.id,
+      groupId: observation.groupId,
+      // A null subarray stays missing, so the user sees it needs choosing
+      subarray: observation.subarray
+    } as ObservationInput;
+  }
+  return {
+    ...observation,
+    observingBand,
+    ...frequencyDefaults(
+      telescope,
+      observingBand,
+      observation.subarray,
+      observation.observingMode,
+      osd
+    )
+  } as ObservationInput;
+};
+
+/**
+ * The observation with another subarray. A subarray in the OSD sets the stations or antennas,
+ * and the number of zoom channels is reduced to what the subarray has. The rest is kept, and shows
+ * an error if the subarray doesn't allow it.
+ */
+export const observationForSubarray = (
+  observation: ObservationInput,
+  subarray: Subarray,
+  osd: ObservationOsd
+): ObservationInput => {
+  const maxZoomChannels = subarrayCapabilities(
+    osd,
+    observation.telescope,
+    subarray
+  )?.numberZoomChannels;
+  return {
+    ...observation,
+    subarray,
+    ...(subarray !== SA_CUSTOM && arrayDefaults(observation.telescope, subarray, osd)),
+    ...(observation.observingMode === OBSERVING_MODE.SPECTRAL &&
+      maxZoomChannels !== undefined &&
+      observation.zoomChannels !== null &&
+      observation.zoomChannels > maxZoomChannels && {
+        zoomChannels: maxZoomChannels,
+        bandwidth: spectralBandwidth(
+          observation.telescope,
+          observation.zoomFactor,
+          maxZoomChannels,
+          observation.bandwidth.unit ?? 'MHz'
+        )
+      })
+  } as ObservationInput;
+};
+
+/**
+ * The observation in another observing mode. The fields all modes have are kept, and so is a
+ * bandwidth of its own between the modes that have one. A spectral line observation starts with
+ * the coarsest zoom factor and all the zoom channels, and a PST one with pulsar timing.
+ */
+export const observationForMode = (
+  observation: ObservationInput,
+  observingMode: ObservingMode,
+  osd: ObservationOsd
+): ObservationInput => {
+  // The fields of the current mode go, and the new mode's come in their place
+  const {
+    observingMode: _mode,
+    bandwidth,
+    zoomFactor: _zoomFactor,
+    zoomChannels: _zoomChannels,
+    pstMode: _pstMode,
+    ...shared
+  } = observation as ObservationInput & {
+    bandwidth?: ObservationInput['centralFrequency'];
+    zoomFactor?: unknown;
+    zoomChannels?: unknown;
+    pstMode?: unknown;
+  };
+  const defaults = frequencyDefaults(
+    observation.telescope,
+    observation.observingBand,
+    observation.subarray,
+    observingMode,
+    osd
+  );
+  return {
+    ...shared,
+    ...modeDefaults(observingMode),
+    ...(observingMode === OBSERVING_MODE.SPECTRAL
+      ? {
+          bandwidth: defaults.bandwidth,
+          zoomFactor: defaults.zoomFactor,
+          zoomChannels: defaults.zoomChannels
+        }
+      : {
+          // A spectral line bandwidth is that of its channels, so the new mode starts from its
+          // default
+          bandwidth:
+            observation.observingMode !== OBSERVING_MODE.SPECTRAL && bandwidth
+              ? bandwidth
+              : defaults.bandwidth
+        })
+  } as ObservationInput;
 };
