@@ -46,12 +46,11 @@ export function buildLoginRequest(): { scopes: string[] } | undefined {
   };
 }
 
-// Where Indigo sends full-page login responses: the app itself.
-// Kept the MSENTRA_ env var name for backwards-compatibility.
-// TODO: Remove when we're done with Entra.
-// Resolve to an absolute URL: deployed envs may set this to a relative path (see
-// ska-oso-pht-ui.urls-redirectUri helper), and MSAL mishandles a relative/trailing-slash
-// redirect_uri during its redirect-state matching (BTN-3402).
+// The app's own URL, which Indigo redirects back to after a full-page login.
+// (The MSENTRA_REDIRECT_URI, name dates from from when we only supported Entra login.)
+// Always ensure the returned URI is absolute since a relative path breaks MSAL's
+// login handling (see BTN-3402).
+// TODO: rename MSENTRA_REDIRECT_URI once Entra is gone.
 export const getRedirectUri = (): string =>
   new URL(env.MSENTRA_REDIRECT_URI, window.location.origin).href;
 
