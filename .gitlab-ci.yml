@@ -88,8 +88,9 @@ js-test:
     policy: pull
 
 # e2e deployments use the template's names: environment test/<branch or tag> and one namespace per
-# commit (ci-<project>-<short sha>). These replace the template's rules, so they repeat its
-# `exists` list.
+# commit (ci-<project>-<short sha>). A tag pipeline adds the tag to the namespace, as its commit is
+# usually also deployed by a branch pipeline. The tag's slug, as namespaces can't contain dots.
+# These replace the template's rules, so they repeat its `exists` list.
 .e2e_specs:
   exists: &e2e_specs
     - ${JS_PROJECT_DIR}/tests/cypress/**/*.test.*
@@ -99,6 +100,10 @@ js-test:
 
 .e2e_rules:
   rules: &e2e_rules
+    - if: $CI_COMMIT_TAG
+      exists: *e2e_specs
+      variables:
+        KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_COMMIT_REF_SLUG
     - exists: *e2e_specs
 
 .e2e_vars:
@@ -165,6 +170,11 @@ stop-js-e2e-test:
   when: always
   allow_failure: true
   rules:
+    - if: $CI_COMMIT_TAG
+      exists: *e2e_specs
+      variables:
+        KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_COMMIT_REF_SLUG
+      when: always
     - exists: *e2e_specs
       when: always
 
