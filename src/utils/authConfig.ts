@@ -47,7 +47,7 @@ export function buildLoginRequest(): { scopes: string[] } | undefined {
 }
 
 // The app's own URL, which Indigo redirects back to after a full-page login.
-// (The MSENTRA_REDIRECT_URI, name dates from from when we only supported Entra login.)
+// (The MSENTRA_REDIRECT_URI, name dates from when we only supported Entra login.)
 // Always ensure the returned URI is absolute since a relative path breaks MSAL's
 // login handling (see BTN-3402).
 // TODO: rename MSENTRA_REDIRECT_URI once Entra is gone.
