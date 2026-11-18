@@ -12,7 +12,7 @@ const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
 const mockNotifyWarning = vi.hoisted(() => vi.fn());
-import { PROPOSAL_STATUS, TMP_REVIEWER_ID } from '@/utils/constants';
+import { NAV, PROPOSAL_STATUS, TMP_REVIEWER_ID } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
@@ -106,11 +106,19 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 
 // Stub TableSubmissions so the clone button reliably calls cloneFunction(id)
 vi.mock('@/components/table/tableSubmissions/TableSubmissions', () => ({
-  default: ({ cloneFunction, data }: any) =>
+  default: ({ cloneFunction, editFunction, viewFunction, data }: any) =>
     data.map((item: any) => (
-      <button key={item.id} data-testid="cloneIcon" onClick={() => cloneFunction(item.id)}>
-        Clone
-      </button>
+      <div key={item.id}>
+        <button data-testid="viewIcon" onClick={() => viewFunction(item.id)}>
+          View
+        </button>
+        <button data-testid="cloneIcon" onClick={() => cloneFunction(item.id)}>
+          Clone
+        </button>
+        <button data-testid="editIcon" onClick={() => editFunction(item.id)}>
+          Edit
+        </button>
+      </div>
     ))
 }));
 
@@ -250,7 +258,113 @@ describe('clone proposal', () => {
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
+  });
+
+  test('scrolls to the top when opening a proposal for editing', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    wrapper(<LandingPage />);
+
+    fireEvent.click(await screen.findByTestId('editIcon'));
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
+    expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID, expect.any(Function));
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+  });
+
+  test.each(['editIcon', 'viewIcon', 'cloneIcon'])(
+    'rejects overlapping proposal loads while %s is pending',
+    async (firstAction) => {
+      const secondProposal = { ...mockRichOriginalProposal, id: 'prp-2' };
+      (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal, secondProposal]);
+      let finishLoad!: (proposal: Partial<Proposal>) => void;
+      mockLoadFromOda.mockImplementationOnce(
+        () => new Promise<Partial<Proposal>>((resolve) => (finishLoad = resolve))
+      );
+      vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+      const alert = vi.fn();
+      vi.stubGlobal('alert', alert);
+      wrapper(<LandingPage />);
+
+      fireEvent.click((await screen.findAllByTestId(firstAction))[0]);
+      fireEvent.click(screen.getAllByTestId('editIcon')[1]);
+      fireEvent.click(screen.getAllByTestId('viewIcon')[1]);
+      fireEvent.click(screen.getAllByTestId('cloneIcon')[1]);
+
+      expect(mockLoadFromOda).toHaveBeenCalledTimes(1);
+      expect(mockLoadFromOda).toHaveBeenCalledWith(ORIGINAL_PROPOSAL_ID, expect.any(Function));
+      expect(alert).not.toHaveBeenCalled();
+
+      finishLoad(mockRichOriginalProposal);
+      await waitFor(() =>
+        expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(mockRichOriginalProposal)
+      );
+    }
+  );
+
+  test('ignores a pending proposal load that finishes after leaving the page', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    const alert = vi.fn();
+    vi.stubGlobal('alert', alert);
+    let finishLoad!: (proposal: Partial<Proposal>) => void;
+    mockLoadFromOda.mockImplementationOnce(
+      () => new Promise<Partial<Proposal>>((resolve) => (finishLoad = resolve))
+    );
+    const { unmount } = wrapper(<LandingPage />);
+
+    fireEvent.click(await screen.findByTestId('editIcon'));
+    await waitFor(() => expect(mockLoadFromOda).toHaveBeenCalledTimes(1));
+    mockUpdateAppContent2.mockClear();
+
+    unmount();
+    expect(mockLoadFromOda.mock.calls[0][1]()).toBe(false);
+    finishLoad(mockRichOriginalProposal);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(mockUpdateAppContent2).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(scrollTo).not.toHaveBeenCalled();
+    expect(alert).not.toHaveBeenCalled();
+  });
+
+  test('does not scroll or navigate when loading the proposal fails', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    const alert = vi.fn();
+    vi.stubGlobal('alert', alert);
+    mockLoadFromOda.mockResolvedValue('Unable to load proposal');
+    wrapper(<LandingPage />);
+
+    fireEvent.click(await screen.findByTestId('editIcon'));
+
+    await waitFor(() => expect(alert).toHaveBeenCalled());
+    expect(scrollTo).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  test('keeps proposals available after a failed load and clears the error on retry', async () => {
+    const secondProposal = { ...mockRichOriginalProposal, id: 'prp-2' };
+    (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal, secondProposal]);
+    mockLoadFromOda
+      .mockResolvedValueOnce('Unable to load proposal')
+      .mockResolvedValueOnce(secondProposal);
+    vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    vi.stubGlobal('alert', vi.fn());
+    wrapper(<LandingPage />);
+
+    const editButtons = await screen.findAllByTestId('editIcon');
+    fireEvent.click(editButtons[0]);
+
+    expect(await screen.findByTestId('axiosViewErrorTestId')).toHaveTextContent(
+      'Unable to load proposal'
+    );
+    expect(screen.getAllByTestId('editIcon')).toHaveLength(2);
+
+    fireEvent.click(screen.getAllByTestId('editIcon')[1]);
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
+    expect(mockLoadFromOda).toHaveBeenLastCalledWith('prp-2', expect.any(Function));
+    expect(screen.queryByTestId('axiosViewErrorTestId')).not.toBeInTheDocument();
   });
 
   const triggerCloneConfirm = async () => {
@@ -268,6 +382,14 @@ describe('clone proposal', () => {
 
     fireEvent.click(screen.getByTestId('displayConfirmationButton'));
   };
+
+  test('scrolls to the top when the cloned proposal opens', async () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    await triggerCloneConfirm();
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+  });
 
   test('preserves original targets, observations, abstract and data products after cloning', async () => {
     await triggerCloneConfirm();
