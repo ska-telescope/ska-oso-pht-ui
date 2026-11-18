@@ -78,11 +78,43 @@ CHANGELOG:
   rules:
     - if: $CI_COMMIT_TAG
       when: manual
-    
+
+# e2e deployments use the template's namespace, one per commit (ci-<project>-<short sha>), except
+# that a tag pipeline adds the tag, as its commit has usually already been deployed by a branch
+# pipeline. The tag's slug, as namespaces can't contain dots. These replace the template's rules,
+# so they repeat its `exists` list. All three jobs need them, so that the tests and the stop job
+# (which auto_stop_in also runs) use the same namespace as the deployment.
+.e2e_rules:
+  rules: &e2e_rules
+    - if: $CI_COMMIT_TAG
+      exists: &e2e_specs
+        - ${JS_PROJECT_DIR}/tests/cypress/**/*.test.*
+        - tests/cypress/**/*.test.*
+        - ${JS_PROJECT_DIR}/tests/cypress/**/*.cy.*
+        - tests/cypress/**/*.cy.*
+      variables:
+        KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_COMMIT_REF_SLUG
+    - exists: *e2e_specs
+
+js-e2e-deploy:
+  rules: *e2e_rules
+
 js-e2e-test:
   variables:
     JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
     CYPRESS_PARALLEL_WORKERS: "3"
+  rules: *e2e_rules
+
+# Still manual, as in the template, but rules' `when` replaces the job's, so it's repeated here
+stop-js-e2e-test:
+  rules:
+    - if: $CI_COMMIT_TAG
+      exists: *e2e_specs
+      variables:
+        KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_COMMIT_REF_SLUG
+      when: manual
+    - exists: *e2e_specs
+      when: manual
 
 info-dev-environment:
   <<: *dev_env
