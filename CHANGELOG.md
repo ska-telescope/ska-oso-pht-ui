@@ -8,10 +8,9 @@ UNRELEASED
 ----------
 * Changed: e2e test auth moved into the test framework; Indigo token renewal uses a new `auth-callback.html` page (register `<app URL>auth-callback.html` as an Indigo redirect URI)
 * Added: Indigo smoke tests, a REQUEST_TIMEOUT_MS setting (default 20s), and --clean-db for local e2e runs
-* Changed: CI splits the e2e tests across GitLab parallel jobs, and its e2e deployments wait 60s for the backend (REQUEST_TIMEOUT_MS)
-* Added: CI runs the Indigo smoke tests after deployments to the dev and staging environments
-* Changed: CI removes its e2e deployment as soon as the e2e tests finish
-* Changed: CI downloads Cypress once for the e2e test jobs, and not at all for the unit tests or the OCI image build
+* Changed: CI runs the e2e tests as parallel jobs with a 60s backend timeout, and removes the e2e deployment when the tests finish
+* Added: CI runs the Indigo smoke tests after dev and staging deployments
+* Changed: CI now defaults to Cypress only being included for the e2e test and smoke test jobs which make use of it. For all other jobs the default is that it isn't downloaded.
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
