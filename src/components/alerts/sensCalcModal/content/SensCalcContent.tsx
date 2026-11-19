@@ -2,36 +2,18 @@ import { Grid, Typography } from '@mui/material';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
-import {
-  FREQUENCY_KHZ,
-  FREQUENCY_STR_KHZ,
-  FREQUENCY_UNITS,
-  LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
-  SA_CUSTOM,
-  SENSITIVITY_STATE,
-  TELESCOPE_LOW_NUM,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_CONTINUUM_SPECTRAL_LONG
-} from '../../../../utils/constants';
+import { FREQUENCY_STR_KHZ, SA_CUSTOM, SENSITIVITY_STATE } from '../../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import { storageObject } from '@utils/storage/store';
-import Proposal from '@utils/types/proposal.tsx';
 import Target from '@utils/types/target';
 import type { ProposalType } from '@/models/proposals/proposal';
 import {
-  getLowSpectralAveragingFactor,
-  getSensitivityDataProduct
+  getSensitivityDataProduct,
+  sensitivitySpectralResolutionKhz
 } from '@/services/sensitivityCalculator/calculate';
 import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
 import type { SensitivityValues } from '@/models/proposals/targetObservation';
-import {
-  convertFrequencyToDisplayUnits,
-  frequencyConversion,
-  getBandwidthZoom,
-  getSpectralResolutionHz
-} from '@utils/helpers.ts';
+import { convertFrequencyToDisplayUnits } from '@utils/helpers.ts';
 
 interface SensCalcContentProps {
   targetObservation: TargetObservation;
@@ -47,19 +29,13 @@ export default function SensCalcContent({
 }: SensCalcContentProps) {
   const { t } = useScopedTranslation();
 
-  const { application } = storageObject.useStore();
-
-  const getProposal = () => application.content2 as Proposal;
-
-  const proposal = getProposal();
-
-  // TODO: The form owns the targets and data products; observations are still read from the store
   const form = useFormContext<ProposalType>();
   const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const observations = useWatch({ control: form.control, name: 'observations' }) ?? [];
   const dataProducts = useWatch({ control: form.control, name: 'dataProducts' }) ?? [];
   const target = targets.find((target) => target.id === targetObservation.targetId);
 
-  const observation = proposal.observations?.find(
+  const observation = observations.find(
     (observation) => observation.id === targetObservation.observationId
   );
 
@@ -143,37 +119,12 @@ export default function SensCalcContent({
     </>
   );
 
-  const isLowContinuum =
-    observation.telescope === TELESCOPE_LOW_NUM &&
-    [TYPE_CONTINUUM, TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(
-      observation.type
-    );
-
-  const spectralResolution = convertFrequencyToDisplayUnits(
-    // Only LOW continuum averages channels; MID sends a factor of 1 and zoom has no averaging
-    isLowContinuum
-      ? getLowSpectralAveragingFactor(
-          // TODO BTN-3595 The observation's bandwidth from the form, once this reads it
-          frequencyConversion(
-            observation.continuumBandwidth ?? 0,
-            observation.continuumBandwidthUnits as number,
-            FREQUENCY_KHZ
-          ),
-          dataProduct
-        ) * LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
-      : getSpectralResolutionHz(observation) * 1e-3,
-    FREQUENCY_STR_KHZ
-  );
-  const bandwidth = [
-    TYPE_CONTINUUM,
-    TYPE_CONTINUUM_SPECTRAL,
-    TYPE_CONTINUUM_SPECTRAL_LONG
-  ].includes(observation.type)
-    ? {
-        value: observation.continuumBandwidth,
-        unit: FREQUENCY_UNITS[observation.continuumBandwidthUnits - 1]?.label
-      }
-    : getBandwidthZoom(observation);
+  // The resolution the calculator used, shown in Hz, kHz or MHz by its size
+  const spectralResolutionKhz = sensitivitySpectralResolutionKhz(observation, dataProduct);
+  const spectralResolution =
+    spectralResolutionKhz === null
+      ? undefined
+      : convertFrequencyToDisplayUnits(spectralResolutionKhz, FREQUENCY_STR_KHZ);
 
   return (
     <>
@@ -181,16 +132,22 @@ export default function SensCalcContent({
       {displayElement(
         'centralFrequency',
         valueText(
-          observation.centralFrequency,
-          FREQUENCY_UNITS[observation.centralFrequencyUnits - 1]?.label
+          observation.centralFrequency.value,
+          observation.centralFrequency.unit ?? undefined
         )
       )}
-      {displayElement('bandwidth', valueText(bandwidth.value, bandwidth.unit))}
+      {displayElement(
+        'bandwidth',
+        valueText(observation.bandwidth.value, observation.bandwidth.unit ?? undefined)
+      )}
       {displayElement(
         'spectralResolution',
         valueText(spectralResolution?.value, spectralResolution?.unit)
       )}
-      {displayElement('integrationTime', valueText(observation.supplied.value, 'h'))}
+      {displayElement(
+        'integrationTime',
+        valueText(observation.integrationTime.value, observation.integrationTime.unit ?? undefined)
+      )}
 
       {sensitivity.state === SENSITIVITY_STATE.CALCULATING && (
         <>

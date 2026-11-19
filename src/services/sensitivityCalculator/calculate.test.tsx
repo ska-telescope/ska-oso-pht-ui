@@ -25,7 +25,8 @@ import {
   buildSensitivityRequest,
   getSensitivityDataProduct,
   SENS_CALC_MODE,
-  sendSensitivityRequest
+  sendSensitivityRequest,
+  sensitivitySpectralResolutionKhz
 } from './calculate';
 import { SENS_CALC_ERROR_KIND } from './client';
 import type { ContinuumResult, ZoomResult } from './types';
@@ -340,6 +341,30 @@ describe('getSensitivityDataProduct', () => {
 
   test('gives nothing when the linked data product does not exist', () => {
     expect(getSensitivityDataProduct('obs-1', 'missing', [IMAGES])).toBeUndefined();
+  });
+});
+
+describe('sensitivitySpectralResolutionKhz', () => {
+  test('is the LOW continuum channels averaged into the output channels', () => {
+    // 691 channels of 5.43 kHz, as in the LOW continuum request
+    expect(sensitivitySpectralResolutionKhz(LOW_CONTINUUM, imageDataProduct())).toBeCloseTo(
+      691 * ((1e3 * 400) / 512 / 144),
+      9
+    );
+  });
+
+  test('is a MID channel for MID continuum', () => {
+    expect(sensitivitySpectralResolutionKhz(MID_CONTINUUM, imageDataProduct())).toBe(13.44);
+  });
+
+  test('is the exact width of a zoom channel for spectral line', () => {
+    expect(sensitivitySpectralResolutionKhz(LOW_ZOOM, imageDataProduct())).toBe(
+      zoomChannelWidthHz(TELESCOPE.LOW, 8) / 1e3
+    );
+  });
+
+  test('is none for PST, which is not calculated', () => {
+    expect(sensitivitySpectralResolutionKhz(LOW_PST, imageDataProduct())).toBeNull();
   });
 });
 

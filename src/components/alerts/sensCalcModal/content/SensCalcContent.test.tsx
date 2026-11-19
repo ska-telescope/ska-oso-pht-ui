@@ -1,9 +1,8 @@
-import { beforeEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FormProvider } from 'react-hook-form';
-import { storageObject, StoreProvider } from '@utils/storage/store';
-import completeMockStore from '@/utils/MockStore';
+import { StoreProvider } from '@utils/storage/store';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import SensCalcContent from './SensCalcContent';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
@@ -32,11 +31,13 @@ const values = (weighted: number): SensitivityValues => ({
   synthesizedBeamSize: { value: '1.00 x 2.00', unit: 'arcsec²' }
 });
 
-// The linked target and data product live in the form, which owns them
+// The linked target, observation and data product live in the form, which owns them
 const FormWithTarget = ({ children }: { children: React.ReactNode }) => {
   const form = useProposalForm({
     id: 'p1',
     targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets'],
+    observations: MockProposalFrontend.observations,
+    groupObservations: MockProposalFrontend.groupObservations,
     dataProducts: MockProposalFrontend.dataProducts
   });
   return <FormProvider {...form}>{children}</FormProvider>;
@@ -53,14 +54,6 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<SensCalcModalSingle />', () => {
-  // The linked observation is still read from the store
-  beforeEach(() => {
-    vi.spyOn(storageObject, 'useStore').mockReturnValue({
-      ...completeMockStore,
-      application: { ...completeMockStore.application, content2: MockProposalFrontend }
-    } as unknown as ReturnType<typeof storageObject.useStore>);
-  });
-
   test('renders the no-data state when results have not been calculated', () => {
     wrapper(
       <SensCalcContent

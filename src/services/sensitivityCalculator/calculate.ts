@@ -19,6 +19,7 @@ import {
 import { convertFrequency } from '@/utils/helpers';
 import {
   INTEGRATION_TIME_UNIT_HOURS,
+  MID_CHANNEL_WIDTH_HZ,
   OBSERVING_MODE,
   TELESCOPE,
   zoomChannelWidthHz,
@@ -26,6 +27,7 @@ import {
   type Telescope,
   type LowObservationValues,
   type MidObservationValues,
+  type ObservationInput,
   type ObservationValues
 } from '@/models/proposals/observations';
 import type { TargetType } from '@/models/proposals/targets';
@@ -239,6 +241,40 @@ const midZoomRequest = (
   ],
   reference_coordinates: [referenceCoordinate(target)]
 });
+
+/**
+ * The spectral resolution the calculator uses for an observation and data product, in kHz: LOW
+ * continuum channels averaged into the data product's output channels, a MID channel, or the
+ * width of a zoom channel. Null while what it depends on isn't set, and for PST, which isn't
+ * calculated.
+ */
+export const sensitivitySpectralResolutionKhz = (
+  observation: ObservationInput,
+  dataProduct: DataProductInput
+): number | null => {
+  switch (observation.observingMode) {
+    case OBSERVING_MODE.SPECTRAL:
+      return observation.zoomFactor === null
+        ? null
+        : convertFrequency(
+            zoomChannelWidthHz(observation.telescope, observation.zoomFactor),
+            'Hz',
+            'kHz'
+          );
+    case OBSERVING_MODE.PST:
+      return null;
+    default: {
+      if (observation.telescope === TELESCOPE.MID) {
+        return MID_SPECTRAL_AVERAGING_FACTOR * convertFrequency(MID_CHANNEL_WIDTH_HZ, 'Hz', 'kHz');
+      }
+      const { value, unit } = observation.bandwidth;
+      return value === null || unit === null
+        ? null
+        : getLowSpectralAveragingFactor(convertFrequency(value, unit, 'kHz'), dataProduct) *
+            LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ;
+    }
+  }
+};
 
 /**
  * The sensitivity should always be calculated based on the images data product.

@@ -140,7 +140,7 @@ const openProposal = ({
         id: 'prsl-1',
         targets: [],
         targetObservation: [],
-        // TODO BTN-3595 Remove once SensCalcContent reads the observation from the form
+        // TODO BTN-3595 Seed the form directly once it no longer takes its observations from the store's legacy shape
         ...legacyObservationsFromForm(observations),
         ...proposal
       }

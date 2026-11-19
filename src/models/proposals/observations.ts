@@ -290,7 +290,7 @@ export type ObservationOsd = Partial<ObservatoryDataCapabilities>;
 
 // The channel width of MID. A MID sub-band is at least a channel wide.
 // TODO: Take it from the OSD once it has it
-const MID_CHANNEL_WIDTH_HZ = 13440;
+export const MID_CHANNEL_WIDTH_HZ = 13440;
 
 /**
  * The step a bandwidth of its own is a whole number of: 8 coarse channels on LOW, and 20 channels
