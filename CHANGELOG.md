@@ -7,8 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 * Changed: e2e test auth moved into the test framework; Indigo token renewal uses a new `auth-callback.html` page (register `<app URL>auth-callback.html` as an Indigo redirect URI)
-* Added: Indigo smoke tests, a REQUEST_TIMEOUT_MS setting (default 20s), and --clean-db for local e2e runs
-* Changed: CI runs the e2e tests as parallel jobs with a 60s backend timeout, and removes the e2e deployment when the tests finish
+* Added: Indigo smoke tests, a REQUEST_TIMEOUT_MS setting (default 20s, 60s for CI e2e deployments), and --clean-db for local e2e runs
+* Changed: CI runs the e2e tests as parallel jobs, and removes the e2e deployment when the tests finish
 * Added: CI runs the Indigo smoke tests after dev and staging deployments
 * Changed: CI now defaults to Cypress only being included for the e2e test and smoke test jobs which make use of it. For all other jobs the default is that it isn't downloaded.
 * Changed: CI tag pipelines deploy their e2e tests to their own namespace, rather than the one their commit's branch pipeline used
