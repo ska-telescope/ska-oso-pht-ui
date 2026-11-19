@@ -18,7 +18,6 @@ import {
   ObservingMode,
   OBSERVING_MODE
 } from '@/models/proposals/observations';
-import { legacyObservationsFromForm } from '@/models/proposals/legacyObservations';
 import Target from '../types/target';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
@@ -104,9 +103,7 @@ const linkObservation = async (
   form.setValue('targetObservation', [targetObservation]);
   form.setValue('calibrationStrategy', [calibrationStrategy]);
 
-  // The calibrator lookup still takes the legacy observation. An incomplete one has none.
-  const [legacyObservation] = legacyObservationsFromForm([observation]).observations;
-  const calibrators = await lookupCalibrators(authAxiosClient, legacyObservation, target);
+  const calibrators = await lookupCalibrators(authAxiosClient, observation, target);
   // Only while this calibration is still there: another change may have replaced it meanwhile.
   // The notes are the ones there now, which the author may have edited during the lookup.
   const strategies = form.getValues('calibrationStrategy');

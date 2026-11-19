@@ -173,9 +173,10 @@ export default function LinkingPage() {
       return;
     }
 
+    const observation = form.getValues('observations').find((o) => o.id === observationId);
+    if (!observation) return;
     const calibration = await buildCalibrationStrategy(authAxiosClient, {
-      observationId,
-      observation: getProposal().observations?.find((o) => o.id === observationId),
+      observation,
       target: remainingTarget,
       notes: calibrationNotesFor(getCalibration(), observationId)
     });
@@ -236,7 +237,8 @@ export default function LinkingPage() {
   };
 
   const addObservationTargetAndCalibration = async (target: Target) => {
-    if (!currRec) return;
+    const observation = form.getValues('observations').find((o) => o.id === currRec?.id2);
+    if (!currRec || !observation) return;
     const targetObs: TargetObservation = {
       observationId: currRec.id2,
       targetId: target.id,
@@ -244,11 +246,7 @@ export default function LinkingPage() {
       sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     };
 
-    const calibration = await buildCalibrationStrategy(authAxiosClient, {
-      observationId: currRec.id2,
-      observation: getProposal().observations?.find((o) => o.id === currRec.id2),
-      target
-    });
+    const calibration = await buildCalibrationStrategy(authAxiosClient, { observation, target });
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 

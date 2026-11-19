@@ -9,7 +9,6 @@ import {
   updateImageSizes
 } from './dataProducts';
 import { lookupCalibrators } from './calibrationOperations';
-import { legacyObservationsFromForm } from './legacyObservations';
 import { ObservationInput, OBSERVING_MODE } from './observations';
 
 /*
@@ -102,9 +101,7 @@ export async function refreshCalibrators(
     return;
   }
 
-  // The calibrator lookup still takes the legacy observation. An incomplete one has none.
-  const [legacyObservation] = legacyObservationsFromForm([observation]).observations;
-  const calibrators = await lookupCalibrators(authAxiosClient, legacyObservation, target);
+  const calibrators = await lookupCalibrators(authAxiosClient, observation, target);
 
   const stillLinked = form
     .getValues('targetObservation')
