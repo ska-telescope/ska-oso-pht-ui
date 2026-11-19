@@ -96,15 +96,8 @@ js-test:
     - ${JS_PROJECT_DIR}/tests/cypress/**/*.cy.*
     - tests/cypress/**/*.cy.*
 
-# A push to an MR's branch also starts a branch pipeline for the same commit. which could result in whichever pipeline finished first deleting the environment being used for testing by the other pipeline.
-# Effectively, since there is no need to run the e2e tests twice, so we can skip running the e2e tests on a merge request pipeline.
-.e2e_skip_mr: &e2e_skip_mr
-  if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  when: never
-
 .e2e_rules:
   rules: &e2e_rules
-    - *e2e_skip_mr
     - exists: *e2e_specs
 
 # e2e deployments wait longer for backend responses than users would (20s), as the tests'
@@ -171,7 +164,6 @@ stop-js-e2e-test:
   when: always
   allow_failure: true
   rules:
-    - *e2e_skip_mr
     - exists: *e2e_specs
       when: always
 
