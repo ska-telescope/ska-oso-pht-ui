@@ -105,6 +105,10 @@ stop-dev-environment:
   <<: *dev_env
 
 deploy-integration:
+  rules:
+    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
+      when: manual
+  needs: []
   variables:
     KUBE_HOST: https://k8s.stfc.skao.int
 

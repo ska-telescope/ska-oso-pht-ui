@@ -16,6 +16,11 @@ dependencies:
     version: 17.1.0
     repository: https://artefact.skao.int/repository/helm-internal
 
+  - name: ska-db-oda-umbrella
+    # If updating this, also remember to update the Python dependency
+    version: 20.0.1
+    repository: https://artefact.skao.int/repository/helm-internal
+
   # Sensitivity calculator services required by the PHT for the observation page
   - name: ska-ost-senscalc
     version: 11.4.1

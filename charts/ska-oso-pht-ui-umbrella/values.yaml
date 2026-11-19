@@ -4,5 +4,14 @@ global:
     app.gitlab.com/env: CI_ENVIRONMENT_SLUG
   minikube: true
 
+ska-oso-services-umbrella:
+  ska-db-oda-umbrella:
+    enabled: false
+
 ska-ost-senscalc:
   enabled: true
+
+ska-db-oda-umbrella:
+  postgres:
+    adoptExisting: true
+
