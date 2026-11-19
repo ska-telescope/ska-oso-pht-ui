@@ -1446,7 +1446,12 @@
   },
   "telescopes": {
     "2": "LOW",
-    "1": "MID"
+    "1": "MID",
+    "label": "Telescope",
+    "name": {
+      "2": "SKA-Low",
+      "1": "SKA-Mid"
+    }
   },
   "timeAveraging": {
     "label": "Time Averaging",

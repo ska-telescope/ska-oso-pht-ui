@@ -2,29 +2,50 @@ import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { NOT_SPECIFIED } from '@utils/constants.ts';
-import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
+import {
+  FREQUENCY_UNITS,
+  NOT_SPECIFIED,
+  SENSITIVITY_STATE,
+  TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
+  TYPE_PST
+} from '@utils/constants.ts';
+import { getBandwidthOrFrequencyUnitsLabel, getBandwidthZoom } from '@utils/helpers';
+import { presentUnits, presentValue } from '@utils/present/present';
 import Alert from '../../alerts/standardAlert/StandardAlert';
+import Observation from '../../../utils/types/observation';
 import Proposal from '../../../utils/types/proposal';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
 
 interface GridObservationSummaryProps {
   height?: number;
   proposal: Proposal | null;
   rowClick?: Function;
+  // Only one observation is possible, so its ID, paging and sorting add nothing
+  isScienceVerification?: boolean;
 }
+
+const CONTINUUM_TYPES: string[] = [
+  TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
+  TYPE_PST
+];
+const NO_VALUE = '-';
+const DP_IMAGES = 1;
+const DP_VISIBILITIES = 2;
 
 export default function GridObservationSummary({
   height = 171,
   proposal,
-  rowClick
+  rowClick,
+  isScienceVerification = false
 }: GridObservationSummaryProps) {
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
-  const { observatoryConstants } = useOSDAccessors();
 
   const headerDisplay = (inValue: string, inValue2?: string) => (
     <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
@@ -77,14 +98,43 @@ export default function GridObservationSummary({
     );
   };
 
-  const sensitivityIntegrationTime = (rec: { type?: number; supplied?: any }) => {
-    return (
-      rec.supplied.value +
-      ' ' +
-      observatoryConstants?.Supplied[rec.supplied.type]?.units.find(
-        (e) => (e.value = rec.supplied.units)
-      )?.label
+  const integrationTime = (rec: { supplied?: { value?: number } }) =>
+    rec.supplied?.value == null ? NO_VALUE : `${rec.supplied.value} h`;
+
+  const valueWithUnits = (value?: string | number | null, units?: string) =>
+    value == null ? NO_VALUE : `${presentValue(value)} ${units ? presentUnits(units) : ''}`.trim();
+
+  const centralFrequency = (rec: { centralFrequency?: number; centralFrequencyUnits?: number }) =>
+    valueWithUnits(
+      rec.centralFrequency,
+      getBandwidthOrFrequencyUnitsLabel(rec.centralFrequencyUnits as number)
     );
+
+  const bandwidth = (rec: Observation) => {
+    if (CONTINUUM_TYPES.includes(rec.type)) {
+      return valueWithUnits(
+        rec.continuumBandwidth,
+        FREQUENCY_UNITS[(rec.continuumBandwidthUnits ?? 0) - 1]?.label
+      );
+    }
+    const zoom = getBandwidthZoom(rec);
+    return valueWithUnits(zoom.value, zoom.unit);
+  };
+
+  // The weighted sensitivities of the observation's links, as the Data Products page shows them
+  const getSensitivities = (rec: Observation): string[] => {
+    if (rec.type === TYPE_PST) return [];
+    const isContinuum = rec.type === TYPE_CONTINUUM;
+    return (proposal?.targetObservation ?? []).flatMap((link) => {
+      const results = link.observationId === rec.id ? link.sensitivity : undefined;
+      if (results?.state !== SENSITIVITY_STATE.DONE) return [];
+      const values = isContinuum ? results.continuum : results.spectral;
+      if (!values) return [];
+      const label = t(isContinuum ? 'observationType.continuum' : 'observationType.spectral');
+      return [
+        `${label}: ${valueWithUnits(values.weightedSensitivity.value, values.weightedSensitivity.unit)}`
+      ];
+    });
   };
 
   const getObservationTargets = (rec: { type?: number; id?: any }) => {
@@ -104,11 +154,14 @@ export default function GridObservationSummary({
     }
   };
 
-  // Each data product of the observation, by the title of its kind
-  const getDataProducts = (rec: { id?: string | number }): string[] =>
-    (proposal?.dataProducts ?? [])
-      .filter((dp) => dp.observationId === rec.id)
-      .map((dp) => t('page.7.group.' + dp.kind));
+  // Non-PST observations always have images and visibilities; PST shows its mode
+  const getDataProducts = (rec: Observation): string[] =>
+    rec.type === TYPE_PST
+      ? [t('pstMode.options.' + (rec.pstMode ?? 2))]
+      : [
+          t('observatoryDataProduct.options.' + DP_IMAGES),
+          t('observatoryDataProduct.options.' + DP_VISIBILITIES)
+        ];
 
   const colObservationId = {
     field: 'id',
@@ -125,16 +178,6 @@ export default function GridObservationSummary({
     renderCell: (e: { row: { type: number } }) => elementArray(getObservationTargets(e.row))
   };
 
-  const colObservingBand = {
-    field: 'telescope',
-    renderHeader: () => headerDisplay('observingBand.label'),
-    flex: 1,
-    disableClickEventBubbling: true,
-    renderCell: (e: { row: { telescope: string; observingBand: string } }) => (
-      <ObservingBand telescope={String(e.row.telescope)} band={e.row.observingBand} />
-    )
-  };
-
   const colObservingType = {
     field: 'type',
     renderHeader: () => headerDisplay('observationType.short'),
@@ -143,36 +186,64 @@ export default function GridObservationSummary({
     renderCell: (e: { row: { type: number } }) => <ObservingType type={String(e.row.type)} />
   };
 
-  const colSensCalcStatus = {
-    field: 'weather',
-    renderHeader: () =>
-      headerDisplay(
-        'sensitivityCalculatorResults.sensitivity',
-        'sensitivityCalculatorResults.integrationTime'
-      ),
-    flex: 1.5,
+  const colCentralFrequency = {
+    field: 'centralFrequency',
+    renderHeader: () => headerDisplay('centralFrequency.label'),
+    flex: 1,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { type: number } }) => element(sensitivityIntegrationTime(e.row))
+    renderCell: (e: { row: Observation }) => element(centralFrequency(e.row))
   };
 
-  const colSensCalcBandwidth = {
+  const colBandwidth = {
     field: 'bandwidth',
+    renderHeader: () => headerDisplay('bandwidth.label'),
+    flex: 1,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: Observation }) => element(bandwidth(e.row))
+  };
+
+  const colIntegrationTime = {
+    field: 'weather',
+    renderHeader: () => headerDisplay('sensitivityCalculatorResults.integrationTime'),
+    flex: 1,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: Observation }) => element(integrationTime(e.row))
+  };
+
+  const colSensitivity = {
+    field: 'sensitivity',
+    renderHeader: () => headerDisplay('sensitivityCalculatorResults.sensitivity'),
+    flex: 1.5,
+    disableClickEventBubbling: true,
+    renderCell: (e: { row: Observation }) => {
+      const sensitivities = getSensitivities(e.row);
+      return sensitivities.length ? elementArray(sensitivities) : element(NO_VALUE);
+    }
+  };
+
+  const colDataProducts = {
+    field: 'dataProducts',
     renderHeader: () => headerDisplay('page.7.plural'),
     flex: 1.5,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { id: string } }) => elementArray(getDataProducts(e.row))
+    renderCell: (e: { row: Observation }) => elementArray(getDataProducts(e.row))
   };
 
   const basicColumns = [
-    colObservationId,
+    ...(isScienceVerification ? [] : [colObservationId]),
     colElevation,
-    colObservingBand,
     colObservingType,
-    colSensCalcStatus,
-    colSensCalcBandwidth
+    colCentralFrequency,
+    colBandwidth,
+    colIntegrationTime,
+    colSensitivity,
+    colDataProducts
   ];
 
-  const getColumns = () => [...basicColumns];
+  const getColumns = () =>
+    basicColumns.map((col) =>
+      isScienceVerification ? { ...col, sortable: false, disableColumnMenu: true } : col
+    );
 
   return (
     <>
@@ -182,6 +253,7 @@ export default function GridObservationSummary({
           columns={getColumns()}
           getRowHeight={() => 'auto'}
           height={height}
+          hideFooter={isScienceVerification}
           onRowClick={rowClick}
           testId="investigatorsTableId"
         />

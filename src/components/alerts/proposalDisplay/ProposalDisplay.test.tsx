@@ -144,10 +144,6 @@ describe('<ProposalDisplay />', () => {
     expect(renderedLatex).not.toHaveTextContent(/\\[a-zA-Z]+/);
 
     const titleContainer = screen.getByTestId('proposal-title-latex');
-    expect(titleContainer).toHaveStyle({
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap'
-    });
+    expect(titleContainer).not.toHaveStyle({ textOverflow: 'ellipsis' });
   });
 });

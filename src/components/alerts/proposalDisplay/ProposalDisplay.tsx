@@ -11,19 +11,16 @@ import {
   NOT_SPECIFIED,
   PAGE_CYCLE,
   PAGE_OBSERVATION,
-  PAGE_TITLE_ADD,
   PROPOSAL_TYPE
 } from '../../../utils/constants';
 import DownloadButton from '../../button/Download/Download';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GridMembers from '../../grid/members/GridMembers';
-import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import ObservingType from '@/components/display/observingType/observingType';
 
 interface ProposalDisplayProps {
   proposal: Proposal | null;
@@ -35,12 +32,12 @@ interface ProposalDisplayProps {
 
 const MODAL_WIDTH = '75%';
 const GRID_HEIGHT = 300;
+const GRID_HEIGHT_SV = 160;
 const TITLE_STYLE = 'h5';
 const LABEL_WIDTH = 4;
 const LABEL_STYLE = 'subtitle1';
 const CONTENT_STYLE = 'subtitle2';
 const BOLD_LABEL = true;
-const BOLD_CONTENT = false;
 
 export default function ProposalDisplay({
   proposal,
@@ -96,13 +93,12 @@ export default function ProposalDisplay({
 
   const isScienceVerification = proposal?.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
 
-  const observationType = () => {
-    const type = proposal?.observations?.[0]?.type;
-    if (!type) return NOT_SPECIFIED;
-    return <ObservingType type={type} />;
+  const telescope = () => {
+    const tel = proposal?.observations?.[0]?.telescope;
+    return tel ? t('telescopes.name.' + tel) : NOT_SPECIFIED;
   };
 
-  const title = (inLabel: string, inValue: string) => {
+  const title = (inValue: string) => {
     return (
       <Box
         id={'title-box'}
@@ -116,26 +112,8 @@ export default function ProposalDisplay({
           boxSizing: 'border-box'
         }}
       >
-        <Typography
-          id="title"
-          variant={TITLE_STYLE}
-          style={{ fontWeight: getFont(BOLD_LABEL) }}
-          sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5, width: '100%' }}
-        >
-          <Box component="span" sx={{ flexShrink: 0 }}>
-            {inLabel}
-          </Box>
-          <Box
-            component="span"
-            data-testid="proposal-title-latex"
-            sx={{
-              minWidth: 0,
-              flex: '1 1 auto',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}
-          >
+        <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
+          <Box component="span" data-testid="proposal-title-latex">
             {presentLatex(inValue)}
           </Box>
         </Typography>
@@ -170,9 +148,7 @@ export default function ProposalDisplay({
     </Typography>
   );
   const content = (inValue: string | number) => (
-    <Typography variant={CONTENT_STYLE} style={{ fontWeight: getFont(BOLD_CONTENT) }}>
-      {inValue}
-    </Typography>
+    <Typography variant={CONTENT_STYLE}>{inValue}</Typography>
   );
 
   const details = (inLabel: string, inValue: string | number) => {
@@ -236,22 +212,6 @@ export default function ProposalDisplay({
           {typeof inValue === 'number' ||
             (typeof inValue === 'string' && element(inValue, optional))}
         </Grid>
-      </Grid>
-    );
-  };
-
-  const entryObject = (inLabel: string, inValue: React.ReactNode) => {
-    return (
-      <Grid
-        container
-        direction="row"
-        sx={{
-          justifyContent: 'space-around',
-          alignItems: 'center'
-        }}
-      >
-        <Grid size={{ xs: 7 }}>{label(inLabel)}</Grid>
-        <Grid size={{ xs: 5 }}>{inValue}</Grid>
       </Grid>
     );
   };
@@ -388,10 +348,7 @@ export default function ProposalDisplay({
           alignItems: 'center'
         }}
       >
-        <Grid size={{ xs: 2 }}>{skaoIcon({ useSymbol: false })}</Grid>
-        <Grid size={{ xs: 6 }}>
-          {title(t('page.' + PAGE_TITLE_ADD + '.title') + '  ', proposal?.title ?? '')}
-        </Grid>
+        <Grid size={{ xs: 8 }}>{title(proposal?.title ?? '')}</Grid>
         <Grid size={{ xs: 4 }}>
           <Grid
             container
@@ -429,7 +386,7 @@ export default function ProposalDisplay({
       >
         <Grid size={{ xs: 6 }}>{entry(t('proposalType.label'), proposalType())}</Grid>
         {isScienceVerification && (
-          <Grid size={{ xs: 6 }}>{entryObject(t('observationType.label'), observationType())}</Grid>
+          <Grid size={{ xs: 6 }}>{entry(t('telescopes.label'), telescope())}</Grid>
         )}
         {!isScienceVerification && (
           <>
@@ -453,7 +410,15 @@ export default function ProposalDisplay({
       <Grid>
         <Grid>{label(t('page.' + PAGE_OBSERVATION + '.title'))}</Grid>
       </Grid>
-      <Grid>{proposal && <GridObservationSummary height={GRID_HEIGHT} proposal={proposal} />}</Grid>
+      <Grid>
+        {proposal && (
+          <GridObservationSummary
+            height={isScienceVerification ? GRID_HEIGHT_SV : GRID_HEIGHT}
+            proposal={proposal}
+            isScienceVerification={isScienceVerification}
+          />
+        )}
+      </Grid>
     </>
   );
 

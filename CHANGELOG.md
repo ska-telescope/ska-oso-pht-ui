@@ -16,6 +16,7 @@ UNRELEASED
 * Changed: Target name resolution error improved and shown in a pop-up
 * Changed: Do not allow duplicate target names when adding multiple targets
 * Bugfix: Page now scrolls to top after proposal selection 
+* Changed: Improved validation summary output
 
 11.1.0
 ----------
