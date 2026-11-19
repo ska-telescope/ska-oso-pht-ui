@@ -51,6 +51,14 @@ export const OBSERVING_MODE = {
 
 export type ObservingMode = (typeof OBSERVING_MODE)[keyof typeof OBSERVING_MODE];
 
+/** The key of each observing mode's name in the observationType translations. */
+export const OBSERVING_MODE_TRANSLATION_KEY: Record<ObservingMode, string> = {
+  [OBSERVING_MODE.CONTINUUM]: 'continuum',
+  [OBSERVING_MODE.CONTINUUM_SPECTRAL]: 'continuumSpectral',
+  [OBSERVING_MODE.SPECTRAL]: 'spectral',
+  [OBSERVING_MODE.PST]: 'pst'
+};
+
 export const MID_BANDS = [
   BAND_1_STR,
   BAND_2_STR,

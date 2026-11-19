@@ -116,21 +116,20 @@ describe('DataProduct entry', () => {
     observation(TYPE_PST, { id: 'OBS2', pstMode: 1 })
   ];
 
-  it('starts with the defaults for the PST observation', () => {
+  it("starts a new data product with the first observation's defaults", () => {
     openProposal({ observations, dataProducts: [] });
     renderPage();
 
-    expect(screen.getByText(/Observation OBS1/)).toBeInTheDocument();
-    expect(screen.getByText('page.7.descContent.pstDetectedFilterbank')).toBeInTheDocument();
+    expect(productType()).toHaveTextContent(IMAGES);
   });
 
   it('starts again with the defaults of another observation when the user picks it', async () => {
     openProposal({ observations, dataProducts: [] });
     renderPage();
 
-    fireEvent.click(screen.getByText(/Observation OBS1/));
+    fireEvent.click(screen.getByText(/Observation OBS2/));
 
-    await waitFor(() => expect(productType()).toHaveTextContent(IMAGES));
+    expect(await screen.findByText('page.7.descContent.pstDetectedFilterbank')).toBeInTheDocument();
   });
 
   it('adds the data product to the proposal only when the user adds it', async () => {
@@ -145,8 +144,8 @@ describe('DataProduct entry', () => {
     await waitFor(() =>
       expect(storedProposal().dataProducts).toEqual([
         expect.objectContaining({
-          observationId: 'OBS2',
-          kind: DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK
+          observationId: 'OBS1',
+          kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE
         })
       ])
     );

@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router';
 import { Grid, Paper } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
 import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -13,26 +12,14 @@ import {
   newDataProduct
 } from '@/models/proposals/dataProducts';
 import { mainDataProductKind, newDataProductsForMode } from '@/utils/autoLinking/AutoLinking';
-import { formObservationsFromLegacy } from '@/models/proposals/legacyObservations';
-import {
-  FOOTER_HEIGHT_PHT,
-  NAV,
-  PAGE_DATA_PRODUCTS,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST
-} from '@/utils/constants';
-import Proposal from '@/utils/types/proposal';
+import { OBSERVING_MODE, type ObservationInput } from '@/models/proposals/observations';
+import { FOOTER_HEIGHT_PHT, NAV, PAGE_DATA_PRODUCTS } from '@/utils/constants';
 import AddButton from '@/components/button/Add/Add';
-import Observation from '@/utils/types/observation';
 import DataProductView, { DataProductsForm } from '@/pages/DataProduct/DataProductView';
 
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 
 const getEntrySchema = () => z.object({ dataProducts: getDataProductsSchema().length(1) });
-
-// TODO: Remove once this page reads the observations from the form
-const formObservation = (observation: Observation) =>
-  formObservationsFromLegacy([observation], [])[0];
 
 /**
  * Adds a data product, or updates the one given, in an entry form of its own. It is written to
@@ -42,7 +29,7 @@ function DataProductEntry({
   observations,
   editId
 }: {
-  observations: Observation[];
+  observations: ObservationInput[];
   editId?: string;
 }) {
   const navigate = useNavigate();
@@ -51,20 +38,14 @@ function DataProductEntry({
     ? proposalForm.getValues('dataProducts').find((dp) => dp.id === editId)
     : undefined;
   const defaultObservation =
-    observations.find((obs) => obs.id === existing?.observationId) ??
-    observations.find((obs) => obs.type === TYPE_PST) ??
-    observations[0];
+    observations.find((obs) => obs.id === existing?.observationId) ?? observations[0];
 
   const entryForm = useForm<DataProductsForm>({
     mode: 'all',
     resolver: zodResolver(getEntrySchema()) as never,
     defaultValues: {
       dataProducts: [
-        existing ??
-          newDataProduct(
-            mainDataProductKind(formObservation(defaultObservation)),
-            defaultObservation.id
-          )
+        existing ?? newDataProduct(mainDataProductKind(defaultObservation), defaultObservation.id)
       ]
     }
   });
@@ -72,13 +53,13 @@ function DataProductEntry({
   const observation = observations.find((obs) => obs.id === dp.observationId) ?? defaultObservation;
 
   // A data product of another observation starts again with that observation's defaults
-  const selectObservation = (next: Observation) => {
+  const selectObservation = (next: ObservationInput) => {
     if (next.id === dp.observationId) {
       return;
     }
     entryForm.setValue(
       'dataProducts.0',
-      { ...newDataProduct(mainDataProductKind(formObservation(next)), next.id), id: dp.id },
+      { ...newDataProduct(mainDataProductKind(next), next.id), id: dp.id },
       { shouldValidate: true }
     );
   };
@@ -100,7 +81,7 @@ function DataProductEntry({
       : [...dataProducts, dp];
     // A continuum and spectral observation also needs its hidden visibilities companion
     const needsCompanion =
-      observation.type === TYPE_CONTINUUM_SPECTRAL &&
+      observation.observingMode === OBSERVING_MODE.CONTINUUM_SPECTRAL &&
       !updated.some(
         (other) =>
           other.observationId === observation.id &&
@@ -108,7 +89,7 @@ function DataProductEntry({
       );
     proposalForm.setValue('dataProducts', [
       ...updated,
-      ...(needsCompanion ? newDataProductsForMode(formObservation(observation)).slice(1) : [])
+      ...(needsCompanion ? newDataProductsForMode(observation).slice(1) : [])
     ]);
     navigate(NAV[BACK_PAGE]);
   };
@@ -165,8 +146,8 @@ function DataProductEntry({
  */
 export default function DataProduct() {
   const locationProperties = useLocation();
-  const { application } = storageObject.useStore();
-  const observations = (application.content2 as Proposal)?.observations ?? [];
+  const proposalForm = useFormContext<ProposalType>();
+  const observations = useWatch({ control: proposalForm.control, name: 'observations' });
 
   if (observations.length === 0) {
     return null;
