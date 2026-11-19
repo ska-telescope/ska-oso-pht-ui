@@ -97,7 +97,7 @@ js-test:
     - tests/cypress/**/*.cy.*
 
 # A push to an MR's branch also starts a branch pipeline for the same commit. which could result in whichever pipeline finished first deleting the environment being used for testing by the other pipeline.
-# Effectively, since there is no need to run the e2e tests twice, so we can skip running the e2e tests on a merge request pipeline. 
+# Effectively, since there is no need to run the e2e tests twice, so we can skip running the e2e tests on a merge request pipeline.
 .e2e_skip_mr: &e2e_skip_mr
   if: $CI_PIPELINE_SOURCE == "merge_request_event"
   when: never
@@ -159,7 +159,7 @@ js-e2e-test:
   # deployments at once to the same environment, which GitLab fails with data_integrity_failure.
   # These jobs deploy nothing; they test what js-e2e-deploy installed, finding it through
   # KUBE_NAMESPACE. The only reason these jobs would need the environment would be to set
-  # auto_stop_in, to stop the deployment a certain time after the tests have finished. 
+  # auto_stop_in, to stop the deployment a certain time after the tests have finished.
   # For this suite we handle that in stop-js-e2e-test, which removes it whether or not the tests pass.
   environment: null
 
