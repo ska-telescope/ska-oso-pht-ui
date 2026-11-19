@@ -5,6 +5,9 @@ variables:
 # Reinstate to enable cypress cloud run in the pipeline
 #  JS_E2E_TEST_COMMAND: test:e2e
   GIT_SUBMODULE_STRATEGY: recursive
+  # Most jobs that install the dependencies don't run Cypress, so don't download its binary. The
+  # jobs that do run it set this to "" (unset).
+  CYPRESS_INSTALL_BINARY: "0"
 
 stages:
   - build
@@ -79,11 +82,8 @@ CHANGELOG:
     - if: $CI_COMMIT_TAG
       when: manual
     
-# The unit tests don't use Cypress, so don't download its binary. Only reads the cache it shares
-# with the e2e jobs, so it can't save a copy without the binary for them to restore.
+
 js-test:
-  variables:
-    CYPRESS_INSTALL_BINARY: "0"
   cache:
     policy: pull
 
@@ -111,8 +111,6 @@ js-test:
     # The deployment's app waits this long (ms) for backend responses, rather than the users' 20s
     REQUEST_TIMEOUT_MS: "60000"
 
-# Keeps the template's auto_stop_in (1 hour), which only matters when stop-js-e2e-test doesn't
-# run, such as when the pipeline is cancelled
 js-e2e-deploy:
   variables: *e2e_vars
   rules: *e2e_rules
@@ -126,6 +124,9 @@ js-e2e-install:
   stage: test
   tags:
     - ${SKA_K8S_RUNNER}
+  variables:
+    # We explicitly want the Cypress binary here, because it is needed for the e2e tests.
+    CYPRESS_INSTALL_BINARY: ""
   script:
     - make js-install
   cache:
@@ -155,10 +156,13 @@ js-e2e-test:
   # there, and doesn't download it again. Only reads the cache, so the jobs don't upload it again.
   cache:
     policy: pull
-  # No environment: the template makes each test job a deployment to it, with its own
-  # auto_stop_in, and GitLab can't start parallel jobs that share one (data-integrity-failure).
-  # They find the deployment through KUBE_NAMESPACE, and js-e2e-deploy and stop-js-e2e-test
-  # look after the environment.
+  # The template gives js-e2e-test an environment, and GitLab treats any job with an environment
+  # as a deployment to it, whatever its script does. With parallel set to > 1 that is multiple
+  # deployments at once to the same environment, which GitLab fails with data_integrity_failure.
+  # These jobs deploy nothing; they test what js-e2e-deploy installed, finding it through
+  # KUBE_NAMESPACE. The only reason these jobs would need the environment would be to set
+  # auto_stop_in, to stop the deployment a certain time after the tests have finished. 
+  # For this suite we handle that in stop-js-e2e-test, which removes it whether or not the tests pass.
   environment: null
 
 # Removes the deployment once all the test jobs have finished, whether or not they passed,
@@ -206,6 +210,8 @@ stop-dev-environment:
   image: ${JS_BUILD_IMAGE}
   tags:
     - ${SKA_K8S_RUNNER}
+  variables:
+    CYPRESS_INSTALL_BINARY: ""
   before_script:
     - make js-install
   script:
