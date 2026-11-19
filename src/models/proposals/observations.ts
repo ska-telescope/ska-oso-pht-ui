@@ -582,8 +582,8 @@ export type ObservationInput = z.input<ReturnType<typeof getObservationSchema>>;
 /** A valid observation. */
 export type ObservationValues = z.output<ReturnType<typeof getObservationSchema>>;
 
-type MidObservationValues = Extract<ObservationValues, { telescope: typeof TELESCOPE.MID }>;
-type LowObservationValues = Extract<ObservationValues, { telescope: typeof TELESCOPE.LOW }>;
+export type MidObservationValues = Extract<ObservationValues, { telescope: typeof TELESCOPE.MID }>;
+export type LowObservationValues = Extract<ObservationValues, { telescope: typeof TELESCOPE.LOW }>;
 
 /*********************************************************** PDM mapping ***********************************************************/
 

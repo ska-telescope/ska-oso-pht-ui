@@ -3,25 +3,22 @@ import { AxiosError, CanceledError, InternalAxiosRequestConfig } from 'axios';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import {
   BAND_1_STR,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  DEFAULT_PST_OBSERVATION_LOW,
-  DEFAULT_ZOOM_OBSERVATION_LOW,
-  FREQUENCY_GHZ,
-  FREQUENCY_MHZ,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
+  SA_AA2,
   SA_AA_STAR,
   SA_CUSTOM,
-  SUPPLIED_TYPE_INTEGRATION,
-  TELESCOPE_MID_NUM,
-  TIME_HOURS,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_ZOOM,
   VELOCITY_DEFINITION
 } from '@/utils/constants';
-import type Observation from '@/utils/types/observation';
+import {
+  getObservationSchema,
+  newSvObservation,
+  OBSERVING_MODE,
+  TELESCOPE,
+  zoomChannelWidthHz,
+  type ObservationValues
+} from '@/models/proposals/observations';
 import type { TargetType } from '@/models/proposals/targets';
 import { DATA_PRODUCT_KIND, type DataProductInput } from '@/models/proposals/dataProducts';
 import {
@@ -80,29 +77,37 @@ const VISIBILITIES: DataProductInput = {
   frequencyAveragingKhz: 21.7
 };
 
-const MID_CONTINUUM_OBSERVATION: Observation = {
+// The SV defaults: LOW AA2 at 199.609375 MHz (200 MHz for spectral line), for 1 h at 15 degrees
+const svObservation = (mode: ObservationValues['observingMode']) =>
+  getObservationSchema().parse({ ...newSvObservation(mode, 15), id: 'obs-1' });
+const LOW_CONTINUUM = svObservation(OBSERVING_MODE.CONTINUUM);
+// 1000 channels of zoom factor 8
+const LOW_ZOOM = svObservation(OBSERVING_MODE.SPECTRAL);
+const LOW_PST = svObservation(OBSERVING_MODE.PST);
+
+const MID_CONTINUUM = {
   id: 'obs-mid',
-  telescope: TELESCOPE_MID_NUM,
+  groupId: null,
+  telescope: TELESCOPE.MID,
   subarray: SA_AA_STAR,
-  type: TYPE_CONTINUUM,
   observingBand: BAND_1_STR,
   weather: 5,
   elevation: 45,
-  centralFrequency: 0.7975,
-  centralFrequencyUnits: FREQUENCY_GHZ,
-  bandwidth: null,
-  continuumBandwidth: 400,
-  continuumBandwidthUnits: FREQUENCY_MHZ,
-  supplied: { type: SUPPLIED_TYPE_INTEGRATION, value: 1, units: TIME_HOURS },
-  spectralResolution: '13.44 kHz',
-  numSubBands: 1
-};
+  numberOfSubBands: 1,
+  integrationTime: { value: 1, unit: 'h' },
+  centralFrequency: { value: 797.5, unit: 'MHz' },
+  observingMode: OBSERVING_MODE.CONTINUUM,
+  bandwidth: { value: 400, unit: 'MHz' }
+} as ObservationValues;
 
-const MID_ZOOM_OBSERVATION: Observation = {
-  ...MID_CONTINUUM_OBSERVATION,
-  type: TYPE_ZOOM,
+// 1000 channels of zoom factor 7, 13.44 kHz
+const MID_ZOOM = {
+  ...MID_CONTINUUM,
+  observingMode: OBSERVING_MODE.SPECTRAL,
+  bandwidth: { value: 13.44, unit: 'MHz' },
+  zoomFactor: 7,
   zoomChannels: 1000
-};
+} as ObservationValues;
 
 const quantity = (value: number, unit = 'uJy / beam') => ({ value, unit });
 const beam = { beam_maj: quantity(1, 'arcsec'), beam_min: quantity(2, 'arcsec') };
@@ -142,7 +147,7 @@ afterEach(() => {
 
 describe('buildSensitivityRequest', () => {
   test('LOW continuum', () => {
-    const request = build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
+    const request = build(LOW_CONTINUUM, ICRS_TARGET, imageDataProduct());
 
     expect(request.mode).toBe(SENS_CALC_MODE.CONTINUUM);
     expect(request.path).toBe('low/continuum/calculate');
@@ -161,7 +166,7 @@ describe('buildSensitivityRequest', () => {
   });
 
   test('LOW zoom', () => {
-    const request = build(DEFAULT_ZOOM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
+    const request = build(LOW_ZOOM, ICRS_TARGET, imageDataProduct());
 
     expect(request.mode).toBe(SENS_CALC_MODE.ZOOM);
     expect(request.path).toBe('low/zoom/calculate');
@@ -171,18 +176,15 @@ describe('buildSensitivityRequest', () => {
       integration_time_h: 1,
       elevation_limit: 15,
       freq_centres_mhz: [200],
-      spectral_resolutions_hz: [1808.45],
-      total_bandwidths_khz: [1808.45],
+      // The exact width of a zoom channel, not the 1808.45 Hz the PDM's text rounds it to
+      spectral_resolutions_hz: [zoomChannelWidthHz(TELESCOPE.LOW, 8)],
+      total_bandwidths_khz: [zoomChannelWidthHz(TELESCOPE.LOW, 8)],
       reference_coordinates: [{ kind: 'icrs', ra_str: '05:34:31.94', dec_str: '+22:00:52.2' }]
     });
   });
 
   test('MID continuum', () => {
-    const request = build(
-      MID_CONTINUUM_OBSERVATION,
-      ICRS_TARGET,
-      imageDataProduct({ taper: 0.25 })
-    );
+    const request = build(MID_CONTINUUM, ICRS_TARGET, imageDataProduct({ taper: 0.25 }));
 
     expect(request.mode).toBe(SENS_CALC_MODE.CONTINUUM);
     expect(request.path).toBe('mid/continuum/calculate');
@@ -202,7 +204,7 @@ describe('buildSensitivityRequest', () => {
   });
 
   test('MID zoom', () => {
-    const request = build(MID_ZOOM_OBSERVATION, ICRS_TARGET, imageDataProduct());
+    const request = build(MID_ZOOM, ICRS_TARGET, imageDataProduct());
 
     expect(request.mode).toBe(SENS_CALC_MODE.ZOOM);
     expect(request.path).toBe('mid/zoom/calculate');
@@ -221,7 +223,7 @@ describe('buildSensitivityRequest', () => {
   });
 
   test('a galactic target is sent as l and b', () => {
-    const request = build(DEFAULT_CONTINUUM_OBSERVATION_LOW, GALACTIC_TARGET, imageDataProduct());
+    const request = build(LOW_CONTINUUM, GALACTIC_TARGET, imageDataProduct());
 
     expect(request.body).toMatchObject({
       reference_coordinates: [{ kind: 'galactic', l: 10, b: 5 }]
@@ -230,7 +232,7 @@ describe('buildSensitivityRequest', () => {
 
   test('robustness is only sent with Briggs weighting', () => {
     const request = build(
-      DEFAULT_CONTINUUM_OBSERVATION_LOW,
+      LOW_CONTINUUM,
       ICRS_TARGET,
       imageDataProduct({ weighting: { type: 'briggs', robust: -1 } })
     );
@@ -238,9 +240,24 @@ describe('buildSensitivityRequest', () => {
     expect(request.body).toMatchObject({ weighting_mode: 'robust', robustness: -1 });
   });
 
+  test.each([
+    { telescope: 'LOW', observation: LOW_CONTINUUM, subarray: SA_AA2, name: 'LOW_AA2_all' },
+    { telescope: 'LOW', observation: LOW_CONTINUUM, subarray: SA_AA_STAR, name: 'LOW_AAstar_all' },
+    { telescope: 'MID', observation: MID_CONTINUUM, subarray: SA_AA2, name: 'AA2' },
+    { telescope: 'MID', observation: MID_CONTINUUM, subarray: SA_AA_STAR, name: 'AA*' }
+  ])('sends $name for a $telescope $subarray subarray', ({ observation, subarray, name }) => {
+    const request = build(
+      { ...observation, subarray } as ObservationValues,
+      ICRS_TARGET,
+      imageDataProduct()
+    );
+
+    expect(request.body).toMatchObject({ subarray_configuration: name });
+  });
+
   test('a custom LOW subarray sends the number of stations', () => {
     const request = build(
-      { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, subarray: SA_CUSTOM, numStations: 100 },
+      { ...LOW_CONTINUUM, subarray: SA_CUSTOM, numberOfStations: 100 } as ObservationValues,
       ICRS_TARGET,
       imageDataProduct()
     );
@@ -251,7 +268,12 @@ describe('buildSensitivityRequest', () => {
 
   test('a custom MID subarray sends the antenna numbers', () => {
     const request = build(
-      { ...MID_CONTINUUM_OBSERVATION, subarray: SA_CUSTOM, num15mAntennas: 10, num13mAntennas: 4 },
+      {
+        ...MID_CONTINUUM,
+        subarray: SA_CUSTOM,
+        number15mAntennas: 10,
+        number13mAntennas: 4
+      } as ObservationValues,
       ICRS_TARGET,
       imageDataProduct()
     );
@@ -262,7 +284,7 @@ describe('buildSensitivityRequest', () => {
 
   test('the combined mode uses the continuum endpoint', () => {
     const request = build(
-      { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, type: TYPE_CONTINUUM_SPECTRAL },
+      { ...LOW_CONTINUUM, observingMode: OBSERVING_MODE.CONTINUUM_SPECTRAL } as ObservationValues,
       ICRS_TARGET,
       imageDataProduct({ kind: DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE, channelsOut: 4000 })
     );
@@ -273,7 +295,7 @@ describe('buildSensitivityRequest', () => {
   });
 
   test('continuum visibilities average over the default number of channels', () => {
-    const request = build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, VISIBILITIES);
+    const request = build(LOW_CONTINUUM, ICRS_TARGET, VISIBILITIES);
 
     // 27648 channels / CHANNELS_OUT_DEFAULT (10)
     expect(request.body).toMatchObject({ spectral_averaging_factor: 2764 });
@@ -282,17 +304,12 @@ describe('buildSensitivityRequest', () => {
   test.each([
     {
       name: 'an SSO target',
-      observation: DEFAULT_CONTINUUM_OBSERVATION_LOW,
+      observation: LOW_CONTINUUM,
       target: SSO_TARGET
     },
     {
       name: 'a PST observation',
-      observation: DEFAULT_PST_OBSERVATION_LOW,
-      target: ICRS_TARGET
-    },
-    {
-      name: 'an unknown observation type',
-      observation: { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, type: 'unknown' },
+      observation: LOW_PST,
       target: ICRS_TARGET
     }
   ])('builds no request for $name', ({ observation, target }) => {
@@ -301,31 +318,28 @@ describe('buildSensitivityRequest', () => {
 });
 
 describe('getSensitivityDataProduct', () => {
-  const CONTINUUM_OBSERVATION = { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' };
   const IMAGES = imageDataProduct();
   // Another observation's images data product, which must never be used
   const OTHER_IMAGES = imageDataProduct({ id: 'dp-3', observationId: 'x' });
 
   test('gives the linked images data product', () => {
-    expect(getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'dp-1', [VISIBILITIES, IMAGES])).toBe(
+    expect(getSensitivityDataProduct('obs-1', 'dp-1', [VISIBILITIES, IMAGES])).toBe(IMAGES);
+  });
+
+  test("gives the observation's images data product for linked visibilities", () => {
+    expect(getSensitivityDataProduct('obs-1', 'dp-2', [OTHER_IMAGES, VISIBILITIES, IMAGES])).toBe(
       IMAGES
     );
   });
 
-  test("gives the observation's images data product for linked visibilities", () => {
-    expect(
-      getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'dp-2', [OTHER_IMAGES, VISIBILITIES, IMAGES])
-    ).toBe(IMAGES);
-  });
-
   test('gives linked visibilities when the observation has no images data product', () => {
-    expect(
-      getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'dp-2', [OTHER_IMAGES, VISIBILITIES])
-    ).toBe(VISIBILITIES);
+    expect(getSensitivityDataProduct('obs-1', 'dp-2', [OTHER_IMAGES, VISIBILITIES])).toBe(
+      VISIBILITIES
+    );
   });
 
   test('gives nothing when the linked data product does not exist', () => {
-    expect(getSensitivityDataProduct(CONTINUUM_OBSERVATION, 'missing', [IMAGES])).toBeUndefined();
+    expect(getSensitivityDataProduct('obs-1', 'missing', [IMAGES])).toBeUndefined();
   });
 });
 
@@ -333,7 +347,7 @@ describe('sendSensitivityRequest', () => {
   test('sends the request to its path, with the abort signal', async () => {
     const post = mockPost(continuumResponse);
     const controller = new AbortController();
-    const request = build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct());
+    const request = build(LOW_CONTINUUM, ICRS_TARGET, imageDataProduct());
 
     await sendSensitivityRequest(request, { signal: controller.signal });
 
@@ -348,7 +362,7 @@ describe('sendSensitivityRequest', () => {
     mockPost(continuumResponse);
 
     const response = await sendSensitivityRequest(
-      build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct())
+      build(LOW_CONTINUUM, ICRS_TARGET, imageDataProduct())
     );
 
     expect(response).toEqual({ ok: true, data: CONTINUUM_RESULT });
@@ -357,9 +371,7 @@ describe('sendSensitivityRequest', () => {
   test('returns the results of the zoom window', async () => {
     mockPost(zoomResponse);
 
-    const response = await sendSensitivityRequest(
-      build(DEFAULT_ZOOM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct())
-    );
+    const response = await sendSensitivityRequest(build(LOW_ZOOM, ICRS_TARGET, imageDataProduct()));
 
     expect(response).toEqual({ ok: true, data: SPECTRAL_RESULT });
   });
@@ -367,9 +379,7 @@ describe('sendSensitivityRequest', () => {
 
 describe('sendSensitivityRequest errors', () => {
   const calculate = () =>
-    sendSensitivityRequest(
-      build(DEFAULT_CONTINUUM_OBSERVATION_LOW, ICRS_TARGET, imageDataProduct())
-    );
+    sendSensitivityRequest(build(LOW_CONTINUUM, ICRS_TARGET, imageDataProduct()));
 
   const responseError = (status: number, data: unknown) =>
     new AxiosError('Request failed', 'ERR_BAD_REQUEST', undefined, undefined, {

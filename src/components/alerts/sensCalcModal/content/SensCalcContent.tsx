@@ -3,6 +3,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
 import {
+  FREQUENCY_KHZ,
   FREQUENCY_STR_KHZ,
   FREQUENCY_UNITS,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
@@ -27,6 +28,7 @@ import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
 import type { SensitivityValues } from '@/models/proposals/targetObservation';
 import {
   convertFrequencyToDisplayUnits,
+  frequencyConversion,
   getBandwidthZoom,
   getSpectralResolutionHz
 } from '@utils/helpers.ts';
@@ -64,7 +66,7 @@ export default function SensCalcContent({
   // The data product the results were calculated from, which can differ from the linked one
   const dataProduct =
     observation &&
-    getSensitivityDataProduct(observation, targetObservation.dataProductsSDPId, dataProducts);
+    getSensitivityDataProduct(observation.id, targetObservation.dataProductsSDPId, dataProducts);
 
   // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
   // which a custom subarray or a non-Gaussian beam has none of
@@ -150,8 +152,15 @@ export default function SensCalcContent({
   const spectralResolution = convertFrequencyToDisplayUnits(
     // Only LOW continuum averages channels; MID sends a factor of 1 and zoom has no averaging
     isLowContinuum
-      ? getLowSpectralAveragingFactor(observation, dataProduct) *
-          LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
+      ? getLowSpectralAveragingFactor(
+          // TODO BTN-3595 The observation's bandwidth from the form, once this reads it
+          frequencyConversion(
+            observation.continuumBandwidth ?? 0,
+            observation.continuumBandwidthUnits as number,
+            FREQUENCY_KHZ
+          ),
+          dataProduct
+        ) * LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ
       : getSpectralResolutionHz(observation) * 1e-3,
     FREQUENCY_STR_KHZ
   );

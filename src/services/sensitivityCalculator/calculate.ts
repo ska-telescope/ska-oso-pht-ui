@@ -6,29 +6,28 @@ import {
   BAND_5A_STR,
   BAND_5B_STR,
   CHANNELS_OUT_DEFAULT,
-  FREQUENCY_HZ,
-  FREQUENCY_KHZ,
-  FREQUENCY_MHZ,
+  type FrequencyUnit,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SA_CUSTOM,
   TAPER_DEFAULT,
-  TELESCOPE_LOW_NUM,
-  TIME_HOURS,
-  TIME_SECS,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_CONTINUUM_SPECTRAL_LONG,
-  TYPE_PST,
-  TYPE_ZOOM,
-  TYPE_ZOOM_LONG
+  SA_AA2,
+  SA_AA_STAR
 } from '@/utils/constants';
-import { OSD_CONSTANTS } from '@/utils/OSDConstants';
-import { frequencyConversion, getBandwidthZoom, getSpectralResolutionHz } from '@/utils/helpers';
-import { timeConversion } from '@/utils/helpersSensCalc';
-import type Observation from '@/utils/types/observation';
+import { convertFrequency } from '@/utils/helpers';
+import {
+  INTEGRATION_TIME_UNIT_HOURS,
+  OBSERVING_MODE,
+  TELESCOPE,
+  zoomChannelWidthHz,
+  type Subarray,
+  type Telescope,
+  type LowObservationValues,
+  type MidObservationValues,
+  type ObservationValues
+} from '@/models/proposals/observations';
 import type { TargetType } from '@/models/proposals/targets';
 import { ImageWeighting } from '@/generated/models';
 import {
@@ -67,7 +66,7 @@ export type SensitivityRequest =
     }
   | { mode: typeof SENS_CALC_MODE.ZOOM; path: string; body: LowZoomRequest | MidZoomRequest };
 
-const MID_RX_BANDS: Record<string, MidRxBand> = {
+const MID_RX_BANDS: Record<MidObservationValues['observingBand'], MidRxBand> = {
   [BAND_1_STR]: 'Band 1',
   [BAND_2_STR]: 'Band 2',
   [BAND_3_STR]: 'Band 3',
@@ -81,22 +80,25 @@ const referenceCoordinate = (target: TargetType): ReferenceCoordinate =>
     ? { kind: 'galactic', l: Number(target.l), b: Number(target.b) }
     : { kind: 'icrs', ra_str: target.raStr ?? '', dec_str: target.decStr ?? '' };
 
-const subarrayConfiguration = (observation: Observation) =>
-  OSD_CONSTANTS.array
-    .find((telescope) => telescope.value === observation.telescope)
-    ?.subarray?.find((subarray) => subarray.value === observation.subarray)?.map ?? '';
+// The calculator's name for each named subarray. A custom one sends its stations or antennas.
+// The calculator has no SV subarrays: AA2 for SV is calculated as AA2.
+const CALCULATOR_SUBARRAY: Record<
+  Telescope,
+  Record<Exclude<Subarray, typeof SA_CUSTOM>, string>
+> = {
+  [TELESCOPE.LOW]: { [SA_AA2]: 'LOW_AA2_all', [SA_AA_STAR]: 'LOW_AAstar_all' },
+  [TELESCOPE.MID]: { [SA_AA2]: 'AA2', [SA_AA_STAR]: 'AA*' }
+};
 
-const isCustomSubarray = (observation: Observation) => observation.subarray === SA_CUSTOM;
+const lowArray = (observation: LowObservationValues) =>
+  observation.subarray === SA_CUSTOM
+    ? { num_stations: observation.numberOfStations ?? 0 }
+    : { subarray_configuration: CALCULATOR_SUBARRAY[TELESCOPE.LOW][observation.subarray] };
 
-const lowArray = (observation: Observation) =>
-  isCustomSubarray(observation)
-    ? { num_stations: observation.numStations ?? 0 }
-    : { subarray_configuration: subarrayConfiguration(observation) };
-
-const midArray = (observation: Observation) =>
-  isCustomSubarray(observation)
-    ? { n_ska: observation.num15mAntennas ?? 0, n_meer: observation.num13mAntennas ?? 0 }
-    : { subarray_configuration: subarrayConfiguration(observation).toUpperCase() };
+const midArray = (observation: MidObservationValues) =>
+  observation.subarray === SA_CUSTOM
+    ? { n_ska: observation.number15mAntennas ?? 0, n_meer: observation.number13mAntennas ?? 0 }
+    : { subarray_configuration: CALCULATOR_SUBARRAY[TELESCOPE.MID][observation.subarray] };
 
 // The calculator's name for each weighting: it calls Briggs weighting 'robust'
 const WEIGHTING_MODE: Record<ImageWeighting, WeightingMode> = {
@@ -121,29 +123,22 @@ const weighting = (dataProduct: DataProductInput, defaultWeighting: ImageWeighti
 const taper = (dataProduct: DataProductInput) =>
   isImageDataProduct(dataProduct) ? dataProduct.taper : TAPER_DEFAULT;
 
-const integrationTime = (observation: Observation, unit: number) =>
-  timeConversion(observation.supplied.value, observation.supplied.units, unit);
+const integrationTimeHours = (observation: ObservationValues) =>
+  observation.integrationTime.value * INTEGRATION_TIME_UNIT_HOURS[observation.integrationTime.unit];
 
-const centralFrequency = (observation: Observation, unit: number) =>
-  frequencyConversion(observation.centralFrequency, observation.centralFrequencyUnits, unit);
-
-const continuumBandwidth = (observation: Observation, unit: number) =>
-  frequencyConversion(
-    observation.continuumBandwidth ?? 0,
-    observation.continuumBandwidthUnits as number,
-    unit
-  );
+const inUnit = (frequency: { value: number; unit: FrequencyUnit }, unit: FrequencyUnit) =>
+  convertFrequency(frequency.value, frequency.unit, unit);
 
 /**
- * The number of LOW continuum channels averaged into each output channel of the data product.
- * Continuum visibilities always use the default number of output channels.
+ * The number of LOW continuum channels averaged into each output channel of the data product,
+ * for a continuum bandwidth. Continuum visibilities always use the default number of output
+ * channels.
  */
 export const getLowSpectralAveragingFactor = (
-  observation: Observation,
+  bandwidthKhz: number,
   dataProduct: DataProductInput
 ) => {
-  const totalChannels =
-    continuumBandwidth(observation, FREQUENCY_KHZ) / LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ;
+  const totalChannels = bandwidthKhz / LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ;
 
   const channelsOut = isImageDataProduct(dataProduct)
     ? dataProduct.channelsOut
@@ -160,84 +155,142 @@ export const getLowSpectralAveragingFactor = (
 // The MID correlator only offers a fixed set of averaging factors; no averaging is applied
 const MID_SPECTRAL_AVERAGING_FACTOR = 1;
 
+type ContinuumObservation<T> = Extract<
+  T,
+  { observingMode: typeof OBSERVING_MODE.CONTINUUM | typeof OBSERVING_MODE.CONTINUUM_SPECTRAL }
+>;
+type SpectralObservation<T> = Extract<T, { observingMode: typeof OBSERVING_MODE.SPECTRAL }>;
+
 const lowContinuumRequest = (
-  observation: Observation,
+  observation: ContinuumObservation<LowObservationValues>,
   target: TargetType,
   dataProduct: DataProductInput
 ): LowContinuumRequest => ({
   ...lowArray(observation),
   ...weighting(dataProduct, ImageWeighting.Uniform),
-  integration_time_h: integrationTime(observation, TIME_HOURS),
-  elevation_limit: Number(observation.elevation),
-  freq_centre_mhz: centralFrequency(observation, FREQUENCY_MHZ),
-  bandwidth_mhz: continuumBandwidth(observation, FREQUENCY_MHZ),
-  spectral_averaging_factor: getLowSpectralAveragingFactor(observation, dataProduct),
-  n_subbands: observation.numSubBands ?? 1,
+  integration_time_h: integrationTimeHours(observation),
+  elevation_limit: observation.minElevation,
+  freq_centre_mhz: inUnit(observation.centralFrequency, 'MHz'),
+  bandwidth_mhz: inUnit(observation.bandwidth, 'MHz'),
+  spectral_averaging_factor: getLowSpectralAveragingFactor(
+    inUnit(observation.bandwidth, 'kHz'),
+    dataProduct
+  ),
+  n_subbands: 1,
   reference_coordinates: [referenceCoordinate(target)]
 });
 
 const midContinuumRequest = (
-  observation: Observation,
+  observation: ContinuumObservation<MidObservationValues>,
   target: TargetType,
   dataProduct: DataProductInput
 ): MidContinuumRequest => ({
   ...midArray(observation),
   ...weighting(dataProduct, ImageWeighting.Uniform),
   rx_band: MID_RX_BANDS[observation.observingBand],
-  integration_time_s: integrationTime(observation, TIME_SECS),
+  integration_time_s: integrationTimeHours(observation) * 3600,
   taper: taper(dataProduct),
-  el: Number(observation.elevation),
-  freq_centre_hz: centralFrequency(observation, FREQUENCY_HZ),
-  bandwidth_hz: continuumBandwidth(observation, FREQUENCY_HZ),
+  el: observation.elevation,
+  freq_centre_hz: inUnit(observation.centralFrequency, 'Hz'),
+  bandwidth_hz: inUnit(observation.bandwidth, 'Hz'),
   spectral_averaging_factor: MID_SPECTRAL_AVERAGING_FACTOR,
-  n_subbands: observation.numSubBands ?? 1,
+  n_subbands: observation.numberOfSubBands,
   reference_coordinates: [referenceCoordinate(target)]
 });
 
 const lowZoomRequest = (
-  observation: Observation,
+  observation: SpectralObservation<LowObservationValues>,
   target: TargetType,
   dataProduct: DataProductInput
 ): LowZoomRequest => ({
   ...lowArray(observation),
   ...weighting(dataProduct, ImageWeighting.Briggs),
-  integration_time_h: integrationTime(observation, TIME_HOURS),
-  elevation_limit: Number(observation.elevation),
-  freq_centres_mhz: [centralFrequency(observation, FREQUENCY_MHZ)],
-  spectral_resolutions_hz: [getSpectralResolutionHz(observation)],
+  integration_time_h: integrationTimeHours(observation),
+  elevation_limit: observation.minElevation,
+  freq_centres_mhz: [inUnit(observation.centralFrequency, 'MHz')],
+  spectral_resolutions_hz: [zoomChannelWidthHz(observation.telescope, observation.zoomFactor)],
   total_bandwidths_khz: [
-    frequencyConversion(getBandwidthZoom(observation).value, FREQUENCY_MHZ, FREQUENCY_KHZ)
+    convertFrequency(
+      observation.zoomChannels * zoomChannelWidthHz(observation.telescope, observation.zoomFactor),
+      'Hz',
+      'kHz'
+    )
   ],
   reference_coordinates: [referenceCoordinate(target)]
 });
 
 const midZoomRequest = (
-  observation: Observation,
+  observation: SpectralObservation<MidObservationValues>,
   target: TargetType,
   dataProduct: DataProductInput
 ): MidZoomRequest => ({
   ...midArray(observation),
   ...weighting(dataProduct, ImageWeighting.Briggs),
   rx_band: MID_RX_BANDS[observation.observingBand],
-  integration_time_s: integrationTime(observation, TIME_SECS),
+  integration_time_s: integrationTimeHours(observation) * 3600,
   taper: taper(dataProduct),
-  el: Number(observation.elevation),
-  freq_centres_hz: [centralFrequency(observation, FREQUENCY_HZ)],
-  spectral_resolutions_hz: [getSpectralResolutionHz(observation)],
+  el: observation.elevation,
+  freq_centres_hz: [inUnit(observation.centralFrequency, 'Hz')],
+  spectral_resolutions_hz: [zoomChannelWidthHz(observation.telescope, observation.zoomFactor)],
   // TODO The calculator rejects MID zoom bandwidths below 3.125 MHz, so narrower MID zooms fail
   //  validation. Revisit after SV call delivery.
   total_bandwidths_hz: [
-    frequencyConversion(getBandwidthZoom(observation).value, FREQUENCY_MHZ, FREQUENCY_HZ)
+    observation.zoomChannels * zoomChannelWidthHz(observation.telescope, observation.zoomFactor)
   ],
   reference_coordinates: [referenceCoordinate(target)]
 });
 
-const continuumRequest = (
-  observation: Observation,
+/**
+ * The sensitivity should always be calculated based on the images data product.
+ * Fall back to the linked (selected) data product if no images one is available.
+ * TODO: revisit once the PDM's result_details model is corrected.
+ */
+export const getSensitivityDataProduct = (
+  observationId: string,
+  linkedId: string,
+  dataProducts: DataProductInput[]
+): DataProductInput | undefined => {
+  const linked = dataProducts.find((dp) => dp.id === linkedId);
+  if (!linked || linked.kind !== DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES) {
+    return linked;
+  }
+  const images = dataProducts.find(
+    (dp) => dp.observationId === observationId && isImageDataProduct(dp)
+  );
+  return images ?? linked;
+};
+
+/**
+ * Builds the calculator request for one target, valid observation and data product.
+ *
+ * Returns null when the calculator doesn't apply: SSO targets and the PST observing mode. A
+ * continuum and spectral line observation is calculated as continuum.
+ */
+export const buildSensitivityRequest = (
+  observation: ObservationValues,
   target: TargetType,
   dataProduct: DataProductInput
-): SensitivityRequest =>
-  observation.telescope === TELESCOPE_LOW_NUM
+): SensitivityRequest | null => {
+  if (
+    target.kind === REFERENCE_COORDINATE_TYPE_SSO.value ||
+    observation.observingMode === OBSERVING_MODE.PST
+  ) {
+    return null;
+  }
+  if (observation.observingMode === OBSERVING_MODE.SPECTRAL) {
+    return observation.telescope === TELESCOPE.LOW
+      ? {
+          mode: SENS_CALC_MODE.ZOOM,
+          path: 'low/zoom/calculate',
+          body: lowZoomRequest(observation, target, dataProduct)
+        }
+      : {
+          mode: SENS_CALC_MODE.ZOOM,
+          path: 'mid/zoom/calculate',
+          body: midZoomRequest(observation, target, dataProduct)
+        };
+  }
+  return observation.telescope === TELESCOPE.LOW
     ? {
         mode: SENS_CALC_MODE.CONTINUUM,
         path: 'low/continuum/calculate',
@@ -248,71 +301,6 @@ const continuumRequest = (
         path: 'mid/continuum/calculate',
         body: midContinuumRequest(observation, target, dataProduct)
       };
-
-const zoomRequest = (
-  observation: Observation,
-  target: TargetType,
-  dataProduct: DataProductInput
-): SensitivityRequest =>
-  observation.telescope === TELESCOPE_LOW_NUM
-    ? {
-        mode: SENS_CALC_MODE.ZOOM,
-        path: 'low/zoom/calculate',
-        body: lowZoomRequest(observation, target, dataProduct)
-      }
-    : {
-        mode: SENS_CALC_MODE.ZOOM,
-        path: 'mid/zoom/calculate',
-        body: midZoomRequest(observation, target, dataProduct)
-      };
-
-/**
- * The sensitivity should always be calculated based on the images data product.
- * Fall back to the linked (selected) data product if no images one is available.
- * TODO: revisit once the PDM's result_details model is corrected.
- */
-export const getSensitivityDataProduct = (
-  observation: Observation,
-  linkedId: string,
-  dataProducts: DataProductInput[]
-): DataProductInput | undefined => {
-  const linked = dataProducts.find((dp) => dp.id === linkedId);
-  if (!linked || linked.kind !== DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES) {
-    return linked;
-  }
-  const images = dataProducts.find(
-    (dp) => dp.observationId === observation.id && isImageDataProduct(dp)
-  );
-  return images ?? linked;
-};
-
-/**
- * Builds the calculator request for one target, observation and data product.
- *
- * Returns null when the calculator doesn't apply: SSO targets, PST observing mode, and any
- * observing mode the calculator doesn't support.
- */
-export const buildSensitivityRequest = (
-  observation: Observation,
-  target: TargetType,
-  dataProduct: DataProductInput
-): SensitivityRequest | null => {
-  if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value || observation.type === TYPE_PST) {
-    return null;
-  }
-
-  switch (observation.type) {
-    case TYPE_CONTINUUM:
-      return continuumRequest(observation, target, dataProduct);
-    case TYPE_CONTINUUM_SPECTRAL:
-    case TYPE_CONTINUUM_SPECTRAL_LONG:
-      return continuumRequest({ ...observation, type: TYPE_CONTINUUM }, target, dataProduct);
-    case TYPE_ZOOM:
-    case TYPE_ZOOM_LONG:
-      return zoomRequest(observation, target, dataProduct);
-    default:
-      return null;
-  }
 };
 
 /**

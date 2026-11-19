@@ -14,6 +14,8 @@ import {
 } from './calculate';
 import { toSensitivity } from './results';
 import { getDataProductSchema } from '@/models/proposals/dataProducts';
+import { getObservationSchema } from '@/models/proposals/observations';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export const SENS_CALC_DEBOUNCE_MS = 500;
 
@@ -38,14 +40,13 @@ const getLinkId = (link: { targetId: string; observationId: string; dataProducts
  */
 export const useSensitivityService = () => {
   const { control, getValues, setValue } = useFormContext<ProposalType>();
-  // TODO BTN-3595 Read the observations from the form once they are migrated to it
   const { application } = storageObject.useStore();
   const proposal = application.content2 as Proposal | undefined;
-  const observations = proposal?.observations;
   const { notifyError } = useNotify();
-  const [targets, links, dataProducts] = useWatch({
+  const { osdLOW, osdMID } = useOSDAccessors();
+  const [targets, links, observations, dataProducts] = useWatch({
     control,
-    name: ['targets', 'targetObservation', 'dataProducts']
+    name: ['targets', 'targetObservation', 'observations', 'dataProducts']
   });
 
   const recordsRef = React.useRef<LinkRecords>(new Map());
@@ -76,19 +77,20 @@ export const useSensitivityService = () => {
       const observation = observations?.find((o) => o.id === link.observationId);
       const dataProduct =
         observation &&
-        getSensitivityDataProduct(observation, link.dataProductsSDPId, dataProducts ?? []);
+        getSensitivityDataProduct(observation.id, link.dataProductsSDPId, dataProducts ?? []);
       if (!target || !observation || !dataProduct) {
         return [];
       }
 
-      // SV proposals edit their data product in place, so it can hold values that aren't valid
-      // yet, which the calculator would reject. An invalid one gives no request, the same rule
-      // that decides what is saved: further invalid edits change nothing, a valid edit
-      // recalculates, and the no-request branch below clears the link's results.
-      // TODO BTN-3595 Check the observation against its item schema too, once it is in the form
-      const request = getDataProductSchema().safeParse(dataProduct).success
-        ? buildSensitivityRequest(observation, target, dataProduct)
-        : null;
+      // SV proposals edit their observation and data product in place, so they can hold values
+      // that aren't valid yet. Check first the validity of all fields before sending the request.
+      const validObservation = getObservationSchema({ low: osdLOW, mid: osdMID }).safeParse(
+        observation
+      );
+      const request =
+        validObservation.success && getDataProductSchema().safeParse(dataProduct).success
+          ? buildSensitivityRequest(validObservation.data, target, dataProduct)
+          : null;
       const requestKey = request ? request.path + JSON.stringify(request.body) : '';
       return [{ link, linkId: getLinkId(link), request, requestKey }];
     });
@@ -118,8 +120,8 @@ export const useSensitivityService = () => {
         }
 
         if (!request) {
-          // The calculator doesn't apply (SSO targets and PST), or the data product isn't valid yet,
-          // so the link has no results
+          // The calculator doesn't apply (SSO targets and PST), or the observation or data product
+          // isn't valid yet, so the link has no results
           recordsRef.current.set(linkId, { requestKey });
           if (!link.sensitivity) return;
           writeResults(linkId, undefined);
@@ -163,7 +165,7 @@ export const useSensitivityService = () => {
     // notifyError is a new function on every render, and the service re-renders on any store
     // change. Any copy of it works, so it isn't a dependency: one would restart the debounce.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targets, links, observations, dataProducts, getValues, setValue]);
+  }, [targets, links, observations, dataProducts, osdLOW, osdMID, getValues, setValue]);
 };
 
 /**
