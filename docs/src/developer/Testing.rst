@@ -122,7 +122,8 @@ Specs are shared between the workers by how long each took last time, from
 ``scripts/cypress-timings.json``. Each local run rewrites that file, so commit it when specs have
 been added or removed, or their durations have changed a lot.
 
-CI runs it through ``make js-e2e-test`` against a fresh deployment with an empty database.
+CI runs it through ``make js-e2e-test`` against a fresh deployment with an empty database, whose
+app waits 60 seconds for the backend (``REQUEST_TIMEOUT_MS``).
 Failing tests are retried twice in headless runs.
 
 The smoke suite (``tests/cypress/smoke``) logs in through Indigo's real login page, and checks
