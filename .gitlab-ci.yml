@@ -81,7 +81,6 @@ CHANGELOG:
   rules:
     - if: $CI_COMMIT_TAG
       when: manual
-    
 
 js-test:
   cache:
@@ -108,13 +107,11 @@ js-test:
     - *e2e_skip_mr
     - exists: *e2e_specs
 
-.e2e_vars:
-  variables: &e2e_vars
-    # The deployment's app waits this long (ms) for backend responses, rather than the users' 20s
-    REQUEST_TIMEOUT_MS: "60000"
-
+# e2e deployments wait longer for backend responses than users would (20s), as the tests'
+# BACKEND_TIMEOUT expects. The Makefile passes it to the chart in k8s-install-chart.
 js-e2e-deploy:
-  variables: *e2e_vars
+  variables:
+    REQUEST_TIMEOUT_MS: "60000"
   rules: *e2e_rules
 
 # Installs the dependencies, including the Cypress binary, once for the e2e test jobs, while
@@ -147,7 +144,6 @@ js-e2e-test:
   # CI_NODE_TOTAL to give each job its share of the specs, balanced by the durations in SPLIT_FILE
   parallel: 3
   variables:
-    <<: *e2e_vars
     SPLIT: "true"
     SPLIT_FILE: scripts/cypress-timings.json
   rules: *e2e_rules
@@ -170,7 +166,6 @@ js-e2e-test:
 # Removes the deployment once all the test jobs have finished, whether or not they passed,
 # rather than leaving it to auto_stop_in or someone running this by hand
 stop-js-e2e-test:
-  variables: *e2e_vars
   needs:
     - js-e2e-test
   when: always
