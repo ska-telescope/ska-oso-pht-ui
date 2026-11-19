@@ -42,7 +42,7 @@ export default function TargetPage() {
   // when the target is added or deleted
   const setTheProposalState = () => {
     // The form has every observation; the store only the valid ones
-    const statuses = validateProposal(getProposal(), form.getValues());
+    const statuses = validateProposal(form.getValues());
     const pages = [
       PAGE_TARGET,
       PAGE_OBSERVATION,

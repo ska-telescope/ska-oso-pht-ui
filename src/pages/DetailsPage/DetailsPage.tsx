@@ -51,7 +51,12 @@ export default function DetailsPage() {
     control: form.control,
     name: 'scienceCategory'
   });
-  const status = validateDetailsPage({ ...getProposal(), abstract, scienceCategory });
+  // An SV proposal's observing mode, chosen here, is its observation's
+  const [proposalType, observations] = useWatch({
+    control: form.control,
+    name: ['proposalType', 'observations']
+  });
+  const status = validateDetailsPage({ abstract, scienceCategory, proposalType, observations });
   const proposalState = application.content1 as number[];
   React.useEffect(() => {
     if (proposalState[PAGE] === status) return;

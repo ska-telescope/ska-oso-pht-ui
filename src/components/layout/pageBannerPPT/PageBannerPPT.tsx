@@ -14,9 +14,7 @@ import {
   PROPOSAL_STATUS,
   STATUS_ARRAY_PAGES_PROPOSAL,
   STATUS_ARRAY_PAGES_SV,
-  STATUS_ERROR,
-  STATUS_INITIAL,
-  STATUS_PARTIAL
+  STATUS_OK
 } from '@utils/constants.ts';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
 import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
@@ -96,14 +94,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const results: string[] = [];
 
     // The form has every observation; the store only the valid ones
-    const statuses = validateProposal(getProposal(), form.getValues());
+    const statuses = validateProposal(form.getValues());
     updateAppContent1(statuses);
 
     statuses.forEach((status, key) => {
-      if (
-        pages.includes(key) &&
-        (status === STATUS_ERROR || status === STATUS_PARTIAL || status === STATUS_INITIAL)
-      ) {
+      if (pages.includes(key) && status !== STATUS_OK) {
         results.push(t('page.' + key + '.pageError'));
       }
     });

@@ -1,13 +1,6 @@
 import { describe, it, expect, test, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import {
-  PAGE_OBSERVATION,
-  PROPOSAL_TYPE,
-  STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL,
-  TYPE_CONTINUUM
-} from '../constants';
+import { PAGE_OBSERVATION, PROPOSAL_TYPE, STATUS_ERROR, STATUS_OK } from '../constants';
 import {
   useValidateProposal,
   validateDeclination,
@@ -15,7 +8,6 @@ import {
   validateRightAscension,
   validateTitlePage
 } from './validation';
-import Proposal from '../types/proposal';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
@@ -34,8 +26,7 @@ describe('useValidateProposal', () => {
   const observation = newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
   const validate = () => renderHook(() => useValidateProposal()).result.current;
 
-  // The submit schema's pages come from the form values given, not the proposal, as the store's
-  // proposal has only the valid observations
+  // The form has every observation, including invalid ones the store has no copy of
   test.each([
     ['valid', observation, STATUS_OK],
     [
@@ -47,7 +38,7 @@ describe('useValidateProposal', () => {
     'gives the Observations page of form values with an observation %s its status',
     (_, formObservation, status) => {
       const values = { ...getProposalFormDefaults(), observations: [formObservation] };
-      expect(validate()({} as Proposal, values)[PAGE_OBSERVATION]).toBe(status);
+      expect(validate()(values)[PAGE_OBSERVATION]).toBe(status);
     }
   );
 });
@@ -58,40 +49,45 @@ describe('validateTitlePage', () => {
       validateTitlePage({ title: 'A proposal with @', proposalType: PROPOSAL_TYPE.STANDARD })
     ).toBe(STATUS_ERROR);
   });
+
+  it.each([
+    ['a title and a proposal type', 'A proposal', PROPOSAL_TYPE.STANDARD, STATUS_OK],
+    ['no proposal type', 'A proposal', null, STATUS_ERROR],
+    ['no title', '', PROPOSAL_TYPE.STANDARD, STATUS_ERROR]
+  ] as const)('is complete only with both: %s', (_, title, proposalType, status) => {
+    expect(validateTitlePage({ title, proposalType })).toBe(status);
+  });
 });
 
 describe('validateDetailsPage', () => {
-  const observation = { id: 'obs-1', type: TYPE_CONTINUUM };
+  const observation = newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
+  const standard: Parameters<typeof validateDetailsPage>[0] = {
+    proposalType: PROPOSAL_TYPE.STANDARD,
+    abstract: 'An abstract',
+    scienceCategory: 1,
+    observations: []
+  };
 
   it.each([2300, 2301])('checks the Zod character limit at %s characters', (length) => {
-    expect(
-      validateDetailsPage({
-        proposalType: PROPOSAL_TYPE.STANDARD,
-        abstract: 'a'.repeat(length),
-        scienceCategory: 1
-      } as Parameters<typeof validateDetailsPage>[0])
-    ).toBe(length === 2300 ? STATUS_OK : STATUS_ERROR);
+    expect(validateDetailsPage({ ...standard, abstract: 'a'.repeat(length) })).toBe(
+      length === 2300 ? STATUS_OK : STATUS_ERROR
+    );
   });
 
   it('requires an abstract and a science category for standard proposals', () => {
-    const proposal = { proposalType: PROPOSAL_TYPE.STANDARD, abstract: 'An abstract' };
-    expect(validateDetailsPage({ ...proposal, scienceCategory: 1 } as any)).toBe(STATUS_OK);
-    expect(validateDetailsPage({ ...proposal, scienceCategory: null } as any)).toBe(STATUS_PARTIAL);
+    expect(validateDetailsPage(standard)).toBe(STATUS_OK);
+    expect(validateDetailsPage({ ...standard, scienceCategory: null })).toBe(STATUS_ERROR);
   });
 
   it('requires an abstract and an observation (the observing mode) for SV proposals', () => {
-    const proposal = {
+    const sv = {
+      ...standard,
       proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-      scienceCategory: null,
-      abstract: 'An abstract'
+      scienceCategory: null
     };
-    expect(validateDetailsPage({ ...proposal, observations: [observation] } as any)).toBe(
-      STATUS_OK
-    );
-    expect(validateDetailsPage({ ...proposal, observations: [] } as any)).toBe(STATUS_PARTIAL);
-    expect(validateDetailsPage({ ...proposal, abstract: '', observations: [] } as any)).toBe(
-      STATUS_ERROR
-    );
+    expect(validateDetailsPage({ ...sv, observations: [observation] })).toBe(STATUS_OK);
+    expect(validateDetailsPage(sv)).toBe(STATUS_ERROR);
+    expect(validateDetailsPage({ ...sv, abstract: '' })).toBe(STATUS_ERROR);
   });
 });
 

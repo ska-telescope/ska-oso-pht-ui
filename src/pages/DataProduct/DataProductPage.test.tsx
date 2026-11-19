@@ -9,8 +9,8 @@ import {
   PAGE_DATA_PRODUCTS,
   PROPOSAL_TYPE,
   STATUS_ERROR,
-  STATUS_OK,
-  STATUS_PARTIAL
+  STATUS_INITIAL,
+  STATUS_OK
 } from '@/utils/constants';
 import completeMockStore from '@/utils/MockStore';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
@@ -42,7 +42,7 @@ vi.mock('./DataProductInPlace', () => ({
 
 const renderWithProposal = (
   proposal: object,
-  statuses = Array(PAGE_DATA_PRODUCTS + 1).fill(STATUS_PARTIAL)
+  statuses = Array(PAGE_DATA_PRODUCTS + 1).fill(STATUS_INITIAL)
 ) => {
   vi.spyOn(storageObject, 'useStore').mockReturnValue({
     ...completeMockStore,

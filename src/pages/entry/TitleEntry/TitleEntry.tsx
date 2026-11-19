@@ -88,9 +88,9 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     const status =
       errors.title || errors.proposalType
         ? STATUS_ERROR
-        : validateTitlePage({ ...getProposal(), title, proposalType });
+        : validateTitlePage({ title, proposalType: selectedProposalType });
     setTheProposalState(status);
-  }, [errors.title, errors.proposalType, getProposal, setTheProposalState, title, proposalType]);
+  }, [errors.title, errors.proposalType, setTheProposalState, title, selectedProposalType]);
 
   const handleDialogResponse = () => {
     onProposalTypeChange(tempValue);

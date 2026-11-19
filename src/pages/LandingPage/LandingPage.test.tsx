@@ -349,12 +349,11 @@ describe('clone proposal', () => {
   test('updates validation state with cloned proposal ID after cloning', async () => {
     await triggerCloneConfirm();
 
-    // After confirming the clone, we expect validateProposal to be called once for the new
-    // cloned proposal (with the new ID so that the contents and state match.
+    // After confirming the clone, the page statuses are worked out from the clone's values, so
+    // that its contents and statuses match
     await waitFor(() => {
       expect(mockValidateFn).toHaveBeenCalledWith(
-        expect.objectContaining({ id: CLONED_PROPOSAL_ID }),
-        expect.anything()
+        expect.objectContaining({ title: 'In a galaxy far, far away cloneProposal.suffix' })
       );
     });
   });

@@ -137,7 +137,7 @@ export default function LandingPage() {
       return false;
     } else {
       setSelectedPolicyByCycleId((response as Proposal).cycle ?? '');
-      updateAppContent1(validateProposal(response, getProposalFormValues(response)));
+      updateAppContent1(validateProposal(getProposalFormValues(response)));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;
@@ -221,7 +221,7 @@ export default function LandingPage() {
         targetObservation: resetTargetObservationResults(originalProposal.targetObservation)
       };
       setProposal(clonedProposal);
-      updateAppContent1(validateProposal(clonedProposal, getProposalFormValues(clonedProposal)));
+      updateAppContent1(validateProposal(getProposalFormValues(clonedProposal)));
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
         prslId: response.id,

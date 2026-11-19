@@ -352,7 +352,7 @@ export default function GridProposals({
       setAxiosViewError(response);
       return false;
     } else {
-      updateAppContent1(validateProposal(response, getProposalFormValues(response)));
+      updateAppContent1(validateProposal(getProposalFormValues(response)));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;
