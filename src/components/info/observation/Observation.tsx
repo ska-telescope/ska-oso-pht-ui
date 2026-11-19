@@ -1,11 +1,9 @@
 import { Grid } from '@mui/material';
-import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
-import { TYPE_PST } from '@/utils/constants';
-import Observation from '@/utils/types/observation';
+import { OBSERVING_MODE, type ObservationInput } from '@/models/proposals/observations';
 
 interface ObservationProps {
   t: any;
-  observation: Observation;
+  observation: ObservationInput;
 }
 
 // This is a placeholder component for Observation Info.
@@ -14,9 +12,9 @@ interface ObservationProps {
 // Recommend to look at the DataProduct component for an implementation as a guide
 
 export default function ObservationInfo({ observation }: ObservationProps) {
-  const isContinuum = () => observation?.type === TYPE_CONTINUUM;
-  const isSpectral = () => observation?.type === TYPE_ZOOM;
-  const isPST = () => observation?.type === TYPE_PST;
+  const isContinuum = () => observation.observingMode === OBSERVING_MODE.CONTINUUM;
+  const isSpectral = () => observation.observingMode === OBSERVING_MODE.SPECTRAL;
+  const isPST = () => observation.observingMode === OBSERVING_MODE.PST;
 
   return (
     <>

@@ -15,7 +15,6 @@ import {
   SA_AA2,
   SA_CUSTOM,
   TEL,
-  TEL_UNITS,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
   type FrequencyUnit
@@ -24,6 +23,7 @@ import { calculateVelocity, convertFrequency, generateId, obTypeTransform } from
 import { isFineZoomRestricted } from '@/utils/zoomWindow';
 import {
   bandRange,
+  spectrumOf,
   centralFrequencyGridHz,
   bandwidthStepHz,
   LOW_ZOOM_RESOLUTIONS,
@@ -178,7 +178,6 @@ export default function ObservationView({ index, groupIds, proposalForm }: Obser
 
   /*********************************************************** frequencies ***********************************************************/
 
-  const band = bandRange(osd, observation.telescope, observation.observingBand);
   const centralFrequency = observation.centralFrequency;
   const centralHz =
     centralFrequency.value !== null && centralFrequency.unit !== null
@@ -224,20 +223,8 @@ export default function ObservationView({ index, groupIds, proposalForm }: Obser
         asArray: true,
         paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
       }) ?? [];
-    // The spectrum is drawn in the telescope's unit, with the bandwidth in MHz
-    const displayUnit = isLow ? 'MHz' : 'GHz';
-    const display = (hz: number | null | undefined) =>
-      hz === null || hz === undefined ? 0 : convertFrequency(hz, 'Hz', displayUnit);
     return (
-      <FrequencySpectrum
-        minFreq={display(band?.minFrequencyHz)}
-        maxFreq={display(band?.maxFrequencyHz)}
-        centerFreq={display(centralHz)}
-        bandWidth={bandwidthHz === null ? 0 : convertFrequency(bandwidthHz, 'Hz', 'MHz')}
-        bandColor={bandColor}
-        boxWidth="100%"
-        unit={TEL_UNITS[isLow ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM]}
-      />
+      <FrequencySpectrum {...spectrumOf(observation, osd)} bandColor={bandColor} boxWidth="100%" />
     );
   };
 

@@ -12,10 +12,6 @@ import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetOb
 
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
-vi.mock('i18next', () => ({
-  t: (key: string) => key
-}));
-
 const link = (sensitivity: Sensitivity) => ({
   targetId: 't1',
   observationId: 'obs-obR1Ej',

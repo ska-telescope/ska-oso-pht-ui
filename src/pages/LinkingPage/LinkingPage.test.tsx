@@ -11,15 +11,21 @@ import completeMockStore from '@/utils/MockStore';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   PROPOSAL_TYPE,
-  SENSITIVITY_STATE
+  SENSITIVITY_STATE,
+  STATUS_ERROR
 } from '@/utils/constants';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
+import SensCalcModalMultiple from '@/components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
 vi.mock('@services/axios/get/getCalibratorList/getCalibratorList', () => ({
   default: vi.fn(async () => [])
+}));
+// The results dialog, to see what the page passes it
+vi.mock('@/components/alerts/sensCalcModal/multiple/SensCalcModalMultiple', () => ({
+  default: vi.fn(() => null)
 }));
 
 const wrapper = (component: React.ReactElement) => {
@@ -185,8 +191,9 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
     vi.mocked(GetCalibratorList).mockClear();
     vi.mocked(GetCalibratorList).mockResolvedValueOnce(calibratorsForM3 as never);
 
-    // Unlinking M2 leaves M3 linked, so the calibrators are chosen for M3
-    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    // Unlinking M2 (the first target) leaves M3 linked, so the calibrators are chosen for M3
+    const [m2TickBox] = await screen.findAllByTestId('linkedTickBox');
+    fireEvent.click(within(m2TickBox).getByRole('checkbox'));
     await waitFor(() => {
       expect(formProbe.getValues('calibrationStrategy')).toEqual([
         expect.objectContaining({
@@ -229,7 +236,8 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
     vi.mocked(GetCalibratorList).mockImplementationOnce(
       () => new Promise((resolve) => (resolveCalibrators = resolve))
     );
-    fireEvent.click(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox'));
+    const [m2TickBox] = await screen.findAllByTestId('linkedTickBox');
+    fireEvent.click(within(m2TickBox).getByRole('checkbox'));
     await waitFor(() => expect(formProbe.getValues('targetObservation')).toEqual([secondLink]));
 
     // The notes are edited while the lookup runs
@@ -261,5 +269,34 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
     fireEvent.click(within(observationRows[1]).getAllByRole('gridcell')[0]);
     expect(within(await screen.findByTestId('linkedTickBox')).getByRole('checkbox')).toBeChecked();
     expect(formProbe.getValues('targetObservation')).toHaveLength(1);
+  });
+
+  test("opens the results of the selected data product's links with their level and error", async () => {
+    renderLinking();
+    await selectObservationAndTickTarget();
+    await waitFor(() => expect(formProbe.getValues('targetObservation')).toHaveLength(1));
+    const [link] = formProbe.getValues('targetObservation');
+    act(() =>
+      formProbe.setValue('targetObservation', [
+        { ...link, sensitivity: { state: SENSITIVITY_STATE.FAILED, error: 'calculator error' } }
+      ])
+    );
+
+    fireEvent.click(
+      within(screen.getByTestId('observationDetails')).getByRole('button', {
+        name: 'sensCalc.' + STATUS_ERROR
+      })
+    );
+
+    await waitFor(() =>
+      expect(SensCalcModalMultiple).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          observation: expect.objectContaining({ id: 'obs-1' }),
+          level: STATUS_ERROR,
+          levelError: 'calculator error'
+        }),
+        undefined
+      )
+    );
   });
 });

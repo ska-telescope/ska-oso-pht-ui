@@ -78,9 +78,8 @@
     "label": "Array Configuration",
     "short": "Array",
     "help": "Specify an array configuration. Currently the SKA has two arrays - SKA-MID (350MHz - 154GHz) and SKA-LOW (50MHz – 350 MHz).",
-    "0": "Not specified",
-    "1": "SKA-MID",
-    "2": "SKA-LOW"
+    "ska_mid": "SKA-MID",
+    "ska_low": "SKA-LOW"
   },
   "assignBtn": {
     "label": "Assign",
@@ -1445,8 +1444,8 @@
     "missing": "No targets have been added to this proposal yet"
   },
   "telescopes": {
-    "2": "LOW",
-    "1": "MID"
+    "ska_low": "LOW",
+    "ska_mid": "MID"
   },
   "timeAveraging": {
     "label": "Time Averaging",
@@ -1705,7 +1704,6 @@
     "noCalibrationsNoTarget": "Define a target to show calibration strategy",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
-    "proposalNotLoaded": "No proposal loaded — please select a proposal to continue.",
     "invalidString": "Invalid input: Only numeric characters are allowed"
   },
   "pstMode": {

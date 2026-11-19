@@ -1,57 +1,33 @@
-// ObservationInfo.test.tsx
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import ObservationInfo from './Observation';
-import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
-import { BAND_LOW_STR, TYPE_PST } from '@/utils/constants';
-import Observation from '@/utils/types/observation';
+import {
+  newSvObservation,
+  OBSERVING_MODE,
+  type ObservingMode
+} from '@/models/proposals/observations';
 
-const TYPE_UNKNOWN = 9;
+const render_ = (mode: ObservingMode) =>
+  render(<ObservationInfo observation={newSvObservation(mode, 15)} t={() => {}} />);
 
 describe('ObservationInfo', () => {
-  const baseObservation: Observation = {
-    id: 'obs1',
-    type: 0,
-    telescope: 0,
-    subarray: '',
-
-    observingBand: BAND_LOW_STR,
-    weather: 0,
-    elevation: 0,
-    centralFrequency: 0,
-    centralFrequencyUnits: 0,
-    bandwidth: 0,
-    continuumBandwidth: 0,
-    continuumBandwidthUnits: 0,
-    spectralResolution: '0',
-    supplied: {
-      type: 0,
-      value: 0,
-      units: 0
-    }
-  };
-
   it('renders Continuum Grid', () => {
-    render(
-      <ObservationInfo observation={{ ...baseObservation, type: TYPE_CONTINUUM }} t={() => {}} />
-    );
+    render_(OBSERVING_MODE.CONTINUUM);
     expect(screen.getByTestId('continuum-grid')).toBeInTheDocument();
   });
 
   it('renders Spectral Grid', () => {
-    render(<ObservationInfo observation={{ ...baseObservation, type: TYPE_ZOOM }} t={() => {}} />);
+    render_(OBSERVING_MODE.SPECTRAL);
     expect(screen.getByTestId('spectral-grid')).toBeInTheDocument();
   });
 
   it('renders PST Grid', () => {
-    render(<ObservationInfo observation={{ ...baseObservation, type: TYPE_PST }} t={() => {}} />);
+    render_(OBSERVING_MODE.PST);
     expect(screen.getByTestId('pst-grid')).toBeInTheDocument();
   });
 
-  it('renders nothing for unknown type', () => {
-    render(
-      <ObservationInfo observation={{ ...baseObservation, type: TYPE_UNKNOWN }} t={() => {}} />
-    );
+  it('renders nothing for continuum and spectral line, which has no grid yet', () => {
+    render_(OBSERVING_MODE.CONTINUUM_SPECTRAL);
     expect(screen.queryByTestId('continuum-grid')).not.toBeInTheDocument();
     expect(screen.queryByTestId('spectral-grid')).not.toBeInTheDocument();
     expect(screen.queryByTestId('pst-grid')).not.toBeInTheDocument();

@@ -14,7 +14,9 @@ import {
   SA_AA2,
   SA_AA_STAR,
   SA_CUSTOM,
-  SUPPLIED_INTEGRATION_TIME_MAX_HOURS
+  SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM
 } from '@/utils/constants';
 import { calculateVelocity, convertFrequency, generateObsSetId } from '@/utils/helpers';
 import { isFineZoomRestricted, snapCentralFrequencyToChannelGridHz } from '@/utils/zoomWindow';
@@ -41,6 +43,12 @@ export const TELESCOPE = {
 } as const;
 
 export type Telescope = (typeof TELESCOPE)[keyof typeof TELESCOPE];
+
+/** The number the library's telescope colours (getColors) key each telescope on */
+export const TELESCOPE_NUMBER: Record<Telescope, number> = {
+  [TELESCOPE.MID]: TELESCOPE_MID_NUM,
+  [TELESCOPE.LOW]: TELESCOPE_LOW_NUM
+};
 
 export const OBSERVING_MODE = {
   CONTINUUM: 'continuum',
@@ -340,6 +348,26 @@ export const bandRange = (
   telescope === TELESCOPE.LOW
     ? osd.low?.basicCapabilities
     : osd.mid?.basicCapabilities.receiverInformation.find((rx) => rx.rxId === observingBand);
+
+/**
+ * What the frequency spectrum shows of an observation: its band and central frequency in the
+ * telescope's unit (MHz for LOW, GHz for MID), and its bandwidth in MHz. A value that isn't set
+ * shows as 0.
+ */
+export const spectrumOf = (observation: ObservationInput, osd: ObservationOsd) => {
+  const unit = observation.telescope === TELESCOPE.LOW ? 'MHz' : 'GHz';
+  const display = (hz: number | null | undefined) =>
+    hz === null || hz === undefined ? 0 : convertFrequency(hz, 'Hz', unit);
+  const band = bandRange(osd, observation.telescope, observation.observingBand);
+  const bandwidthHz = frequencyHzOf(observation.bandwidth);
+  return {
+    minFreq: display(band?.minFrequencyHz),
+    maxFreq: display(band?.maxFrequencyHz),
+    centerFreq: display(frequencyHzOf(observation.centralFrequency)),
+    bandWidth: bandwidthHz === null ? 0 : convertFrequency(bandwidthHz, 'Hz', 'MHz'),
+    unit
+  };
+};
 
 /** What a subarray of a telescope has, from the OSD. A custom subarray isn't in it. */
 export const subarrayCapabilities = (

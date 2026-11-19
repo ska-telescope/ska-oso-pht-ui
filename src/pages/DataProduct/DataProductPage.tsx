@@ -153,6 +153,7 @@ export default function DataProductsPage() {
           />
           <TableDataProducts
             data={form.getValues('dataProducts')}
+            observations={observations}
             deleteFunction={deleteIconClicked}
             updateFunction={editIconClicked}
           />
