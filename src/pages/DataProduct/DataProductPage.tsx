@@ -28,7 +28,7 @@ export default function DataProductsPage() {
   const { application, updateAppContent1 } = storageObject.useStore();
   const [currentRow, setCurrentRow] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
-  const { osdCyclePolicy } = useOSDAccessors();
+  const { osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
   const navigate = useNavigate();
 
   const form = useFormContext<ProposalType>();
@@ -36,7 +36,7 @@ export default function DataProductsPage() {
   const observations = useWatch({ control: form.control, name: 'observations' });
   // Write submit status checks into the status store (to be deleted in future refactor)
   useWatch({ control: form.control, name: ['proposalType', 'dataProducts', 'targetObservation'] });
-  const status = getSubmitPageStatuses(form.getValues()).dataProducts;
+  const status = getSubmitPageStatuses(form.getValues(), { low: osdLOW, mid: osdMID }).dataProducts;
   React.useEffect(() => {
     const statuses = application.content1 as number[];
     if (!statuses || statuses.length <= PAGE || statuses[PAGE] === status) {

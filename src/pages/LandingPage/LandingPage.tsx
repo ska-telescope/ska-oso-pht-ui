@@ -17,6 +17,7 @@ import AddButton from '@/components/button/Add/Add';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
@@ -136,7 +137,7 @@ export default function LandingPage() {
       return false;
     } else {
       setSelectedPolicyByCycleId((response as Proposal).cycle ?? '');
-      updateAppContent1(validateProposal(response));
+      updateAppContent1(validateProposal(response, getProposalFormValues(response)));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;
@@ -220,7 +221,7 @@ export default function LandingPage() {
         targetObservation: resetTargetObservationResults(originalProposal.targetObservation)
       };
       setProposal(clonedProposal);
-      updateAppContent1(validateProposal(clonedProposal));
+      updateAppContent1(validateProposal(clonedProposal, getProposalFormValues(clonedProposal)));
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
         prslId: response.id,

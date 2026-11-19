@@ -4,7 +4,9 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import { storageObject } from '@utils/storage/store';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
+import { useFormContext } from 'react-hook-form';
 import { useValidateProposal } from '../../utils/validation/validation';
+import { ProposalType } from '@/models/proposals/proposal';
 import { Proposal } from '../../utils/types/proposal';
 import {
   PAGE_TARGET,
@@ -34,11 +36,13 @@ export default function TargetPage() {
   const { isSV } = useOSDAccessors();
   const getProposalState = () => application.content1 as number[];
   const validateProposal = useValidateProposal();
+  const form = useFormContext<ProposalType>();
 
   // The pages that depend on the target are revalidated with it, so their statuses are updated
   // when the target is added or deleted
   const setTheProposalState = () => {
-    const statuses = validateProposal(getProposal());
+    // The form has every observation; the store only the valid ones
+    const statuses = validateProposal(getProposal(), form.getValues());
     const pages = [
       PAGE_TARGET,
       PAGE_OBSERVATION,

@@ -1,4 +1,6 @@
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router';
 import { Box, Grid, Typography } from '@mui/material';
@@ -45,6 +47,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const theme = useTheme();
   const { isSV } = useOSDAccessors();
   const validateProposal = useValidateProposal();
+  const form = useFormContext<ProposalType>();
   const LG = useMediaQuery(theme.breakpoints.down('lg'), {
     defaultMatches: false,
     noSsr: true
@@ -92,7 +95,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     setValidationResults([]);
     const results: string[] = [];
 
-    const statuses = validateProposal(getProposal());
+    // The form has every observation; the store only the valid ones
+    const statuses = validateProposal(getProposal(), form.getValues());
     updateAppContent1(statuses);
 
     statuses.forEach((status, key) => {

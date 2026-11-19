@@ -7,7 +7,13 @@ import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import ObservationPage from './ObservationPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { DEFAULT_CONTINUUM_OBSERVATION_LOW, PROPOSAL_TYPE } from '@/utils/constants';
+import {
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  PAGE_OBSERVATION,
+  PROPOSAL_TYPE,
+  STATUS_ERROR,
+  STATUS_OK
+} from '@/utils/constants';
 import completeMockStore from '@/utils/MockStore';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
@@ -32,16 +38,22 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 const mockOSD = vi.hoisted(() => ({ maxObservations: 1 }));
-vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
-  useOSDAccessors: () => ({
-    autoLink: true,
-    osdCycleId: 'CYCLE-1',
-    osdCyclePolicy: {
-      maxTargets: 1,
-      maxObservations: mockOSD.maxObservations
-    }
-  })
-}));
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
+  const { MockObservatoryDataFrontend } =
+    await import('@services/axios/get/getObservatoryData/mockObservatoryDataFrontend');
+  return {
+    useOSDAccessors: () => ({
+      autoLink: true,
+      osdCycleId: 'CYCLE-1',
+      osdCyclePolicy: {
+        maxTargets: 1,
+        maxObservations: mockOSD.maxObservations
+      },
+      osdLOW: MockObservatoryDataFrontend.capabilities.low,
+      osdMID: MockObservatoryDataFrontend.capabilities.mid
+    })
+  };
+});
 vi.mock('react-router', () => ({ useNavigate: () => vi.fn() }));
 vi.mock('../../components/layout/Shell/Shell', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>
@@ -50,12 +62,12 @@ vi.mock('./ObservationInPlace', () => ({
   default: () => <div data-testid="observationInPlaceStub" />
 }));
 
-const renderWithProposal = (proposal: object) => {
+const renderWithProposal = (proposal: object, statuses: number[] = []) => {
   vi.spyOn(storageObject, 'useStore').mockReturnValue({
     ...completeMockStore,
     application: {
       ...completeMockStore.application,
-      content1: [],
+      content1: statuses,
       content2: { id: 'prsl-1', targets: [], targetObservation: [], ...proposal }
     }
   } as any);
@@ -95,6 +107,27 @@ describe('<ObservationPage />', () => {
     );
 
     expect(await screen.findByTestId('observationInPlaceStub')).toBeInTheDocument();
+  });
+
+  test('marks the Observations page for an observation outside its band', async () => {
+    renderWithProposal(
+      { proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, observations: [] },
+      Array(10).fill(STATUS_OK)
+    );
+    const lastObservationStatus = () =>
+      vi.mocked(completeMockStore.updateAppContent1).mock.lastCall?.[0]?.[PAGE_OBSERVATION];
+    const observation = newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
+
+    act(() => formProbe.setValue('observations', [observation]));
+    await waitFor(() => expect(lastObservationStatus()).toBe(STATUS_OK));
+
+    // Checking the band needs the OSD
+    act(() =>
+      formProbe.setValue('observations', [
+        { ...observation, centralFrequency: { value: 400, unit: 'MHz' } }
+      ])
+    );
+    await waitFor(() => expect(lastObservationStatus()).toBe(STATUS_ERROR));
   });
 
   test('shows the same no-observation message for every proposal type', () => {

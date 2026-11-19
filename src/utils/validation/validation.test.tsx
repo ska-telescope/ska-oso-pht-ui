@@ -1,92 +1,62 @@
-import { describe, it, expect, test } from 'vitest';
+import { describe, it, expect, test, vi } from 'vitest';
+import { renderHook } from '@testing-library/react';
 import {
+  PAGE_OBSERVATION,
   PROPOSAL_TYPE,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
-  SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
-  SUPPLIED_INTEGRATION_TIME_UNITS_H,
-  SUPPLIED_INTEGRATION_TIME_UNITS_M,
-  SUPPLIED_TYPE_INTEGRATION,
-  TIME_HOURS,
   TYPE_CONTINUUM
 } from '../constants';
-import { timeConversion } from '../helpers';
 import {
+  useValidateProposal,
   validateDeclination,
   validateDetailsPage,
-  validateObservationPage,
   validateRightAscension,
   validateTitlePage
 } from './validation';
+import Proposal from '../types/proposal';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
+
+vi.mock('../osd/useOSDAccessors/useOSDAccessors', async () => {
+  const { MockObservatoryDataFrontend } =
+    await import('@services/axios/get/getObservatoryData/mockObservatoryDataFrontend');
+  return {
+    useOSDAccessors: () => ({
+      osdLOW: MockObservatoryDataFrontend.capabilities.low,
+      osdMID: MockObservatoryDataFrontend.capabilities.mid
+    })
+  };
+});
+
+describe('useValidateProposal', () => {
+  const observation = newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
+  const validate = () => renderHook(() => useValidateProposal()).result.current;
+
+  // The submit schema's pages come from the form values given, not the proposal, as the store's
+  // proposal has only the valid observations
+  test.each([
+    ['valid', observation, STATUS_OK],
+    [
+      'outside its band',
+      { ...observation, centralFrequency: { value: 400, unit: 'MHz' } },
+      STATUS_ERROR
+    ]
+  ] as const)(
+    'gives the Observations page of form values with an observation %s its status',
+    (_, formObservation, status) => {
+      const values = { ...getProposalFormDefaults(), observations: [formObservation] };
+      expect(validate()({} as Proposal, values)[PAGE_OBSERVATION]).toBe(status);
+    }
+  );
+});
 
 describe('validateTitlePage', () => {
   it('returns STATUS_ERROR for titles with unsupported characters', () => {
     expect(
       validateTitlePage({ title: 'A proposal with @', proposalType: PROPOSAL_TYPE.STANDARD })
     ).toBe(STATUS_ERROR);
-  });
-});
-
-describe('validateObservationPage supplied rules', () => {
-  const baseObservation = {
-    supplied: {
-      type: SUPPLIED_TYPE_INTEGRATION,
-      value: 1,
-      units: SUPPLIED_INTEGRATION_TIME_UNITS_H
-    }
-  };
-
-  it('returns STATUS_OK when observations exist with valid supplied values, with no target', () => {
-    const proposal = {
-      observations: [baseObservation],
-      targetObservation: []
-    };
-    expect(validateObservationPage(proposal as any)).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_ERROR for integration supplied values above the converted max', () => {
-    const maxMinutes = timeConversion(
-      SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
-      TIME_HOURS,
-      SUPPLIED_INTEGRATION_TIME_UNITS_M
-    );
-    const proposal = {
-      observations: [
-        {
-          ...baseObservation,
-          supplied: {
-            type: SUPPLIED_TYPE_INTEGRATION,
-            value: maxMinutes + 1,
-            units: SUPPLIED_INTEGRATION_TIME_UNITS_M
-          }
-        }
-      ],
-      targetObservation: []
-    };
-    expect(validateObservationPage(proposal as any)).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_ERROR when a linked observation has an invalid supplied value', () => {
-    const proposal = {
-      observations: [{ ...baseObservation, supplied: { ...baseObservation.supplied, value: -1 } }],
-      targetObservation: [{ targetId: '1', observationId: 'obs-1' }]
-    };
-    expect(validateObservationPage(proposal as any)).toBe(STATUS_ERROR);
-  });
-
-  it('transitions Observation breadcrumb status from STATUS_OK to STATUS_ERROR when supplied becomes invalid', () => {
-    const validProposal = {
-      observations: [baseObservation],
-      targetObservation: []
-    };
-    expect(validateObservationPage(validProposal as any)).toBe(STATUS_OK);
-
-    const invalidProposal = {
-      observations: [{ ...baseObservation, supplied: { ...baseObservation.supplied, value: -1 } }],
-      targetObservation: []
-    };
-    expect(validateObservationPage(invalidProposal as any)).toBe(STATUS_ERROR);
   });
 });
 

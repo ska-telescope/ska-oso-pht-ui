@@ -5,6 +5,7 @@ import { storageObject, StoreProvider } from '@utils/storage/store';
 import TargetPage from './TargetPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import completeMockStore from '@/utils/MockStore';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import {
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
@@ -19,7 +20,9 @@ import {
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <TestProposalFormProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </TestProposalFormProvider>
     </StoreProvider>
   );
 };

@@ -174,16 +174,20 @@ describe('clone proposal', () => {
         id: TMP_REVIEWER_ID,
         firstName: 'Jane',
         lastName: 'Doe',
+        phdThesis: false,
+        status: 'accepted',
         pi: true,
         email: 'jane@example.com'
-      } as any,
+      },
       {
         id: 'inv-2',
         firstName: 'John',
         lastName: 'Smith',
+        phdThesis: false,
+        status: 'accepted',
         pi: false,
         email: 'john@example.com'
-      } as any
+      }
     ],
     dataProducts: [{ id: 'dp-1' } as any],
     calibrationStrategy: [],
@@ -311,8 +315,10 @@ describe('clone proposal', () => {
       firstName: 'Real',
       lastName: 'Cloner',
       email: 'real.cloner@example.com',
+      phdThesis: false,
+      status: 'accepted',
       pi: true
-    } as any;
+    };
     (PostProposal as Mock).mockResolvedValue({
       ...mockPostProposalSkeleton,
       investigators: [backendInjectedPI]
@@ -347,7 +353,8 @@ describe('clone proposal', () => {
     // cloned proposal (with the new ID so that the contents and state match.
     await waitFor(() => {
       expect(mockValidateFn).toHaveBeenCalledWith(
-        expect.objectContaining({ id: CLONED_PROPOSAL_ID })
+        expect.objectContaining({ id: CLONED_PROPOSAL_ID }),
+        expect.anything()
       );
     });
   });

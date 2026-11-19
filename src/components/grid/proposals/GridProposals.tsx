@@ -10,6 +10,7 @@ import { Typography, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { storageObject } from '@utils/storage/store';
 import { useValidateProposal } from '@utils/validation/validation';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
 import EditIcon from '../../icon/editIcon/editIcon';
@@ -351,7 +352,7 @@ export default function GridProposals({
       setAxiosViewError(response);
       return false;
     } else {
-      updateAppContent1(validateProposal(response));
+      updateAppContent1(validateProposal(response, getProposalFormValues(response)));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;

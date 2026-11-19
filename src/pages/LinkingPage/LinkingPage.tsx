@@ -20,6 +20,7 @@ import {
 import { getColors } from '@ska-telescope/ska-gui-components';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import { getSubmitPageStatuses } from '@/models/proposals/submit';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import {
   SA_CUSTOM,
   PAGE_CALIBRATION,
@@ -57,6 +58,7 @@ export default function LinkingPage() {
   const { t } = useScopedTranslation();
 
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
+  const { osdLOW, osdMID } = useOSDAccessors();
   const { application, updateAppContent1 } = storageObject.useStore();
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
@@ -86,7 +88,10 @@ export default function LinkingPage() {
   const getCalibration = () => getFormCalibration(form);
 
   // Write submit status checks into the status store (to be deleted in future refactor)
-  const { linking, calibration } = getSubmitPageStatuses(form.getValues());
+  const { linking, calibration } = getSubmitPageStatuses(form.getValues(), {
+    low: osdLOW,
+    mid: osdMID
+  });
   React.useEffect(() => {
     const statuses = application.content1 as number[];
     if (

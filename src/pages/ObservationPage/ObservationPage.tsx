@@ -5,8 +5,7 @@ import { ProposalType } from '@/models/proposals/proposal';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { Proposal } from '@utils/types/proposal.tsx';
-import { useValidateProposal } from '@utils/validation/validation.tsx';
+import { getSubmitPageStatuses } from '@/models/proposals/submit';
 import {
   PAGE_CALIBRATION,
   PAGE_LINKING,
@@ -30,8 +29,7 @@ const GAP = 4;
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  const { osdCyclePolicy } = useOSDAccessors();
-  const validateProposal = useValidateProposal();
+  const { osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
 
   const { application, updateAppContent1 } = storageObject.useStore();
   // The observation the user is asked to confirm deleting, while the dialog is open
@@ -39,28 +37,22 @@ export default function ObservationPage() {
     null
   );
 
-  const getProposal = () => application.content2 as Proposal;
   const form = useFormContext<ProposalType>();
   // The form has every observation, including ones still being edited
   const observations = useWatch({ control: form.control, name: 'observations' });
+  useWatch({ control: form.control, name: ['targetObservation', 'calibrationStrategy'] });
 
-  // Write the page statuses into the status store (to be deleted in future refactor). Deleting an
-  // observation also deletes its links and calibration, so the Linking and Calibration pages' go
-  // too
-  const proposal = getProposal();
-  const statuses = proposal ? validateProposal(proposal) : undefined;
-  const observationStatus = statuses?.[PAGE];
-  const linkingStatus = statuses?.[PAGE_LINKING];
-  const calibrationStatus = statuses?.[PAGE_CALIBRATION];
+  // Write submit status checks into the status store (to be deleted in future refactor). Deleting
+  // an observation also deletes its links and calibration, so the Linking and Calibration pages'
+  // statuses are written too
+  const {
+    observation: observationStatus,
+    linking: linkingStatus,
+    calibration: calibrationStatus
+  } = getSubmitPageStatuses(form.getValues(), { low: osdLOW, mid: osdMID });
   React.useEffect(() => {
     const current = application.content1 as number[];
-    if (
-      observationStatus === undefined ||
-      linkingStatus === undefined ||
-      calibrationStatus === undefined ||
-      !current ||
-      current.length <= PAGE
-    ) {
+    if (!current || current.length <= PAGE) {
       return;
     }
     const next = current.map((value, i) =>
