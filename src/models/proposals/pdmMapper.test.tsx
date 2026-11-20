@@ -96,15 +96,26 @@ describe('mapPdmToForm', () => {
     ]);
   });
 
-  test('returns empty form values when there is no PDM', () => {
-    expect(mapPdmToForm(undefined)).toEqual({
-      title: '',
-      proposalType: { type: null, subTypes: [] },
-      abstract: '',
-      scienceCategory: null,
-      investigators: [],
-      ...emptySlices
-    });
+  // The PDM requires a proposal type, so a proposal without one fails to load
+  test('rejects a PDM without a proposal type', () => {
+    expect(() =>
+      mapPdmToForm({
+        ...pdm,
+        proposal_info: { ...pdm.proposal_info, proposal_type: {} as never }
+      })
+    ).toThrow();
+  });
+
+  test('defaults missing PDM sub-types to an empty list', () => {
+    expect(
+      mapPdmToForm({
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          proposal_type: { main_type: PROPOSAL_TYPE.STANDARD }
+        }
+      }).proposalType
+    ).toEqual({ type: PROPOSAL_TYPE.STANDARD, subTypes: [] });
   });
 
   test.each([undefined, []])(

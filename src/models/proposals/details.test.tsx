@@ -92,8 +92,8 @@ describe('details PDM mapping', () => {
     });
   });
 
-  test('defaults missing proposal metadata without an observing mode', () => {
-    expect(detailsFromPdm()).toEqual({
+  test('defaults a missing abstract and science category', () => {
+    expect(detailsFromPdm({})).toEqual({
       abstract: '',
       scienceCategory: null
     });

@@ -11,30 +11,30 @@ import { dataProductsFromPdm } from './dataProducts';
 import { observationInfoToSave } from './save';
 import { observationsFromPdm } from './observations';
 
-/** PDM (ODA) → RHF form values. Add migrated page as a slice here. */
-export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
-  const documents = documentsFromPdm(pdm?.observation_info?.documents);
+/**
+ * PDM (ODA) → RHF form values. Add migrated page as a slice here. What the PDM requires is read
+ * as it is, so a proposal without it fails to load; what the PDM makes optional gets the form's
+ * default.
+ */
+export function mapPdmToForm(pdm: ProposalBackend): ProposalType {
+  const { proposal_info: proposalInfo, observation_info: observationInfo } = pdm;
   return {
-    title: titleFromPdm(pdm?.proposal_info),
+    title: titleFromPdm(proposalInfo),
     proposalType: {
-      type:
-        getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ??
-        null,
-      subTypes: getProposalSubTypesSchema().parse(
-        pdm?.proposal_info?.proposal_type?.attributes ?? []
-      )
+      type: getProposalTypeSchema().parse(proposalInfo.proposal_type.main_type),
+      subTypes: getProposalSubTypesSchema().parse(proposalInfo.proposal_type.attributes ?? [])
     },
-    ...detailsFromPdm(pdm?.proposal_info),
-    ...teamFromPdm(pdm?.proposal_info?.investigators),
-    targets: targetsFromPdm(pdm?.observation_info?.targets),
+    ...detailsFromPdm(proposalInfo),
+    ...teamFromPdm(proposalInfo.investigators),
+    targets: targetsFromPdm(observationInfo.targets),
     targetObservation: targetObservationFromPdm(
-      pdm?.observation_info?.result_details,
-      pdm?.observation_info?.observation_sets
+      observationInfo.result_details,
+      observationInfo.observation_sets
     ),
-    calibrationStrategy: calibrationStrategyFromPdm(pdm?.observation_info?.calibration_strategy),
-    ...documents,
-    dataProducts: dataProductsFromPdm(pdm?.observation_info?.data_product_sdps),
-    observations: observationsFromPdm(pdm?.observation_info?.observation_sets)
+    calibrationStrategy: calibrationStrategyFromPdm(observationInfo.calibration_strategy),
+    ...documentsFromPdm(observationInfo.documents),
+    dataProducts: dataProductsFromPdm(observationInfo.data_product_sdps),
+    observations: observationsFromPdm(observationInfo.observation_sets)
   };
 }
 

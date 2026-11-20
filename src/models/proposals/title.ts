@@ -25,7 +25,7 @@ export function getTitleSchema() {
 
 export type TitleType = z.infer<ReturnType<typeof getTitleSchema>>;
 
-export const titleFromPdm = (proposalInfo?: Partial<ProposalInfo>): TitleType =>
-  proposalInfo?.title ?? '';
+export const titleFromPdm = (proposalInfo: Pick<ProposalInfo, 'title'>): TitleType =>
+  proposalInfo.title;
 
 export const titleToPdm = (title: TitleType): Pick<ProposalInfo, 'title'> => ({ title });
