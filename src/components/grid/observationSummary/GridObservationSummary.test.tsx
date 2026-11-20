@@ -1,9 +1,23 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, expect, test, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import GridObservationSummary from './GridObservationSummary';
-import { BAND_LOW_STR, TYPE_CONTINUUM } from '@/utils/constants';
+import {
+  BAND_LOW_STR,
+  SENSITIVITY_STATE,
+  TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
+  TYPE_ZOOM,
+  TYPE_ZOOM_LONG
+} from '@/utils/constants';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
+import type { Sensitivity } from '@/models/proposals/targetObservation';
+
+vi.mock('@/services/i18n/useScopedTranslation', () => ({
+  useScopedTranslation: () => ({ t: (key: string) => key })
+}));
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
@@ -100,3 +114,71 @@ describe('<GridObservationSummary />', () => {
     );
   });
 });
+
+const continuum = { weightedSensitivity: { value: 12, unit: 'Jy' } };
+const spectral = { weightedSensitivity: { value: 34, unit: 'Jy' } };
+
+const renderSensitivity = (type: string, sensitivity: Sensitivity, observationId = 'summary-obs') =>
+  wrapper(
+    <GridObservationSummary
+      proposal={{
+        ...MockProposalFrontend,
+        observations: [{ ...MockProposalFrontend.observations![0], id: 'summary-obs', type }],
+        targetObservation: [{ targetId: 't1', observationId, dataProductsSDPId: '', sensitivity }]
+      }}
+    />
+  );
+
+describe.each([TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG])(
+  '%s sensitivities',
+  (type) => {
+    test.each([
+      [continuum, spectral, true, true],
+      [continuum, undefined, true, false],
+      [undefined, spectral, false, true],
+      [undefined, undefined, false, false]
+    ])(
+      'renders available DONE parts (%j, %j)',
+      (continuum, spectral, hasContinuum, hasSpectral) => {
+        // Exercise partial calculator results, including a missing spectral part.
+        renderSensitivity(type, {
+          state: SENSITIVITY_STATE.DONE,
+          continuum,
+          spectral
+        } as Sensitivity);
+        expect(screen.queryByText('observationType.continuum: 12.00 Jy') !== null).toBe(
+          hasContinuum
+        );
+        expect(screen.queryByText('observationType.spectral: 34.00 Jy') !== null).toBe(hasSpectral);
+      }
+    );
+
+    test.each([SENSITIVITY_STATE.CALCULATING, SENSITIVITY_STATE.FAILED])(
+      'does not render results for %s links',
+      (state) => {
+        renderSensitivity(type, { state, error: 'Failed', continuum, spectral } as Sensitivity);
+        expect(
+          screen.queryByText(/observationType\.(continuum|spectral):/)
+        ).not.toBeInTheDocument();
+      }
+    );
+
+    test('ignores results linked to another observation', () => {
+      renderSensitivity(type, { state: SENSITIVITY_STATE.DONE, continuum, spectral }, 'other-obs');
+      expect(screen.queryByText(/observationType\.(continuum|spectral):/)).not.toBeInTheDocument();
+    });
+  }
+);
+
+test.each([TYPE_CONTINUUM, TYPE_ZOOM, TYPE_ZOOM_LONG])(
+  '%s retains its existing sensitivity',
+  (type) => {
+    renderSensitivity(type, { state: SENSITIVITY_STATE.DONE, continuum, spectral });
+    expect(screen.queryByText('observationType.continuum: 12.00 Jy') !== null).toBe(
+      type === TYPE_CONTINUUM
+    );
+    expect(screen.queryByText('observationType.spectral: 34.00 Jy') !== null).toBe(
+      type !== TYPE_CONTINUUM
+    );
+  }
+);

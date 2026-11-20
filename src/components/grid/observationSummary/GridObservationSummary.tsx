@@ -132,16 +132,23 @@ export default function GridObservationSummary({
   // The weighted sensitivities of the observation's links, as the Data Products page shows them
   const getSensitivities = (rec: Observation): string[] => {
     if (rec.type === TYPE_PST) return [];
-    const isContinuum = rec.type === TYPE_CONTINUUM;
+    const parts: Array<'continuum' | 'spectral'> =
+      rec.type === TYPE_CONTINUUM
+        ? ['continuum']
+        : [TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG].includes(rec.type)
+          ? ['continuum', 'spectral']
+          : ['spectral'];
     return (proposal?.targetObservation ?? []).flatMap((link) => {
       const results = link.observationId === rec.id ? link.sensitivity : undefined;
       if (results?.state !== SENSITIVITY_STATE.DONE) return [];
-      const values = isContinuum ? results.continuum : results.spectral;
-      if (!values) return [];
-      const label = t(isContinuum ? 'observationType.continuum' : 'observationType.spectral');
-      return [
-        `${label}: ${valueWithUnits(values.weightedSensitivity.value, values.weightedSensitivity.unit)}`
-      ];
+      return parts.flatMap((part) => {
+        const values = results[part];
+        if (!values) return [];
+        const label = t(`observationType.${part}`);
+        return [
+          `${label}: ${valueWithUnits(values.weightedSensitivity.value, values.weightedSensitivity.unit)}`
+        ];
+      });
     });
   };
 
