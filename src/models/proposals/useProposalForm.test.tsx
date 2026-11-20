@@ -4,7 +4,12 @@ import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUse
 import { useProposalForm } from './useProposalForm';
 import Investigator from '@/utils/types/investigator';
 import { getTeamValues } from './team';
-import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
+import {
+  PROPOSAL_SUBTYPE,
+  PROPOSAL_TYPE,
+  VELOCITY_DEFINITION,
+  type ProposalSubTypeType
+} from '@/utils/constants';
 import Target from '@/utils/types/target';
 import TargetObservation from '@/utils/types/targetObservation';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
@@ -14,6 +19,7 @@ type Props = {
   id?: string;
   title: string;
   proposalType?: (typeof PROPOSAL_TYPE)[keyof typeof PROPOSAL_TYPE];
+  proposalSubType?: ProposalSubTypeType[];
   abstract?: string;
   scienceCategory?: number | null;
   investigators?: Investigator[];
@@ -49,7 +55,7 @@ describe('useProposalForm', () => {
   test('seeds the title from the proposal', () => {
     const { result } = renderHook(() => useProposalForm({ id: 'p1', title: 'Saved title' }));
     expect(result.current.getValues('title')).toBe('Saved title');
-    expect(result.current.getValues('proposalType')).toBeNull();
+    expect(result.current.getValues('proposalType')).toEqual({ type: null, subTypes: [] });
     expect(result.current.getValues('abstract')).toBe('');
     expect(result.current.getValues('scienceCategory')).toBeNull();
     expect(result.current.getValues('investigators')).toEqual([]);
@@ -123,22 +129,29 @@ describe('useProposalForm', () => {
     expect(result.current.getValues('title')).toBe('Typed title');
   });
 
-  test('seeds and re-seeds the proposal type when switching proposals', () => {
+  test('seeds and re-seeds the proposal type and sub-types when switching proposals', () => {
     const { result, rerender } = renderHook((proposal: Props) => useProposalForm(proposal), {
       initialProps: {
         id: 'p1',
         title: 'First',
-        proposalType: PROPOSAL_TYPE.STANDARD
+        proposalType: PROPOSAL_TYPE.STANDARD,
+        proposalSubType: [PROPOSAL_SUBTYPE.JOINT]
       } as Props
     });
-    expect(result.current.getValues('proposalType')).toBe(PROPOSAL_TYPE.STANDARD);
+    expect(result.current.getValues('proposalType')).toEqual({
+      type: PROPOSAL_TYPE.STANDARD,
+      subTypes: [PROPOSAL_SUBTYPE.JOINT]
+    });
 
     rerender({
       id: 'p2',
       title: 'Second',
       proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION
     });
-    expect(result.current.getValues('proposalType')).toBe(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
+    expect(result.current.getValues('proposalType')).toEqual({
+      type: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      subTypes: []
+    });
   });
 
   test('keeps in-progress type edits when the same proposal changes', () => {
@@ -150,10 +163,10 @@ describe('useProposalForm', () => {
       } as Props
     });
 
-    act(() => result.current.setValue('proposalType', PROPOSAL_TYPE.KEY_SCIENCE));
+    act(() => result.current.setValue('proposalType.type', PROPOSAL_TYPE.KEY_SCIENCE));
     rerender({ id: 'p1', title: 'First', proposalType: PROPOSAL_TYPE.STANDARD });
 
-    expect(result.current.getValues('proposalType')).toBe(PROPOSAL_TYPE.KEY_SCIENCE);
+    expect(result.current.getValues('proposalType.type')).toBe(PROPOSAL_TYPE.KEY_SCIENCE);
   });
 
   test('seeds targets, links and calibration from the proposal', () => {

@@ -10,7 +10,7 @@ import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { getProposalSchema } from './proposal';
 import { DataProductInput } from './dataProducts';
 import { formObservationsFromLegacy } from './legacyObservations';
-import { PROPOSAL_STATUS, PROPOSAL_TYPE } from '@/utils/constants';
+import { PROPOSAL_STATUS, PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
 // A base from the legacy mapper, as on a real save, so the form's slices map back to it exactly
@@ -30,7 +30,10 @@ describe('mapPdmToForm', () => {
     const legacy = mapping(pdm);
     expect(mapPdmToForm(pdm)).toEqual({
       title: pdm.proposal_info.title,
-      proposalType: pdm.proposal_info.proposal_type.main_type,
+      proposalType: {
+        type: pdm.proposal_info.proposal_type.main_type,
+        subTypes: pdm.proposal_info.proposal_type.attributes
+      },
       abstract: pdm.proposal_info.abstract,
       scienceCategory: 1,
       investigators: [],
@@ -96,7 +99,7 @@ describe('mapPdmToForm', () => {
   test('returns empty form values when there is no PDM', () => {
     expect(mapPdmToForm(undefined)).toEqual({
       title: '',
-      proposalType: null,
+      proposalType: { type: null, subTypes: [] },
       abstract: '',
       scienceCategory: null,
       investigators: [],
@@ -153,7 +156,7 @@ describe('mapFormToPdm', () => {
     const result = mapFormToPdm(
       {
         title: 'Edited title',
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        proposalType: { type: PROPOSAL_TYPE.KEY_SCIENCE, subTypes: [PROPOSAL_SUBTYPE.JOINT] },
         abstract: 'Edited abstract',
         scienceCategory: 7,
         investigators: [],
@@ -166,8 +169,8 @@ describe('mapFormToPdm', () => {
     expect(result.proposal_info.abstract).toBe('Edited abstract');
     expect(result.proposal_info.science_category).toBe('High Energy Cosmic Particles');
     expect(result.proposal_info.proposal_type).toEqual({
-      ...pdm.proposal_info.proposal_type,
-      main_type: PROPOSAL_TYPE.KEY_SCIENCE
+      main_type: PROPOSAL_TYPE.KEY_SCIENCE,
+      attributes: [PROPOSAL_SUBTYPE.JOINT]
     });
     expect(result.prsl_id).toBe(pdm.prsl_id);
   });
@@ -177,7 +180,7 @@ describe('mapFormToPdm', () => {
     mapFormToPdm(
       {
         title: 'Edited title',
-        proposalType: PROPOSAL_TYPE.STANDARD,
+        proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
         abstract: '',
         scienceCategory: null,
         investigators: [],
@@ -197,7 +200,7 @@ describe('mapFormToPdm', () => {
     const result = mapFormToPdm(
       {
         title: 'Edited title',
-        proposalType: PROPOSAL_TYPE.STANDARD,
+        proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
         abstract: '',
         scienceCategory: null,
         investigators: [investigator],

@@ -8,7 +8,8 @@ import { getCalibrationStrategySchema } from './calibrationStrategy';
 import { getDocumentRefSchema } from './documents';
 import { getDataProductsSchema } from './dataProducts';
 import { getObservationsSchema, ObservationOsd } from './observations';
-import { PROPOSAL_TYPE } from '@/utils/constants';
+import { required } from './required';
+import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import { getDetailsSchema } from './details';
 import { getTeamSchema } from './team';
@@ -17,15 +18,19 @@ export function getProposalTypeSchema() {
   return z.enum(PROPOSAL_TYPE);
 }
 
+export function getProposalSubTypesSchema() {
+  return z.array(z.enum(PROPOSAL_SUBTYPE));
+}
+
 /** The proposal's rules. The observations' rules that need the OSD are checked only with it. */
 export function getProposalSchema(osd: ObservationOsd = {}) {
   return z.object({
     title: getTitleSchema(),
-    proposalType: getProposalTypeSchema()
-      // Controlled fields need null to clear a previous selection on reset
-      .nullable()
-      // Returns a plain boolean so the type is not narrowed to non-null
-      .refine((value): boolean => value != null, { message: phtTranslations.proposalType.help }),
+    // The type and the sub-types that go with it, as the PDM's proposal_type holds them
+    proposalType: z.object({
+      type: required(z.enum(PROPOSAL_TYPE, { error: phtTranslations.proposalType.help })),
+      subTypes: getProposalSubTypesSchema()
+    }),
     abstract: getDetailsSchema().shape.abstract,
     scienceCategory: getDetailsSchema().shape.scienceCategory,
     // Without the subgroup's own default: the form's defaults are in getProposalFormDefaults, and

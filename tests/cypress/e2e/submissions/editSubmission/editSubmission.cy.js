@@ -14,7 +14,6 @@ import {
   addSubmissionSummary,
   clickEditIconForRow,
   clickAddObservationEntry,
-  updateFieldValue,
   verifyDataInTable,
   clickAddDataProduct,
   addContinuumImagesObservatoryDataProduct,
@@ -78,7 +77,9 @@ describe('Edit Proposal', () => {
         // validated LOW spectral window schema. 199.609375 MHz is the nearest valid point (also
         // ODT's own default), so set that explicitly rather than fail the observation page's own
         // validation before the proposal is even submitted.
-        updateFieldValue('centralFrequency', '199.609375');
+        cy.findByRole('spinbutton', { name: 'Central Frequency' })
+          .type('{selectall}199.609375')
+          .blur();
         clickAddObservationEntry();
         verifyDataInTable('review-table', 'Continuum');
         clickStatusIconNav('statusId7'); //Click to data product page

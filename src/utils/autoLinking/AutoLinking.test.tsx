@@ -408,7 +408,7 @@ describe('relinkSvTarget()', () => {
   };
   const svValues: ProposalType = {
     ...getProposalFormDefaults(),
-    proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+    proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
     targets: [target],
     observations: [observation(OBSERVING_MODE.CONTINUUM, 'obs-1')],
     dataProducts: [leftover]
@@ -467,7 +467,7 @@ describe('relinkSvTarget()', () => {
       }
     ],
     ['no target', { targets: [] }],
-    ['another proposal type', { proposalType: PROPOSAL_TYPE.STANDARD }]
+    ['another proposal type', { proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] } }]
   ])('leaves a proposal with %s as it is', (_, change) => {
     const values = { ...svValues, ...change } as ProposalType;
 

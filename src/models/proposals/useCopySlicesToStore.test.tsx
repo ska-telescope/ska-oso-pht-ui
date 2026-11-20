@@ -4,7 +4,13 @@ import { act, renderHook } from '@testing-library/react';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import Target from '@utils/types/target';
-import { BAND_LOW_STR, PROPOSAL_TYPE, SA_AA_STAR, VELOCITY_DEFINITION } from '@/utils/constants';
+import {
+  BAND_LOW_STR,
+  PROPOSAL_SUBTYPE,
+  PROPOSAL_TYPE,
+  SA_AA_STAR,
+  VELOCITY_DEFINITION
+} from '@/utils/constants';
 import { useProposalForm } from './useProposalForm';
 import { useCopySlicesToStore } from './useCopySlicesToStore';
 import { dataProductsFromPdm } from './dataProducts';
@@ -143,14 +149,19 @@ describe('useCopySlicesToStore', () => {
 
     act(() => {
       result.current.form.setValue('title', 'Second');
-      result.current.form.setValue('proposalType', PROPOSAL_TYPE.KEY_SCIENCE);
+      result.current.form.setValue('proposalType', {
+        type: PROPOSAL_TYPE.KEY_SCIENCE,
+        subTypes: [PROPOSAL_SUBTYPE.JOINT]
+      });
       result.current.form.setValue('sciencePDF', { documentId: 'science-doc-p1' });
     });
 
     expect(storedProposal(result)).toEqual(
       expect.objectContaining({
         title: 'Second',
+        // The store has the type flat, with its sub-types beside it
         proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        proposalSubType: [PROPOSAL_SUBTYPE.JOINT],
         sciencePDF: { documentId: 'science-doc-p1' }
       })
     );

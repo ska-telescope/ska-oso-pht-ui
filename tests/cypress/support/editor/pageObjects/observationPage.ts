@@ -1,8 +1,7 @@
-import { enter, section, select, verifySelected } from '../fields';
+import { enter, select, verifySelected } from '../fields';
 import type { PageObject } from '../types';
 
-// The integration time field has no label, and it's the only text field in its section
-const integrationTimeField = () => section('Array Setup').findByRole('textbox');
+const integrationTimeField = () => cy.findByRole('spinbutton', { name: 'Integration time' });
 const centralFrequencyField = () => cy.findByRole('spinbutton', { name: 'Central Frequency' });
 const bandwidthField = () => cy.findByRole('spinbutton', { name: 'Bandwidth' });
 const numberOfChannelsField = () => cy.findByRole('spinbutton', { name: 'Number of channels' });

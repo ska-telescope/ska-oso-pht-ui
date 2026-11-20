@@ -8,7 +8,7 @@ import { getDocumentPageStatus } from '@/models/proposals/documents';
 
 // Each page is complete or not: the title needs a valid title and a proposal type
 export const validateTitlePage = (values: Pick<ProposalType, 'title' | 'proposalType'>) =>
-  getTitleSchema().safeParse(values.title).success && values.proposalType !== null
+  getTitleSchema().safeParse(values.title).success && values.proposalType.type !== null
     ? STATUS_OK
     : STATUS_ERROR;
 
@@ -19,7 +19,7 @@ export const validateDetailsPage = (
   values: Pick<ProposalType, 'abstract' | 'scienceCategory' | 'proposalType' | 'observations'>
 ) => {
   const hasCategoryOrMode =
-    values.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+    values.proposalType.type === PROPOSAL_TYPE.SCIENCE_VERIFICATION
       ? values.observations.length > 0
       : values.scienceCategory !== null;
   return getDetailsSchema().shape.abstract.safeParse(values.abstract).success && hasCategoryOrMode

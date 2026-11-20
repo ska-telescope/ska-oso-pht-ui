@@ -1,5 +1,5 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { getProposalTypeSchema, ProposalType } from './proposal';
+import { getProposalSubTypesSchema, getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
 import { detailsFromPdm, detailsToPdm } from './details';
 import { teamFromPdm, teamToPdm } from './team';
@@ -16,9 +16,14 @@ export function mapPdmToForm(pdm?: Partial<ProposalBackend>): ProposalType {
   const documents = documentsFromPdm(pdm?.observation_info?.documents);
   return {
     title: titleFromPdm(pdm?.proposal_info),
-    proposalType:
-      getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ??
-      null,
+    proposalType: {
+      type:
+        getProposalTypeSchema().optional().parse(pdm?.proposal_info?.proposal_type?.main_type) ??
+        null,
+      subTypes: getProposalSubTypesSchema().parse(
+        pdm?.proposal_info?.proposal_type?.attributes ?? []
+      )
+    },
     ...detailsFromPdm(pdm?.proposal_info),
     ...teamFromPdm(pdm?.proposal_info?.investigators),
     targets: targetsFromPdm(pdm?.observation_info?.targets),
@@ -53,8 +58,8 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
       ...detailsToPdm(form),
       investigators: teamToPdm(form.investigators ?? []),
       proposal_type: {
-        ...base.proposal_info.proposal_type,
-        main_type: getProposalTypeSchema().parse(form.proposalType)
+        main_type: getProposalTypeSchema().parse(form.proposalType.type),
+        attributes: form.proposalType.subTypes
       }
     },
     investigator_refs: (form.investigators ?? []).map(({ id }) => id),

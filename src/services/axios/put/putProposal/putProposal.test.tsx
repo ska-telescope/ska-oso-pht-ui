@@ -10,6 +10,7 @@ import {
   TYPE_PST,
   PST_MODES,
   TYPE_ZOOM_LONG,
+  PROPOSAL_SUBTYPE,
   PROPOSAL_TYPE
 } from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
@@ -141,7 +142,7 @@ describe('PutProposal Service', () => {
       await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
         ...formSlices,
         title: 'Title from RHF',
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        proposalType: { type: PROPOSAL_TYPE.KEY_SCIENCE, subTypes: [PROPOSAL_SUBTYPE.JOINT] },
         abstract: 'Abstract from RHF',
         scienceCategory: 7
       });
@@ -153,9 +154,10 @@ describe('PutProposal Service', () => {
           title: 'Title from RHF',
           abstract: 'Abstract from RHF',
           science_category: 'High Energy Cosmic Particles',
+          // The type and its sub-types are the form's
           proposal_type: {
-            ...base.proposal_info.proposal_type,
-            main_type: PROPOSAL_TYPE.KEY_SCIENCE
+            main_type: PROPOSAL_TYPE.KEY_SCIENCE,
+            attributes: [PROPOSAL_SUBTYPE.JOINT]
           }
         }
       });
@@ -169,7 +171,7 @@ describe('PutProposal Service', () => {
     await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
       ...formSlices,
       title: '',
-      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
       abstract: '',
       scienceCategory: null
     });

@@ -60,7 +60,7 @@ export function getProposalSubmitSchema(osd: ObservationOsd) {
       // An SV proposal has no Linking page, so check that data product and target are linked here.
       .refine(
         (values) =>
-          values?.proposalType !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
+          values?.proposalType?.type !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
           (Array.isArray(values.targetObservation) &&
             Array.isArray(values.dataProducts) &&
             values.targetObservation.some(

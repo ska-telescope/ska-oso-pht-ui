@@ -8,12 +8,16 @@ import Observation from '@/utils/types/observation';
 import GroupObservation from '@/utils/types/groupObservation';
 import { formObservationsFromLegacy } from './legacyObservations';
 import { ObservationOsd } from './observations';
+import type { ProposalSubTypeType, ProposalTypeType } from '@/utils/constants';
 
 type ProposalSeed = Omit<
   Partial<ProposalType>,
-  'scienceCategory' | 'investigators' | 'observations'
+  'proposalType' | 'scienceCategory' | 'investigators' | 'observations'
 > & {
   id?: string | null;
+  // TODO: The legacy store's shape, until nothing reads them from there
+  proposalType?: ProposalTypeType | null;
+  proposalSubType?: ProposalSubTypeType[] | null;
   scienceCategory?: number | string | null;
   investigators?: Investigator[] | null;
   // The legacy store's shape, until nothing reads observations from there
@@ -24,7 +28,7 @@ type ProposalSeed = Omit<
 /** The form values of a new proposal. */
 export const getProposalFormDefaults = (): ProposalType => ({
   title: '',
-  proposalType: null,
+  proposalType: { type: null, subTypes: [] },
   abstract: '',
   scienceCategory: null,
   investigators: [],
@@ -51,6 +55,10 @@ export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => 
   ) as ProposalType;
   return {
     ...slices,
+    proposalType: {
+      type: proposal?.proposalType ?? null,
+      subTypes: proposal?.proposalSubType ?? []
+    },
     ...getDetailsValues(proposal),
     ...getTeamValues(proposal),
     observations: formObservationsFromLegacy(proposal?.observations, proposal?.groupObservations)

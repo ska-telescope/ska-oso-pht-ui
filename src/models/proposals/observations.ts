@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { required } from './required';
 import {
   BAND_1_STR,
   BAND_2_STR,
@@ -202,11 +203,6 @@ export const zoomFactorFromSpectralResolution = (
     ? nearest
     : null;
 };
-
-// A value that can be missing in the form (e.g. not in the saved proposal) but is required to be
-// valid: null in the form, and an error with the schema's own message until it is set.
-const required = <T extends z.ZodType>(schema: T) =>
-  z.custom<z.input<T> | null>().pipe(schema as z.ZodType<z.output<T>, z.input<T> | null>);
 
 const rangeSchema = (range: { min: number; max: number }) =>
   required(z.number().min(range.min).max(range.max));

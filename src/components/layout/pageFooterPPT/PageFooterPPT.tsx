@@ -81,7 +81,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     // An SV proposal starts with an observation in the default observing mode, which the user can
     // change on the Details page, and its data products
     const observations =
-      proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+      proposalType.type === PROPOSAL_TYPE.SCIENCE_VERIFICATION
         ? [
             newSvObservation(
               OBSERVING_MODE.CONTINUUM,
@@ -100,7 +100,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         investigators,
         ...legacyObservationsFromForm(observations),
         dataProducts: observations.flatMap(newDataProductsForMode),
-        proposalType: proposalType ?? undefined,
+        proposalType: proposalType.type ?? undefined,
+        proposalSubType: proposalType.subTypes,
         cycle: osdCycleId ?? null
       },
       PROPOSAL_STATUS.DRAFT

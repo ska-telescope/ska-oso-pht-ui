@@ -38,7 +38,7 @@ const observation = { ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id: 'o1
 
 const values = (slices: Partial<ProposalType> = {}): ProposalType => ({
   title: 'A valid title',
-  proposalType: PROPOSAL_TYPE.STANDARD,
+  proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
   abstract: 'A valid abstract',
   scienceCategory: null,
   investigators: [],
@@ -193,7 +193,7 @@ describe('getSubmitPageStatuses, Data Products page', () => {
     expect(
       getSubmitPageStatuses(
         values({
-          proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+          proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
           targetObservation: targetObservation as TargetObservationLink[]
         }),
         osd
@@ -208,19 +208,20 @@ describe('getSubmitPageStatuses, Data Products page', () => {
   });
 
   // The SV link rule is checked even when the values are malformed
-  test.each([null, {}, { proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, dataProducts: 'x' }])(
-    'reports malformed values without throwing: %j',
-    (malformed) => {
-      expect(getProposalSubmitSchema(osd).safeParse(malformed).success).toBe(false);
-    }
-  );
+  test.each([
+    null,
+    {},
+    { proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] }, dataProducts: 'x' }
+  ])('reports malformed values without throwing: %j', (malformed) => {
+    expect(getProposalSubmitSchema(osd).safeParse(malformed).success).toBe(false);
+  });
 
   // A wrong type stops Zod checking the rest of the proposal unless the rule says otherwise
   test('still reports an SV data product without a link when a target is malformed', () => {
     expect(
       getSubmitPageStatuses(
         values({
-          proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+          proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
           targets: [{ ...target, kind: 'not a number' } as never],
           targetObservation: []
         }),

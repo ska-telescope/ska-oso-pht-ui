@@ -46,7 +46,10 @@ describe('useValidateProposal', () => {
 describe('validateTitlePage', () => {
   it('returns STATUS_ERROR for titles with unsupported characters', () => {
     expect(
-      validateTitlePage({ title: 'A proposal with @', proposalType: PROPOSAL_TYPE.STANDARD })
+      validateTitlePage({
+        title: 'A proposal with @',
+        proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] }
+      })
     ).toBe(STATUS_ERROR);
   });
 
@@ -55,14 +58,16 @@ describe('validateTitlePage', () => {
     ['no proposal type', 'A proposal', null, STATUS_ERROR],
     ['no title', '', PROPOSAL_TYPE.STANDARD, STATUS_ERROR]
   ] as const)('is complete only with both: %s', (_, title, proposalType, status) => {
-    expect(validateTitlePage({ title, proposalType })).toBe(status);
+    expect(validateTitlePage({ title, proposalType: { type: proposalType, subTypes: [] } })).toBe(
+      status
+    );
   });
 });
 
 describe('validateDetailsPage', () => {
   const observation = newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
   const standard: Parameters<typeof validateDetailsPage>[0] = {
-    proposalType: PROPOSAL_TYPE.STANDARD,
+    proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
     abstract: 'An abstract',
     scienceCategory: 1,
     observations: []
@@ -82,7 +87,7 @@ describe('validateDetailsPage', () => {
   it('requires an abstract and an observation (the observing mode) for SV proposals', () => {
     const sv = {
       ...standard,
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
       scienceCategory: null
     };
     expect(validateDetailsPage({ ...sv, observations: [observation] })).toBe(STATUS_OK);

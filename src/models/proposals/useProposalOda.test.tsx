@@ -36,7 +36,11 @@ const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) =>
   const { result: form } = renderHook(() =>
     useForm<ProposalType>({
       // The other slices match the proposal being saved, as they do when seeded from the store
-      defaultValues: { ...getProposalFormValues(mapping(pdm)), title, proposalType }
+      defaultValues: {
+        ...getProposalFormValues(mapping(pdm)),
+        title,
+        proposalType: { type: proposalType, subTypes: [] }
+      }
     })
   );
   const { result: oda } = renderHook(() => useProposalOda(), {
@@ -67,7 +71,10 @@ describe('useProposalOda', () => {
     });
 
     expect(form.current.getValues('title')).toBe(pdm.proposal_info.title);
-    expect(form.current.getValues('proposalType')).toBe(pdm.proposal_info.proposal_type.main_type);
+    expect(form.current.getValues('proposalType')).toEqual({
+      type: pdm.proposal_info.proposal_type.main_type,
+      subTypes: pdm.proposal_info.proposal_type.attributes
+    });
     expect(form.current.getValues()).not.toHaveProperty('observingMode');
     expect(form.current.getValues('abstract')).toBe(pdm.proposal_info.abstract);
     expect(form.current.getValues('scienceCategory')).toBe(1);
@@ -184,10 +191,8 @@ describe('useProposalOda', () => {
           abstract: pdm.proposal_info.abstract,
           science_category: pdm.proposal_info.science_category,
           investigators: [],
-          proposal_type: {
-            ...expected.proposal_info.proposal_type,
-            main_type: PROPOSAL_TYPE.KEY_SCIENCE
-          }
+          // The type and its sub-types are the form's
+          proposal_type: { main_type: PROPOSAL_TYPE.KEY_SCIENCE, attributes: [] }
         }
       }
     );

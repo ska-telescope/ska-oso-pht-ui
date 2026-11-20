@@ -149,7 +149,7 @@ export async function linkTarget(
 export const relinkSvTarget = (values: ProposalType): ProposalType => {
   const [target] = values.targets;
   if (
-    values.proposalType !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
+    values.proposalType.type !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
     values.observations.length !== 1 ||
     !target ||
     values.targetObservation.length > 0
