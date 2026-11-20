@@ -49,8 +49,11 @@ describe('mapPdmToForm', () => {
     const proposal = mapping(pdm);
     expect(proposal.observations?.[0]?.type).toBe('continuum');
     expect(mapPdmToForm(pdm)).not.toHaveProperty('observingMode');
-    expect(mapFormToPdm(mapPdmToForm(pdm), pdm).observation_info.observation_sets).toEqual(
-      pdm.observation_info.observation_sets
+    const saved = mapFormToPdm(mapPdmToForm(pdm), pdm).observation_info.observation_sets ?? [];
+    expect(saved.map((set) => set.observation_type_details.observation_type)).toEqual(
+      (pdm.observation_info.observation_sets ?? []).map(
+        (set) => set.observation_type_details.observation_type
+      )
     );
   });
 
@@ -224,12 +227,12 @@ describe('mapFormToPdm', () => {
     expect(mapFormToPdm(mapPdmToForm(base), base)).toEqual(base);
   });
 
-  test('lays targets, links and calibration from the form over the base PDM', () => {
+  test('lays targets, observations, links and calibration from the form over the base PDM', () => {
     const result = mapFormToPdm({ ...mapPdmToForm(pdm), ...emptySlices }, pdm);
     expect(result.observation_info.targets).toEqual([]);
+    expect(result.observation_info.observation_sets).toEqual([]);
     expect(result.observation_info.result_details).toEqual([]);
     expect(result.observation_info.calibration_strategy).toEqual([]);
-    expect(result.observation_info.observation_sets).toEqual(pdm.observation_info.observation_sets);
   });
 
   test('saves the valid data products and their links', () => {

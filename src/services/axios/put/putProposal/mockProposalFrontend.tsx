@@ -222,7 +222,7 @@ export const MockProposalFrontendZoom: Proposal = {
       centralFrequencyUnits: 2,
       elevation: 20,
       numSubBands: 1,
-      bandwidth: 1,
+      bandwidth: 5,
       continuumBandwidth: 150,
       continuumBandwidthUnits: 2,
       supplied: {
@@ -231,7 +231,7 @@ export const MockProposalFrontendZoom: Proposal = {
         units: 2
       },
       weather: undefined,
-      spectralResolution: '14.13 Hz (21.2 m/s)',
+      spectralResolution: '226.06 Hz (338.8 m/s)',
       numStations: 68,
       num13mAntennas: undefined,
       num15mAntennas: undefined,

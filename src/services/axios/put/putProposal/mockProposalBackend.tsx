@@ -87,7 +87,6 @@ export const MockProposalBackend = {
         observation_set_id: 'obs-obR1Ej',
         observing_band: BAND_LOW_STR,
         elevation: 20,
-        group_id: '',
         array_details: {
           array: 'ska_low',
           subarray: SA_AA2,
@@ -238,7 +237,6 @@ export const MockProposalBackendZoom = {
         observation_set_id: 'obs-arMIoY',
         observing_band: BAND_LOW_STR,
         elevation: 20,
-        group_id: '',
         array_details: {
           array: 'ska_low',
           subarray: SA_AA2,
@@ -247,7 +245,7 @@ export const MockProposalBackendZoom = {
         observation_type_details: {
           observation_type: TYPE_ZOOM_LONG,
           bandwidth: {
-            value: 0.01446912,
+            value: 0.23148148148148148,
             unit: 'MHz'
           },
           central_frequency: {
@@ -261,7 +259,7 @@ export const MockProposalBackendZoom = {
               unit: 'h'
             }
           },
-          spectral_resolution: '14.13 Hz (21.2 m/s)',
+          spectral_resolution: '226.06 Hz (338.8 m/s)',
           number_of_channels: 1024
         }
       }
