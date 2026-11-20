@@ -3,15 +3,21 @@ import { Box, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import {
+  FLOW_THROUGH_VALUE,
   FREQUENCY_UNITS,
   NOT_SPECIFIED,
   SENSITIVITY_STATE,
+  TIME_HOURS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_PST
 } from '@utils/constants.ts';
-import { getBandwidthOrFrequencyUnitsLabel, getBandwidthZoom } from '@utils/helpers';
+import {
+  getBandwidthOrFrequencyUnitsLabel,
+  getBandwidthZoom,
+  timeConversion
+} from '@utils/helpers';
 import { presentUnits, presentValue } from '@utils/present/present';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Observation from '../../../utils/types/observation';
@@ -98,8 +104,10 @@ export default function GridObservationSummary({
     );
   };
 
-  const integrationTime = (rec: { supplied?: { value?: number } }) =>
-    rec.supplied?.value == null ? NO_VALUE : `${rec.supplied.value} h`;
+  const integrationTime = (rec: { supplied?: { value?: number; units?: number } }) =>
+    rec.supplied?.value == null
+      ? NO_VALUE
+      : `${timeConversion(rec.supplied.value, rec.supplied.units ?? TIME_HOURS, TIME_HOURS)} h`;
 
   const valueWithUnits = (value?: string | number | null, units?: string) =>
     value == null ? NO_VALUE : `${presentValue(value)} ${units ? presentUnits(units) : ''}`.trim();
@@ -157,7 +165,7 @@ export default function GridObservationSummary({
   // Non-PST observations always have images and visibilities; PST shows its mode
   const getDataProducts = (rec: Observation): string[] =>
     rec.type === TYPE_PST
-      ? [t('pstMode.options.' + (rec.pstMode ?? 2))]
+      ? [t('pstMode.options.' + (rec.pstMode ?? FLOW_THROUGH_VALUE))]
       : [
           t('observatoryDataProduct.options.' + DP_IMAGES),
           t('observatoryDataProduct.options.' + DP_VISIBILITIES)
