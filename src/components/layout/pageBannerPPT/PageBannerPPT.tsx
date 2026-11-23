@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -53,6 +53,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
+  // A proposal on the Add proposal page is not created in the backend yet
+  const isNewProposal = useLocation().pathname === PATH[1];
   const { application, updateAppContent1 } = storageObject.useStore();
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
@@ -76,7 +78,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
     if (
       loggedIn &&
-      (getProposal().id == null ||
+      (isNewProposal ||
         getProposal()?.title?.trim()?.length === 0 ||
         countWords(getProposal().title ?? '') > maxTitleWords ||
         countWords(getProposal().abstract ?? '') > maxAbstractWords)
@@ -201,7 +203,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         {!backPage && <HomeButton />}
       </Grid>
       <Grid>
-        {loggedIn && getProposal().id !== null && pages.includes(pageNo) && (
+        {loggedIn && !isNewProposal && pages.includes(pageNo) && (
           <SaveButton
             testId={'saveBtn'}
             disabled={isDisableEndpoints()}
@@ -226,7 +228,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       }}
     >
       <Grid>
-        {getProposal().id !== null && pages.includes(pageNo) && (
+        {!isNewProposal && pages.includes(pageNo) && (
           <SubmitButton
             action={submitClicked}
             title="submitProposalBtn.label"
@@ -263,7 +265,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
             display: 'block'
           }}
         >
-          {getProposal().id !== '' && pages.includes(pageNo) && <StatusArray />}
+          {pages.includes(pageNo) && <StatusArray />}
         </Grid>
       )}
 
@@ -369,7 +371,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       {/* I'm assuming intention is to display row2() when loggedIn is true?
       if someone understands better than I do please feel free to
       remove in favour of whatever is supposed to happen here. */}
-      {loggedIn && getProposal().id !== '' && row2()}
+      {loggedIn && row2()}
       {row3()}
 
       {openProposalDisplay && (

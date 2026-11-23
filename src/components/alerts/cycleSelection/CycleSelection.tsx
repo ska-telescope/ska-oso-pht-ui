@@ -16,11 +16,12 @@ import ConfirmButton from '../../button/Confirm/Confirm';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { presentDateTime } from '@/utils/present/present';
+import { ObservatoryPolicy } from '@/utils/types/observatoryData';
 
 interface CycleSelectionProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (policy: any) => void;
+  onConfirm: (policy: ObservatoryPolicy) => void;
 }
 
 const MODAL_WIDTH = '40%';

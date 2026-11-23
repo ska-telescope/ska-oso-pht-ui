@@ -1,6 +1,8 @@
 import React from 'react';
+import { Entity, mintSkuid } from '@ska-telescope/skuid';
 import { ButtonLogin, isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router';
+import { useFormContext } from 'react-hook-form';
 import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@utils/storage/store';
@@ -18,14 +20,16 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { ProposalType } from '@/models/proposals/proposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
-import Proposal from '@/utils/types/proposal';
+import Proposal, { NEW_PROPOSAL } from '@/utils/types/proposal';
 import TargetObservation from '@/utils/types/targetObservation';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
+  EMPTY_STATUS,
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
   NAV,
@@ -33,6 +37,7 @@ import {
   PATH,
   PROPOSAL_STATUS,
   PROPOSAL_STATUS_OPTIONS,
+  PROPOSAL_TYPE,
   SENSITIVITY_STATE
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
@@ -41,7 +46,8 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
 import { useNotify } from '@/utils/notify/useNotify';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { isSVPolicy, useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { ObservatoryPolicy } from '@/utils/types/observatoryData';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
 import TableSubmissions from '@/components/table/tableSubmissions/TableSubmissions';
@@ -53,6 +59,7 @@ export default function LandingPage() {
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const { osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
   const validateProposal = useValidateProposal();
+  const { reset } = useFormContext<ProposalType>();
   const theme = useTheme();
 
   const {
@@ -200,7 +207,7 @@ export default function LandingPage() {
       refreshAuthToken,
       {
         ...originalProposal,
-        id: '',
+        id: mintSkuid(Entity.PRP),
         title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
         cycle: osdCycleId ?? '',
         investigators: [],
@@ -286,13 +293,17 @@ export default function LandingPage() {
     />
   );
 
-  const cycleConfirmed = async () => {
-    if (loggedIn) {
-      navigate(PATH[1]);
-    } else {
-      setProposal(getProposal());
-      navigate(NAV[4]);
-    }
+  const cycleConfirmed = (policy: ObservatoryPolicy) => {
+    const newProposal = {
+      ...NEW_PROPOSAL,
+      id: mintSkuid(Entity.PRP),
+      cycle: policy.cycleInformation.cycleId,
+      proposalType: isSVPolicy(policy) ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined
+    };
+    reset(getProposalFormValues(newProposal));
+    updateAppContent1(EMPTY_STATUS);
+    updateAppContent2(newProposal);
+    navigate(PATH[1]);
   };
 
   const cycleClicked = () => (

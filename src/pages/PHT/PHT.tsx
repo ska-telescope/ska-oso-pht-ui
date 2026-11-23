@@ -11,7 +11,6 @@ import {
 import { storageObject } from '@utils/storage/store';
 import { Typography, CssBaseline, Tooltip, Paper, Grid } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import {
   FOOTER_HEIGHT_PHT,
   NAV,
@@ -62,7 +61,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
-import { FormProvider } from 'react-hook-form';
+import { FormProvider, useWatch } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 
@@ -137,7 +136,6 @@ export default function PHT({
 
   const belowLg = useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
-  const loggedIn = isLoggedIn();
 
   React.useEffect(() => {
     if (location.pathname !== '/') {
@@ -156,6 +154,12 @@ export default function PHT({
   const formMethods = useProposalForm(getProposal(), { low: osdLOW, mid: osdMID });
   const { getValues } = formMethods;
   useCopySlicesToStore(formMethods);
+  const prslId = useWatch({ control: formMethods.control, name: 'prslId' });
+  // The pages that edit the proposal open in the form, outside which it isn't shown: the
+  // proposal pages and the entry pages for observations, data products and calibration
+  const isEditing =
+    NAV.includes(location.pathname) ||
+    [PATH[2], PATH[3], PATH[4], PATH[5]].includes(location.pathname);
 
   // A target can end up linked with no matching targetObservation entry (e.g. an older
   // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
@@ -164,25 +168,24 @@ export default function PHT({
   // first added. autoLink depends on OSD/cycle-policy data that may not have resolved yet when
   // the proposal is fetched, so this does not latch until autoLink actually becomes true.
   React.useEffect(() => {
-    const proposal = getProposal();
     const target = formMethods.getValues('targets')?.[0] as Target | undefined;
     if (
-      !proposal?.id ||
-      autoRepairAttemptedForIdRef.current === proposal.id ||
+      !prslId ||
+      autoRepairAttemptedForIdRef.current === prslId ||
       !autoLink ||
       !target ||
       (formMethods.getValues('targetObservation')?.length ?? 0) > 0
     ) {
       return;
     }
-    autoRepairAttemptedForIdRef.current = proposal.id;
+    autoRepairAttemptedForIdRef.current = prslId;
     void linkTarget(
       target,
       formMethods,
       authClient,
       osdLOW?.basicCapabilities?.minElevationDeg ?? null
     );
-  }, [getProposal(), autoLink]);
+  }, [prslId, autoLink]);
 
   React.useEffect(() => {
     const previousPath = previousPathRef.current;
@@ -195,10 +198,8 @@ export default function PHT({
     const isProposalPageTransition =
       NAV.includes(previousPath) && (NAV.includes(currentPath) || currentPath === PATH[0]);
     const proposal = getProposal();
-    const canAutoSave =
-      isProposalPageTransition && loggedIn && proposal?.id != null && proposal.id !== '';
 
-    if (canAutoSave) {
+    if (isProposalPageTransition) {
       const values = getValues();
       void (async () => {
         const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT, values);
@@ -209,7 +210,7 @@ export default function PHT({
     }
 
     previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, loggedIn, authClient, notifyError, getValues]);
+  }, [location.pathname, application.content2, authClient, notifyError, getValues]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
@@ -278,7 +279,7 @@ export default function PHT({
   };
 
   const headerCountdown = () => {
-    const opt1 = (!showNotification() && loggedIn && getProposal()?.id?.length) ?? false;
+    const opt1 = !showNotification() && isEditing;
 
     if (!opt1) return null;
     return (
@@ -365,7 +366,7 @@ export default function PHT({
               pt: 1
             }}
           >
-            {loggedIn ? (getProposal()?.id ? `Submission ID: ${getProposal()?.id}` : '') : ''}
+            {isEditing ? `Submission ID: ${prslId}` : ''}
           </Typography>
         }
         headerChildren={headerCountdown()}

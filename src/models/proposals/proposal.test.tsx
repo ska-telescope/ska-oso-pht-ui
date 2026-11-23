@@ -5,6 +5,8 @@ import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
 const emptySlices = {
+  prslId: 'prsl-t0001-20261120-00001',
+  cycle: 'SKAO_2027_1',
   abstract: 'A valid abstract',
   scienceCategory: null,
   investigators: [],
@@ -105,6 +107,8 @@ describe('proposal schema', () => {
 describe('proposal form values', () => {
   test('a new proposal has empty defaults', () => {
     expect(getProposalFormDefaults()).toEqual({
+      prslId: '',
+      cycle: '',
       title: '',
       proposalType: { type: null, subTypes: [] },
       abstract: '',
@@ -128,11 +132,16 @@ describe('proposal form values', () => {
 
   test("lays a proposal's slices over the defaults, without checking them", () => {
     const values = getProposalFormValues({
+      id: 'prsl-t0001-20261120-00001',
+      cycle: 'SKAO_2027_1',
       title: 'A title that is far too long to pass the title check '.repeat(10),
       proposalType: PROPOSAL_TYPE.STANDARD,
       proposalSubType: [PROPOSAL_SUBTYPE.JOINT]
     });
     expect(values.title).toContain('far too long');
+    // The store has the ID as id
+    expect(values.prslId).toBe('prsl-t0001-20261120-00001');
+    expect(values.cycle).toBe('SKAO_2027_1');
     // The store has the type flat, with its sub-types beside it
     expect(values.proposalType).toEqual({
       type: PROPOSAL_TYPE.STANDARD,

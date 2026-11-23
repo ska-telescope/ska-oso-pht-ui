@@ -12,9 +12,10 @@ import type { ProposalSubTypeType, ProposalTypeType } from '@/utils/constants';
 
 type ProposalSeed = Omit<
   Partial<ProposalType>,
-  'proposalType' | 'scienceCategory' | 'investigators' | 'observations'
+  'prslId' | 'cycle' | 'proposalType' | 'scienceCategory' | 'investigators' | 'observations'
 > & {
   id?: string | null;
+  cycle?: string | null;
   // TODO: The legacy store's shape, until nothing reads them from there
   proposalType?: ProposalTypeType | null;
   proposalSubType?: ProposalSubTypeType[] | null;
@@ -27,6 +28,9 @@ type ProposalSeed = Omit<
 
 /** The form values of a new proposal. */
 export const getProposalFormDefaults = (): ProposalType => ({
+  // No proposal is open
+  prslId: '',
+  cycle: '',
   title: '',
   proposalType: { type: null, subTypes: [] },
   abstract: '',
@@ -48,13 +52,16 @@ export const getProposalFormDefaults = (): ProposalType => ({
 export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => {
   const defaults = getProposalFormDefaults();
   const slices = Object.fromEntries(
-    (Object.keys(defaults) as (keyof ProposalType)[]).map((slice) => [
-      slice,
-      proposal?.[slice] ?? defaults[slice]
-    ])
+    (Object.keys(defaults) as (keyof ProposalType)[])
+      // The seed has the ID as id, so it is set below
+      .filter((slice): slice is Exclude<keyof ProposalType, 'prslId'> => slice !== 'prslId')
+      .map((slice) => [slice, proposal?.[slice] ?? defaults[slice]])
   ) as ProposalType;
   return {
     ...slices,
+    // The legacy store's names, until nothing reads them from there
+    prslId: proposal?.id ?? '',
+    cycle: proposal?.cycle ?? '',
     proposalType: {
       type: proposal?.proposalType ?? null,
       subTypes: proposal?.proposalSubType ?? []

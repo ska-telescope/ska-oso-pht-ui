@@ -161,7 +161,7 @@ describe('PageFooterPPT', () => {
     });
   });
 
-  it('creates the proposal with its own type and the selected cycle', async () => {
+  it('creates the proposal with its own ID, type and cycle', async () => {
     const newProposal = { id: null, title: 'New SV idea' };
     const store = storageObject.useStore();
     storageObject.useStore = () =>
@@ -171,6 +171,8 @@ describe('PageFooterPPT', () => {
       }) as any;
 
     wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title, {
+      prslId: 'prsl-t0001-20261120-00001',
+      cycle: 'CYCLE-1',
       proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] }
     });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
@@ -181,7 +183,8 @@ describe('PageFooterPPT', () => {
         expect.anything(),
         expect.anything(),
         expect.objectContaining({
-          ...newProposal,
+          id: 'prsl-t0001-20261120-00001',
+          title: newProposal.title,
           proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
           abstract: '',
           scienceCategory: null,

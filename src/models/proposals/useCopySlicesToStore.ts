@@ -5,21 +5,28 @@ import Proposal from '@utils/types/proposal';
 import { ProposalType, STORE_COPIED_SLICES } from './proposal';
 import { legacyObservationsFromForm } from './legacyObservations';
 
+// The store holds the ID as id, so it is copied by itself
+const COPIED_UNDER_OWN_NAME = STORE_COPIED_SLICES.filter(
+  (key): key is Exclude<keyof ProposalType, 'prslId'> => key !== 'prslId'
+);
+
 // The store's copy of the form's slices. Observations are in the store's own shape, with their
 // groups in groupObservations, and the proposal type is flat, with its sub-types in
 // proposalSubType, until nothing reads them from there.
 const storeSlices = (proposal: Proposal): Partial<Proposal> => ({
-  ...Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, proposal[key]])),
+  ...Object.fromEntries(COPIED_UNDER_OWN_NAME.map((key) => [key, proposal[key]])),
   groupObservations: proposal.groupObservations,
-  proposalSubType: proposal.proposalSubType
+  proposalSubType: proposal.proposalSubType,
+  id: proposal.id
 });
 
 // The form's slices as the store holds them, in the same key order as storeSlices
 const formSlices = (values: ProposalType): Partial<Proposal> => ({
-  ...Object.fromEntries(STORE_COPIED_SLICES.map((key) => [key, values[key]])),
+  ...Object.fromEntries(COPIED_UNDER_OWN_NAME.map((key) => [key, values[key]])),
   ...legacyObservationsFromForm(values.observations),
   proposalType: values.proposalType.type ?? undefined,
-  proposalSubType: values.proposalType.subTypes
+  proposalSubType: values.proposalType.subTypes,
+  id: values.prslId
 });
 
 /*********************************************************************************************************/

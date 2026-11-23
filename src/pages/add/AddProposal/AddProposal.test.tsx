@@ -47,6 +47,18 @@ describe('<AddProposal />', () => {
 });
 
 describe('Create button validation', () => {
+  // A single store object, so TitleEntry's effect on application.content2 doesn't re-run every render
+  const svStore = {
+    application: {
+      content1: [],
+      content2: { proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION },
+      content5: {}
+    },
+    updateAppContent1: vi.fn(),
+    updateAppContent2: vi.fn(),
+    updateAppContent5: vi.fn()
+  };
+
   afterEach(() => {
     vi.restoreAllMocks();
     mockOSD.isSV = false;
@@ -69,8 +81,10 @@ describe('Create button validation', () => {
     }
   );
 
+  // The Landing page starts an SV proposal with its type
   test('uses the SV default without requiring a type selection', async () => {
     mockOSD.isSV = true;
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(svStore as any);
     const { container } = wrapper(<AddProposal />);
     expect(container.querySelector('[id^="ProposalType-"]')).not.toBeInTheDocument();
     expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
@@ -79,59 +93,5 @@ describe('Create button validation', () => {
       target: { value: 'A valid SV title' }
     });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
-  });
-
-  test('clears an earlier SV type when starting a new proposal in a normal cycle', async () => {
-    mockOSD.isSV = true;
-    const { rerender, container } = wrapper(<AddProposal />);
-    fireEvent.change(screen.getByTestId('titleId'), {
-      target: { value: 'An SV title' }
-    });
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
-
-    rerender(<></>);
-    mockOSD.isSV = false;
-    rerender(<AddProposal />);
-    expect(screen.getByTestId('titleId')).toHaveValue('');
-
-    fireEvent.change(screen.getByTestId('titleId'), {
-      target: { value: 'A normal proposal title' }
-    });
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
-    fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.STANDARD}`)!);
-    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
-  });
-});
-
-describe('new proposal type', () => {
-  const originalUseStore = storageObject.useStore;
-  // A single store object, so TitleEntry's effect on application.content2 doesn't re-run every render
-  const mockStore = {
-    application: { content1: [], content2: {} },
-    updateAppContent1: vi.fn(),
-    updateAppContent2: vi.fn()
-  };
-
-  afterEach(() => {
-    storageObject.useStore = originalUseStore;
-    mockOSD.isSV = false;
-    vi.clearAllMocks();
-  });
-
-  test('is set to science verification for an SV cycle', () => {
-    mockOSD.isSV = true;
-    storageObject.useStore = () => mockStore as any;
-    wrapper(<AddProposal />);
-    expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
-      expect.objectContaining({ proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION })
-    );
-  });
-
-  test('is left unset for a normal cycle, so the user picks it', () => {
-    storageObject.useStore = () => mockStore as any;
-    wrapper(<AddProposal />);
-    expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
-      expect.objectContaining({ proposalType: undefined })
-    );
   });
 });

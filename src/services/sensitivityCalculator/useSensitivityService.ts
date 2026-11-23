@@ -2,10 +2,8 @@ import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import type { ProposalType } from '@/models/proposals/proposal';
 import type { Sensitivity } from '@/models/proposals/targetObservation';
-import { storageObject } from '@utils/storage/store';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
-import type Proposal from '@/utils/types/proposal';
 import { SENS_CALC_ERROR_KIND, toSensCalcError } from './client';
 import {
   buildSensitivityRequest,
@@ -40,8 +38,7 @@ const getLinkId = (link: { targetId: string; observationId: string; dataProducts
  */
 export const useSensitivityService = () => {
   const { control, getValues, setValue } = useFormContext<ProposalType>();
-  const { application } = storageObject.useStore();
-  const proposal = application.content2 as Proposal | undefined;
+  const prslId = useWatch({ control, name: 'prslId' });
   const { notifyError } = useNotify();
   const { osdLOW, osdMID } = useOSDAccessors();
   const [targets, links, observations, dataProducts] = useWatch({
@@ -55,7 +52,7 @@ export const useSensitivityService = () => {
   React.useEffect(() => {
     recordsRef.current.forEach((record) => record.controller?.abort());
     recordsRef.current.clear();
-  }, [proposal?.id]);
+  }, [prslId]);
 
   React.useEffect(() => {
     // Writes a link's results to the links as they are now, as a response can arrive after a change

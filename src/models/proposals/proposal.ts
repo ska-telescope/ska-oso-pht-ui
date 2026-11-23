@@ -25,6 +25,8 @@ export function getProposalSubTypesSchema() {
 /** The proposal's rules. The observations' rules that need the OSD are checked only with it. */
 export function getProposalSchema(osd: ObservationOsd = {}) {
   return z.object({
+    prslId: z.string(),
+    cycle: z.string(),
     title: getTitleSchema(),
     // The type and the sub-types that go with it, as the PDM's proposal_type holds them
     proposalType: z.object({

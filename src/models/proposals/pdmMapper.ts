@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getProposalSubTypesSchema, getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
@@ -19,6 +20,8 @@ import { observationsFromPdm } from './observations';
 export function mapPdmToForm(pdm: ProposalBackend): ProposalType {
   const { proposal_info: proposalInfo, observation_info: observationInfo } = pdm;
   return {
+    prslId: z.string().parse(pdm.prsl_id),
+    cycle: pdm.cycle,
     title: titleFromPdm(proposalInfo),
     proposalType: {
       type: getProposalTypeSchema().parse(proposalInfo.proposal_type.main_type),
@@ -52,6 +55,8 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
 
   return {
     ...base,
+    prsl_id: form.prslId,
+    cycle: form.cycle,
     proposal_info: {
       ...base.proposal_info,
       ...titleToPdm(form.title),

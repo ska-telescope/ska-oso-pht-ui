@@ -16,6 +16,8 @@ const pdm = MockProposalBackend as ProposalBackend;
 // A base from the legacy mapper, as on a real save, so the form's slices map back to it exactly
 const base = MappingPutProposal(mapping(pdm), PROPOSAL_STATUS.DRAFT);
 const emptySlices = {
+  prslId: pdm.prsl_id as string,
+  cycle: pdm.cycle,
   targets: [],
   targetObservation: [],
   calibrationStrategy: [],
@@ -29,6 +31,8 @@ describe('mapPdmToForm', () => {
   test('maps the PDM into form values', () => {
     const legacy = mapping(pdm);
     expect(mapPdmToForm(pdm)).toEqual({
+      prslId: pdm.prsl_id,
+      cycle: pdm.cycle,
       title: pdm.proposal_info.title,
       proposalType: {
         type: pdm.proposal_info.proposal_type.main_type,
@@ -97,6 +101,11 @@ describe('mapPdmToForm', () => {
   });
 
   // The PDM requires a proposal type, so a proposal without one fails to load
+  // A stored proposal always has its ID; the PDM makes it optional only for creating
+  test('rejects a PDM without an ID', () => {
+    expect(() => mapPdmToForm({ ...pdm, prsl_id: undefined })).toThrow();
+  });
+
   test('rejects a PDM without a proposal type', () => {
     expect(() =>
       mapPdmToForm({
@@ -171,7 +180,9 @@ describe('mapFormToPdm', () => {
         abstract: 'Edited abstract',
         scienceCategory: 7,
         investigators: [],
-        ...emptySlices
+        ...emptySlices,
+        prslId: 'prsl-t0001-20261120-00002',
+        cycle: 'SKAO_2027_2'
       },
       pdm
     );
@@ -183,7 +194,8 @@ describe('mapFormToPdm', () => {
       main_type: PROPOSAL_TYPE.KEY_SCIENCE,
       attributes: [PROPOSAL_SUBTYPE.JOINT]
     });
-    expect(result.prsl_id).toBe(pdm.prsl_id);
+    expect(result.prsl_id).toBe('prsl-t0001-20261120-00002');
+    expect(result.cycle).toBe('SKAO_2027_2');
   });
 
   test('does not modify the base PDM', () => {
