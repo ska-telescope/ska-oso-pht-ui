@@ -79,10 +79,8 @@ CHANGELOG:
     - if: $CI_COMMIT_TAG
       when: manual
     
-# e2e deployments use one namespace per commit (ci-<project>-<short sha>). A tag pipeline adds the
-# tag, as its commit is usually also deployed by a branch pipeline: its slug if that's 12 characters
-# or fewer, otherwise 12 characters of the tag's hash, so the name stays within Kubernetes'
-# 63-character limit. Repeats the template's before_script, which this replaces.
+# Give tag pipelines a unique namespace. For short tags (up to 12 chars) the tag is used for readability. Longer tags are hashed. This means even projects with long names should generate a namespace less than the 63 character Kube limit. 
+# Repeats the template's before_script, which this replaces.
 .e2e_tag_namespace:
   before_script: &e2e_tag_namespace
     - |
