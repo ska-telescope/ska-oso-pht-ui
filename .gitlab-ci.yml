@@ -86,9 +86,11 @@ CHANGELOG:
     - ${JS_PROJECT_DIR}/tests/cypress/**/*.cy.*
     - tests/cypress/**/*.cy.*
 
-# Give tag pipelines a unique namespace. Using short SHA and slug avoids dots. 
-# Tags are expected to follow SKA's semantic versioning rules, so the generated namespace 
-# should always be less than the 63 character Kube limit. 
+# Give tag pipelines a unique namespace. 
+# Using the CI_COMMIT_SHORT_SHA and CI_COMMIT_REF_SLUG avoids illegal namespace characters.
+# Tags that follow SKA's mandated semantic versioning rules (see https://semver.org/) 
+# will have a tag at most 20 characters long so the namespace generated
+# should always be less than the kubernetes 63 character limit for resource names. 
 .e2e_tag_namespace:
   variables: &e2e_tag_namespace
     KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_COMMIT_REF_SLUG
