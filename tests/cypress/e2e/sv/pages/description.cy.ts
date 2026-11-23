@@ -3,6 +3,7 @@ import { standardUser } from '../../../support/users';
 import { buildSvContinuumProposal } from '../../../support/editor/data/sv';
 import { SV_CYCLE } from '../../../support/editor/cycles';
 import {
+  BACKEND_TIMEOUT,
   createProposal,
   goToPage,
   stubDocumentUpload
@@ -59,11 +60,15 @@ describe('SV Description page', () => {
 
   it('shows an error and keeps no document when the upload to S3 fails', () => {
     // Takes precedence over the stub from stubDocumentUpload(), as it's added later
-    cy.intercept({ method: 'PUT', url: /X-Amz-Signature=/ }, { statusCode: 500 });
+    cy.intercept({ method: 'PUT', url: /X-Amz-Signature=/ }, { statusCode: 500 }).as(
+      'documentUploadFailure'
+    );
 
     chooseDocument(proposal.description.document);
     cy.findByRole('button', { name: 'Upload' }).click();
 
+    // The app gets the presigned URL from the real backend before the stubbed upload fails
+    cy.wait('@documentUploadFailure', { requestTimeout: BACKEND_TIMEOUT });
     cy.findByText(UPLOAD_FAILED);
     cy.findByRole('button', { name: 'Download' }).should('not.exist');
   });

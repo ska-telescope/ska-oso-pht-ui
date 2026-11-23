@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 * Changed: CI tag pipelines deploy their e2e tests to their own namespace, rather than the one their commit's branch pipeline used
+* Changed: e2e test auth moved into the test framework; Indigo token renewal uses a new `auth-callback.html` page (register `<app URL>auth-callback.html` as an Indigo redirect URI)
+* Added: Indigo smoke tests, a REQUEST_TIMEOUT_MS setting (default 20s, 60s for CI e2e deployments), and --clean-db for local e2e runs
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
 * Bugfix: Keep the automatic-save timer running when page renders update its callback

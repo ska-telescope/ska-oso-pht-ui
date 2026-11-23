@@ -78,7 +78,7 @@ CHANGELOG:
   rules:
     - if: $CI_COMMIT_TAG
       when: manual
-    
+
 .e2e_specs:
   exists: &e2e_specs
     - ${JS_PROJECT_DIR}/tests/cypress/**/*.test.*
@@ -102,7 +102,11 @@ CHANGELOG:
       variables: *e2e_tag_namespace
     - exists: *e2e_specs
 
+# e2e deployments wait longer for backend responses than users would (20s), as the tests'
+# BACKEND_TIMEOUT expects. The Makefile passes it to the chart in k8s-install-chart.
 js-e2e-deploy:
+  variables:
+    REQUEST_TIMEOUT_MS: "60000"
   rules: *e2e_rules
 
 js-e2e-test:

@@ -10,9 +10,19 @@ const proxyTarget = process.env.BACKEND_PROXY;
 // keep hitting the real deployment. Falls back to BACKEND_PROXY when unset.
 const osoProxyTarget = process.env.OSO_SERVICES_PROXY || proxyTarget;
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: './',
-  build: { rollupOptions: { external: ['/env.js'] } },
+  build: {
+    rollupOptions: {
+      external: ['/env.js'],
+      // auth-callback.html receives MSAL's silent and popup sign-in responses (src/authCallback.ts).
+      // Not when cypress-vite bundles a spec (mode 'cypress', see cypress.config.mjs), as it
+      // builds each spec as its only input.
+      ...(mode === 'cypress'
+        ? {}
+        : { input: { main: 'index.html', authCallback: 'auth-callback.html' } })
+    }
+  },
   plugins: [react()],
   resolve: { tsconfigPaths: true },
   server: {
@@ -34,5 +44,5 @@ export default defineConfig({
           }
         }
       : undefined
-  },
-});
+  }
+}));
