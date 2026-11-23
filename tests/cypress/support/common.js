@@ -1,13 +1,11 @@
 import { click, entry, selectId, verifyContent, verifyExists, verifyVisible } from './cypress';
-import { fetchLiveOpsToken, loginAsUser, stubMsalForceRefresh } from './auth';
+import { fetchLiveOpsToken, loginAsUser } from './auth';
 
 // visitWithAuth logs in via a real MSAL session (see auth.js's loginAsUser) and then
 // does its own cy.visit() on top of that restored session - login itself no longer happens here.
 export const visitWithAuth = (user) => {
   loginAsUser(user.username);
   cy.visit('/');
-  // stub until User Portal is fully integrated with the new auth flow. Otherwise this can cause the tests to timeout.
-  stubMsalForceRefresh();
 };
 
 // IMPROVEMENT  move cy. commands out of this file into cypress.js and create a function for it
@@ -125,8 +123,13 @@ export const clickSubProposalTypeTargetOfOpportunity = () =>
   selectId('proposalAttribute-target_of_opportunity');
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
+// The table appears once the proposal list (GET prsls/mine) has loaded, which a busy test backend
+// can take longer than defaultCommandTimeout to return. Wait as long as test deployments let the
+// app wait for it (REQUEST_TIMEOUT_MS)
+const getSubmissionsTable = () => cy.get('[data-testid="table-submissions"]', { timeout: 60000 });
+
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
+  getSubmissionsTable().should('contain', 'prsl-test');
 };
 export const verifyDataInTable = (tableTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`).find('[role="row"]').filter(`:contains("${text}")`);
@@ -427,8 +430,8 @@ export const completeScienceIdeaCreation = (title) => {
   clickCreateSubmission();
   cy.wait('@mockCreateSVIdea');
   // postProposal.tsx calls the real refreshAuthToken() itself after creating the proposal, to
-  // fetch a fresh token reflecting the new group membership - stubMsalForceRefresh (wired up in
-  // visitWithAuth()) short-circuits just that call, so it doesn't stall the success message below.
+  // fetch a fresh token reflecting the new group membership - auth.js's intercepts answer that
+  // with a real password-grant token for the test user.
   verifyScienceIdeaCreatedAlertFooter();
   pageConfirmed('TEAM');
 };
@@ -538,5 +541,5 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 };
 
 export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="table-submissions"]').should('contain', 'Science Verification Idea Title');
+  getSubmissionsTable().should('contain', 'Science Verification Idea Title');
 };

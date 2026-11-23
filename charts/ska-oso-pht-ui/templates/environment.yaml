@@ -17,3 +17,4 @@ data:
   INDIGO_CLIENT_ID: {{ .Values.runtimeEnv.indigoClientId | quote }}
   INDIGO_SCOPE: {{ .Values.runtimeEnv.indigoScope | quote }}
   INDIGO_AUDIENCE: {{ .Values.runtimeEnv.indigoAudience | quote }}
+  REQUEST_TIMEOUT_MS: {{ .Values.runtimeEnv.requestTimeoutMs | toString | quote }}
