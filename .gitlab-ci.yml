@@ -79,39 +79,45 @@ CHANGELOG:
     - if: $CI_COMMIT_TAG
       when: manual
     
-# Give tag pipelines a unique namespace. For short tags (up to 12 chars) the tag is used for readability. Longer tags are hashed. This means even projects with long names should generate a namespace less than the 63 character Kube limit. 
-# Repeats the template's before_script, which this replaces.
+.e2e_specs:
+  exists: &e2e_specs
+    - ${JS_PROJECT_DIR}/tests/cypress/**/*.test.*
+    - tests/cypress/**/*.test.*
+    - ${JS_PROJECT_DIR}/tests/cypress/**/*.cy.*
+    - tests/cypress/**/*.cy.*
+
+# Give tag pipelines a unique namespace. Using short SHA and slug avoids dots. 
+# Tags are expected to follow SKA's semantic versioning rules, so the generated namespace 
+# should always be less than the 63 character Kube limit. 
 .e2e_tag_namespace:
-  before_script: &e2e_tag_namespace
-    - |
-      if [ -n "$CI_COMMIT_TAG" ]; then
-        TAG_ID="$CI_COMMIT_REF_SLUG"
-        if [ ${#TAG_ID} -gt 12 ]; then
-          TAG_ID=$(printf %s "$CI_COMMIT_TAG" | sha1sum | cut -c1-12)
-        fi
-        KUBE_NAMESPACE="ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$TAG_ID"
-        export KUBE_NAMESPACE
-      fi
+  variables: &e2e_tag_namespace
+    KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_COMMIT_REF_SLUG
+
+.e2e_rules:
+  rules: &e2e_rules
+    - if: $CI_COMMIT_TAG
+      exists: *e2e_specs
+      variables: *e2e_tag_namespace
+    - exists: *e2e_specs
 
 js-e2e-deploy:
-  before_script:
-    - *e2e_tag_namespace
-    - '[ -f .make/k8s.mk ] || (echo "File k8s.mk not included in Makefile"; exit 1;)'
-    - 'make help | grep k8s-install-chart'
+  rules: *e2e_rules
 
 js-e2e-test:
   variables:
     JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
     CYPRESS_PARALLEL_WORKERS: "3"
-  before_script:
-    - *e2e_tag_namespace
-    - '[ -f .make/js.mk ] || (echo "File js.mk not included in Makefile"; exit 1;)'
-    - 'make help | grep js-e2e-test'
-    - make js-install
+  rules: *e2e_rules
 
+# The template runs this by hand, and so does a tag pipeline
 stop-js-e2e-test:
-  before_script:
-    - *e2e_tag_namespace
+  rules:
+    - if: $CI_COMMIT_TAG
+      exists: *e2e_specs
+      variables: *e2e_tag_namespace
+      when: manual
+    - exists: *e2e_specs
+      when: manual
 
 info-dev-environment:
   <<: *dev_env
