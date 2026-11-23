@@ -79,10 +79,45 @@ CHANGELOG:
     - if: $CI_COMMIT_TAG
       when: manual
     
+# e2e deployments use one namespace per commit (ci-<project>-<short sha>). A tag pipeline adds the
+# tag to the namespace, as its commit is usually also deployed by a branch pipeline. The tag's slug,
+# as namespaces can't contain dots. These replace the template's rules, so they repeat its `exists` list.
+.e2e_specs:
+  exists: &e2e_specs
+    - ${JS_PROJECT_DIR}/tests/cypress/**/*.test.*
+    - tests/cypress/**/*.test.*
+    - ${JS_PROJECT_DIR}/tests/cypress/**/*.cy.*
+    - tests/cypress/**/*.cy.*
+
+.e2e_tag_namespace:
+  variables: &e2e_tag_namespace
+    KUBE_NAMESPACE: ci-$CI_PROJECT_NAME-$CI_COMMIT_SHORT_SHA-$CI_COMMIT_REF_SLUG
+
+.e2e_rules:
+  rules: &e2e_rules
+    - if: $CI_COMMIT_TAG
+      exists: *e2e_specs
+      variables: *e2e_tag_namespace
+    - exists: *e2e_specs
+
+js-e2e-deploy:
+  rules: *e2e_rules
+
 js-e2e-test:
   variables:
     JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
     CYPRESS_PARALLEL_WORKERS: "3"
+  rules: *e2e_rules
+
+# The template runs this by hand, and so does a tag pipeline
+stop-js-e2e-test:
+  rules:
+    - if: $CI_COMMIT_TAG
+      exists: *e2e_specs
+      variables: *e2e_tag_namespace
+      when: manual
+    - exists: *e2e_specs
+      when: manual
 
 info-dev-environment:
   <<: *dev_env
