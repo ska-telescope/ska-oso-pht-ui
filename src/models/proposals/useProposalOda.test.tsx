@@ -2,16 +2,12 @@ import React from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
-import {
-  PROPOSAL_STATUS,
-  PROPOSAL_TYPE,
-  SENSITIVITY_STATE
-} from '@utils/constants.ts';
+import { PROPOSAL_STATUS, PROPOSAL_TYPE, SENSITIVITY_STATE } from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
-import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
+import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { ProposalType } from './proposal';
 import { DATA_PRODUCT_KIND } from './dataProducts';
 import { useProposalOda } from './useProposalOda';
@@ -20,18 +16,24 @@ import phtTranslations from '../../../public/locales/en/pht.json';
 import { InvestigatorBackend } from '@/utils/types/investigator';
 import { getProposalFormValues } from './useProposalForm';
 
-const { mockGet, mockPut } = vi.hoisted(() => ({
+const { mockGet, mockPut, mockCreate, mockRefreshAuthToken } = vi.hoisted(() => ({
   mockGet: vi.fn(),
-  mockPut: vi.fn()
+  mockPut: vi.fn(),
+  mockCreate: vi.fn(),
+  mockRefreshAuthToken: vi.fn()
 }));
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: { get: mockGet } })
+
+vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/services/axios/axiosAuthClient/axiosAuthClient')>()),
+  useRefreshAuthToken: () => mockRefreshAuthToken
 }));
 
 vi.mock('@/generated', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@/generated')>()),
   PPTAPIProposalPreparationApiFactory: () => ({
-    updateProposalOsoApiV17PhtPrslsPrslIdPut: mockPut
+    getProposalOsoApiV17PhtPrslsPrslIdGet: mockGet,
+    updateProposalOsoApiV17PhtPrslsPrslIdPut: mockPut,
+    createProposalOsoApiV17PhtPrslsCreatePost: mockCreate
   })
 }));
 
@@ -61,13 +63,15 @@ describe('useProposalOda', () => {
   beforeEach(() => {
     mockGet.mockReset();
     mockPut.mockReset();
+    mockCreate.mockReset();
+    mockRefreshAuthToken.mockReset().mockResolvedValue(undefined);
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  test('Load from ODA maps the PDM into the form and returns the legacy proposal', async () => {
+  test('Load from ODA maps the PDM into the form and returns the form values', async () => {
     mockGet.mockResolvedValue({ data: pdm });
     const { form, oda } = renderWithForm();
 
@@ -85,7 +89,8 @@ describe('useProposalOda', () => {
     expect(form.current.getValues('abstract')).toBe(pdm.proposal_info.abstract);
     expect(form.current.getValues('scienceCategory')).toBe(1);
     expect(form.current.getValues('investigators')).toEqual([]);
-    expect(loaded).toEqual(mapping(pdm));
+    expect(mockGet).toHaveBeenCalledExactlyOnceWith('prsl-1');
+    expect(loaded).toEqual({ data: mapPdmToForm(pdm) });
   });
 
   test('Load from ODA links an SV target saved without its link to new default data products', async () => {
@@ -131,7 +136,7 @@ describe('useProposalOda', () => {
       loaded = await oda.current.loadFromOda('prsl-1');
     });
 
-    expect(loaded).toBe('Network Error');
+    expect(loaded).toEqual({ error: 'Network Error' });
     expect(form.current.getValues('title')).toBe('Unsaved title');
   });
 
@@ -158,8 +163,8 @@ describe('useProposalOda', () => {
       loaded = await oda.current.loadFromOda('prsl-1');
     });
 
-    expect(loaded).toEqual(expect.any(String));
-    expect(loaded).not.toBe('');
+    expect(loaded).toEqual({ error: expect.any(String) });
+    expect(loaded).not.toEqual({ error: '' });
     expect(form.current.getValues('title')).toBe('Unsaved title');
     expect(form.current.getFieldState('title').error?.message).toBe('Existing error');
   });
@@ -175,45 +180,36 @@ describe('useProposalOda', () => {
     });
     const { form, oda } = renderWithForm('Unsaved title');
 
-    await expect(oda.current.loadFromOda('prsl-1')).resolves.toBe('error.API_UNKNOWN_ERROR');
+    await expect(oda.current.loadFromOda('prsl-1')).resolves.toEqual({
+      error: 'error.API_UNKNOWN_ERROR'
+    });
     expect(form.current.getValues('title')).toBe('Unsaved title');
   });
 
-  test('Save to ODA sends the RHF title and type with the legacy proposal in one request', async () => {
+  test('Save to ODA sends the whole proposal from the form in one request', async () => {
     mockPut.mockResolvedValue({ data: pdm });
-    const { oda } = renderWithForm('Edited title');
-    const legacy = mapping(pdm);
+    const { form, oda } = renderWithForm('Edited title');
 
-    const saved = await oda.current.saveToOda(legacy);
+    const saved = await oda.current.saveToOda();
 
-    const expected = MappingPutProposal(legacy, PROPOSAL_STATUS.DRAFT);
-    expect(mockPut).toHaveBeenCalledExactlyOnceWith(
-      legacy.id,
-      {
-        ...expected,
-        proposal_info: {
-          ...expected.proposal_info,
-          title: 'Edited title',
-          abstract: pdm.proposal_info.abstract,
-          science_category: pdm.proposal_info.science_category,
-          investigators: [],
-          // The type and its sub-types are the form's
-          proposal_type: { main_type: PROPOSAL_TYPE.KEY_SCIENCE, attributes: [] }
-        }
-      }
-    );
+    expect(mockPut).toHaveBeenCalledExactlyOnceWith(pdm.prsl_id, {
+      ...mapFormToPdm(form.current.getValues()),
+      status: PROPOSAL_STATUS.DRAFT,
+      submitted_on: null,
+      submitted_by: ''
+    });
+    expect(mockPut.mock.calls[0][1].proposal_info).toMatchObject({
+      title: 'Edited title',
+      // The type and its sub-types are the form's
+      proposal_type: { main_type: PROPOSAL_TYPE.KEY_SCIENCE, attributes: [] }
+    });
     expect(saved).toEqual({ data: pdm });
   });
 
-  test('Save to ODA preserves legacy saves outside the proposal form', async () => {
-    mockPut.mockResolvedValue({ data: pdm });
+  test('Save to ODA saves nothing without the proposal form', async () => {
     const { result } = renderHook(() => useProposalOda());
-    const legacy = mapping(pdm);
-    expect(await result.current.saveToOda(legacy)).toEqual({ data: pdm });
-    expect(mockPut).toHaveBeenCalledWith(
-      expect.any(String),
-      MappingPutProposal(legacy, PROPOSAL_STATUS.DRAFT)
-    );
+    expect(await result.current.saveToOda()).toEqual({ error: 'error.API_UNKNOWN_ERROR' });
+    expect(mockPut).not.toHaveBeenCalled();
   });
 
   test.each([0, Number(phtTranslations.abstract.maxWord) + 1])(
@@ -223,13 +219,12 @@ describe('useProposalOda', () => {
       expect(abstract.length).toBeLessThan(Number(phtTranslations.abstract.maxChar));
       mockPut.mockResolvedValue({ data: pdm });
       const { form, oda } = renderWithForm('Draft title');
-      const legacy = mapping(pdm);
       act(() => {
         form.current.setValue('abstract', abstract);
       });
 
       expect(getDetailsSchema().safeParse(form.current.getValues()).success).toBe(false);
-      await expect(oda.current.saveToOda(legacy)).resolves.toEqual({ data: pdm });
+      await expect(oda.current.saveToOda()).resolves.toEqual({ data: pdm });
       expect(mockPut).toHaveBeenLastCalledWith(
         expect.any(String),
         expect.objectContaining({
@@ -241,7 +236,7 @@ describe('useProposalOda', () => {
       act(() => {
         form.current.setValue('title', 'Edited on another page');
       });
-      await expect(oda.current.saveToOda(legacy)).resolves.toEqual({ data: pdm });
+      await expect(oda.current.saveToOda()).resolves.toEqual({ data: pdm });
       expect(mockPut).toHaveBeenCalledTimes(2);
       expect(mockPut).toHaveBeenLastCalledWith(
         expect.any(String),
@@ -287,13 +282,12 @@ describe('useProposalOda', () => {
       });
 
       expect(form.current.getValues('investigators')?.[0]).not.toHaveProperty('affiliation');
-      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual({
+      await expect(oda.current.saveToOda()).resolves.toEqual({
         data: withInvestigator
       });
       expect(mockPut).toHaveBeenCalledExactlyOnceWith(
         withInvestigator.prsl_id,
         expect.objectContaining({
-          investigator_refs: [investigator.id],
           proposal_info: expect.objectContaining({
             abstract: 'Edited details',
             investigators: [
@@ -357,13 +351,12 @@ describe('useProposalOda', () => {
         form.current.setValue('title', 'Edited title');
       });
 
-      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual({
+      await expect(oda.current.saveToOda()).resolves.toEqual({
         data: withInvestigator
       });
       expect(mockPut).toHaveBeenCalledExactlyOnceWith(
         proposalId,
         expect.objectContaining({
-          investigator_refs: [investigator.id],
           proposal_info: expect.objectContaining({
             title: 'Edited title',
             abstract: 'Edited details',
@@ -402,11 +395,9 @@ describe('useProposalOda', () => {
     mockGet.mockResolvedValue({ data: withTeam });
     mockPut.mockResolvedValue({ data: withTeam });
     const { form, oda } = renderWithForm();
-    let loaded = mapping(withTeam);
     await act(async () => {
       const result = await oda.current.loadFromOda('prsl-1');
-      if (typeof result === 'string') throw new Error(result);
-      loaded = result;
+      if (result.error) throw new Error(result.error);
     });
     const [member] = form.current.getValues('investigators') ?? [];
     act(() => {
@@ -416,12 +407,11 @@ describe('useProposalOda', () => {
       ]);
     });
 
-    await oda.current.saveToOda(loaded);
+    await oda.current.saveToOda();
 
     expect(mockPut).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
-        investigator_refs: ['new-member', investigator.id],
         proposal_info: expect.objectContaining({
           investigators: [
             expect.objectContaining({
@@ -442,6 +432,75 @@ describe('useProposalOda', () => {
     mockPut.mockRejectedValue(new Error('Save failed'));
     const { oda } = renderWithForm('Edited title');
 
-    expect(await oda.current.saveToOda(mapping(pdm))).toEqual({ error: 'Save failed' });
+    expect(await oda.current.saveToOda()).toEqual({ error: 'Save failed' });
+  });
+  describe('Create in ODA', () => {
+    // The backend adds the caller as PI and returns the proposal as stored
+    const backendPi: InvestigatorBackend = {
+      user_id: 'signed-in-user',
+      given_name: 'Real',
+      family_name: 'Creator',
+      email: 'real.creator@example.com',
+      status: 'Accepted',
+      principal_investigator: true
+    };
+    const created: ProposalBackend = {
+      ...pdm,
+      prsl_id: 'prsl-new',
+      proposal_info: { ...pdm.proposal_info, investigators: [backendPi] }
+    };
+
+    test('creates the proposal from the given values and puts the created proposal in the form', async () => {
+      mockCreate.mockResolvedValue({ data: created });
+      const { form, oda } = renderWithForm('Original title');
+      const values = { ...form.current.getValues(), prslId: 'prsl-new', investigators: [] };
+
+      let result;
+      await act(async () => {
+        result = await oda.current.createInOda(values);
+      });
+
+      expect(mockCreate).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({
+          prsl_id: 'prsl-new',
+          proposal_info: expect.objectContaining({ title: 'Original title', investigators: [] })
+        })
+      );
+      expect(result).toEqual({ data: mapPdmToForm(created) });
+      expect(form.current.getValues('prslId')).toBe('prsl-new');
+      // The PI is the one the backend added, not one made up client-side
+      expect(form.current.getValues('investigators')).toEqual([
+        expect.objectContaining({ id: backendPi.user_id, pi: true })
+      ]);
+    });
+
+    test('refreshes the token after the create and before returning', async () => {
+      mockCreate.mockResolvedValue({ data: created });
+      let refreshed = false;
+      mockRefreshAuthToken.mockImplementation(async () => {
+        refreshed = true;
+      });
+      const { form, oda } = renderWithForm();
+
+      await act(async () => {
+        await oda.current.createInOda(form.current.getValues());
+        expect(refreshed).toBe(true);
+      });
+      expect(mockRefreshAuthToken).toHaveBeenCalledOnce();
+    });
+
+    test('returns the error, leaves the form alone and does not refresh when the create fails', async () => {
+      mockCreate.mockRejectedValue(new Error('Create failed'));
+      const { form, oda } = renderWithForm('Unsaved title');
+
+      let result;
+      await act(async () => {
+        result = await oda.current.createInOda(form.current.getValues());
+      });
+
+      expect(result).toEqual({ error: 'Create failed' });
+      expect(form.current.getValues('title')).toBe('Unsaved title');
+      expect(mockRefreshAuthToken).not.toHaveBeenCalled();
+    });
   });
 });

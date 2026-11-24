@@ -7,18 +7,17 @@ import LandingPage from './LandingPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
-import PostProposal from '@/services/axios/post/postProposal/postProposal';
 const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
 const mockNotifyWarning = vi.hoisted(() => vi.fn());
-import { PATH, PROPOSAL_STATUS, PROPOSAL_TYPE, TMP_REVIEWER_ID } from '@/utils/constants';
+import { NAV, PATH, PROPOSAL_STATUS, PROPOSAL_TYPE, TMP_REVIEWER_ID } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
 import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults, getProposalFormValues } from '@/models/proposals/useProposalForm';
 import { ObservatoryPolicy } from '@/utils/types/observatoryData';
 
 // ---- Module mocks ----
@@ -45,9 +44,16 @@ vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   };
 });
 
-const mockLoadFromOda = vi.hoisted(() => vi.fn());
+const { mockLoadFromOda, mockCreateInOda } = vi.hoisted(() => ({
+  mockLoadFromOda: vi.fn(),
+  mockCreateInOda: vi.fn()
+}));
 vi.mock('@/models/proposals/useProposalOda', () => ({
-  useProposalOda: () => ({ loadFromOda: mockLoadFromOda, saveToOda: vi.fn() })
+  useProposalOda: () => ({
+    loadFromOda: mockLoadFromOda,
+    saveToOda: vi.fn(),
+    createInOda: mockCreateInOda
+  })
 }));
 
 vi.mock('@/services/axios/get/getProposalList/getProposalList', () => ({
@@ -55,10 +61,6 @@ vi.mock('@/services/axios/get/getProposalList/getProposalList', () => ({
 }));
 
 vi.mock('@/services/axios/get/getProposalAccess/user/getProposalAccessForUser', () => ({
-  default: vi.fn()
-}));
-
-vi.mock('@/services/axios/post/postProposal/postProposal', () => ({
   default: vi.fn()
 }));
 
@@ -189,7 +191,6 @@ describe('<LandingPage />', () => {
 
 describe('clone proposal', () => {
   const ORIGINAL_PROPOSAL_ID = 'prp-1';
-  const CLONED_PROPOSAL_ID = 'prp-c10ne2';
 
   const mockRichOriginalProposal: Partial<Proposal> = {
     id: ORIGINAL_PROPOSAL_ID,
@@ -229,21 +230,18 @@ describe('clone proposal', () => {
     technicalPDF: null
   };
 
-  // Skeleton response returned by PostProposal — mimics what the backend creates:
-  // a minimal record with only the fields sent in the create payload (title, type, cycle).
-  // All rich data fields (targets, observations, abstract, etc.) are empty.
-  const mockPostProposalSkeleton: Partial<Proposal> = {
-    id: CLONED_PROPOSAL_ID,
-    title: 'In a galaxy far, far away (Copy)',
-    cycle: 'CYCLE-1',
-    status: PROPOSAL_STATUS.DRAFT,
-    targets: [],
-    observations: [],
-    investigators: [],
-    abstract: '',
-    dataProducts: [],
-    calibrationStrategy: []
+  // The PI the backend adds to the clone: the person cloning, from their auth token
+  const backendInjectedPI = {
+    id: 'real-signed-in-account-id',
+    firstName: 'Real',
+    lastName: 'Cloner',
+    email: 'real.cloner@example.com',
+    phdThesis: false,
+    status: 'accepted',
+    pi: true
   };
+
+  const originalValues = () => getProposalFormValues(mockRichOriginalProposal as Proposal);
 
   const mockAccessList: ProposalAccess[] = [
     {
@@ -262,10 +260,18 @@ describe('clone proposal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (isLoggedIn as Mock).mockReturnValue(true);
-    mockLoadFromOda.mockResolvedValue(mockRichOriginalProposal);
+    // Loads the original into the form, as the real loadFromOda does
+    mockLoadFromOda.mockImplementation(async () => {
+      const values = originalValues();
+      formProbe.reset(values);
+      return { data: values };
+    });
+    // Returns the proposal as the backend creates it: as sent, with the caller added as PI
+    mockCreateInOda.mockImplementation(async (values: ProposalType) => ({
+      data: { ...values, investigators: [backendInjectedPI] }
+    }));
     (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal]);
     (GetProposalAccessForUser as Mock).mockResolvedValue(mockAccessList);
-    (PostProposal as Mock).mockResolvedValue(mockPostProposalSkeleton);
 
     vi.spyOn(storageObject, 'useStore').mockReturnValue({
       application: {
@@ -305,21 +311,22 @@ describe('clone proposal', () => {
     fireEvent.click(screen.getByTestId('displayConfirmationButton'));
   };
 
-  test('preserves original targets, observations, abstract and data products after cloning', async () => {
+  test('creates the clone from the original in the form, with its own ID, title and cycle', async () => {
     await triggerCloneConfirm();
 
-    // After confirming the clone, the proposal state should contain a copy of all the original proposal data.
-    await waitFor(() => {
-      expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          id: CLONED_PROPOSAL_ID,
-          targets: mockRichOriginalProposal.targets,
-          observations: mockRichOriginalProposal.observations,
-          abstract: mockRichOriginalProposal.abstract,
-          dataProducts: mockRichOriginalProposal.dataProducts
-        })
-      );
+    await waitFor(() => expect(mockCreateInOda).toHaveBeenCalledOnce());
+    const original = originalValues();
+    const [sent] = mockCreateInOda.mock.calls[0];
+    expect(sent).toMatchObject({
+      title: 'In a galaxy far, far away cloneProposal.suffix',
+      cycle: 'CYCLE-1',
+      abstract: original.abstract,
+      targets: original.targets,
+      observations: original.observations,
+      dataProducts: original.dataProducts
     });
+    expect(sent.prslId).not.toBe(ORIGINAL_PROPOSAL_ID);
+    expect(sent.prslId).toMatch(/^prp-/);
   });
 
   test('sends no investigators when creating the clone, regardless of the original investigator list', async () => {
@@ -329,53 +336,35 @@ describe('clone proposal', () => {
     await triggerCloneConfirm();
 
     await waitFor(() => {
-      expect(PostProposal).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.anything(),
-        expect.objectContaining({ investigators: [] }),
-        PROPOSAL_STATUS.DRAFT
-      );
+      expect(mockCreateInOda).toHaveBeenCalledWith(expect.objectContaining({ investigators: [] }));
     });
   });
 
-  test('uses the investigators returned by PostProposal as the sole source of truth for the clone', async () => {
-    // The backend appends exactly one investigator (the caller, from their auth token) to
-    // whatever was sent - simulate that response and confirm the client copies it verbatim
-    // rather than reconstructing anything itself.
-    const backendInjectedPI = {
-      id: 'real-signed-in-account-id',
-      firstName: 'Real',
-      lastName: 'Cloner',
-      email: 'real.cloner@example.com',
-      phdThesis: false,
-      status: 'accepted',
-      pi: true
-    };
-    (PostProposal as Mock).mockResolvedValue({
-      ...mockPostProposalSkeleton,
-      investigators: [backendInjectedPI]
-    });
-
+  test('copies the created clone, with the PI the backend added, to the legacy store', async () => {
     await triggerCloneConfirm();
 
     await waitFor(() => {
       expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
-        expect.objectContaining({ investigators: [backendInjectedPI] })
+        expect.objectContaining({
+          title: 'In a galaxy far, far away cloneProposal.suffix',
+          abstract: mockRichOriginalProposal.abstract,
+          investigators: [backendInjectedPI]
+        })
       );
     });
+    const [sent] = mockCreateInOda.mock.calls[0];
+    expect(mockUpdateAppContent2.mock.lastCall?.[0].id).toBe(sent.prslId);
+    expect(mockNavigate).toHaveBeenCalledWith(NAV[0]);
   });
 
-  test('does not overwrite cloned proposal with empty PostProposal skeleton', async () => {
+  test('reports a failed clone and stays on the landing page', async () => {
+    mockCreateInOda.mockResolvedValue({ error: 'Create failed' });
+
     await triggerCloneConfirm();
 
-    // The last state update is expected to be a full proposal object containing all the original proposal data
-    // (not the empty skeleton returned by PostProposal).
-    await waitFor(() => {
-      const lastCall = mockUpdateAppContent2.mock.calls.at(-1)?.[0];
-      expect(lastCall?.targets).not.toEqual([]);
-      expect(lastCall?.observations).not.toEqual([]);
-      expect(lastCall?.abstract).not.toEqual('');
-    });
+    await waitFor(() => expect(mockNotifyError).toHaveBeenCalledWith('Create failed'));
+    expect(mockNavigate).not.toHaveBeenCalledWith(NAV[0]);
+    expect(mockNotifySuccess).not.toHaveBeenCalled();
   });
 
   test('updates validation state with cloned proposal ID after cloning', async () => {

@@ -1,119 +1,121 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import Proposal from '@utils/types/proposal.tsx';
-import { PROPOSAL_STATUS } from '@utils/constants.ts';
-import { mapping } from '../../get/getProposal/getProposal.tsx';
-import PostProposal, { mockPostProposal } from './postProposal.tsx';
-import { MockProposalFrontend } from './mockProposalFrontend.tsx';
-import { MockProposalBackend } from './mockProposalBackend.tsx';
+import { AxiosError, type AxiosResponse } from 'axios';
+import { PROPOSAL_STATUS, TEAM_STATUS_TYPE_OPTIONS } from '@utils/constants.ts';
+import { ProposalBackend } from '@utils/types/proposal.tsx';
+import { mapFormToPdm, mapPdmToForm } from '@/models/proposals/pdmMapper';
+import type { ProposalType } from '@/models/proposals/proposal';
+import { MockProposalBackend } from '../../get/getProposal/mockProposalBackend.tsx';
+import { MockUserFrontendList } from '../../get/getUserByEmail/mockUserFrontend';
+import { UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
+import PostProposal from './postProposal.tsx';
 
-describe('Helper Functions', () => {
-  test('mockPostProposal returns mock proposal', () => {
-    const result = mockPostProposal();
-    expect(result).to.deep.equal(mapping(MockProposalBackend));
-  });
-});
+const { mockCreateProposal } = vi.hoisted(() => ({ mockCreateProposal: vi.fn() }));
 
-describe('PostProposal Service', () => {
-  let mockedAuthClient: any;
-  let mockRefreshAuthToken: any;
+vi.mock('@/generated', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/generated')>()),
+  PPTAPIProposalPreparationApiFactory: () => ({
+    createProposalOsoApiV17PhtPrslsCreatePost: mockCreateProposal
+  })
+}));
+
+// A proposal with calculated sensitivities on its links, as a clone starts from
+const pdm = MockProposalBackend as ProposalBackend;
+const values: ProposalType = mapPdmToForm(pdm);
+
+const sentPayload = (): ProposalBackend => mockCreateProposal.mock.calls[0][0];
+
+describe('PostProposal', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
-    mockedAuthClient = {
-      put: vi.fn(),
-      get: vi.fn(),
-      post: vi.fn(),
-      delete: vi.fn(),
-      interceptors: {
-        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
-        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
-      }
-    };
-    mockRefreshAuthToken = vi.fn().mockResolvedValue(undefined);
+    mockCreateProposal.mockReset();
   });
 
-  test('returns proposal from API', async () => {
-    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
-    const result = (await PostProposal(
-      mockedAuthClient,
-      mockRefreshAuthToken,
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
-    )) as Proposal;
-    expect(result).to.deep.equal(mapping(MockProposalBackend));
-  });
+  test('creates the proposal from the form values as a draft and returns the created PDM', async () => {
+    mockCreateProposal.mockResolvedValue({ data: pdm });
 
-  test('calls refreshAuthToken after a successful create', async () => {
-    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
+    const result = await PostProposal(values);
 
-    await PostProposal(
-      mockedAuthClient,
-      mockRefreshAuthToken,
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
+    expect(mockCreateProposal).toHaveBeenCalledOnce();
+    const payload = sentPayload();
+    const mapped = mapFormToPdm(values);
+    // The proposal's own ID, minted when it was started or cloned
+    expect(payload.prsl_id).toBe(values.prslId);
+    expect(payload.cycle).toBe(mapped.cycle);
+    expect(payload.proposal_info.title).toBe(mapped.proposal_info.title);
+    expect(payload.observation_info.targets).toEqual(mapped.observation_info.targets);
+    expect(payload.observation_info.observation_sets).toEqual(
+      mapped.observation_info.observation_sets
     );
-
-    expect(mockRefreshAuthToken).toHaveBeenCalledTimes(1);
+    expect(payload).toMatchObject({
+      status: PROPOSAL_STATUS.DRAFT,
+      submitted_on: null,
+      submitted_by: ''
+    });
+    expect(result).toEqual({ data: pdm });
   });
 
-  test('returns error message on API failure', async () => {
-    mockedAuthClient.post.mockRejectedValue(new Error('Network Error'));
-    const result = await PostProposal(
-      mockedAuthClient,
-      mockRefreshAuthToken,
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
+  test('keeps the links but not their stale sensitivity results', async () => {
+    expect(values.targetObservation.length).toBeGreaterThan(0);
+    expect(pdm.observation_info.result_details?.some((link) => link.result)).toBe(true);
+    mockCreateProposal.mockResolvedValue({ data: pdm });
+
+    await PostProposal(values);
+
+    const links = sentPayload().observation_info.result_details ?? [];
+    expect(
+      links.map(({ target_ref, observation_set_ref, data_product_ref }) => [
+        target_ref,
+        observation_set_ref,
+        data_product_ref
+      ])
+    ).toEqual(
+      values.targetObservation.map((link) => [
+        link.targetId,
+        link.observationId,
+        link.dataProductsSDPId
+      ])
     );
-    expect(result).toStrictEqual({ error: 'Network Error' });
+    expect(links.every((link) => link.result === null)).toBe(true);
   });
 
-  test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    mockedAuthClient.post.mockRejectedValue({ unexpected: 'object' });
-    const result = await PostProposal(
-      mockedAuthClient,
-      mockRefreshAuthToken,
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
-    );
-    expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
+  test('sends every investigator as pending, as invitations to the new proposal start afresh', async () => {
+    const investigator = { ...MockUserFrontendList[0], status: TEAM_STATUS_TYPE_OPTIONS.accepted };
+    mockCreateProposal.mockResolvedValue({ data: pdm });
+
+    await PostProposal({ ...values, investigators: [investigator] });
+
+    expect(sentPayload().proposal_info.investigators).toEqual([
+      expect.objectContaining({
+        user_id: investigator.id,
+        status: TEAM_STATUS_TYPE_OPTIONS.pending
+      })
+    ]);
   });
 
-  test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
-    mockedAuthClient.post.mockResolvedValue(undefined);
-    const result = await PostProposal(
-      mockedAuthClient,
-      mockRefreshAuthToken,
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
-    );
-    expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
+  test('returns the standard error when the API returns no data', async () => {
+    mockCreateProposal.mockResolvedValue(undefined);
+    await expect(PostProposal(values)).resolves.toEqual({ error: UNKNOWN_API_ERROR });
   });
 
-  test("sends payload with the proposal's own prsl_id, without investigator_refs, or stale result_details", async () => {
-    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
-
-    await PostProposal(
-      mockedAuthClient,
-      mockRefreshAuthToken,
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
-    );
-
-    const [, sentBody] = mockedAuthClient.post.mock.calls[0];
-    // The ID is minted when the proposal is started or cloned, not here
-    expect(sentBody.prsl_id).toEqual(MockProposalFrontend.id);
-    expect(sentBody).not.toHaveProperty('investigator_refs');
-    expect(sentBody.observation_info.result_details).toEqual([]);
+  test('returns the error message when the request fails', async () => {
+    mockCreateProposal.mockRejectedValue(new Error('Network Error'));
+    await expect(PostProposal(values)).resolves.toEqual({ error: 'Network Error' });
   });
 
-  test('returns error.API_UNKNOWN_ERROR when result null', async () => {
-    mockedAuthClient.post.mockResolvedValue(null);
-    const result = await PostProposal(
-      mockedAuthClient,
-      mockRefreshAuthToken,
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
+  test('returns the standard error when something other than an Error is thrown', async () => {
+    mockCreateProposal.mockRejectedValue({ unexpected: 'object' });
+    await expect(PostProposal(values)).resolves.toEqual({ error: UNKNOWN_API_ERROR });
+  });
+
+  test('returns the server error from a failed request', async () => {
+    mockCreateProposal.mockRejectedValue(
+      new AxiosError('Request failed', 'ERR_BAD_REQUEST', undefined, undefined, {
+        status: 400,
+        data: { title: 'Bad Request', detail: 'Proposal already exists' }
+      } as AxiosResponse)
     );
-    expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
+    await expect(PostProposal(values)).resolves.toEqual({
+      error: 'Bad Request: Proposal already exists'
+    });
   });
 });

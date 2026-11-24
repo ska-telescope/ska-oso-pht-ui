@@ -57,7 +57,8 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
 });
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: {} })
+  default: () => ({ axiosClient: {} }),
+  useRefreshAuthToken: () => vi.fn()
 }));
 
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({

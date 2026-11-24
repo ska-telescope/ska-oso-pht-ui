@@ -14,18 +14,18 @@ import {
   Spacer,
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
-import PutProposal from '@services/axios/put/putProposal/putProposal';
 import AddButton from '@/components/button/Add/Add';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { legacyProposalFromForm } from '@/models/proposals/useCopySlicesToStore';
+import { UNKNOWN_API_ERROR } from '@/services/axios/apiResult/apiResult';
 import { ProposalType } from '@/models/proposals/proposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal, { NEW_PROPOSAL } from '@/utils/types/proposal';
-import TargetObservation from '@/utils/types/targetObservation';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
@@ -37,14 +37,12 @@ import {
   PATH,
   PROPOSAL_STATUS,
   PROPOSAL_STATUS_OPTIONS,
-  PROPOSAL_TYPE,
-  SENSITIVITY_STATE
+  PROPOSAL_TYPE
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
-import PostProposal from '@/services/axios/post/postProposal/postProposal';
 import { useNotify } from '@/utils/notify/useNotify';
 import { isSVPolicy, useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ObservatoryPolicy } from '@/utils/types/observatoryData';
@@ -59,7 +57,7 @@ export default function LandingPage() {
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const { osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
   const validateProposal = useValidateProposal();
-  const { reset } = useFormContext<ProposalType>();
+  const { reset, getValues } = useFormContext<ProposalType>();
   const theme = useTheme();
 
   const {
@@ -87,8 +85,8 @@ export default function LandingPage() {
   useOSDAPI(setAxiosError, Boolean(loggedIn));
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
-  const { loadFromOda } = useProposalOda();
+  const { axiosClient: authClient } = useAxiosAuthClient();
+  const { loadFromOda, saveToOda, createInOda } = useProposalOda();
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -135,20 +133,21 @@ export default function LandingPage() {
     setHelp('');
     updateAppContent5({});
 
-    const response = await loadFromOda(id);
-    if (typeof response === 'string') {
+    const { data: values, error } = await loadFromOda(id);
+    if (!values) {
       updateAppContent1({});
       updateAppContent2({});
       storeProposalCopy({} as Proposal);
-      setAxiosViewError(response);
+      setAxiosViewError(error ?? UNKNOWN_API_ERROR);
       return false;
-    } else {
-      setSelectedPolicyByCycleId((response as Proposal).cycle ?? '');
-      updateAppContent1(validateProposal(getProposalFormValues(response)));
-      updateAppContent2(response);
-      storeProposalCopy(response);
-      return true;
     }
+    setSelectedPolicyByCycleId(values.cycle);
+    updateAppContent1(validateProposal(values));
+    // The legacy store's copy, for the dialogs, clone and pages that still read it from there
+    const proposal = legacyProposalFromForm(values);
+    updateAppContent2(proposal);
+    storeProposalCopy(proposal);
+    return true;
   };
 
   const goToTitlePage = () => {
@@ -166,11 +165,10 @@ export default function LandingPage() {
   const editIconClicked = async (id: string) => {
     if (!loggedIn) return;
 
-    const response = await getTheProposal(id);
-    if (typeof response === 'string') {
-      alert(t('error.iconClicked'));
-    } else {
+    if (await getTheProposal(id)) {
       goToTitlePage();
+    } else {
+      alert(t('error.iconClicked'));
     }
   };
 
@@ -182,70 +180,49 @@ export default function LandingPage() {
     }
   };
 
-  // The clone keeps the original's target/observation/data-product links (same targets and
-  // observations carry over), but not the calculated sensitivity results attached to them - those
-  // are stale for the new proposal. Reset each link to the same "linked, not yet calculated"
-  // shape LinkingPage.tsx uses for a brand new link, rather than dropping the links entirely.
-  const resetTargetObservationResults = (targetObservation?: TargetObservation[]) =>
-    targetObservation?.map((rec) => ({
-      ...rec,
-      sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
-    })) ?? [];
-
+  // The clone is made from the original, which getTheProposal loaded into the form. It keeps the
+  // original's content and links; PostProposal leaves out the links' sensitivity results, which
+  // are stale for the new proposal.
   const createProposal = async () => {
     notifyWarning(t('addProposal.warning'));
-    const originalProposal = getProposal();
+    const original = getValues();
 
     // The person doing the cloning always becomes the sole PI of the new proposal — not the
     // original proposal's full investigator list. Rather than guessing their identity
     // client-side, send no investigators at all: POST /create already builds a PI record from
     // the caller's verified auth token and appends it server-side (see
-    // ska_oso_services/pht/api/prsls.py's create_proposal), so the response is the
-    // authoritative source for who that investigator is.
-    const response = await PostProposal(
-      authClient,
-      refreshAuthToken,
-      {
-        ...originalProposal,
-        id: mintSkuid(Entity.PRP),
-        title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
-        cycle: osdCycleId ?? '',
-        investigators: [],
-        targetObservation: resetTargetObservationResults(originalProposal.targetObservation)
-      },
-      PROPOSAL_STATUS.DRAFT
-    );
+    // ska_oso_services/pht/api/prsls.py's create_proposal), so the proposal it returns, which
+    // createInOda puts in the form, is the authoritative source for who that investigator is.
+    const { data: cloned, error } = await createInOda({
+      ...original,
+      prslId: mintSkuid(Entity.PRP),
+      title: original.title + ' ' + t('cloneProposal.suffix'),
+      cycle: osdCycleId ?? '',
+      investigators: []
+    });
 
-    if (response && !('error' in response)) {
-      notifySuccess(t('addProposal.success') + response.id);
-      const clonedProposal = {
-        ...originalProposal,
-        id: (response as Proposal).id,
-        title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
-        cycle: osdCycleId ?? '',
-        status: PROPOSAL_STATUS.DRAFT,
-        investigators: (response as Proposal).investigators,
-        targetObservation: resetTargetObservationResults(originalProposal.targetObservation)
-      };
-      setProposal(clonedProposal);
-      updateAppContent1(validateProposal(getProposalFormValues(clonedProposal)));
-      // Create a new access entry for the PI.  Saves doing the endpoint
-      const newAcc: Partial<ProposalAccess> = {
-        prslId: response.id,
-        role: PROPOSAL_ROLE_PI,
-        permissions: PROPOSAL_ACCESS_PERMISSIONS
-      };
-
-      const acc = Array.isArray(application.content4)
-        ? (application.content4 as ProposalAccess[])
-        : [];
-
-      updateAppContent4([...acc, newAcc]);
-
-      goToTitlePage();
-    } else {
-      notifyError((response as { error: string }).error);
+    if (!cloned) {
+      notifyError(error ?? UNKNOWN_API_ERROR);
+      return;
     }
+    notifySuccess(t('addProposal.success') + cloned.prslId);
+    updateAppContent1(validateProposal(cloned));
+    // The legacy store's copy, for the pages that still read it from there
+    setProposal(legacyProposalFromForm(cloned));
+    // Create a new access entry for the PI.  Saves doing the endpoint
+    const newAcc: Partial<ProposalAccess> = {
+      prslId: cloned.prslId,
+      role: PROPOSAL_ROLE_PI,
+      permissions: PROPOSAL_ACCESS_PERMISSIONS
+    };
+
+    const acc = Array.isArray(application.content4)
+      ? (application.content4 as ProposalAccess[])
+      : [];
+
+    updateAppContent4([...acc, newAcc]);
+
+    goToTitlePage();
   };
 
   const cloneConfirmed = () => {
@@ -253,9 +230,9 @@ export default function LandingPage() {
     createProposal();
   };
 
-  // TODO(T9): Full cleanup needed once everything is migrated to the form
+  // The proposal was loaded into the form by getTheProposal, so it is withdrawn from there
   const deleteConfirmed = async () => {
-    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.WITHDRAWN);
+    const response = await saveToOda(PROPOSAL_STATUS.WITHDRAWN);
     if (!response.error) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);

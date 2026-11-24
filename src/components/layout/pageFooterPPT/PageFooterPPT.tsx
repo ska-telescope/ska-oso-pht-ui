@@ -6,7 +6,6 @@ import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import {
   NAV,
-  PROPOSAL_STATUS,
   PROPOSAL_TYPE,
   PAGE_TITLE_ADD,
   PAGE_TARGET,
@@ -14,11 +13,9 @@ import {
   STATUS_ARRAY_PAGES_PROPOSAL,
   STATUS_ARRAY_PAGES_SV
 } from '@utils/constants.ts';
-import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import Proposal from '../../../utils/types/proposal';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { UNKNOWN_API_ERROR } from '@/services/axios/apiResult/apiResult';
 import { useNotify } from '@/utils/notify/useNotify';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
@@ -26,7 +23,8 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
-import { legacyObservationsFromForm } from '@/models/proposals/legacyObservations';
+import { useProposalOda } from '@/models/proposals/useProposalOda';
+import { legacyProposalFromForm } from '@/models/proposals/useCopySlicesToStore';
 import { newDataProductsForMode } from '@/utils/autoLinking/AutoLinking';
 
 const createProposalSchema = getProposalSchema().pick({ title: true, proposalType: true });
@@ -40,7 +38,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
-  const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
+  const { createInOda } = useProposalOda();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdLOW } = useOSDAccessors();
@@ -49,8 +47,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     name: ['title', 'proposalType']
   });
   const canCreate = createProposalSchema.safeParse({ title, proposalType }).success;
-
-  const proposal = application.content2 as Proposal;
 
   const pages = React.useMemo(
     () => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL),
@@ -74,13 +70,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
-    // Only the slices a new proposal takes from the form; the rest come from the legacy defaults
-    const { prslId, cycle, title, proposalType, abstract, scienceCategory, investigators } =
-      getValues();
+    // The form holds only the new proposal, as it was reset when the proposal was started
+    const values = getValues();
     // An SV proposal starts with an observation in the default observing mode, which the user can
     // change on the Details page, and its data products
     const observations =
-      proposalType.type === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+      values.proposalType.type === PROPOSAL_TYPE.SCIENCE_VERIFICATION
         ? [
             newSvObservation(
               OBSERVING_MODE.CONTINUUM,
@@ -88,49 +83,36 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
             )
           ]
         : [];
-    const response = await PostProposal(
-      authClient,
-      refreshAuthToken,
-      {
-        ...proposal,
-        id: prslId,
-        title,
-        abstract,
-        scienceCategory,
-        investigators,
-        ...legacyObservationsFromForm(observations),
-        dataProducts: observations.flatMap(newDataProductsForMode),
-        proposalType: proposalType.type ?? undefined,
-        proposalSubType: proposalType.subTypes,
-        cycle
-      },
-      PROPOSAL_STATUS.DRAFT
-    );
+    const { data: created, error } = await createInOda({
+      ...values,
+      observations,
+      dataProducts: observations.flatMap(newDataProductsForMode)
+    });
 
-    if (response && !('error' in response)) {
-      notifySuccess(t('addProposal.success') + response.id);
-      updateAppContent2(response as Proposal);
-
-      const newAcc: Partial<ProposalAccess> = {
-        prslId: response.id,
-        role: PROPOSAL_ROLE_PI,
-        permissions: PROPOSAL_ACCESS_PERMISSIONS
-      };
-
-      const acc = Array.isArray(application.content4)
-        ? (application.content4 as ProposalAccess[])
-        : [];
-
-      updateAppContent4([...acc, newAcc]);
-      navigate(NAV[1]);
-    } else {
-      notifyError((response as { error: string }).error);
+    if (!created) {
+      notifyError(error ?? UNKNOWN_API_ERROR);
+      return;
     }
+    notifySuccess(t('addProposal.success') + created.prslId);
+    // The legacy store's copy, for the pages that still read it from there
+    updateAppContent2(legacyProposalFromForm(created));
+
+    const newAcc: Partial<ProposalAccess> = {
+      prslId: created.prslId,
+      role: PROPOSAL_ROLE_PI,
+      permissions: PROPOSAL_ACCESS_PERMISSIONS
+    };
+
+    const acc = Array.isArray(application.content4)
+      ? (application.content4 as ProposalAccess[])
+      : [];
+
+    updateAppContent4([...acc, newAcc]);
+    navigate(NAV[1]);
   }, [
-    proposal,
     getValues,
-    authClient,
-    refreshAuthToken,
+    osdLOW,
+    createInOda,
     notifyWarning,
     notifySuccess,
     notifyError,

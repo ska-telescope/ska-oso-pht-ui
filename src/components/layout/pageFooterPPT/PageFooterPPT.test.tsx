@@ -4,8 +4,6 @@ import { storageObject, StoreProvider } from '@utils/storage/store';
 import { useNavigate } from 'react-router';
 import { FormProvider, useForm } from 'react-hook-form';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
-import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
@@ -15,11 +13,11 @@ import {
   PAGE_TARGET,
   PROPOSAL_SUBTYPE,
   PROPOSAL_TYPE,
-  TYPE_CONTINUUM,
   type ProposalTypeType
 } from '@/utils/constants';
 import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { OBSERVING_MODE } from '@/models/proposals/observations';
 
 // --- Additional mocks ---
 const mockNotifyError = vi.hoisted(() => vi.fn());
@@ -54,12 +52,10 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
-vi.mock('@services/axios/post/postProposal/postProposal.tsx', () => ({
-  default: vi.fn()
-}));
-
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
+// Creates the proposal as sent, as the backend does (apart from adding the caller as PI)
+const mockCreateInOda = vi.hoisted(() => vi.fn());
+vi.mock('@/models/proposals/useProposalOda', () => ({
+  useProposalOda: () => ({ createInOda: mockCreateInOda })
 }));
 
 // --- Setup ---
@@ -80,11 +76,12 @@ const mockNotification = {
   okRequired: false
 };
 
-(PostProposal as unknown as Mock).mockResolvedValue(MockProposalBackend);
+const mockUpdateAppContent2 = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
   mockOSD.isSV = false;
+  mockCreateInOda.mockImplementation(async (values: ProposalType) => ({ data: values }));
 
   storageObject.useStore = () =>
     ({
@@ -99,7 +96,7 @@ beforeEach(() => {
         content9: {}
       },
 
-      updateAppContent2: vi.fn(),
+      updateAppContent2: mockUpdateAppContent2,
       updateAppContent4: vi.fn()
     }) as any;
 });
@@ -156,7 +153,7 @@ describe('PageFooterPPT', () => {
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
     await waitFor(() => {
-      expect(PostProposal).toHaveBeenCalled();
+      expect(mockCreateInOda).toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalled();
     });
   });
@@ -179,19 +176,16 @@ describe('PageFooterPPT', () => {
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
     await waitFor(() => {
-      expect(PostProposal).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.anything(),
+      expect(mockCreateInOda).toHaveBeenCalledWith(
         expect.objectContaining({
-          id: 'prsl-t0001-20261120-00001',
+          prslId: 'prsl-t0001-20261120-00001',
           title: newProposal.title,
-          proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+          proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
           abstract: '',
           scienceCategory: null,
           investigators: [],
           cycle: 'CYCLE-1'
-        }),
-        'draft'
+        })
       );
     });
   });
@@ -207,14 +201,16 @@ describe('PageFooterPPT', () => {
       });
       await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
       fireEvent.click(screen.getByTestId('nextButtonTestId'));
-      await waitFor(() => expect(PostProposal).toHaveBeenCalled());
-      return vi.mocked(PostProposal).mock.calls[0][2];
+      await waitFor(() => expect(mockCreateInOda).toHaveBeenCalled());
+      return mockCreateInOda.mock.calls[0][0] as ProposalType;
     };
 
     it('is a default continuum observation with its data products for an SV proposal', async () => {
       const proposal = await createProposal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
 
-      expect(proposal.observations).toEqual([expect.objectContaining({ type: TYPE_CONTINUUM })]);
+      expect(proposal.observations).toEqual([
+        expect.objectContaining({ observingMode: OBSERVING_MODE.CONTINUUM })
+      ]);
       // Continuum has an images data product plus a hidden visibilities one
       expect(proposal.dataProducts).toEqual([
         expect.objectContaining({ observationId: proposal.observations?.[0].id }),
@@ -244,7 +240,7 @@ describe('PageFooterPPT', () => {
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
-    expect(PostProposal).not.toHaveBeenCalled();
+    expect(mockCreateInOda).not.toHaveBeenCalled();
     expect(mockNotifyError).not.toHaveBeenCalled();
   });
 
@@ -256,15 +252,11 @@ describe('PageFooterPPT', () => {
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
     await waitFor(() =>
-      expect(PostProposal).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.anything(),
+      expect(mockCreateInOda).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'Edited title',
-          proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
-          proposalSubType: [PROPOSAL_SUBTYPE.JOINT]
-        }),
-        'draft'
+          proposalType: { type: PROPOSAL_TYPE.KEY_SCIENCE, subTypes: [PROPOSAL_SUBTYPE.JOINT] }
+        })
       )
     );
   });
@@ -277,7 +269,29 @@ describe('PageFooterPPT', () => {
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
-    expect(PostProposal).not.toHaveBeenCalled();
+    expect(mockCreateInOda).not.toHaveBeenCalled();
+  });
+
+  it('copies the created proposal to the legacy store and opens the Team page', async () => {
+    wrapper(<PageFooterPPT pageNo={-1} />, 'Created title', { prslId: 'prsl-created' });
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[1]));
+    expect(mockUpdateAppContent2).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'prsl-created', title: 'Created title' })
+    );
+  });
+
+  it('reports a failed create and stays on the Title page', async () => {
+    mockCreateInOda.mockResolvedValue({ error: 'Create failed' });
+    wrapper(<PageFooterPPT pageNo={-1} />);
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    await waitFor(() => expect(mockNotifyError).toHaveBeenCalledWith('Create failed'));
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockUpdateAppContent2).not.toHaveBeenCalled();
   });
 
   it('navigates to next page when next button clicked', async () => {

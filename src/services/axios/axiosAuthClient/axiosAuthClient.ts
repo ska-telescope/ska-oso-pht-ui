@@ -1,3 +1,4 @@
+import React from 'react';
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
@@ -156,6 +157,28 @@ export const createRequestInterceptor =
     throw new Error('No MSAL session found - redirecting to login.');
   };
 
+// See RefreshAuthToken's own comment above for why this exists at all. Best-effort: a failed
+// refresh just leaves the caller with whatever token it already had.
+export const createRefreshAuthToken =
+  (instance: MsalInstance): RefreshAuthToken =>
+  async () => {
+    const account = instance.getAllAccounts()?.[0];
+    if (account) {
+      await instance
+        .acquireTokenSilent({ ...loginRequest, account, forceRefresh: true })
+        .catch(() => {});
+    }
+  };
+
+/**
+ * The token refresh on its own, for callers that use the generated API clients (which get their
+ * token from the global interceptor) rather than the axios instance from useAxiosAuthClient.
+ */
+export const useRefreshAuthToken = (): RefreshAuthToken => {
+  const { instance } = useMsal();
+  return React.useMemo(() => createRefreshAuthToken(instance), [instance]);
+};
+
 const useAxiosAuthClient = (baseURL: string = '/') => {
   const { instance } = useMsal();
 
@@ -169,16 +192,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
     });
   }
 
-  // See RefreshAuthToken's own comment above for why this exists at all. Best-effort: a failed
-  // refresh just leaves the caller with whatever token it already had.
-  const refreshAuthToken: RefreshAuthToken = async () => {
-    const account = instance.getAllAccounts()?.[0];
-    if (account) {
-      await instance
-        .acquireTokenSilent({ ...loginRequest, account, forceRefresh: true })
-        .catch(() => {});
-    }
-  };
+  const refreshAuthToken = createRefreshAuthToken(instance);
 
   const axiosClient = axios.create({
     baseURL,
