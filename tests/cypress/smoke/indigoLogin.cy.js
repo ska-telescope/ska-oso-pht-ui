@@ -39,7 +39,8 @@ const loginThroughIndigo = () => {
 
 describe('Indigo login', () => {
   it('logs in through Indigo and calls the backend with the token', () => {
-    cy.intercept('GET', '**/oso/api/**').as('backendCall');
+    // Ignoring prefix is deliberate, it differs between environments (prod is /api).
+    cy.intercept('GET', '**/pht/prsls/mine').as('backendCall');
 
     loginThroughIndigo();
 

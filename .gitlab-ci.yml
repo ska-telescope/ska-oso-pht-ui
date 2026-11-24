@@ -86,9 +86,7 @@ js-test:
   cache:
     policy: pull
 
-# e2e deployments use the template's names: environment test/<branch or tag> and one namespace per
-# commit (ci-<project>-<short sha>). These replace the template's rules, so they repeat its
-# `exists` list.
+# js-e2e-install runs only when the template's e2e jobs do, so it repeats their `exists` list
 .e2e_specs:
   exists: &e2e_specs
     - ${JS_PROJECT_DIR}/tests/cypress/**/*.test.*
@@ -96,16 +94,11 @@ js-test:
     - ${JS_PROJECT_DIR}/tests/cypress/**/*.cy.*
     - tests/cypress/**/*.cy.*
 
-.e2e_rules:
-  rules: &e2e_rules
-    - exists: *e2e_specs
-
 # e2e deployments wait longer for backend responses than users would (20s), as the tests'
 # BACKEND_TIMEOUT expects. The Makefile passes it to the chart in k8s-install-chart.
 js-e2e-deploy:
   variables:
     REQUEST_TIMEOUT_MS: "60000"
-  rules: *e2e_rules
 
 # Installs the dependencies, including the Cypress binary, once for the e2e test jobs, while
 # js-e2e-deploy installs the chart, and saves them to the cache. Otherwise each parallel test job
@@ -130,7 +123,8 @@ js-e2e-install:
     paths:
       - ${JS_PROJECT_DIR}/node_modules/
       - ${JS_PROJECT_DIR}/cache/Cypress
-  rules: *e2e_rules
+  rules:
+    - exists: *e2e_specs
 
 js-e2e-test:
   # SPLIT: "true" makes cypress-split (cypress.config.mjs) read GitLab's CI_NODE_INDEX/
@@ -139,7 +133,6 @@ js-e2e-test:
   variables:
     SPLIT: "true"
     SPLIT_FILE: scripts/cypress-timings.json
-  rules: *e2e_rules
   needs:
     - js-e2e-deploy
     - js-e2e-install
@@ -147,13 +140,13 @@ js-e2e-test:
   # there, and doesn't download it again. Only reads the cache, so the jobs don't upload it again.
   cache:
     policy: pull
-  # The template gives js-e2e-test an environment, and GitLab treats any job with an environment
-  # as a deployment to it, whatever its script does. With parallel set to > 1 that is multiple
-  # deployments at once to the same environment, which GitLab fails with data_integrity_failure.
-  # These jobs deploy nothing; they test what js-e2e-deploy installed, finding it through
-  # KUBE_NAMESPACE. The only reason these jobs would need the environment would be to set
-  # auto_stop_in, to stop the deployment a certain time after the tests have finished.
-  # For this suite we handle that in stop-js-e2e-test, which removes it whether or not the tests pass.
+  # With parallel set to > 1, the template's environment would also make the jobs simultaneous
+  # deployments to the same environment, which GitLab fails with data_integrity_failure.
+  # Environment is not needed. The tests run against the environment created by  
+  # js-e2e-deploy installed, accessing it via KUBE_NAMESPACE. The only reason to
+  # access environment would be to alter the auto_stop time. In this suite we handle 
+  # stopping after the tests complete in stop-js-e2e-test, whether or not the tests pass. 
+  # (null environment is used to avoid the default environment being created by the template)
   environment: null
 
 # Removes the deployment once all the test jobs have finished, whether or not they passed,
@@ -163,9 +156,6 @@ stop-js-e2e-test:
     - js-e2e-test
   when: always
   allow_failure: true
-  rules:
-    - exists: *e2e_specs
-      when: always
 
 info-dev-environment:
   <<: *dev_env
