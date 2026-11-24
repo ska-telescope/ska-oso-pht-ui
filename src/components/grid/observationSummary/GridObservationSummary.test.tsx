@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import GridObservationSummary from './GridObservationSummary';
@@ -9,6 +9,7 @@ import {
   SUPPLIED_TYPE_INTEGRATION,
   SUPPLIED_TYPE_SENSITIVITY,
   TIME_DAYS,
+  TIME_HOURS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
@@ -136,9 +137,39 @@ test.each([
     />
   );
   // Unit ID 1 is shared by days and Jy/beam; only time inputs may be converted.
-  expect(container.querySelector('[role="gridcell"][data-field="weather"]')).toHaveTextContent(
-    expected
+  expect(
+    container.querySelector('[role="gridcell"][data-field="integrationTime"]')
+  ).toHaveTextContent(expected);
+});
+
+test('sorts integration time by numeric hours', () => {
+  const { container } = wrapper(
+    <GridObservationSummary
+      proposal={{
+        ...MockProposalFrontend,
+        observations: [
+          {
+            ...MockProposalFrontend.observations![0],
+            id: 'one-day',
+            supplied: { type: SUPPLIED_TYPE_INTEGRATION, value: 1, units: TIME_DAYS }
+          },
+          {
+            ...MockProposalFrontend.observations![0],
+            id: 'two-hours',
+            supplied: { type: SUPPLIED_TYPE_INTEGRATION, value: 2, units: TIME_HOURS }
+          }
+        ]
+      }}
+    />
   );
+  const header = container.querySelector('[role="columnheader"][data-field="integrationTime"]');
+  expect(header).toBeInTheDocument();
+  if (header) fireEvent.click(header);
+
+  const rowIds = Array.from(container.querySelectorAll('[role="row"][data-id]')).map((row) =>
+    row.getAttribute('data-id')
+  );
+  expect(rowIds).toEqual(['two-hours', 'one-day']);
 });
 
 const continuum = { weightedSensitivity: { value: 12, unit: 'Jy' } };

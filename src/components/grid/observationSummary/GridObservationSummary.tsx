@@ -105,12 +105,19 @@ export default function GridObservationSummary({
     );
   };
 
-  const integrationTime = (rec: {
+  const integrationTimeHours = (rec: {
     supplied?: { type?: number; value?: number; units?: number };
   }) =>
     rec.supplied?.type !== SUPPLIED_TYPE_INTEGRATION || rec.supplied?.value == null
-      ? NO_VALUE
-      : `${timeConversion(rec.supplied.value, rec.supplied.units ?? TIME_HOURS, TIME_HOURS)} h`;
+      ? null
+      : timeConversion(rec.supplied.value, rec.supplied.units ?? TIME_HOURS, TIME_HOURS);
+
+  const integrationTime = (rec: {
+    supplied?: { type?: number; value?: number; units?: number };
+  }) => {
+    const hours = integrationTimeHours(rec);
+    return hours == null ? NO_VALUE : `${hours} h`;
+  };
 
   const valueWithUnits = (value?: string | number | null, units?: string) =>
     value == null ? NO_VALUE : `${presentValue(value)} ${units ? presentUnits(units) : ''}`.trim();
@@ -221,10 +228,12 @@ export default function GridObservationSummary({
   };
 
   const colIntegrationTime = {
-    field: 'weather',
+    field: 'integrationTime',
+    type: 'number',
     renderHeader: () => headerDisplay('sensitivityCalculatorResults.integrationTime'),
     flex: 1,
     disableClickEventBubbling: true,
+    valueGetter: (_value: unknown, row: Observation) => integrationTimeHours(row),
     renderCell: (e: { row: Observation }) => element(integrationTime(e.row))
   };
 
