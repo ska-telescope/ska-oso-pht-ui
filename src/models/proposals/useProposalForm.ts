@@ -98,6 +98,8 @@ export function useProposalForm(proposal?: ProposalSeed, osd: ObservationOsd = {
   React.useEffect(() => {
     if (proposalId === seededProposalIdRef.current) return;
     seededProposalIdRef.current = proposalId;
+    // A proposal loaded or started in the form is already there, with what the load added to it
+    if (proposalId === formMethods.getValues('prslId')) return;
     reset(getProposalFormValues(currentProposalRef.current));
   }, [proposalId, reset]);
 

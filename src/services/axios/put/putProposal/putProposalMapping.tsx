@@ -16,7 +16,8 @@ import {
   TYPE_PST,
   TYPE_ZOOM,
   TYPE_ZOOM_LONG,
-  SA_AA4
+  SA_AA4,
+  PROPOSAL_TYPE
 } from '@utils/constants.ts';
 import { DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
@@ -202,6 +203,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
   // The same observations, data products, links and calibration as a save from the form (see
   // mapFormToPdm)
   const saved = observationInfoToSave({
+    isSV: proposal.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION,
     // TODO BTN-3595 Goes with this legacy save, once its callers send the form's values instead
     observations: formObservationsFromLegacy(proposal.observations, proposal.groupObservations),
     dataProducts: proposal.dataProducts ?? [],

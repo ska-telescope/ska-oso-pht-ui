@@ -21,6 +21,7 @@ import {
 import Target from '../types/target';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
+import { PstMode } from '@/generated/models';
 
 /** The kind of the observation's main data product, the one its link points at. */
 export const mainDataProductKind = (observation: ObservationInput): DataProductKind => {
@@ -140,39 +141,87 @@ export async function linkTarget(
   await linkObservation(form, target, observation, mainDataProduct, authAxiosClient);
 }
 
+// The data product a link points at; an imaging observation also has a hidden visibilities one
+const isMainDataProduct = (dataProduct: DataProductInput) =>
+  dataProduct.kind !== DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES;
+
+/** The default SV observation for the mode of the given main data product, or continuum. */
+const svObservationFor = (
+  dataProduct: DataProductInput | undefined,
+  minElevation: number | null
+): ObservationInput => {
+  switch (dataProduct?.kind) {
+    case DATA_PRODUCT_KIND.SPECTRAL_IMAGE:
+      // A spectral image's channels out are the observation's zoom channels
+      return newSvObservation(OBSERVING_MODE.SPECTRAL, minElevation, dataProduct.channelsOut);
+    case DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE:
+      return newSvObservation(OBSERVING_MODE.CONTINUUM_SPECTRAL, minElevation);
+    case DATA_PRODUCT_KIND.PST_FLOW_THROUGH:
+      return newSvObservation(OBSERVING_MODE.PST, minElevation, undefined, PstMode.FlowThrough);
+    case DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK:
+      return newSvObservation(
+        OBSERVING_MODE.PST,
+        minElevation,
+        undefined,
+        PstMode.DetectedFilterbank
+      );
+    case DATA_PRODUCT_KIND.PST_TIMING:
+      return newSvObservation(OBSERVING_MODE.PST, minElevation, undefined, PstMode.PulsarTiming);
+    default:
+      return newSvObservation(OBSERVING_MODE.CONTINUUM, minElevation);
+  }
+};
+
 /**
- * An SV proposal loaded with a target but no link gets its observation's default data products
- * back, linked to the target. This happens when its main data product was invalid when it was
- * last saved, so it and its link were left out. The calibration belongs to the observation, so it
- * is kept. The sensitivity service calculates the new link's results.
+ * An SV proposal has the observation, data products and link the app sets up for it, as the user
+ * can't add them. A loaded SV proposal gets back any of these a save left out because they were
+ * invalid:
+ * - No observation: the default one for the mode of the data products kept for it, with the ID
+ *   they and the calibration still refer to, so they belong to it again. Continuum if there are none.
+ * - No main data product: the observation's default data products, replacing any left without it.
+ * - A target without a link, or a new observation: the link. The sensitivity service calculates
+ *   its results.
  */
-export const relinkSvTarget = (values: ProposalType): ProposalType => {
-  const [target] = values.targets;
-  if (
-    values.proposalType.type !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
-    values.observations.length !== 1 ||
-    !target ||
-    values.targetObservation.length > 0
-  ) {
+export const withSvDefaults = (values: ProposalType, minElevation: number | null): ProposalType => {
+  if (values.proposalType.type !== PROPOSAL_TYPE.SCIENCE_VERIFICATION) {
     return values;
   }
-  const [observation] = values.observations;
-  // Any data product left from the save is replaced too, with the full default set
-  const dataProducts = newDataProductsForMode(observation);
+  const [target] = values.targets;
+  const missingObservation = values.observations.length === 0;
+  const missingMainDataProduct = !values.dataProducts.some(isMainDataProduct);
+  // A new observation needs a new link, as the results were for the old one
+  const missingLink = !!target && (missingObservation || values.targetObservation.length === 0);
+  if (!missingObservation && !missingMainDataProduct && !missingLink) {
+    return values;
+  }
+
+  const savedObservationId =
+    values.dataProducts[0]?.observationId ?? values.calibrationStrategy[0]?.observationIdRef;
+  const observation = missingObservation
+    ? {
+        ...svObservationFor(values.dataProducts.find(isMainDataProduct), minElevation),
+        ...(savedObservationId && { id: savedObservationId })
+      }
+    : values.observations[0];
+  const dataProducts = missingMainDataProduct
+    ? newDataProductsForMode(observation)
+    : values.dataProducts;
+  const mainDataProduct = dataProducts.find(isMainDataProduct) as DataProductInput;
+
   return {
     ...values,
-    dataProducts: [
-      ...values.dataProducts.filter((dp) => dp.observationId !== observation.id),
-      ...dataProducts
-    ],
-    targetObservation: [
-      {
-        targetId: target.id,
-        observationId: observation.id,
-        dataProductsSDPId: dataProducts[0].id,
-        sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
-      }
-    ]
+    observations: [observation],
+    dataProducts,
+    targetObservation: missingLink
+      ? [
+          {
+            targetId: target.id,
+            observationId: observation.id,
+            dataProductsSDPId: mainDataProduct.id,
+            sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
+          }
+        ]
+      : values.targetObservation
   };
 };
 

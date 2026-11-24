@@ -42,6 +42,7 @@ const incomplete = (id: string): ObservationInput => ({
 describe('observationInfoToSave', () => {
   test('saves complete observations with their data products, links and calibration', () => {
     const saved = observationInfoToSave({
+      isSV: false,
       observations: [observation('o1')],
       dataProducts: [dataProduct('dp1', 'o1')],
       links: [link('o1', 'dp1')],
@@ -58,6 +59,7 @@ describe('observationInfoToSave', () => {
 
   test('leaves out an incomplete observation with its data products, links and calibration', () => {
     const saved = observationInfoToSave({
+      isSV: false,
       observations: [observation('o1'), incomplete('o2')],
       dataProducts: [dataProduct('dp1', 'o1'), dataProduct('dp2', 'o2')],
       links: [link('o1', 'dp1'), link('o2', 'dp2')],
@@ -75,6 +77,7 @@ describe('observationInfoToSave', () => {
     const outOfBand = { ...observation('o1'), centralFrequency: { value: 400, unit: 'MHz' } };
 
     const saved = observationInfoToSave({
+      isSV: false,
       observations: [outOfBand as ObservationInput],
       dataProducts: [],
       links: [],
@@ -92,12 +95,29 @@ describe('observationInfoToSave', () => {
     } as DataProductInput;
 
     const saved = observationInfoToSave({
+      isSV: false,
       observations: [observation('o1')],
       dataProducts: [dataProduct('dp1', 'o1'), invalid],
       links: [link('o1', 'dp1'), link('o1', 'dp2')],
       calibrationStrategy: [strategy('o1')]
     });
 
+    expect(saved.dataProducts.map((dp) => dp.data_product_id)).toEqual(['dp1']);
+    expect(saved.links).toEqual([link('o1', 'dp1')]);
+    expect(saved.calibrationStrategy).toEqual([strategy('o1')]);
+  });
+
+  // The load gives an SV observation back with the defaults and the ID they refer to
+  test('keeps the data products, links and calibration of an incomplete SV observation', () => {
+    const saved = observationInfoToSave({
+      isSV: true,
+      observations: [incomplete('o1')],
+      dataProducts: [dataProduct('dp1', 'o1')],
+      links: [link('o1', 'dp1')],
+      calibrationStrategy: [strategy('o1')]
+    });
+
+    expect(saved.observationSets).toEqual([]);
     expect(saved.dataProducts.map((dp) => dp.data_product_id)).toEqual(['dp1']);
     expect(saved.links).toEqual([link('o1', 'dp1')]);
     expect(saved.calibrationStrategy).toEqual([strategy('o1')]);

@@ -118,6 +118,21 @@ describe('useProposalForm', () => {
     expect(result.current.getValues('title')).toBe('Second');
   });
 
+  // The load from the ODA resets the form before the store gets the legacy proposal, which lacks
+  // what the load added (such as SV defaults)
+  test('keeps a proposal the form was loaded with when the store switches to it', () => {
+    const { result, rerender } = renderHook((proposal: Props) => useProposalForm(proposal), {
+      initialProps: { id: undefined, title: '' } as Props
+    });
+    act(() =>
+      result.current.reset({ ...result.current.getValues(), prslId: 'p1', title: 'Loaded' })
+    );
+
+    rerender({ id: 'p1', title: 'Store copy' });
+
+    expect(result.current.getValues('title')).toBe('Loaded');
+  });
+
   test('keeps in-progress edits when the same proposal changes', () => {
     const { result, rerender } = renderHook((proposal: Props) => useProposalForm(proposal), {
       initialProps: { id: 'p1', title: 'First' } as Props

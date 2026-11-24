@@ -29,6 +29,12 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => ({ axiosClient: { get: mockGet, put: mockPut } })
 }));
 
+// The cycles the OSD has, for the loaded proposal's own
+const mockOsdPolicies = vi.hoisted(() => ({ current: [] as unknown[] }));
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({ osdPolicies: mockOsdPolicies.current })
+}));
+
 const pdm = MockProposalBackend as ProposalBackend;
 const investigator = MockUserFrontendList[0];
 
@@ -114,6 +120,76 @@ describe('useProposalOda', () => {
         sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
       }
     ]);
+  });
+
+  // The user can't add an SV observation or data products, so the load adds the defaults
+  test('Load from ODA gives an SV observation without data products its defaults', async () => {
+    mockGet.mockResolvedValue({
+      data: {
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION }
+        },
+        observation_info: {
+          ...pdm.observation_info,
+          targets: [],
+          data_product_sdps: [],
+          result_details: []
+        }
+      }
+    });
+    const { form, oda } = renderWithForm();
+
+    await act(async () => {
+      await oda.current.loadFromOda('prsl-1');
+    });
+
+    const [observation] = mapping(pdm).observations ?? [];
+    expect(form.current.getValues('dataProducts').map((dp) => dp.observationId)).toEqual([
+      observation.id,
+      observation.id
+    ]);
+    expect(form.current.getValues('targetObservation')).toEqual([]);
+  });
+
+  test("Load from ODA gives a new SV observation the minimum elevation of the proposal's cycle", async () => {
+    mockOsdPolicies.current = [
+      {
+        cycleInformation: { cycleId: 'another-cycle' },
+        capabilities: { low: { basicCapabilities: { minElevationDeg: 10 } } }
+      },
+      {
+        cycleInformation: { cycleId: pdm.cycle },
+        capabilities: { low: { basicCapabilities: { minElevationDeg: 20 } } }
+      }
+    ];
+    mockGet.mockResolvedValue({
+      data: {
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION }
+        },
+        observation_info: {
+          ...pdm.observation_info,
+          observation_sets: [],
+          data_product_sdps: [],
+          result_details: [],
+          calibration_strategy: []
+        }
+      }
+    });
+    const { form, oda } = renderWithForm();
+
+    await act(async () => {
+      await oda.current.loadFromOda('prsl-1');
+    });
+
+    expect(form.current.getValues('observations')).toEqual([
+      expect.objectContaining({ minElevation: 20 })
+    ]);
+    mockOsdPolicies.current = [];
   });
 
   test('Load from ODA returns the error and leaves the form alone on failure', async () => {

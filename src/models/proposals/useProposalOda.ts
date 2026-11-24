@@ -7,7 +7,8 @@ import PutProposal from '@services/axios/put/putProposal/putProposal';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { ProposalType } from './proposal';
 import { mapPdmToForm } from './pdmMapper';
-import { relinkSvTarget } from '@/utils/autoLinking/AutoLinking';
+import { withSvDefaults } from '@/utils/autoLinking/AutoLinking';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 /**
  * Moves the proposal between the ODA (PDM) and the global proposal form (RHF).
@@ -17,6 +18,7 @@ export function useProposalOda() {
   const { axiosClient: authClient } = useAxiosAuthClient();
 
   const form = useFormContext<ProposalType>() as UseFormReturn<ProposalType> | null;
+  const { osdPolicies } = useOSDAccessors();
 
   const loadFromOda = React.useCallback(
     async (id: string): Promise<Proposal | string> => {
@@ -28,14 +30,19 @@ export function useProposalOda() {
       let values: ProposalType;
       try {
         proposal = mapping(pdm);
-        values = relinkSvTarget(mapPdmToForm(pdm));
+        // The proposal's own cycle, as it is only selected once the proposal has loaded
+        const policy = osdPolicies.find((p) => p.cycleInformation?.cycleId === pdm.cycle);
+        values = withSvDefaults(
+          mapPdmToForm(pdm),
+          policy?.capabilities?.low?.basicCapabilities?.minElevationDeg ?? null
+        );
       } catch (error) {
         return error instanceof Error ? error.message : 'error.API_UNKNOWN_ERROR';
       }
       form?.reset(values);
       return proposal;
     },
-    [authClient, form]
+    [authClient, form, osdPolicies]
   );
 
   const saveToOda = React.useCallback(
