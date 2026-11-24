@@ -1,53 +1,90 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { MockProposalFrontend } from '@services/axios/get/getProposal/mockProposalFrontend.tsx';
+import { AxiosError, type AxiosResponse } from 'axios';
+import { PROPOSAL_STATUS } from '@utils/constants.ts';
+import { ProposalBackend } from '@utils/types/proposal.tsx';
+import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
+import { mapFormToPdm, mapPdmToForm } from '@/models/proposals/pdmMapper';
+import { UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import PostProposalValidate from './postProposalValidate.tsx';
 
-describe('PostProposalValidate Service', () => {
-  let mockedAuthClient: any;
+const { mockValidate } = vi.hoisted(() => ({ mockValidate: vi.fn() }));
+
+vi.mock('@/generated', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/generated')>()),
+  PPTAPIProposalPreparationApiFactory: () => ({
+    validateProposalOsoApiV17PhtPrslsValidatePost: mockValidate
+  })
+}));
+
+const values = mapPdmToForm(MockProposalBackend as ProposalBackend);
+
+describe('PostProposalValidate', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
-    mockedAuthClient = {
-      post: vi.fn()
-    };
+    mockValidate.mockReset();
   });
 
-  test('returns confirmation when data valid', async () => {
-    mockedAuthClient.post.mockResolvedValue({ data: { result: true, validation_errors: [] } });
-    const result = await PostProposalValidate(mockedAuthClient, MockProposalFrontend);
-    expect(result).to.toStrictEqual({ valid: 'success' });
-  });
+  test('sends the proposal mapped from the form as a draft', async () => {
+    mockValidate.mockResolvedValue({ data: { result: true, validation_errors: [] } });
 
-  test('returns validation error when validation fails', async () => {
-    const errorList = ['This proposal has no observation sets'];
-    mockedAuthClient.post.mockResolvedValue({
-      data: { result: false, validation_errors: errorList }
+    await PostProposalValidate(values);
+
+    expect(mockValidate).toHaveBeenCalledExactlyOnceWith({
+      ...mapFormToPdm(values),
+      status: PROPOSAL_STATUS.DRAFT,
+      submitted_on: null,
+      submitted_by: ''
     });
-    const result = await PostProposalValidate(mockedAuthClient, MockProposalFrontend);
-    expect(result).to.toStrictEqual({ error: errorList });
   });
 
-  test('returns error when typeof validateResponseData undefined', async () => {
-    mockedAuthClient.post.mockResolvedValue({ result: undefined });
-    const result = await PostProposalValidate(mockedAuthClient, MockProposalFrontend);
-    expect(result).to.toStrictEqual({ error: ['error.API_UNKNOWN_ERROR'] });
+  test('returns confirmation when the proposal is valid', async () => {
+    mockValidate.mockResolvedValue({ data: { result: true, validation_errors: [] } });
+    await expect(PostProposalValidate(values)).resolves.toStrictEqual({ valid: 'success' });
   });
 
-  test('returns validation error when response unexpected format', async () => {
-    mockedAuthClient.post.mockResolvedValue({ result: 'some unexpected format' });
-    const result = await PostProposalValidate(mockedAuthClient, MockProposalFrontend);
-    expect(result).to.toStrictEqual({ error: ['error.API_UNKNOWN_ERROR'] });
+  test('returns the validation errors when the proposal is invalid', async () => {
+    const errorList = ['This proposal has no observation sets'];
+    mockValidate.mockResolvedValue({ data: { result: false, validation_errors: errorList } });
+    await expect(PostProposalValidate(values)).resolves.toStrictEqual({ error: errorList });
   });
 
-  test('returns error message on API failure', async () => {
-    mockedAuthClient.post.mockRejectedValue(new Error('Network Error'));
-    const result = await PostProposalValidate(mockedAuthClient, MockProposalFrontend);
-    expect(result).toStrictEqual({ error: ['Network Error'] });
+  test('returns the standard error when the API returns no data', async () => {
+    mockValidate.mockResolvedValue(undefined);
+    await expect(PostProposalValidate(values)).resolves.toStrictEqual({
+      error: [UNKNOWN_API_ERROR]
+    });
   });
 
-  test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    mockedAuthClient.post.mockRejectedValue({ response: { data: { title: 'this is an error' } } });
-    const result = await PostProposalValidate(mockedAuthClient, MockProposalFrontend);
-    expect(result).toStrictEqual({ error: ['this is an error'] });
+  test('returns the standard error when the response is in an unexpected format', async () => {
+    mockValidate.mockResolvedValue({ data: { result: 'some unexpected format' } });
+    await expect(PostProposalValidate(values)).resolves.toStrictEqual({
+      error: [UNKNOWN_API_ERROR]
+    });
+  });
+
+  test('returns the error message when the request fails', async () => {
+    mockValidate.mockRejectedValue(new Error('Network Error'));
+    await expect(PostProposalValidate(values)).resolves.toStrictEqual({
+      error: ['Network Error']
+    });
+  });
+
+  test('returns the server error from a failed request', async () => {
+    mockValidate.mockRejectedValue(
+      new AxiosError('Request failed', 'ERR_BAD_RESPONSE', undefined, undefined, {
+        status: 500,
+        data: { title: 'Internal Server Error', detail: 'Validation unavailable' }
+      } as AxiosResponse)
+    );
+    await expect(PostProposalValidate(values)).resolves.toStrictEqual({
+      error: ['Internal Server Error: Validation unavailable']
+    });
+  });
+
+  test('returns the standard error when something other than an Error is thrown', async () => {
+    mockValidate.mockRejectedValue({ unexpected: 'object' });
+    await expect(PostProposalValidate(values)).resolves.toStrictEqual({
+      error: [UNKNOWN_API_ERROR]
+    });
   });
 });

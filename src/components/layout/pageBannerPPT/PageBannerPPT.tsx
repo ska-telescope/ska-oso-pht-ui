@@ -26,7 +26,6 @@ import SubmitButton from '../../button/Submit/Submit';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -66,7 +65,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     [isSV]
   );
 
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const { saveToOda } = useProposalOda();
   const { notifyError, notifySuccess } = useNotify();
 
@@ -105,7 +103,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         results.push(t('page.' + key + '.pageError'));
       }
     });
-    const response = await PostProposalValidate(authClient, getProposal());
+    const response = await PostProposalValidate(form.getValues());
 
     if (response.valid && !response.error && results.length === 0) {
       notifySuccess(t('validation.success'));
