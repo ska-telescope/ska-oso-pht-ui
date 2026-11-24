@@ -112,11 +112,11 @@ export default function GridObservationSummary({
   const valueWithUnits = (value?: string | number | null, units?: string) =>
     value == null ? NO_VALUE : `${presentValue(value)} ${units ? presentUnits(units) : ''}`.trim();
 
-  const centralFrequency = (rec: { centralFrequency?: number; centralFrequencyUnits?: number }) =>
-    valueWithUnits(
-      rec.centralFrequency,
-      getBandwidthOrFrequencyUnitsLabel(rec.centralFrequencyUnits as number)
-    );
+  const centralFrequency = (rec: { centralFrequency?: number; centralFrequencyUnits?: number }) => {
+    if (rec.centralFrequency == null) return NO_VALUE;
+    const units = getBandwidthOrFrequencyUnitsLabel(rec.centralFrequencyUnits as number);
+    return `${rec.centralFrequency} ${units ? presentUnits(units) : ''}`.trim();
+  };
 
   const bandwidth = (rec: Observation) => {
     if (CONTINUUM_TYPES.includes(rec.type)) {

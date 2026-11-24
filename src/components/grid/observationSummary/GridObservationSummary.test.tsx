@@ -182,3 +182,18 @@ test.each([TYPE_CONTINUUM, TYPE_ZOOM, TYPE_ZOOM_LONG])(
     );
   }
 );
+
+test.each([199.609375, 199.609375123456])(
+  'displays the saved central frequency precision for %s MHz',
+  (centralFrequency) => {
+    wrapper(
+      <GridObservationSummary
+        proposal={{
+          ...MockProposalFrontend,
+          observations: [{ ...MockProposalFrontend.observations![0], centralFrequency }]
+        }}
+      />
+    );
+    expect(screen.getByText(`${centralFrequency} MHz`)).toBeInTheDocument();
+  }
+);
