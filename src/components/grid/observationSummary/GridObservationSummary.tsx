@@ -7,6 +7,7 @@ import {
   FREQUENCY_UNITS,
   NOT_SPECIFIED,
   SENSITIVITY_STATE,
+  SUPPLIED_TYPE_INTEGRATION,
   TIME_HOURS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -104,8 +105,10 @@ export default function GridObservationSummary({
     );
   };
 
-  const integrationTime = (rec: { supplied?: { value?: number; units?: number } }) =>
-    rec.supplied?.value == null
+  const integrationTime = (rec: {
+    supplied?: { type?: number; value?: number; units?: number };
+  }) =>
+    rec.supplied?.type !== SUPPLIED_TYPE_INTEGRATION || rec.supplied?.value == null
       ? NO_VALUE
       : `${timeConversion(rec.supplied.value, rec.supplied.units ?? TIME_HOURS, TIME_HOURS)} h`;
 

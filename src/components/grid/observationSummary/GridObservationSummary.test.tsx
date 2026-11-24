@@ -6,6 +6,9 @@ import GridObservationSummary from './GridObservationSummary';
 import {
   BAND_LOW_STR,
   SENSITIVITY_STATE,
+  SUPPLIED_TYPE_INTEGRATION,
+  SUPPLIED_TYPE_SENSITIVITY,
+  TIME_DAYS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
@@ -113,6 +116,29 @@ describe('<GridObservationSummary />', () => {
       />
     );
   });
+});
+
+test.each([
+  [SUPPLIED_TYPE_SENSITIVITY, '-'],
+  [SUPPLIED_TYPE_INTEGRATION, '24 h']
+])('displays integration time for supplied type %s', (type, expected) => {
+  const { container } = wrapper(
+    <GridObservationSummary
+      proposal={{
+        ...MockProposalFrontend,
+        observations: [
+          {
+            ...MockProposalFrontend.observations![0],
+            supplied: { type, value: 1, units: TIME_DAYS }
+          }
+        ]
+      }}
+    />
+  );
+  // Unit ID 1 is shared by days and Jy/beam; only time inputs may be converted.
+  expect(container.querySelector('[role="gridcell"][data-field="weather"]')).toHaveTextContent(
+    expected
+  );
 });
 
 const continuum = { weightedSensitivity: { value: 12, unit: 'Jy' } };
