@@ -11,7 +11,7 @@ import { documentsFromPdm, documentsToPdm } from './documents';
 import { dataProductsFromPdm } from './dataProducts';
 import { observationInfoToSave } from './save';
 import { observationsFromPdm } from './observations';
-
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 /**
  * PDM (ODA) → RHF form values. Add migrated page as a slice here. What the PDM requires is read
  * as it is, so a proposal without it fails to load; what the PDM makes optional gets the form's
@@ -45,7 +45,7 @@ export function mapPdmToForm(pdm: ProposalBackend): ProposalType {
  * RHF form values → PDM (ODA). `base` is the PDM for the rest of the proposal (fields not yet
  * migrated to the form); the form's slices are laid over it.
  */
-export function mapFormToPdm(form: ProposalType, base: ProposalBackend): ProposalBackend {
+export function mapFormToPdm(form: ProposalType, base: ProposalPDM): ProposalPDM {
   const saved = observationInfoToSave({
     observations: form.observations,
     dataProducts: form.dataProducts,
@@ -67,7 +67,6 @@ export function mapFormToPdm(form: ProposalType, base: ProposalBackend): Proposa
         attributes: form.proposalType.subTypes
       }
     },
-    investigator_refs: (form.investigators ?? []).map(({ id }) => id),
     observation_info: {
       ...base.observation_info,
       targets: targetsToPdm(form.targets),

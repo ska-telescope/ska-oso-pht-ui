@@ -5,6 +5,7 @@ import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-comp
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
+import type { ApiResult } from '@/services/axios/apiResult/apiResult';
 import { generateId, helpers } from '@utils/helpers.ts';
 import {
   LAB_POS_TICK,
@@ -157,14 +158,11 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     setPi(event.target.checked);
   };
 
-  const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
-    if (response && !('error' in response)) {
+  const updateProposalResponse = (response: ApiResult<ProposalBackend>) => {
+    if (!response.error) {
       notifySuccess(t('saveBtn.success'));
     } else {
-      notifyError(
-        'error' in response ? response.error : 'An unknown error occurred',
-        NOTIFICATION_DELAY_IN_SECONDS
-      );
+      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
     }
   };
 

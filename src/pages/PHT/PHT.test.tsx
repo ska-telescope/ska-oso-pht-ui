@@ -48,11 +48,16 @@ vi.mock('@utils/storage/store', () => ({
 }));
 
 vi.mock('@/services/axios/put/putProposal/putProposal', () => ({
-  default: vi.fn().mockResolvedValue({ id: 'prsl-123' })
+  default: vi.fn().mockResolvedValue({ data: { id: 'prsl-123' } })
 }));
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
+}));
+
+vi.mock('@/services/axios/useAxiosInterceptor/useAxiosInterceptor', () => ({
+  default: vi.fn(),
+  useAxiosInterceptor: vi.fn()
 }));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
@@ -195,7 +200,7 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
+      expect(PutProposal).toHaveBeenCalledWith({ id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
         prslId: 'prsl-123',
         cycle: '',
         title: '',
@@ -224,7 +229,7 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
+      expect(PutProposal).toHaveBeenCalledWith({ id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
         prslId: 'prsl-123',
         cycle: '',
         title: '',
@@ -264,7 +269,6 @@ describe('<PHT />', () => {
             expect.objectContaining({ id: 'prsl-123', abstract })
           );
           expect(PutProposal).toHaveBeenCalledWith(
-            {},
             expect.objectContaining({ abstract: 'Stale store summary' }),
             PROPOSAL_STATUS.DRAFT,
             expect.objectContaining({ abstract })

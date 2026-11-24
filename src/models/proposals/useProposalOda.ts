@@ -4,6 +4,7 @@ import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import { GetProposalPdm, mapping } from '@services/axios/get/getProposal/getProposal';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
+import type { ApiResult } from '@services/axios/apiResult/apiResult';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { ProposalType } from './proposal';
 import { mapPdmToForm } from './pdmMapper';
@@ -42,9 +43,8 @@ export function useProposalOda() {
     (
       proposal: Proposal,
       status: string = PROPOSAL_STATUS.DRAFT
-    ): Promise<ProposalBackend | { error: string }> =>
-      PutProposal(authClient, proposal, status, form?.getValues()),
-    [authClient, form]
+    ): Promise<ApiResult<ProposalBackend>> => PutProposal(proposal, status, form?.getValues()),
+    [form]
   );
 
   return { loadFromOda, saveToOda };

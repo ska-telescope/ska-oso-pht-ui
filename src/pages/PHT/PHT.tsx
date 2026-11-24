@@ -58,6 +58,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import useAxiosInterceptor from '@/services/axios/useAxiosInterceptor/useAxiosInterceptor';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
@@ -129,6 +130,7 @@ export default function PHT({
   const navigate = useNavigate();
   const location = useLocation();
   const { axiosClient: authClient } = useAxiosAuthClient();
+  useAxiosInterceptor();
   const { setHelp } = useHelp();
   const { notifyError } = useNotify();
   const theme = useTheme();
@@ -202,15 +204,15 @@ export default function PHT({
     if (isProposalPageTransition) {
       const values = getValues();
       void (async () => {
-        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT, values);
-        if ('error' in response) {
-          notifyError(response.error);
+        const { error } = await PutProposal(proposal, PROPOSAL_STATUS.DRAFT, values);
+        if (error) {
+          notifyError(error);
         }
       })();
     }
 
     previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, authClient, notifyError, getValues]);
+  }, [location.pathname, application.content2, notifyError, getValues]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />

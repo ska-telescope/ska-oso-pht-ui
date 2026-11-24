@@ -93,7 +93,9 @@ const resolveLocalhostAccount = async (
 
 export const createRequestInterceptor =
   (instance: MsalInstance) => async (request: InternalAxiosRequestConfig) => {
-    const isHttp = request?.baseURL?.startsWith(HTTP);
+    // Requests made through the generated client carry their full URL in `url` with no
+    // `baseURL`, so check both.
+    const isHttp = request?.baseURL?.startsWith(HTTP) || request?.url?.startsWith(HTTP);
     if (isHttp && !isLocalhost()) {
       return Promise.reject('HTTP is not allowed except on localhost.');
     } else if (!isLocalhost() && request.baseURL && !request.baseURL.startsWith(HTTPS)) {

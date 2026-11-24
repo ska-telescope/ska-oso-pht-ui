@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
 import {
-  OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
   PROPOSAL_TYPE,
   SENSITIVITY_STATE
@@ -26,7 +25,14 @@ const { mockGet, mockPut } = vi.hoisted(() => ({
   mockPut: vi.fn()
 }));
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: { get: mockGet, put: mockPut } })
+  default: () => ({ axiosClient: { get: mockGet } })
+}));
+
+vi.mock('@/generated', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/generated')>()),
+  PPTAPIProposalPreparationApiFactory: () => ({
+    updateProposalOsoApiV17PhtPrslsPrslIdPut: mockPut
+  })
 }));
 
 const pdm = MockProposalBackend as ProposalBackend;
@@ -182,7 +188,7 @@ describe('useProposalOda', () => {
 
     const expected = MappingPutProposal(legacy, PROPOSAL_STATUS.DRAFT);
     expect(mockPut).toHaveBeenCalledExactlyOnceWith(
-      expect.stringContaining(`${OSO_SERVICES_PROPOSAL_PATH}/${legacy.id}`),
+      legacy.id,
       {
         ...expected,
         proposal_info: {
@@ -196,14 +202,14 @@ describe('useProposalOda', () => {
         }
       }
     );
-    expect(saved).toEqual(pdm);
+    expect(saved).toEqual({ data: pdm });
   });
 
   test('Save to ODA preserves legacy saves outside the proposal form', async () => {
     mockPut.mockResolvedValue({ data: pdm });
     const { result } = renderHook(() => useProposalOda());
     const legacy = mapping(pdm);
-    expect(await result.current.saveToOda(legacy)).toEqual(pdm);
+    expect(await result.current.saveToOda(legacy)).toEqual({ data: pdm });
     expect(mockPut).toHaveBeenCalledWith(
       expect.any(String),
       MappingPutProposal(legacy, PROPOSAL_STATUS.DRAFT)
@@ -223,7 +229,7 @@ describe('useProposalOda', () => {
       });
 
       expect(getDetailsSchema().safeParse(form.current.getValues()).success).toBe(false);
-      await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
+      await expect(oda.current.saveToOda(legacy)).resolves.toEqual({ data: pdm });
       expect(mockPut).toHaveBeenLastCalledWith(
         expect.any(String),
         expect.objectContaining({
@@ -235,7 +241,7 @@ describe('useProposalOda', () => {
       act(() => {
         form.current.setValue('title', 'Edited on another page');
       });
-      await expect(oda.current.saveToOda(legacy)).resolves.toEqual(pdm);
+      await expect(oda.current.saveToOda(legacy)).resolves.toEqual({ data: pdm });
       expect(mockPut).toHaveBeenCalledTimes(2);
       expect(mockPut).toHaveBeenLastCalledWith(
         expect.any(String),
@@ -281,11 +287,11 @@ describe('useProposalOda', () => {
       });
 
       expect(form.current.getValues('investigators')?.[0]).not.toHaveProperty('affiliation');
-      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual(
-        withInvestigator
-      );
+      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual({
+        data: withInvestigator
+      });
       expect(mockPut).toHaveBeenCalledExactlyOnceWith(
-        expect.stringContaining(`${OSO_SERVICES_PROPOSAL_PATH}/${withInvestigator.prsl_id}`),
+        withInvestigator.prsl_id,
         expect.objectContaining({
           investigator_refs: [investigator.id],
           proposal_info: expect.objectContaining({
@@ -351,11 +357,11 @@ describe('useProposalOda', () => {
         form.current.setValue('title', 'Edited title');
       });
 
-      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual(
-        withInvestigator
-      );
+      await expect(oda.current.saveToOda(mapping(withInvestigator))).resolves.toEqual({
+        data: withInvestigator
+      });
       expect(mockPut).toHaveBeenCalledExactlyOnceWith(
-        expect.stringContaining(`${OSO_SERVICES_PROPOSAL_PATH}/${proposalId}`),
+        proposalId,
         expect.objectContaining({
           investigator_refs: [investigator.id],
           proposal_info: expect.objectContaining({

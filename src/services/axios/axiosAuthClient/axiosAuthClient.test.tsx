@@ -115,6 +115,27 @@ describe('createRequestInterceptor', () => {
     );
   });
 
+  it('rejects an absolute HTTP url on non-localhost when there is no baseURL', async () => {
+    (window as any).location.hostname = 'example.com';
+    const interceptor = createRequestInterceptor(mockInstance);
+
+    await expect(interceptor(asRequestConfig({ url: 'http://example.com/oso' }))).rejects.toBe(
+      'HTTP is not allowed except on localhost.'
+    );
+  });
+
+  it('allows a relative url on non-localhost', async () => {
+    (window as any).location.hostname = 'example.com';
+    mockAcquireTokenSilent.mockResolvedValue({ accessToken: 'mock-token' });
+    const interceptor = createRequestInterceptor(mockInstance);
+
+    const result = await interceptor(
+      asRequestConfig({ url: '/oso/api/v17/pht/prsls/1', headers: {} as any })
+    );
+
+    expect(result.headers['Authorization']).toBe('Bearer mock-token');
+  });
+
   it('allows HTTP requests on localhost', async () => {
     mockAcquireTokenSilent.mockResolvedValue({ accessToken: 'mock-token' });
     const interceptor = createRequestInterceptor(mockInstance);

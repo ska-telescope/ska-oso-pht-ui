@@ -17,6 +17,7 @@ import {
   STATUS_OK
 } from '@utils/constants.ts';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
+import type { ApiResult } from '@/services/axios/apiResult/apiResult';
 import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
@@ -123,11 +124,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
-  const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
-    if (response && !('error' in response)) {
+  const updateProposalResponse = (response: ApiResult<ProposalBackend>) => {
+    if (!response.error) {
       // Not needed as the save is not automatic : notifySuccess(t('saveBtn.success'));
     } else {
-      notifyError('error' in response ? response.error : 'An unknown error occurred');
+      notifyError(response.error);
     }
   };
 
@@ -145,12 +146,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const submitConfirmed = async () => {
     const response = await saveToOda(application.content2 as Proposal, PROPOSAL_STATUS.SUBMITTED);
-    if (response && !('error' in response)) {
+    if (!response.error) {
       notifySuccess(t('submitBtn.success'));
       setOpenProposalDisplay(false);
       navigate(PATH[0]);
     } else {
-      notifyError('error' in response ? response.error : 'An unknown error occurred');
+      notifyError(response.error);
       setOpenProposalDisplay(false);
     }
   };

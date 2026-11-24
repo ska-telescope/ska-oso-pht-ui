@@ -23,6 +23,16 @@ import MappingPutProposal, {
   mapCalibrationStrategyToBackend
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
+import { AxiosError } from 'axios';
+
+const { mockUpdateProposal } = vi.hoisted(() => ({ mockUpdateProposal: vi.fn() }));
+
+vi.mock('@/generated', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/generated')>()),
+  PPTAPIProposalPreparationApiFactory: () => ({
+    updateProposalOsoApiV17PhtPrslsPrslIdPut: mockUpdateProposal
+  })
+}));
 
 // The form's other slices match the proposal being saved, as they do when seeded from the store
 const formSlices = getProposalFormValues(MockProposalFrontend);
@@ -103,31 +113,20 @@ describe('Helper Functions', () => {
 });
 
 describe('PutProposal Service', () => {
-  let mockedAuthClient: any;
   afterEach(() => {
     vi.useRealTimers();
   });
 
   beforeEach(() => {
     vi.resetAllMocks();
-    mockedAuthClient = {
-      put: vi.fn(),
-      get: vi.fn(),
-      post: vi.fn(),
-      delete: vi.fn(),
-      interceptors: {
-        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
-        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
-      }
-    };
   });
 
   test('returns data from API', async () => {
-    mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
-    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
-    expect(result).to.deep.equal(MockProposalBackend);
-    expect(mockedAuthClient.put).toHaveBeenCalledWith(
-      expect.any(String),
+    mockUpdateProposal.mockResolvedValue({ data: MockProposalBackend });
+    const result = await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    expect(result).to.deep.equal({ data: MockProposalBackend });
+    expect(mockUpdateProposal).toHaveBeenCalledWith(
+      MockProposalBackend.prsl_id,
       MappingPutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT)
     );
   });
@@ -136,10 +135,10 @@ describe('PutProposal Service', () => {
     'sends RHF values over the legacy payload for %s without losing other fields',
     async (status) => {
       vi.useFakeTimers({ toFake: ['Date'] });
-      mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
+      mockUpdateProposal.mockResolvedValue({ data: MockProposalBackend });
       const base = MappingPutProposal(MockProposalFrontend, status);
 
-      await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
+      await PutProposal(MockProposalFrontend, status, {
         ...formSlices,
         title: 'Title from RHF',
         proposalType: { type: PROPOSAL_TYPE.KEY_SCIENCE, subTypes: [PROPOSAL_SUBTYPE.JOINT] },
@@ -147,7 +146,7 @@ describe('PutProposal Service', () => {
         scienceCategory: 7
       });
 
-      expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
+      expect(mockUpdateProposal).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
         ...base,
         proposal_info: {
           ...base.proposal_info,
@@ -166,9 +165,9 @@ describe('PutProposal Service', () => {
   );
 
   test('does not replace an empty RHF title with the legacy title', async () => {
-    mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
+    mockUpdateProposal.mockResolvedValue({ data: MockProposalBackend });
 
-    await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
+    await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
       ...formSlices,
       title: '',
       proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
@@ -176,7 +175,7 @@ describe('PutProposal Service', () => {
       scienceCategory: null
     });
 
-    expect(mockedAuthClient.put).toHaveBeenCalledWith(
+    expect(mockUpdateProposal).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         proposal_info: expect.objectContaining({ title: '' })
@@ -185,26 +184,34 @@ describe('PutProposal Service', () => {
   });
 
   test('returns error message on API failure', async () => {
-    mockedAuthClient.put.mockRejectedValue(new Error('Network Error'));
-    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    mockUpdateProposal.mockRejectedValue(new Error('Network Error'));
+    const result = await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
+  test('maps an axios error through mapAxiosError', async () => {
+    const axiosError = new AxiosError('Request failed with status code 500');
+    axiosError.response = { status: 500 } as AxiosError['response'];
+    mockUpdateProposal.mockRejectedValue(axiosError);
+    const result = await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    expect(result).toStrictEqual({ error: 'Server responded with an error: 500' });
+  });
+
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    mockedAuthClient.put.mockRejectedValue({ unexpected: 'object' });
-    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    mockUpdateProposal.mockRejectedValue({ unexpected: 'object' });
+    const result = await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
-    mockedAuthClient.put.mockResolvedValue(undefined);
-    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    mockUpdateProposal.mockResolvedValue(undefined);
+    const result = await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
-    mockedAuthClient.put.mockResolvedValue(null);
-    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+    mockUpdateProposal.mockResolvedValue(null);
+    const result = await PutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });
