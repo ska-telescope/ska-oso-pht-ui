@@ -14,7 +14,6 @@ import {
   Spacer,
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
-import PutProposal from '@services/axios/put/putProposal/putProposal';
 import AddButton from '@/components/button/Add/Add';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
@@ -76,7 +75,6 @@ export default function LandingPage() {
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
   const [openCycleDialog, setOpenCycleDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
@@ -253,17 +251,6 @@ export default function LandingPage() {
     createProposal();
   };
 
-  // TODO(T9): Full cleanup needed once everything is migrated to the form
-  const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
-    if (response && !('error' in response)) {
-      setOpenDeleteDialog(false);
-      setFetchList(!fetchList);
-    } else {
-      setOpenDeleteDialog(false);
-    }
-  };
-
   const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
 
   function filterProposals() {
@@ -351,16 +338,6 @@ export default function LandingPage() {
     />
   );
 
-  const deleteClicked = () => (
-    <ProposalDisplay
-      proposal={getProposal()}
-      open={openDeleteDialog}
-      onClose={() => setOpenDeleteDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel="deleteProposal.confirm"
-    />
-  );
-
   const cloneClicked = () => (
     <ProposalDisplay
       proposal={getProposal()}
@@ -376,8 +353,6 @@ export default function LandingPage() {
       proposal={getProposal()}
       open={openViewDialog}
       onClose={() => setOpenViewDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel=""
     />
   );
 
@@ -520,7 +495,6 @@ export default function LandingPage() {
         )}
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}
       {openCycleDialog && cycleClicked()}

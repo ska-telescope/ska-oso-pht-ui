@@ -11,10 +11,8 @@ import { useNavigate } from 'react-router';
 import { storageObject } from '@utils/storage/store';
 import { useValidateProposal } from '@utils/validation/validation';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
-import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
 import EditIcon from '../../icon/editIcon/editIcon';
-import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import {
   getColAuthors,
@@ -93,7 +91,6 @@ export default function GridProposals({
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const [proposalsCollection, setProposalsCollection] = React.useState<IdObject[]>([]);
@@ -105,16 +102,6 @@ export default function GridProposals({
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
   const validateProposal = useValidateProposal();
-
-  const deleteClicked = () => (
-    <ProposalDisplay
-      proposal={getProposal()}
-      open={openDeleteDialog}
-      onClose={() => setOpenDeleteDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel="deleteProposal.confirm"
-    />
-  );
 
   const cloneClicked = () => (
     <ProposalDisplay
@@ -131,8 +118,6 @@ export default function GridProposals({
       proposal={getProposal()}
       open={openViewDialog}
       onClose={() => setOpenViewDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel=""
     />
   );
 
@@ -231,11 +216,6 @@ export default function GridProposals({
           onClick={() => cloneIconClicked(e.row.id)}
           disabled={!canClone()}
           toolTip={t('cloneProposal.toolTip')}
-        />
-        <TrashIcon
-          onClick={() => deleteIconClicked(e.row.id)}
-          disabled // TO BE re-introduced once API is completed  ={!canDelete(e)}
-          toolTip={t('deleteProposal.disabled')} // canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
         />
       </>
     )
@@ -397,25 +377,6 @@ export default function GridProposals({
     goToTitlePage();
   };
 
-  const deleteIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setTimeout(() => {
-        setOpenDeleteDialog(true);
-      }, 1000);
-    }
-  };
-
-  // TODO(T9): Full cleanup needed once everything is migrated to the form
-  const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
-    if (response && !('error' in response)) {
-      setOpenDeleteDialog(false);
-      setFetchList(!fetchList);
-    } else {
-      setOpenDeleteDialog(false);
-    }
-  };
-
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = React.useState<number>(0);
   React.useLayoutEffect(() => {
@@ -491,7 +452,6 @@ export default function GridProposals({
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid>
-      {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}
     </Box>
