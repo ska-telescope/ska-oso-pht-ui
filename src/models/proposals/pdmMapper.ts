@@ -42,10 +42,10 @@ export function mapPdmToForm(pdm: ProposalBackend): ProposalType {
 }
 
 /**
- * RHF form values → PDM (ODA). `base` is the PDM for the rest of the proposal (fields not yet
- * migrated to the form); the form's slices are laid over it.
+ * RHF form values → PDM (ODA). The whole proposal comes from the form; the save metadata (status,
+ * submitted on/by) is added by the caller, as it is not form state.
  */
-export function mapFormToPdm(form: ProposalType, base: ProposalPDM): ProposalPDM {
+export function mapFormToPdm(form: ProposalType): ProposalPDM {
   const saved = observationInfoToSave({
     observations: form.observations,
     dataProducts: form.dataProducts,
@@ -54,11 +54,9 @@ export function mapFormToPdm(form: ProposalType, base: ProposalPDM): ProposalPDM
   });
 
   return {
-    ...base,
     prsl_id: form.prslId,
     cycle: form.cycle,
     proposal_info: {
-      ...base.proposal_info,
       ...titleToPdm(form.title),
       ...detailsToPdm(form),
       investigators: teamToPdm(form.investigators ?? []),
@@ -68,7 +66,6 @@ export function mapFormToPdm(form: ProposalType, base: ProposalPDM): ProposalPDM
       }
     },
     observation_info: {
-      ...base.observation_info,
       targets: targetsToPdm(form.targets),
       observation_sets: saved.observationSets,
       calibration_strategy: calibrationStrategyToPdm(saved.calibrationStrategy),

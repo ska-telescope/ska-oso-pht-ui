@@ -8,7 +8,6 @@ import {
 import Observation from '@utils/types/observation.tsx';
 import Supplied from '@utils/types/supplied.tsx';
 import {
-  SKA_OSO_SERVICES_URL,
   DETAILS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
@@ -18,7 +17,6 @@ import {
   TELESCOPE_LOW_BACKEND_MAPPING,
   SA_AA2,
   FREQUENCY_UNITS,
-  OSO_SERVICES_PROPOSAL_PATH,
   PDF_NAME_PREFIXES,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
@@ -36,7 +34,8 @@ import {
 import { DocumentPDF } from '@utils/types/document.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
+import { type ApiResult, handleApiError, UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
+import { osoApiConfiguration } from '../../generatedClient/osoApiConfig.ts';
 import { targetsFromPdm } from '@/models/proposals/targets';
 import { targetObservationFromPdm } from '@/models/proposals/targetObservation';
 import { calibrationStrategyFromPdm } from '@/models/proposals/calibrationStrategy';
@@ -53,6 +52,7 @@ import type {
   SpectralLineSetup,
   Supplied as SuppliedTransport
 } from '@/generated/models';
+import { PPTAPIProposalPreparationApiFactory } from '@/generated';
 
 export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefined) => {
   const investigators = [] as Investigator[];
@@ -354,39 +354,15 @@ export function mapping(inRec: ProposalBackend): Proposal {
   return convertedProposal as Proposal;
 }
 
-// Unmapped version: fetch proposal from the ODA in its PDM (backend) shape, without mapping it.
-export async function GetProposalPdm(
-  authAxiosClient: AxiosAuthClient,
-  id: string
-): Promise<ProposalBackend | string> {
+/** Fetches the proposal from the ODA in its PDM shape, without mapping it. */
+export async function GetProposalPdm(id: string): Promise<ApiResult<ProposalBackend>> {
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
-    if (!result || !result?.data) {
-      return 'error.API_UNKNOWN_ERROR';
-    }
-    return result.data;
-  } catch (e) {
-    if (e instanceof Error) {
-      return e.message;
-    }
-    return 'error.API_UNKNOWN_ERROR';
+    const result =
+      await PPTAPIProposalPreparationApiFactory(
+        osoApiConfiguration
+      ).getProposalOsoApiV17PhtPrslsPrslIdGet(id);
+    return result?.data ? { data: result.data } : { error: UNKNOWN_API_ERROR };
+  } catch (err) {
+    return handleApiError(err);
   }
 }
-
-async function GetProposal(
-  authAxiosClient: AxiosAuthClient,
-  id: string
-): Promise<Proposal | string> {
-  const response = await GetProposalPdm(authAxiosClient, id);
-  if (typeof response === 'string') {
-    return response;
-  }
-  try {
-    return mapping(response);
-  } catch (error) {
-    return error instanceof Error ? error.message : 'error.API_UNKNOWN_ERROR';
-  }
-}
-
-export default GetProposal;

@@ -166,8 +166,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     }
   };
 
-  const updateProposal = async (rec: Proposal) => {
-    const response = await saveToOda(rec, PROPOSAL_STATUS.DRAFT);
+  const updateProposal = async () => {
+    const response = await saveToOda(PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
@@ -201,7 +201,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     });
     setProposal(record);
     // save the proposal with new investigators as email has been sent & access rights have been created
-    await updateProposal(record);
+    await updateProposal();
   }
 
   const getInvestigator = (currentInvestigators: Investigator[] | undefined): Investigator => {

@@ -43,7 +43,7 @@ describe('documents slice', () => {
   // PHT does not use
   test('round-trips PDM documents through the form unchanged', () => {
     const withDocs = withDocuments([science, technical]);
-    expect(mapFormToPdm(mapPdmToForm(withDocs), withDocs).observation_info.documents).toEqual(
+    expect(mapFormToPdm(mapPdmToForm(withDocs)).observation_info.documents).toEqual(
       withDocs.observation_info.documents
     );
   });
@@ -54,7 +54,7 @@ describe('documents slice', () => {
       ...mapPdmToForm(base),
       sciencePDF: { documentId: 'science-doc-p1', isUploadedPdf: false }
     };
-    expect(mapFormToPdm(form, base).observation_info.documents).toEqual([
+    expect(mapFormToPdm(form).observation_info.documents).toEqual([
       { document_id: 'science-doc-p1', uploaded_pdf: false }
     ]);
   });

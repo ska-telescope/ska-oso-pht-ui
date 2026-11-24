@@ -200,22 +200,25 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({ id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
-        prslId: 'prsl-123',
-        cycle: '',
-        title: '',
-        proposalType: { type: null, subTypes: [] },
-        abstract: '',
-        scienceCategory: null,
-        investigators: [],
-        targets: [],
-        targetObservation: [],
-        calibrationStrategy: [],
-        sciencePDF: null,
-        technicalPDF: null,
-        dataProducts: [],
-        observations: []
-      });
+      expect(PutProposal).toHaveBeenCalledWith(
+        {
+          prslId: 'prsl-123',
+          cycle: '',
+          title: '',
+          proposalType: { type: null, subTypes: [] },
+          abstract: '',
+          scienceCategory: null,
+          investigators: [],
+          targets: [],
+          targetObservation: [],
+          calibrationStrategy: [],
+          sciencePDF: null,
+          technicalPDF: null,
+          dataProducts: [],
+          observations: []
+        },
+        PROPOSAL_STATUS.DRAFT
+      );
     });
   });
 
@@ -229,22 +232,25 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({ id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
-        prslId: 'prsl-123',
-        cycle: '',
-        title: '',
-        proposalType: { type: null, subTypes: [] },
-        abstract: '',
-        scienceCategory: null,
-        investigators: [],
-        targets: [],
-        targetObservation: [],
-        calibrationStrategy: [],
-        sciencePDF: null,
-        technicalPDF: null,
-        dataProducts: [],
-        observations: []
-      });
+      expect(PutProposal).toHaveBeenCalledWith(
+        {
+          prslId: 'prsl-123',
+          cycle: '',
+          title: '',
+          proposalType: { type: null, subTypes: [] },
+          abstract: '',
+          scienceCategory: null,
+          investigators: [],
+          targets: [],
+          targetObservation: [],
+          calibrationStrategy: [],
+          sciencePDF: null,
+          technicalPDF: null,
+          dataProducts: [],
+          observations: []
+        },
+        PROPOSAL_STATUS.DRAFT
+      );
     });
   });
 
@@ -268,10 +274,10 @@ describe('<PHT />', () => {
           expect(mockUpdateAppContent2).toHaveBeenCalledWith(
             expect.objectContaining({ id: 'prsl-123', abstract })
           );
+          // Saved from the form, not the stale store
           expect(PutProposal).toHaveBeenCalledWith(
-            expect.objectContaining({ abstract: 'Stale store summary' }),
-            PROPOSAL_STATUS.DRAFT,
-            expect.objectContaining({ abstract })
+            expect.objectContaining({ abstract }),
+            PROPOSAL_STATUS.DRAFT
           );
         });
       } finally {

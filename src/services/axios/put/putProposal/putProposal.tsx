@@ -1,5 +1,5 @@
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
-import Proposal from '@utils/types/proposal.tsx';
+import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { type ApiResult, handleApiError, UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import { osoApiConfiguration } from '../../generatedClient/osoApiConfig.ts';
 import MappingPutProposal from './putProposalMapping.tsx';
@@ -13,14 +13,21 @@ export function mockPutProposal() {
   return MappingPutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
 }
 
+/** Saves the proposal held in the form, with the given status. */
 async function PutProposal(
-  proposal: Proposal,
-  status?: string,
-  formValues?: ProposalType
+  formValues: ProposalType,
+  status: string = PROPOSAL_STATUS.DRAFT
 ): Promise<ApiResult<ProposalPDM>> {
   try {
-    const convertedProposal = MappingPutProposal(proposal, status as string);
-    const payload = formValues ? mapFormToPdm(formValues, convertedProposal) : convertedProposal;
+    const submitted = status === PROPOSAL_STATUS.SUBMITTED;
+    const payload: ProposalPDM = {
+      ...mapFormToPdm(formValues),
+      // Save metadata, not form state. submitted_on is null when not submitted, as the ODA does
+      // not accept ''
+      status: status as ProposalPDM['status'],
+      submitted_on: submitted ? new Date().toISOString() : null,
+      submitted_by: submitted ? getUserId() : ''
+    };
 
     const result = await PPTAPIProposalPreparationApiFactory(
       osoApiConfiguration

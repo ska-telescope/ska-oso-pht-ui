@@ -2,7 +2,7 @@ import React from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { storageObject, StoreProvider } from '@utils/storage/store';
-import Proposal from '@utils/types/proposal';
+import Proposal, { NEW_PROPOSAL } from '@utils/types/proposal';
 import Target from '@utils/types/target';
 import {
   BAND_LOW_STR,
@@ -11,8 +11,8 @@ import {
   SA_AA_STAR,
   VELOCITY_DEFINITION
 } from '@/utils/constants';
-import { useProposalForm } from './useProposalForm';
-import { useCopySlicesToStore } from './useCopySlicesToStore';
+import { getProposalFormValues, useProposalForm } from './useProposalForm';
+import { legacyProposalFromForm, useCopySlicesToStore } from './useCopySlicesToStore';
 import { dataProductsFromPdm } from './dataProducts';
 import { pdmDataProducts } from './testing/pdmDataProducts';
 import { ObservationInput, OBSERVING_MODE, TELESCOPE } from './observations';
@@ -220,5 +220,47 @@ describe('useCopySlicesToStore', () => {
     act(() => result.current.form.setValue('targets', [target('a')]));
 
     expect(storedProposal(result)).toEqual([]);
+  });
+});
+
+describe('legacyProposalFromForm', () => {
+  const values = {
+    ...getProposalFormValues(),
+    prslId: 'prsl-1',
+    cycle: 'SKAO_2027_1',
+    title: 'Loaded title',
+    proposalType: {
+      type: PROPOSAL_TYPE.STANDARD,
+      subTypes: [PROPOSAL_SUBTYPE.TARGET_OF_OPPORTUNITY]
+    },
+    targets: [target('a')]
+  };
+
+  test("holds the form's slices under the store's names", () => {
+    const proposal = legacyProposalFromForm(values);
+
+    expect(proposal).toMatchObject({
+      id: 'prsl-1',
+      cycle: 'SKAO_2027_1',
+      title: 'Loaded title',
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalSubType: [PROPOSAL_SUBTYPE.TARGET_OF_OPPORTUNITY],
+      targets: [target('a')],
+      ...legacyObservationsFromForm(values.observations)
+    });
+  });
+
+  test("takes the new proposal's defaults for fields the form doesn't hold", () => {
+    const proposal = legacyProposalFromForm(values);
+
+    expect(proposal.targetOption).toBe(NEW_PROPOSAL.targetOption);
+    expect(proposal.scienceSubCategory).toEqual(NEW_PROPOSAL.scienceSubCategory);
+  });
+
+  test("shares no objects with the form's values, which the store would freeze", () => {
+    const proposal = legacyProposalFromForm(values);
+
+    expect(proposal.targets?.[0]).toEqual(values.targets[0]);
+    expect(proposal.targets?.[0]).not.toBe(values.targets[0]);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import Proposal from '@utils/types/proposal.tsx';
+import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
@@ -7,7 +7,9 @@ import {
   BAND_LOW_STR,
   PROPOSAL_TYPE
 } from '@utils/constants.ts';
-import GetProposal, {
+import { AxiosError, type AxiosResponse } from 'axios';
+import { UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
+import {
   GetProposalPdm,
   mapping,
   getInvestigators,
@@ -22,6 +24,15 @@ import {
   MockProposalFrontend,
   MockProposalFrontendZoom
 } from './mockProposalFrontend.tsx';
+
+const { mockGetProposal } = vi.hoisted(() => ({ mockGetProposal: vi.fn() }));
+
+vi.mock('@/generated', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/generated')>()),
+  PPTAPIProposalPreparationApiFactory: () => ({
+    getProposalOsoApiV17PhtPrslsPrslIdGet: mockGetProposal
+  })
+}));
 
 type ReferenceCoordinateInput = Parameters<typeof getReferenceCoordinate>[0];
 
@@ -62,94 +73,51 @@ describe('Helper Functions', () => {
     expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.STANDARD);
     expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
   });
+
+  test("mapping doesn't crash when receiving unexpected data", () => {
+    expect(mapping({ not: 'expected' } as unknown as ProposalBackend)).toEqual(
+      MockNullProposalFrontend
+    );
+  });
 });
 
-describe('GetProposal Service', () => {
-  let mockedAuthClient: any;
+describe('GetProposalPdm', () => {
   beforeEach(() => {
-    vi.resetAllMocks();
-    mockedAuthClient = {
-      put: vi.fn(),
-      get: vi.fn(),
-      post: vi.fn(),
-      delete: vi.fn(),
-      interceptors: {
-        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
-        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
-      }
-    };
+    mockGetProposal.mockReset();
   });
 
-  test('returns mapped data from API', async () => {
-    mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackend });
-    const result = (await GetProposal(
-      mockedAuthClient,
-      MockProposalBackend.prsl_id as string
-    )) as Proposal;
-    expect(result).to.deep.equal(MockProposalFrontend);
+  test('fetches the proposal by ID and returns the unmapped PDM', async () => {
+    mockGetProposal.mockResolvedValue({ data: MockProposalBackend });
+    const result = await GetProposalPdm(MockProposalBackend.prsl_id as string);
+    expect(mockGetProposal).toHaveBeenCalledExactlyOnceWith(MockProposalBackend.prsl_id);
+    expect(result).toEqual({ data: MockProposalBackend });
   });
 
-  test('GetProposalPdm returns the unmapped PDM from the API', async () => {
-    mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackend });
-    const result = await GetProposalPdm(mockedAuthClient, MockProposalBackend.prsl_id as string);
-    expect(result).toEqual(MockProposalBackend);
+  test('returns the standard error when the API returns no data', async () => {
+    mockGetProposal.mockResolvedValue(undefined);
+    await expect(GetProposalPdm('prsl-1')).resolves.toEqual({ error: UNKNOWN_API_ERROR });
   });
 
-  test('returns an error string when a target cannot be mapped', async () => {
-    const malformed = {
-      ...MockProposalBackend,
-      observation_info: {
-        ...MockProposalBackend.observation_info,
-        targets: MockProposalBackend.observation_info?.targets?.map((target) => ({
-          ...target,
-          radial_velocity: undefined
-        }))
-      }
-    };
-    expect(() => mapping(malformed)).toThrow();
-    mockedAuthClient.get.mockResolvedValue({ data: malformed });
-
-    const result = await GetProposal(mockedAuthClient, 'prsl-1');
-
-    expect(result).toEqual(expect.any(String));
-    expect(result).not.toBe('');
+  test('returns the error message when the request fails', async () => {
+    mockGetProposal.mockRejectedValue(new Error('Network Error'));
+    await expect(GetProposalPdm('prsl-1')).resolves.toEqual({ error: 'Network Error' });
   });
 
-  test('returns the standard error for non-Error mapping failures', async () => {
-    mockedAuthClient.get.mockResolvedValue({
-      data: {
-        ...MockProposalBackend,
-        get observation_info() {
-          throw 'Mapping failed';
-        }
-      }
+  test('returns the standard error when something other than an Error is thrown', async () => {
+    mockGetProposal.mockRejectedValue({ unexpected: 'object' });
+    await expect(GetProposalPdm('prsl-1')).resolves.toEqual({ error: UNKNOWN_API_ERROR });
+  });
+
+  test('returns the server error from a failed request', async () => {
+    mockGetProposal.mockRejectedValue(
+      new AxiosError('Request failed', 'ERR_BAD_RESPONSE', undefined, undefined, {
+        status: 500,
+        data: { title: 'Internal Server Error', detail: 'ODA unavailable' }
+      } as AxiosResponse)
+    );
+    await expect(GetProposalPdm('prsl-1')).resolves.toEqual({
+      error: 'Internal Server Error: ODA unavailable'
     });
-
-    await expect(GetProposal(mockedAuthClient, 'prsl-1')).resolves.toBe('error.API_UNKNOWN_ERROR');
-  });
-
-  test('returns error message on API failure', async () => {
-    mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
-    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id as string);
-    expect(result).toBe('Network Error');
-  });
-
-  test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-    mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
-    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id as string);
-    expect(result).toBe('error.API_UNKNOWN_ERROR');
-  });
-
-  test("mapping doesn't crash when receiving unexpected data", async () => {
-    mockedAuthClient.get.mockResolvedValue({ data: { not: 'expected' } });
-    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id as string);
-    expect(result).toEqual(MockNullProposalFrontend);
-  });
-
-  test('returns error.API_UNKNOWN_ERROR when API returns no data', async () => {
-    mockedAuthClient.get.mockResolvedValue(undefined);
-    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id as string);
-    expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });
 

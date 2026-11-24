@@ -132,9 +132,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
-  const updateProposal = async (proposal: Proposal) => {
+  const updateProposal = async () => {
     if (!isDisableEndpoints()) {
-      const response = await saveToOda(proposal, PROPOSAL_STATUS.DRAFT);
+      const response = await saveToOda(PROPOSAL_STATUS.DRAFT);
       updateProposalResponse(response);
     }
   };
@@ -145,7 +145,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const submitConfirmed = async () => {
-    const response = await saveToOda(application.content2 as Proposal, PROPOSAL_STATUS.SUBMITTED);
+    const response = await saveToOda(PROPOSAL_STATUS.SUBMITTED);
     if (!response.error) {
       notifySuccess(t('submitBtn.success'));
       setOpenProposalDisplay(false);
@@ -183,7 +183,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const handleSave = () => {
-    void updateProposal(application.content2 as Proposal);
+    void updateProposal();
   };
 
   const buttonsLeft = () => (

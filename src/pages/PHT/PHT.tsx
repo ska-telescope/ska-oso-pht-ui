@@ -199,12 +199,10 @@ export default function PHT({
 
     const isProposalPageTransition =
       NAV.includes(previousPath) && (NAV.includes(currentPath) || currentPath === PATH[0]);
-    const proposal = getProposal();
-
     if (isProposalPageTransition) {
       const values = getValues();
       void (async () => {
-        const { error } = await PutProposal(proposal, PROPOSAL_STATUS.DRAFT, values);
+        const { error } = await PutProposal(values, PROPOSAL_STATUS.DRAFT);
         if (error) {
           notifyError(error);
         }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useWatch, UseFormReturn } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
-import Proposal from '@utils/types/proposal';
+import Proposal, { NEW_PROPOSAL } from '@utils/types/proposal';
 import { ProposalType, STORE_COPIED_SLICES } from './proposal';
 import { legacyObservationsFromForm } from './legacyObservations';
 
@@ -28,6 +28,14 @@ const formSlices = (values: ProposalType): Partial<Proposal> => ({
   proposalSubType: values.proposalType.subTypes,
   id: values.prslId
 });
+
+/**
+ * The legacy store's proposal for the given form values, for code that still reads the proposal
+ * from there. Fields the form doesn't hold (e.g. targetOption) take the new proposal's defaults.
+ */
+export const legacyProposalFromForm = (values: ProposalType): Proposal =>
+  // The store freezes what it is given, and the form must stay mutable
+  structuredClone({ ...NEW_PROPOSAL, ...formSlices(values) }) as Proposal;
 
 /*********************************************************************************************************/
 

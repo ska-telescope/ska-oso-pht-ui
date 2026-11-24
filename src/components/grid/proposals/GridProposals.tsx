@@ -10,9 +10,9 @@ import { Typography, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { storageObject } from '@utils/storage/store';
 import { useValidateProposal } from '@utils/validation/validation';
-import { getProposalFormValues } from '@/models/proposals/useProposalForm';
-import PutProposal from '@services/axios/put/putProposal/putProposal';
-import GetProposal from '@services/axios/get/getProposal/getProposal';
+import { legacyProposalFromForm } from '@/models/proposals/useCopySlicesToStore';
+import { UNKNOWN_API_ERROR } from '@/services/axios/apiResult/apiResult';
+import { useProposalOda } from '@/models/proposals/useProposalOda';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -104,6 +104,7 @@ export default function GridProposals({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
+  const { loadFromOda, saveToOda } = useProposalOda();
   const validateProposal = useValidateProposal();
 
   const deleteClicked = () => (
@@ -344,19 +345,20 @@ export default function GridProposals({
     setHelp('');
     updateAppContent5({});
 
-    const response = await GetProposal(authClient, id);
-    if (typeof response === 'string') {
+    const { data: values, error } = await loadFromOda(id);
+    if (!values) {
       updateAppContent1({});
       updateAppContent2({});
       storeProposalCopy({} as Proposal);
-      setAxiosViewError(response);
+      setAxiosViewError(error ?? UNKNOWN_API_ERROR);
       return false;
-    } else {
-      updateAppContent1(validateProposal(getProposalFormValues(response)));
-      updateAppContent2(response);
-      storeProposalCopy(response);
-      return true;
     }
+    updateAppContent1(validateProposal(values));
+    // The legacy store's copy, for the dialogs and clone, which still read it from there
+    const proposal = legacyProposalFromForm(values);
+    updateAppContent2(proposal);
+    storeProposalCopy(proposal);
+    return true;
   };
 
   const goToTitlePage = () => {
@@ -405,10 +407,10 @@ export default function GridProposals({
     }
   };
 
-  // TODO(T9): Full cleanup needed once everything is migrated to the form
+  // The proposal was loaded into the form by getTheProposal, so it is withdrawn from there
   const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
-    if (response && !('error' in response)) {
+    const response = await saveToOda(PROPOSAL_STATUS.WITHDRAWN);
+    if (!response.error) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);
     } else {
