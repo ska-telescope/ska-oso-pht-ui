@@ -2,16 +2,10 @@ import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { type ApiResult, handleApiError, UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import { osoApiConfiguration } from '../../generatedClient/osoApiConfig.ts';
-import MappingPutProposal from './putProposalMapping.tsx';
-import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 import type { ProposalType } from '@/models/proposals/proposal';
 import { mapFormToPdm } from '@/models/proposals/pdmMapper';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { PPTAPIProposalPreparationApiFactory } from '@/generated';
-
-export function mockPutProposal() {
-  return MappingPutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
-}
 
 /** Saves the proposal held in the form, with the given status. */
 async function PutProposal(

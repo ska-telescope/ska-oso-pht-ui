@@ -4,24 +4,15 @@ import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposa
 import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 const investigator = MockUserFrontendList[0];
-import MappingPutProposal from '@services/axios/put/putProposal/putProposalMapping';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { getProposalSchema } from './proposal';
 import { DataProductInput } from './dataProducts';
 import { formObservationsFromLegacy } from './legacyObservations';
-import { PROPOSAL_STATUS, PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
+import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
-// A base from the legacy mapper, as on a real save, so the form's slices map back to it exactly
-const base = MappingPutProposal(mapping(pdm), PROPOSAL_STATUS.DRAFT);
-// The base without the save metadata, which PutProposal adds and the form does not hold
-const {
-  status: _status,
-  submitted_on: _submittedOn,
-  submitted_by: _submittedBy,
-  investigator_refs: _investigatorRefs,
-  ...baseFromForm
-} = base;
+// The proposal as the form saves it. A PDM saved from the form loads and saves back unchanged.
+const saved = mapFormToPdm(mapPdmToForm(pdm));
 const emptySlices = {
   prslId: pdm.prsl_id as string,
   cycle: pdm.cycle,
@@ -222,8 +213,8 @@ describe('mapFormToPdm', () => {
     expect(result.proposal_info.investigators?.[0]).not.toHaveProperty('organization');
   });
 
-  test('round-trips through the form unchanged, but for the save metadata', () => {
-    expect(mapFormToPdm(mapPdmToForm(base))).toEqual(baseFromForm);
+  test('round-trips a saved proposal through the form unchanged', () => {
+    expect(mapFormToPdm(mapPdmToForm(saved))).toEqual(saved);
   });
 
   test('maps targets, observations, links and calibration from the form', () => {
@@ -235,16 +226,16 @@ describe('mapFormToPdm', () => {
   });
 
   test('saves the valid data products and their links', () => {
-    const result = mapFormToPdm(mapPdmToForm(base));
+    const result = mapFormToPdm(mapPdmToForm(saved));
 
     expect(result.observation_info.data_product_sdps).toEqual(
-      base.observation_info.data_product_sdps
+      saved.observation_info.data_product_sdps
     );
-    expect(result.observation_info.result_details).toEqual(base.observation_info.result_details);
+    expect(result.observation_info.result_details).toEqual(saved.observation_info.result_details);
   });
 
   test('leaves out an invalid data product and the links to it, but keeps the others', () => {
-    const form = mapPdmToForm(base);
+    const form = mapPdmToForm(saved);
     const [valid] = form.dataProducts;
     const [validLink] = form.targetObservation;
     // Being edited: the image size has no unit yet
@@ -261,13 +252,13 @@ describe('mapFormToPdm', () => {
     });
 
     expect(result.observation_info.data_product_sdps).toEqual(
-      base.observation_info.data_product_sdps
+      saved.observation_info.data_product_sdps
     );
-    expect(result.observation_info.result_details).toEqual(base.observation_info.result_details);
+    expect(result.observation_info.result_details).toEqual(saved.observation_info.result_details);
   });
 
   test('saves no data products or links when there are none', () => {
-    const result = mapFormToPdm({ ...mapPdmToForm(base), dataProducts: [] });
+    const result = mapFormToPdm({ ...mapPdmToForm(saved), dataProducts: [] });
 
     expect(result.observation_info.data_product_sdps).toEqual([]);
     expect(result.observation_info.result_details).toEqual([]);

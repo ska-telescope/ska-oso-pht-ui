@@ -16,11 +16,10 @@ import {
   PROPOSAL_SUBTYPE,
   PROPOSAL_TYPE
 } from '@utils/constants.ts';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
-import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
-import PutProposal, { mockPutProposal } from './putProposal.tsx';
-import MappingPutProposal, {
+import { MockProposalFrontend } from './mockProposalFrontend.tsx';
+import { MockProposalBackend } from './mockProposalBackend.tsx';
+import PutProposal from './putProposal.tsx';
+import {
   getObservationTypeDetails,
   getReferenceCoordinate,
   mapCalibrationStrategyToBackend
@@ -39,81 +38,6 @@ vi.mock('@/generated', async (importOriginal) => ({
 
 // The form's other slices match the proposal being saved, as they do when seeded from the store
 const formSlices = getProposalFormValues(MockProposalFrontend);
-
-describe('Helper Functions', () => {
-  test('mockPutProposal returns mock proposal', () => {
-    const result = mockPutProposal();
-    expect(result).to.deep.equal(MockProposalBackend);
-  });
-
-  test('mappingPutProposal returns mapped proposal from frontend to backend format', () => {
-    const proposalBackEnd: ProposalBackend = MappingPutProposal(
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
-    );
-    expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
-  });
-
-  test('mappingPutProposal omits empty investigator fields and preserves populated fields', () => {
-    const investigator = {
-      id: 'user-1',
-      status: 'accepted',
-      firstName: '',
-      lastName: 'Lovelace',
-      email: '',
-      phdThesis: false,
-      pi: true
-    };
-    const result = MappingPutProposal(
-      { ...MockProposalFrontend, investigators: [investigator] },
-      PROPOSAL_STATUS.DRAFT
-    );
-    expect(result.proposal_info.investigators).toEqual([
-      {
-        user_id: 'user-1',
-        status: 'accepted',
-        family_name: 'Lovelace',
-        for_phd: false,
-        principal_investigator: true
-      }
-    ]);
-  });
-
-  test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
-    const proposalBackEnd: ProposalBackend = MappingPutProposal(
-      MockProposalFrontendZoom,
-      PROPOSAL_STATUS.DRAFT
-    );
-    expect(proposalBackEnd).to.deep.equal(MockProposalBackendZoom);
-  });
-
-  test('mappingPutProposal returns mapped proposal and returns empty array of sub-type when not specified', () => {
-    const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
-    const proposalBackEnd: ProposalBackend = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
-    expect(proposalBackEnd).to.deep.equal({
-      ...MockProposalBackend,
-      proposal_info: {
-        ...MockProposalBackend.proposal_info,
-        proposal_type: { ...MockProposalBackend.proposal_info.proposal_type, attributes: [] }
-      }
-    });
-  });
-
-  test('mappingPutProposal passes the science verification type through with no science category', () => {
-    const proposal = {
-      ...MockProposalFrontend,
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-      proposalSubType: [],
-      scienceCategory: null
-    };
-    const proposalBackEnd: ProposalBackend = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
-    expect(proposalBackEnd.proposal_info.proposal_type).to.deep.equal({
-      main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-      attributes: []
-    });
-    expect(proposalBackEnd.proposal_info.science_category).to.equal(undefined);
-  });
-});
 
 describe('PutProposal Service', () => {
   afterEach(() => {

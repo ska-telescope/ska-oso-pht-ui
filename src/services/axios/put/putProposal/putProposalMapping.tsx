@@ -1,11 +1,8 @@
 import Observation from '@utils/types/observation.tsx';
 import GroupObservation from '@utils/types/groupObservation.tsx';
 import { ValueUnitPair } from '@utils/types/valueUnitPair.tsx';
-import TargetObservation from '@utils/types/targetObservation.tsx';
 import {
   FREQUENCY_UNITS,
-  DETAILS,
-  PROPOSAL_STATUS,
   PST_MODES,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
@@ -18,19 +15,11 @@ import {
   TYPE_ZOOM_LONG,
   SA_AA4
 } from '@utils/constants.ts';
-import { DocumentPDF } from '@utils/types/document.tsx';
-import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
-import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { getBandwidthZoom, helpers } from '@/utils/helpers';
+import { getBandwidthZoom } from '@/utils/helpers';
 import { referenceCoordinateToPdm, targetsToPdm } from '@/models/proposals/targets';
-import { targetObservationToPdm } from '@/models/proposals/targetObservation';
-import { observationInfoToSave } from '@/models/proposals/save';
-import { formObservationsFromLegacy } from '@/models/proposals/legacyObservations';
 import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
-import { investigatorToPdm } from '@/models/proposals/team';
 import type {
-  Document as DocumentTransport,
   LowArray,
   MidArray,
   ObservationSets,
@@ -44,27 +33,6 @@ const isPST = (type: string) => type === TYPE_PST;
 export const getReferenceCoordinate = referenceCoordinateToPdm;
 export const getTargets = targetsToPdm;
 export const mapCalibrationStrategyToBackend = calibrationStrategyToPdm;
-
-// const isZoom = (type: number) => type === TYPE_ZOOM;
-const getDocuments = (
-  sciencePDF: DocumentPDF | null,
-  technicalPDF: DocumentPDF | null
-): DocumentTransport[] => {
-  const documents: DocumentTransport[] = [];
-  if (sciencePDF) {
-    documents.push({
-      document_id: sciencePDF.documentId as string,
-      uploaded_pdf: sciencePDF.isUploadedPdf
-    });
-  }
-  if (technicalPDF) {
-    documents.push({
-      document_id: technicalPDF.documentId as string,
-      uploaded_pdf: technicalPDF.isUploadedPdf
-    });
-  }
-  return documents;
-};
 
 const getGroupObservation = (obsId: string, observationGroups: GroupObservation[] | undefined) => {
   const groupId = observationGroups?.find((group) => group.observationId === obsId)?.groupId ?? '';
@@ -194,55 +162,3 @@ export const getObservationsSets = (
   }
   return outObservationsSets;
 };
-
-/*************************************************************************************************************************/
-
-export default function MappingPutProposal(proposal: Proposal, status: string) {
-  const userId = getUserId();
-  // The same observations, data products, links and calibration as a save from the form (see
-  // mapFormToPdm)
-  const saved = observationInfoToSave({
-    // TODO BTN-3595 Goes with this legacy save, once its callers send the form's values instead
-    observations: formObservationsFromLegacy(proposal.observations, proposal.groupObservations),
-    dataProducts: proposal.dataProducts ?? [],
-    links: (proposal.targetObservation ?? []) as TargetObservation[],
-    calibrationStrategy: proposal.calibrationStrategy ?? []
-  });
-
-  const transformedProposal: ProposalBackend = {
-    prsl_id: proposal?.id,
-    status: status as ProposalBackend['status'],
-    submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
-    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? userId : '',
-    investigator_refs: proposal.investigators?.map((investigator) => {
-      return investigator?.id?.toString();
-    }),
-    cycle: proposal.cycle as string,
-    proposal_info: {
-      title: proposal.title,
-      proposal_type: {
-        main_type: proposal.proposalType as string,
-        attributes: proposal.proposalSubType ?? []
-      },
-      abstract: proposal.abstract as string,
-      science_category: DETAILS.ScienceCategory?.find(
-        (category) => category.value === proposal?.scienceCategory
-      )?.label as string,
-      investigators: proposal?.investigators
-        ? proposal.investigators.map((investigator) =>
-            investigatorToPdm({ ...investigator, id: investigator?.id?.toString() })
-          )
-        : (null as unknown as undefined) // still sent as null; the PDM type has no null here
-    },
-    observation_info: {
-      targets: targetsToPdm(proposal?.targets ? proposal.targets : []),
-      documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
-      observation_sets: saved.observationSets,
-      calibration_strategy: calibrationStrategyToPdm(saved.calibrationStrategy),
-      data_product_sdps: saved.dataProducts,
-      result_details: targetObservationToPdm(saved.links)
-    }
-  };
-  helpers.transform.trimObject(transformedProposal);
-  return transformedProposal;
-}
