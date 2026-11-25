@@ -21,6 +21,10 @@ vi.mock('@/services/saveDraft/useSaveDraft', () => ({
   })
 }));
 
+vi.mock('@/services/saveDraft/LastSavedContext', () => ({
+  useLastSaved: () => ({ lastSavedOn: () => '2026-11-20T09:00:00Z' })
+}));
+
 vi.mock('react-router', () => ({
   useNavigate: () => vi.fn()
 }));
@@ -48,6 +52,12 @@ describe('<PageBannerPPT />', () => {
 
   test('renders correctly', () => {
     wrapper(<PageBannerPPT pageNo={1} />);
+  });
+
+  test('shows when the proposal was last saved next to the Save button', () => {
+    wrapper(<PageBannerPPT pageNo={PAGE_TEAM} />);
+    expect(screen.getByTestId('saveBtn')).toBeInTheDocument();
+    expect(screen.getByTestId('lastSaved')).toBeInTheDocument();
   });
 
   describe('Save button', () => {

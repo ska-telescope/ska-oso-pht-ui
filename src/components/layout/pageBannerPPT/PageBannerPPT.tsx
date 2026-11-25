@@ -19,6 +19,7 @@ import { Proposal } from '@utils/types/proposal.tsx';
 import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
+import LastSaved from '../../display/lastSaved/LastSaved';
 import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
@@ -31,6 +32,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useValidateProposal } from '@/utils/validation/validation';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { useSaveDraft } from '@/services/saveDraft/useSaveDraft';
+import { useLastSaved } from '@/services/saveDraft/LastSavedContext';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -63,6 +65,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { saveToOda } = useProposalOda();
   const { saveDraft, isSavePage, isSaveBlocked } = useSaveDraft();
+  const { lastSavedOn } = useLastSaved();
   const { notifyError, notifySuccess } = useNotify();
 
   const loggedIn = isLoggedIn();
@@ -171,11 +174,16 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         )}
         {!backPage && <HomeButton />}
       </Grid>
-      <Grid>
-        {isSavePage(pageNo) && (
-          <SaveButton testId={'saveBtn'} disabled={isSaveBlocked()} action={handleSave} />
-        )}
-      </Grid>
+      {isSavePage(pageNo) && (
+        <>
+          <Grid>
+            <SaveButton testId={'saveBtn'} disabled={isSaveBlocked()} action={handleSave} />
+          </Grid>
+          <Grid>
+            <LastSaved savedOn={lastSavedOn(getProposal())} />
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 
