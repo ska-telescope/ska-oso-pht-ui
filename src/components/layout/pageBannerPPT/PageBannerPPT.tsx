@@ -16,7 +16,7 @@ import {
   STATUS_INITIAL,
   STATUS_PARTIAL
 } from '@utils/constants.ts';
-import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
+import { Proposal } from '@utils/types/proposal.tsx';
 import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
@@ -30,9 +30,8 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useValidateProposal } from '@/utils/validation/validation';
-import { countWords } from '@utils/helpers.ts';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import { useSaveDraft } from '@/models/proposals/useSaveDraft';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -64,27 +63,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { saveToOda } = useProposalOda();
+  const { saveDraft, isSavePage, isSaveBlocked } = useSaveDraft();
   const { notifyError, notifySuccess } = useNotify();
 
   const loggedIn = isLoggedIn();
 
   const getProposal = () => application.content2 as Proposal;
-
-  const isDisableEndpoints = () => {
-    const maxTitleWords = Number(phtTranslations.title.maxWord);
-    const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
-    if (
-      loggedIn &&
-      (getProposal().id == null ||
-        getProposal()?.title?.trim()?.length === 0 ||
-        countWords(getProposal().title ?? '') > maxTitleWords ||
-        countWords(getProposal().abstract ?? '') > maxAbstractWords)
-    ) {
-      return true;
-    } else if (!loggedIn) {
-      return true;
-    }
-  };
 
   // TODO(T9): Full cleanup needed once everything is migrated to the form
   const validateTheProposal = async (): Promise<boolean> => {
@@ -119,21 +103,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const prevPageNav = () => {
     if (backPage) {
       navigate(NAV[backPage]);
-    }
-  };
-
-  const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
-    if (response && !('error' in response)) {
-      // Not needed as the save is not automatic : notifySuccess(t('saveBtn.success'));
-    } else {
-      notifyError('error' in response ? response.error : 'An unknown error occurred');
-    }
-  };
-
-  const updateProposal = async (proposal: Proposal) => {
-    if (!isDisableEndpoints()) {
-      const response = await saveToOda(proposal, PROPOSAL_STATUS.DRAFT);
-      updateProposalResponse(response);
     }
   };
 
@@ -181,7 +150,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const handleSave = () => {
-    void updateProposal(application.content2 as Proposal);
+    void saveDraft();
   };
 
   const buttonsLeft = () => (
@@ -202,10 +171,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         {!backPage && <HomeButton />}
       </Grid>
       <Grid>
-        {loggedIn && getProposal().id !== null && pages.includes(pageNo) && (
+        {isSavePage(pageNo) && (
           <SaveButton
             testId={'saveBtn'}
-            disabled={isDisableEndpoints()}
+            disabled={isSaveBlocked()}
             action={handleSave}
             autoSaveInterval={AUTO_SAVE_INTERVAL}
           />

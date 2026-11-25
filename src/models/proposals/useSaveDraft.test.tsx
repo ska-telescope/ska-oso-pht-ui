@@ -1,0 +1,119 @@
+import { renderHook } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import { storageObject } from '@utils/storage/store';
+import completeMockStore from '@utils/MockStore';
+import { useSaveDraft } from './useSaveDraft';
+import phtTranslations from '../../../public/locales/en/pht.json';
+import { PAGE_LANDING, PAGE_LINKING, PAGE_TEAM, PROPOSAL_STATUS } from '@/utils/constants';
+
+const mockNotifyError = vi.hoisted(() => vi.fn());
+const mockSaveToOda = vi.hoisted(() => vi.fn());
+const mockOSD = vi.hoisted(() => ({ isSV: false }));
+
+vi.mock('@/utils/notify/useNotify', () => ({
+  useNotify: () => ({ notifyError: mockNotifyError })
+}));
+
+vi.mock('./useProposalOda', () => ({
+  useProposalOda: () => ({ saveToOda: mockSaveToOda })
+}));
+
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({ isSV: mockOSD.isSV })
+}));
+
+vi.mock('@ska-telescope/ska-login-page', () => ({
+  isLoggedIn: vi.fn(() => true)
+}));
+
+const proposal = completeMockStore.application.content2;
+const originalUseStore = storageObject.useStore;
+
+const renderWith = (changes: object = {}) => {
+  storageObject.useStore = () =>
+    ({
+      ...completeMockStore,
+      application: { ...completeMockStore.application, content2: { ...proposal, ...changes } }
+    }) as unknown as ReturnType<typeof originalUseStore>;
+  return renderHook(() => useSaveDraft()).result.current;
+};
+
+const words = (n: number) => Array(n).fill('word').join(' ');
+
+describe('useSaveDraft', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(isLoggedIn).mockReturnValue(true);
+    mockOSD.isSV = false;
+  });
+
+  afterEach(() => {
+    storageObject.useStore = originalUseStore;
+  });
+
+  describe('saveDraft', () => {
+    test('saves a draft and resolves true', async () => {
+      mockSaveToOda.mockResolvedValue({ prsl_id: 'prsl-1' });
+      await expect(renderWith().saveDraft()).resolves.toBe(true);
+      expect(mockSaveToOda).toHaveBeenCalledWith(proposal, PROPOSAL_STATUS.DRAFT);
+      expect(mockNotifyError).not.toHaveBeenCalled();
+    });
+
+    test('shows the error and resolves false when the save fails', async () => {
+      mockSaveToOda.mockResolvedValue({ error: 'Save failed' });
+      await expect(renderWith().saveDraft()).resolves.toBe(false);
+      expect(mockNotifyError).toHaveBeenCalledWith('Save failed');
+    });
+
+    test('does not save when blocked', async () => {
+      await expect(renderWith({ title: '   ' }).saveDraft()).resolves.toBe(false);
+      expect(mockSaveToOda).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('isSaveBlocked', () => {
+    const maxTitleWords = Number(phtTranslations.title.maxWord);
+    const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
+
+    test('is not blocked for a valid proposal, up to the word limits', () => {
+      expect(renderWith().isSaveBlocked()).toBe(false);
+      expect(renderWith({ title: words(maxTitleWords) }).isSaveBlocked()).toBe(false);
+      expect(renderWith({ abstract: words(maxAbstractWords) }).isSaveBlocked()).toBe(false);
+    });
+
+    test.each([
+      ['an empty title', { title: '' }],
+      ['no id', { id: null }],
+      ['a title over the word limit', { title: words(maxTitleWords + 1) }],
+      ['an abstract over the word limit', { abstract: words(maxAbstractWords + 1) }]
+    ])('is blocked with %s', (_, changes) => {
+      expect(renderWith(changes).isSaveBlocked()).toBe(true);
+    });
+
+    test('is blocked when not logged in', () => {
+      vi.mocked(isLoggedIn).mockReturnValue(false);
+      expect(renderWith().isSaveBlocked()).toBe(true);
+    });
+  });
+
+  describe('isSavePage', () => {
+    test('is true on the proposal pages only', () => {
+      const { isSavePage } = renderWith();
+      expect(isSavePage(PAGE_TEAM)).toBe(true);
+      expect(isSavePage(PAGE_LINKING)).toBe(true);
+      expect(isSavePage(PAGE_LANDING)).toBe(false);
+    });
+
+    test('uses the SV pages for SV', () => {
+      mockOSD.isSV = true;
+      expect(renderWith().isSavePage(PAGE_LINKING)).toBe(false);
+    });
+
+    test('is false before the proposal has an id, or when not logged in', () => {
+      expect(renderWith({ id: null }).isSavePage(PAGE_TEAM)).toBe(false);
+      vi.mocked(isLoggedIn).mockReturnValue(false);
+      expect(renderWith().isSavePage(PAGE_TEAM)).toBe(false);
+    });
+  });
+});
