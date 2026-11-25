@@ -8,7 +8,7 @@ import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { newDataProductsForMode, newObservationForMode } from '@/utils/autoLinking/AutoLinking';
 import { countWords } from '@utils/helpers.ts';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 const PAGE = PAGE_TITLE_ADD;
 const PAGE_INNER = 0;

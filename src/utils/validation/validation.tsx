@@ -62,7 +62,7 @@ import {
   isCentralFrequencyDivisible,
   isCentralFrequencyOnChannelGrid
 } from '../zoomWindow';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 type SuppliedValueInput = {
   type?: number;

@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Translation files moved from `public` to `src` to avoid display text caching
 
 11.0.0
 ----------
