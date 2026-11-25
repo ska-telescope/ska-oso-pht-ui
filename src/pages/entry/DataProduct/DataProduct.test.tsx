@@ -77,7 +77,7 @@ const openProposal = (proposal: {
   mockStoreReturn = {
     application: {
       content2: {
-        id: 'prsl-1',
+        id: 'prp-1',
         targets: [],
         targetObservation: [],
         ...proposal

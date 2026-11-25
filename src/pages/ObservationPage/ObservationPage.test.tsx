@@ -68,7 +68,7 @@ const renderWithProposal = (proposal: object, statuses: number[] = []) => {
     application: {
       ...completeMockStore.application,
       content1: statuses,
-      content2: { id: 'prsl-1', targets: [], targetObservation: [], ...proposal }
+      content2: { id: 'prp-1', targets: [], targetObservation: [], ...proposal }
     }
   } as any);
   wrapper(<ObservationPage />);

@@ -74,7 +74,7 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
 };
 
 const linkingProposal = {
-  id: 'prsl-1',
+  id: 'prp-1',
   proposalType: PROPOSAL_TYPE.STANDARD,
   observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
   dataProducts: [{ ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'sdp-1' }],

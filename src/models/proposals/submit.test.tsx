@@ -37,7 +37,7 @@ const dataProduct = { ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'o1')
 const observation = { ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id: 'o1' };
 
 const values = (slices: Partial<ProposalType> = {}): ProposalType => ({
-  prslId: 'prsl-t0001-20261120-00001',
+  prslId: 'prp-1',
   cycle: 'SKAO_2027_1',
   title: 'A valid title',
   proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },

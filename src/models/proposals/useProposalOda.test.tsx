@@ -73,7 +73,7 @@ describe('useProposalOda', () => {
 
     let loaded;
     await act(async () => {
-      loaded = await oda.current.loadFromOda('prsl-1');
+      loaded = await oda.current.loadFromOda('prp-1');
     });
 
     expect(form.current.getValues('title')).toBe(pdm.proposal_info.title);
@@ -103,7 +103,7 @@ describe('useProposalOda', () => {
     const { form, oda } = renderWithForm();
 
     await act(async () => {
-      await oda.current.loadFromOda('prsl-1');
+      await oda.current.loadFromOda('prp-1');
     });
 
     const [observation] = mapping(pdm).observations ?? [];
@@ -142,7 +142,7 @@ describe('useProposalOda', () => {
     const { form, oda } = renderWithForm();
 
     await act(async () => {
-      await oda.current.loadFromOda('prsl-1');
+      await oda.current.loadFromOda('prp-1');
     });
 
     const [observation] = mapping(pdm).observations ?? [];
@@ -183,7 +183,7 @@ describe('useProposalOda', () => {
     const { form, oda } = renderWithForm();
 
     await act(async () => {
-      await oda.current.loadFromOda('prsl-1');
+      await oda.current.loadFromOda('prp-1');
     });
 
     expect(form.current.getValues('observations')).toEqual([
@@ -198,7 +198,7 @@ describe('useProposalOda', () => {
 
     let loaded;
     await act(async () => {
-      loaded = await oda.current.loadFromOda('prsl-1');
+      loaded = await oda.current.loadFromOda('prp-1');
     });
 
     expect(loaded).toBe('Network Error');
@@ -225,7 +225,7 @@ describe('useProposalOda', () => {
 
     let loaded;
     await act(async () => {
-      loaded = await oda.current.loadFromOda('prsl-1');
+      loaded = await oda.current.loadFromOda('prp-1');
     });
 
     expect(loaded).toEqual(expect.any(String));
@@ -245,7 +245,7 @@ describe('useProposalOda', () => {
     });
     const { form, oda } = renderWithForm('Unsaved title');
 
-    await expect(oda.current.loadFromOda('prsl-1')).resolves.toBe('error.API_UNKNOWN_ERROR');
+    await expect(oda.current.loadFromOda('prp-1')).resolves.toBe('error.API_UNKNOWN_ERROR');
     expect(form.current.getValues('title')).toBe('Unsaved title');
   });
 
@@ -325,7 +325,7 @@ describe('useProposalOda', () => {
   test.each([undefined, null, '', 'Analytical Engines'])(
     'saves edited details when an investigator organization is %s',
     async (organization) => {
-      const proposalId = 'prsl-1';
+      const proposalId = 'prp-1';
       const withInvestigator: ProposalBackend = {
         ...pdm,
         prsl_id: proposalId,
@@ -383,7 +383,7 @@ describe('useProposalOda', () => {
   test.each([undefined, null])(
     'saves edits outside Team when investigator names and email are %s and flags are omitted',
     async (value) => {
-      const proposalId = 'prsl-1';
+      const proposalId = 'prp-1';
       const withInvestigator: ProposalBackend = {
         ...pdm,
         prsl_id: proposalId,
