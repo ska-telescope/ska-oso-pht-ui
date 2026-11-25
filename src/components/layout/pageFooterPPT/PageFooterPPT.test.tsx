@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { useNavigate } from 'react-router';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
@@ -104,6 +104,9 @@ beforeEach(() => {
     }) as any;
 });
 
+// The form of the last render, to check what the component left in it
+let currentForm: UseFormReturn<ProposalType>;
+
 const wrapper = (
   component: React.ReactElement,
   title = mockProposal.title,
@@ -122,6 +125,7 @@ const wrapper = (
         ...formValues
       }
     });
+    currentForm = methods;
     return (
       <StoreProvider>
         <ThemeA11yProvider>
@@ -159,6 +163,24 @@ describe('PageFooterPPT', () => {
       expect(PostProposal).toHaveBeenCalled();
       expect(mockNavigate).toHaveBeenCalled();
     });
+  });
+
+  it('puts the PI the backend added in the form', async () => {
+    const creator = {
+      id: 'creator-account-id',
+      status: 'accepted',
+      phdThesis: false,
+      pi: true
+    };
+    (PostProposal as unknown as Mock).mockResolvedValueOnce({
+      ...MockProposalBackend,
+      investigators: [creator]
+    });
+    wrapper(<PageFooterPPT pageNo={-1} />);
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    await waitFor(() => expect(currentForm.getValues('investigators')).toEqual([creator]));
   });
 
   it('creates the proposal with its own ID, type and cycle', async () => {
@@ -220,6 +242,13 @@ describe('PageFooterPPT', () => {
         expect.objectContaining({ observationId: proposal.observations?.[0].id }),
         expect.objectContaining({ observationId: proposal.observations?.[0].id })
       ]);
+      // The form has them too, once the proposal is created
+      await waitFor(() =>
+        expect(currentForm.getValues('observations')).toEqual([
+          expect.objectContaining({ id: proposal.observations?.[0].id })
+        ])
+      );
+      expect(currentForm.getValues('dataProducts')).toEqual(proposal.dataProducts);
     });
 
     it('is not created for other proposals', async () => {

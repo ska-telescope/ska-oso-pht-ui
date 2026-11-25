@@ -27,6 +27,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 import { legacyObservationsFromForm } from '@/models/proposals/legacyObservations';
+import { getTeamValues } from '@/models/proposals/team';
 import { newDataProductsForMode } from '@/utils/autoLinking/AutoLinking';
 
 const createProposalSchema = getProposalSchema().pick({ title: true, proposalType: true });
@@ -44,7 +45,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdLOW } = useOSDAccessors();
-  const { trigger, getValues } = useFormContext<ProposalType>();
+  const { trigger, getValues, setValue } = useFormContext<ProposalType>();
   const [title, proposalType] = useWatch<ProposalType, ['title', 'proposalType']>({
     name: ['title', 'proposalType']
   });
@@ -88,6 +89,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
             )
           ]
         : [];
+    const dataProducts = observations.flatMap(newDataProductsForMode);
     const response = await PostProposal(
       authClient,
       refreshAuthToken,
@@ -99,7 +101,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         scienceCategory,
         investigators,
         ...legacyObservationsFromForm(observations),
-        dataProducts: observations.flatMap(newDataProductsForMode),
+        dataProducts,
         proposalType: proposalType.type ?? undefined,
         proposalSubType: proposalType.subTypes,
         cycle
@@ -109,6 +111,11 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
     if (response && !('error' in response)) {
       notifySuccess(t('addProposal.success') + response.id);
+      // The store keeps the same ID, so it doesn't re-seed the form with them
+      setValue('observations', observations);
+      setValue('dataProducts', dataProducts);
+      // The backend adds the creator as PI
+      setValue('investigators', getTeamValues(response as Proposal).investigators);
       updateAppContent2(response as Proposal);
 
       const newAcc: Partial<ProposalAccess> = {
@@ -129,6 +136,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   }, [
     proposal,
     getValues,
+    setValue,
     authClient,
     refreshAuthToken,
     notifyWarning,
