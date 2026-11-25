@@ -4,6 +4,8 @@ import { Proposal } from '@utils/types/proposal.tsx';
 type LastSave = { proposalId: string; savedOn: string };
 
 type LastSavedContextValue = {
+  /** The latest save this session, of any proposal; a new object for every save */
+  lastSave: LastSave | null;
   /** When the proposal was last saved: its latest save this session, else when it was loaded */
   lastSavedOn: (proposal: Proposal) => string | undefined;
   recordSave: (proposalId: string, savedOn: string) => void;
@@ -11,6 +13,7 @@ type LastSavedContextValue = {
 
 // Without a provider nothing is remembered: saves are not recorded and the loaded time is given
 const LastSavedContext = createContext<LastSavedContextValue>({
+  lastSave: null,
   lastSavedOn: (proposal) => proposal.lastUpdated,
   recordSave: () => {}
 });
@@ -31,7 +34,10 @@ export const LastSavedProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     [lastSave]
   );
 
-  const value = useMemo(() => ({ lastSavedOn, recordSave }), [lastSavedOn, recordSave]);
+  const value = useMemo(
+    () => ({ lastSave, lastSavedOn, recordSave }),
+    [lastSave, lastSavedOn, recordSave]
+  );
   return <LastSavedContext value={value}>{children}</LastSavedContext>;
 };
 

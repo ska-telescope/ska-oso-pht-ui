@@ -25,6 +25,10 @@ describe('LastSavedContext', () => {
     act(() => result.current.recordSave('prsl-1', '2026-11-25T14:32:00Z'));
     act(() => result.current.recordSave('prsl-1', '2026-11-25T14:33:00Z'));
     expect(result.current.lastSavedOn(proposal('prsl-1'))).toBe('2026-11-25T14:33:00Z');
+    expect(result.current.lastSave).toEqual({
+      proposalId: 'prsl-1',
+      savedOn: '2026-11-25T14:33:00Z'
+    });
   });
 
   test('ignores a save of another proposal', () => {

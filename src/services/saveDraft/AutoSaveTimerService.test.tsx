@@ -8,6 +8,8 @@ const mockSaveDraft = vi.hoisted(() => vi.fn());
 const mockHook = vi.hoisted(() => ({ saveDraft: vi.fn() }));
 const mockIsSavePage = vi.hoisted(() => vi.fn());
 const mockLocation = vi.hoisted(() => ({ pathname: '/' }));
+// The latest save, as the context gives it
+const mockLastSaved = vi.hoisted(() => ({ lastSave: null as object | null }));
 
 vi.mock('./useSaveDraft', () => ({
   useSaveDraft: () => ({ saveDraft: mockHook.saveDraft, isSavePage: mockIsSavePage })
@@ -17,6 +19,10 @@ vi.mock('react-router', () => ({
   useLocation: () => mockLocation
 }));
 
+vi.mock('./LastSavedContext', () => ({
+  useLastSaved: () => ({ lastSave: mockLastSaved.lastSave })
+}));
+
 const INTERVAL_MS = AUTO_SAVE_INTERVAL * 1000;
 
 describe('<AutoSaveTimerService />', () => {
@@ -24,6 +30,7 @@ describe('<AutoSaveTimerService />', () => {
     vi.useFakeTimers();
     vi.clearAllMocks();
     mockHook.saveDraft = mockSaveDraft;
+    mockLastSaved.lastSave = null;
     mockIsSavePage.mockImplementation((pageNo: number) => pageNo === PAGE_TEAM);
   });
 
@@ -74,5 +81,20 @@ describe('<AutoSaveTimerService />', () => {
     vi.advanceTimersByTime(INTERVAL_MS / 2);
     expect(replacementSaveDraft).toHaveBeenCalledOnce();
     expect(mockSaveDraft).not.toHaveBeenCalled();
+  });
+
+  test('starts the wait again after a save from elsewhere', () => {
+    mockLocation.pathname = NAV[PAGE_TEAM];
+    const { rerender } = render(<AutoSaveTimerService />);
+
+    vi.advanceTimersByTime(INTERVAL_MS - 1000);
+    // e.g. the Save button, just before the timer was due
+    mockLastSaved.lastSave = { proposalId: 'prsl-1', savedOn: '2026-11-25T14:00:29Z' };
+    rerender(<AutoSaveTimerService />);
+
+    vi.advanceTimersByTime(INTERVAL_MS - 1);
+    expect(mockSaveDraft).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
+    expect(mockSaveDraft).toHaveBeenCalledOnce();
   });
 });
