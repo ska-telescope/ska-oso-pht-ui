@@ -31,6 +31,14 @@ describe('LastSavedContext', () => {
     });
   });
 
+  test('gives the loaded time when someone has saved the proposal since this session did', () => {
+    const result = renderLastSaved();
+    act(() => result.current.recordSave('prsl-1', '2026-11-25T10:00:00Z'));
+    expect(result.current.lastSavedOn(proposal('prsl-1', '2026-11-25T10:30:00.123456Z'))).toBe(
+      '2026-11-25T10:30:00.123456Z'
+    );
+  });
+
   test('ignores a save of another proposal', () => {
     const result = renderLastSaved();
     act(() => result.current.recordSave('prsl-1', '2026-11-25T14:32:00Z'));
