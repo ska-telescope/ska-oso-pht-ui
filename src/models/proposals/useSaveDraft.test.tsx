@@ -1,9 +1,12 @@
-import { renderHook } from '@testing-library/react';
+import React from 'react';
+import { act, renderHook } from '@testing-library/react';
+import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { storageObject } from '@utils/storage/store';
 import completeMockStore from '@utils/MockStore';
 import { useSaveDraft } from './useSaveDraft';
+import { ProposalType } from './proposal';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import { PAGE_LANDING, PAGE_LINKING, PAGE_TEAM, PROPOSAL_STATUS } from '@/utils/constants';
 
@@ -30,13 +33,18 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
 const proposal = completeMockStore.application.content2;
 const originalUseStore = storageObject.useStore;
 
-const renderWith = (changes: object = {}) => {
+const renderWith = (changes: object = {}, form?: UseFormReturn<ProposalType>) => {
   storageObject.useStore = () =>
     ({
       ...completeMockStore,
       application: { ...completeMockStore.application, content2: { ...proposal, ...changes } }
     }) as unknown as ReturnType<typeof originalUseStore>;
-  return renderHook(() => useSaveDraft()).result.current;
+  const wrapper = form
+    ? ({ children }: { children: React.ReactNode }) => (
+        <FormProvider {...form}>{children}</FormProvider>
+      )
+    : undefined;
+  return renderHook(() => useSaveDraft(), { wrapper }).result.current;
 };
 
 const words = (n: number) => Array(n).fill('word').join(' ');
@@ -56,7 +64,7 @@ describe('useSaveDraft', () => {
     test('saves a draft and resolves true', async () => {
       mockSaveToOda.mockResolvedValue({ prsl_id: 'prsl-1' });
       await expect(renderWith().saveDraft()).resolves.toBe(true);
-      expect(mockSaveToOda).toHaveBeenCalledWith(proposal, PROPOSAL_STATUS.DRAFT);
+      expect(mockSaveToOda).toHaveBeenCalledWith(proposal, PROPOSAL_STATUS.DRAFT, undefined);
       expect(mockNotifyError).not.toHaveBeenCalled();
     });
 
@@ -88,7 +96,33 @@ describe('useSaveDraft', () => {
       expect(mockSaveToOda).toHaveBeenCalledTimes(2);
       expect(mockSaveToOda).toHaveBeenLastCalledWith(
         expect.objectContaining({ title: 'Newer title' }),
-        PROPOSAL_STATUS.DRAFT
+        PROPOSAL_STATUS.DRAFT,
+        undefined
+      );
+    });
+
+    test('saves the form as it was when the save was asked for, not when it runs', async () => {
+      let finishFirst: (value: object) => void = () => {};
+      mockSaveToOda
+        .mockReturnValueOnce(new Promise((resolve) => (finishFirst = resolve)))
+        .mockResolvedValueOnce({ prsl_id: 'prsl-1' });
+      const { result: form } = renderHook(() =>
+        useForm<ProposalType>({ defaultValues: { title: 'Typed title' } })
+      );
+      const { saveDraft } = renderWith({}, form.current);
+
+      const first = saveDraft();
+      const second = saveDraft();
+      // e.g. leaving the editor resets the form while the second save is still queued
+      act(() => form.current.reset({ title: '' }));
+      finishFirst({ prsl_id: 'prsl-1' });
+      await first;
+      await second;
+
+      expect(mockSaveToOda).toHaveBeenLastCalledWith(
+        proposal,
+        PROPOSAL_STATUS.DRAFT,
+        expect.objectContaining({ title: 'Typed title' })
       );
     });
 

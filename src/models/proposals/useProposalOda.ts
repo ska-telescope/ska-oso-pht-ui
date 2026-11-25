@@ -48,9 +48,11 @@ export function useProposalOda() {
   const saveToOda = React.useCallback(
     (
       proposal: Proposal,
-      status: string = PROPOSAL_STATUS.DRAFT
+      status: string = PROPOSAL_STATUS.DRAFT,
+      // Defaults to the form as it is now; pass values read earlier to save that snapshot instead
+      values: ProposalType | undefined = form?.getValues()
     ): Promise<ProposalBackend | { error: string }> =>
-      PutProposal(authClient, proposal, status, form?.getValues()),
+      PutProposal(authClient, proposal, status, values),
     [authClient, form]
   );
 

@@ -1,4 +1,5 @@
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { countWords } from '@utils/helpers.ts';
@@ -8,6 +9,7 @@ import {
   STATUS_ARRAY_PAGES_SV
 } from '@utils/constants.ts';
 import { useProposalOda } from './useProposalOda';
+import { ProposalType } from './proposal';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import phtTranslations from '../../../public/locales/en/pht.json';
@@ -21,6 +23,7 @@ export function useSaveDraft() {
   const { application } = storageObject.useStore();
   const { isSV } = useOSDAccessors();
   const { saveToOda } = useProposalOda();
+  const form = useFormContext<ProposalType>() as UseFormReturn<ProposalType> | null;
   const { notifyError } = useNotify();
 
   // TODO: Get the proposal from the new form context
@@ -45,8 +48,11 @@ export function useSaveDraft() {
     if (isSaveBlocked()) {
       return Promise.resolve(false);
     }
+    // Read the form now: by the time this save runs, the form may have moved on (e.g. leaving the
+    // editor resets it)
+    const values = form?.getValues();
     const saved = saveQueue.then(async () => {
-      const response = await saveToOda(proposal, PROPOSAL_STATUS.DRAFT);
+      const response = await saveToOda(proposal, PROPOSAL_STATUS.DRAFT, values);
       if (!response || 'error' in response) {
         notifyError(response?.error ?? 'An unknown error occurred');
         return false;
