@@ -92,22 +92,6 @@ js-e2e-test:
   variables:
     SPLIT: "true"
     SPLIT_FILE: scripts/cypress-timings.json
-  # With parallel set to > 1, the template's environment would also make the jobs simultaneous
-  # deployments to the same environment, which GitLab fails with data_integrity_failure.
-  # Environment is not needed. The tests run against the environment created by  
-  # js-e2e-deploy installed, accessing it via KUBE_NAMESPACE. The only reason to
-  # access environment would be to alter the auto_stop time. In this suite we handle 
-  # stopping after the tests complete in stop-js-e2e-test, whether or not the tests pass. 
-  # (null environment is used to avoid the default environment being created by the template)
-  environment: null
-
-# Removes the deployment once all the test jobs have finished, whether or not they passed,
-# rather than leaving it to auto_stop_in or someone running this by hand
-stop-js-e2e-test:
-  needs:
-    - js-e2e-test
-  when: always
-  allow_failure: true
 
 info-dev-environment:
   <<: *dev_env
@@ -231,12 +215,14 @@ include:
   - template: "Verify/Accessibility.gitlab-ci.yml"
   # TS linting and unit testing
   - project: 'ska-telescope/templates-repository'
+    ref: btn-3676-remove-jstest-env
     file: 'gitlab-ci/includes/js.gitlab-ci.yml'
   # OCI
   - project: "ska-telescope/templates-repository"
     file: "gitlab-ci/includes/oci-image.gitlab-ci.yml"
   # Docs pages
   - project: 'ska-telescope/templates-repository'
+    ref: btn-3676-remove-jstest-env
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
   # .post step finalisers eg: badges
   - project: "ska-telescope/templates-repository"
