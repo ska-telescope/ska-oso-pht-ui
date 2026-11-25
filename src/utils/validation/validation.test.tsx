@@ -1,18 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { DataProductSDPNew, SDPFilterbankPSTData } from '../types/dataProduct';
+import { describe, it, expect, test } from 'vitest';
 import {
-  DETECTED_FILTER_BANK_VALUE,
-  CHANNELS_OUT_MAX,
-  CHANNELS_OUT_MAX_COMBINED,
-  CHANNELS_OUT_MIN_CONTINUUM,
-  CHANNELS_OUT_MIN_SPECTRAL,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  FLOW_THROUGH_VALUE,
-  IW_BRIGGS,
-  IW_UNIFORM,
   PROPOSAL_TYPE,
-  PULSAR_TIMING_VALUE,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
@@ -22,421 +10,22 @@ import {
   SUPPLIED_TYPE_INTEGRATION,
   SUPPLIED_TYPE_SENSITIVITY,
   TIME_HOURS,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
-  TYPE_ZOOM
+  TYPE_CONTINUUM
 } from '../constants';
 import { timeConversion } from '../helpers';
-import { validateDetailsPage, validateObservationPage, validateSDPPage } from './validation';
+import {
+  validateDeclination,
+  validateDetailsPage,
+  validateObservationPage,
+  validateRightAscension,
+  validateTitlePage
+} from './validation';
 
-describe('validateSDPPage robust rules', () => {
-  const makeProposalWithDataProduct = (data: any) =>
-    ({
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data
-        } as DataProductSDPNew
-      ]
-    }) as any;
-
-  it('returns STATUS_ERROR when no data products exist', () => {
-    expect(validateSDPPage({ dataProductSDP: [] } as any)).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_OK for non-BRIGGS weighting (robust inactive)', () => {
-    const proposal = makeProposalWithDataProduct({
-      dataProductType: DP_TYPE_IMAGES,
-      weighting: IW_UNIFORM,
-      robust: 99,
-      polarisations: ['I']
-    });
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_OK for BRIGGS image data with robust in range', () => {
-    const proposal = makeProposalWithDataProduct({
-      dataProductType: DP_TYPE_IMAGES,
-      weighting: IW_BRIGGS,
-      robust: 1.5,
-      polarisations: ['I']
-    });
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_OK for BRIGGS visibilities data (robust inactive)', () => {
-    const proposal = makeProposalWithDataProduct({
-      dataProductType: DP_TYPE_VISIBLE,
-      weighting: IW_BRIGGS,
-      robust: 999
-    });
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-
-  it('transitions Data Product breadcrumb status from STATUS_OK to STATUS_ERROR when robust becomes invalid', () => {
-    const validProposal = makeProposalWithDataProduct({
-      dataProductType: DP_TYPE_IMAGES,
-      weighting: IW_BRIGGS,
-      robust: 0,
-      polarisations: ['I']
-    });
-    expect(validateSDPPage(validProposal)).toBe(STATUS_OK);
-
-    const invalidProposal = makeProposalWithDataProduct({
-      dataProductType: DP_TYPE_IMAGES,
-      weighting: IW_BRIGGS,
-      robust: 2.1,
-      polarisations: ['I']
-    });
-    expect(validateSDPPage(invalidProposal)).toBe(STATUS_ERROR);
-  });
-});
-
-describe('validateSDPPage polarisation rules', () => {
-  it('returns STATUS_ERROR when an image data product has no polarisations selected', () => {
-    const proposal = {
-      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data: { dataProductType: DP_TYPE_IMAGES, polarisations: [] }
-        }
-      ]
-    } as any;
-    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_OK for a visibilities data product with no polarisations selected', () => {
-    const proposal = {
-      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM }],
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data: {
-            dataProductType: DP_TYPE_VISIBLE,
-            polarisations: [],
-            timeAveraging: 1,
-            frequencyAveraging: 1
-          }
-        }
-      ]
-    } as any;
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_ERROR when a PST flow-through data product has no polarisations selected', () => {
-    const proposal = {
-      observations: [{ id: 'obs-1', type: TYPE_PST, pstMode: FLOW_THROUGH_VALUE }],
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data: { dataProductType: FLOW_THROUGH_VALUE, polarisations: [] }
-        }
-      ]
-    } as any;
-    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_OK for a PST pulsar timing data product with no polarisations field', () => {
-    const proposal = {
-      observations: [{ id: 'obs-1', type: TYPE_PST, pstMode: PULSAR_TIMING_VALUE }],
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data: { dataProductType: PULSAR_TIMING_VALUE }
-        }
-      ]
-    } as any;
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_ERROR when a zoom/combined spectral data product has no polarisations selected', () => {
-    const proposal = {
-      observations: [{ id: 'obs-1', type: TYPE_ZOOM }],
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data: { polarisations: [] } // SDPSpectralData has no dataProductType field
-        }
-      ]
-    } as any;
-    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
-  });
-
-  it('ignores the hidden visibilities companion data product HiddenSDPData creates alongside a combined spectral product', () => {
-    const proposal = {
-      observations: [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }],
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data: {
-            polarisations: ['I', 'XX'],
-            channelsOut: CHANNELS_OUT_MIN_SPECTRAL,
-            imageSizeValue: 100,
-            pixelSizeValue: 1
-          } // the displayed spectral product - valid
-        },
-        {
-          id: 'SDP-1-hidden',
-          observationId: 'obs-1',
-          // the auto-created hidden visibilities companion - never carries polarisations
-          data: { dataProductType: DP_TYPE_VISIBLE, timeAveraging: 4, frequencyAveraging: 1 }
-        }
-      ]
-    } as any;
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-});
-
-describe('validateSDPPage channelsOut rules', () => {
-  const makeProposalWithDataProducts = (
-    dataProducts: { data: any; observationId?: string }[],
-    observations?: any[]
-  ) =>
-    ({
-      observations,
-
-      dataProductSDP: dataProducts.map((dp, idx) => ({
-        id: `SDP-${idx + 1}`,
-        observationId: dp.observationId ?? 'obs-1',
-        data: {
-          imageSizeValue: 100,
-          pixelSizeValue: 1,
-          timeAveraging: 1,
-          frequencyAveraging: 1,
-          ...dp.data
-        }
-      })) as DataProductSDPNew[]
-    }) as any;
-
-  const continuumObservations = [{ id: 'obs-1', type: TYPE_CONTINUUM }];
-
-  it('returns STATUS_OK for a valid channelsOut value', () => {
-    const proposal = makeProposalWithDataProducts(
-      [
-        {
-          data: {
-            dataProductType: DP_TYPE_IMAGES,
-            channelsOut: CHANNELS_OUT_MIN_CONTINUUM,
-            polarisations: ['I']
-          }
-        }
-      ],
-      continuumObservations
-    );
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_ERROR when channelsOut is below the minimum', () => {
-    const proposal = makeProposalWithDataProducts(
-      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MIN_CONTINUUM - 1 } }],
-      continuumObservations
-    );
-    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_ERROR when channelsOut exceeds the standard maximum', () => {
-    const proposal = makeProposalWithDataProducts(
-      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: CHANNELS_OUT_MAX + 1 } }],
-      continuumObservations
-    );
-    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_ERROR when channelsOut is not an integer', () => {
-    const proposal = makeProposalWithDataProducts(
-      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 5.5 } }],
-      continuumObservations
-    );
-    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
-  });
-
-  it('allows the combined-mode maximum when the linked observation is continuum+spectral', () => {
-    const proposal = makeProposalWithDataProducts(
-      [{ data: { channelsOut: CHANNELS_OUT_MAX + 1, polarisations: ['I'] } }],
-      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
-    );
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-
-    const invalidProposal = makeProposalWithDataProducts(
-      [{ data: { channelsOut: CHANNELS_OUT_MAX_COMBINED + 1, polarisations: ['I'] } }],
-      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
-    );
-    expect(validateSDPPage(invalidProposal)).toBe(STATUS_ERROR);
-  });
-
-  it('ignores a Visibilities-type data product even though it carries channelsOut', () => {
-    // getProposal.tsx's backend mapping always writes a channelsOut key (defaulted to 0) onto
-    // every data product, including Visibilities ones that have no real "channels out" concept.
-    const proposal = makeProposalWithDataProducts(
-      [{ data: { dataProductType: DP_TYPE_VISIBLE, channelsOut: 0 } }],
-      continuumObservations
-    );
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-
-  it('ignores the hidden Visibilities companion of a combined-mode observation', () => {
-    // Regression test: the auto-added hidden companion for TYPE_CONTINUUM_SPECTRAL previously
-    // got flagged as invalid because it inherits a channelsOut: 0 from the backend mapping,
-    // even though only the primary (Images) data product's channelsOut is ever user-editable.
-    const proposal = makeProposalWithDataProducts(
-      [
-        { data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 4, polarisations: ['I'] } },
-        { data: { dataProductType: DP_TYPE_VISIBLE, channelsOut: 0 } }
-      ],
-      [{ id: 'obs-1', type: TYPE_CONTINUUM_SPECTRAL }]
-    );
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-
-  it('ignores channelsOut for observation types that never use it (e.g. PST)', () => {
-    const proposal = makeProposalWithDataProducts(
-      [{ data: { dataProductType: DP_TYPE_IMAGES, channelsOut: 0 } }],
-      [{ id: 'obs-1', type: TYPE_PST }]
-    );
-    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
-  });
-});
-
-describe('validateSDPPage detected filterbank field rules', () => {
-  const makeProposal = (
-    data: Partial<SDPFilterbankPSTData>,
-    pstMode = DETECTED_FILTER_BANK_VALUE
-  ) =>
-    ({
-      observations: [{ id: 'obs-1', type: TYPE_PST, pstMode }],
-
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data: {
-            dataProductType: DETECTED_FILTER_BANK_VALUE,
-            outputFrequencyResolution: 1,
-            outputSamplingInterval: 1,
-            dispersionMeasure: 1.5,
-            rotationMeasure: -2.5,
-            polarisations: ['I'],
-            ...data
-          }
-        }
-      ]
-    }) as any;
-
-  it('returns STATUS_OK when detected filterbank measures are valid decimals', () => {
-    expect(validateSDPPage(makeProposal({}))).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_OK when dispersion measure exceeds the former maximum', () => {
-    expect(validateSDPPage(makeProposal({ dispersionMeasure: 100001 }))).toBe(STATUS_OK);
-  });
-
-  it('returns STATUS_ERROR when rotation measure is not numeric', () => {
-    expect(validateSDPPage(makeProposal({ rotationMeasure: 'invalid' as any }))).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_ERROR when output frequency resolution is invalid', () => {
-    expect(validateSDPPage(makeProposal({ outputFrequencyResolution: 1.5 }))).toBe(STATUS_ERROR);
-  });
-
-  it('returns STATUS_ERROR when output sampling interval is invalid', () => {
-    expect(validateSDPPage(makeProposal({ outputSamplingInterval: 0 }))).toBe(STATUS_ERROR);
-  });
-
-  it('ignores detected filterbank values when their fields are not shown', () => {
+describe('validateTitlePage', () => {
+  it('returns STATUS_ERROR for titles with unsupported characters', () => {
     expect(
-      validateSDPPage(
-        makeProposal(
-          {
-            outputFrequencyResolution: 1.5,
-            outputSamplingInterval: 0,
-            dispersionMeasure: -1,
-            rotationMeasure: 'invalid' as any
-          },
-          FLOW_THROUGH_VALUE
-        )
-      )
-    ).toBe(STATUS_OK);
-  });
-});
-
-describe('validateSDPPage continuum visibilities rules', () => {
-  const makeProposal = (
-    data: { timeAveraging?: number; frequencyAveraging?: number },
-    observationType = TYPE_CONTINUUM
-  ) =>
-    ({
-      observations: [{ id: 'obs-1', type: observationType }],
-
-      dataProductSDP: [
-        {
-          id: 'SDP-1',
-          observationId: 'obs-1',
-          data: {
-            dataProductType: DP_TYPE_VISIBLE,
-            timeAveraging: 1,
-            frequencyAveraging: 1,
-            ...data
-          }
-        }
-      ]
-    }) as any;
-
-  it.each([
-    ['time averaging below range', { timeAveraging: 0 }],
-    ['time averaging off-step', { timeAveraging: 1.5 }],
-    ['frequency averaging above range', { frequencyAveraging: 13 }],
-    ['frequency averaging off-step', { frequencyAveraging: 1.5 }]
-  ])('returns STATUS_ERROR when combined continuum-spectral %s is invalid', (_field, data) => {
-    expect(validateSDPPage(makeProposal(data, TYPE_CONTINUUM_SPECTRAL))).toBe(STATUS_ERROR);
-  });
-});
-
-describe('validateSDPPage auto-linked sensitivity rules', () => {
-  const observation = { id: 'obs-1', type: TYPE_PST };
-  const dataProduct = {
-    id: 'sdp-1',
-    observationId: 'obs-1',
-    data: { dataProductType: PULSAR_TIMING_VALUE }
-  } as DataProductSDPNew;
-  const makeProposal = (targetObservation: unknown[]) =>
-    ({
-      observations: [observation],
-      dataProductSDP: [dataProduct],
-      targetObservation
-    }) as any;
-  const link = { targetId: 'target-1', observationId: 'obs-1', dataProductsSDPId: 'sdp-1' };
-
-  it('is valid without a target when the cycle does not auto-link', () => {
-    expect(validateSDPPage(makeProposal([]))).toBe(STATUS_OK);
-  });
-
-  it('is invalid without a target when the cycle auto-links', () => {
-    expect(validateSDPPage(makeProposal([]), true)).toBe(STATUS_ERROR);
-  });
-
-  it('is valid when the target is linked with sensitivity results', () => {
-    expect(
-      validateSDPPage(makeProposal([{ ...link, sensCalc: { statusGUI: STATUS_OK } }]), true)
-    ).toBe(STATUS_OK);
-  });
-
-  it('is invalid when the sensitivity results are an error', () => {
-    expect(
-      validateSDPPage(makeProposal([{ ...link, sensCalc: { statusGUI: STATUS_ERROR } }]), true)
+      validateTitlePage({ title: 'A proposal with @', proposalType: PROPOSAL_TYPE.STANDARD })
     ).toBe(STATUS_ERROR);
-  });
-
-  it('is valid when the target is linked without results, as for SSO targets and PST', () => {
-    expect(validateSDPPage(makeProposal([link]), true)).toBe(STATUS_OK);
   });
 });
 
@@ -522,6 +111,16 @@ describe('validateObservationPage supplied rules', () => {
 describe('validateDetailsPage', () => {
   const observation = { id: 'obs-1', type: TYPE_CONTINUUM };
 
+  it.each([2300, 2301])('checks the Zod character limit at %s characters', (length) => {
+    expect(
+      validateDetailsPage({
+        proposalType: PROPOSAL_TYPE.STANDARD,
+        abstract: 'a'.repeat(length),
+        scienceCategory: 1
+      } as Parameters<typeof validateDetailsPage>[0])
+    ).toBe(length === 2300 ? STATUS_OK : STATUS_ERROR);
+  });
+
   it('requires an abstract and a science category for standard proposals', () => {
     const proposal = { proposalType: PROPOSAL_TYPE.STANDARD, abstract: 'An abstract' };
     expect(validateDetailsPage({ ...proposal, scienceCategory: 1 } as any)).toBe(STATUS_OK);
@@ -541,5 +140,88 @@ describe('validateDetailsPage', () => {
     expect(validateDetailsPage({ ...proposal, abstract: '', observations: [] } as any)).toBe(
       STATUS_ERROR
     );
+  });
+});
+
+describe('validateRightAscension', () => {
+  test('validates correct equatorial format', () => {
+    expect(validateRightAscension('12:34:56')).toBeNull();
+    expect(validateRightAscension('2:34:56')).toBeNull();
+    expect(validateRightAscension('+12:34:56')).toBeNull();
+  });
+
+  test('rejects incorrect equatorial format', () => {
+    expect(validateRightAscension('123:45:67')).toBe('0'); // Invalid hours
+    expect(validateRightAscension('12:345:67')).toBe('0'); // Invalid minutes
+    expect(validateRightAscension('12:3:67')).toBe('0'); // Invalid minutes
+    expect(validateRightAscension('12:34:567')).toBe('0'); // Invalid seconds
+    expect(validateRightAscension('12:34:5')).toBe('0'); // Invalid seconds
+    expect(validateRightAscension('12:34')).toBe('0'); // Missing seconds
+    expect(validateRightAscension('12:34:')).toBe('0'); // Missing seconds value
+    expect(validateRightAscension('')).toBe('0'); // Empty string
+    expect(validateRightAscension('abc:def:ghi')).toBe('0'); // Non-numeric input
+  });
+
+  test('validates fractional seconds', () => {
+    expect(validateRightAscension('12:34:56.789')).toBeNull(); // Valid fractional seconds
+    expect(validateRightAscension('12:34:56.789 ')).toBeNull(); // Valid with trailing whitespace
+    expect(validateRightAscension('12:34:56.')).toBeNull(); // Valid trailing dot
+  });
+
+  test('rejects out-of-range values', () => {
+    expect(validateRightAscension('91:00:00')).toBe('1'); // Hours out of range
+    expect(validateRightAscension('-91:00:00')).toBe('0'); // Negative sign → format error
+    expect(validateRightAscension('12:60:00')).toBe('0'); // Minutes > 59 is a format error (hours are fine)
+    expect(validateRightAscension('12:34:60')).toBe('0'); // Seconds >= 60 is a format error (hours are fine)
+  });
+
+  test('rejects negative values', () => {
+    expect(validateRightAscension('-12:34:56')).toBe('0');
+    expect(validateRightAscension('-12:34:56.789')).toBe('0');
+  });
+
+  test('rejects targets not visible', () => {
+    expect(validateRightAscension('50:00:00')).toBe('1');
+    expect(validateRightAscension('89:50:00')).toBe('1');
+    expect(validateRightAscension('90:00:00')).toBe('1');
+  });
+});
+
+describe('validateDeclination', () => {
+  test('validates correct equatorial format', () => {
+    expect(validateDeclination('12:34:56')).toBe(null);
+    expect(validateDeclination('2:34:56')).toBe(null);
+    expect(validateDeclination('-12:34:56')).toBe(null);
+    expect(validateDeclination('+12:34:56')).toBe(null);
+    expect(validateDeclination('-90:00:00')).toBe(null);
+  });
+
+  test('rejects incorrect equatorial format', () => {
+    expect(validateDeclination('123:45:67')).toBe('0'); // Invalid hours
+    expect(validateDeclination('12:345:67')).toBe('0'); // Invalid minutes
+    expect(validateDeclination('12:3:67')).toBe('0'); // Invalid minutes
+    expect(validateDeclination('12:34:567')).toBe('0'); // Invalid seconds
+    expect(validateDeclination('12:34:5')).toBe('0'); // Invalid seconds
+    expect(validateDeclination('12:34')).toBe('0'); // Missing seconds
+    expect(validateDeclination('12:34:')).toBe('0'); // Missing seconds value
+    expect(validateDeclination('')).toBe('0'); // Empty string
+    expect(validateDeclination('abc:def:ghi')).toBe('0'); // Non-numeric input
+  });
+
+  test('validates fractional seconds', () => {
+    expect(validateDeclination('12:34:56.789')).toBe(null); // Valid fractional seconds
+    expect(validateDeclination('-12:34:56.789')).toBe(null); // Valid negative fractional seconds
+    expect(validateDeclination('-90:00:00.0')).toBe(null); // Valid edge case with fractional seconds
+    expect(validateDeclination('12:34:56.789 ')).toBe(null); // Valid trailing whitespace
+    expect(validateDeclination('-12:34:56.789 ')).toBe(null); // Valid trailing whitespace
+    expect(validateDeclination('12:34:56.')).toBe(null); // Valid trailing dot
+    expect(validateDeclination('-12:34:56.')).toBe(null); // Valid negative trailing dot
+  });
+
+  test('rejects out-of-range values', () => {
+    expect(validateDeclination('91:00:00')).toBe('1'); // Hours out of range
+    expect(validateDeclination('-91:00:00')).toBe('1'); // Negative hours out of range
+    expect(validateDeclination('12:60:00')).toBe('0'); // Invalid format (60 min has no meaning in context of sky direction)
+    expect(validateDeclination('12:34:60')).toBe('0'); // Invalid format (60 sec has no meaning in context of sky direction)
   });
 });

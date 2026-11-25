@@ -4,11 +4,12 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { MemoryRouter } from 'react-router';
 import PHT from './PHT';
-import { NAV, PATH, PROPOSAL_STATUS } from '@/utils/constants';
+import { NAV, PATH, PROPOSAL_STATUS, SENSITIVITY_STATE } from '@/utils/constants';
 import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
+import * as proposalForm from '@/models/proposals/useProposalForm';
 
 const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
@@ -113,7 +114,6 @@ const { mockProposal, mockUpdateAppContent2 } = vi.hoisted(() => ({
     abstract: 'Test abstract',
     targets: [{ id: 1, name: 'Target 1' }],
     observations: [] as any[],
-    dataProductSDP: [] as any[],
     targetObservation: [] as any[],
     calibrationStrategy: [] as any[]
   },
@@ -195,7 +195,19 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT);
+      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
+        title: '',
+        proposalType: null,
+        abstract: '',
+        scienceCategory: null,
+        investigators: [],
+        targets: [],
+        targetObservation: [],
+        calibrationStrategy: [],
+        sciencePDF: null,
+        technicalPDF: null,
+        dataProducts: []
+      });
     });
   });
 
@@ -209,15 +221,60 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT);
+      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
+        title: '',
+        proposalType: null,
+        abstract: '',
+        scienceCategory: null,
+        investigators: [],
+        targets: [],
+        targetObservation: [],
+        calibrationStrategy: [],
+        sciencePDF: null,
+        technicalPDF: null,
+        dataProducts: []
+      });
     });
   });
+
+  test.each(['Latest summary before blur', '', 'word '.repeat(251).trim()])(
+    'saves and synchronizes current RHF abstract on navigation without blur: %s',
+    async (abstract) => {
+      const formSpy = vi.spyOn(proposalForm, 'useProposalForm');
+      try {
+        mockApplicationContent2.current = { id: 'prsl-123', abstract: 'Stale store summary' };
+        mockPathname.current = NAV[2];
+        const { rerenderPHT } = renderPHT();
+        const form = formSpy.mock.results[formSpy.mock.results.length - 1].value;
+        act(() => {
+          form.setValue('abstract', abstract);
+        });
+
+        mockPathname.current = NAV[1];
+        rerenderPHT();
+
+        await waitFor(() => {
+          expect(mockUpdateAppContent2).toHaveBeenCalledWith(
+            expect.objectContaining({ id: 'prsl-123', abstract })
+          );
+          expect(PutProposal).toHaveBeenCalledWith(
+            {},
+            expect.objectContaining({ abstract: 'Stale store summary' }),
+            PROPOSAL_STATUS.DRAFT,
+            expect.objectContaining({ abstract })
+          );
+        });
+      } finally {
+        formSpy.mockRestore();
+      }
+    }
+  );
 });
 
 describe('<PHT /> auto-repair for a linked target with no observation', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(linkTarget).mockResolvedValue({ success: true });
+    vi.mocked(linkTarget).mockResolvedValue();
     mockProposal.targetObservation = [];
     mockApplicationContent2.current = mockProposal;
   });
@@ -235,6 +292,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
       mockProposal.targets[0],
       expect.any(Function),
       expect.any(Function),
+      expect.objectContaining({ getValues: expect.any(Function) }),
       {}
     );
   });
@@ -245,7 +303,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
         targetId: 1,
         observationId: 'obs-1',
         dataProductsSDPId: 'sdp-1',
-        sensCalc: { id: 1, title: 'Target 1', statusGUI: 0 }
+        sensitivity: { id: 1, title: 'Target 1', state: SENSITIVITY_STATE.DONE }
       }
     ];
 

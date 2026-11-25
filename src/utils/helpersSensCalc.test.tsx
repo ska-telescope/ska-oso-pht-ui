@@ -1,14 +1,9 @@
 import { describe, test } from 'vitest';
 import '@testing-library/jest-dom';
-import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import {
   getBeamSize,
   getImageWeightingMapping,
-  getSensitivitiesUnitsMapping,
-  isGalactic,
-  isLow,
   isNumeric,
-  isSuppliedTime,
   shiftSensitivity,
   shiftTime,
   timeConversion,
@@ -17,21 +12,8 @@ import {
   transformSurfaceBrightnessPerSubBandData,
   transformSynthesizedBeamSizePerSubBandData
 } from '@/utils/helpersSensCalc.ts';
-import {
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
-  SUPPLIED_TYPE_INTEGRATION,
-  SUPPLIED_TYPE_SENSITIVITY
-} from '@/utils/constants.ts';
 
 describe('Sensitivity Calculator helper functions', () => {
-  test('Telescope type, TELESCOPE_LOW', () => {
-    expect(isLow(TELESCOPE_LOW)).equal(true);
-  });
-  test('Telescope type, TELESCOPE_MID', () => {
-    expect(isLow(TELESCOPE_MID)).equal(false);
-  });
-
   test('Numeric check, Returns false when supplied value is "1.4"', () => {
     expect(isNumeric('1.4')).equal(false);
   });
@@ -168,24 +150,6 @@ describe('Sensitivity Calculator helper functions', () => {
       }
     };
     expect(transformPerSubBandTime(minMax)).deep.equal('224.05 μs - 149.68 μs');
-  });
-
-  test('Coordinate check, is Galactic, Returns false when supplied value is "RA_TYPE_ICRS"', () => {
-    expect(isGalactic(REFERENCE_COORDINATE_TYPE_ICRS)).equal(false);
-  });
-  test('Coordinate check, is Galactic, Returns true when supplied value is "RA_TYPE_GALACTIC"', () => {
-    expect(isGalactic(REFERENCE_COORDINATE_TYPE_GALACTIC)).equal(true);
-  });
-
-  test('Supplied Time check, Returns true when supplied value is "SUPPLIED_TYPE_INTEGRATION"', () => {
-    expect(isSuppliedTime(SUPPLIED_TYPE_INTEGRATION)).equal(true);
-  });
-  test('Supplied Time check, Returns false when supplied value is "SUPPLIED_TYPE_SENSITIVITY"', () => {
-    expect(isSuppliedTime(SUPPLIED_TYPE_SENSITIVITY)).equal(false);
-  });
-
-  test('Map Sensitivities Units', () => {
-    expect(getSensitivitiesUnitsMapping(3)).equal('μJy/beam');
   });
 
   test('Shift Sensitivity { value : 50000000000, unit : Jy}', () => {

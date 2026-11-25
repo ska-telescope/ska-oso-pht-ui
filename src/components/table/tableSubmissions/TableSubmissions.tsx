@@ -29,7 +29,7 @@ export default function TableSubmissions({
   return (
     <TableContainer>
       <Table
-        aria-label="Data Products Table"
+        aria-label="Table of Proposal Submissions"
         sx={{ tableLayout: 'auto', width: '100%' }}
         data-testid="table-submissions"
       >

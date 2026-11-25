@@ -26,9 +26,9 @@ import type { HTTPValidationError } from '../models';
 // @ts-ignore
 import type { Panel } from '../models';
 // @ts-ignore
-import type { ResponseAutoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost } from '../models';
+import type { ResponseAutoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost } from '../models';
 // @ts-ignore
-import type { ResponseAutoCreatePanelOsoApiV16PhtPanelsGeneratePost } from '../models';
+import type { ResponseAutoCreatePanelOsoApiV17PhtPanelsGeneratePost } from '../models';
 /**
  * PMTAPIPanelManagementApi - axios parameter creator
  * @export
@@ -43,10 +43,10 @@ export const PMTAPIPanelManagementApiAxiosParamCreator = function (configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost: async (param: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost: async (param: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'param' is not null or undefined
-            assertParamExists('autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost', 'param', param)
-            const localVarPath = `/oso/api/v16/pht/panels/assignments`;
+            assertParamExists('autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost', 'param', param)
+            const localVarPath = `/oso/api/v17/pht/panels/assignments`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -87,8 +87,8 @@ export const PMTAPIPanelManagementApiAxiosParamCreator = function (configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        autoCreatePanelOsoApiV16PhtPanelsGeneratePost: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/panels/generate`;
+        autoCreatePanelOsoApiV17PhtPanelsGeneratePost: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/panels/generate`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -126,10 +126,10 @@ export const PMTAPIPanelManagementApiAxiosParamCreator = function (configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createPanelOsoApiV16PhtPanelsCreatePost: async (panel: Panel, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createPanelOsoApiV17PhtPanelsCreatePost: async (panel: Panel, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'panel' is not null or undefined
-            assertParamExists('createPanelOsoApiV16PhtPanelsCreatePost', 'panel', panel)
-            const localVarPath = `/oso/api/v16/pht/panels/create`;
+            assertParamExists('createPanelOsoApiV17PhtPanelsCreatePost', 'panel', panel)
+            const localVarPath = `/oso/api/v17/pht/panels/create`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -170,10 +170,10 @@ export const PMTAPIPanelManagementApiAxiosParamCreator = function (configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPanelByIdOsoApiV16PhtPanelsPanelIdGet: async (panelId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getPanelByIdOsoApiV17PhtPanelsPanelIdGet: async (panelId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'panelId' is not null or undefined
-            assertParamExists('getPanelByIdOsoApiV16PhtPanelsPanelIdGet', 'panelId', panelId)
-            const localVarPath = `/oso/api/v16/pht/panels/{panel_id}`
+            assertParamExists('getPanelByIdOsoApiV17PhtPanelsPanelIdGet', 'panelId', panelId)
+            const localVarPath = `/oso/api/v17/pht/panels/{panel_id}`
                 .replace(`{${"panel_id"}}`, encodeURIComponent(String(panelId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -211,8 +211,8 @@ export const PMTAPIPanelManagementApiAxiosParamCreator = function (configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPanelsOsoApiV16PhtPanelsGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/panels/`;
+        getPanelsOsoApiV17PhtPanelsGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/panels/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -251,12 +251,12 @@ export const PMTAPIPanelManagementApiAxiosParamCreator = function (configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updatePanelOsoApiV16PhtPanelsPanelIdPut: async (panelId: string, panel: Panel, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updatePanelOsoApiV17PhtPanelsPanelIdPut: async (panelId: string, panel: Panel, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'panelId' is not null or undefined
-            assertParamExists('updatePanelOsoApiV16PhtPanelsPanelIdPut', 'panelId', panelId)
+            assertParamExists('updatePanelOsoApiV17PhtPanelsPanelIdPut', 'panelId', panelId)
             // verify required parameter 'panel' is not null or undefined
-            assertParamExists('updatePanelOsoApiV16PhtPanelsPanelIdPut', 'panel', panel)
-            const localVarPath = `/oso/api/v16/pht/panels/{panel_id}`
+            assertParamExists('updatePanelOsoApiV17PhtPanelsPanelIdPut', 'panel', panel)
+            const localVarPath = `/oso/api/v17/pht/panels/{panel_id}`
                 .replace(`{${"panel_id"}}`, encodeURIComponent(String(panelId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -308,10 +308,10 @@ export const PMTAPIPanelManagementApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost(param: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAutoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost(param, xRequestID, options);
+        async autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost(param: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAutoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost(param, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -321,10 +321,10 @@ export const PMTAPIPanelManagementApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async autoCreatePanelOsoApiV16PhtPanelsGeneratePost(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAutoCreatePanelOsoApiV16PhtPanelsGeneratePost>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.autoCreatePanelOsoApiV16PhtPanelsGeneratePost(xRequestID, options);
+        async autoCreatePanelOsoApiV17PhtPanelsGeneratePost(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseAutoCreatePanelOsoApiV17PhtPanelsGeneratePost>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.autoCreatePanelOsoApiV17PhtPanelsGeneratePost(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.autoCreatePanelOsoApiV16PhtPanelsGeneratePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.autoCreatePanelOsoApiV17PhtPanelsGeneratePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -335,10 +335,10 @@ export const PMTAPIPanelManagementApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createPanelOsoApiV16PhtPanelsCreatePost(panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createPanelOsoApiV16PhtPanelsCreatePost(panel, xRequestID, options);
+        async createPanelOsoApiV17PhtPanelsCreatePost(panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createPanelOsoApiV17PhtPanelsCreatePost(panel, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.createPanelOsoApiV16PhtPanelsCreatePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.createPanelOsoApiV17PhtPanelsCreatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -349,10 +349,10 @@ export const PMTAPIPanelManagementApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getPanelByIdOsoApiV16PhtPanelsPanelIdGet(panelId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Panel>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getPanelByIdOsoApiV16PhtPanelsPanelIdGet(panelId, xRequestID, options);
+        async getPanelByIdOsoApiV17PhtPanelsPanelIdGet(panelId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Panel>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPanelByIdOsoApiV17PhtPanelsPanelIdGet(panelId, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.getPanelByIdOsoApiV16PhtPanelsPanelIdGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.getPanelByIdOsoApiV17PhtPanelsPanelIdGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -362,10 +362,10 @@ export const PMTAPIPanelManagementApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getPanelsOsoApiV16PhtPanelsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Panel>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getPanelsOsoApiV16PhtPanelsGet(xRequestID, options);
+        async getPanelsOsoApiV17PhtPanelsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Panel>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPanelsOsoApiV17PhtPanelsGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.getPanelsOsoApiV16PhtPanelsGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.getPanelsOsoApiV17PhtPanelsGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -377,10 +377,10 @@ export const PMTAPIPanelManagementApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updatePanelOsoApiV16PhtPanelsPanelIdPut(panelId: string, panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Panel>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updatePanelOsoApiV16PhtPanelsPanelIdPut(panelId, panel, xRequestID, options);
+        async updatePanelOsoApiV17PhtPanelsPanelIdPut(panelId: string, panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Panel>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updatePanelOsoApiV17PhtPanelsPanelIdPut(panelId, panel, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.updatePanelOsoApiV16PhtPanelsPanelIdPut']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelManagementApi.updatePanelOsoApiV17PhtPanelsPanelIdPut']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -401,8 +401,8 @@ export const PMTAPIPanelManagementApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost(param: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAutoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost> {
-            return localVarFp.autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost(param, xRequestID, options).then((request) => request(axios, basePath));
+        autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost(param: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAutoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost> {
+            return localVarFp.autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost(param, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Creates a list of panels for both Science Verification and Science Categories.  - Ensure 1 Science Verification panel exists; if not, create it. - Ensure all science-category panels in PANEL_NAME_POOL exist.   Create any missing ones, - Returns a summary of all newly created panels: {created_count, created_names}.  Auto creates panels: - Create 1 panel called \'Science Verification\'. - Create panels for PANEL_NAME_POOL, which is the science categories     (to be pulled in from OSD when available) - Then return a summary:     {created_count, created_names}.. Note: We will need to use cycle (Match the cycle in the     proposal to the panel) here to detrrmine the appropriate panel to     assign a proposal to. This will soon be a problem after the first     cycle and when we get to multiple cycles as panels     can span across cycles.
@@ -411,8 +411,8 @@ export const PMTAPIPanelManagementApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        autoCreatePanelOsoApiV16PhtPanelsGeneratePost(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAutoCreatePanelOsoApiV16PhtPanelsGeneratePost> {
-            return localVarFp.autoCreatePanelOsoApiV16PhtPanelsGeneratePost(xRequestID, options).then((request) => request(axios, basePath));
+        autoCreatePanelOsoApiV17PhtPanelsGeneratePost(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<ResponseAutoCreatePanelOsoApiV17PhtPanelsGeneratePost> {
+            return localVarFp.autoCreatePanelOsoApiV17PhtPanelsGeneratePost(xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * This endpoint may not be needed in the future.  The idea is to auto-generate panels and assign proposals.
@@ -422,8 +422,8 @@ export const PMTAPIPanelManagementApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createPanelOsoApiV16PhtPanelsCreatePost(panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.createPanelOsoApiV16PhtPanelsCreatePost(panel, xRequestID, options).then((request) => request(axios, basePath));
+        createPanelOsoApiV17PhtPanelsCreatePost(panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.createPanelOsoApiV17PhtPanelsCreatePost(panel, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -433,8 +433,8 @@ export const PMTAPIPanelManagementApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPanelByIdOsoApiV16PhtPanelsPanelIdGet(panelId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Panel> {
-            return localVarFp.getPanelByIdOsoApiV16PhtPanelsPanelIdGet(panelId, xRequestID, options).then((request) => request(axios, basePath));
+        getPanelByIdOsoApiV17PhtPanelsPanelIdGet(panelId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Panel> {
+            return localVarFp.getPanelByIdOsoApiV17PhtPanelsPanelIdGet(panelId, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Function that requests to GET /panels are mapped to  Retrieves the Panels for the given cycle ID from the underlying data store, if available  :return: a tuple of a list of Panel
@@ -443,8 +443,8 @@ export const PMTAPIPanelManagementApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPanelsOsoApiV16PhtPanelsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<Panel>> {
-            return localVarFp.getPanelsOsoApiV16PhtPanelsGet(xRequestID, options).then((request) => request(axios, basePath));
+        getPanelsOsoApiV17PhtPanelsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<Panel>> {
+            return localVarFp.getPanelsOsoApiV17PhtPanelsGet(xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Updates a panel and ensures: - A proposal that already belongs to a different panel is prevented from being assigned - Removed proposals are set back to SUBMITTED (if not in an other panel) - Newly added proposals are set to UNDER REVIEW - Reviews/Decisions exist for all proposals in the panel (create if doesn\'t exist) (Assumption: Only one technical reviewer for a panel for now. Hence, only one technical review for each proposal in a panel is needed.)
@@ -455,8 +455,8 @@ export const PMTAPIPanelManagementApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updatePanelOsoApiV16PhtPanelsPanelIdPut(panelId: string, panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Panel> {
-            return localVarFp.updatePanelOsoApiV16PhtPanelsPanelIdPut(panelId, panel, xRequestID, options).then((request) => request(axios, basePath));
+        updatePanelOsoApiV17PhtPanelsPanelIdPut(panelId: string, panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Panel> {
+            return localVarFp.updatePanelOsoApiV17PhtPanelsPanelIdPut(panelId, panel, xRequestID, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -477,8 +477,8 @@ export class PMTAPIPanelManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelManagementApi
      */
-    public autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost(param: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelManagementApiFp(this.configuration).autoAssignToPanelOsoApiV16PhtPanelsAssignmentsPost(param, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost(param: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelManagementApiFp(this.configuration).autoAssignToPanelOsoApiV17PhtPanelsAssignmentsPost(param, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -489,8 +489,8 @@ export class PMTAPIPanelManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelManagementApi
      */
-    public autoCreatePanelOsoApiV16PhtPanelsGeneratePost(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelManagementApiFp(this.configuration).autoCreatePanelOsoApiV16PhtPanelsGeneratePost(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public autoCreatePanelOsoApiV17PhtPanelsGeneratePost(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelManagementApiFp(this.configuration).autoCreatePanelOsoApiV17PhtPanelsGeneratePost(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -502,8 +502,8 @@ export class PMTAPIPanelManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelManagementApi
      */
-    public createPanelOsoApiV16PhtPanelsCreatePost(panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelManagementApiFp(this.configuration).createPanelOsoApiV16PhtPanelsCreatePost(panel, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public createPanelOsoApiV17PhtPanelsCreatePost(panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelManagementApiFp(this.configuration).createPanelOsoApiV17PhtPanelsCreatePost(panel, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -515,8 +515,8 @@ export class PMTAPIPanelManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelManagementApi
      */
-    public getPanelByIdOsoApiV16PhtPanelsPanelIdGet(panelId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelManagementApiFp(this.configuration).getPanelByIdOsoApiV16PhtPanelsPanelIdGet(panelId, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getPanelByIdOsoApiV17PhtPanelsPanelIdGet(panelId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelManagementApiFp(this.configuration).getPanelByIdOsoApiV17PhtPanelsPanelIdGet(panelId, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -527,8 +527,8 @@ export class PMTAPIPanelManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelManagementApi
      */
-    public getPanelsOsoApiV16PhtPanelsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelManagementApiFp(this.configuration).getPanelsOsoApiV16PhtPanelsGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getPanelsOsoApiV17PhtPanelsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelManagementApiFp(this.configuration).getPanelsOsoApiV17PhtPanelsGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -541,8 +541,8 @@ export class PMTAPIPanelManagementApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelManagementApi
      */
-    public updatePanelOsoApiV16PhtPanelsPanelIdPut(panelId: string, panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelManagementApiFp(this.configuration).updatePanelOsoApiV16PhtPanelsPanelIdPut(panelId, panel, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public updatePanelOsoApiV17PhtPanelsPanelIdPut(panelId: string, panel: Panel, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelManagementApiFp(this.configuration).updatePanelOsoApiV17PhtPanelsPanelIdPut(panelId, panel, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

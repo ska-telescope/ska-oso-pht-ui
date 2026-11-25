@@ -3,6 +3,9 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import SciencePage from './SciencePage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import { FormProvider, useForm } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -138,7 +141,21 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(<ThemeA11yProvider>{component}</ThemeA11yProvider>);
+  const FormWrapper = () => {
+    const methods = useForm<ProposalType>({
+      defaultValues: getProposalFormValues({
+        title: '',
+        proposalType: null,
+        ...(mockStore.application.content2 as any)
+      })
+    });
+    return (
+      <FormProvider {...methods}>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </FormProvider>
+    );
+  };
+  return render(<FormWrapper />);
 };
 
 const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
@@ -306,9 +323,7 @@ describe('SciencePage', () => {
       await waitFor(() => {
         expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();
       });
-      expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
-        expect.objectContaining({ sciencePDF: null })
-      );
+      expect(capturedFile).toBeNull();
     });
 
     it('unreadable PDF: invalidFileError shown, upload blocked', async () => {

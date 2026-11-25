@@ -16,8 +16,9 @@ const getAuthors = (arr: Investigator[]) => {
   }
   const results: string[] = [];
   arr.forEach((e) => {
-    if (e.pi) {
-      results.push(e.lastName + ', ' + e.firstName);
+    const name = [e.lastName, e.firstName].filter(Boolean).join(', ');
+    if (e.pi && name) {
+      results.push(name);
     }
   });
   if (results.length === 0) {

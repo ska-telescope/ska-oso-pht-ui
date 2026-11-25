@@ -1,0 +1,83 @@
+@startuml proposalEditorDataFlow
+' Proposal editor: data flow from creating a proposal to saving, refreshing and submitting it.
+' Lifelines are where the data is held; arrows are how it moves and is transformed.
+
+hide footbox
+skinparam sequenceMessageAlign center
+skinparam noteBackgroundColor #FEFECE
+
+actor User
+participant "formState\n(ProposalFormInput)" as Form
+database "localStorage\n(backup)" as Backup
+database "backend\n(proposal PDM)" as Backend
+
+== Create ==
+
+User -> Form : proposal type and title, Create
+Form -> Backend : toPdm(values), POST
+
+alt created
+  Backend --> Form : new proposal\nfromPdm(pdm), reset form
+else POST failed
+  Form --> User : error message\n(stays on the Title page)
+end
+
+== Editing ==
+
+User -> Form : user input
+note over Form
+  RHF validates with ProposalSubmitSchema
+end note
+Form -> Backup : backup ProposalFormInput (debounced)
+
+== Save ==
+
+User -> Form : leaves the editor, Save, or 30 s timer
+Form -> Backup : backup ProposalFormInput\n(immediately, no debounce)
+
+alt ProposalDraftSchema.safeParse(getValues()) OK
+  Form -> Backend : toPdm(values), PUT
+  Form -> Backup : mark backup as saved
+else parse or PUT failed
+  Form --> User : "not saved" message\n(leaving the editor is never blocked)
+end
+
+== Refresh ==
+
+User -> Form : page refresh
+Backup --> Form : ID of the proposal being edited
+Form -> Backend : GET
+
+alt fetched
+  Backend --> Form : proposal\nfromPdm(pdm), reset form
+  opt backup has unsaved changes
+    Backup --> Form : apply ProposalFormInput on top
+  end
+else fetch failed
+  Form --> User : "Something went wrong retrieving\nproposal with ID <prsl_id>"
+end
+
+... more input and saves ...
+
+== Submit ==
+
+User -> Form : Submit
+note over Form
+  handleSubmit validates every field
+  with ProposalSubmitSchema
+end note
+
+alt issues
+  Form --> User : validation issue summary (pop-up)
+else valid
+  Form -> Backend : toPdm(values) + submitted_by, PUT
+  note over Backend
+    For now, backend sets proposal status
+    based on submitted_by field; a future
+    feature will likely add a separate
+    submit endpoint
+  end note
+  Form -> Backup : clear backup
+end
+
+@enduml

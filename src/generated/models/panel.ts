@@ -40,7 +40,7 @@ export interface Panel {
      * @type {string}
      * @memberof Panel
      */
-    'panel_id': string;
+    'panel_id'?: string | null;
     /**
      * 
      * @type {string}

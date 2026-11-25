@@ -1,53 +1,29 @@
+import { buildCalibrationStrategy } from '@/models/proposals/calibrationOperations';
+import type { ProposalFormAccess, ProposalType } from '@/models/proposals/proposal';
 import {
-  CHANNELS_OUT_DEFAULT,
-  CHANNELS_OUT_MAX_COMBINED,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  IMAGE_SIZE_DEFAULT,
-  IMAGE_SIZE_UNIT_DEFAULT,
-  IMAGE_WEIGHTING_DEFAULT,
-  PIXEL_SIZE_DEFAULT,
-  PIXEL_SIZE_UNIT_DEFAULT,
-  POLARISATIONS_DEFAULT,
-  PULSAR_TIMING_VALUE,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  ROBUST_DEFAULT,
-  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
-  STATUS_ERROR,
-  TAPER_DEFAULT,
+  PROPOSAL_TYPE,
+  SENSITIVITY_STATE,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
+import { generateDataProductId, generateObsSetId, getDefaultObservationLowAA2 } from '../helpers';
+import { CalibrationStrategy } from '../types/calibrationStrategy';
 import {
-  generateCalibrationId,
-  generateDataProductId,
-  generateObsSetId,
-  getDefaultObservationLowAA2
-} from '../helpers';
-import { CalibrationStrategy, Calibrator } from '../types/calibrationStrategy';
-import {
-  DataProductSDPNew,
-  SDPFilterbankPSTData,
-  SDPFlowthroughPSTData,
-  SDPImageContinuumData,
-  SDPSpectralData,
-  SDPTimingPSTData,
-  SDPVisibilitiesContinuumData
-} from '../types/dataProduct';
+  DATA_PRODUCT_KIND,
+  DataProductInput,
+  DataProductKind,
+  newDataProduct,
+  pstDataProductKind,
+  STEPPED_FIELD,
+  steppedFromPdm
+} from '@/models/proposals/dataProducts';
 import Observation from '../types/observation';
 import Target from '../types/target';
 import Proposal from '@utils/types/proposal.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
-
-interface DefaultsResults {
-  success: boolean;
-  error?: string;
-}
 
 const RECOGNISED_OBSERVATION_MODES = [TYPE_CONTINUUM, TYPE_ZOOM, TYPE_PST, TYPE_CONTINUUM_SPECTRAL];
 
@@ -76,199 +52,114 @@ export const newObservationForMode = (
   };
 };
 
-export const newCalibrationStrategy = async (
-  observationId: string,
-  authAxiosClient: AxiosAuthClient,
-  observation: Observation,
-  target: Target,
-  notes: string | null = null
-): Promise<CalibrationStrategy> => {
-  let calibrators: Calibrator[] | null = null;
-
-  if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value) {
-    const response = await GetCalibratorList(authAxiosClient, observation, target);
-    if (typeof response !== 'string') {
-      calibrators = response;
-    }
-  }
-
-  return {
-    observatoryDefined: true,
-    id: generateCalibrationId(),
-    observationIdRef: observationId,
-    calibrators,
-    notes
-  };
-};
-
-/**
- * Fields shared by every imaging data product default; each mode overrides only what differs.
- */
-const DEFAULT_IMAGING_DATA = {
-  imageSizeValue: IMAGE_SIZE_DEFAULT,
-  imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
-  pixelSizeValue: PIXEL_SIZE_DEFAULT,
-  pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
-  weighting: IMAGE_WEIGHTING_DEFAULT,
-  polarisations: POLARISATIONS_DEFAULT,
-  channelsOut: CHANNELS_OUT_DEFAULT,
-  robust: ROBUST_DEFAULT,
-  taperValue: TAPER_DEFAULT,
-  continuumSubtraction: SET_CONTINUUM_SUBSTRACTION_DEFAULT
-};
-
-/**
- * Builds the default data product for the given observation's mode.
- */
-export const SDPData = (
-  observation: Observation
-):
-  | SDPImageContinuumData
-  | SDPVisibilitiesContinuumData
-  | SDPSpectralData
-  | SDPFilterbankPSTData
-  | SDPTimingPSTData
-  | SDPFlowthroughPSTData => {
+/** The kind of the observation's main data product, the one its link points at. */
+export const mainDataProductKind = (observation: Observation): DataProductKind => {
   switch (observation.type) {
     case TYPE_PST:
-      return {
-        dataProductType: PULSAR_TIMING_VALUE
-      } as SDPFlowthroughPSTData;
+      return pstDataProductKind(observation.pstMode);
     case TYPE_ZOOM:
-      return { ...DEFAULT_IMAGING_DATA } as SDPSpectralData;
+      return DATA_PRODUCT_KIND.SPECTRAL_IMAGE;
     case TYPE_CONTINUUM_SPECTRAL:
-      return {
-        ...DEFAULT_IMAGING_DATA,
-        channelsOut: CHANNELS_OUT_MAX_COMBINED
-      } as SDPSpectralData;
+      return DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE;
     default:
-      return {
-        ...DEFAULT_IMAGING_DATA,
-        dataProductType: DP_TYPE_IMAGES
-      } as SDPImageContinuumData;
+      return DATA_PRODUCT_KIND.CONTINUUM_IMAGE;
   }
 };
 
 /**
- * Builds the hidden companion data product (written to the proposal but not displayed) for the
- * given observation's mode, or null for modes that don't have one.
+ * A spectral image's output channels are the observation's zoom channels, which the page shows and
+ * the backend is sent. Other data products are left as they are.
  */
-export const HiddenSDPData = (
+export const withZoomChannels = (
+  dataProduct: DataProductInput,
   observation: Observation
-):
-  | SDPImageContinuumData
-  | SDPVisibilitiesContinuumData
-  | SDPSpectralData
-  | SDPFilterbankPSTData
-  | SDPTimingPSTData
-  | SDPFlowthroughPSTData
-  | null => {
-  switch (observation.type) {
-    case TYPE_PST:
-      return null;
-    case TYPE_ZOOM:
-      return {
-        dataProductType: DP_TYPE_VISIBLE,
-        timeAveraging: 4,
-        frequencyAveraging: 1
-      } as SDPVisibilitiesContinuumData;
-    case TYPE_CONTINUUM:
-      return {
-        dataProductType: DP_TYPE_VISIBLE,
-        timeAveraging: 4,
-        frequencyAveraging: 4
-      } as SDPVisibilitiesContinuumData;
-    case TYPE_CONTINUUM_SPECTRAL:
-      return {
-        dataProductType: DP_TYPE_VISIBLE,
-        timeAveraging: 4,
-        frequencyAveraging: 1
-      } as SDPVisibilitiesContinuumData;
-    default:
-      return null;
-  }
-};
+): DataProductInput =>
+  dataProduct.kind === DATA_PRODUCT_KIND.SPECTRAL_IMAGE && observation.zoomChannels !== undefined
+    ? { ...dataProduct, channelsOut: observation.zoomChannels }
+    : dataProduct;
 
-export const newDataProductsForMode = (observation: Observation): DataProductSDPNew[] => {
-  const data = SDPData(observation);
-  const newDSP: DataProductSDPNew = {
+/**
+ * The default data products for the observation's mode: the main one, which the link points at,
+ * and for imaging modes a hidden visibilities companion (saved but not displayed).
+ */
+export const newDataProductsForMode = (observation: Observation): DataProductInput[] => {
+  const main = withZoomChannels(
+    newDataProduct(mainDataProductKind(observation), observation.id),
+    observation
+  );
+  if (observation.type === TYPE_PST) {
+    return [main];
+  }
+  const companion: DataProductInput = {
     id: generateDataProductId(),
     observationId: observation.id,
-    selected: true,
-    data
+    kind: DATA_PRODUCT_KIND.CONTINUUM_VISIBILITIES,
+    timeAveragingS: steppedFromPdm(4, STEPPED_FIELD.TIME_AVERAGING_S),
+    frequencyAveragingKhz: steppedFromPdm(
+      observation.type === TYPE_CONTINUUM ? 4 : 1,
+      STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ
+    )
   };
-
-  const hiddenData = HiddenSDPData(observation);
-  if (hiddenData) {
-    const hiddenDataProduct = {
-      id: generateDataProductId(),
-      observationId: observation.id,
-      data: hiddenData
-    };
-    return [newDSP, hiddenDataProduct];
-  }
-
-  return [newDSP];
+  return [main, companion];
 };
 
 /**
- * Builds the sensitivity results and calibrators linking a target to an observation
- * and its main data product, or returns the sensitivity calculator error on a failed
- * sensitivity calculation.
+ * Builds the link of a target to an observation and its main data product, with the calibrators
+ * for them. The link is marked partial: the sensitivity service calculates its results.
  */
 const buildTargetLink = async (
   target: Target,
   observation: Observation,
-  mainDataProduct: DataProductSDPNew,
-  getProposal: Function,
+  mainDataProduct: DataProductInput,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient
-): Promise<
-  | {
-      success: true;
-      targetObservation: TargetObservation;
-      calibrationStrategy: CalibrationStrategy;
-    }
-  | { success: false; error?: string }
-> => {
-  const sensCalcResult = await getSensCalc(observation, target, mainDataProduct);
-
-  if (sensCalcResult?.statusGUI == STATUS_ERROR) {
-    return { success: false, error: sensCalcResult.error };
-  }
-
+): Promise<{ targetObservation: TargetObservation; calibrationStrategy: CalibrationStrategy }> => {
   const targetObservation: TargetObservation = {
     targetId: target?.id,
     observationId: observation.id,
     dataProductsSDPId: mainDataProduct.id,
-    sensCalc: sensCalcResult
+    sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
   };
 
-  const existingNotes = getProposal()?.calibrationStrategy?.[0]?.notes ?? null;
+  const existingNotes = form.getValues('calibrationStrategy')?.[0]?.notes ?? null;
 
-  const calibrationStrategy = await newCalibrationStrategy(
-    observation.id,
-    authAxiosClient,
+  const calibrationStrategy = await buildCalibrationStrategy(authAxiosClient, {
+    observationId: observation.id,
     observation,
     target,
-    existingNotes
-  );
+    notes: existingNotes
+  });
 
-  return { success: true, targetObservation, calibrationStrategy };
+  return { targetObservation, calibrationStrategy };
+};
+
+/**
+ * Writes a target link to the form, which owns the targets, links and calibration.
+ */
+const setTargetLink = (
+  form: ProposalFormAccess,
+  target: Target,
+  link: { targetObservation: TargetObservation; calibrationStrategy: CalibrationStrategy }
+) => {
+  form.setValue('targets', [target]);
+  form.setValue('targetObservation', [link.targetObservation]);
+  form.setValue('calibrationStrategy', [link.calibrationStrategy]);
 };
 
 /**
  * Replaces the observation and data products of a proposal based on given mode,
- * and links them to the target with new sensitivity results and calibration.
- * Used when the observing mode changes.
+ * and links them to the target with a new calibration. Used when the observing mode changes.
+ * The sensitivity service calculates the new link's results.
  */
 export async function regenerateForMode(
   target: Target,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient,
   observationMode?: string,
   maxZoomChannels?: number
-): Promise<DefaultsResults> {
+): Promise<void> {
   const mode = observationMode ?? getProposal().observations?.[0]?.type ?? TYPE_CONTINUUM;
   const newObservation = newObservationForMode(mode, maxZoomChannels);
   const newDataProducts = newDataProductsForMode(newObservation);
@@ -276,91 +167,102 @@ export async function regenerateForMode(
     target,
     newObservation,
     newDataProducts[0],
-    getProposal,
+    form,
     authAxiosClient
   );
 
-  if (!link.success) {
-    return { success: false, error: link.error };
-  }
-
-  setProposal({
-    ...getProposal(),
-    targets: [target],
-    observations: [newObservation],
-    dataProductSDP: newDataProducts,
-    targetObservation: [link.targetObservation],
-    calibrationStrategy: [link.calibrationStrategy]
-  });
-
-  return { success: true };
+  setTargetLink(form, target, link);
+  form.setValue('dataProducts', newDataProducts);
+  setProposal({ ...getProposal(), observations: [newObservation] });
 }
 
 /**
  * Links a target to the existing observation and data products of a proposal in a cycle
- * that allows only one target and observation (autoLink), adding the sensitivity results
- * and calibration for it. A default continuum observation is created if there is none yet.
+ * that allows only one target and observation (autoLink), adding the calibration for it. The
+ * sensitivity service calculates the link's results. A default continuum observation is created
+ * if there is none yet.
  */
 export async function linkTarget(
   target: Target,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient
-): Promise<DefaultsResults> {
+): Promise<void> {
   const proposal: Proposal = getProposal();
   const observation = proposal.observations?.[0] ?? newObservationForMode(TYPE_CONTINUUM);
-  const existingDataProducts = (proposal.dataProductSDP ?? []).filter(
-    (dp) => dp.observationId === observation.id
-  );
-  const newDataProducts = existingDataProducts.length ? [] : newDataProductsForMode(observation);
-  const mainDataProduct =
-    existingDataProducts.find((dp) => dp.selected) ?? existingDataProducts[0] ?? newDataProducts[0];
+  const dataProducts = form.getValues('dataProducts');
+  const observationDataProducts = dataProducts.filter((dp) => dp.observationId === observation.id);
+  const newDataProducts = observationDataProducts.length ? [] : newDataProductsForMode(observation);
+  // The main data product comes first; the others are hidden companions
+  const mainDataProduct = observationDataProducts[0] ?? newDataProducts[0];
 
-  const link = await buildTargetLink(
-    target,
-    observation,
-    mainDataProduct,
-    getProposal,
-    authAxiosClient
-  );
+  const link = await buildTargetLink(target, observation, mainDataProduct, form, authAxiosClient);
 
-  if (!link.success) {
-    return { success: false, error: link.error };
-  }
-
-  setProposal({
-    ...getProposal(),
-    targets: [target],
-    observations: [observation],
-    dataProductSDP: [...(getProposal().dataProductSDP ?? []), ...newDataProducts],
-    targetObservation: [link.targetObservation],
-    calibrationStrategy: [link.calibrationStrategy]
-  });
-
-  return { success: true };
+  setTargetLink(form, target, link);
+  form.setValue('dataProducts', [...form.getValues('dataProducts'), ...newDataProducts]);
+  setProposal({ ...getProposal(), observations: [observation] });
 }
+
+/**
+ * An SV proposal loaded with a target but no link gets its observation's default data products
+ * back, linked to the target. This happens when its main data product was invalid when it was
+ * last saved, so it and its link were left out. The calibration belongs to the observation, so it
+ * is kept. The sensitivity service calculates the new link's results.
+ */
+export const relinkSvTarget = (values: ProposalType, observations: Observation[]): ProposalType => {
+  const [target] = values.targets;
+  if (
+    values.proposalType !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
+    observations.length !== 1 ||
+    !target ||
+    values.targetObservation.length > 0
+  ) {
+    return values;
+  }
+  const [observation] = observations;
+  // Any data product left from the save is replaced too, with the full default set
+  const dataProducts = newDataProductsForMode(observation);
+  return {
+    ...values,
+    dataProducts: [
+      ...values.dataProducts.filter((dp) => dp.observationId !== observation.id),
+      ...dataProducts
+    ],
+    targetObservation: [
+      {
+        targetId: target.id,
+        observationId: observation.id,
+        dataProductsSDPId: dataProducts[0].id,
+        sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
+      }
+    ]
+  };
+};
 
 /**
  * Sets the observing mode of a proposal with a single observation (e.g. SV).
  *
- * With a target, the observation, data products, results and calibration are all regenerated for
+ * With a target, the observation, data products, link and calibration are all regenerated for
  * the new mode via regenerateForMode. Without one, only a default observation and data products
- * for the mode are created, as results and calibration need a target; linkTarget adds these once
+ * for the mode are created, as the link and calibration need a target; linkTarget adds these once
  * a target is added.
  */
 export async function setObservingMode(
   observationMode: string,
   getProposal: Function,
   setProposal: Function,
+  form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient,
   maxZoomChannels?: number
-): Promise<DefaultsResults> {
-  const target = getProposal().targets?.[0];
+): Promise<void> {
+  const target = form.getValues('targets')?.[0] as Target | undefined;
   if (target) {
     return regenerateForMode(
       target,
       getProposal,
       setProposal,
+      form,
       authAxiosClient,
       observationMode,
       maxZoomChannels
@@ -368,10 +270,6 @@ export async function setObservingMode(
   }
 
   const newObservation = newObservationForMode(observationMode, maxZoomChannels);
-  setProposal({
-    ...getProposal(),
-    observations: [newObservation],
-    dataProductSDP: newDataProductsForMode(newObservation)
-  });
-  return { success: true };
+  form.setValue('dataProducts', newDataProductsForMode(newObservation));
+  setProposal({ ...getProposal(), observations: [newObservation] });
 }

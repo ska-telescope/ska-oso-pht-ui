@@ -49,8 +49,6 @@ describe('<ConflictConfirmation />', () => {
           targetObservation: undefined,
           technicalPDF: null,
           technicalLoadStatus: undefined,
-          dataProductSDP: undefined,
-          dataProductSRC: undefined,
           pipeline: undefined,
           calibrationStrategy: []
         }}

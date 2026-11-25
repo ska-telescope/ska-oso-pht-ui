@@ -2,6 +2,14 @@ import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid';
 import { storageObject } from '@utils/storage/store';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import { getFormCalibration, getFormLinks, getFormTargets } from '@/models/proposals/formSlices';
+import {
+  buildCalibrationStrategy,
+  calibrationNotesFor,
+  withCalibrationFor
+} from '@/models/proposals/calibrationOperations';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import {
   AlertColorTypes,
@@ -13,52 +21,34 @@ import { getColors } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import Observation from '../../utils/types/observation';
-import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
+import { getSubmitPageStatuses } from '@/models/proposals/submit';
 import {
   SA_CUSTOM,
   PAGE_CALIBRATION,
   PAGE_LINKING,
   REFERENCE_COORDINATE_TYPE_ICRS,
+  SENSITIVITY_STATE,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
-  STATUS_PARTIAL,
-  SUPPLIED_TYPE_INTEGRATION,
-  NOTIFICATION_DELAY_IN_SECONDS,
-  REFERENCE_COORDINATE_TYPE_SSO
+  STATUS_PARTIAL
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
-import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
+import SensCalcModalMultiple, {
+  SensCalcRow
+} from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
-import { isNonGaussianBeamWeighting } from '@/utils/helpersSensCalc';
-import { SensCalcResults } from '@/utils/types/sensCalcResults';
-import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
-import { generateCalibrationId } from '@/utils/helpers';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
+import { DataProductInput } from '@/models/proposals/dataProducts';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
-import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
-
-export const isNonGaussianSensitivityCase = ({
-  subarray,
-  weighting,
-  robust
-}: {
-  subarray?: string;
-  weighting?: number | string | null;
-  robust?: number | string | null;
-}) => {
-  return subarray !== SA_CUSTOM && isNonGaussianBeamWeighting(weighting, robust);
-};
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
@@ -86,7 +76,15 @@ export default function LinkingPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const { notifyError } = useNotify();
+  // The form owns the targets, links and calibration; watching them re-renders the page on change
+  const form = useFormContext<ProposalType>();
+  const watchedSlices = useWatch({
+    control: form.control,
+    name: ['targets', 'targetObservation', 'calibrationStrategy']
+  });
+  const getTargets = () => getFormTargets(form);
+  const getLinks = () => getFormLinks(form);
+  const getCalibration = () => getFormCalibration(form);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number, valueCalibration: number) => {
@@ -100,25 +98,20 @@ export default function LinkingPage() {
     updateAppContent1(temp);
   };
 
-  const isIntegrationTime = (ob: { supplied: { type: number } }) =>
-    ob?.supplied?.type === SUPPLIED_TYPE_INTEGRATION;
-
   const getLevel = (obs: any) => {
     let result = STATUS_INITIAL;
-    filteredByDataProduct(obs.id)?.forEach((rec) => {
-      if (typeof rec !== 'undefined') {
-        switch (rec.statusGUI) {
-          case STATUS_ERROR:
-            result = STATUS_ERROR;
-            return;
-          case STATUS_PARTIAL:
-            result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
-            return;
-          default:
-            if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
-              result = STATUS_OK;
-            }
-        }
+    filteredByDataProduct(obs.id).forEach(({ sensitivity }) => {
+      switch (sensitivity.state) {
+        case SENSITIVITY_STATE.FAILED:
+          result = STATUS_ERROR;
+          return;
+        case SENSITIVITY_STATE.CALCULATING:
+          result = result !== STATUS_ERROR ? STATUS_PARTIAL : STATUS_ERROR;
+          return;
+        default:
+          if (result !== STATUS_PARTIAL && result !== STATUS_ERROR) {
+            result = STATUS_OK;
+          }
       }
     });
     return result;
@@ -126,9 +119,9 @@ export default function LinkingPage() {
 
   const getError = (obs: Observation) => {
     let result = '';
-    filteredByDataProduct(obs.id)?.forEach((rec) => {
-      if (typeof rec !== 'undefined' && rec.statusGUI === STATUS_ERROR) {
-        result = rec.error ?? '';
+    filteredByDataProduct(obs.id).forEach(({ sensitivity }) => {
+      if (sensitivity.state === SENSITIVITY_STATE.FAILED) {
+        result = sensitivity.error;
       }
     });
     return result;
@@ -138,87 +131,62 @@ export default function LinkingPage() {
     targetObservations: TargetObservation[],
     calibration: CalibrationStrategy[]
   ) => {
-    const proposal = getProposal();
-
-    const update = {
-      ...proposal,
-      targetObservation: targetObservations,
-      calibrationStrategy: [...calibration]
-    };
-
-    setProposal(update);
+    form.setValue('targetObservation', targetObservations);
+    form.setValue('calibrationStrategy', [...calibration]);
   };
 
+  // Other observations keep their calibration; only this observation's strategy is replaced
   const addTargetObservationAndCalibrationStorage = (
     targetObs: TargetObservation,
     calibration: CalibrationStrategy
   ) => {
     setTargetObservationAndCalibrationStorage(
-      [...(getProposal().targetObservation ?? []), targetObs],
-      [calibration]
+      [...getLinks(), targetObs],
+      withCalibrationFor(getCalibration(), calibration)
     );
   };
 
-  const updateTargetObservationStorage = async (
-    target: Target,
-    observationId: string,
-    dataProductsSDPId: string,
-    results?: SensCalcResults
-  ) => {
-    const temp = {
-      observationId: observationId,
-      dataProductsSDPId: dataProductsSDPId,
-      targetId: target.id,
-      sensCalc: results
-    };
-    const base = getProposal().targetObservation?.filter(
-      (e) => !(e.targetId === target.id && e.observationId === observationId)
+  /** A target still linked to the observation, if any. */
+  const linkedTargetFor = (observationId: string) =>
+    getTargets().find((target) =>
+      getLinks().some((link) => link.observationId === observationId && link.targetId === target.id)
     );
-    base?.push(temp);
 
-    const observation = getProposal().observations?.find((o) => o.id === observationId);
+  // The observation's calibration goes with its last link; other observations keep theirs. While
+  // another target is still linked, the calibrators are looked up again for it, as they may have
+  // been chosen for the target just unlinked.
+  const deleteObservationTargetAndCalibration = async (row: any) => {
+    const observationId = currRec?.id2;
+    if (!observationId) return;
+    form.setValue(
+      'targetObservation',
+      getLinks().filter(
+        (link) => !(link.observationId === observationId && link.targetId === row.id)
+      )
+    );
 
-    let calibrators: Calibrator[] | null = null;
-    if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value && observation) {
-      const response = await GetCalibratorList(authAxiosClient, observation, target);
-      if (typeof response !== 'string') {
-        calibrators = response;
-      }
-    }
-
-    const existingNotes =
-      getProposal().calibrationStrategy?.find((cal) => cal.observationIdRef === observationId)
-        ?.notes ?? null;
-
-    const calibration: CalibrationStrategy = {
-      observatoryDefined: true,
-      id: generateCalibrationId(),
-      observationIdRef: observationId,
-      calibrators,
-      notes: existingNotes
-    };
-
-    setTargetObservationAndCalibrationStorage(base ?? [], [calibration]);
-  };
-
-  const deleteObservationTargetAndCalibration = (row: any) => {
-    function filterRecords(id: string) {
-      return getProposal().targetObservation?.filter(
-        (item) => !(item.observationId === currRec?.id2 && item.targetId === id)
+    const remainingTarget = linkedTargetFor(observationId);
+    if (!remainingTarget) {
+      form.setValue(
+        'calibrationStrategy',
+        getCalibration().filter((item) => item.observationIdRef !== observationId)
       );
+      return;
     }
-    function filterRecordsCalibration(id: number) {
-      return getProposal().calibrationStrategy?.filter(
-        (item) => item.observationIdRef === id.toString()
-      );
+
+    const calibration = await buildCalibrationStrategy(authAxiosClient, {
+      observationId,
+      observation: getProposal().observations?.find((o) => o.id === observationId),
+      target: remainingTarget,
+      notes: calibrationNotesFor(getCalibration(), observationId)
+    });
+    // The lookup takes time, so the strategy is only replaced if the observation is still linked
+    if (linkedTargetFor(observationId)) {
+      form.setValue('calibrationStrategy', withCalibrationFor(getCalibration(), calibration));
     }
-    setTargetObservationAndCalibrationStorage(
-      filterRecords(row.id) ?? [],
-      filterRecordsCalibration(row.id) ?? []
-    );
   };
 
-  const popElementO = (dp: DataProductSDPNew, obs: Observation) => {
+  const popElementO = (dp: DataProductInput, obs: Observation) => {
     return {
       id: dp.id,
       id2: obs.id,
@@ -250,34 +218,21 @@ export default function LinkingPage() {
     };
   };
 
-  const getSensCalcData = async (
-    observation: Observation,
-    target: Target,
-    dataProductSDP: DataProductSDPNew
-  ) => {
-    const response = await getSensCalc(observation, target, dataProductSDP);
-    if (response?.error) {
-      const errMsg = response.error;
-      notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
-    }
-
-    await updateTargetObservationStorage(target, observation.id, dataProductSDP.id, response);
-  };
-
   const closeDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };
 
   const deleteConfirmed = () => {
     const obs1 = getProposal().observations?.filter((e) => e.id !== currRec?.id2) ?? [];
-    const obs2 =
-      getProposal().targetObservation?.filter((e) => e.observationId !== currRec?.id2) ?? [];
     const obs3 =
       getProposal().groupObservations?.filter((e) => e.observationId !== currRec?.id2) ?? [];
+    form.setValue(
+      'targetObservation',
+      getLinks().filter((e) => e.observationId !== currRec?.id2)
+    );
     setProposal({
       ...getProposal(),
       observations: obs1,
-      targetObservation: obs2,
       groupObservations: obs3
     });
     setElementsO(elementsO.filter((e) => e.id !== currRec?.id));
@@ -291,59 +246,27 @@ export default function LinkingPage() {
       observationId: currRec.id2,
       targetId: target.id,
       dataProductsSDPId: currRec.id ?? '',
-      sensCalc: {
-        statusGUI: STATUS_PARTIAL,
-        error: ''
-      }
+      sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     };
 
-    const observation = getProposal().observations?.find((o) => o.id === currRec.id2);
-
-    let calibrators: Calibrator[] | null = null;
-    if (target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value && observation) {
-      const response = await GetCalibratorList(authAxiosClient, observation, target);
-      if (typeof response !== 'string') {
-        calibrators = response;
-      }
-    }
-
-    const calibration: CalibrationStrategy = {
-      observatoryDefined: true,
-      id: generateCalibrationId(),
-      observationIdRef: currRec.id2,
-      calibrators,
-      notes: null
-    };
+    const calibration = await buildCalibrationStrategy(authAxiosClient, {
+      observationId: currRec.id2,
+      observation: getProposal().observations?.find((o) => o.id === currRec.id2),
+      target
+    });
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 
   const isTargetSelected = (targetId: string) =>
-    (getProposal().targetObservation ?? []).filter(
+    (getLinks() ?? []).filter(
       (entry) => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
     ).length > 0;
 
   const targetSelectedToggle = async (el: ElementT) => {
     if (isTargetSelected(el.id)) {
-      deleteObservationTargetAndCalibration(el.target);
+      await deleteObservationTargetAndCalibration(el.target);
     } else {
       await addObservationTargetAndCalibration(el.target);
-    }
-  };
-
-  const checkPartials = () => {
-    const proposal = getProposal();
-    const results = proposal?.targetObservation?.find(
-      (p) => p.sensCalc?.statusGUI === STATUS_PARTIAL
-    );
-    if (results) {
-      const target = proposal.targets?.find((e) => e.id === results.targetId);
-      const observation = proposal.observations?.find((e) => e.id === results.observationId);
-      const dataProductSDP = proposal.dataProductSDP?.find(
-        (d) => d.id === results.dataProductsSDPId
-      );
-      if (observation && target && dataProductSDP) {
-        getSensCalcData(observation, target, dataProductSDP);
-      }
     }
   };
 
@@ -351,56 +274,34 @@ export default function LinkingPage() {
     const proposal = getProposal();
     setValidateToggle(!validateToggle);
     setElementsO(
-      (
-        proposal.dataProductSDP?.map((rec) => {
+      form
+        .getValues('dataProducts')
+        .map((rec) => {
           const obs = proposal.observations?.find((o) => o.id === rec.observationId);
           return obs ? popElementO(rec, obs) : null;
-        }) ?? []
-      ).filter((item): item is ReturnType<typeof popElementO> => item !== null)
+        })
+        .filter((item): item is ReturnType<typeof popElementO> => item !== null)
     );
-    setElementsT(proposal.targets?.map((rec) => popElementT(rec)) ?? []);
+    setElementsT(getTargets().map((rec) => popElementT(rec)));
   }, []);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    checkPartials();
-  }, [getProposal()]);
+  }, [getProposal(), ...watchedSlices]);
 
   React.useEffect(() => {
-    setTheProposalState(validateLinkingPage(getProposal()), validateCalibrationPage(getProposal()));
+    const statuses = getSubmitPageStatuses(form.getValues());
+    setTheProposalState(statuses.linking, statuses.calibration);
   }, [validateToggle]);
-
-  // NOTE : We used to have Groups in the list, so keep this until we are sure we don't need it.
-  // const observationGroupIds = (id: string) => {
-  //   if (
-  //     getProposal()?.groupObservations &&
-  //     getProposal()?.groupObservations?.some(e => e.observationId === id)
-  //   ) {
-  //     const group: GroupObservation[] =
-  //       getProposal().groupObservations?.filter(e => e.observationId === id) ?? [];
-  //     return group[0]?.groupId;
-  //   }
-  //   return '';
-  // };
 
   const hasTargets = () => (elementsT?.length ?? 0) > 0;
 
   const hasObservations = () => elementsO?.length > 0;
 
   const getTargetObservationForTargetGrid = (targetId: string): TargetObservation | undefined =>
-    getProposal()?.targetObservation?.find(
-      (p) => p.observationId === currRec?.id2 && p.targetId === targetId
-    );
+    getLinks()?.find((p) => p.observationId === currRec?.id2 && p.targetId === targetId);
 
   const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
-  const isNatural = () => {
-    const selectedDp = currRec?.dp ?? elementsO.find((e) => e.id2 === currRec?.id2)?.dp;
-    return isNonGaussianSensitivityCase({
-      subarray: currRec?.subarray ?? currRec?.rec?.subarray,
-      weighting: selectedDp?.data?.weighting,
-      robust: selectedDp?.data?.robust
-    });
-  };
 
   const getSensCalcSingle = (id: string, field: string) => {
     return (
@@ -409,7 +310,6 @@ export default function LinkingPage() {
         show={isTargetSelected(id)}
         field={field}
         isCustom={isCustom()}
-        isNatural={isNatural()}
       />
     );
   };
@@ -525,7 +425,6 @@ export default function LinkingPage() {
             <>
               {
                 <StatusIconDisplay
-                  ariaDescription=" "
                   ariaTitle={t('sensCalc.' + getLevel(rec))}
                   level={getLevel(rec)}
                   onClick={() =>
@@ -613,28 +512,13 @@ export default function LinkingPage() {
       {
         field: 'vel',
         renderHeader: () =>
-          currRec?.rec ? (
-            <>
-              {t(
-                isIntegrationTime(currRec?.rec as Observation)
-                  ? 'sensitivityCalculatorResults.weightedSensitivity'
-                  : 'sensitivityCalculatorResults.integrationTime'
-              )}
-            </>
-          ) : (
-            <></>
-          ),
+          currRec?.rec ? <>{t('sensitivityCalculatorResults.weightedSensitivity')}</> : <></>,
         sortable: false,
         flex: 2,
         minWidth: 170,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
-          return getSensCalcSingle(
-            e.row.id,
-            isIntegrationTime(currRec?.rec as Observation)
-              ? 'SensitivityWeighted'
-              : 'IntegrationTime'
-          );
+          return getSensCalcSingle(e.row.id, 'SensitivityWeighted');
         }
       },
       {
@@ -661,15 +545,19 @@ export default function LinkingPage() {
     else return [];
   };
 
-  const filteredByDataProduct = (id: string) => {
-    const results: SensCalcResults[] = [];
-    getProposal()?.targetObservation?.forEach((rec) => {
-      if (rec.dataProductsSDPId === id && rec.sensCalc != undefined) {
-        results.push(rec.sensCalc);
-      }
-    });
-    return results;
-  };
+  // The data product's links with results, named by their targets
+  const filteredByDataProduct = (id: string): SensCalcRow[] =>
+    getLinks().flatMap((link) =>
+      link.dataProductsSDPId === id && link.sensitivity
+        ? [
+            {
+              id: link.targetId,
+              title: getTargets().find((target) => target.id === link.targetId)?.name ?? '',
+              sensitivity: link.sensitivity
+            }
+          ]
+        : []
+    );
 
   return (
     <Shell page={PAGE}>
@@ -750,7 +638,6 @@ export default function LinkingPage() {
             level={getLevel(currRec?.rec)}
             levelError={getError(currRec?.rec)}
             isCustom={isCustom()}
-            isNatural={isNatural()}
           />
         )}
       </>

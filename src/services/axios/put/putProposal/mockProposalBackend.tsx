@@ -32,11 +32,7 @@ export const MockProposalBackend = {
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
-          dec_str: '00:00:00.0',
-          epoch: 2000,
-          parallax: undefined,
-          pm_ra: undefined,
-          pm_dec: undefined
+          dec_str: '00:00:00.0'
         },
         radial_velocity: {
           quantity: {
@@ -54,11 +50,7 @@ export const MockProposalBackend = {
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
-          dec_str: '+22:00:53.000',
-          epoch: 2000,
-          parallax: undefined,
-          pm_ra: undefined,
-          pm_dec: undefined
+          dec_str: '+22:00:53.000'
         },
         radial_velocity: {
           quantity: {
@@ -76,11 +68,7 @@ export const MockProposalBackend = {
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
-          dec_str: '-00:49:23.700',
-          epoch: 2000,
-          parallax: undefined,
-          pm_ra: undefined,
-          pm_dec: undefined
+          dec_str: '-00:49:23.700'
         },
         radial_velocity: {
           quantity: {
@@ -93,7 +81,6 @@ export const MockProposalBackend = {
         }
       }
     ],
-    data_product_src_nets: [],
     documents: [],
     observation_sets: [
       {
@@ -234,11 +221,7 @@ export const MockProposalBackendZoom = {
         reference_coordinate: {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
-          dec_str: '-00:49:23.700',
-          epoch: 2000,
-          parallax: undefined,
-          pm_ra: undefined,
-          pm_dec: undefined
+          dec_str: '-00:49:23.700'
         },
         radial_velocity: {
           quantity: {
@@ -292,10 +275,10 @@ export const MockProposalBackendZoom = {
         script_parameters: {
           variant: 'spectral image',
           kind: 'spectral',
-          channels_out: 1,
+          channels_out: 2,
           gaussian_taper: 1,
           polarisations: ['I'],
-          continuum_subtraction: undefined,
+          continuum_subtraction: false,
           image_size: {
             value: 100,
             unit: 'deg'
@@ -364,7 +347,6 @@ export const MockProposalBackendZoom = {
         }
       }
     ],
-    documents: [],
-    data_product_src_nets: []
+    documents: []
   }
 } as unknown as ProposalBackend;

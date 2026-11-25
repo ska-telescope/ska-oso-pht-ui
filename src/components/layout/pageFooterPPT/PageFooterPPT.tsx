@@ -1,4 +1,5 @@
 import React from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router';
 import { Grid, Paper } from '@mui/material';
@@ -22,6 +23,9 @@ import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+
+const createProposalSchema = getProposalSchema().pick({ title: true, proposalType: true });
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -36,6 +40,11 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdCycleId } = useOSDAccessors();
+  const { trigger, getValues } = useFormContext<ProposalType>();
+  const [title, proposalType] = useWatch<ProposalType, ['title', 'proposalType']>({
+    name: ['title', 'proposalType']
+  });
+  const canCreate = createProposalSchema.safeParse({ title, proposalType }).success;
 
   const proposal = application.content2 as Proposal;
 
@@ -45,6 +54,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   );
 
   const currPageNo = proposal?.id == null ? -1 : pageNo;
+
+  React.useEffect(() => {
+    if (currPageNo === -1) {
+      void trigger(['title', 'proposalType']);
+    }
+  }, [currPageNo, trigger]);
 
   const { prevPageNo, nextPageNo } = React.useMemo(() => {
     const idx = pages.findIndex((p) => p === currPageNo);
@@ -57,10 +72,20 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
+    // Only the slices a new proposal takes from the form; the rest come from the legacy defaults
+    const { title, proposalType, abstract, scienceCategory, investigators } = getValues();
     const response = await PostProposal(
       authClient,
       refreshAuthToken,
-      { ...proposal, cycle: osdCycleId ?? null },
+      {
+        ...proposal,
+        title,
+        abstract,
+        scienceCategory,
+        investigators,
+        proposalType: proposalType ?? undefined,
+        cycle: osdCycleId ?? null
+      },
       PROPOSAL_STATUS.DRAFT
     );
 
@@ -85,6 +110,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     }
   }, [
     proposal,
+    getValues,
     osdCycleId,
     authClient,
     refreshAuthToken,
@@ -187,7 +213,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         <Grid sx={{ pointerEvents: 'auto' }}>
           {showNextNav() && (
             <NextPageButton
-              disabled={buttonDisabled}
+              disabled={buttonDisabled || (currPageNo === -1 && !canCreate)}
               testId="nextButtonTestId"
               title={nextLabel()}
               page={currPageNo}

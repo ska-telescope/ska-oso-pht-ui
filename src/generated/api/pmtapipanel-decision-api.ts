@@ -39,10 +39,10 @@ export const PMTAPIPanelDecisionApiAxiosParamCreator = function (configuration?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost: async (panelDecision: PanelDecision, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost: async (panelDecision: PanelDecision, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'panelDecision' is not null or undefined
-            assertParamExists('createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost', 'panelDecision', panelDecision)
-            const localVarPath = `/oso/api/v16/pht/panel/decision/create`;
+            assertParamExists('createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost', 'panelDecision', panelDecision)
+            const localVarPath = `/oso/api/v17/pht/panel/decision/create`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -83,10 +83,10 @@ export const PMTAPIPanelDecisionApiAxiosParamCreator = function (configuration?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet: async (decisionId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet: async (decisionId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'decisionId' is not null or undefined
-            assertParamExists('getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet', 'decisionId', decisionId)
-            const localVarPath = `/oso/api/v16/pht/panel/decision/{decision_id}`
+            assertParamExists('getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet', 'decisionId', decisionId)
+            const localVarPath = `/oso/api/v17/pht/panel/decision/{decision_id}`
                 .replace(`{${"decision_id"}}`, encodeURIComponent(String(decisionId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -124,8 +124,8 @@ export const PMTAPIPanelDecisionApiAxiosParamCreator = function (configuration?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPanelDecisionsForUserOsoApiV16PhtPanelDecisionGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/panel/decision/`;
+        getPanelDecisionsForUserOsoApiV17PhtPanelDecisionGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/panel/decision/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -164,12 +164,12 @@ export const PMTAPIPanelDecisionApiAxiosParamCreator = function (configuration?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut: async (decisionId: string, panelDecision: PanelDecision, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut: async (decisionId: string, panelDecision: PanelDecision, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'decisionId' is not null or undefined
-            assertParamExists('updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut', 'decisionId', decisionId)
+            assertParamExists('updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut', 'decisionId', decisionId)
             // verify required parameter 'panelDecision' is not null or undefined
-            assertParamExists('updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut', 'panelDecision', panelDecision)
-            const localVarPath = `/oso/api/v16/pht/panel/decision/{decision_id}`
+            assertParamExists('updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut', 'panelDecision', panelDecision)
+            const localVarPath = `/oso/api/v17/pht/panel/decision/{decision_id}`
                 .replace(`{${"decision_id"}}`, encodeURIComponent(String(decisionId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -221,10 +221,10 @@ export const PMTAPIPanelDecisionApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost(panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost(panelDecision, xRequestID, options);
+        async createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost(panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost(panelDecision, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelDecisionApi.createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelDecisionApi.createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -235,10 +235,10 @@ export const PMTAPIPanelDecisionApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet(decisionId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelDecision>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet(decisionId, xRequestID, options);
+        async getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet(decisionId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelDecision>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet(decisionId, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelDecisionApi.getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelDecisionApi.getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -248,10 +248,10 @@ export const PMTAPIPanelDecisionApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getPanelDecisionsForUserOsoApiV16PhtPanelDecisionGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PanelDecision>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getPanelDecisionsForUserOsoApiV16PhtPanelDecisionGet(xRequestID, options);
+        async getPanelDecisionsForUserOsoApiV17PhtPanelDecisionGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PanelDecision>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPanelDecisionsForUserOsoApiV17PhtPanelDecisionGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelDecisionApi.getPanelDecisionsForUserOsoApiV16PhtPanelDecisionGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelDecisionApi.getPanelDecisionsForUserOsoApiV17PhtPanelDecisionGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -263,10 +263,10 @@ export const PMTAPIPanelDecisionApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut(decisionId: string, panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelDecision>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut(decisionId, panelDecision, xRequestID, options);
+        async updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut(decisionId: string, panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelDecision>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut(decisionId, panelDecision, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelDecisionApi.updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIPanelDecisionApi.updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -287,8 +287,8 @@ export const PMTAPIPanelDecisionApiFactory = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost(panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost(panelDecision, xRequestID, options).then((request) => request(axios, basePath));
+        createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost(panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost(panelDecision, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Retrieves a decision for a panel from the ODA based on the decision_id.  Returns:     PanelDecision: The created panel decision, validated against the schema.     This includes the metadata such as `created_by`, and `created_on`.
@@ -298,8 +298,8 @@ export const PMTAPIPanelDecisionApiFactory = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet(decisionId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PanelDecision> {
-            return localVarFp.getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet(decisionId, xRequestID, options).then((request) => request(axios, basePath));
+        getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet(decisionId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PanelDecision> {
+            return localVarFp.getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet(decisionId, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Retrieves the latest panel Decision for all proposals from the ODA, if available
@@ -308,8 +308,8 @@ export const PMTAPIPanelDecisionApiFactory = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPanelDecisionsForUserOsoApiV16PhtPanelDecisionGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<PanelDecision>> {
-            return localVarFp.getPanelDecisionsForUserOsoApiV16PhtPanelDecisionGet(xRequestID, options).then((request) => request(axios, basePath));
+        getPanelDecisionsForUserOsoApiV17PhtPanelDecisionGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<PanelDecision>> {
+            return localVarFp.getPanelDecisionsForUserOsoApiV17PhtPanelDecisionGet(xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Updates a decision in the ODA.
@@ -320,8 +320,8 @@ export const PMTAPIPanelDecisionApiFactory = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut(decisionId: string, panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PanelDecision> {
-            return localVarFp.updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut(decisionId, panelDecision, xRequestID, options).then((request) => request(axios, basePath));
+        updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut(decisionId: string, panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PanelDecision> {
+            return localVarFp.updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut(decisionId, panelDecision, xRequestID, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -342,8 +342,8 @@ export class PMTAPIPanelDecisionApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelDecisionApi
      */
-    public createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost(panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelDecisionApiFp(this.configuration).createPanelDecisionOsoApiV16PhtPanelDecisionCreatePost(panelDecision, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost(panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelDecisionApiFp(this.configuration).createPanelDecisionOsoApiV17PhtPanelDecisionCreatePost(panelDecision, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -355,8 +355,8 @@ export class PMTAPIPanelDecisionApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelDecisionApi
      */
-    public getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet(decisionId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelDecisionApiFp(this.configuration).getPanelDecisionOsoApiV16PhtPanelDecisionDecisionIdGet(decisionId, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet(decisionId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelDecisionApiFp(this.configuration).getPanelDecisionOsoApiV17PhtPanelDecisionDecisionIdGet(decisionId, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -367,8 +367,8 @@ export class PMTAPIPanelDecisionApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelDecisionApi
      */
-    public getPanelDecisionsForUserOsoApiV16PhtPanelDecisionGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelDecisionApiFp(this.configuration).getPanelDecisionsForUserOsoApiV16PhtPanelDecisionGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getPanelDecisionsForUserOsoApiV17PhtPanelDecisionGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelDecisionApiFp(this.configuration).getPanelDecisionsForUserOsoApiV17PhtPanelDecisionGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -381,8 +381,8 @@ export class PMTAPIPanelDecisionApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIPanelDecisionApi
      */
-    public updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut(decisionId: string, panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIPanelDecisionApiFp(this.configuration).updatePanelDecisionOsoApiV16PhtPanelDecisionDecisionIdPut(decisionId, panelDecision, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut(decisionId: string, panelDecision: PanelDecision, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIPanelDecisionApiFp(this.configuration).updatePanelDecisionOsoApiV17PhtPanelDecisionDecisionIdPut(decisionId, panelDecision, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

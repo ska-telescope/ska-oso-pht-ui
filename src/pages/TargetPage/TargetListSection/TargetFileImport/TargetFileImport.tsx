@@ -1,14 +1,16 @@
 import React from 'react';
 import { Grid, Typography } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
+import { useFormContext } from 'react-hook-form';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
-import { Proposal } from '../../../../utils/types/proposal';
+import { ProposalType } from '@/models/proposals/proposal';
 import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   UPLOAD_MAX_WIDTH_CSV,
-  NOTIFICATION_DELAY_IN_SECONDS
+  NOTIFICATION_DELAY_IN_SECONDS,
+  VELOCITY_DEFINITION,
+  VELOCITY_TYPE
 } from '../../../../utils/constants';
 import Target from '@/utils/types/target';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -24,17 +26,15 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
   const { t } = useScopedTranslation();
   const { notifyError, notifySuccess } = useNotify();
 
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const form = useFormContext<ProposalType>();
   const { setHelp } = useHelp();
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState(null);
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     setHelp('targetImport.help');
   }, []);
 
-  const AddTheTargetGalactic = (name: string, latitude: string, longitude: string) => {
+  const AddTheTargetGalactic = (name: string, latitude: string, longitude: string): Target => {
     const newTarget = {
       //Default values from AddTarget.tsx
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
@@ -42,9 +42,11 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
       name,
       b: Number(latitude),
       l: Number(longitude),
-      redshift: null,
+      redshift: '',
+      velType: VELOCITY_TYPE.VELOCITY,
       vel: '',
-      velUnit: '0'
+      velUnit: 0,
+      velocityDefinition: VELOCITY_DEFINITION.RADIO
     };
 
     return newTarget;
@@ -59,9 +61,10 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
       name,
       raStr: ra,
       redshift: '',
-      velType: 0,
+      velType: VELOCITY_TYPE.VELOCITY,
       vel: '',
-      velUnit: 0
+      velUnit: 0,
+      velocityDefinition: VELOCITY_DEFINITION.RADIO
     };
 
     return newTarget;
@@ -83,7 +86,7 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
           setUploadButtonStatus(FileUploadStatus.PENDING);
           try {
             let errorInRows = false;
-            let targets;
+            let targets: Target[];
             if (referenceCoordinateType === REFERENCE_COORDINATE_TYPE_ICRS.value) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
@@ -103,17 +106,7 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
                 throw t('uploadCsvBtn.uploadErrorGalacticNotValidMsg');
               targets = result.data.reduce(
                 (
-                  result: {
-                    //Default values from AddTarget.tsx
-                    kind: number;
-                    id: string;
-                    name: string;
-                    b: number;
-                    l: number;
-                    redshift: null;
-                    vel: string;
-                    velUnit: string;
-                  }[],
+                  result: Target[],
                   target: { name: string; latitude: string; longitude: string }
                 ) => {
                   if (target.name && target.latitude && target.longitude) {
@@ -128,10 +121,7 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
                 []
               );
             }
-            setProposal({
-              ...getProposal(),
-              targets: [...(getProposal()?.targets ?? []), ...targets]
-            });
+            form.setValue('targets', [...(form.getValues('targets') ?? []), ...targets]);
             if (errorInRows) throw t('uploadCsvBtn.uploadErrorPartialMsg');
             setUploadButtonStatus(FileUploadStatus.OK);
             notifySuccess(t('uploadCsvBtn.uploadSuccessMsg'), NOTIFICATION_DELAY_IN_SECONDS);
@@ -140,10 +130,10 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
             setUploadButtonStatus(FileUploadStatus.ERROR);
           }
         },
-        error: (message: string) => {
+        error: (error: Error) => {
           setUploadButtonStatus(FileUploadStatus.ERROR);
           notifyError(
-            t('uploadCsvBtn.uploadErrorUnknownParserMsg') + message,
+            t('uploadCsvBtn.uploadErrorUnknownParserMsg') + error,
             NOTIFICATION_DELAY_IN_SECONDS
           );
         }

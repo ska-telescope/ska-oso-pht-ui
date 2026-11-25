@@ -2,6 +2,14 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Box, Grid, Paper, Typography, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
+import { useFormContext } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import { getFormLinks, getFormTargets, getFormCalibration } from '@/models/proposals/formSlices';
+import {
+  buildCalibrationStrategy,
+  calibrationNotesFor,
+  withCalibrationFor
+} from '@/models/proposals/calibrationOperations';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
 import {
@@ -28,6 +36,7 @@ import {
   FREQUENCY_MHZ,
   FREQUENCY_GHZ,
   FOOTER_SPACER,
+  FLOW_THROUGH_VALUE,
   WRAPPER_HEIGHT,
   TYPE_ZOOM,
   TELESCOPE_LOW_NUM,
@@ -50,12 +59,10 @@ import {
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   INTEGRATION_TIME_UNITS,
-  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
-  REFERENCE_COORDINATE_TYPE_SSO
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
-  generateCalibrationId,
   generateObsSetId,
   getBandwidthZoom,
   timeConversion
@@ -92,29 +99,30 @@ import { useHelp } from '@/utils/help/useHelp';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
-import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
-import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
-import fetchSensCalcPatches, { applySensCalcPatches } from '@/utils/update/sensCalc/updateSensCalc';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import {
+  isImageDataProduct,
+  newDataProduct,
+  pstDataProductKind,
+  updateImageSizes
+} from '@/models/proposals/dataProducts';
+import { withZoomChannels } from '@/utils/autoLinking/AutoLinking';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
-import {
-  isDataProductRobustValid,
-  isSuppliedValueValid,
-  useIsFrequencyOutOfRange
-} from '@/utils/validation/validation';
+import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 import QuantityField from '@/components/fields/quantity/quantity';
-import { CalibrationStrategy, Calibrator } from '@utils/types/calibrationStrategy.tsx';
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
-const SENS_CALC_DEBOUNCE_MS = 500;
 
 interface ObservationEntryProps {
   data?: Observation;
 }
+
+export const resolvePstMode = (pstMode?: number | null): number =>
+  pstMode === undefined || pstMode === null || Number.isNaN(pstMode)
+    ? FLOW_THROUGH_VALUE
+    : Number(pstMode);
 
 export default function ObservationEntry({ data }: ObservationEntryProps) {
   const { t } = useScopedTranslation();
@@ -143,9 +151,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const latestProposalRef = React.useRef(getProposal());
-  const sensCalcDebounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const latestSensCalcRequestIdRef = React.useRef(0);
+  // Counts calibrator lookups, so only the latest one is applied
+  const latestCalibratorRequestIdRef = React.useRef(0);
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
@@ -185,85 +192,39 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
 
-  const persistProposal = (proposal: Proposal) => {
-    latestProposalRef.current = proposal;
-    setProposal(proposal);
-  };
+  // The form owns the targets, links and calibration; observations stay in the store
+  const form = useFormContext<ProposalType>();
+  const getLinks = () => getFormLinks(form);
 
-  const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
-    isSuppliedValueValid({
-      type: ob?.supplied?.type,
-      value: ob?.supplied?.value,
-      units: ob?.supplied?.units
-    }) && isDataProductRobustValid(dp);
-
-  const scheduleLocalSensCalcUpdate = (
-    ob: Observation,
-    dp: DataProductSDPNew,
-    delay = SENS_CALC_DEBOUNCE_MS
-  ) => {
-    if (sensCalcDebounceTimerRef.current) {
-      clearTimeout(sensCalcDebounceTimerRef.current);
+  /**
+   * Looks up the calibrators again for an observation's linked target, keeping the strategy's
+   * notes. A lookup that a newer one has overtaken is ignored.
+   */
+  const refreshCalibrators = async (ob: Observation) => {
+    const linkedTarget = getFormTargets(form).find((t) =>
+      getLinks().some((to) => to.observationId === ob.id && to.targetId === t.id)
+    );
+    if (!linkedTarget) {
+      return;
     }
-    const requestId = ++latestSensCalcRequestIdRef.current;
-
-    const applyUpdate = async () => {
-      sensCalcDebounceTimerRef.current = null;
-      const sensCalcPatches = await fetchSensCalcPatches(latestProposalRef.current, ob, dp);
-
-      if (requestId !== latestSensCalcRequestIdRef.current) {
-        return;
-      }
-
-      const targetObservation = applySensCalcPatches(
-        latestProposalRef.current.targetObservation,
-        sensCalcPatches
-      );
-
-      const linkedTarget = latestProposalRef.current.targets?.find((t) =>
-        targetObservation.some((to) => to.observationId === ob.id && to.targetId === t.id)
-      );
-
-      let calibrationStrategy = latestProposalRef.current.calibrationStrategy ?? [];
-      if (linkedTarget) {
-        let calibrators: Calibrator[] | null = null;
-        if (linkedTarget.kind !== REFERENCE_COORDINATE_TYPE_SSO.value) {
-          const response = await GetCalibratorList(authAxiosClient, ob, linkedTarget);
-          if (typeof response !== 'string') {
-            calibrators = response;
-          }
-        }
-
-        const existingNotes =
-          calibrationStrategy.find((cal) => cal.observationIdRef === ob.id)?.notes ?? null;
-
-        const updatedStrategy: CalibrationStrategy = {
-          observatoryDefined: true,
-          id: generateCalibrationId(),
-          observationIdRef: ob.id,
-          calibrators,
-          notes: existingNotes
-        };
-
-        calibrationStrategy = [
-          ...calibrationStrategy.filter((cal) => cal.observationIdRef !== ob.id),
-          updatedStrategy
-        ];
-      }
-
-      const mergedProposal = {
-        ...latestProposalRef.current,
-        targetObservation,
-        calibrationStrategy
-      };
-      persistProposal(mergedProposal);
-    };
-
-    if (delay > 0 && areSensCalcInputsValid(ob, dp)) {
-      sensCalcDebounceTimerRef.current = setTimeout(() => void applyUpdate(), delay);
-    } else {
-      void applyUpdate();
+    const requestId = ++latestCalibratorRequestIdRef.current;
+    const strategy = await buildCalibrationStrategy(authAxiosClient, {
+      observationId: ob.id,
+      observation: ob,
+      target: linkedTarget,
+      notes: calibrationNotesFor(getFormCalibration(form), ob.id)
+    });
+    if (requestId !== latestCalibratorRequestIdRef.current) {
+      return;
     }
+    // The lookup takes time, so the strategy is only applied if the same target is still linked
+    const stillLinked = getLinks().some(
+      (to) => to.observationId === ob.id && to.targetId === linkedTarget.id
+    );
+    if (!stillLinked) {
+      return;
+    }
+    form.setValue('calibrationStrategy', withCalibrationFor(getFormCalibration(form), strategy));
   };
 
   const observationIn = (ob: Observation) => {
@@ -310,7 +271,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
     setZoomChannels(ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW);
-    setPstMode(ob?.pstMode ?? PULSAR_TIMING_VALUE);
+    // A saved PST observation without a mode is flow-through (see resolvePstMode); pulsar timing
+    // stays the default for an observation that is switched to PST here
+    setPstMode(
+      ob?.type === TYPE_PST ? resolvePstMode(ob?.pstMode) : (ob?.pstMode ?? PULSAR_TIMING_VALUE)
+    );
   };
 
   // Storing sub-Hz precision doesn't reflect anything a real receiver can tune to, so round to
@@ -353,33 +318,92 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /*--------------------------------------------------*/
 
+  // A PST observation has one data product, of the kind its PST mode needs
+  const replacePstDataProduct = (observation: Observation) => {
+    const dataProducts = form.getValues('dataProducts');
+    const current = dataProducts.find((dp) => dp.observationId === observation.id);
+    if (!current) {
+      return;
+    }
+    const replacement = newDataProduct(pstDataProductKind(observation.pstMode), observation.id);
+    form.setValue('dataProducts', [
+      ...dataProducts.filter((dp) => dp.observationId !== observation.id),
+      { ...replacement, id: current.id }
+    ]);
+  };
+
+  // The image sizes follow the observation's central frequency
+  const resizeImageDataProducts = (observation: Observation) => {
+    const centralFrequencyMhz = frequencyConversion(
+      observation.centralFrequency,
+      observation.centralFrequencyUnits ?? FREQUENCY_MHZ,
+      FREQUENCY_MHZ
+    );
+    form.setValue(
+      'dataProducts',
+      form
+        .getValues('dataProducts')
+        .map((dp) =>
+          dp.observationId === observation.id && isImageDataProduct(dp)
+            ? updateImageSizes(dp, centralFrequencyMhz)
+            : dp
+        )
+    );
+  };
+
+  // A spectral image's output channels follow the observation's zoom channels
+  const setChannelsOutFromZoomChannels = (observation: Observation) =>
+    form.setValue(
+      'dataProducts',
+      form
+        .getValues('dataProducts')
+        .map((dp) => (dp.observationId === observation.id ? withZoomChannels(dp, observation) : dp))
+    );
+
   const updateObservationOnProposal = () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
 
     const oldObservations = proposal.observations ?? [];
-    const oldDataProducts = proposal.dataProductSDP ?? [];
-    const linkedDataProductId = proposal.targetObservation?.find(
-      (to) => to.observationId === newObservation.id
-    )?.dataProductsSDPId;
+    const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
 
-    const dataProductSDP: DataProductSDPNew | undefined = proposal.dataProductSDP?.find(
-      (dp) => dp.id === linkedDataProductId
-    );
-
-    const oldTO = proposal?.targetObservation ?? [];
-    const tmp = {
+    setProposal({
       ...proposal,
-      observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: updateDataProductsOnObservationChange(oldDataProducts, newObservation),
-      targetObservation: dataProductSDP ? oldTO : updateSensCalcPartial(oldTO, newObservation)
-    };
-    persistProposal(tmp);
+      observations: updateObservations(oldObservations ?? [], newObservation)
+    });
 
-    if (!dataProductSDP) {
-      return;
+    // Compared with the stored observation, so revisiting this page keeps the user's data product
+    // values. A new observation has no data products yet.
+    if (oldObservation) {
+      // A PST observation saved without a mode is flow-through, so loading one isn't a change
+      const pstModeChanged =
+        newObservation.type === TYPE_PST &&
+        (oldObservation.type !== TYPE_PST ||
+          resolvePstMode(oldObservation.pstMode) !== resolvePstMode(newObservation.pstMode));
+      const frequencyChanged =
+        newObservation.type !== TYPE_PST &&
+        (oldObservation.centralFrequency !== newObservation.centralFrequency ||
+          oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
+      if (pstModeChanged) {
+        replacePstDataProduct(newObservation);
+      }
+      if (frequencyChanged) {
+        resizeImageDataProducts(newObservation);
+      }
+      if (oldObservation.zoomChannels !== newObservation.zoomChannels) {
+        setChannelsOutFromZoomChannels(newObservation);
+      }
     }
-    scheduleLocalSensCalcUpdate(newObservation, dataProductSDP);
+
+    // The calibrators depend on the telescope and the integration time
+    const calibratorInputsChanged =
+      !oldObservation ||
+      oldObservation.telescope !== newObservation.telescope ||
+      oldObservation.supplied?.value !== newObservation.supplied.value ||
+      oldObservation.supplied?.units !== newObservation.supplied.units;
+    if (calibratorInputsChanged) {
+      void refreshCalibrators(newObservation);
+    }
   };
 
   const addObservationToProposal = () => {
@@ -493,18 +517,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
     return 0;
   };
-
-  React.useEffect(() => {
-    latestProposalRef.current = getProposal();
-  }, [application.content2]);
-
-  React.useEffect(() => {
-    return () => {
-      if (sensCalcDebounceTimerRef.current) {
-        clearTimeout(sensCalcDebounceTimerRef.current);
-      }
-    };
-  }, []);
 
   React.useEffect(() => {
     setHelp('observationId');
@@ -635,8 +647,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       // We just need to do this one more time as some fields could not be updated until observingBand has changed.
       observationIn(once);
       setOnce(null);
-      setDefaultCentralFrequency(observingBand);
-      setDefaultContinuumBandwidth(observingBand);
+      // Only fall back to the band defaults when the saved observation has no value
+      if (!once.centralFrequency) {
+        setDefaultCentralFrequency(observingBand);
+      }
+      if (!once.continuumBandwidth) {
+        setDefaultContinuumBandwidth(observingBand);
+      }
     }
     calculateSubarray();
     setAfterChange();
@@ -651,8 +668,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   // TODO: Min channel width for Mid hardcoded for now since I'm not sure if it's correct
+  // Without the OSD channel width the minimum-width constraint is skipped; the bandwidth fields
+  // treat 0 as "no constraint"
+  const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz;
   const minimumChannelWidthHz = isLow()
-    ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+    ? coarseChannelWidthHz === undefined
+      ? 0
+      : coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
     : 13.44e3;
 
   // LOW-zoom channel resolution (Hz) for the selected `bandwidth` index, and the total zoom

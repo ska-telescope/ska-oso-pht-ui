@@ -38,8 +38,8 @@ export const ODTAPIApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        configurationGetOsoApiV16OdtConfigurationGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/odt/configuration`;
+        configurationGetOsoApiV17OdtConfigurationGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/odt/configuration`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -86,10 +86,10 @@ export const ODTAPIApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async configurationGetOsoApiV16OdtConfigurationGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OsdConfiguration>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.configurationGetOsoApiV16OdtConfigurationGet(xRequestID, options);
+        async configurationGetOsoApiV17OdtConfigurationGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OsdConfiguration>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.configurationGetOsoApiV17OdtConfigurationGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ODTAPIApi.configurationGetOsoApiV16OdtConfigurationGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ODTAPIApi.configurationGetOsoApiV17OdtConfigurationGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -109,8 +109,8 @@ export const ODTAPIApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        configurationGetOsoApiV16OdtConfigurationGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<OsdConfiguration> {
-            return localVarFp.configurationGetOsoApiV16OdtConfigurationGet(xRequestID, options).then((request) => request(axios, basePath));
+        configurationGetOsoApiV17OdtConfigurationGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<OsdConfiguration> {
+            return localVarFp.configurationGetOsoApiV17OdtConfigurationGet(xRequestID, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -130,8 +130,8 @@ export class ODTAPIApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ODTAPIApi
      */
-    public configurationGetOsoApiV16OdtConfigurationGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return ODTAPIApiFp(this.configuration).configurationGetOsoApiV16OdtConfigurationGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public configurationGetOsoApiV17OdtConfigurationGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return ODTAPIApiFp(this.configuration).configurationGetOsoApiV17OdtConfigurationGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

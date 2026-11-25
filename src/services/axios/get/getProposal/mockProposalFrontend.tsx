@@ -1,13 +1,13 @@
 import {
   BAND_LOW_STR,
   DEFAULT_USER,
-  DP_TYPE_IMAGES,
   PROPOSAL_STATUS,
   SA_AA2,
   TYPE_CONTINUUM
 } from '@utils/constants.ts';
 import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
+import { DATA_PRODUCT_KIND } from '@/models/proposals/dataProducts';
 
 export const MockProposalFrontend: Proposal = {
   metadata: {
@@ -39,93 +39,48 @@ export const MockProposalFrontend: Proposal = {
   targets: [
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      epoch: 2000,
       decStr: '00:00:00.0',
       id: 'target-123',
       name: 'target',
       b: undefined,
       l: undefined,
-      parallax: undefined,
-      pmDec: undefined,
-      pmRa: undefined,
       raStr: '00:00:00.0',
       redshift: '0',
-      // referenceFrame: RA_TYPE_ICRS.label,
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
-      velType: 1,
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
+      velType: 0,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     },
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      epoch: 2000,
       decStr: '+22:00:53.000',
       id: 'target-456',
       name: 'target2',
       b: undefined,
       l: undefined,
-      parallax: undefined,
-      pmDec: undefined,
-      pmRa: undefined,
       raStr: '05:34:30.900',
       redshift: '0',
-      // referenceFrame: RA_TYPE_ICRS.label,
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
-      velType: 1,
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
+      velType: 0,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     },
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      epoch: 2000,
       decStr: '-00:49:23.700',
       id: 'target-789',
       name: 'M2',
       b: undefined,
       l: undefined,
-      parallax: undefined,
-      pmDec: undefined,
-      pmRa: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      // referenceFrame: RA_TYPE_ICRS.label,
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
-      velType: 1,
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
+      velType: 0,
       vel: '0',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     }
   ],
   observations: [
@@ -161,70 +116,22 @@ export const MockProposalFrontend: Proposal = {
       targetId: 'target-789',
       observationId: 'obs-obR1Ej',
       dataProductsSDPId: 'SDP-2',
-      sensCalc: {
-        statusGUI: 0,
-        error: '',
-        section1: [
-          {
-            field: 'continuumSensitivityWeighted',
-            value: '107.53904853211655',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'continuumConfusionNoise',
-            value: '1.0183425082744668',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'continuumTotalSensitivity',
-            value: '107.54387002826836',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'continuumSynthBeamSize',
-            value: '3.85 x 3.02',
-            units: 'arcsec²'
-          },
-          {
-            field: 'continuumSurfaceBrightnessSensitivity',
-            value: '282.72036408677496',
-            units: 'K'
-          }
-        ],
-        section2: [
-          {
-            field: 'spectralSensitivityWeighted',
-            value: '18.72201668513227',
-            units: 'mJy/beam'
-          },
-          {
-            field: 'spectralConfusionNoise',
-            value: '3.52582756374021',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'spectralTotalSensitivity',
-            value: '18.72201701713336',
-            units: 'mJy/beam'
-          },
-          {
-            field: 'spectralSynthBeamSize',
-            value: '5.84 x 5.02',
-            units: 'arcsec²'
-          },
-          {
-            field: 'spectralSurfaceBrightnessSensitivity',
-            value: '19489.22259007647',
-            units: 'K'
-          }
-        ],
-        section3: [
-          {
-            field: 'integrationTime',
-            value: '1',
-            units: 'h'
-          }
-        ]
+      sensitivity: {
+        state: 'done',
+        continuum: {
+          weightedSensitivity: { value: 107.53904853211655, unit: 'μJy/beam' },
+          confusionNoise: { value: 1.0183425082744668, unit: 'μJy/beam' },
+          totalSensitivity: { value: 107.54387002826836, unit: 'μJy/beam' },
+          synthesizedBeamSize: { value: '3.85 x 3.02', unit: 'arcsec²' },
+          surfaceBrightnessSensitivity: { value: 282.72036408677496, unit: 'K' }
+        },
+        spectral: {
+          weightedSensitivity: { value: 18.72201668513227, unit: 'mJy/beam' },
+          confusionNoise: { value: 3.52582756374021, unit: 'μJy/beam' },
+          totalSensitivity: { value: 18.72201701713336, unit: 'mJy/beam' },
+          synthesizedBeamSize: { value: '5.84 x 5.02', unit: 'arcsec²' },
+          surfaceBrightnessSensitivity: { value: 19489.22259007647, unit: 'K' }
+        }
       }
     }
   ],
@@ -239,34 +146,19 @@ export const MockProposalFrontend: Proposal = {
     }
   ],
   technicalLoadStatus: 9,
-  dataProductSDP: [
+  dataProducts: [
     {
       id: 'SDP-2',
       observationId: 'obs-obR1Ej',
-      selected: true,
-      data: {
-        dataProductType: DP_TYPE_IMAGES,
-        dispersionMeasure: 0,
-        imageSizeValue: 15,
-        imageSizeUnits: 0,
-        pixelSizeValue: 1.007,
-        pixelSizeUnits: 2,
-        weighting: 1,
-        polarisations: ['X'],
-        channelsOut: 1,
-        robust: 0,
-        taperValue: 1,
-        timeAveraging: 1,
-        frequencyAveraging: 1,
-        bitDepth: 1,
-        continuumSubtraction: false,
-        outputFrequencyResolution: 0,
-        outputSamplingInterval: 0,
-        rotationMeasure: 0
-      }
+      kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE,
+      imageSize: { value: 15, unit: 'deg' },
+      pixelSize: { value: 1.007, unit: 'arcsec' },
+      weighting: { type: 'uniform' },
+      taper: 1,
+      polarisations: ['X'],
+      channelsOut: 1
     }
   ],
-  dataProductSRC: [],
   pipeline: ''
 };
 
@@ -310,33 +202,18 @@ export const MockProposalFrontendZoom: Proposal = {
   targets: [
     {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      epoch: 2000,
       decStr: '-00:49:23.700',
       id: 'target-123',
       name: 'target',
       b: undefined,
       l: undefined,
-      parallax: undefined,
-      pmDec: undefined,
-      pmRa: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      // referenceFrame: RA_TYPE_ICRS.label,
-      raReferenceFrame: 'LSRK',
-      raDefinition: 'RADIO',
-      velType: 1,
+      referenceFrame: 'LSRK',
+      velocityDefinition: 'RADIO',
+      velType: 0,
       vel: '-3.6',
-      velUnit: 0,
-      pointingPattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
+      velUnit: 0
     }
   ],
   observations: [
@@ -372,76 +249,33 @@ export const MockProposalFrontendZoom: Proposal = {
       targetId: 'target-789',
       observationId: 'obs-arMIoY',
       dataProductsSDPId: 'SDP-1',
-      sensCalc: {
-        statusGUI: 0,
-        error: '',
-        section1: [
-          {
-            field: 'spectralSensitivityWeighted',
-            value: '29.69626339640881',
-            units: 'mJy/beam'
-          },
-          {
-            field: 'spectralConfusionNoise',
-            value: '22.18293905542935',
-            units: 'μJy/beam'
-          },
-          {
-            field: 'spectralTotalSensitivity',
-            value: '29.696271681672012',
-            units: 'mJy/beam'
-          },
-          {
-            field: 'spectralSynthBeamSize',
-            value: '13.47 x 11.10',
-            units: 'arcsec²'
-          },
-          {
-            field: 'spectralSurfaceBrightnessSensitivity',
-            value: '6071.553983562558',
-            units: 'K'
-          }
-        ],
-        section2: [],
-        section3: [
-          {
-            field: 'integrationTime',
-            value: '1',
-            units: 'h'
-          }
-        ]
+      sensitivity: {
+        state: 'done',
+        spectral: {
+          weightedSensitivity: { value: 29.69626339640881, unit: 'mJy/beam' },
+          confusionNoise: { value: 22.18293905542935, unit: 'μJy/beam' },
+          totalSensitivity: { value: 29.696271681672012, unit: 'mJy/beam' },
+          synthesizedBeamSize: { value: '13.47 x 11.10', unit: 'arcsec²' },
+          surfaceBrightnessSensitivity: { value: 6071.553983562558, unit: 'K' }
+        }
       }
     }
   ],
   technicalLoadStatus: 9,
-  dataProductSDP: [
+  dataProducts: [
     {
       id: 'SDP-1',
       observationId: 'obs-arMIoY',
-      selected: true,
-      data: {
-        dataProductType: DP_TYPE_IMAGES,
-        dispersionMeasure: 0,
-        imageSizeValue: 100,
-        imageSizeUnits: 0,
-        pixelSizeValue: 3.7,
-        pixelSizeUnits: 2,
-        outputFrequencyResolution: 0,
-        outputSamplingInterval: 0,
-        rotationMeasure: 0,
-        weighting: 2,
-        polarisations: ['I', 'XX'],
-        channelsOut: 1,
-        robust: 0.5,
-        taperValue: 0,
-        timeAveraging: 1,
-        frequencyAveraging: 1,
-        bitDepth: 1,
-        continuumSubtraction: false
-      }
+      kind: DATA_PRODUCT_KIND.SPECTRAL_IMAGE,
+      imageSize: { value: 100, unit: 'deg' },
+      pixelSize: { value: 3.7, unit: 'arcsec' },
+      weighting: { type: 'briggs', robust: 0.5 },
+      taper: 0,
+      polarisations: ['I', 'XX'],
+      channelsOut: 2,
+      continuumSubtraction: false
     }
   ],
-  dataProductSRC: [],
   pipeline: ''
 };
 
@@ -472,7 +306,6 @@ export const MockNullProposalFrontend: Proposal = {
   technicalPDF: null,
   calibrationStrategy: [],
   technicalLoadStatus: 9,
-  dataProductSDP: [],
-  dataProductSRC: [],
+  dataProducts: [],
   pipeline: ''
 };

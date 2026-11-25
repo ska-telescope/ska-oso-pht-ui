@@ -13,10 +13,10 @@ import {
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
-import GetProposal from '@services/axios/get/getProposal/getProposal';
 import AddButton from '@/components/button/Add/Add';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
+import { useProposalOda } from '@/models/proposals/useProposalOda';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
@@ -32,7 +32,7 @@ import {
   PATH,
   PROPOSAL_STATUS,
   PROPOSAL_STATUS_OPTIONS,
-  STATUS_PARTIAL
+  SENSITIVITY_STATE
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
@@ -80,6 +80,15 @@ export default function LandingPage() {
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
+  const { loadFromOda } = useProposalOda();
+
+  const pageMounted = React.useRef(true);
+  React.useEffect(() => {
+    pageMounted.current = true;
+    return () => {
+      pageMounted.current = false;
+    };
+  }, []);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -125,8 +134,11 @@ export default function LandingPage() {
   const getTheProposal = async (id: string) => {
     setHelp('');
     updateAppContent5({});
+    setAxiosViewError('');
 
-    const response = await GetProposal(authClient, id);
+    const response = await loadFromOda(id, () => pageMounted.current);
+    if (response === null || !pageMounted.current) return false;
+
     if (typeof response === 'string') {
       updateAppContent1({});
       updateAppContent2({});
@@ -146,41 +158,47 @@ export default function LandingPage() {
     navigate(NAV[0]);
   };
 
-  const viewIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenViewDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
+  const proposalLoadPending = React.useRef(false);
+
+  const openProposal = async (id: string, onSuccess: () => void) => {
+    if (proposalLoadPending.current) return;
+
+    proposalLoadPending.current = true;
+    try {
+      const loaded = await getTheProposal(id);
+      if (!pageMounted.current) return;
+
+      if (loaded) {
+        onSuccess();
+      } else {
+        alert(t('error.iconClicked'));
+      }
+    } finally {
+      proposalLoadPending.current = false;
     }
   };
 
-  const editIconClicked = async (id: string) => {
+  const viewIconClicked = (id: string) => openProposal(id, () => setOpenViewDialog(true));
+
+  const editIconClicked = (id: string) => {
     if (!loggedIn) return;
 
-    const response = await getTheProposal(id);
-    if (typeof response === 'string') {
-      alert(t('error.iconClicked'));
-    } else {
+    return openProposal(id, () => {
+      window.scrollTo(0, 0);
       goToTitlePage();
-    }
+    });
   };
 
-  const cloneIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenCloneDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
-    }
-  };
+  const cloneIconClicked = (id: string) => openProposal(id, () => setOpenCloneDialog(true));
 
   // The clone keeps the original's target/observation/data-product links (same targets and
-  // observations carry over), but not the calculated sensCalc results attached to them - those
+  // observations carry over), but not the calculated sensitivity results attached to them - those
   // are stale for the new proposal. Reset each link to the same "linked, not yet calculated"
   // shape LinkingPage.tsx uses for a brand new link, rather than dropping the links entirely.
   const resetTargetObservationResults = (targetObservation?: TargetObservation[]) =>
     targetObservation?.map((rec) => ({
       ...rec,
-      sensCalc: { id: rec.targetId, title: '', statusGUI: STATUS_PARTIAL, error: '' }
+      sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     })) ?? [];
 
   const createProposal = async () => {
@@ -233,6 +251,7 @@ export default function LandingPage() {
 
       updateAppContent4([...acc, newAcc]);
 
+      window.scrollTo(0, 0);
       goToTitlePage();
     } else {
       notifyError((response as { error: string }).error);
@@ -244,6 +263,7 @@ export default function LandingPage() {
     createProposal();
   };
 
+  // TODO(T9): Full cleanup needed once everything is migrated to the form
   const deleteConfirmed = async () => {
     const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
     if (response && !('error' in response)) {
@@ -421,7 +441,7 @@ export default function LandingPage() {
           {!axiosViewError && loggedIn && (!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
-          {!axiosViewError && filteredData.length > 0 && (
+          {filteredData.length > 0 && (
             <Box
               sx={{
                 pt: 5

@@ -28,6 +28,11 @@ export default function SaveButton({
   const theme = useTheme();
   const [countdown, setCountdown] = React.useState(autoSaveInterval);
   const [warn, setWarn] = React.useState(false);
+  const actionRef = React.useRef(action);
+
+  React.useEffect(() => {
+    actionRef.current = action;
+  }, [action]);
 
   React.useEffect(() => {
     if (autoSaveInterval > 0) {
@@ -35,8 +40,9 @@ export default function SaveButton({
       const intervalId = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
-            if (typeof action === 'function') {
-              action(); // trigger auto-save
+            const currentAction = actionRef.current;
+            if (typeof currentAction === 'function') {
+              currentAction(); // trigger auto-save
               setWarn(true); // switch to warning color
               warnTimeoutId = setTimeout(() => setWarn(false), 600); // revert after 600ms
             }
@@ -52,7 +58,7 @@ export default function SaveButton({
         setWarn(false);
       };
     }
-  }, [autoSaveInterval, action]);
+  }, [autoSaveInterval]);
 
   const iconWithCountdown = (
     <Box

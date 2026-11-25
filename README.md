@@ -165,20 +165,26 @@ For k8s deployments:
 | `MSENTRA_TENANT_ID`                  | MS Entra tenant ID                 |
 | `MSENTRA_REDIRECT_URI`               | OAuth redirect URI                 |
 
-# Backend Requirements
+# Testing
 
-The UI requires the following services to be reachable:
+```bash
+# Unit tests (Vitest), with coverage
+yarn test:unit
 
-- `ska-oso-services`
-- `ska-ost-senscalc`
+# End-to-end tests (Cypress), with the app running at http://localhost:6101
+yarn test:e2e:ui                               # interactive
+yarn test:e2e:parallel --browser chromium      # whole suite, headless
 
-Please refer to their respective documentation for setup instructions.
+# Type checks
+yarn typecheck           # the application
+yarn typecheck:cypress   # the Cypress tests
+```
 
-If the UI fails to load data:
+> **Warning:** only run the Cypress tests against a local Minikube deployment or a dev deployment
+> from a branch. The tests create proposals that can't be deleted, so running them against the
+> integration deployment will unnecessarily fill the integration database.
 
-- Verify backend URLs in `.env`
-- Confirm Minikube IP
-- Ensure API versions (`v13`, `v11`) match deployed services
+See [Testing](docs/src/developer/Testing.rst) for more detail.
 
 # Code Generation
 

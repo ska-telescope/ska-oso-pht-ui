@@ -45,6 +45,29 @@ describe('Save Button', () => {
     // Should not throw or call anything
     expect(mockAction).not.toHaveBeenCalled();
   });
+
+  test('uses the latest action without restarting the auto-save timer', () => {
+    const initialAction = vi.fn();
+    const latestAction = vi.fn();
+    const { rerender } = wrapper(<SaveButton action={initialAction} autoSaveInterval={2} />);
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    rerender(
+      <StoreProvider>
+        <ThemeA11yProvider>
+          <SaveButton action={latestAction} autoSaveInterval={2} />
+        </ThemeA11yProvider>
+      </StoreProvider>
+    );
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(initialAction).not.toHaveBeenCalled();
+    expect(latestAction).toHaveBeenCalledOnce();
+  });
 });
 
 describe('SaveButton iconWithCountdown', () => {

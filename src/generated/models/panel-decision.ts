@@ -46,7 +46,7 @@ export interface PanelDecision {
      * @type {string}
      * @memberof PanelDecision
      */
-    'decision_id': string;
+    'decision_id'?: string | null;
     /**
      * 
      * @type {string}

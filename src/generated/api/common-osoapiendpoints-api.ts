@@ -41,12 +41,12 @@ export const CommonOSOAPIEndpointsApiAxiosParamCreator = function (configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet: async (identifier: string, referenceFrame: ReferenceFrame, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet: async (identifier: string, referenceFrame: ReferenceFrame, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'identifier' is not null or undefined
-            assertParamExists('getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet', 'identifier', identifier)
+            assertParamExists('getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet', 'identifier', identifier)
             // verify required parameter 'referenceFrame' is not null or undefined
-            assertParamExists('getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet', 'referenceFrame', referenceFrame)
-            const localVarPath = `/oso/api/v16/coordinates/{identifier}/{reference_frame}`
+            assertParamExists('getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet', 'referenceFrame', referenceFrame)
+            const localVarPath = `/oso/api/v17/coordinates/{identifier}/{reference_frame}`
                 .replace(`{${"identifier"}}`, encodeURIComponent(String(identifier)))
                 .replace(`{${"reference_frame"}}`, encodeURIComponent(String(referenceFrame)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -81,13 +81,14 @@ export const CommonOSOAPIEndpointsApiAxiosParamCreator = function (configuration
          * @param {string} [b] Galactic latitude e.g. -5.7833
          * @param {string} [coordSystem] ICRS | Galactic
          * @param {boolean} [showAteam] Overlay A-team source elevations and separations
+         * @param {number} [minElevationDeg] Minimum elevation in degrees
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        visibilitySvgOsoApiV16VisibilityVisibilityGet: async (array: string, ra?: string, dec?: string, l?: string, b?: string, coordSystem?: string, showAteam?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        visibilitySvgOsoApiV17VisibilityVisibilityGet: async (array: string, ra?: string, dec?: string, l?: string, b?: string, coordSystem?: string, showAteam?: boolean, minElevationDeg?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'array' is not null or undefined
-            assertParamExists('visibilitySvgOsoApiV16VisibilityVisibilityGet', 'array', array)
-            const localVarPath = `/oso/api/v16/visibility/visibility`;
+            assertParamExists('visibilitySvgOsoApiV17VisibilityVisibilityGet', 'array', array)
+            const localVarPath = `/oso/api/v17/visibility/visibility`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -127,6 +128,10 @@ export const CommonOSOAPIEndpointsApiAxiosParamCreator = function (configuration
                 localVarQueryParameter['show_ateam'] = showAteam;
             }
 
+            if (minElevationDeg !== undefined) {
+                localVarQueryParameter['min_elevation_deg'] = minElevationDeg;
+            }
+
 
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -156,10 +161,10 @@ export const CommonOSOAPIEndpointsApiFp = function(configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet(identifier: string, referenceFrame: ReferenceFrame, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Target>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet(identifier, referenceFrame, options);
+        async getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet(identifier: string, referenceFrame: ReferenceFrame, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Target>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet(identifier, referenceFrame, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CommonOSOAPIEndpointsApi.getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CommonOSOAPIEndpointsApi.getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -172,13 +177,14 @@ export const CommonOSOAPIEndpointsApiFp = function(configuration?: Configuration
          * @param {string} [b] Galactic latitude e.g. -5.7833
          * @param {string} [coordSystem] ICRS | Galactic
          * @param {boolean} [showAteam] Overlay A-team source elevations and separations
+         * @param {number} [minElevationDeg] Minimum elevation in degrees
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async visibilitySvgOsoApiV16VisibilityVisibilityGet(array: string, ra?: string, dec?: string, l?: string, b?: string, coordSystem?: string, showAteam?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.visibilitySvgOsoApiV16VisibilityVisibilityGet(array, ra, dec, l, b, coordSystem, showAteam, options);
+        async visibilitySvgOsoApiV17VisibilityVisibilityGet(array: string, ra?: string, dec?: string, l?: string, b?: string, coordSystem?: string, showAteam?: boolean, minElevationDeg?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.visibilitySvgOsoApiV17VisibilityVisibilityGet(array, ra, dec, l, b, coordSystem, showAteam, minElevationDeg, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CommonOSOAPIEndpointsApi.visibilitySvgOsoApiV16VisibilityVisibilityGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CommonOSOAPIEndpointsApi.visibilitySvgOsoApiV17VisibilityVisibilityGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -199,8 +205,8 @@ export const CommonOSOAPIEndpointsApiFactory = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet(identifier: string, referenceFrame: ReferenceFrame, options?: RawAxiosRequestConfig): AxiosPromise<Target> {
-            return localVarFp.getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet(identifier, referenceFrame, options).then((request) => request(axios, basePath));
+        getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet(identifier: string, referenceFrame: ReferenceFrame, options?: RawAxiosRequestConfig): AxiosPromise<Target> {
+            return localVarFp.getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet(identifier, referenceFrame, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -212,11 +218,12 @@ export const CommonOSOAPIEndpointsApiFactory = function (configuration?: Configu
          * @param {string} [b] Galactic latitude e.g. -5.7833
          * @param {string} [coordSystem] ICRS | Galactic
          * @param {boolean} [showAteam] Overlay A-team source elevations and separations
+         * @param {number} [minElevationDeg] Minimum elevation in degrees
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        visibilitySvgOsoApiV16VisibilityVisibilityGet(array: string, ra?: string, dec?: string, l?: string, b?: string, coordSystem?: string, showAteam?: boolean, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.visibilitySvgOsoApiV16VisibilityVisibilityGet(array, ra, dec, l, b, coordSystem, showAteam, options).then((request) => request(axios, basePath));
+        visibilitySvgOsoApiV17VisibilityVisibilityGet(array: string, ra?: string, dec?: string, l?: string, b?: string, coordSystem?: string, showAteam?: boolean, minElevationDeg?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
+            return localVarFp.visibilitySvgOsoApiV17VisibilityVisibilityGet(array, ra, dec, l, b, coordSystem, showAteam, minElevationDeg, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -237,8 +244,8 @@ export class CommonOSOAPIEndpointsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CommonOSOAPIEndpointsApi
      */
-    public getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet(identifier: string, referenceFrame: ReferenceFrame, options?: RawAxiosRequestConfig) {
-        return CommonOSOAPIEndpointsApiFp(this.configuration).getSystemcoordinatesOsoApiV16CoordinatesIdentifierReferenceFrameGet(identifier, referenceFrame, options).then((request) => request(this.axios, this.basePath));
+    public getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet(identifier: string, referenceFrame: ReferenceFrame, options?: RawAxiosRequestConfig) {
+        return CommonOSOAPIEndpointsApiFp(this.configuration).getSystemcoordinatesOsoApiV17CoordinatesIdentifierReferenceFrameGet(identifier, referenceFrame, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -251,12 +258,13 @@ export class CommonOSOAPIEndpointsApi extends BaseAPI {
      * @param {string} [b] Galactic latitude e.g. -5.7833
      * @param {string} [coordSystem] ICRS | Galactic
      * @param {boolean} [showAteam] Overlay A-team source elevations and separations
+     * @param {number} [minElevationDeg] Minimum elevation in degrees
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CommonOSOAPIEndpointsApi
      */
-    public visibilitySvgOsoApiV16VisibilityVisibilityGet(array: string, ra?: string, dec?: string, l?: string, b?: string, coordSystem?: string, showAteam?: boolean, options?: RawAxiosRequestConfig) {
-        return CommonOSOAPIEndpointsApiFp(this.configuration).visibilitySvgOsoApiV16VisibilityVisibilityGet(array, ra, dec, l, b, coordSystem, showAteam, options).then((request) => request(this.axios, this.basePath));
+    public visibilitySvgOsoApiV17VisibilityVisibilityGet(array: string, ra?: string, dec?: string, l?: string, b?: string, coordSystem?: string, showAteam?: boolean, minElevationDeg?: number, options?: RawAxiosRequestConfig) {
+        return CommonOSOAPIEndpointsApiFp(this.configuration).visibilitySvgOsoApiV17VisibilityVisibilityGet(array, ra, dec, l, b, coordSystem, showAteam, minElevationDeg, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

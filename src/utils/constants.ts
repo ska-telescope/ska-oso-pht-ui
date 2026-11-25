@@ -76,7 +76,7 @@ export const DP_TYPE_VISIBLE = 2;
 
 export const ERROR_SECS = 2000;
 
-export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // See SRCNet INACTIVE
+export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
 export const FOOTER_HEIGHT_PHT = 60;
 export const FOOTER_SPACER = 130;
@@ -109,38 +109,94 @@ export const TYPE_CONTINUUM_SPECTRAL = 'continuumSpectral';
 export const TYPE_CONTINUUM_SPECTRAL_LONG = 'continuum and spectral line';
 export const TYPE_PST = 'pst';
 
+export const SCIENCE_CATEGORY = {
+  COSMOLOGY: 1,
+  CRADLE_OF_LIFE: 2,
+  EPOCH_OF_REIONIZATION: 3,
+  EXTRAGALACTIC_CONTINUUM: 4,
+  EXTRAGALACTIC_SPECTRAL_LINE: 5,
+  GRAVITATIONAL_WAVES: 6,
+  HIGH_ENERGY_COSMIC_PARTICLES: 7,
+  HI_GALAXY_SCIENCE: 8,
+  MAGNETISM: 9,
+  OUR_GALAXY: 10,
+  PULSARS: 11,
+  SOLAR_HELIOSPHERIC_AND_IONOSPHERIC_PHYSICS: 12,
+  TRANSIENTS: 13,
+  VLBI: 14
+} as const;
+
 export const DETAILS = {
   ScienceCategory: [
-    { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
-    { label: 'Cradle of Life', subCategory: [{ label: 'Not specified', value: 1 }], value: 2 },
+    {
+      label: 'Cosmology',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.COSMOLOGY
+    },
+    {
+      label: 'Cradle of Life',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.CRADLE_OF_LIFE
+    },
     {
       label: 'Epoch of Re-ionization',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 3
+      value: SCIENCE_CATEGORY.EPOCH_OF_REIONIZATION
     },
     {
       label: 'Extragalactic continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 4
+      value: SCIENCE_CATEGORY.EXTRAGALACTIC_CONTINUUM
     },
     {
       label: 'Extragalactic Spectral line',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 5
+      value: SCIENCE_CATEGORY.EXTRAGALACTIC_SPECTRAL_LINE
     },
-    { label: 'Gravitational Waves', subCategory: [{ label: 'Not specified', value: 1 }], value: 6 },
+    {
+      label: 'Gravitational Waves',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.GRAVITATIONAL_WAVES
+    },
     {
       label: 'High Energy Cosmic Particles',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: 7
+      value: SCIENCE_CATEGORY.HIGH_ENERGY_COSMIC_PARTICLES
     },
-    { label: 'HI Galaxy science', subCategory: [{ label: 'Not specified', value: 1 }], value: 8 },
-    { label: 'Magnetism', subCategory: [{ label: 'Not specified', value: 1 }], value: 9 },
-    { label: 'Our Galaxy', subCategory: [{ label: 'Not specified', value: 1 }], value: 10 },
-    { label: 'Pulsars', subCategory: [{ label: 'Not specified', value: 1 }], value: 11 },
-    { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
-    { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
-    { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
+    {
+      label: 'HI Galaxy science',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.HI_GALAXY_SCIENCE
+    },
+    {
+      label: 'Magnetism',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.MAGNETISM
+    },
+    {
+      label: 'Our Galaxy',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.OUR_GALAXY
+    },
+    {
+      label: 'Pulsars',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.PULSARS
+    },
+    {
+      label: 'Solar, Heliospheric and Ionospheric Physics',
+      value: SCIENCE_CATEGORY.SOLAR_HELIOSPHERIC_AND_IONOSPHERIC_PHYSICS
+    },
+    {
+      label: 'Transients',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.TRANSIENTS
+    },
+    {
+      label: 'VLBI',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: SCIENCE_CATEGORY.VLBI
+    }
   ]
 };
 
@@ -189,19 +245,10 @@ export const NAV = [
   '/proposal/technical',
   '/proposal/data',
   '/proposal/linking',
-  '/proposal/calibration',
-  '/proposal/src'
+  '/proposal/calibration'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
-export const CUSTOM_VALID_FIELDS = [
-  'continuumSensitivityWeighted',
-  'spectralSensitivityWeighted',
-  'integrationTime',
-  'sensitivity',
-  'continuumIntegrationTime',
-  'spectralIntegrationTime'
-];
 
 export const TIME_DAYS = 1;
 export const TIME_HOURS = 2;
@@ -240,7 +287,6 @@ export const PAGE_TECHNICAL = 6;
 export const PAGE_DATA_PRODUCTS = 7;
 export const PAGE_LINKING = 8;
 export const PAGE_CALIBRATION = 9;
-export const PAGE_SRC_NET = 10;
 export const PAGE_OBSERVATION_ADD = 11;
 export const PAGE_LANDING = 12;
 export const PAGE_CYCLE = 13;
@@ -474,15 +520,17 @@ export const UPLOAD_MAX_WIDTH_PDF = 25;
 export const SCIENCE_PDF_MAX_PAGES = 4;
 export const SCIENCE_PDF_MAX_SIZE_MB = 100;
 
-export const VEL_TYPES = [
-  { label: 'Velocity', value: 0 },
-  { label: 'Redshift', value: 1 }
+export const VELOCITY_UNIT = { KM_PER_S: 0, M_PER_S: 1 } as const;
+
+export const VELOCITY_UNITS = [
+  { label: 'km/s', value: VELOCITY_UNIT.KM_PER_S, metresPerSecond: 1000 },
+  { label: 'm/s', value: VELOCITY_UNIT.M_PER_S, metresPerSecond: 1 }
 ];
 
-export const VEL_UNITS = [
-  { label: 'km/s', value: 0 },
-  { label: 'm/s', value: 1 }
-];
+// The two coordinates of a sky direction: right ascension and declination for ICRS, longitude
+// and latitude for Galactic. Their labels, units and errors are translated by these numbers.
+export const SKY_DIRECTION_AXIS = { LONGITUDE: 1, LATITUDE: 2 } as const;
+export type SkyDirectionAxis = (typeof SKY_DIRECTION_AXIS)[keyof typeof SKY_DIRECTION_AXIS];
 
 export const SEARCH_TYPE_OPTIONS_REVIEWERS = [
   { label: 'Pulsar Timing', value: 'Pulsar Timing' },
@@ -508,8 +556,14 @@ export const STATUS_ERROR = 1;
 export const STATUS_ERROR_SYMBOL = '!';
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
-export type STATUS =
-  typeof STATUS_OK | typeof STATUS_ERROR | typeof STATUS_PARTIAL | typeof STATUS_INITIAL;
+
+/** The state of a target–observation link's sensitivity results. */
+export const SENSITIVITY_STATE = {
+  CALCULATING: 'calculating',
+  FAILED: 'failed',
+  DONE: 'done'
+} as const;
+export type SensitivityState = (typeof SENSITIVITY_STATE)[keyof typeof SENSITIVITY_STATE];
 export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
@@ -560,15 +614,22 @@ export const TEXT_ENTRY_PARAMS = {
   }
 };
 
+/** Whether a target's radial motion is entered as a velocity or a redshift (PHT only, not a PDM field) */
 export const VELOCITY_TYPE = {
   VELOCITY: 0,
   REDSHIFT: 1
-};
+} as const;
 
-export const VELOCITY_UNITS = [
-  { label: 'm/s', value: 0, convert: 1 },
-  { label: 'km/s', value: 1, convert: 1000 }
-];
+export type VelocityType = (typeof VELOCITY_TYPE)[keyof typeof VELOCITY_TYPE];
+
+/** The convention a target's radial velocity is given in. New targets use RADIO, the PDM default. */
+export const VELOCITY_DEFINITION = {
+  RADIO: 'RADIO',
+  OPTICAL: 'OPTICAL',
+  RELATIVISTIC: 'RELATIVISTIC'
+} as const;
+
+export type VelocityDefinition = (typeof VELOCITY_DEFINITION)[keyof typeof VELOCITY_DEFINITION];
 
 export const WRAPPER_HEIGHT = '75px';
 

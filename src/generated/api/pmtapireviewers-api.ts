@@ -36,8 +36,8 @@ export const PMTAPIReviewersApiAxiosParamCreator = function (configuration?: Con
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviewersOsoApiV16PhtReviewersGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/reviewers`;
+        getReviewersOsoApiV17PhtReviewersGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/reviewers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -84,10 +84,10 @@ export const PMTAPIReviewersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getReviewersOsoApiV16PhtReviewersGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviewersOsoApiV16PhtReviewersGet(xRequestID, options);
+        async getReviewersOsoApiV17PhtReviewersGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{ [key: string]: any; }>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviewersOsoApiV17PhtReviewersGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewersApi.getReviewersOsoApiV16PhtReviewersGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewersApi.getReviewersOsoApiV17PhtReviewersGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -107,8 +107,8 @@ export const PMTAPIReviewersApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviewersOsoApiV16PhtReviewersGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
-            return localVarFp.getReviewersOsoApiV16PhtReviewersGet(xRequestID, options).then((request) => request(axios, basePath));
+        getReviewersOsoApiV17PhtReviewersGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<{ [key: string]: any; }> {
+            return localVarFp.getReviewersOsoApiV17PhtReviewersGet(xRequestID, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -128,8 +128,8 @@ export class PMTAPIReviewersApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIReviewersApi
      */
-    public getReviewersOsoApiV16PhtReviewersGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIReviewersApiFp(this.configuration).getReviewersOsoApiV16PhtReviewersGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getReviewersOsoApiV17PhtReviewersGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIReviewersApiFp(this.configuration).getReviewersOsoApiV17PhtReviewersGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -39,10 +39,10 @@ export const PMTAPIReviewsApiAxiosParamCreator = function (configuration?: Confi
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createReviewOsoApiV16PhtReviewsCreatePost: async (panelReview: PanelReview, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createReviewOsoApiV17PhtReviewsCreatePost: async (panelReview: PanelReview, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'panelReview' is not null or undefined
-            assertParamExists('createReviewOsoApiV16PhtReviewsCreatePost', 'panelReview', panelReview)
-            const localVarPath = `/oso/api/v16/pht/reviews/create`;
+            assertParamExists('createReviewOsoApiV17PhtReviewsCreatePost', 'panelReview', panelReview)
+            const localVarPath = `/oso/api/v17/pht/reviews/create`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -83,10 +83,10 @@ export const PMTAPIReviewsApiAxiosParamCreator = function (configuration?: Confi
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviewOsoApiV16PhtReviewsReviewIdGet: async (reviewId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getReviewOsoApiV17PhtReviewsReviewIdGet: async (reviewId: string, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'reviewId' is not null or undefined
-            assertParamExists('getReviewOsoApiV16PhtReviewsReviewIdGet', 'reviewId', reviewId)
-            const localVarPath = `/oso/api/v16/pht/reviews/{review_id}`
+            assertParamExists('getReviewOsoApiV17PhtReviewsReviewIdGet', 'reviewId', reviewId)
+            const localVarPath = `/oso/api/v17/pht/reviews/{review_id}`
                 .replace(`{${"review_id"}}`, encodeURIComponent(String(reviewId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -124,8 +124,8 @@ export const PMTAPIReviewsApiAxiosParamCreator = function (configuration?: Confi
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviewsForUserOsoApiV16PhtReviewsUsersReviewsGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/oso/api/v16/pht/reviews/users/reviews`;
+        getReviewsForUserOsoApiV17PhtReviewsUsersReviewsGet: async (xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/oso/api/v17/pht/reviews/users/reviews`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -164,12 +164,12 @@ export const PMTAPIReviewsApiAxiosParamCreator = function (configuration?: Confi
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReviewOsoApiV16PhtReviewsReviewIdPut: async (reviewId: string, panelReview: PanelReview, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateReviewOsoApiV17PhtReviewsReviewIdPut: async (reviewId: string, panelReview: PanelReview, xRequestID?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'reviewId' is not null or undefined
-            assertParamExists('updateReviewOsoApiV16PhtReviewsReviewIdPut', 'reviewId', reviewId)
+            assertParamExists('updateReviewOsoApiV17PhtReviewsReviewIdPut', 'reviewId', reviewId)
             // verify required parameter 'panelReview' is not null or undefined
-            assertParamExists('updateReviewOsoApiV16PhtReviewsReviewIdPut', 'panelReview', panelReview)
-            const localVarPath = `/oso/api/v16/pht/reviews/{review_id}`
+            assertParamExists('updateReviewOsoApiV17PhtReviewsReviewIdPut', 'panelReview', panelReview)
+            const localVarPath = `/oso/api/v17/pht/reviews/{review_id}`
                 .replace(`{${"review_id"}}`, encodeURIComponent(String(reviewId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -221,10 +221,10 @@ export const PMTAPIReviewsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createReviewOsoApiV16PhtReviewsCreatePost(panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createReviewOsoApiV16PhtReviewsCreatePost(panelReview, xRequestID, options);
+        async createReviewOsoApiV17PhtReviewsCreatePost(panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createReviewOsoApiV17PhtReviewsCreatePost(panelReview, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewsApi.createReviewOsoApiV16PhtReviewsCreatePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewsApi.createReviewOsoApiV17PhtReviewsCreatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -235,10 +235,10 @@ export const PMTAPIReviewsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getReviewOsoApiV16PhtReviewsReviewIdGet(reviewId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelReview>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviewOsoApiV16PhtReviewsReviewIdGet(reviewId, xRequestID, options);
+        async getReviewOsoApiV17PhtReviewsReviewIdGet(reviewId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelReview>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviewOsoApiV17PhtReviewsReviewIdGet(reviewId, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewsApi.getReviewOsoApiV16PhtReviewsReviewIdGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewsApi.getReviewOsoApiV17PhtReviewsReviewIdGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -248,10 +248,10 @@ export const PMTAPIReviewsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getReviewsForUserOsoApiV16PhtReviewsUsersReviewsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PanelReview>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviewsForUserOsoApiV16PhtReviewsUsersReviewsGet(xRequestID, options);
+        async getReviewsForUserOsoApiV17PhtReviewsUsersReviewsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PanelReview>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReviewsForUserOsoApiV17PhtReviewsUsersReviewsGet(xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewsApi.getReviewsForUserOsoApiV16PhtReviewsUsersReviewsGet']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewsApi.getReviewsForUserOsoApiV17PhtReviewsUsersReviewsGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -263,10 +263,10 @@ export const PMTAPIReviewsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateReviewOsoApiV16PhtReviewsReviewIdPut(reviewId: string, panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelReview>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateReviewOsoApiV16PhtReviewsReviewIdPut(reviewId, panelReview, xRequestID, options);
+        async updateReviewOsoApiV17PhtReviewsReviewIdPut(reviewId: string, panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PanelReview>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateReviewOsoApiV17PhtReviewsReviewIdPut(reviewId, panelReview, xRequestID, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewsApi.updateReviewOsoApiV16PhtReviewsReviewIdPut']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['PMTAPIReviewsApi.updateReviewOsoApiV17PhtReviewsReviewIdPut']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -287,8 +287,8 @@ export const PMTAPIReviewsApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createReviewOsoApiV16PhtReviewsCreatePost(panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.createReviewOsoApiV16PhtReviewsCreatePost(panelReview, xRequestID, options).then((request) => request(axios, basePath));
+        createReviewOsoApiV17PhtReviewsCreatePost(panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.createReviewOsoApiV17PhtReviewsCreatePost(panelReview, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -298,8 +298,8 @@ export const PMTAPIReviewsApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviewOsoApiV16PhtReviewsReviewIdGet(reviewId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PanelReview> {
-            return localVarFp.getReviewOsoApiV16PhtReviewsReviewIdGet(reviewId, xRequestID, options).then((request) => request(axios, basePath));
+        getReviewOsoApiV17PhtReviewsReviewIdGet(reviewId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PanelReview> {
+            return localVarFp.getReviewOsoApiV17PhtReviewsReviewIdGet(reviewId, xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Retrieves the Reviews for the given user ID from the underlying data store, if available
@@ -308,8 +308,8 @@ export const PMTAPIReviewsApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getReviewsForUserOsoApiV16PhtReviewsUsersReviewsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<PanelReview>> {
-            return localVarFp.getReviewsForUserOsoApiV16PhtReviewsUsersReviewsGet(xRequestID, options).then((request) => request(axios, basePath));
+        getReviewsForUserOsoApiV17PhtReviewsUsersReviewsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Array<PanelReview>> {
+            return localVarFp.getReviewsForUserOsoApiV17PhtReviewsUsersReviewsGet(xRequestID, options).then((request) => request(axios, basePath));
         },
         /**
          * Updates a Review in the underlying data store.  :param review_id: identifier of the Review in the URL :param review: Review object payload from the request body :return: the updated Review object
@@ -320,8 +320,8 @@ export const PMTAPIReviewsApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateReviewOsoApiV16PhtReviewsReviewIdPut(reviewId: string, panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PanelReview> {
-            return localVarFp.updateReviewOsoApiV16PhtReviewsReviewIdPut(reviewId, panelReview, xRequestID, options).then((request) => request(axios, basePath));
+        updateReviewOsoApiV17PhtReviewsReviewIdPut(reviewId: string, panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PanelReview> {
+            return localVarFp.updateReviewOsoApiV17PhtReviewsReviewIdPut(reviewId, panelReview, xRequestID, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -342,8 +342,8 @@ export class PMTAPIReviewsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIReviewsApi
      */
-    public createReviewOsoApiV16PhtReviewsCreatePost(panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIReviewsApiFp(this.configuration).createReviewOsoApiV16PhtReviewsCreatePost(panelReview, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public createReviewOsoApiV17PhtReviewsCreatePost(panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIReviewsApiFp(this.configuration).createReviewOsoApiV17PhtReviewsCreatePost(panelReview, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -355,8 +355,8 @@ export class PMTAPIReviewsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIReviewsApi
      */
-    public getReviewOsoApiV16PhtReviewsReviewIdGet(reviewId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIReviewsApiFp(this.configuration).getReviewOsoApiV16PhtReviewsReviewIdGet(reviewId, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getReviewOsoApiV17PhtReviewsReviewIdGet(reviewId: string, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIReviewsApiFp(this.configuration).getReviewOsoApiV17PhtReviewsReviewIdGet(reviewId, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -367,8 +367,8 @@ export class PMTAPIReviewsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIReviewsApi
      */
-    public getReviewsForUserOsoApiV16PhtReviewsUsersReviewsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIReviewsApiFp(this.configuration).getReviewsForUserOsoApiV16PhtReviewsUsersReviewsGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public getReviewsForUserOsoApiV17PhtReviewsUsersReviewsGet(xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIReviewsApiFp(this.configuration).getReviewsForUserOsoApiV17PhtReviewsUsersReviewsGet(xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -381,8 +381,8 @@ export class PMTAPIReviewsApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof PMTAPIReviewsApi
      */
-    public updateReviewOsoApiV16PhtReviewsReviewIdPut(reviewId: string, panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
-        return PMTAPIReviewsApiFp(this.configuration).updateReviewOsoApiV16PhtReviewsReviewIdPut(reviewId, panelReview, xRequestID, options).then((request) => request(this.axios, this.basePath));
+    public updateReviewOsoApiV17PhtReviewsReviewIdPut(reviewId: string, panelReview: PanelReview, xRequestID?: string | null, options?: RawAxiosRequestConfig) {
+        return PMTAPIReviewsApiFp(this.configuration).updateReviewOsoApiV17PhtReviewsReviewIdPut(reviewId, panelReview, xRequestID, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

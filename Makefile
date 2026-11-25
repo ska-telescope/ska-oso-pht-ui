@@ -2,6 +2,21 @@
 # using Helm.  If this does not already exist it will be created
 KUBE_NAMESPACE ?= ska-oso-pht-ui
 K8S_CHART ?= ska-oso-pht-ui-umbrella
+# Not every CI runner provides KUBE_HOST (e.g. the STFC techops runners), so fall back to the
+# STFC/AWS ingress load balancer rather than the local default.
+# The load balancer is used in Cypress tests since cluster authentication is not accepting Indigo
+# tokens yet. We should be able to remove this once STS-3234 has been resolved.
+ifneq ($(CI),)
+ifeq ($(origin KUBE_HOST),undefined)
+ifneq ($(findstring aws,$(CI_RUNNER_TAGS)),)
+# AWS runner
+KUBE_HOST := https://ingress-nginx-controller-default.ingress-nginx
+else
+# STFC runner
+KUBE_HOST := https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
+endif
+endif
+endif
 KUBE_HOST ?= http://localhost
 
 K8S_WAIT_LABEL_FILTER_ARGS = -l release=$(HELM_RELEASE)
@@ -28,6 +43,8 @@ js-pre-format:
 	$(JS_COMMAND_RUNNER) prettier:fix
 typecheck:
 	$(JS_COMMAND_RUNNER) typecheck
+cypress-typecheck:
+	$(JS_COMMAND_RUNNER) typecheck:cypress
 
 AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
 ifeq ($(AWK),)
@@ -43,7 +60,7 @@ BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 
 
 # Major version of the deployed ska-ost-senscalc — keep in sync with charts/ska-oso-pht-ui-umbrella/Chart.yaml
-SENSCALC_API_VERSION ?= v11
+SENSCALC_API_VERSION ?= v12
 
 K8S_CHART_PARAMS += \
   --wait \
@@ -69,6 +86,11 @@ ifneq ($(USE_INDIGO),)
   K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
 endif
 
+# Test deployments set this (in ms) to wait longer for backend responses than users would
+ifneq ($(REQUEST_TIMEOUT_MS),)
+  K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.requestTimeoutMs=$(REQUEST_TIMEOUT_MS)
+endif
+
 # CAR DEPLOYMENT CHART VERSION
 # Staging and production deploy with k8s-install-chart-car, which resolves
 # skatelescope/$(K8S_CHART) to whatever is newest in CAR. Pin the chart to this
@@ -85,7 +107,7 @@ ifneq ($(ENV_CHECK),)
 
 PRODUCTION_URL=sv-ideas.skao.int
 API_DEPLOY_PATH=/api
-SENSCALC_URL=https://sensitivity-calculator.skao.int/api/v11/
+SENSCALC_URL=https://sensitivity-calculator.skao.int/api/$(SENSCALC_API_VERSION)/
 
 # UI config
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
@@ -161,6 +183,7 @@ set-dev-env-vars:
 	INDIGO_REDIRECT_URI="http://localhost:6101/" \
 	INDIGO_SCOPE="pht:readwrite pht:read openid profile" \
 	INDIGO_AUDIENCE="test:pht" \
+	REQUEST_TIMEOUT_MS="$(or $(REQUEST_TIMEOUT_MS),20000)" \
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 
 dev-start: set-dev-env-vars

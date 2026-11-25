@@ -1,14 +1,11 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
-import Target, {
-  PointingPatternParams,
+import {
   ReferenceCoordinateGalactic,
   ReferenceCoordinateICRS,
   ReferenceCoordinateSSO
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
-import TargetObservation from '@utils/types/targetObservation.tsx';
 import Supplied from '@utils/types/supplied.tsx';
 import {
   SKA_OSO_SERVICES_URL,
@@ -17,8 +14,6 @@ import {
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_ZOOM,
-  VEL_TYPES,
-  VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
   SA_AA2,
@@ -32,52 +27,32 @@ import {
   ProposalTypeType,
   TYPE_PST,
   PST_MODES,
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  IMAGE_WEIGHTING,
-  IMAGE_WEIGHTING_DEFAULT,
-  ROBUST_DEFAULT,
   FREQUENCY_STR_MHZ,
   BAND_LOW_STR,
   FREQUENCY_STR_GHZ,
-  PULSAR_TIMING_VALUE,
-  DETECTED_FILTER_BANK_VALUE,
-  FLOW_THROUGH_VALUE,
   TYPE_ZOOM_LONG,
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import { DocumentPDF } from '@utils/types/document.tsx';
-import { DataProductSDPNew, DataProductSRC } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
-import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy.tsx';
+import { targetsFromPdm } from '@/models/proposals/targets';
+import { targetObservationFromPdm } from '@/models/proposals/targetObservation';
+import { calibrationStrategyFromPdm } from '@/models/proposals/calibrationStrategy';
+import { dataProductsFromPdm } from '@/models/proposals/dataProducts';
 import type {
-  CalibrationStrategy as CalibrationStrategyTransport,
-  DataProductSDP as DataProductSDPTransport,
-  DataProductSRC as DataProductSRCTransport,
   Document as DocumentTransport,
-  FluxCal,
   GalacticCoordinates,
   ICRSCoordinates,
-  Integration,
   LowArray,
   MidArray,
   ObservationSets,
-  PointingPatternParameters,
   PstSetup,
-  Result,
-  Sensitivity,
   SpecialCoordinates,
   SpectralLineSetup,
-  Supplied as SuppliedTransport,
-  Target as TargetTransport
+  Supplied as SuppliedTransport
 } from '@/generated/models';
-
-// The PDM result is a union on supplied_type, but the mapping reads the fields of both variants.
-type ResultsDetailsAnySupplied = Omit<Result, 'result'> & {
-  result?: Partial<Omit<Integration, 'supplied_type'> & Omit<Sensitivity, 'supplied_type'>> | null;
-};
 
 export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefined) => {
   const investigators = [] as Investigator[];
@@ -88,14 +63,11 @@ export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefin
     investigators.push({
       id: inValue[i].user_id as string,
       status: inValue[i].status,
-      firstName: inValue[i].given_name as string,
-      lastName: inValue[i].family_name as string,
-      email: inValue[i]?.email as string,
-      affiliation: inValue[i].organization as string,
-      phdThesis: inValue[i].for_phd as boolean,
-      pi: inValue[i].principal_investigator as boolean,
-      officeLocation: inValue[i].officeLocation as string | null,
-      jobTitle: inValue[i].jobTitle as string | null
+      firstName: inValue[i].given_name ?? undefined,
+      lastName: inValue[i].family_name ?? undefined,
+      email: inValue[i].email ?? undefined,
+      phdThesis: inValue[i].for_phd ?? false,
+      pi: inValue[i].principal_investigator ?? false
     });
   }
   return investigators;
@@ -122,13 +94,6 @@ const getPDF = (
     documentId: documentById.document_id,
     isUploadedPdf: documentById.uploaded_pdf
   };
-};
-
-export const getVelType = (InDefinition: string) => {
-  const velType = VEL_TYPES.find(
-    (item) => item.label.toLowerCase() === InDefinition?.toLowerCase()
-  )?.value;
-  return velType ? velType : 1; // fallback
 };
 
 export const getReferenceCoordinate = (
@@ -167,91 +132,6 @@ export const getReferenceCoordinate = (
   }
 };
 
-const getTargetType = (kind: string): number => {
-  switch (kind) {
-    case REFERENCE_COORDINATE_TYPE_ICRS.label:
-      return REFERENCE_COORDINATE_TYPE_ICRS.value;
-
-    case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
-      return REFERENCE_COORDINATE_TYPE_GALACTIC.value;
-
-    case REFERENCE_COORDINATE_TYPE_SSO.label:
-      return REFERENCE_COORDINATE_TYPE_SSO.value;
-
-    default:
-      throw new Error(`Unsupported coordinate type: ${kind}`);
-  }
-};
-
-const getTargets = (inRec: TargetTransport[] = []): Target[] => {
-  const results = [];
-  for (let i = 0; i < inRec?.length; i++) {
-    const e = inRec[i];
-    const referenceCoordinate = e.reference_coordinate!.kind as string;
-    const icrs = e.reference_coordinate as ICRSCoordinates;
-    const radialVelocity = e.radial_velocity as Required<
-      NonNullable<TargetTransport['radial_velocity']>
-    >;
-    const target: Partial<Target> = {
-      kind: getTargetType(referenceCoordinate),
-      epoch: icrs?.epoch,
-      parallax: icrs?.parallax as number | undefined,
-      id: e.target_id as string,
-      name: e?.name as string,
-      b: undefined,
-      l: undefined,
-      redshift: radialVelocity.redshift.toString(),
-      raReferenceFrame: radialVelocity.reference_frame,
-      raDefinition: radialVelocity.definition,
-      velType: getVelType(radialVelocity.definition),
-      vel: radialVelocity.quantity?.value?.toString(),
-      velUnit: VEL_UNITS.find(
-        (u) => u.label === radialVelocity?.quantity?.unit?.split(' ').join('')
-      )?.value as number,
-      pointingPattern: {
-        active: e.pointing_pattern?.active as string,
-        parameters: e.pointing_pattern?.parameters?.map((p) => {
-          const params = p as PointingPatternParameters & {
-            offset_x_arcsec: number;
-            offset_y_arcsec: number;
-          };
-          return {
-            kind: params.kind,
-            offsetXArcsec: params.offset_x_arcsec,
-            offsetYArcsec: params.offset_y_arcsec
-          };
-        }) as PointingPatternParams[]
-      }
-    };
-    /*------- reference coordinate properties --------------------- */
-
-    switch (referenceCoordinate) {
-      case REFERENCE_COORDINATE_TYPE_ICRS.label:
-        target.raStr = icrs.ra_str;
-        target.decStr = icrs.dec_str;
-        target.pmRa = icrs.pm_ra as number | undefined;
-        target.pmDec = icrs.pm_dec as number | undefined;
-        break;
-
-      case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
-        target.l = (e.reference_coordinate as GalacticCoordinates).l;
-        target.b = (e.reference_coordinate as GalacticCoordinates).b;
-        target.pmL = (e.reference_coordinate as GalacticCoordinates).pm_l;
-        target.pmB = (e.reference_coordinate as GalacticCoordinates).pm_b;
-        break;
-
-      case REFERENCE_COORDINATE_TYPE_SSO.label:
-        break;
-
-      default:
-        throw new Error(`Unsupported coordinate type ${referenceCoordinate}`);
-    }
-    /*------- end of reference coordinate properties --------------------- */
-    results.push(target);
-  }
-  return results as Target[];
-};
-
 const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => {
   const results: any = [];
   if (!inValue || inValue.length === 0) {
@@ -271,147 +151,7 @@ const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => 
   return results;
 };
 
-const getDataProductSRC = (
-  inValue: DataProductSRCTransport[] | null | undefined
-): DataProductSRC[] => {
-  return inValue
-    ? inValue.map((dp) => ({
-        id: dp?.data_products_src_id,
-        dataProductType: 0,
-        observationId: ''
-      }))
-    : [];
-};
-
-// The image/visibilities split is carried on `variant`, not `kind` - `kind` is 'continuum' for
-// both a continuum image and its hidden visibilities companion (see getDataProductScriptParameters
-// in putProposalMapping.tsx), so switching on kind here could never actually match either of them.
-const getDataProductType = (el: any) => {
-  switch ((el.variant ?? '').toLowerCase()) {
-    case 'visibilities':
-      return DP_TYPE_VISIBLE;
-    case 'detected filterbank':
-      return DETECTED_FILTER_BANK_VALUE;
-    case 'pulsar timing':
-      return PULSAR_TIMING_VALUE;
-    case 'flow through':
-      return FLOW_THROUGH_VALUE;
-    default:
-      return DP_TYPE_IMAGES;
-  }
-};
-
-/**
- * Marks the data products linked to results as selected. Selection is not stored in the backend,
- * so this keeps it in step with the results and keeps it if the target is later removed.
- */
-const markSelectedDataProducts = (
-  dataProducts: DataProductSDPNew[],
-  results: Result[] | null | undefined
-): DataProductSDPNew[] => {
-  const linkedIds = new Set((results ?? []).map((result) => result.data_product_ref));
-  return dataProducts.map((dp) => (linkedIds.has(dp.id) ? { ...dp, selected: true } : dp));
-};
-
-const getDataProductSDP = (
-  inValue: DataProductSDPTransport[] | null | undefined
-): DataProductSDPNew[] => {
-  const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
-  const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
-
-  const getImageSizeUnits = (unit: string | null): number =>
-    unit ? IMAGE_SIZE_UNITS.indexOf(unit) : 0;
-
-  const getPixelSizeUnits = (unit: string | null): number =>
-    unit ? PIXEL_SIZE_UNITS.indexOf(unit) : 0;
-
-  return (
-    inValue?.map((dp) => {
-      const script = dp?.script_parameters ?? {};
-      return {
-        id: dp?.data_product_id ?? '',
-        observationId: dp?.observation_set_ref ?? '',
-        data: {
-          dataProductType: getDataProductType(script) ?? 0,
-          imageSizeValue: 'image_size' in script ? (script.image_size?.value ?? 0) : 0,
-          imageSizeUnits:
-            'image_size' in script ? getImageSizeUnits(script.image_size?.unit ?? null) : 0,
-
-          pixelSizeValue: 'image_cellsize' in script ? (script.image_cellsize?.value ?? 0) : 0,
-          pixelSizeUnits:
-            'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : 0,
-          weighting:
-            getWeighting('weight' in script ? script.weight?.weighting : undefined) ??
-            IMAGE_WEIGHTING_DEFAULT,
-          robust:
-            'weight' in script && script.weight?.weighting === 'briggs'
-              ? Number(script.weight.robust ?? ROBUST_DEFAULT)
-              : ROBUST_DEFAULT,
-          polarisations: 'polarisations' in script ? script.polarisations : undefined,
-          channelsOut: 'channels_out' in script ? (Number(script.channels_out) ?? 0) : 0,
-          taperValue: 'gaussian_taper' in script ? (Number(script.gaussian_taper) ?? 0) : 0,
-          // TODO - we shouldn't need so many conditionals in this function. Fix when we have
-          // refactored with better typing
-          timeAveraging: 'time_averaging' in script ? (script.time_averaging ?? 1) : 1,
-          frequencyAveraging:
-            'frequency_averaging' in script ? (script.frequency_averaging ?? 1) : 1,
-          bitDepth: 'bit_depth' in script ? (Number(script.bit_depth) ?? 1) : 1,
-          continuumSubtraction:
-            'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false,
-          outputFrequencyResolution:
-            'output_frequency_resolution' in script
-              ? (Number(script.output_frequency_resolution) ?? 0)
-              : 0,
-          outputSamplingInterval:
-            'output_sampling_interval' in script
-              ? (Number(script.output_sampling_interval) ?? 0)
-              : 0,
-          dispersionMeasure:
-            'dispersion_measure' in script ? (Number(script.dispersion_measure) ?? 0) : 0,
-          rotationMeasure: 'rotation_measure' in script ? (Number(script.rotation_measure) ?? 0) : 0
-        }
-      };
-    }) ?? []
-  );
-};
-
-function fluxCalToCalibrator(data: FluxCal, index: number): Calibrator {
-  return {
-    targetId: '',
-    name: data.name,
-    calibrationIntent: 'flux',
-    durationSeconds: 600,
-    selectionStrategy: 'highest_elevation',
-    relativeToScan: index === 0 ? 'before_each_scan' : 'after_each_scan',
-    notes: null
-  };
-}
-
-const getCalibrationStrategy = (
-  inValue: CalibrationStrategyTransport[] | null | undefined
-): CalibrationStrategy[] => {
-  return inValue
-    ? inValue.map((strategy) => ({
-        observatoryDefined: strategy?.observatory_defined,
-        id: strategy?.calibration_id as unknown as string,
-        observationIdRef: strategy?.observation_set_ref as unknown as string,
-        calibrators: strategy?.calibrators
-          ? (strategy.calibrators as unknown as FluxCal[]).map((calibrator, index) =>
-              fluxCalToCalibrator(calibrator, index)
-            )
-          : null,
-        notes: strategy.notes as unknown as string | null
-      }))
-    : [];
-};
-
 /*********************************************************** observation parameters mapping *********************************************************/
-// Returns undefined for a missing label, or one the backend sends that we don't know, leaving the
-// caller to apply the default.
-const getWeighting = (inImageWeighting?: string): number | undefined =>
-  IMAGE_WEIGHTING?.find((item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase())
-    ?.value;
-
 const getSupplied = (inSupplied: SuppliedTransport | null): Supplied => {
   const suppliedType = OSD_CONSTANTS.Supplied?.find(
     (s) => s.mappingLabel === inSupplied?.supplied_type
@@ -557,210 +297,6 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
   return results;
 };
 
-/*********************************************************** sensitivity calculator results mapping *********************************************************/
-
-const getResultsSection1 = (
-  inResult: ResultsDetailsAnySupplied,
-  isContinuum: boolean,
-  isPST: boolean,
-  isSensitivity: boolean,
-  inObservationSets: ObservationSets[],
-  inResultObservationRef: string | null
-): SensCalcResults['section1'] => {
-  let section1 = [];
-  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
-
-  // for continuum or PST observation
-  if (isContinuum || isPST) {
-    if (!isSensitivity) {
-      section1.push({
-        // This is only saved for supplied sensitivity obs in backend
-        // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
-        // TODO SC -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
-        // => see sensitivity calculator
-        // TODO SC once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
-        field: 'continuumSensitivityWeighted',
-        value: inResult.result?.weighted_continuum_sensitivity?.value.toString(),
-        units: inResult?.result?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
-      } as ResultsSection);
-    }
-    section1.push({
-      field: 'continuumConfusionNoise',
-      value: inResult.continuum_confusion_noise?.value.toString(),
-      units: inResult?.continuum_confusion_noise?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-    if (!isSensitivity) {
-      section1.push({
-        field: 'continuumTotalSensitivity',
-        value: inResult.result?.total_continuum_sensitivity?.value.toString(),
-        units: inResult?.result?.total_continuum_sensitivity?.unit?.split(' ')?.join('')
-      } as ResultsSection);
-    }
-    section1.push({
-      field: 'continuumSynthBeamSize',
-      value: inResult.synthesized_beam_size?.continuum,
-      units: inResult?.synthesized_beam_size?.unit
-    } as ResultsSection);
-    if (isSensitivity) {
-      section1.push({
-        field: 'continuumIntegrationTime',
-        value: obs?.observation_type_details?.supplied?.quantity?.value.toString(),
-        units: obs?.observation_type_details?.supplied?.quantity?.unit
-      } as ResultsSection);
-    } else {
-      section1.push({
-        field: 'continuumSurfaceBrightnessSensitivity',
-        value: inResult.result?.surface_brightness_sensitivity?.continuum?.toString(),
-        units: inResult?.result?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
-      } as ResultsSection);
-    }
-    // for zoom observation
-  } else {
-    section1 = getResultsSection2(
-      inResult,
-      isSensitivity,
-      inObservationSets,
-      inResultObservationRef
-    ) as any[];
-  }
-  return section1;
-};
-
-const getResultsSection2 = (
-  inResult: ResultsDetailsAnySupplied,
-  isSensitivity: boolean,
-  inObservationSets: ObservationSets[],
-  inResultObservationRef: string | null
-): SensCalcResults['section2'] => {
-  const section2 = [];
-  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
-
-  if (!isSensitivity) {
-    section2.push({
-      field: 'spectralSensitivityWeighted',
-      value: inResult.result?.weighted_spectral_sensitivity?.value.toString(),
-      units: inResult?.result?.weighted_spectral_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-  }
-  section2.push({
-    field: 'spectralConfusionNoise',
-    value: inResult.spectral_confusion_noise?.value.toString(),
-    units: inResult?.spectral_confusion_noise?.unit?.split(' ')?.join('')
-  } as ResultsSection);
-  if (!isSensitivity) {
-    section2.push({
-      field: 'spectralTotalSensitivity',
-      value: inResult.result?.total_spectral_sensitivity?.value.toString(),
-      units: inResult?.result?.total_spectral_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-  }
-  section2.push({
-    field: 'spectralSynthBeamSize',
-    value: inResult.synthesized_beam_size?.spectral,
-    units: inResult?.synthesized_beam_size?.unit // unit is the same for spectral or continuum
-  } as ResultsSection);
-  if (isSensitivity) {
-    section2.push({
-      field: 'spectralIntegrationTime',
-      value: obs?.observation_type_details?.supplied?.quantity?.value.toString(),
-      units: obs?.observation_type_details?.supplied?.quantity?.unit
-    } as ResultsSection);
-  } else {
-    section2.push({
-      field: 'spectralSurfaceBrightnessSensitivity',
-      value: inResult.result?.surface_brightness_sensitivity?.spectral?.toString(),
-      units: inResult?.result?.surface_brightness_sensitivity?.unit?.split(' ')?.join('')
-    } as ResultsSection);
-  }
-  return section2;
-};
-
-const getResultsSection3 = (
-  inResultObservationRef: string | null,
-  inObservationSets: ObservationSets[],
-  _inResult: Result,
-  isSensitivity: boolean
-): SensCalcResults['section3'] => {
-  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
-  const field = isSensitivity ? 'sensitivity' : 'integrationTime';
-  return [
-    {
-      field: field,
-      value: obs?.observation_type_details?.supplied?.quantity?.value?.toString() as string,
-      units: obs?.observation_type_details?.supplied?.quantity?.unit?.split(' ')?.join('')
-    }
-  ];
-};
-
-const getResultObsType = (result: Result, inObservationSets: ObservationSets[]) => {
-  const obsSetRef = result.observation_set_ref;
-  const obs = inObservationSets.find((item) => item.observation_set_id === obsSetRef);
-  return obs?.observation_type_details?.observation_type;
-};
-
-const getTargetObservation = (
-  inResults: Result[] | null | undefined,
-  inObservationSets: ObservationSets[] | null | undefined,
-  // inTargets: TargetBackend[],
-  outTargets: Target[]
-): TargetObservation[] => {
-  const targetObsArray: TargetObservation[] = [];
-  if (
-    !inResults ||
-    inResults.length === 0 ||
-    !inObservationSets ||
-    inObservationSets.length === 0
-  ) {
-    return targetObsArray;
-  }
-  for (const result of inResults) {
-    const resultObsType = getResultObsType(result, inObservationSets);
-    const isContinuum =
-      resultObsType === TYPE_CONTINUUM || resultObsType === TYPE_CONTINUUM_SPECTRAL_LONG;
-    const isPST = resultObsType === TYPE_PST;
-    const isSensitivity = result.result?.supplied_type === 'sensitivity';
-
-    const targetObs: TargetObservation = {
-      targetId: result.target_ref,
-      observationId: result.observation_set_ref,
-      dataProductsSDPId: result?.data_product_ref
-    };
-
-    if (result.result != undefined) {
-      targetObs.sensCalc = {
-        statusGUI: 0, // only for UI
-        error: '', // only for UI
-        section1: getResultsSection1(
-          result,
-          isContinuum,
-          isPST,
-          isSensitivity,
-          inObservationSets,
-          result.observation_set_ref
-        ),
-        section2:
-          isContinuum || isPST
-            ? getResultsSection2(
-                result,
-                isSensitivity,
-                inObservationSets,
-                result.observation_set_ref
-              )
-            : [], // only used for continuum & PST observation
-        section3: getResultsSection3(
-          result.observation_set_ref,
-          inObservationSets,
-          result,
-          isSensitivity
-        )
-      };
-    }
-
-    targetObsArray.push(targetObs);
-  }
-  return targetObsArray;
-};
-
 /*************************************************************************************************************************/
 
 export function mapping(inRec: ProposalBackend): Proposal {
@@ -778,7 +314,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
         PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
       ) as unknown as DocumentPDF);
 
-  const targets = getTargets(inRec.observation_info?.targets);
+  const targets = targetsFromPdm(inRec.observation_info?.targets);
 
   const convertedProposal = {
     metadata: inRec.metadata,
@@ -804,46 +340,55 @@ export function mapping(inRec: ProposalBackend): Proposal {
     targets: targets,
     observations: getObservations(inRec.observation_info?.observation_sets),
     groupObservations: getGroupObservations(inRec.observation_info?.observation_sets),
-    targetObservation: getTargetObservation(
+    targetObservation: targetObservationFromPdm(
       inRec.observation_info?.result_details,
-      inRec.observation_info?.observation_sets,
-      targets
+      inRec.observation_info?.observation_sets
     ),
-    calibrationStrategy: getCalibrationStrategy(inRec.observation_info?.calibration_strategy),
+    calibrationStrategy: calibrationStrategyFromPdm(inRec.observation_info?.calibration_strategy),
     technicalPDF: isSV ? undefined : technicalPDF,
     technicalLoadStatus: isSV
       ? FileUploadStatus.INITIAL
       : technicalPDF
         ? FileUploadStatus.OK
         : FileUploadStatus.INITIAL,
-    dataProductSDP: inRec?.observation_info?.data_product_sdps
-      ? markSelectedDataProducts(
-          getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPTransport[]),
-          inRec.observation_info?.result_details
-        )
-      : [],
-    dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
+    dataProducts: dataProductsFromPdm(inRec.observation_info?.data_product_sdps),
     pipeline: '' // TODO remove this property from type as not needed
   };
   return convertedProposal as Proposal;
 }
 
-async function GetProposal(
+// Unmapped version: fetch proposal from the ODA in its PDM (backend) shape, without mapping it.
+export async function GetProposalPdm(
   authAxiosClient: AxiosAuthClient,
   id: string
-): Promise<Proposal | string> {
+): Promise<ProposalBackend | string> {
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
     if (!result || !result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
-    return mapping(result.data);
+    return result.data;
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
     }
     return 'error.API_UNKNOWN_ERROR';
+  }
+}
+
+async function GetProposal(
+  authAxiosClient: AxiosAuthClient,
+  id: string
+): Promise<Proposal | string> {
+  const response = await GetProposalPdm(authAxiosClient, id);
+  if (typeof response === 'string') {
+    return response;
+  }
+  try {
+    return mapping(response);
+  } catch (error) {
+    return error instanceof Error ? error.message : 'error.API_UNKNOWN_ERROR';
   }
 }
 

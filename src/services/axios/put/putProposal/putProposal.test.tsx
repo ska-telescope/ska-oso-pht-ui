@@ -1,46 +1,30 @@
 import { describe, test, expect } from 'vitest';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import '@testing-library/jest-dom';
 import {
   PROPOSAL_STATUS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
   TYPE_ZOOM,
   TYPE_PST,
-  DP_TYPE_IMAGES,
-  DETECTED_FILTER_BANK_VALUE,
-  PULSAR_TIMING_VALUE,
-  IW_BRIGGS,
   PST_MODES,
   TYPE_ZOOM_LONG,
   PROPOSAL_TYPE
 } from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import {
-  DataProductSDPNew,
-  DataProductSRC,
-  SDPFilterbankPSTData,
-  SDPVisibilitiesContinuumData
-} from '@utils/types/dataProduct.tsx';
-import type {
-  DataProductSRC as DataProductSRCTransport,
-  PstDetectedFilterbank
-} from '@/generated/models';
-import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
-  getDataProductRef,
-  getDataProductScriptParameters,
-  getDataProductSRC,
   getObservationTypeDetails,
   getReferenceCoordinate,
-  getSuppliedFieldsIntegrationTime,
   mapCalibrationStrategyToBackend
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
+
+// The form's other slices match the proposal being saved, as they do when seeded from the store
+const formSlices = getProposalFormValues(MockProposalFrontend);
 
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
@@ -54,6 +38,31 @@ describe('Helper Functions', () => {
       PROPOSAL_STATUS.DRAFT
     );
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
+  });
+
+  test('mappingPutProposal omits empty investigator fields and preserves populated fields', () => {
+    const investigator = {
+      id: 'user-1',
+      status: 'accepted',
+      firstName: '',
+      lastName: 'Lovelace',
+      email: '',
+      phdThesis: false,
+      pi: true
+    };
+    const result = MappingPutProposal(
+      { ...MockProposalFrontend, investigators: [investigator] },
+      PROPOSAL_STATUS.DRAFT
+    );
+    expect(result.proposal_info.investigators).toEqual([
+      {
+        user_id: 'user-1',
+        status: 'accepted',
+        family_name: 'Lovelace',
+        for_phd: false,
+        principal_investigator: true
+      }
+    ]);
   });
 
   test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
@@ -94,6 +103,10 @@ describe('Helper Functions', () => {
 
 describe('PutProposal Service', () => {
   let mockedAuthClient: any;
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   beforeEach(() => {
     vi.resetAllMocks();
     mockedAuthClient = {
@@ -112,6 +125,61 @@ describe('PutProposal Service', () => {
     mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
     const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).to.deep.equal(MockProposalBackend);
+    expect(mockedAuthClient.put).toHaveBeenCalledWith(
+      expect.any(String),
+      MappingPutProposal(MockProposalFrontend, PROPOSAL_STATUS.DRAFT)
+    );
+  });
+
+  test.each([PROPOSAL_STATUS.DRAFT, PROPOSAL_STATUS.SUBMITTED])(
+    'sends RHF values over the legacy payload for %s without losing other fields',
+    async (status) => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
+      const base = MappingPutProposal(MockProposalFrontend, status);
+
+      await PutProposal(mockedAuthClient, MockProposalFrontend, status, {
+        ...formSlices,
+        title: 'Title from RHF',
+        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        abstract: 'Abstract from RHF',
+        scienceCategory: 7
+      });
+
+      expect(mockedAuthClient.put).toHaveBeenCalledExactlyOnceWith(expect.any(String), {
+        ...base,
+        proposal_info: {
+          ...base.proposal_info,
+          title: 'Title from RHF',
+          abstract: 'Abstract from RHF',
+          science_category: 'High Energy Cosmic Particles',
+          proposal_type: {
+            ...base.proposal_info.proposal_type,
+            main_type: PROPOSAL_TYPE.KEY_SCIENCE
+          }
+        }
+      });
+      expect(MockProposalFrontend.title).not.toBe('Title from RHF');
+    }
+  );
+
+  test('does not replace an empty RHF title with the legacy title', async () => {
+    mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
+
+    await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT, {
+      ...formSlices,
+      title: '',
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      abstract: '',
+      scienceCategory: null
+    });
+
+    expect(mockedAuthClient.put).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        proposal_info: expect.objectContaining({ title: '' })
+      })
+    );
   });
 
   test('returns error message on API failure', async () => {
@@ -218,7 +286,7 @@ describe('mapCalibrationStrategyToBackend', () => {
 });
 
 describe('getReferenceCoordinate', () => {
-  test('should map galactic coordinates correctly', () => {
+  test('maps galactic coordinates, leaving the unused fields to the PDM', () => {
     const galactic = {
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
       l: 123.4,
@@ -232,15 +300,11 @@ describe('getReferenceCoordinate', () => {
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: 123.4,
-      b: 56.7,
-      pm_l: 1.1,
-      pm_b: 2.2,
-      epoch: 'J2000',
-      parallax: 0.5
+      b: 56.7
     });
   });
 
-  test('should map ICRS coordinates correctly', () => {
+  test('maps ICRS coordinates, leaving the unused fields to the PDM', () => {
     const icrs = {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       raStr: '12:34:56.7',
@@ -254,229 +318,8 @@ describe('getReferenceCoordinate', () => {
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       ra_str: '12:34:56.7',
-      dec_str: '-12:34:56.7',
-      pm_ra: 0.1,
-      pm_dec: 0.2,
-      epoch: 'J2000',
-      parallax: 0.3
+      dec_str: '-12:34:56.7'
     });
-  });
-});
-
-describe('getDataProductScriptParameters', () => {
-  const obs = [
-    { id: '1', type: TYPE_CONTINUUM, pstMode: undefined },
-    { id: '2', type: TYPE_ZOOM, pstMode: undefined },
-    { id: '3', type: TYPE_PST, pstMode: DETECTED_FILTER_BANK_VALUE },
-    { id: '4', type: TYPE_PST, pstMode: PULSAR_TIMING_VALUE },
-    { id: '5', type: TYPE_PST, pstMode: 999 },
-    { id: '6', type: TYPE_CONTINUUM_SPECTRAL, pstMode: undefined }
-  ] as any[];
-
-  test('should return correct parameters for continuum image', () => {
-    const dp = {
-      id: 'dp-1',
-      observationId: '1',
-      data: {
-        dataProductType: DP_TYPE_IMAGES,
-        imageSizeValue: 10,
-        imageSizeUnits: 1,
-        pixelSizeValue: 2,
-        pixelSizeUnits: 2,
-        weighting: 1,
-        polarisations: ['XX'],
-        channelsOut: 4,
-        taperValue: 0.5
-      }
-    } as DataProductSDPNew;
-    const result = getDataProductScriptParameters(obs, dp);
-    expect(result).toMatchObject({
-      image_size: { value: 10, unit: 'arcmin' },
-      image_cellsize: { value: 2, unit: 'arcsec' },
-      kind: 'continuum',
-      variant: 'continuum image'
-    });
-  });
-
-  test('should return correct parameters for continuum visibilities', () => {
-    const dp = {
-      id: 'dp-2',
-      observationId: '1',
-      data: {
-        dataProductType: 2,
-        timeAveraging: 5,
-        frequencyAveraging: 10
-      } as SDPVisibilitiesContinuumData
-    } as DataProductSDPNew;
-    const result = getDataProductScriptParameters(obs, dp);
-    expect(result).toMatchObject({
-      kind: 'continuum',
-      variant: 'visibilities',
-      time_averaging: 5,
-      frequency_averaging: 10
-    });
-  });
-
-  test('should return correct parameters for zoom', () => {
-    const dp = {
-      id: 'dp-3',
-      observationId: '2',
-      data: {
-        imageSizeValue: 20,
-        imageSizeUnits: 2,
-        pixelSizeValue: 1,
-        pixelSizeUnits: 0,
-        weighting: 2,
-        polarisations: ['XY'],
-        channelsOut: 8,
-        taperValue: 0.1,
-        continuumSubtraction: true,
-        robust: 1
-      }
-    } as DataProductSDPNew;
-    const result = getDataProductScriptParameters(obs, dp);
-    expect(result).toMatchObject({
-      image_size: { value: 20, unit: 'arcsec' },
-      image_cellsize: { value: 1, unit: 'deg' },
-      kind: 'spectral',
-      variant: 'spectral image',
-      continuum_subtraction: true,
-      gaussian_taper: 0.1
-    });
-  });
-
-  test('should return continuum and spectral line image for combined mode', () => {
-    const dp = {
-      id: 'dp-6',
-      observationId: '6',
-      data: {
-        imageSizeValue: 20,
-        imageSizeUnits: 2,
-        pixelSizeValue: 1,
-        pixelSizeUnits: 0,
-        weighting: 2,
-        polarisations: ['XY'],
-        channelsOut: 8,
-        taperValue: 0.1,
-        continuumSubtraction: true,
-        robust: 1
-      }
-    } as DataProductSDPNew;
-    const result = getDataProductScriptParameters(obs, dp);
-    expect(result).toMatchObject({
-      kind: 'continuum and spectral line',
-      variant: 'continuum and spectral line image',
-      gaussian_taper: 0.1
-    });
-    expect(result).not.toHaveProperty('continuum_subtraction');
-  });
-
-  test('should return detected filterbank for PST', () => {
-    const dp = {
-      id: 'dp-4',
-      observationId: '3',
-      data: {
-        dataProductType: DETECTED_FILTER_BANK_VALUE,
-        polarisations: ['YX'],
-        bitDepth: 8,
-        outputFrequencyResolution: 1,
-        outputSamplingInterval: 1,
-        dispersionMeasure: 10.5,
-        rotationMeasure: 5.25
-      } as SDPFilterbankPSTData
-    } as DataProductSDPNew;
-    const result = getDataProductScriptParameters(obs, dp);
-    expect(result).toMatchObject({
-      polarisations: ['YX'],
-      bit_depth: 8,
-      output_frequency_resolution: 1,
-      output_sampling_interval: 1,
-      dispersion_measure: 10.5,
-      rotation_measure: 5.25,
-      kind: 'pst',
-      variant: 'detected filterbank'
-    } as PstDetectedFilterbank);
-  });
-
-  test('should return pulsar timing for PST', () => {
-    const dp = {
-      id: 'dp-4',
-      observationId: '4'
-    } as any;
-    const result = getDataProductScriptParameters(obs, dp);
-    expect(result).toMatchObject({
-      kind: 'pst',
-      variant: 'pulsar timing'
-    });
-  });
-
-  test('should return flow through for PST', () => {
-    const dp = {
-      id: 'dp-5',
-      observationId: '5',
-      data: {
-        polarisations: ['YX'],
-        bitDepth: 32
-      }
-    } as DataProductSDPNew;
-    const result = getDataProductScriptParameters(obs, dp);
-    expect(result).toMatchObject({
-      polarisations: ['YX'],
-      bit_depth: 32,
-      kind: 'pst',
-      variant: 'flow through'
-    });
-  });
-
-  test('should handle missing obs gracefully', () => {
-    const dp = { observationId: 'notfound' } as any;
-    const result = getDataProductScriptParameters(obs, dp);
-    expect(result).toBeDefined();
-  });
-
-  test('should include robust if weighting is IW_BRIGGS', () => {
-    const dp = {
-      id: 'dp-1',
-      observationId: '1',
-      data: {
-        dataProductType: DP_TYPE_IMAGES,
-        imageSizeValue: 1,
-        imageSizeUnits: 0,
-        pixelSizeValue: 1,
-        pixelSizeUnits: 0,
-        weighting: IW_BRIGGS,
-        robust: 0.5,
-        polarisations: [],
-        channelsOut: 1,
-        taperValue: 0
-      }
-    } as DataProductSDPNew;
-    const result = getDataProductScriptParameters(obs, dp);
-    const weight = (result as { weight?: { weighting?: string; robust?: number } })?.weight;
-    expect(weight?.weighting).toBe('briggs');
-    expect(weight?.robust).toBe(0.5);
-  });
-});
-
-describe('getDataProductSRC', () => {
-  test('should map DataProductSRC array to DataProductSRCNetBackend array', () => {
-    const input: Partial<DataProductSRC>[] = [{ id: '1' }, { id: '2' }, { id: '3' }];
-    const expected: DataProductSRCTransport[] = [
-      { data_products_src_id: '1' },
-      { data_products_src_id: '2' },
-      { data_products_src_id: '3' }
-    ];
-    expect(getDataProductSRC(input)).toEqual(expected);
-  });
-
-  test('should return an empty array if input is empty', () => {
-    expect(getDataProductSRC([])).toEqual([]);
-  });
-
-  test('should handle undefined or null id values', () => {
-    const input = [{ id: undefined }, { id: null }];
-    const expected = [{ data_products_src_id: undefined }, { data_products_src_id: null }];
-    expect(getDataProductSRC(input as any)).toEqual(expected);
   });
 });
 
@@ -532,41 +375,5 @@ describe('getObservationTypeDetails', () => {
     } as any;
     const result = getObservationTypeDetails(obs);
     expect(result.observation_type).toBe(TYPE_PST);
-  });
-});
-
-describe('getSuppliedFieldsIntegrationTime', () => {
-  const mockTarObs = {
-    sensCalc: {
-      section3: [{ value: 123, units: 'hr', field: 'integrationTime' }]
-    }
-  } as any;
-
-  test('should return correct values for continuum type', () => {
-    const result = getSuppliedFieldsIntegrationTime('integration_time', TYPE_CONTINUUM, mockTarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: 123, unit: 'hr' },
-      spectral: { value: 123, unit: 'hr' }
-    });
-  });
-
-  test('should return 0 and empty string for non-continuum type', () => {
-    const result = getSuppliedFieldsIntegrationTime('integration_time', 999, mockTarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: 0, unit: '' },
-      spectral: { value: 123, unit: 'hr' }
-    });
-  });
-
-  test('should handle missing section3 gracefully', () => {
-    const tarObs = { sensCalc: {} } as any;
-    const result = getSuppliedFieldsIntegrationTime('integration_time', TYPE_CONTINUUM, tarObs);
-    expect(result).toEqual({
-      supplied_type: 'integration_time',
-      continuum: { value: NaN, unit: '' },
-      spectral: { value: NaN, unit: '' }
-    });
   });
 });

@@ -46,7 +46,7 @@ export interface PanelReview {
      * @type {string}
      * @memberof PanelReview
      */
-    'review_id': string;
+    'review_id'?: string | null;
     /**
      * 
      * @type {boolean}
