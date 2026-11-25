@@ -11,6 +11,7 @@ import { PAGE_LANDING, PAGE_LINKING, PAGE_TEAM, PROPOSAL_STATUS } from '@/utils/
 
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockSaveToOda = vi.hoisted(() => vi.fn());
+const mockRecordSave = vi.hoisted(() => vi.fn());
 const mockOSD = vi.hoisted(() => ({ isSV: false }));
 
 vi.mock('@/utils/notify/useNotify', () => ({
@@ -19,6 +20,10 @@ vi.mock('@/utils/notify/useNotify', () => ({
 
 vi.mock('@/models/proposals/useProposalOda', () => ({
   useProposalOda: () => ({ saveToOda: mockSaveToOda })
+}));
+
+vi.mock('./LastSavedContext', () => ({
+  useLastSaved: () => ({ recordSave: mockRecordSave })
 }));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
@@ -66,11 +71,36 @@ describe('useSaveDraft', () => {
       mockSaveToOda.mockResolvedValue({ error: 'Save failed' });
       await expect(renderWith().saveDraft()).resolves.toBe(false);
       expect(mockNotifyError).toHaveBeenCalledWith('Save failed');
+      expect(mockRecordSave).not.toHaveBeenCalled();
     });
 
     test('does not save when blocked', async () => {
       await expect(renderWith({ title: '   ' }).saveDraft()).resolves.toBe(false);
       expect(mockSaveToOda).not.toHaveBeenCalled();
+      expect(mockRecordSave).not.toHaveBeenCalled();
+    });
+
+    test("records the backend's time for a successful save", async () => {
+      mockSaveToOda.mockResolvedValue({
+        prsl_id: 'prsl-1',
+        metadata: { last_modified_on: '2026-11-25T14:32:00Z' }
+      });
+      await renderWith().saveDraft();
+      expect(mockRecordSave).toHaveBeenCalledExactlyOnceWith(proposal.id, '2026-11-25T14:32:00Z');
+    });
+
+    test('records the current time when the response does not give one', async () => {
+      vi.useFakeTimers({ now: new Date('2026-11-25T14:33:00Z'), toFake: ['Date'] });
+      try {
+        mockSaveToOda.mockResolvedValue({ prsl_id: 'prsl-1' });
+        await renderWith().saveDraft();
+        expect(mockRecordSave).toHaveBeenCalledExactlyOnceWith(
+          proposal.id,
+          '2026-11-25T14:33:00.000Z'
+        );
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     test('waits for an earlier save, from any caller, to finish before starting', async () => {

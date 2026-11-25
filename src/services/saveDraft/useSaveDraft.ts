@@ -12,18 +12,21 @@ import { ProposalType } from '@/models/proposals/proposal';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import phtTranslations from '../../../public/locales/en/pht.json';
+import { useLastSaved } from './LastSavedContext';
 
 // Every caller (Save button, timer, navigation) shares this queue. Saves run one after another, so
 // a save started later always lands later and an older snapshot can never overwrite a newer one
 let saveQueue: Promise<unknown> = Promise.resolve();
 
-/** Saves the proposal being edited as a draft. A failed save shows its error. */
+/** Saves the proposal being edited as a draft. A failed save shows its error; a successful one
+ * records when it was saved. */
 export function useSaveDraft() {
   const { application } = storageObject.useStore();
   const { isSV } = useOSDAccessors();
   const { saveToOda } = useProposalOda();
   const form = useFormContext<ProposalType>() as UseFormReturn<ProposalType> | null;
   const { notifyError } = useNotify();
+  const { recordSave } = useLastSaved();
 
   // TODO: Get the proposal from the new form context
   const proposal = application.content2 as Proposal;
@@ -53,6 +56,8 @@ export function useSaveDraft() {
         notifyError(response?.error ?? 'An unknown error occurred');
         return false;
       }
+      // The backend's time for the save, or now if the response does not say
+      recordSave(proposal.id, response.metadata?.last_modified_on ?? new Date().toISOString());
       return true;
     });
     // A save that throws must not stop the ones queued after it
