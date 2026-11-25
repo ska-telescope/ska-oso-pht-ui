@@ -12,6 +12,10 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
+// Every caller (Save button, timer, navigation) shares this queue. Saves run one after another, so
+// a save started later always lands later and an older snapshot can never overwrite a newer one
+let saveQueue: Promise<unknown> = Promise.resolve();
+
 /** Saves the proposal being edited as a draft. A failed save shows its error. */
 export function useSaveDraft() {
   const { application } = storageObject.useStore();
@@ -36,17 +40,22 @@ export function useSaveDraft() {
     countWords(proposal.title ?? '') > Number(phtTranslations.title.maxWord) ||
     countWords(proposal.abstract ?? '') > Number(phtTranslations.abstract.maxWord);
 
-  // Resolves to whether the proposal was saved
-  const saveDraft = async (): Promise<boolean> => {
+  // Resolves to whether the proposal was saved, once the saves queued before it have finished
+  const saveDraft = (): Promise<boolean> => {
     if (isSaveBlocked()) {
-      return false;
+      return Promise.resolve(false);
     }
-    const response = await saveToOda(proposal, PROPOSAL_STATUS.DRAFT);
-    if (!response || 'error' in response) {
-      notifyError(response?.error ?? 'An unknown error occurred');
-      return false;
-    }
-    return true;
+    const saved = saveQueue.then(async () => {
+      const response = await saveToOda(proposal, PROPOSAL_STATUS.DRAFT);
+      if (!response || 'error' in response) {
+        notifyError(response?.error ?? 'An unknown error occurred');
+        return false;
+      }
+      return true;
+    });
+    // A save that throws must not stop the ones queued after it
+    saveQueue = saved.catch(() => undefined);
+    return saved;
   };
 
   return { saveDraft, isSavePage, isSaveBlocked };

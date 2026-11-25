@@ -70,6 +70,38 @@ describe('useSaveDraft', () => {
       await expect(renderWith({ title: '   ' }).saveDraft()).resolves.toBe(false);
       expect(mockSaveToOda).not.toHaveBeenCalled();
     });
+
+    test('waits for an earlier save, from any caller, to finish before starting', async () => {
+      let finishFirst: (value: object) => void = () => {};
+      mockSaveToOda
+        .mockReturnValueOnce(new Promise((resolve) => (finishFirst = resolve)))
+        .mockResolvedValueOnce({ prsl_id: 'prsl-1' });
+      const first = renderWith().saveDraft();
+      const second = renderWith({ title: 'Newer title' }).saveDraft();
+
+      await Promise.resolve();
+      expect(mockSaveToOda).toHaveBeenCalledOnce();
+
+      finishFirst({ prsl_id: 'prsl-1' });
+      await expect(first).resolves.toBe(true);
+      await expect(second).resolves.toBe(true);
+      expect(mockSaveToOda).toHaveBeenCalledTimes(2);
+      expect(mockSaveToOda).toHaveBeenLastCalledWith(
+        expect.objectContaining({ title: 'Newer title' }),
+        PROPOSAL_STATUS.DRAFT
+      );
+    });
+
+    test('still runs a queued save after an earlier save throws', async () => {
+      mockSaveToOda
+        .mockRejectedValueOnce(new Error('Network Error'))
+        .mockResolvedValueOnce({ prsl_id: 'prsl-1' });
+      const first = renderWith().saveDraft();
+      const second = renderWith().saveDraft();
+
+      await expect(first).rejects.toThrow('Network Error');
+      await expect(second).resolves.toBe(true);
+    });
   });
 
   describe('isSaveBlocked', () => {
