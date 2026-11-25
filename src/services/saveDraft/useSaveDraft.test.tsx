@@ -150,6 +150,37 @@ describe('useSaveDraft', () => {
       );
     });
 
+    test('replaces a waiting save with a newer one, whose result both callers get', async () => {
+      let finishFirst: (value: object) => void = () => {};
+      mockSaveToOda
+        .mockReturnValueOnce(new Promise((resolve) => (finishFirst = resolve)))
+        .mockResolvedValueOnce({ error: 'Save failed' });
+      const first = renderWith().saveDraft();
+      const replaced = renderWith({ title: 'Older title' }).saveDraft();
+      const newest = renderWith({ title: 'Newest title' }).saveDraft();
+
+      finishFirst({ prsl_id: 'prsl-1' });
+      await expect(first).resolves.toBe(true);
+      // The newest save ran in place of the replaced one, so both get its result
+      await expect(newest).resolves.toBe(false);
+      await expect(replaced).resolves.toBe(false);
+      expect(mockSaveToOda).toHaveBeenCalledTimes(2);
+      expect(mockSaveToOda).toHaveBeenLastCalledWith(
+        expect.objectContaining({ title: 'Newest title' }),
+        PROPOSAL_STATUS.DRAFT,
+        undefined
+      );
+      // One save failed, so one error, however many asked for it
+      expect(mockNotifyError).toHaveBeenCalledOnce();
+    });
+
+    test('runs a save straight away once the previous one has finished', async () => {
+      mockSaveToOda.mockResolvedValue({ prsl_id: 'prsl-1' });
+      await renderWith().saveDraft();
+      await renderWith().saveDraft();
+      expect(mockSaveToOda).toHaveBeenCalledTimes(2);
+    });
+
     test('still runs a queued save after an earlier save throws', async () => {
       mockSaveToOda
         .mockRejectedValueOnce(new Error('Network Error'))
