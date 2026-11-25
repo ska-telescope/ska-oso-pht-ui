@@ -6,8 +6,7 @@
 // app. See hydrateIndigoSession's own comment below for how/why that works (it bypasses Indigo's
 // login/consent HTML forms via direct API calls rather than cy.origin() - cy.origin() turned out
 // to be unreliable for this, see its comment for why).
-// fetchLiveIndigoToken/fetchLiveOpsToken are separate - kept only for assignProposalToPanel's own
-// API fixture setup. Also see axiosAuthClient.ts's __msalLoadExternalTokens hook.
+// Also see axiosAuthClient.ts's __msalLoadExternalTokens hook.
 //
 // The suite always runs against a live backend now - there is no stubbed/mocked mode any more.
 
@@ -77,19 +76,6 @@ const fetchLiveIndigoTokenResponse = ({ username, password } = {}) =>
       timeout: 15000
     })
   ).then((response) => response.body);
-
-export const fetchLiveIndigoToken = (opts) =>
-  fetchLiveIndigoTokenResponse(opts).then((body) => body.access_token);
-
-// Token for the ops/reviewer-admin account (see DEFAULT_OPS_USERNAME above) - only used by
-// assignProposalToPanel's own direct API calls, see the file header comment.
-export const fetchLiveOpsToken = () =>
-  withEnv((envOr) =>
-    fetchLiveIndigoToken({
-      username: envOr('INDIGO_OPS_USERNAME', DEFAULT_OPS_USERNAME),
-      password: envOr('INDIGO_OPS_PASSWORD', DEFAULT_OPS_PASSWORD)
-    })
-  );
 
 // Seeds MSAL's cache from a real token response via the app's __msalLoadExternalTokens hook (see
 // axiosAuthClient.ts) - scopes must match what axiosAuthClient.ts's loginRequest asks for, or the

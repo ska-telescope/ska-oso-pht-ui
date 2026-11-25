@@ -33,15 +33,7 @@ export const enter = (field: Cypress.Chainable<JQuery>, value: string) =>
     })
     .blur();
 
-// TODO: Find by cy.findByRole('combobox', { name: label }) once the pages use the controlled
-//  components. Current gui-components implementation of dropdowns does not wire the labels to
-//  IDs correctly which is why we cannot do this yet.
-const dropdown = (label: string) =>
-  // cy.findByRole('combobox', { name: label })
-  cy
-    .contains('label', new RegExp(`^${label}`))
-    .parent()
-    .find('[role="combobox"]');
+const dropdown = (label: string) => cy.findByRole('combobox', { name: new RegExp(`^${label}`) });
 
 export const select = (label: string, option: string) => {
   dropdown(label).click();

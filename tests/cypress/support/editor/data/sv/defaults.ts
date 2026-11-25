@@ -19,16 +19,16 @@ export const SV_DEFAULTS: Record<
   { observation: Observation; dataProduct?: ImageDataProduct }
 > = {
   Continuum: {
-    observation: { centralFrequency: '199.609375', bandwidth: '150', integrationTime: '1' },
+    observation: { centralFrequency: '199.609375', bandwidth: '150.000000', integrationTime: '1' },
     dataProduct: { ...IMAGE_DP_DEFAULTS, channelsOut: '10' }
   },
   'Continuum-Spectral': {
-    observation: { centralFrequency: '199.609375', bandwidth: '150', integrationTime: '1' },
+    observation: { centralFrequency: '199.609375', bandwidth: '150.000000', integrationTime: '1' },
     dataProduct: { ...IMAGE_DP_DEFAULTS, channelsOut: '4000' }
   },
   Spectral: {
     observation: {
-      centralFrequency: '200',
+      centralFrequency: '200.000000',
       numberOfChannels: SPECTRAL_CHANNELS,
       spectralResolution: '1808.45 Hz (2.7 km/s)',
       integrationTime: '1'
@@ -43,7 +43,7 @@ export const SV_DEFAULTS: Record<
   PST: {
     observation: {
       centralFrequency: '199.609375',
-      bandwidth: '150',
+      bandwidth: '150.000000',
       pstMode: 'Pulsar Timing',
       integrationTime: '1'
     }
