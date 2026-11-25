@@ -1,9 +1,8 @@
 import React from 'react';
 import { describe, expect, test, vi } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import SaveButton from './Save';
-import '@testing-library/jest-dom';
 import '@testing-library/jest-dom';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
@@ -16,102 +15,23 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('Save Button', () => {
-  const mockAction = vi.fn();
-
-  beforeEach(() => {
-    vi.useFakeTimers();
-    mockAction.mockClear();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-  test('renders correctly', () => {
-    wrapper(<SaveButton action={mockAction} />);
-    expect(screen.getByTestId('saveButtonTestId')).toHaveTextContent('saveBtn.label');
-    screen.getByTestId('saveButtonTestId').click();
-    expect(mockAction).toBeCalled();
-  });
-  test('renders correctly with tooltip empty', () => {
-    wrapper(<SaveButton action={mockAction} toolTip="" />);
-    expect(screen.getByTestId('saveButtonTestId')).toHaveTextContent('saveBtn.label');
-  });
-
-  test('does not trigger auto-save if action is not a function', () => {
-    wrapper(<SaveButton action="notAFunction" autoSaveInterval={2} showCountdown />);
-    act(() => {
-      vi.advanceTimersByTime(4000);
-    });
-    // Should not throw or call anything
-    expect(mockAction).not.toHaveBeenCalled();
-  });
-
-  test('uses the latest action without restarting the auto-save timer', () => {
-    const initialAction = vi.fn();
-    const latestAction = vi.fn();
-    const { rerender } = wrapper(<SaveButton action={initialAction} autoSaveInterval={2} />);
-
-    act(() => {
-      vi.advanceTimersByTime(1000);
-    });
-    rerender(
-      <StoreProvider>
-        <ThemeA11yProvider>
-          <SaveButton action={latestAction} autoSaveInterval={2} />
-        </ThemeA11yProvider>
-      </StoreProvider>
-    );
-    act(() => {
-      vi.advanceTimersByTime(1000);
-    });
-
-    expect(initialAction).not.toHaveBeenCalled();
-    expect(latestAction).toHaveBeenCalledOnce();
-  });
-});
-
-describe('SaveButton iconWithCountdown', () => {
-  const mockAction = vi.fn();
-
-  beforeEach(() => {
-    vi.useFakeTimers();
-    mockAction.mockClear();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it('renders SaveIcon inside a Box', () => {
-    const { getByTestId } = wrapper(<SaveButton action={mockAction} />);
-    const btn = getByTestId('saveButtonTestId');
-    expect(btn.querySelector('svg')).toBeTruthy();
-  });
-
-  it('renders CircularProgress when showCountdown and autoSaveInterval > 0', () => {
-    const { container } = wrapper(
-      <SaveButton action={mockAction} showCountdown autoSaveInterval={5} />
-    );
-    expect(container.querySelector('[role="progressbar"]')).toBeTruthy();
-  });
-
-  it('does not render CircularProgress when showCountdown is false', () => {
-    const { container } = wrapper(
-      <SaveButton action={mockAction} showCountdown={false} autoSaveInterval={5} />
-    );
-    expect(container.querySelector('[role="progressbar"]')).toBeFalsy();
-  });
-
-  it('does not render CircularProgress when autoSaveInterval is 0', () => {
-    const { container } = wrapper(
-      <SaveButton action={mockAction} showCountdown autoSaveInterval={0} />
-    );
-    expect(container.querySelector('[role="progressbar"]')).toBeFalsy();
-  });
-
-  it('respects disabled prop', () => {
-    wrapper(<SaveButton action={mockAction} disabled />);
+  test('renders and calls the action on click', () => {
+    const action = vi.fn();
+    wrapper(<SaveButton action={action} />);
     const btn = screen.getByTestId('saveButtonTestId');
-    expect(btn).toBeDisabled();
+    expect(btn).toHaveTextContent('saveBtn.label');
+    expect(btn.querySelector('svg')).toBeTruthy();
+    btn.click();
+    expect(action).toHaveBeenCalledOnce();
+  });
+
+  test('renders with an empty tooltip', () => {
+    wrapper(<SaveButton action={vi.fn()} toolTip="" />);
+    expect(screen.getByTestId('saveButtonTestId')).toHaveTextContent('saveBtn.label');
+  });
+
+  test('respects disabled prop', () => {
+    wrapper(<SaveButton action={vi.fn()} disabled />);
+    expect(screen.getByTestId('saveButtonTestId')).toBeDisabled();
   });
 });

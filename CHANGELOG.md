@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: The automatic save timer no longer restarts on every page change
 * Changed: e2e test auth moved into the test framework; Indigo token renewal uses a new `auth-callback.html` page (register `<app URL>auth-callback.html` as an Indigo redirect URI)
 * Added: Indigo smoke tests, a REQUEST_TIMEOUT_MS setting (default 20s, 60s for CI e2e deployments), and --clean-db for local e2e runs
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.

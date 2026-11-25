@@ -6,7 +6,6 @@ import { storageObject } from '@utils/storage/store';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import {
-  AUTO_SAVE_INTERVAL,
   NAV,
   PATH,
   PROPOSAL_STATUS,
@@ -172,12 +171,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       </Grid>
       <Grid>
         {isSavePage(pageNo) && (
-          <SaveButton
-            testId={'saveBtn'}
-            disabled={isSaveBlocked()}
-            action={handleSave}
-            autoSaveInterval={AUTO_SAVE_INTERVAL}
-          />
+          <SaveButton testId={'saveBtn'} disabled={isSaveBlocked()} action={handleSave} />
         )}
       </Grid>
     </Grid>

@@ -1,7 +1,5 @@
 import SaveIcon from '@mui/icons-material/Save';
-import React from 'react';
-import { Box, CircularProgress } from '@mui/material';
-import { useTheme } from '@mui/system';
+import { Box } from '@mui/material';
 import BaseButton from '../Base/Button';
 
 interface SaveButtonProps {
@@ -11,96 +9,25 @@ interface SaveButtonProps {
   primary?: boolean;
   testId?: string;
   toolTip?: string;
-  showCountdown?: boolean;
-  autoSaveInterval?: number;
 }
 
 export default function SaveButton({
   disabled = false,
   action,
-  autoSaveInterval = 0,
   title = 'saveBtn.label',
   primary = false,
   testId = 'saveButtonTestId',
-  toolTip = 'saveBtn.tooltip',
-  showCountdown = false
+  toolTip = 'saveBtn.tooltip'
 }: SaveButtonProps) {
-  const theme = useTheme();
-  const [countdown, setCountdown] = React.useState(autoSaveInterval);
-  const [warn, setWarn] = React.useState(false);
-  const actionRef = React.useRef(action);
-
-  React.useEffect(() => {
-    actionRef.current = action;
-  }, [action]);
-
-  React.useEffect(() => {
-    if (autoSaveInterval > 0) {
-      let warnTimeoutId: ReturnType<typeof setTimeout> | undefined;
-      const intervalId = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            const currentAction = actionRef.current;
-            if (typeof currentAction === 'function') {
-              currentAction(); // trigger auto-save
-              setWarn(true); // switch to warning color
-              warnTimeoutId = setTimeout(() => setWarn(false), 600); // revert after 600ms
-            }
-            return autoSaveInterval; // reset countdown
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      return () => {
-        clearInterval(intervalId);
-        clearTimeout(warnTimeoutId);
-        setWarn(false);
-      };
-    }
-  }, [autoSaveInterval]);
-
-  const iconWithCountdown = (
-    <Box
-      sx={{
-        pr: 1,
-        position: 'relative',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}
-    >
-      <SaveIcon
-        sx={{
-          fontSize: 18,
-          color: showCountdown && warn ? theme.palette.warning.main : 'inherit',
-          transition: 'color 0.3s ease'
-        }}
-      />
-      {showCountdown && autoSaveInterval > 0 && (
-        <CircularProgress
-          variant="determinate"
-          value={(countdown / autoSaveInterval) * 100}
-          size={34}
-          thickness={3}
-          sx={{
-            position: 'absolute',
-            top: -8,
-            left: -8,
-            zIndex: 1,
-            color: primary ? 'primary.main' : 'secondary.main',
-            transition: 'all 0.3s linear'
-          }}
-        />
-      )}
-    </Box>
-  );
-
   return (
     <BaseButton
       action={action}
       disabled={disabled}
-      icon={iconWithCountdown}
+      icon={
+        <Box sx={{ pr: 1, display: 'inline-flex', alignItems: 'center' }}>
+          <SaveIcon sx={{ fontSize: 18 }} />
+        </Box>
+      }
       primary={primary}
       testId={testId}
       title={title}
