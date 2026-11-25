@@ -62,9 +62,7 @@ import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
-import { AutoSaveTimerService } from '@/services/saveDraft/AutoSaveTimerService';
-import { AutoSaveNavigationService } from '@/services/saveDraft/AutoSaveNavigationService';
-import { LastSavedProvider } from '@/services/saveDraft/LastSavedContext';
+import { SaveDraftProvider } from '@/services/saveDraft/SaveDraftProvider';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -345,11 +343,9 @@ export default function PHT({
           >
             {/* TODO: REMOVE  */}
             {/* Global form provider for proposal form management */}
-            <LastSavedProvider>
-              <FormProvider {...formMethods}>
-                <SensitivityService />
-                <AutoSaveTimerService />
-                <AutoSaveNavigationService />
+            <FormProvider {...formMethods}>
+              <SensitivityService />
+              <SaveDraftProvider>
                 {REQUIRED_WIDTH ? (
                   <Routes>
                     {ROUTES.map((ROUTE) => (
@@ -359,8 +355,8 @@ export default function PHT({
                 ) : (
                   mediaSizeNotSupported()
                 )}
-              </FormProvider>
-            </LastSavedProvider>
+              </SaveDraftProvider>
+            </FormProvider>
           </Paper>
         }
         selectTelescope={false}
