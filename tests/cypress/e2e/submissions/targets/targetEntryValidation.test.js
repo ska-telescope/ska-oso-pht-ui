@@ -1,5 +1,5 @@
 import {
-  addM2TargetUsingResolve,
+  addM2Target,
   checkFieldDisabled,
   clearLocalStorage,
   clickDialogConfirm,
@@ -9,7 +9,6 @@ import {
   clickToAddTarget,
   enterTargetField,
   spyOnResolveTargetAPI,
-  waitForResolveTarget,
   pageConfirmed,
   updateTargetField,
   verifyFieldError,
@@ -58,8 +57,7 @@ describe('Science Verification: Target entry validation', () => {
     spyOnResolveTargetAPI();
 
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -79,8 +77,7 @@ describe('Science Verification: Target entry validation', () => {
     spyOnResolveTargetAPI();
 
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -100,8 +97,7 @@ describe('Science Verification: Target entry validation', () => {
     spyOnResolveTargetAPI();
 
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -120,8 +116,7 @@ describe('Science Verification: Target entry validation', () => {
   it('SV: Verify target table reflects updated target', () => {
     spyOnResolveTargetAPI();
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //verify target in target table
@@ -167,8 +162,7 @@ describe.skip('Proposal Flow: Target entry validation', () => {
     spyOnResolveTargetAPI();
 
     //add target
-    addM2TargetUsingResolve();
-    waitForResolveTarget();
+    addM2Target();
     clickToAddTarget();
 
     //attempt to add target with the same name

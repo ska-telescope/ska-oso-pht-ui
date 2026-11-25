@@ -571,8 +571,7 @@ export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = nu
   }
   clickStatusIconNav('statusId4'); // Target page
   pageConfirmed('TARGET');
-  addM2TargetUsingResolve();
-  waitForResolveTarget();
+  addM2Target();
   clickToAddTarget();
   verifyAutoLinkAlertFooter();
 };
@@ -580,6 +579,15 @@ export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = nu
 export const addSubmissionSummary = (value) => {
   cy.get('[data-testid="abstractId"]').should('exist');
   cy.get('[data-testid="abstractId"]').type(value);
+};
+
+// Types in the values the resolver gives M2, so the tests don't depend on the resolver's external
+// services (ported from main, 8dd1ba175)
+export const addM2Target = () => {
+  enterTargetField('name', 'M2');
+  enterTargetField('skyDirectionValue1', '21:33:27.0200');
+  enterTargetField('skyDirectionValue2', '-00:49:23.700');
+  enterTargetField('velocityValue', '-3.6');
 };
 
 export const addM2TargetUsingResolve = () => {
