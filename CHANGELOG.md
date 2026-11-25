@@ -20,6 +20,10 @@ UNRELEASED
 * Bugfix: Page now scrolls to top after proposal selection
 * Changed: ska-oso-services dependency updated to v17.2.2
 
+11.1.1
+----------
+* Bugfix: Translation files moved from `public` to `src` to avoid display text caching
+
 11.1.0
 ----------
 
