@@ -64,6 +64,7 @@ import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 import { AutoSaveTimerService } from '@/services/saveDraft/AutoSaveTimerService';
 import { AutoSaveNavigationService } from '@/services/saveDraft/AutoSaveNavigationService';
+import { LastSavedProvider } from '@/services/saveDraft/LastSavedContext';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -344,20 +345,22 @@ export default function PHT({
           >
             {/* TODO: REMOVE  */}
             {/* Global form provider for proposal form management */}
-            <FormProvider {...formMethods}>
-              <SensitivityService />
-              <AutoSaveTimerService />
-              <AutoSaveNavigationService />
-              {REQUIRED_WIDTH ? (
-                <Routes>
-                  {ROUTES.map((ROUTE) => (
-                    <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
-                  ))}
-                </Routes>
-              ) : (
-                mediaSizeNotSupported()
-              )}
-            </FormProvider>
+            <LastSavedProvider>
+              <FormProvider {...formMethods}>
+                <SensitivityService />
+                <AutoSaveTimerService />
+                <AutoSaveNavigationService />
+                {REQUIRED_WIDTH ? (
+                  <Routes>
+                    {ROUTES.map((ROUTE) => (
+                      <Route key={ROUTE.path} path={ROUTE.path} element={ROUTE.element} />
+                    ))}
+                  </Routes>
+                ) : (
+                  mediaSizeNotSupported()
+                )}
+              </FormProvider>
+            </LastSavedProvider>
           </Paper>
         }
         selectTelescope={false}
