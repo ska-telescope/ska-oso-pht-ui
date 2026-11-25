@@ -7,14 +7,6 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Typography, Box, Grid } from '@mui/material';
-import { useNavigate } from 'react-router';
-import { storageObject } from '@utils/storage/store';
-import { useValidateProposal } from '@utils/validation/validation';
-import { legacyProposalFromForm } from '@/models/proposals/useCopySlicesToStore';
-import { UNKNOWN_API_ERROR } from '@/services/axios/apiResult/apiResult';
-import { useProposalOda } from '@/models/proposals/useProposalOda';
-import EditIcon from '../../icon/editIcon/editIcon';
-import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import {
   getColAuthors,
@@ -28,17 +20,12 @@ import {
 } from './columns/Columns';
 import GetProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import Proposal from '@/utils/types/proposal';
-import { PROPOSAL_STATUS, NAV, DETAILS, PROPOSAL_TYPE } from '@/utils/constants';
-import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
-import ViewIcon from '@/components/icon/viewIcon/viewIcon';
-import { storeProposalCopy } from '@/utils/storage/proposalData';
-import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
+import { PROPOSAL_STATUS, DETAILS, PROPOSAL_TYPE } from '@/utils/constants';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export function filterProposals(
@@ -64,7 +51,6 @@ interface GridProposalsProps {
   showSearch?: boolean;
   showTitle?: boolean;
   showSelection?: boolean;
-  showActions?: boolean;
   tickBoxClicked?: (proposal: Proposal, isProposalSelected: boolean) => void;
 }
 
@@ -74,71 +60,26 @@ export default function GridProposals({
   showTitle = false,
   forReview = false,
   showSelection = false,
-  showActions = false,
   tickBoxClicked = () => {}
 }: GridProposalsProps) {
   const { t } = useScopedTranslation();
   const { osdPolicies } = useOSDAccessors();
-  const navigate = useNavigate();
-  const { setHelp } = useHelp();
 
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchScienceCategory, setSearchScienceCategory] = React.useState<string | null>(null);
   const [searchProposalType, setSearchProposalType] = React.useState('');
 
-  const { application, updateAppContent1, updateAppContent2, updateAppContent5 } =
-    storageObject.useStore();
-
   const [axiosError, setAxiosError] = React.useState('');
-  const [axiosViewError, setAxiosViewError] = React.useState('');
-  const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const [openViewDialog, setOpenViewDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const [proposalsCollection, setProposalsCollection] = React.useState<IdObject[]>([]);
   const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
     'indeterminate'
   );
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
-  const { loadFromOda, saveToOda } = useProposalOda();
-  const validateProposal = useValidateProposal();
-
-  const deleteClicked = () => (
-    <ProposalDisplay
-      proposal={getProposal()}
-      open={openDeleteDialog}
-      onClose={() => setOpenDeleteDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel="deleteProposal.confirm"
-    />
-  );
-
-  const cloneClicked = () => (
-    <ProposalDisplay
-      proposal={getProposal()}
-      open={openCloneDialog}
-      onClose={() => setOpenCloneDialog(false)}
-      onConfirm={cloneConfirmed}
-      onConfirmLabel="cloneProposal.confirm"
-    />
-  );
-
-  const viewClicked = () => (
-    <ProposalDisplay
-      proposal={getProposal()}
-      open={openViewDialog}
-      onClose={() => setOpenViewDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel=""
-    />
-  );
 
   React.useEffect(() => {
-    updateAppContent2(null as unknown as Proposal);
     setFetchList(!fetchList);
   }, []);
 
@@ -163,9 +104,6 @@ export default function GridProposals({
       setProposalsCollection(selectedProposals);
     }
   }, [selectedProposals]);
-
-  const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
-  const canClone = () => true;
 
   const isProposalSelected = (proposalId: string): boolean => {
     return proposalsCollection?.filter((entry) => entry.id === proposalId)?.length > 0;
@@ -213,35 +151,6 @@ export default function GridProposals({
     )
   };
 
-  const colActions = {
-    field: 'actions',
-    type: 'actions',
-    headerName: 'Actions',
-    sortable: false,
-    width: 150,
-    disableClickEventBubbling: true,
-    renderCell: (e: { row: any }) => (
-      <>
-        <EditIcon
-          onClick={() => editIconClicked(e.row.id)}
-          disabled={!canEdit(e)}
-          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
-        />
-        <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
-        <CloneIcon
-          onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!canClone()}
-          toolTip={t('cloneProposal.toolTip')}
-        />
-        <TrashIcon
-          onClick={() => deleteIconClicked(e.row.id)}
-          disabled // TO BE re-introduced once API is completed  ={!canDelete(e)}
-          toolTip={t('deleteProposal.disabled')} // canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
-        />
-      </>
-    )
-  };
-
   // Each column is only shown when some proposal needs it: the science category when a proposal
   // has one, and the observing mode when a proposal has none (e.g. SV)
   const scienceCategoryColumn = proposals.some((proposal) => proposal.scienceCategory)
@@ -253,7 +162,6 @@ export default function GridProposals({
 
   const proposalColumns = [
     ...(showSelection ? [colSelect] : []),
-    ...(showActions ? [colActions] : []),
     getColProposalTitle(t),
     getColProposalTypeCycle(t, osdPolicies),
     getColProposalStatus(t),
@@ -341,83 +249,6 @@ export default function GridProposals({
     />
   );
 
-  const getTheProposal = async (id: string) => {
-    setHelp('');
-    updateAppContent5({});
-
-    const { data: values, error } = await loadFromOda(id);
-    if (!values) {
-      updateAppContent1({});
-      updateAppContent2({});
-      storeProposalCopy({} as Proposal);
-      setAxiosViewError(error ?? UNKNOWN_API_ERROR);
-      return false;
-    }
-    updateAppContent1(validateProposal(values));
-    // The legacy store's copy, for the dialogs and clone, which still read it from there
-    const proposal = legacyProposalFromForm(values);
-    updateAppContent2(proposal);
-    storeProposalCopy(proposal);
-    return true;
-  };
-
-  const goToTitlePage = () => {
-    navigate(NAV[0]);
-  };
-
-  const viewIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenViewDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
-    }
-  };
-
-  const editIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      goToTitlePage();
-    } else {
-      alert(t('error.iconClicked'));
-    }
-  };
-
-  const cloneIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenCloneDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
-    }
-  };
-
-  const cloneConfirmed = () => {
-    setOpenCloneDialog(false);
-    setProposal({
-      ...getProposal(),
-      id: '',
-      title: getProposal().title + ' ' + t('cloneProposal.suffix')
-    });
-    goToTitlePage();
-  };
-
-  const deleteIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setTimeout(() => {
-        setOpenDeleteDialog(true);
-      }, 1000);
-    }
-  };
-
-  // The proposal was loaded into the form by getTheProposal, so it is withdrawn from there
-  const deleteConfirmed = async () => {
-    const response = await saveToOda(PROPOSAL_STATUS.WITHDRAWN);
-    if (!response.error) {
-      setOpenDeleteDialog(false);
-      setFetchList(!fetchList);
-    } else {
-      setOpenDeleteDialog(false);
-    }
-  };
-
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = React.useState<number>(0);
   React.useLayoutEffect(() => {
@@ -471,31 +302,19 @@ export default function GridProposals({
       )}
 
       <Grid size={{ xs: 12 }}>
-        {!axiosViewError && (
-          <div>
-            <DataGrid
-              maxHeight={finalHeight}
-              testId="dataGridProposals"
-              rows={filteredData}
-              columns={forReview ? reviewColumns : proposalColumns}
-              height={finalHeight}
-            />
-          </div>
-        )}
-        {axiosViewError && (
-          <Alert
-            color={AlertColorTypes.Error}
-            testId="axiosViewErrorTestId"
-            text={axiosViewError}
+        <div>
+          <DataGrid
+            maxHeight={finalHeight}
+            testId="dataGridProposals"
+            rows={filteredData}
+            columns={forReview ? reviewColumns : proposalColumns}
+            height={finalHeight}
           />
-        )}
+        </div>
         {axiosError && (
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid>
-      {openDeleteDialog && deleteClicked()}
-      {openCloneDialog && cloneClicked()}
-      {openViewDialog && viewClicked()}
     </Box>
   );
 }

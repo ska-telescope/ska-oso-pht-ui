@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useLocation, useNavigate } from 'react-router';
@@ -16,7 +16,7 @@ import {
   STATUS_ARRAY_PAGES_SV,
   STATUS_OK
 } from '@utils/constants.ts';
-import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
+import { ProposalBackend } from '@utils/types/proposal.tsx';
 import type { ApiResult } from '@/services/axios/apiResult/apiResult';
 import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
 import HomeButton from '../../button/Home/Home';
@@ -46,6 +46,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const { isSV } = useOSDAccessors();
   const validateProposal = useValidateProposal();
   const form = useFormContext<ProposalType>();
+  // The open proposal, for the Save/Submit checks and the dialogs
+  const proposal = useWatch({ control: form.control }) as ProposalType;
   const LG = useMediaQuery(theme.breakpoints.down('lg'), {
     defaultMatches: false,
     noSsr: true
@@ -55,7 +57,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const navigate = useNavigate();
   // A proposal on the Add proposal page is not created in the backend yet
   const isNewProposal = useLocation().pathname === PATH[1];
-  const { application, updateAppContent1 } = storageObject.useStore();
+  const { updateAppContent1 } = storageObject.useStore();
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
@@ -70,17 +72,15 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const loggedIn = isLoggedIn();
 
-  const getProposal = () => application.content2 as Proposal;
-
   const isDisableEndpoints = () => {
     const maxTitleWords = Number(phtTranslations.title.maxWord);
     const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
     if (
       loggedIn &&
       (isNewProposal ||
-        getProposal()?.title?.trim()?.length === 0 ||
-        countWords(getProposal().title ?? '') > maxTitleWords ||
-        countWords(getProposal().abstract ?? '') > maxAbstractWords)
+        proposal.title?.trim()?.length === 0 ||
+        countWords(proposal.title ?? '') > maxTitleWords ||
+        countWords(proposal.abstract ?? '') > maxAbstractWords)
     ) {
       return true;
     } else if (!loggedIn) {
@@ -375,7 +375,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
       {openProposalDisplay && (
         <ProposalDisplay
-          proposal={application.content2 as Proposal}
+          proposal={proposal}
           open={openProposalDisplay}
           onClose={() => setOpenProposalDisplay(false)}
           onConfirm={submitConfirmed}
@@ -386,7 +386,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         <ValidationResults
           open={openValidationResults}
           onClose={() => setOpenValidationResults(false)}
-          proposal={application.content2 as Proposal}
+          proposal={proposal}
           results={validationResults}
         />
       )}

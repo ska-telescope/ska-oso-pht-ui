@@ -15,6 +15,7 @@ import {
   STATUS_OK
 } from '@/utils/constants';
 import completeMockStore from '@/utils/MockStore';
+import { ProposalSeed } from '@/models/proposals/useProposalForm';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
 // Exposes the global form, which holds the links and calibration
@@ -27,10 +28,10 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
   formProbe = form;
 };
 
-const wrapper = (component: React.ReactElement) => {
+const wrapper = (component: React.ReactElement, proposal?: ProposalSeed) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider>
+      <TestProposalFormProvider proposal={proposal}>
         <FormProbe onForm={keepForm} />
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
@@ -67,11 +68,10 @@ const renderWithProposal = (proposal: object, statuses: number[] = []) => {
     ...completeMockStore,
     application: {
       ...completeMockStore.application,
-      content1: statuses,
-      content2: { id: 'prsl-1', targets: [], targetObservation: [], ...proposal }
+      content1: statuses
     }
   } as any);
-  wrapper(<ObservationPage />);
+  wrapper(<ObservationPage />, { id: 'prsl-1', ...proposal } as ProposalSeed);
 };
 
 describe('<ObservationPage />', () => {
@@ -94,7 +94,7 @@ describe('<ObservationPage />', () => {
     expect(screen.queryByTestId('noObservationsNotification')).not.toBeInTheDocument();
   });
 
-  test('keeps showing an observation being edited, which the store has no copy of while invalid', async () => {
+  test('keeps showing an observation being edited while it is invalid', async () => {
     renderWithProposal({ proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, observations: [] });
 
     act(() =>

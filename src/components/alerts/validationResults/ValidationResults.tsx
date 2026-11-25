@@ -2,7 +2,7 @@ import Dialog from '@mui/material/Dialog';
 import { DialogContent, Grid, Stack, Typography, Box } from '@mui/material';
 import { AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
-import Proposal from '../../../utils/types/proposal';
+import { ProposalType } from '@/models/proposals/proposal';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import CancelButton from '../../button/Cancel/Cancel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -10,7 +10,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface ValidationResultsProps {
   open: boolean;
   onClose: Function;
-  proposal: Proposal | null;
+  proposal: ProposalType | null;
   results: string[];
 }
 

@@ -1,101 +1,37 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, expect, test } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import GridObservationSummary from './GridObservationSummary';
-import { BAND_LOW_STR, TYPE_CONTINUUM } from '@/utils/constants';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 describe('<GridObservationSummary />', () => {
-  test('renders correctly', () => {
+  test('renders the observations from the form', () => {
+    const observation = newSvObservation(OBSERVING_MODE.CONTINUUM, null);
     wrapper(
       <GridObservationSummary
         proposal={{
-          id: '',
-          title: '',
-          status: '',
-          lastUpdated: '',
-          lastUpdatedBy: '',
-          createdOn: '',
-          createdBy: '',
-          version: 0,
-          cycle: '',
-          proposalType: undefined,
-          proposalSubType: undefined,
-          scienceCategory: null,
-          scienceSubCategory: undefined,
-          investigators: undefined,
-          abstract: undefined,
-          sciencePDF: null,
-          scienceLoadStatus: undefined,
-          targetOption: undefined,
-          targets: undefined,
-          observations: [
-            {
-              id: '',
-              telescope: 0,
-              subarray: '',
-              type: TYPE_CONTINUUM,
-              observingBand: BAND_LOW_STR,
-              elevation: 0,
-              centralFrequency: 0,
-              centralFrequencyUnits: 0,
-              bandwidth: 0,
-              continuumBandwidth: 0,
-              continuumBandwidthUnits: 0,
-              supplied: {
-                type: 0,
-                value: 0,
-                units: 0
-              },
-              spectralResolution: ''
-            }
+          ...getProposalFormDefaults(),
+          targets: [{ id: 'T1', name: 'Target 1' } as any],
+          targetObservation: [
+            { targetId: 'T1', observationId: observation.id, dataProductsSDPId: 'DP1' }
           ],
-          groupObservations: undefined,
-          targetObservation: undefined,
-          calibrationStrategy: [],
-          technicalPDF: null,
-          technicalLoadStatus: undefined,
-          pipeline: undefined
+          observations: [observation]
         }}
       />
     );
+    expect(screen.getByText('Target 1')).toBeInTheDocument();
+    expect(screen.getByText('observationType.continuum')).toBeInTheDocument();
+    expect(screen.getByText('1 h')).toBeInTheDocument();
   });
+
   test('renders correctly ( no observations )', () => {
-    wrapper(
-      <GridObservationSummary
-        proposal={{
-          id: '',
-          title: '',
-          status: '',
-          lastUpdated: '',
-          lastUpdatedBy: '',
-          createdOn: '',
-          createdBy: '',
-          version: 0,
-          cycle: '',
-          proposalType: undefined,
-          proposalSubType: undefined,
-          scienceCategory: null,
-          scienceSubCategory: undefined,
-          investigators: undefined,
-          abstract: undefined,
-          sciencePDF: null,
-          scienceLoadStatus: undefined,
-          targetOption: undefined,
-          targets: undefined,
-          observations: [],
-          groupObservations: undefined,
-          targetObservation: undefined,
-          calibrationStrategy: [],
-          technicalPDF: null,
-          technicalLoadStatus: undefined,
-          pipeline: undefined
-        }}
-      />
-    );
+    wrapper(<GridObservationSummary proposal={getProposalFormDefaults()} />);
+    expect(screen.getByTestId('noObservationsNotification')).toBeInTheDocument();
   });
 });

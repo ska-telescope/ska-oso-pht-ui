@@ -46,7 +46,6 @@ import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
 import CalibrationPage from '../CalibrationPage/CalibrationPage';
 import LinkingPage from '../LinkingPage/LinkingPage';
 import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
-import Proposal from '@/utils/types/proposal';
 import Notification from '@/utils/types/notification';
 import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
@@ -61,9 +60,8 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import useAxiosInterceptor from '@/services/axios/useAxiosInterceptor/useAxiosInterceptor';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
-import { useProposalForm } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults, useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 
 // The height AppWrapper leaves above the page for its fixed header (its SPACER_HEADER)
@@ -93,6 +91,11 @@ const ROUTES = [
   { path: PMT[6], element: <ReviewEntry reviewType={REVIEW_TYPE.TECHNICAL} /> },
   { path: PATH[PAGE_CALIBRATION_ENTRY], element: <CalibrationEntry /> }
 ];
+
+// The pages that work on the open proposal: the proposal pages, the new-proposal page and the
+// entry pages for observations, data products and calibration
+const isEditorPath = (path: string) =>
+  NAV.includes(path) || [PATH[1], PATH[2], PATH[3], PATH[4], PATH[5]].includes(path);
 
 interface PHTPropTypes {
   themeMode: string;
@@ -149,13 +152,10 @@ export default function PHT({
     setHelp('helpText.notAvailable');
   }, [navigate]);
 
-  const getProposal = () => application.content2 as Proposal;
-
   const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
 
-  const formMethods = useProposalForm(getProposal(), { low: osdLOW, mid: osdMID });
-  const { getValues } = formMethods;
-  useCopySlicesToStore(formMethods);
+  const formMethods = useProposalForm({ low: osdLOW, mid: osdMID });
+  const { getValues, reset } = formMethods;
   const prslId = useWatch({ control: formMethods.control, name: 'prslId' });
   // The pages that edit the proposal open in the form, outside which it isn't shown: the
   // proposal pages and the entry pages for observations, data products and calibration
@@ -209,8 +209,15 @@ export default function PHT({
       })();
     }
 
+    // Leaving the editor (for the landing page or PMT) closes the proposal. The values for the
+    // save above are taken first. This runs after the new page's own effects, so the reset can't
+    // be done by that page.
+    if (!isEditorPath(currentPath)) {
+      reset(getProposalFormDefaults());
+    }
+
     previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, notifyError, getValues]);
+  }, [location.pathname, notifyError, getValues, reset]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />

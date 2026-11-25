@@ -23,10 +23,10 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
   formProbe = form;
 };
 
-const wrapper = (component: React.ReactElement) => {
+const wrapper = (component: React.ReactElement, values?: Partial<ProposalType>) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider>
+      <TestProposalFormProvider values={values}>
         <FormProbe onForm={keepForm} />
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
@@ -34,7 +34,6 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
-const mockStore = vi.hoisted(() => ({ targets: [] as unknown[] }));
 const mockOSD = vi.hoisted(() => ({ autoLink: true }));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
@@ -65,15 +64,7 @@ vi.mock('@/utils/notify/useNotify', () => ({
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
-      application: {
-        content2: {
-          targets: mockStore.targets,
-          observations: [],
-          targetObservation: [],
-          calibrationStrategy: []
-        }
-      },
-      updateAppContent2: vi.fn(),
+      application: {},
       updateAppContent5: vi.fn(),
       helpComponent: vi.fn(),
       helpComponentURL: vi.fn()
@@ -100,16 +91,13 @@ describe('<TargetEntry />', () => {
 });
 
 describe('<TargetEntry /> target limit', () => {
-  afterEach(() => {
-    mockStore.targets = [];
-  });
-
   it('disables adding a target once the cycle policy maxTargets is reached', async () => {
-    mockStore.targets = [{ id: 1, name: 'Existing target' }];
     const user = userEvent.setup();
 
     await act(async () => {
-      wrapper(<TargetEntry />);
+      wrapper(<TargetEntry />, {
+        targets: [{ id: 1, name: 'Existing target' }] as unknown as ProposalType['targets']
+      });
     });
 
     await user.type(nameInput(), 'My Target');

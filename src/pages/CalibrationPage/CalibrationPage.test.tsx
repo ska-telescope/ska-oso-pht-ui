@@ -2,16 +2,17 @@ import { afterEach, describe, expect, test } from 'vitest';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { storageObject, StoreProvider } from '@utils/storage/store';
+import { StoreProvider } from '@utils/storage/store';
 import { MockCalibratorFrontendList } from '@services/axios/get/getCalibratorList/mockCalibratorListFrontend.tsx';
-import completeMockStore from '../../utils/MockStore';
+import { MockProposalFrontend } from '@/services/axios/put/putProposal/mockProposalFrontend';
+import { ProposalSeed } from '@/models/proposals/useProposalForm';
 import CalibrationPage from './CalibrationPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
-const wrapper = (component: React.ReactElement) => {
+const wrapper = (component: React.ReactElement, proposal?: ProposalSeed) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider>
+      <TestProposalFormProvider proposal={proposal}>
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
     </StoreProvider>
@@ -52,16 +53,8 @@ vi.mock('../entry/Calibration/CalibrationEntry', () => ({
   default: () => <div data-testid="calibrationEntryStub" />
 }));
 
-const renderWithProposal = (proposal: object) => {
-  vi.spyOn(storageObject, 'useStore').mockReturnValue({
-    ...completeMockStore,
-    application: {
-      ...completeMockStore.application,
-      content2: { ...completeMockStore.application.content2, ...proposal }
-    }
-  } as any);
-  wrapper(<CalibrationPage />);
-};
+const renderWithProposal = (proposal: object) =>
+  wrapper(<CalibrationPage />, { ...MockProposalFrontend, ...proposal } as ProposalSeed);
 
 describe('<CalibrationPage />', () => {
   afterEach(() => {

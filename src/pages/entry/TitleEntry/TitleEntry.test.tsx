@@ -12,14 +12,9 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ isSV: false })
 }));
 
-// A single store object, so TitleEntry's effect on application.content2 doesn't re-run every render
 const mockStore = vi.hoisted(() => ({
-  application: {
-    content1: [],
-    content2: { title: 'A title', proposalType: undefined, proposalSubType: [] }
-  },
-  updateAppContent1: () => {},
-  updateAppContent2: vi.fn()
+  application: { content1: [] },
+  updateAppContent1: () => {}
 }));
 
 vi.mock('@utils/storage/store', () => ({
@@ -77,7 +72,6 @@ describe('<TitleEntry />', () => {
     ).not.toBeInTheDocument();
   });
 
-  // The form's values reach the store through useCopySlicesToStore, not the page
   test('puts title changes in the form', () => {
     wrapper(<TitleEntry page={0} />);
     const titleInput = screen.getByTestId('titleId');
@@ -86,7 +80,6 @@ describe('<TitleEntry />', () => {
     fireEvent.change(titleInput, { target: { value: 'Updated title' } });
 
     expect(screen.getByTestId('formTitle')).toHaveTextContent('Updated title');
-    expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
   });
 
   test('puts a selected type in the form', async () => {
@@ -96,7 +89,6 @@ describe('<TitleEntry />', () => {
     await waitFor(() =>
       expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
     );
-    expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
     expect(screen.queryByTestId('dialogConfirmationButton')).not.toBeInTheDocument();
   });
 
@@ -113,7 +105,6 @@ describe('<TitleEntry />', () => {
       expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
     );
     expect(screen.getByTestId('formSubTypes')).toBeEmptyDOMElement();
-    expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
   });
 
   test('picks and unpicks a sub-type in the form', () => {
@@ -127,7 +118,6 @@ describe('<TitleEntry />', () => {
 
     fireEvent.click(joint);
     expect(screen.getByTestId('formSubTypes')).toBeEmptyDOMElement();
-    expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
   });
 
   test('keeps the selected form type when a change is cancelled', () => {
@@ -138,9 +128,6 @@ describe('<TitleEntry />', () => {
     fireEvent.click(screen.getByTestId('dialogCancelButton'));
 
     expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.STANDARD);
-    expect(mockStore.updateAppContent2).not.toHaveBeenCalledWith(
-      expect.objectContaining({ proposalType: PROPOSAL_TYPE.KEY_SCIENCE })
-    );
   });
 });
 

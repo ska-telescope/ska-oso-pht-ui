@@ -1,11 +1,10 @@
 import { describe, expect, test } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { FormProvider } from 'react-hook-form';
 import { StoreProvider } from '@utils/storage/store';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import SensCalcContent from './SensCalcContent';
-import { useProposalForm } from '@/models/proposals/useProposalForm';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import type { ProposalType } from '@/models/proposals/proposal';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
@@ -28,16 +27,19 @@ const values = (weighted: number): SensitivityValues => ({
 });
 
 // The linked target, observation and data product live in the form, which owns them
-const FormWithTarget = ({ children }: { children: React.ReactNode }) => {
-  const form = useProposalForm({
-    id: 'p1',
-    targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets'],
-    observations: MockProposalFrontend.observations,
-    groupObservations: MockProposalFrontend.groupObservations,
-    dataProducts: MockProposalFrontend.dataProducts
-  });
-  return <FormProvider {...form}>{children}</FormProvider>;
-};
+const FormWithTarget = ({ children }: { children: React.ReactNode }) => (
+  <TestProposalFormProvider
+    proposal={{
+      id: 'p1',
+      targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets'],
+      observations: MockProposalFrontend.observations,
+      groupObservations: MockProposalFrontend.groupObservations,
+      dataProducts: MockProposalFrontend.dataProducts
+    }}
+  >
+    {children}
+  </TestProposalFormProvider>
+);
 
 const wrapper = (component: React.ReactElement) => {
   return render(

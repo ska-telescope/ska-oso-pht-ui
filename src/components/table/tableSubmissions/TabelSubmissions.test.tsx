@@ -5,9 +5,7 @@ import TableSubmissions from './TableSubmissions';
 // --- Mocks ---
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
-    useStore: () => ({
-      application: { content2: { id: 'proposal-1', name: 'Test Proposal' } }
-    })
+    useStore: () => ({ application: {} })
   }
 }));
 

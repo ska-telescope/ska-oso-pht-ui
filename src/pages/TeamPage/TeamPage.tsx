@@ -3,7 +3,6 @@ import { Box, Grid, Tab, Tabs, SvgIcon, Typography, useTheme } from '@mui/materi
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@utils/storage/store';
 import { validateTeamPage } from '../../utils/validation/validation';
-import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import MemberEntry from '../entry/MemberEntry/MemberEntry';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -47,7 +46,7 @@ export function PHDThesis(value: any) {
 export default function TeamPage() {
   const { t } = useScopedTranslation();
   const theme = useTheme();
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
   const [currentMember, setCurrentMember] = React.useState('');
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -58,8 +57,6 @@ export default function TeamPage() {
   const [permissions, setPermissions] = React.useState<ProposalAccess[]>([]);
   const { isSV } = useOSDAccessors();
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { setValue } = useFormContext<ProposalFormValues>();
   const prslId = useWatch<ProposalFormValues, 'prslId'>({ name: 'prslId' });
   const investigators = useWatch<ProposalFormValues, 'investigators'>({
@@ -171,7 +168,6 @@ export default function TeamPage() {
         shouldValidate: true
       }
     );
-    setProposal({ ...getProposal(), investigators: updatedInvestigators });
     setCurrentMember('');
     closeDeleteDialog();
   };

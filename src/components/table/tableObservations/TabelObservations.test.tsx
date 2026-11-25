@@ -14,7 +14,7 @@ const observation = (id: string) => ({ ...newSvObservation(OBSERVING_MODE.CONTIN
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
-      application: { content2: { id: 'proposal-1', name: 'Test Proposal' } }
+      application: {}
     })
   }
 }));

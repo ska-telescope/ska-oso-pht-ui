@@ -4,13 +4,16 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import PageBannerPPT from './PageBannerPPT';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { countWords } from '@utils/helpers.ts';
 import phtTranslations from '../../../../public/locales/en/pht.json';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <ThemeA11yProvider>
+        <TestProposalFormProvider>{component}</TestProposalFormProvider>
+      </ThemeA11yProvider>
     </StoreProvider>
   );
 };

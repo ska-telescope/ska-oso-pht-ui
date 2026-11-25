@@ -2,14 +2,11 @@ import type { ReactElement, ReactNode } from 'react';
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
-import type { Proposal } from '@/utils/types/proposal';
-import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {
-        content2: {},
         content4: []
       }
     })
@@ -32,11 +29,8 @@ const wrapper = (component: ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
 };
 
-type MockProposal = Proposal;
-
 describe('TableSubmissionsRow', () => {
   let TableSubmissionsRow: typeof import('./TableSubmissionsRow').default;
-  let mockProposal: MockProposal;
 
   beforeAll(async () => {
     if (!globalThis.localStorage) {
@@ -58,11 +52,8 @@ describe('TableSubmissionsRow', () => {
       }
     }
 
-    const { MockProposalFrontend } =
-      await import('@/services/axios/get/getProposal/mockProposalFrontend');
     const module = await import('./TableSubmissionsRow');
     TableSubmissionsRow = module.default;
-    mockProposal = MockProposalFrontend;
   }, 30000);
 
   const mockItem = {
@@ -80,7 +71,6 @@ describe('TableSubmissionsRow', () => {
 
   const defaultProps = {
     item: mockItem,
-    proposal: MockProposalFrontend,
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
@@ -93,12 +83,12 @@ describe('TableSubmissionsRow', () => {
   };
 
   it('renders review title and category', () => {
-    wrapper(<TableSubmissionsRow {...defaultProps} proposal={mockProposal} />);
+    wrapper(<TableSubmissionsRow {...defaultProps} />);
     expect(screen.getByText(/Sample Review Title/i)).toBeInTheDocument();
   });
 
   it('renders title with ellipsis overflow styles', () => {
-    wrapper(<TableSubmissionsRow {...defaultProps} proposal={mockProposal} />);
+    wrapper(<TableSubmissionsRow {...defaultProps} />);
 
     const title = screen.getByTestId('row-title-test-row-id');
     expect(title).toHaveStyle({ overflow: 'hidden', textOverflow: 'ellipsis' });
@@ -108,11 +98,7 @@ describe('TableSubmissionsRow', () => {
     const longLatexTitle = '$\\frac{1234567890123456789012345678901234567890}{x}$';
 
     wrapper(
-      <TableSubmissionsRow
-        {...defaultProps}
-        proposal={mockProposal}
-        item={{ ...mockItem, title: longLatexTitle }}
-      />
+      <TableSubmissionsRow {...defaultProps} item={{ ...mockItem, title: longLatexTitle }} />
     );
 
     const title = screen.getByTestId('row-title-test-row-id');

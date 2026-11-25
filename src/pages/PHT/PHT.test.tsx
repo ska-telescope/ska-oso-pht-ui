@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { MemoryRouter } from 'react-router';
 import PHT from './PHT';
-import { NAV, PATH, PROPOSAL_STATUS, SENSITIVITY_STATE } from '@/utils/constants';
+import { NAV, PATH, PMT, PROPOSAL_STATUS, SENSITIVITY_STATE } from '@/utils/constants';
 import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
@@ -14,7 +14,8 @@ import * as proposalForm from '@/models/proposals/useProposalForm';
 const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
 const mockPathname = { current: PATH[0] };
-const mockApplicationContent2 = { current: { id: 'prsl-123' } as any };
+// The proposal open in the form when PHT mounts, in the legacy shape
+const mockOpenProposal = { current: { id: 'prsl-123' } as any };
 const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } as any };
 
 vi.mock('react-router', () => ({
@@ -34,14 +35,12 @@ vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {
-        content2: mockApplicationContent2.current,
         content5: mockApplicationContent5.current
       },
       help: ['', '', ''],
       helpToggle: false,
       helpComponent: vi.fn(),
       helpComponentURL: vi.fn(),
-      updateAppContent2: mockUpdateAppContent2,
       updateAppContent5: vi.fn()
     })
   }
@@ -112,7 +111,7 @@ const fullProps = {
   setFlatten: noop
 };
 
-const { mockProposal, mockUpdateAppContent2 } = vi.hoisted(() => ({
+const { mockProposal } = vi.hoisted(() => ({
   mockProposal: {
     id: 'prsl-t0001-20250101-00001',
     scienceCategory: null,
@@ -121,9 +120,21 @@ const { mockProposal, mockUpdateAppContent2 } = vi.hoisted(() => ({
     observations: [] as any[],
     targetObservation: [] as any[],
     calibrationStrategy: [] as any[]
-  },
-  mockUpdateAppContent2: vi.fn()
+  }
 }));
+
+// PHT's form, opened on mockOpenProposal as a load would leave it
+const realUseProposalForm = proposalForm.useProposalForm;
+let formSpy: ReturnType<typeof vi.spyOn>;
+beforeEach(() => {
+  formSpy = vi
+    .spyOn(proposalForm, 'useProposalForm')
+    .mockImplementation((osd) =>
+      realUseProposalForm(osd, proposalForm.getProposalFormValues(mockOpenProposal.current))
+    );
+  return () => formSpy.mockRestore();
+});
+const currentForm = () => formSpy.mock.results[formSpy.mock.results.length - 1].value;
 
 // PHT's own effects (specifically the auto-repair one under test) don't depend on the routed
 // page - stub the default '/' route so the test doesn't have to satisfy LandingPage's own
@@ -170,7 +181,7 @@ describe('<PHT />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockPathname.current = PATH[0];
-    mockApplicationContent2.current = { id: 'prsl-123' };
+    mockOpenProposal.current = { id: 'prsl-123' };
     mockApplicationContent5.current = { message: '', level: '', delay: 0 };
   });
 
@@ -252,37 +263,53 @@ describe('<PHT />', () => {
         PROPOSAL_STATUS.DRAFT
       );
     });
+    // Returning home closes the proposal, after its values were taken for the save
+    expect(currentForm().getValues()).toEqual(proposalForm.getProposalFormDefaults());
+  });
+
+  test('closes the proposal without saving when leaving the editor for PMT', async () => {
+    const { rerenderPHT } = renderPHT();
+
+    mockPathname.current = NAV[3];
+    rerenderPHT();
+
+    mockPathname.current = PMT[0];
+    rerenderPHT();
+
+    expect(currentForm().getValues()).toEqual(proposalForm.getProposalFormDefaults());
+    expect(PutProposal).not.toHaveBeenCalled();
+  });
+
+  test('keeps the proposal open when moving between editor pages', () => {
+    const { rerenderPHT } = renderPHT();
+
+    mockPathname.current = PATH[1];
+    rerenderPHT();
+    mockPathname.current = NAV[0];
+    rerenderPHT();
+
+    expect(currentForm().getValues('prslId')).toBe('prsl-123');
   });
 
   test.each(['Latest summary before blur', '', 'word '.repeat(251).trim()])(
-    'saves and synchronizes current RHF abstract on navigation without blur: %s',
+    'saves the current RHF abstract on navigation without blur: %s',
     async (abstract) => {
-      const formSpy = vi.spyOn(proposalForm, 'useProposalForm');
-      try {
-        mockApplicationContent2.current = { id: 'prsl-123', abstract: 'Stale store summary' };
-        mockPathname.current = NAV[2];
-        const { rerenderPHT } = renderPHT();
-        const form = formSpy.mock.results[formSpy.mock.results.length - 1].value;
-        act(() => {
-          form.setValue('abstract', abstract);
-        });
+      mockOpenProposal.current = { id: 'prsl-123', abstract: 'Saved summary' };
+      mockPathname.current = NAV[2];
+      const { rerenderPHT } = renderPHT();
+      act(() => {
+        currentForm().setValue('abstract', abstract);
+      });
 
-        mockPathname.current = NAV[1];
-        rerenderPHT();
+      mockPathname.current = NAV[1];
+      rerenderPHT();
 
-        await waitFor(() => {
-          expect(mockUpdateAppContent2).toHaveBeenCalledWith(
-            expect.objectContaining({ id: 'prsl-123', abstract })
-          );
-          // Saved from the form, not the stale store
-          expect(PutProposal).toHaveBeenCalledWith(
-            expect.objectContaining({ abstract }),
-            PROPOSAL_STATUS.DRAFT
-          );
-        });
-      } finally {
-        formSpy.mockRestore();
-      }
+      await waitFor(() => {
+        expect(PutProposal).toHaveBeenCalledWith(
+          expect.objectContaining({ prslId: 'prsl-123', abstract }),
+          PROPOSAL_STATUS.DRAFT
+        );
+      });
     }
   );
 });
@@ -292,7 +319,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
     vi.clearAllMocks();
     vi.mocked(linkTarget).mockResolvedValue();
     mockProposal.targetObservation = [];
-    mockApplicationContent2.current = mockProposal;
+    mockOpenProposal.current = mockProposal;
   });
 
   it('re-links the target as soon as the proposal loads, regardless of the current page', async () => {

@@ -1,10 +1,9 @@
 import React from 'react';
 import { Box, Stack } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
 import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
-import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
+import { ProposalBackend } from '@utils/types/proposal.tsx';
 import type { ApiResult } from '@/services/axios/apiResult/apiResult';
 import { generateId, helpers } from '@utils/helpers.ts';
 import {
@@ -38,12 +37,9 @@ interface MemberEntryProps {
 
 export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberEntryProps) {
   const { t } = useScopedTranslation();
-  const { application, updateAppContent2 } = storageObject.useStore();
   const form = useFormContext<ProposalType>();
   const { setHelp } = useHelp();
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { saveToOda } = useProposalOda();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
@@ -192,14 +188,10 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     currentInvestigators: Investigator[] | undefined,
     newInvestigator: Investigator
   ) {
-    const record = {
-      ...getProposal(),
-      investigators: [...(currentInvestigators ?? []), newInvestigator]
-    };
-    form.setValue('investigators', getTeamValues(record).investigators, {
+    const investigators = [...(currentInvestigators ?? []), newInvestigator];
+    form.setValue('investigators', getTeamValues({ investigators }).investigators, {
       shouldValidate: true
     });
-    setProposal(record);
     // save the proposal with new investigators as email has been sent & access rights have been created
     await updateProposal();
   }

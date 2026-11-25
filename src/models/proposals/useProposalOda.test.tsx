@@ -7,6 +7,7 @@ import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
+import { useProposalForm } from './useProposalForm';
 import { ProposalType } from './proposal';
 import { DATA_PRODUCT_KIND } from './dataProducts';
 import { useProposalOda } from './useProposalOda';
@@ -89,6 +90,23 @@ describe('useProposalOda', () => {
     expect(form.current.getValues('investigators')).toEqual([]);
     expect(mockGet).toHaveBeenCalledExactlyOnceWith('prsl-1');
     expect(loaded).toEqual({ data: mapPdmToForm(pdm) });
+  });
+
+  test('Load from ODA leaves the global form equal to the mapped PDM, with nothing re-seeding it', async () => {
+    mockGet.mockResolvedValue({ data: pdm });
+    const { result: form, rerender } = renderHook(() => useProposalForm());
+    const { result: oda } = renderHook(() => useProposalOda(), {
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <FormProvider {...form.current}>{children}</FormProvider>
+      )
+    });
+
+    await act(async () => {
+      await oda.current.loadFromOda('prsl-1');
+    });
+    rerender();
+
+    expect(form.current.getValues()).toEqual(mapPdmToForm(pdm));
   });
 
   test('Load from ODA links an SV target saved without its link to new default data products', async () => {

@@ -76,8 +76,6 @@ const mockNotification = {
   okRequired: false
 };
 
-const mockUpdateAppContent2 = vi.fn();
-
 beforeEach(() => {
   vi.clearAllMocks();
   mockOSD.isSV = false;
@@ -86,7 +84,6 @@ beforeEach(() => {
   storageObject.useStore = () =>
     ({
       application: {
-        content2: mockProposal,
         content4: mockAccess,
         content5: mockNotification,
         content1: {},
@@ -96,7 +93,6 @@ beforeEach(() => {
         content9: {}
       },
 
-      updateAppContent2: mockUpdateAppContent2,
       updateAppContent4: vi.fn()
     }) as any;
 });
@@ -159,13 +155,7 @@ describe('PageFooterPPT', () => {
   });
 
   it('creates the proposal with its own ID, type and cycle', async () => {
-    const newProposal = { id: null, title: 'New SV idea' };
-    const store = storageObject.useStore();
-    storageObject.useStore = () =>
-      ({
-        ...store,
-        application: { ...store.application, content2: newProposal }
-      }) as any;
+    const newProposal = { title: 'New SV idea' };
 
     wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title, {
       prslId: 'prsl-t0001-20261120-00001',
@@ -192,10 +182,7 @@ describe('PageFooterPPT', () => {
 
   describe('a new proposal observation', () => {
     const createProposal = async (type: ProposalTypeType) => {
-      const newProposal = { id: null, title: 'New idea' };
-      const store = storageObject.useStore();
-      storageObject.useStore = () =>
-        ({ ...store, application: { ...store.application, content2: newProposal } }) as any;
+      const newProposal = { title: 'New idea' };
       wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title, {
         proposalType: { type, subTypes: [] }
       });
@@ -227,15 +214,6 @@ describe('PageFooterPPT', () => {
   });
 
   it('disables Create when the title has RHF validation errors', async () => {
-    const store = storageObject.useStore();
-    storageObject.useStore = () => ({
-      ...store,
-      application: {
-        ...store.application,
-        content2: { id: null, title: 'Invalid @ title' }
-      }
-    });
-
     wrapper(<PageFooterPPT pageNo={-1} />, 'Invalid @ title');
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
@@ -244,7 +222,7 @@ describe('PageFooterPPT', () => {
     expect(mockNotifyError).not.toHaveBeenCalled();
   });
 
-  it('creates with the latest form title, type and sub-types rather than stale store values', async () => {
+  it('creates with the latest form title, type and sub-types', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />, 'Edited title', {
       proposalType: { type: PROPOSAL_TYPE.KEY_SCIENCE, subTypes: [PROPOSAL_SUBTYPE.JOINT] }
     });
@@ -272,14 +250,14 @@ describe('PageFooterPPT', () => {
     expect(mockCreateInOda).not.toHaveBeenCalled();
   });
 
-  it('copies the created proposal to the legacy store and opens the Team page', async () => {
+  it('opens the Team page once the proposal is created', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />, 'Created title', { prslId: 'prsl-created' });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[1]));
-    expect(mockUpdateAppContent2).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'prsl-created', title: 'Created title' })
+    expect(mockCreateInOda).toHaveBeenCalledWith(
+      expect.objectContaining({ prslId: 'prsl-created', title: 'Created title' })
     );
   });
 
@@ -291,7 +269,6 @@ describe('PageFooterPPT', () => {
 
     await waitFor(() => expect(mockNotifyError).toHaveBeenCalledWith('Create failed'));
     expect(mockNavigate).not.toHaveBeenCalled();
-    expect(mockUpdateAppContent2).not.toHaveBeenCalled();
   });
 
   it('navigates to next page when next button clicked', async () => {

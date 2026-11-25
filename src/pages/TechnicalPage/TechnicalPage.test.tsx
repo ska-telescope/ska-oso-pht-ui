@@ -36,13 +36,11 @@ const mockProposal = {
 };
 const mockStore = {
   application: {
-    content1: [0, 0, 0, 0],
-    content2: mockProposal
+    content1: [0, 0, 0, 0]
   },
   helpComponent: vi.fn(),
   helpComponentURL: vi.fn(),
-  updateAppContent1: vi.fn(),
-  updateAppContent2: vi.fn()
+  updateAppContent1: vi.fn()
 };
 
 vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
@@ -86,7 +84,7 @@ const wrapper = (component: React.ReactElement) => {
       defaultValues: getProposalFormValues({
         title: '',
         proposalType: null,
-        ...(mockStore.application.content2 as any)
+        ...(mockProposal as any)
       })
     });
     return (

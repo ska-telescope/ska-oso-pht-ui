@@ -71,25 +71,21 @@ const FormProbe = () => {
   return null;
 };
 
-// The proposal form is seeded from the store, which holds the observations in its own shape
+// The proposal form holds the proposal, given with the observations in the legacy shape
 const renderWithProposal = (component: React.ReactElement, proposal: object = {}) => {
-  vi.spyOn(storageObject, 'useStore').mockReturnValue({
-    ...completeMockStore,
-    application: {
-      ...completeMockStore.application,
-      content2: {
-        id: 'prsl-1',
-        proposalType: PROPOSAL_TYPE.STANDARD,
-        targets: [],
-        targetObservation: [],
-        observations: [],
-        ...proposal
-      }
-    }
-  } as never);
+  vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as never);
   render(
     <StoreProvider>
-      <TestProposalFormProvider>
+      <TestProposalFormProvider
+        proposal={{
+          id: 'prsl-1',
+          proposalType: PROPOSAL_TYPE.STANDARD,
+          targets: [],
+          targetObservation: [],
+          observations: [],
+          ...proposal
+        }}
+      >
         <FormProbe />
         {component}
       </TestProposalFormProvider>

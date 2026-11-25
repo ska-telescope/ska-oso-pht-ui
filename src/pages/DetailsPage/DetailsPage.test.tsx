@@ -1,5 +1,5 @@
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
-import { cloneElement, useReducer } from 'react';
+import { cloneElement } from 'react';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
@@ -23,8 +23,8 @@ import { ObservationInput, ObservingMode, OBSERVING_MODE } from '@/models/propos
 // ---- Module mocks ----
 
 const mockState = vi.hoisted(() => ({
+  // The proposal the form is seeded with, in the legacy shape
   proposal: {} as Record<string, unknown>,
-  updateProposal: vi.fn(),
   updatePageStatus: vi.fn()
 }));
 
@@ -32,11 +32,9 @@ vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
       application: {
-        content1: Array(PAGE_DETAILS + 1).fill(STATUS_ERROR),
-        content2: mockState.proposal
+        content1: Array(PAGE_DETAILS + 1).fill(STATUS_ERROR)
       },
       updateAppContent1: mockState.updatePageStatus,
-      updateAppContent2: mockState.updateProposal,
       helpComponent: vi.fn(),
       helpComponentURL: vi.fn()
     })
@@ -78,11 +76,6 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
 
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
-    const [, rerender] = useReducer((count: number) => count + 1, 0);
-    mockState.updateProposal.mockImplementation((proposal) => {
-      mockState.proposal = proposal;
-      rerender();
-    });
     const methods = useForm<ProposalType>({
       mode: 'all',
       resolver: getProposalResolver(),
@@ -194,7 +187,6 @@ const setMode = (form: ProposalFormAccess, mode: ObservingMode) =>
 describe('<DetailsPage /> observing mode', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockState.updateProposal.mockClear();
     vi.mocked(setObservingMode).mockImplementation(async (mode, form) => {
       setMode(form, mode);
     });
@@ -212,7 +204,7 @@ describe('<DetailsPage /> observing mode', () => {
     expect(screen.queryByTestId('observationType')).not.toBeInTheDocument();
   });
 
-  it('stores abstract edits in RHF without writing to the legacy store', async () => {
+  it('stores abstract edits in RHF', async () => {
     mockState.proposal = {
       proposalType: PROPOSAL_TYPE.STANDARD,
       scienceCategory: null,
@@ -228,12 +220,9 @@ describe('<DetailsPage /> observing mode', () => {
         'A new scientific summary'
       )
     );
-
-    fireEvent.blur(abstractInput);
-    expect(mockState.updateProposal).not.toHaveBeenCalled();
   });
 
-  it('stores a selected science category in RHF without writing to the legacy store', async () => {
+  it('stores a selected science category in RHF', async () => {
     mockState.proposal = {
       proposalType: PROPOSAL_TYPE.STANDARD,
       scienceCategory: null,
@@ -247,10 +236,9 @@ describe('<DetailsPage /> observing mode', () => {
     expect(
       JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '').scienceCategory
     ).toBe(7);
-    expect(mockState.updateProposal).not.toHaveBeenCalled();
   });
 
-  it('updates the breadcrumb from RHF without writing to the legacy store', async () => {
+  it('updates the breadcrumb from RHF', async () => {
     mockState.proposal = {
       proposalType: PROPOSAL_TYPE.STANDARD,
       scienceCategory: 1,
@@ -262,7 +250,6 @@ describe('<DetailsPage /> observing mode', () => {
     await waitFor(() => {
       expect(mockState.updatePageStatus.mock.lastCall?.[0][PAGE_DETAILS]).toBe(STATUS_OK);
     });
-    expect(mockState.updateProposal).not.toHaveBeenCalled();
   });
 
   it('validates the character limit without truncating the abstract', async () => {
@@ -283,7 +270,6 @@ describe('<DetailsPage /> observing mode', () => {
     ).toBeInTheDocument();
     expect(abstractInput).toHaveAttribute('aria-invalid', 'true');
     fireEvent.blur(abstractInput);
-    expect(mockState.updateProposal).not.toHaveBeenCalled();
     fireEvent.change(abstractInput, { target: { value: 'a'.repeat(2300) } });
     await waitFor(() => expect(abstractInput).toHaveAttribute('aria-invalid', 'false'));
   });

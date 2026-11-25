@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import SciencePage from './SciencePage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
@@ -38,14 +38,14 @@ const mockProposal = {
 };
 const mockStore = {
   application: {
-    content1: [0, 0, 0, 0],
-    content2: mockProposal
+    content1: [0, 0, 0, 0]
   },
   helpComponent: vi.fn(),
   helpComponentURL: vi.fn(),
-  updateAppContent1: vi.fn(),
-  updateAppContent2: vi.fn()
+  updateAppContent1: vi.fn()
 };
+// The proposal the form is seeded with
+let currentProposal: Record<string, unknown> = mockProposal;
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => mockStore
@@ -141,15 +141,18 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
+// The form of the last render
+let formMethods: UseFormReturn<ProposalType>;
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
       defaultValues: getProposalFormValues({
         title: '',
         proposalType: null,
-        ...(mockStore.application.content2 as any)
+        ...(currentProposal as any)
       })
     });
+    formMethods = methods;
     return (
       <FormProvider {...methods}>
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
@@ -176,7 +179,7 @@ import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
 describe('SciencePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockStore.application.content2 = {
+    currentProposal = {
       ...mockProposal,
       sciencePDF: mockProposal.sciencePDF ? { ...mockProposal.sciencePDF } : null
     };
@@ -307,7 +310,7 @@ describe('SciencePage', () => {
     });
 
     it('clear file: error cleared and proposal state cleared', async () => {
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       mockGetPdfPageCount.mockResolvedValue(5);
       wrapper(<SciencePage />);
 
@@ -375,7 +378,7 @@ describe('SciencePage', () => {
     });
 
     it('uploadDisabled is false when there is no error', () => {
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       expect(capturedUploadDisabled).toBe(false);
     });
@@ -386,7 +389,7 @@ describe('SciencePage', () => {
     });
 
     it('clearDisabled becomes false when there is a PDF validation error', async () => {
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       fireEvent.change(screen.getByTestId('mock-file-input'), {
         target: { files: [makeNonPdfFile()] }
@@ -431,7 +434,7 @@ describe('SciencePage', () => {
     });
 
     it('selecting non-PDF file shows invalidFileError', async () => {
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       fireEvent.change(screen.getByTestId('mock-file-input'), {
         target: { files: [makeNonPdfFile()] }
@@ -442,7 +445,7 @@ describe('SciencePage', () => {
     });
 
     it('file selector non-PDF change event shows invalidFileError', async () => {
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       fireEvent.change(screen.getByTestId('mock-file-input'), {
         target: { files: [makeNonPdfFile()] }
@@ -453,7 +456,7 @@ describe('SciencePage', () => {
     });
 
     it('dropzone non-PDF drop event shows invalidFileError', async () => {
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       fireEvent.drop(screen.getByTestId('mock-file-input'), {
         dataTransfer: { files: [makeNonPdfFile()] }
@@ -465,7 +468,7 @@ describe('SciencePage', () => {
 
     it('dropzone non-PDF drop remounts FileUpload to hide clear/upload controls', async () => {
       const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       const callsAfterRender = FileUploadMock.mock.calls.length;
 
@@ -481,7 +484,7 @@ describe('SciencePage', () => {
 
     it('FileUpload is remounted when file is rejected via setFile, clearing the filename', async () => {
       const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       const callsAfterRender = FileUploadMock.mock.calls.length;
 
@@ -497,7 +500,7 @@ describe('SciencePage', () => {
     });
 
     it('FileUpload is remounted when clear is triggered via setFile, clearing the filename', async () => {
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
       wrapper(<SciencePage />);
       const callsAfterRender = FileUploadMock.mock.calls.length;
@@ -531,9 +534,7 @@ describe('SciencePage', () => {
       await waitFor(() => {
         expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
       });
-      expect(mockStore.updateAppContent2).not.toHaveBeenCalledWith(
-        expect.objectContaining({ sciencePDF: null })
-      );
+      expect(formMethods.getValues('sciencePDF')).not.toBeNull();
     });
 
     it('uploadDisabled is true when pdfError is set', async () => {
@@ -550,7 +551,7 @@ describe('SciencePage', () => {
 
     it('upload proceeds when a valid file is uploaded after a previous error', async () => {
       mockGetPdfPageCount.mockResolvedValueOnce(5).mockResolvedValueOnce(2);
-      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      currentProposal = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
 
       const badFile = makeFile('bad.pdf');

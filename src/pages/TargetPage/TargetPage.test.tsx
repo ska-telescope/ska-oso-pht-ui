@@ -6,6 +6,7 @@ import TargetPage from './TargetPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import completeMockStore from '@/utils/MockStore';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
+import { ProposalSeed } from '@/models/proposals/useProposalForm';
 import {
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
@@ -17,10 +18,10 @@ import {
   STATUS_INITIAL
 } from '@/utils/constants';
 
-const wrapper = (component: React.ReactElement) => {
+const wrapper = (component: React.ReactElement, proposal?: ProposalSeed) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider>
+      <TestProposalFormProvider proposal={proposal}>
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
     </StoreProvider>
@@ -57,19 +58,17 @@ describe('<TargetPage />>', () => {
       application: {
         ...completeMockStore.application,
         // Statuses left over from when the proposal still had a target
-        content1: Array(10).fill(STATUS_INITIAL),
-        content2: {
-          ...completeMockStore.application.content2,
-          proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-          targets: [],
-          targetObservation: [],
-          calibrationStrategy: []
-        }
+        content1: Array(10).fill(STATUS_INITIAL)
       },
       updateAppContent1
     } as any);
 
-    wrapper(<TargetPage />);
+    wrapper(<TargetPage />, {
+      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      targets: [],
+      targetObservation: [],
+      calibrationStrategy: []
+    });
 
     const statuses = updateAppContent1.mock.calls.at(-1)?.[0];
     expect(statuses[PAGE_TARGET]).toBe(STATUS_ERROR);

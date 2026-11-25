@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import ValidationResults from './ValidationResults';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const wrapper = (component: React.ReactElement) => {
@@ -25,34 +26,7 @@ describe('<ValidationResults />', () => {
       <ValidationResults
         open={true}
         onClose={vi.fn()}
-        proposal={{
-          id: '',
-          title: '',
-          status: '',
-          lastUpdated: '',
-          lastUpdatedBy: '',
-          createdOn: '',
-          createdBy: '',
-          version: 0,
-          cycle: '',
-          proposalType: undefined,
-          proposalSubType: undefined,
-          scienceCategory: 0,
-          scienceSubCategory: undefined,
-          investigators: undefined,
-          abstract: undefined,
-          sciencePDF: null,
-          scienceLoadStatus: undefined,
-          targetOption: undefined,
-          targets: undefined,
-          observations: undefined,
-          groupObservations: undefined,
-          targetObservation: undefined,
-          technicalPDF: null,
-          technicalLoadStatus: undefined,
-          pipeline: undefined,
-          calibrationStrategy: []
-        }}
+        proposal={getProposalFormDefaults()}
         results={['LOOKS OK', 'NO ISSUES FOUND']}
       />
     );

@@ -1,10 +1,8 @@
 import { Table, TableBody } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
 import TableContainer from '../tableContainer/TableContainer';
 import TableSubmissionsHeader from './tableSubmissionsHeader/TableSubmissionsHeader';
 import TableSubmissionsRow from './tableSubmissionsRow/TableSubmissionsRow';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import Proposal from '@/utils/types/proposal';
 
 interface TableSubmissionsProps {
   data: any;
@@ -22,9 +20,6 @@ export default function TableSubmissions({
   viewFunction
 }: TableSubmissionsProps) {
   const { t } = useScopedTranslation();
-  const { application } = storageObject.useStore();
-
-  const getProposal = () => application.content2 as Proposal;
 
   return (
     <TableContainer>
@@ -50,7 +45,6 @@ export default function TableSubmissions({
             <TableSubmissionsRow
               key={item.id}
               item={item}
-              proposal={getProposal()}
               index={index}
               deleteClicked={deleteFunction}
               editClicked={editFunction}

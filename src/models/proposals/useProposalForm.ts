@@ -10,7 +10,8 @@ import { formObservationsFromLegacy } from './legacyObservations';
 import { ObservationOsd } from './observations';
 import type { ProposalSubTypeType, ProposalTypeType } from '@/utils/constants';
 
-type ProposalSeed = Omit<
+// TODO(T9): The legacy proposal shape, which tests and a new proposal still seed the form from
+export type ProposalSeed = Omit<
   Partial<ProposalType>,
   'prslId' | 'cycle' | 'proposalType' | 'scienceCategory' | 'investigators' | 'observations'
 > & {
@@ -72,34 +73,24 @@ export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => 
   };
 };
 
-export function useProposalForm(proposal?: ProposalSeed, osd: ObservationOsd = {}) {
+/**
+ * The global proposal form. It starts empty: a proposal is opened by resetting the form (load,
+ * create, clone or a new proposal) and closed by resetting it to getProposalFormDefaults().
+ * Tests may pass initial values.
+ */
+export function useProposalForm(
+  osd: ObservationOsd = {},
+  initialValues: ProposalType = getProposalFormDefaults()
+) {
   // The OSD loads after the form is created. The form takes the resolver it is given on each
   // render, so this one is rebuilt when the OSD changes.
   const resolver = React.useMemo(
     () => getProposalResolver({ low: osd.low, mid: osd.mid }),
     [osd.low, osd.mid]
   );
-  const formMethods = useForm<ProposalType>({
+  return useForm<ProposalType>({
     mode: 'all',
     resolver,
-    defaultValues: getProposalFormValues(proposal)
+    defaultValues: initialValues
   });
-
-  const { reset } = formMethods;
-  const currentProposalRef = React.useRef(proposal);
-  const proposalId = proposal?.id;
-  const seededProposalIdRef = React.useRef(proposalId);
-
-  React.useEffect(() => {
-    currentProposalRef.current = proposal;
-  });
-
-  // Re-seed migrated fields when loading or switching proposals, not on store synchronization.
-  React.useEffect(() => {
-    if (proposalId === seededProposalIdRef.current) return;
-    seededProposalIdRef.current = proposalId;
-    reset(getProposalFormValues(currentProposalRef.current));
-  }, [proposalId, reset]);
-
-  return formMethods;
 }

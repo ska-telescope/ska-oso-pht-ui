@@ -2,7 +2,7 @@ import React from 'react';
 import { Entity, mintSkuid } from '@ska-telescope/skuid';
 import { ButtonLogin, isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@utils/storage/store';
@@ -19,14 +19,12 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
-import { legacyProposalFromForm } from '@/models/proposals/useCopySlicesToStore';
 import { UNKNOWN_API_ERROR } from '@/services/axios/apiResult/apiResult';
 import { ProposalType } from '@/models/proposals/proposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal, { NEW_PROPOSAL } from '@/utils/types/proposal';
-import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
   EMPTY_STATUS,
@@ -57,16 +55,13 @@ export default function LandingPage() {
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const { osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
   const validateProposal = useValidateProposal();
-  const { reset, getValues } = useFormContext<ProposalType>();
+  const { reset, getValues, control } = useFormContext<ProposalType>();
+  // The proposal the dialogs show, which getTheProposal loads into the form
+  const proposal = useWatch({ control }) as ProposalType;
   const theme = useTheme();
 
-  const {
-    application,
-    updateAppContent1,
-    updateAppContent2,
-    updateAppContent4,
-    updateAppContent5
-  } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent4, updateAppContent5 } =
+    storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -80,11 +75,9 @@ export default function LandingPage() {
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
-  const getProposal = () => application.content2 as Proposal;
   const { setHelp } = useHelp();
   useOSDAPI(setAxiosError, Boolean(loggedIn));
 
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { loadFromOda, saveToOda, createInOda } = useProposalOda();
 
@@ -124,7 +117,6 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     if (loggedIn) {
-      updateAppContent2({});
       setFetchList(!fetchList);
     }
   }, []);
@@ -136,17 +128,11 @@ export default function LandingPage() {
     const { data: values, error } = await loadFromOda(id);
     if (!values) {
       updateAppContent1({});
-      updateAppContent2({});
-      storeProposalCopy({} as Proposal);
       setAxiosViewError(error ?? UNKNOWN_API_ERROR);
       return false;
     }
     setSelectedPolicyByCycleId(values.cycle);
     updateAppContent1(validateProposal(values));
-    // The legacy store's copy, for the dialogs, clone and pages that still read it from there
-    const proposal = legacyProposalFromForm(values);
-    updateAppContent2(proposal);
-    storeProposalCopy(proposal);
     return true;
   };
 
@@ -207,8 +193,6 @@ export default function LandingPage() {
     }
     notifySuccess(t('addProposal.success') + cloned.prslId);
     updateAppContent1(validateProposal(cloned));
-    // The legacy store's copy, for the pages that still read it from there
-    setProposal(legacyProposalFromForm(cloned));
     // Create a new access entry for the PI.  Saves doing the endpoint
     const newAcc: Partial<ProposalAccess> = {
       prslId: cloned.prslId,
@@ -279,7 +263,6 @@ export default function LandingPage() {
     };
     reset(getProposalFormValues(newProposal));
     updateAppContent1(EMPTY_STATUS);
-    updateAppContent2(newProposal);
     navigate(PATH[1]);
   };
 
@@ -330,7 +313,7 @@ export default function LandingPage() {
 
   const deleteClicked = () => (
     <ProposalDisplay
-      proposal={getProposal()}
+      proposal={proposal}
       open={openDeleteDialog}
       onClose={() => setOpenDeleteDialog(false)}
       onConfirm={deleteConfirmed}
@@ -340,7 +323,7 @@ export default function LandingPage() {
 
   const cloneClicked = () => (
     <ProposalDisplay
-      proposal={getProposal()}
+      proposal={proposal}
       open={openCloneDialog}
       onClose={() => setOpenCloneDialog(false)}
       onConfirm={cloneConfirmed}
@@ -350,7 +333,7 @@ export default function LandingPage() {
 
   const viewClicked = () => (
     <ProposalDisplay
-      proposal={getProposal()}
+      proposal={proposal}
       open={openViewDialog}
       onClose={() => setOpenViewDialog(false)}
       onConfirm={deleteConfirmed}

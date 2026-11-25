@@ -76,10 +76,6 @@ vi.mock('@/utils/validation/validation', () => ({
   useValidateProposal: () => mockValidateFn
 }));
 
-vi.mock('@/utils/storage/proposalData', () => ({
-  storeProposalCopy: vi.fn()
-}));
-
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({ setHelp: vi.fn() })
 }));
@@ -254,7 +250,6 @@ describe('clone proposal', () => {
   ];
 
   const mockUpdateAppContent1 = vi.fn();
-  const mockUpdateAppContent2 = vi.fn();
   const mockUpdateAppContent4 = vi.fn();
 
   beforeEach(() => {
@@ -266,17 +261,19 @@ describe('clone proposal', () => {
       formProbe.reset(values);
       return { data: values };
     });
-    // Returns the proposal as the backend creates it: as sent, with the caller added as PI
-    mockCreateInOda.mockImplementation(async (values: ProposalType) => ({
-      data: { ...values, investigators: [backendInjectedPI] }
-    }));
+    // Returns the proposal as the backend creates it, as sent with the caller added as PI, and
+    // opens it in the form, as the real createInOda does
+    mockCreateInOda.mockImplementation(async (values: ProposalType) => {
+      const created = { ...values, investigators: [backendInjectedPI] };
+      formProbe.reset(created);
+      return { data: created };
+    });
     (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal]);
     (GetProposalAccessForUser as Mock).mockResolvedValue(mockAccessList);
 
     vi.spyOn(storageObject, 'useStore').mockReturnValue({
       application: {
         content1: [],
-        content2: mockRichOriginalProposal,
         content4: mockAccessList,
         content5: null,
         content6: {},
@@ -285,7 +282,6 @@ describe('clone proposal', () => {
         content9: {}
       },
       updateAppContent1: mockUpdateAppContent1,
-      updateAppContent2: mockUpdateAppContent2,
       updateAppContent4: mockUpdateAppContent4,
       updateAppContent5: vi.fn()
     } as any);
@@ -340,21 +336,17 @@ describe('clone proposal', () => {
     });
   });
 
-  test('copies the created clone, with the PI the backend added, to the legacy store', async () => {
+  test('opens the created clone, with the PI the backend added, on the Title page', async () => {
     await triggerCloneConfirm();
 
-    await waitFor(() => {
-      expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          title: 'In a galaxy far, far away cloneProposal.suffix',
-          abstract: mockRichOriginalProposal.abstract,
-          investigators: [backendInjectedPI]
-        })
-      );
-    });
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
     const [sent] = mockCreateInOda.mock.calls[0];
-    expect(mockUpdateAppContent2.mock.lastCall?.[0].id).toBe(sent.prslId);
-    expect(mockNavigate).toHaveBeenCalledWith(NAV[0]);
+    expect(formProbe.getValues()).toMatchObject({
+      prslId: sent.prslId,
+      title: 'In a galaxy far, far away cloneProposal.suffix',
+      abstract: mockRichOriginalProposal.abstract,
+      investigators: [backendInjectedPI]
+    });
   });
 
   test('reports a failed clone and stays on the landing page', async () => {

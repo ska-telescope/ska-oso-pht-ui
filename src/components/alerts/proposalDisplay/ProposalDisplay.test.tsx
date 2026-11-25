@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import ProposalDisplay from './ProposalDisplay';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const wrapper = (component: React.ReactElement) => {
@@ -23,32 +24,11 @@ describe('<ProposalDisplay />', () => {
     wrapper(
       <ProposalDisplay
         proposal={{
-          id: '',
+          ...getProposalFormDefaults(),
           title: '',
-          status: '',
-          lastUpdated: '',
-          lastUpdatedBy: '',
-          createdOn: '',
-          createdBy: '',
-          version: 0,
-          cycle: '',
-          proposalType: undefined,
-          proposalSubType: undefined,
-          scienceCategory: 0,
-          scienceSubCategory: undefined,
-          investigators: undefined,
-          abstract: undefined,
-          sciencePDF: null,
-          scienceLoadStatus: undefined,
-          targetOption: undefined,
-          targets: undefined,
-          observations: undefined,
-          groupObservations: undefined,
-          targetObservation: undefined,
-          technicalPDF: null,
-          technicalLoadStatus: undefined,
-          pipeline: undefined,
-          calibrationStrategy: []
+          proposalType: { type: null, subTypes: [] },
+          scienceCategory: null,
+          abstract: ''
         }}
         open={true}
         onClose={mockActionClose}
@@ -62,32 +42,11 @@ describe('<ProposalDisplay />', () => {
     wrapper(
       <ProposalDisplay
         proposal={{
-          id: '',
+          ...getProposalFormDefaults(),
           title: '',
-          status: '',
-          lastUpdated: '',
-          lastUpdatedBy: '',
-          createdOn: '',
-          createdBy: '',
-          version: 0,
-          cycle: '',
-          proposalType: 'standard_proposal',
-          proposalSubType: ['target_of_opportunity'],
+          proposalType: { type: 'standard_proposal', subTypes: ['target_of_opportunity'] },
           scienceCategory: 1,
-          scienceSubCategory: undefined,
-          investigators: undefined,
-          abstract: 'This is an abstract for a proposal.',
-          sciencePDF: null,
-          scienceLoadStatus: undefined,
-          targetOption: undefined,
-          targets: undefined,
-          observations: undefined,
-          groupObservations: undefined,
-          targetObservation: undefined,
-          technicalPDF: null,
-          technicalLoadStatus: undefined,
-          pipeline: undefined,
-          calibrationStrategy: []
+          abstract: 'This is an abstract for a proposal.'
         }}
         open={true}
         onClose={mockActionClose}
@@ -104,32 +63,11 @@ describe('<ProposalDisplay />', () => {
     wrapper(
       <ProposalDisplay
         proposal={{
-          id: '',
+          ...getProposalFormDefaults(),
           title: longLatexTitle,
-          status: '',
-          lastUpdated: '',
-          lastUpdatedBy: '',
-          createdOn: '',
-          createdBy: '',
-          version: 0,
-          cycle: '',
-          proposalType: undefined,
-          proposalSubType: undefined,
-          scienceCategory: 0,
-          scienceSubCategory: undefined,
-          investigators: undefined,
-          abstract: undefined,
-          sciencePDF: null,
-          scienceLoadStatus: undefined,
-          targetOption: undefined,
-          targets: undefined,
-          observations: undefined,
-          groupObservations: undefined,
-          targetObservation: undefined,
-          technicalPDF: null,
-          technicalLoadStatus: undefined,
-          pipeline: undefined,
-          calibrationStrategy: []
+          proposalType: { type: null, subTypes: [] },
+          scienceCategory: null,
+          abstract: ''
         }}
         open={true}
         onClose={mockActionClose}

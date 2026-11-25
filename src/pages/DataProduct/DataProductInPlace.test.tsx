@@ -1,6 +1,7 @@
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 import {
@@ -11,7 +12,7 @@ import {
 } from '@/models/proposals/dataProducts';
 import { REFERENCE_COORDINATE_TYPE_SSO, SENSITIVITY_STATE } from '@/utils/constants.ts';
 import DataProductInPlace from './DataProductInPlace';
-import { legacyObservationsFromForm } from '@/models/proposals/legacyObservations';
+import { ProposalType } from '@/models/proposals/proposal';
 import { PstMode } from '@/generated/models';
 import {
   newSvObservation,
@@ -25,11 +26,6 @@ vi.mock('@/utils/help/useHelp', () => ({ useHelp: () => ({ setHelp: vi.fn() }) }
 const mockOsdCyclePolicy = { maxObservations: 1, maxDataProducts: 1 };
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ osdCyclePolicy: mockOsdCyclePolicy })
-}));
-
-let mockStoreReturn: any;
-vi.mock('@utils/storage/store', () => ({
-  storageObject: { useStore: () => mockStoreReturn }
 }));
 
 let mockId = 0;
@@ -122,39 +118,33 @@ const link = (sensitivity?: Sensitivity) => ({
   sensitivity
 });
 
-// The observation the page shows, and the store the form is seeded from
+// The observation the page shows, and the proposal the form is seeded with
 let openedObservation: ObservationInput;
-const openProposal = ({
-  observations,
-  ...proposal
-}: {
+let openedProposal: Partial<ProposalType>;
+const openProposal = (proposal: {
   observations: ObservationInput[];
   dataProducts: DataProductInput[];
   targetObservation?: object[];
   targets?: object[];
 }) => {
-  openedObservation = observations[0];
-  mockStoreReturn = {
-    application: {
-      content2: {
-        id: 'prsl-1',
-        targets: [],
-        targetObservation: [],
-        // TODO BTN-3595 Seed the form directly once it no longer takes its observations from the store's legacy shape
-        ...legacyObservationsFromForm(observations),
-        ...proposal
-      }
-    },
-    updateAppContent2: vi.fn()
-  };
+  openedObservation = proposal.observations[0];
+  openedProposal = { prslId: 'prsl-1', ...proposal } as Partial<ProposalType>;
 };
 
-// The proposal the form last copied into the store
-const storedProposal = () => mockStoreReturn.updateAppContent2.mock.calls.at(-1)?.[0];
+// Exposes the global form, which holds the proposal
+let form: UseFormReturn<ProposalType>;
+const FormProbe = ({ onForm }: { onForm: (form: UseFormReturn<ProposalType>) => void }) => {
+  onForm(useFormContext<ProposalType>());
+  return null;
+};
+const keepForm = (probed: UseFormReturn<ProposalType>) => {
+  form = probed;
+};
 
 const renderPage = () =>
   render(
-    <TestProposalFormProvider>
+    <TestProposalFormProvider values={openedProposal}>
+      <FormProbe onForm={keepForm} />
       <ThemeProvider theme={theme}>
         <DataProductInPlace observation={openedObservation} />
       </ThemeProvider>
@@ -177,9 +167,8 @@ describe('DataProductInPlace', () => {
 
     expect(productType()).toHaveTextContent(IMAGES);
     expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1');
-    // The store copy may fill in other subgroups, but the data products and results are as loaded
-    expect(storedProposal()?.dataProducts ?? dataProducts).toEqual(dataProducts);
-    expect(storedProposal()?.targetObservation[0].sensitivity ?? DONE).toEqual(DONE);
+    expect(form.getValues('dataProducts')).toEqual(dataProducts);
+    expect(form.getValues('targetObservation')[0].sensitivity).toEqual(DONE);
   });
 
   it("shows the observation's main data product before there is a link", () => {
@@ -216,14 +205,12 @@ describe('DataProductInPlace', () => {
     fireEvent.mouseDown(productType());
     fireEvent.click(screen.getByRole('option', { name: VISIBILITIES }));
 
-    await waitFor(() => expect(storedProposal()).toBeDefined());
-    expect(storedProposal().dataProducts.map((dp: DataProductInput) => dp.id)).toEqual([
-      'DP2',
-      'DP1'
-    ]);
+    await waitFor(() =>
+      expect(form.getValues('dataProducts').map((dp) => dp.id)).toEqual(['DP2', 'DP1'])
+    );
     // The images data product is a hidden companion again, with its defaults back
-    expect(storedProposal().dataProducts[1]).toMatchObject({ id: 'DP1', channelsOut: 10 });
-    expect(storedProposal().targetObservation[0]).toMatchObject({
+    expect(form.getValues('dataProducts')[1]).toMatchObject({ id: 'DP1', channelsOut: 10 });
+    expect(form.getValues('targetObservation')[0]).toMatchObject({
       dataProductsSDPId: 'DP2',
       sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     });

@@ -3,6 +3,7 @@ import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFor
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
+import { ProposalSeed } from '@/models/proposals/useProposalForm';
 import { VELOCITY_TYPE } from '@utils/constants.ts';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
@@ -21,7 +22,7 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
 
 const tree = (component: React.ReactElement | null) => (
   <StoreProvider>
-    <TestProposalFormProvider>
+    <TestProposalFormProvider proposal={mockProposal as unknown as ProposalSeed}>
       <FormProbe onForm={keepForm} />
       <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </TestProposalFormProvider>
@@ -34,7 +35,7 @@ const wrapper = (component: React.ReactElement) => render(tree(component));
 const clickIcon = (testId: string, index: number) =>
   fireEvent.click(within(screen.getAllByTestId(testId)[index]).getByRole('button'));
 
-// Mock proposal data
+// Mock proposal data, which the form is seeded with
 const mockProposal = {
   targets: [
     {
@@ -55,13 +56,12 @@ const mockProposal = {
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
-      application: { content2: mockProposal },
+      application: {},
       help: {
         component: 'This is help text'
       },
       helpComponent: vi.fn(),
-      helpComponentURL: vi.fn(),
-      updateAppContent2: vi.fn()
+      helpComponentURL: vi.fn()
     })
   },
   StoreProvider: ({ children }: any) => <>{children}</>

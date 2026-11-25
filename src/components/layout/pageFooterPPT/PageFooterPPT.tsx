@@ -24,7 +24,6 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
-import { legacyProposalFromForm } from '@/models/proposals/useCopySlicesToStore';
 import { newDataProductsForMode } from '@/utils/autoLinking/AutoLinking';
 
 const createProposalSchema = getProposalSchema().pick({ title: true, proposalType: true });
@@ -37,7 +36,7 @@ interface PageFooterPPTProps {
 export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFooterPPTProps) {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
+  const { application, updateAppContent4 } = storageObject.useStore();
   const { createInOda } = useProposalOda();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
@@ -94,8 +93,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       return;
     }
     notifySuccess(t('addProposal.success') + created.prslId);
-    // The legacy store's copy, for the pages that still read it from there
-    updateAppContent2(legacyProposalFromForm(created));
 
     const newAcc: Partial<ProposalAccess> = {
       prslId: created.prslId,
@@ -116,7 +113,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     notifyWarning,
     notifySuccess,
     notifyError,
-    updateAppContent2,
     updateAppContent4,
     application.content4,
     navigate,

@@ -1,6 +1,8 @@
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { useFormContext, UseFormReturn } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DATA_PRODUCT_KIND, DataProductInput } from '@/models/proposals/dataProducts';
 import { TYPE_CONTINUUM, TYPE_PST } from '@/utils/constants.ts';
@@ -11,11 +13,6 @@ vi.mock('@/utils/help/useHelp', () => ({ useHelp: () => ({ setHelp: vi.fn() }) }
 const mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ osdCyclePolicy: mockOsdCyclePolicy })
-}));
-
-let mockStoreReturn: any;
-vi.mock('@utils/storage/store', () => ({
-  storageObject: { useStore: () => mockStoreReturn }
 }));
 
 let mockId = 0;
@@ -67,32 +64,31 @@ const observation = (type: string, extra: object = {}) => ({
   ...extra
 });
 
-// The store the form is seeded from
+// The proposal the form is seeded with, in the legacy shape
+let openedProposal: object;
 const openProposal = (proposal: {
   observations: object[];
   dataProducts: DataProductInput[];
   targetObservation?: object[];
   targets?: object[];
 }) => {
-  mockStoreReturn = {
-    application: {
-      content2: {
-        id: 'prsl-1',
-        targets: [],
-        targetObservation: [],
-        ...proposal
-      }
-    },
-    updateAppContent2: vi.fn()
-  };
+  openedProposal = { id: 'prsl-1', ...proposal };
 };
 
-// The proposal the form last copied into the store
-const storedProposal = () => mockStoreReturn.updateAppContent2.mock.calls.at(-1)?.[0];
+// Exposes the global form, which holds the proposal
+let form: UseFormReturn<ProposalType>;
+const FormProbe = ({ onForm }: { onForm: (form: UseFormReturn<ProposalType>) => void }) => {
+  onForm(useFormContext<ProposalType>());
+  return null;
+};
+const keepForm = (probed: UseFormReturn<ProposalType>) => {
+  form = probed;
+};
 
 const renderPage = () =>
   render(
-    <TestProposalFormProvider>
+    <TestProposalFormProvider proposal={openedProposal}>
+      <FormProbe onForm={keepForm} />
       <ThemeProvider theme={theme}>
         <DataProduct />
       </ThemeProvider>
@@ -137,12 +133,12 @@ describe('DataProduct entry', () => {
     renderPage();
     const add = screen.getByTestId('addDataProductButtonEntry');
     await waitFor(() => expect(add).toBeEnabled());
-    expect(storedProposal()?.dataProducts ?? []).toEqual([]);
+    expect(form.getValues('dataProducts')).toEqual([]);
 
     fireEvent.click(add);
 
     await waitFor(() =>
-      expect(storedProposal().dataProducts).toEqual([
+      expect(form.getValues('dataProducts')).toEqual([
         expect.objectContaining({
           observationId: 'OBS1',
           kind: DATA_PRODUCT_KIND.CONTINUUM_IMAGE

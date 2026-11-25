@@ -1,15 +1,11 @@
-import { MockProposalFrontend } from '@/services/axios/put/putProposal/mockProposalFrontend';
-
 // Define a mock store object with all required properties and methods
 const completeMockStore = {
   application: {
     content1: [0, 0, 0],
-    content2: MockProposalFrontend,
     content3: {},
     content4: {}
   },
   updateAppContent1: vi.fn(),
-  updateAppContent2: vi.fn(),
   helpComponent: vi.fn(),
   helpComponentURL: vi.fn(),
   user: null,

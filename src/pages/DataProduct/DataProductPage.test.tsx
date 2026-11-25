@@ -14,13 +14,14 @@ import {
 } from '@/utils/constants';
 import completeMockStore from '@/utils/MockStore';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
+import { ProposalSeed } from '@/models/proposals/useProposalForm';
 import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 
-const wrapper = (component: React.ReactElement) => {
+const wrapper = (component: React.ReactElement, proposal?: ProposalSeed) => {
   return render(
     <StoreProvider>
       <ThemeA11yProvider>
-        <TestProposalFormProvider>{component}</TestProposalFormProvider>
+        <TestProposalFormProvider proposal={proposal}>{component}</TestProposalFormProvider>
       </ThemeA11yProvider>
     </StoreProvider>
   );
@@ -48,11 +49,10 @@ const renderWithProposal = (
     ...completeMockStore,
     application: {
       ...completeMockStore.application,
-      content1: statuses,
-      content2: { id: 'prsl-1', targets: [], targetObservation: [], ...proposal }
+      content1: statuses
     }
   } as any);
-  wrapper(<DataProductPage />);
+  wrapper(<DataProductPage />, { id: 'prsl-1', ...proposal } as ProposalSeed);
 };
 
 describe('<DataProductPage />', () => {

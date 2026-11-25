@@ -6,7 +6,6 @@ import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout, getUserInfo } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useNavigate } from 'react-router';
-import { storageObject } from '@utils/storage/store';
 import { PMT, PATH, PAGE_PANEL_MANAGEMENT } from '@/utils/constants';
 import {
   isReviewerAdmin,
@@ -42,7 +41,6 @@ export default function ButtonUserMenu({
   const theme = useTheme();
   const buttonWrapperRef = React.useRef<HTMLDivElement>(null);
   const loginButtonRef = React.useRef<HTMLDivElement>(null);
-  const { updateAppContent2 } = storageObject.useStore();
   const { instance, accounts } = useMsal();
   const { notifyError } = useNotify();
   const [displayName, setDisplayName] = React.useState<string>(accounts[0]?.name ?? '');
@@ -107,7 +105,7 @@ export default function ButtonUserMenu({
   };
 
   const onMenuSelect = (thePath: string) => {
-    updateAppContent2([]);
+    // Leaving the editor closes the open proposal (see PHT)
     navigate(thePath);
     setAnchorEl(null);
   };

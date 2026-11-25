@@ -7,7 +7,6 @@ import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { accessUpdate, useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
-import Proposal from '@/utils/types/proposal';
 import { NOT_SPECIFIED, PROPOSAL_STATUS } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
@@ -16,7 +15,6 @@ import { presentDateTime, presentLatex } from '@/utils/present/present';
 interface TableSubmissionsRowProps {
   item: any;
   index: number;
-  proposal: Proposal;
   deleteClicked?: Function;
   editClicked?: Function;
   cloneClicked?: Function;

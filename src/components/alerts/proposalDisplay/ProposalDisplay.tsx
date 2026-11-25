@@ -6,7 +6,8 @@ import { presentLatex } from '@utils/present/present';
 import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
-import Proposal from '../../../utils/types/proposal';
+import { ProposalType } from '@/models/proposals/proposal';
+import { OBSERVING_MODE_TRANSLATION_KEY } from '@/models/proposals/observations';
 import {
   NOT_SPECIFIED,
   PAGE_CYCLE,
@@ -26,7 +27,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import ObservingType from '@/components/display/observingType/observingType';
 
 interface ProposalDisplayProps {
-  proposal: Proposal | null;
+  proposal: ProposalType | null;
   open: boolean;
   onClose: Function;
   onConfirm: Function;
@@ -69,7 +70,7 @@ export default function ProposalDisplay({
 
   const downloadPdf = async (fileType: string) => {
     try {
-      const selectedFile = `${proposal?.id}-` + fileType + t('fileType.pdf');
+      const selectedFile = `${proposal?.prslId}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
       window.open(signedUrl, '_blank');
     } catch (e) {
@@ -78,13 +79,15 @@ export default function ProposalDisplay({
   };
 
   const proposalType = () => {
-    const proposalType = proposal?.proposalType;
+    const proposalType = proposal?.proposalType?.type;
     const proposalName = !proposalType ? NOT_SPECIFIED : t('proposalType.title.' + proposalType);
     return `${proposalName}`;
   };
 
   const proposalAttributes = () =>
-    (proposal?.proposalSubType ?? []).map((subType) => t('proposalAttribute.title.' + subType));
+    (proposal?.proposalType?.subTypes ?? []).map((subType) =>
+      t('proposalAttribute.title.' + subType)
+    );
 
   const scienceCategory = (): string => {
     const cat = proposal?.scienceCategory;
@@ -94,12 +97,12 @@ export default function ProposalDisplay({
     return t(`${prefix}.${cat}`);
   };
 
-  const isScienceVerification = proposal?.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
+  const isScienceVerification = proposal?.proposalType?.type === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
 
   const observationType = () => {
-    const type = proposal?.observations?.[0]?.type;
-    if (!type) return NOT_SPECIFIED;
-    return <ObservingType type={type} />;
+    const mode = proposal?.observations?.[0]?.observingMode;
+    if (!mode) return NOT_SPECIFIED;
+    return <ObservingType type={OBSERVING_MODE_TRANSLATION_KEY[mode]} />;
   };
 
   const title = (inLabel: string, inValue: string) => {
@@ -398,7 +401,7 @@ export default function ProposalDisplay({
             sx={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: 'right' }}
           >
             <Grid>{details(t('page.' + PAGE_CYCLE + '.short'), proposal?.cycle ?? '')}</Grid>
-            <Grid>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid>
+            <Grid>{details(t('proposalId.label'), proposal?.prslId ?? '')}</Grid>
           </Grid>
         </Grid>
       </Grid>

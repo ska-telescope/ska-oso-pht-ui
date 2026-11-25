@@ -16,7 +16,7 @@ import {
 } from '@/utils/constants';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
 import SensCalcModalMultiple from '@/components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
-import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults, ProposalSeed } from '@/models/proposals/useProposalForm';
 import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
@@ -78,14 +78,23 @@ const linkingProposal = {
   proposalType: PROPOSAL_TYPE.STANDARD,
   observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
   dataProducts: [{ ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'sdp-1' }],
-  targets: [{ id: 't1', name: 'M2', kind: 0, raStr: '21:33:27.020', decStr: '-00:49:23.700' }],
+  targets: [
+    {
+      id: 't1',
+      name: 'M2',
+      kind: 0,
+      velocityDefinition: 'RADIO',
+      raStr: '21:33:27.020',
+      decStr: '-00:49:23.700'
+    }
+  ],
   targetObservation: [],
   calibrationStrategy: []
-};
+} as ProposalSeed;
 
 const linkingTree = (page: React.ReactElement | null) => (
   <StoreProvider>
-    <TestProposalFormProvider>
+    <TestProposalFormProvider proposal={linkingProposal}>
       <FormProbe onForm={keepForm} />
       <ThemeA11yProvider>{page}</ThemeA11yProvider>
     </TestProposalFormProvider>
@@ -95,7 +104,7 @@ const linkingTree = (page: React.ReactElement | null) => (
 const renderLinking = () => {
   vi.spyOn(storageObject, 'useStore').mockReturnValue({
     ...completeMockStore,
-    application: { ...completeMockStore.application, content1: [], content2: linkingProposal }
+    application: { ...completeMockStore.application, content1: [] }
   } as unknown as ReturnType<typeof storageObject.useStore>);
   return render(linkingTree(<LinkingPage />));
 };

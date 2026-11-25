@@ -6,13 +6,14 @@ import { PROPOSAL_TYPE } from '@utils/constants.ts';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
+import { ProposalType } from '@/models/proposals/proposal';
 
-const wrapper = (component: React.ReactElement) => {
+const wrapper = (component: React.ReactElement, values?: Partial<ProposalType>) => {
   return render(component, {
     wrapper: ({ children }) => (
       <StoreProvider>
         <ThemeA11yProvider>
-          <TestProposalFormProvider>{children}</TestProposalFormProvider>
+          <TestProposalFormProvider values={values}>{children}</TestProposalFormProvider>
         </ThemeA11yProvider>
       </StoreProvider>
     )
@@ -47,15 +48,13 @@ describe('<AddProposal />', () => {
 });
 
 describe('Create button validation', () => {
-  // A single store object, so TitleEntry's effect on application.content2 doesn't re-run every render
+  // A single store object, so TitleEntry's effects don't re-run every render
   const svStore = {
     application: {
       content1: [],
-      content2: { proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION },
       content5: {}
     },
     updateAppContent1: vi.fn(),
-    updateAppContent2: vi.fn(),
     updateAppContent5: vi.fn()
   };
 
@@ -85,7 +84,9 @@ describe('Create button validation', () => {
   test('uses the SV default without requiring a type selection', async () => {
     mockOSD.isSV = true;
     vi.spyOn(storageObject, 'useStore').mockReturnValue(svStore as any);
-    const { container } = wrapper(<AddProposal />);
+    const { container } = wrapper(<AddProposal />, {
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] }
+    });
     expect(container.querySelector('[id^="ProposalType-"]')).not.toBeInTheDocument();
     expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
 

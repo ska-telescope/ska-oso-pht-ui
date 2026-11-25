@@ -148,30 +148,6 @@ describe('<GridProposals /> with selected proposals', () => {
   vi.clearAllMocks();
 });
 
-describe('<GridProposals /> showActions', () => {
-  test('renders correctly, showActions true', async () => {
-    vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockProposalBackendList
-    });
-    const { container } = wrapper(<GridProposals showActions />);
-    await waitFor(() => {
-      const authorsHeader = container.querySelector('[data-field="actions"]');
-      expect(authorsHeader).toBeInTheDocument();
-    });
-  });
-  vi.clearAllMocks();
-  test('renders correctly, showActions false', async () => {
-    vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockProposalBackendList
-    });
-    const { container } = wrapper(<GridProposals />);
-    await waitFor(() => {
-      const authorsHeader = container.querySelector('[data-field="actions"]');
-      expect(authorsHeader).toBeNull();
-    });
-  });
-});
-
 describe('<GridProposals /> showSearch', () => {
   test('renders correctly, showSearch true', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({

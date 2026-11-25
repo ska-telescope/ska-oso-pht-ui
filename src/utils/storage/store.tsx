@@ -8,7 +8,6 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 
 export interface ApplicationState {
   content1: object;
-  content2: object;
   content3: object;
   content4: object;
   content5: object;
@@ -28,7 +27,6 @@ export interface HelpState {
 
 const applicationInitialState: ApplicationState = {
   content1: [],
-  content2: [],
   content3: [],
   content4: [],
   content5: [],
@@ -45,9 +43,6 @@ const applicationSlice = createSlice({
     clear: () => applicationInitialState,
     setContent1: (state, action: PayloadAction<object>) => {
       state.content1 = action.payload;
-    },
-    setContent2: (state, action: PayloadAction<object>) => {
-      state.content2 = action.payload;
     },
     setContent3: (state, action: PayloadAction<object>) => {
       state.content3 = action.payload;
@@ -129,7 +124,6 @@ export const storageObject = {
       application: applicationState,
       clearApplication: () => dispatch(application.clear()),
       updateAppContent1: (content: object) => dispatch(application.setContent1(content)),
-      updateAppContent2: (content: object) => dispatch(application.setContent2(content)),
       updateAppContent3: (content: object) => dispatch(application.setContent3(content)),
       updateAppContent4: (content: object) => dispatch(application.setContent4(content)),
       updateAppContent5: (content: object) => dispatch(application.setContent5(content)),

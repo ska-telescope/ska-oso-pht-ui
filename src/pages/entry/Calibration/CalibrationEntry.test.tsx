@@ -7,64 +7,17 @@ import { ProposalType } from '@/models/proposals/proposal';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CalibrationEntry from './CalibrationEntry';
 import { MemoryRouter } from 'react-router';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 // ----------------------
 // MOCKS
 // ----------------------
 
-vi.mock('@utils/storage/store', async () => {
-  const { newSvObservation, OBSERVING_MODE } = await import('@/models/proposals/observations');
-  const { legacyObservationsFromForm } = await import('@/models/proposals/legacyObservations');
-  const observation = {
-    ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
-    id: 'obs-1',
-    integrationTime: { value: 30, unit: 'min' as const }
-  };
-  return {
-    storageObject: {
-      useStore: () => ({
-        application: {
-          content2: {
-            targets: [{ id: 'T1', name: 'Target A' }],
-            targetObservation: [{ targetId: 'T1', observationId: 'obs-1' }],
-            calibrationStrategy: [
-              {
-                observatoryDefined: true,
-                id: 'cal-1',
-                observationIdRef: 'obs-1',
-                calibrators: [
-                  {
-                    targetId: '',
-                    name: 'Hercules A',
-                    calibrationIntent: 'flux',
-                    durationSeconds: 600,
-                    selectionStrategy: 'highest_elevation',
-                    relativeToScan: 'before_each_scan',
-                    notes: null
-                  },
-                  {
-                    targetId: '',
-                    name: 'Hercules A',
-                    calibrationIntent: 'flux',
-                    durationSeconds: 600,
-                    selectionStrategy: 'highest_elevation',
-                    relativeToScan: 'after_each_scan',
-                    notes: null
-                  }
-                ],
-                notes: null
-              }
-            ],
-            // TODO BTN-3595 Seed the form directly once it no longer takes its observations from the store's legacy shape
-            ...legacyObservationsFromForm([observation])
-          }
-        },
-        updateAppContent2: vi.fn()
-      })
-    }
-  };
-});
+// The help slider reads the store
+vi.mock('@utils/storage/store', () => ({
+  storageObject: { useStore: () => ({ application: {} }) }
+}));
 
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({
@@ -102,12 +55,52 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
   formProbe = form;
 };
 
+const proposal = {
+  targets: [{ id: 'T1', name: 'Target A' }],
+  targetObservation: [{ targetId: 'T1', observationId: 'obs-1' }],
+  calibrationStrategy: [
+    {
+      observatoryDefined: true,
+      id: 'cal-1',
+      observationIdRef: 'obs-1',
+      calibrators: [
+        {
+          targetId: '',
+          name: 'Hercules A',
+          calibrationIntent: 'flux',
+          durationSeconds: 600,
+          selectionStrategy: 'highest_elevation',
+          relativeToScan: 'before_each_scan',
+          notes: null
+        },
+        {
+          targetId: '',
+          name: 'Hercules A',
+          calibrationIntent: 'flux',
+          durationSeconds: 600,
+          selectionStrategy: 'highest_elevation',
+          relativeToScan: 'after_each_scan',
+          notes: null
+        }
+      ],
+      notes: null
+    }
+  ],
+  observations: [
+    {
+      ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
+      id: 'obs-1',
+      integrationTime: { value: 30, unit: 'min' as const }
+    }
+  ]
+} as Partial<ProposalType>;
+
 const theme = createTheme();
 const tree = (component: React.ReactElement | null) => (
   <MemoryRouter>
     <ThemeA11yProvider>
       <ThemeProvider theme={theme}>
-        <TestProposalFormProvider>
+        <TestProposalFormProvider values={proposal}>
           <FormProbe onForm={keepForm} />
           {component}
         </TestProposalFormProvider>

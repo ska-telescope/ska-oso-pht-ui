@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { storageObject, StoreProvider } from '@utils/storage/store';
-import completeMockStore from '@/utils/MockStore';
+import { StoreProvider } from '@utils/storage/store';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import SensCalcModalSingle from './SensCalcModalSingle';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
+import { ProposalSeed } from '@/models/proposals/useProposalForm';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
@@ -32,7 +32,7 @@ const values = (weighted: number): SensitivityValues => ({
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider>
+      <TestProposalFormProvider proposal={MockProposalFrontend as unknown as ProposalSeed}>
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
     </StoreProvider>
@@ -40,14 +40,6 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 describe('<SensCalcModalSingle />', () => {
-  // The linked observation and data product are still read from the store
-  beforeEach(() => {
-    vi.spyOn(storageObject, 'useStore').mockReturnValue({
-      ...completeMockStore,
-      application: { ...completeMockStore.application, content2: MockProposalFrontend }
-    } as unknown as ReturnType<typeof storageObject.useStore>);
-  });
-
   test('renders correctly ( calculating )', () => {
     wrapper(
       <SensCalcModalSingle

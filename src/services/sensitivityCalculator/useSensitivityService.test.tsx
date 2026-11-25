@@ -31,10 +31,6 @@ vi.mock('./calculate', async (importOriginal) => ({
 const notifyError = vi.fn();
 vi.mock('@/utils/notify/useNotify', () => ({ useNotify: () => ({ notifyError }) }));
 
-// The service starts again for each proposal in the store; it reads the rest from the form
-vi.mock('@utils/storage/store', () => ({
-  storageObject: { useStore: () => ({ application: { content2: { id: 'proposal-1' } } }) }
-}));
 // Without the OSD unless a test loads it, so its rules aren't checked
 const mockOsd = vi.hoisted(() => ({ low: undefined as unknown }));
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
@@ -101,7 +97,12 @@ const renderService = (link: TargetObservation, dataProducts = [DATA_PRODUCT]) =
   const Editor = () => {
     form = useForm<ProposalType>({
       defaultValues: {
-        ...getProposalFormValues({ targets: [TARGET], targetObservation: [link], dataProducts }),
+        ...getProposalFormValues({
+          id: 'proposal-1',
+          targets: [TARGET],
+          targetObservation: [link],
+          dataProducts
+        }),
         observations: [OBSERVATION]
       }
     });

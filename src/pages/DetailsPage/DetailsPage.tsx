@@ -10,7 +10,6 @@ import {
 } from '@ska-telescope/ska-gui-components/controlled';
 import { DETAILS, PAGE_DETAILS, PROPOSAL_TYPE, SA_AA2 } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
-import { Proposal } from '@utils/types/proposal.tsx';
 import { validateDetailsPage } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
@@ -42,7 +41,6 @@ export default function DetailsPage() {
   const { setHelp } = useHelp();
   const form = useFormContext<ProposalType>();
 
-  const getProposal = () => application.content2 as Proposal;
   const abstract = useWatch<ProposalFormValues, 'abstract'>({
     control: form.control,
     name: 'abstract'
@@ -216,7 +214,7 @@ export default function DetailsPage() {
           }}
         >
           {row2(
-            getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+            proposalType.type === PROPOSAL_TYPE.SCIENCE_VERIFICATION
               ? observingModeField()
               : categoryField()
           )}

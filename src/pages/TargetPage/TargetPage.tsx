@@ -4,10 +4,9 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import { storageObject } from '@utils/storage/store';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { useValidateProposal } from '../../utils/validation/validation';
 import { ProposalType } from '@/models/proposals/proposal';
-import { Proposal } from '../../utils/types/proposal';
 import {
   PAGE_TARGET,
   PAGE_OBSERVATION,
@@ -28,15 +27,20 @@ const PAGE = PAGE_TARGET;
 export default function TargetPage() {
   const { t } = useScopedTranslation();
   const theme = useTheme();
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  // How the targets are given. Only the list of targets is saved, so this is page state.
+  const [targetOption, setTargetOption] = React.useState<number>(TARGET_OPTION.LIST_OF_TARGETS);
   const { isSV } = useOSDAccessors();
   const getProposalState = () => application.content1 as number[];
   const validateProposal = useValidateProposal();
   const form = useFormContext<ProposalType>();
+  // The slices whose page statuses this page updates
+  const [targets, targetObservation, observations, dataProducts, calibrationStrategy] = useWatch({
+    control: form.control,
+    name: ['targets', 'targetObservation', 'observations', 'dataProducts', 'calibrationStrategy']
+  });
 
   // The pages that depend on the target are revalidated with it, so their statuses are updated
   // when the target is added or deleted
@@ -59,14 +63,14 @@ export default function TargetPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-  }, [getProposal()]);
+  }, [targets, targetObservation, observations, dataProducts, calibrationStrategy]);
 
   React.useEffect(() => {
     setTheProposalState();
   }, [validateToggle]);
 
   const handleClick = (index: number) => {
-    setProposal({ ...getProposal(), targetOption: index });
+    setTargetOption(index);
   };
 
   const setCardBG = (isSelected: boolean) =>
@@ -79,8 +83,8 @@ export default function TargetPage() {
       <Grid>
         <Card
           style={{
-            color: setCardFG(occ === getProposal().targetOption),
-            backgroundColor: setCardBG(occ === getProposal().targetOption)
+            color: setCardFG(occ === targetOption),
+            backgroundColor: setCardBG(occ === targetOption)
           }}
         >
           <CardActionArea onClick={() => handleClick(occ)}>
@@ -131,9 +135,9 @@ export default function TargetPage() {
           alignItems: 'center'
         }}
       >
-        {getProposal().targetOption === 1 && <TargetListSection />}
-        {getProposal().targetOption === 2 && <TargetMosaicSection />}
-        {getProposal().targetOption === 3 && <TargetNoSpecificSection />}
+        {targetOption === 1 && <TargetListSection />}
+        {targetOption === 2 && <TargetMosaicSection />}
+        {targetOption === 3 && <TargetNoSpecificSection />}
       </Grid>
     </Shell>
   );

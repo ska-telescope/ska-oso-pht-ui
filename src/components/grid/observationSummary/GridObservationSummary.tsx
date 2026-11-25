@@ -3,9 +3,13 @@ import { Box, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { NOT_SPECIFIED } from '@utils/constants.ts';
-import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import Proposal from '../../../utils/types/proposal';
+import { ProposalType } from '@/models/proposals/proposal';
+import {
+  OBSERVING_MODE_TRANSLATION_KEY,
+  TELESCOPE_NUMBER,
+  type ObservationInput
+} from '@/models/proposals/observations';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import ObservingBand from '@/components/display/observingBand/observingBand';
@@ -13,7 +17,7 @@ import ObservingType from '@/components/display/observingType/observingType';
 
 interface GridObservationSummaryProps {
   height?: number;
-  proposal: Proposal | null;
+  proposal: ProposalType | null;
   rowClick?: Function;
 }
 
@@ -24,7 +28,6 @@ export default function GridObservationSummary({
 }: GridObservationSummaryProps) {
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
-  const { observatoryConstants } = useOSDAccessors();
 
   const headerDisplay = (inValue: string, inValue2?: string) => (
     <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
@@ -77,15 +80,13 @@ export default function GridObservationSummary({
     );
   };
 
-  const sensitivityIntegrationTime = (rec: { type?: number; supplied?: any }) => {
-    return (
-      rec.supplied.value +
-      ' ' +
-      observatoryConstants?.Supplied[0]?.units.find((e) => e.value === rec.supplied.units)?.label
-    );
-  };
+  // The integration time with its unit, or NOT_SPECIFIED while it's missing
+  const integrationTime = ({ integrationTime }: ObservationInput) =>
+    integrationTime.value === null
+      ? NOT_SPECIFIED
+      : `${integrationTime.value} ${integrationTime.unit ?? ''}`;
 
-  const getObservationTargets = (rec: { type?: number; id?: any }) => {
+  const getObservationTargets = (rec: { id: string }) => {
     const array =
       proposal &&
       proposal.targetObservation &&
@@ -103,7 +104,7 @@ export default function GridObservationSummary({
   };
 
   // Each data product of the observation, by the title of its kind
-  const getDataProducts = (rec: { id?: string | number }): string[] =>
+  const getDataProducts = (rec: { id: string }): string[] =>
     (proposal?.dataProducts ?? [])
       .filter((dp) => dp.observationId === rec.id)
       .map((dp) => t('page.7.group.' + dp.kind));
@@ -120,7 +121,7 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('page.4.label'),
     flex: 0.75,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { type: number } }) => elementArray(getObservationTargets(e.row))
+    renderCell: (e: { row: ObservationInput }) => elementArray(getObservationTargets(e.row))
   };
 
   const colObservingBand = {
@@ -128,8 +129,11 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('observingBand.label'),
     flex: 1,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { telescope: string; observingBand: string } }) => (
-      <ObservingBand telescope={String(e.row.telescope)} band={e.row.observingBand} />
+    renderCell: (e: { row: ObservationInput }) => (
+      <ObservingBand
+        telescope={TELESCOPE_NUMBER[e.row.telescope]}
+        band={e.row.observingBand ?? undefined}
+      />
     )
   };
 
@@ -138,7 +142,9 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('observationType.short'),
     flex: 1,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { type: number } }) => <ObservingType type={String(e.row.type)} />
+    renderCell: (e: { row: ObservationInput }) => (
+      <ObservingType type={OBSERVING_MODE_TRANSLATION_KEY[e.row.observingMode]} />
+    )
   };
 
   const colSensCalcStatus = {
@@ -150,7 +156,7 @@ export default function GridObservationSummary({
       ),
     flex: 1.5,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { type: number } }) => element(sensitivityIntegrationTime(e.row))
+    renderCell: (e: { row: ObservationInput }) => element(integrationTime(e.row))
   };
 
   const colSensCalcBandwidth = {
@@ -158,7 +164,7 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('page.7.plural'),
     flex: 1.5,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { id: string } }) => elementArray(getDataProducts(e.row))
+    renderCell: (e: { row: ObservationInput }) => elementArray(getDataProducts(e.row))
   };
 
   const basicColumns = [
