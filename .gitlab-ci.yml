@@ -89,20 +89,6 @@ js-e2e-test:
   variables:
     JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
     CYPRESS_PARALLEL_WORKERS: "3"
-  # Environment is not needed. The tests run against the environment created by  
-  # js-e2e-deploy installed, accessing it via KUBE_NAMESPACE. The only reason to
-  # access environment would be to alter the auto_stop time. In this suite we handle 
-  # stopping after the tests complete in stop-js-e2e-test, whether or not the tests pass. 
-  # (null environment is used to avoid the default environment being created by the template)
-  environment: null
-
-# Removes the deployment once the tests have finished, whether or not they passed,
-# rather than leaving it to auto_stop_in or someone running this by hand
-stop-js-e2e-test:
-  needs:
-    - js-e2e-test
-  when: always
-  allow_failure: true
 
 info-dev-environment:
   <<: *dev_env
@@ -186,12 +172,14 @@ include:
   - template: "Verify/Accessibility.gitlab-ci.yml"
   # TS linting and unit testing
   - project: 'ska-telescope/templates-repository'
+    ref: btn-3676-remove-jstest-env
     file: 'gitlab-ci/includes/js.gitlab-ci.yml'
   # OCI
   - project: "ska-telescope/templates-repository"
     file: "gitlab-ci/includes/oci-image.gitlab-ci.yml"
   # Docs pages
   - project: 'ska-telescope/templates-repository'
+    ref: btn-3676-remove-jstest-env
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
   # .post step finalisers eg: badges
   - project: "ska-telescope/templates-repository"
