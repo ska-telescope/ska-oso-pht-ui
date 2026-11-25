@@ -148,8 +148,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     </Typography>
   );
 
-  const handleSave = () => {
-    void saveDraft();
+  const handleSave = async () => {
+    if (await saveDraft()) {
+      notifySuccess(t('saveBtn.success'));
+    }
   };
 
   const buttonsLeft = () => (
