@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, test } from 'vitest';
-import { mapping } from '@services/axios/get/getProposal/getProposal';
+import { mapPdmToForm } from './pdmMapper';
 import {
   MockProposalBackend,
   MockProposalBackendZoom
@@ -42,7 +42,7 @@ describe('calibration strategy schema', () => {
   const schema = getCalibrationStrategySchema();
 
   test.each(mockPdms)('accepts the calibration the legacy mapper loads from %s', (_, pdm) => {
-    const { calibrationStrategy } = mapping(pdm);
+    const { calibrationStrategy } = mapPdmToForm(pdm);
     expect(calibrationStrategy).not.toHaveLength(0);
     expect(schema.safeParse(calibrationStrategy).error).toBeUndefined();
   });

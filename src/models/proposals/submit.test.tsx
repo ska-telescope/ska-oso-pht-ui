@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { mapping } from '@services/axios/get/getProposal/getProposal';
+import { mapPdmToForm } from './pdmMapper';
 import {
   MockProposalBackend,
   MockProposalBackendZoom
@@ -16,7 +16,6 @@ import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import { getProposalSchema, ProposalType } from './proposal';
 import type { TargetObservationLink } from './targetObservation';
 import { getProposalSubmitSchema, getSubmitPageStatuses } from './submit';
-import { getProposalFormValues } from './useProposalForm';
 import { DATA_PRODUCT_KIND, DataProductInput, newDataProduct } from './dataProducts';
 import { newSvObservation, OBSERVING_MODE, type ObservationInput } from './observations';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
@@ -107,8 +106,8 @@ describe('getSubmitPageStatuses', () => {
     ['MockProposalBackendZoom', MockProposalBackendZoom, STATUS_OK],
     ['MockSlicesPdm', MockSlicesPdm, STATUS_ERROR]
   ])('passes the pages for the proposal loaded from %s', (_, pdm, dataProductsStatus) => {
-    const proposal = mapping(pdm as unknown as ProposalBackend);
-    expect(getSubmitPageStatuses(getProposalFormValues(proposal), osd)).toEqual({
+    const values = mapPdmToForm(pdm as unknown as ProposalBackend);
+    expect(getSubmitPageStatuses(values, osd)).toEqual({
       target: STATUS_OK,
       observation: STATUS_ERROR,
       linking: STATUS_OK,

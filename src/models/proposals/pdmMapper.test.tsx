@@ -1,13 +1,15 @@
 import { describe, expect, test } from 'vitest';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 const investigator = MockUserFrontendList[0];
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { getProposalSchema } from './proposal';
-import { DataProductInput } from './dataProducts';
-import { formObservationsFromLegacy } from './legacyObservations';
+import { DataProductInput, dataProductsFromPdm } from './dataProducts';
+import { targetsFromPdm } from './targets';
+import { targetObservationFromPdm } from './targetObservation';
+import { calibrationStrategyFromPdm } from './calibrationStrategy';
+import { OBSERVING_MODE, observationsFromPdm } from './observations';
 import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
@@ -27,7 +29,7 @@ const emptySlices = {
 
 describe('mapPdmToForm', () => {
   test('maps the PDM into form values', () => {
-    const legacy = mapping(pdm);
+    const { observation_info: info } = pdm;
     expect(mapPdmToForm(pdm)).toEqual({
       prslId: pdm.prsl_id,
       cycle: pdm.cycle,
@@ -39,20 +41,18 @@ describe('mapPdmToForm', () => {
       abstract: pdm.proposal_info.abstract,
       scienceCategory: 1,
       investigators: [],
-      targets: legacy.targets,
-      targetObservation: legacy.targetObservation,
-      calibrationStrategy: legacy.calibrationStrategy,
+      targets: targetsFromPdm(info.targets),
+      targetObservation: targetObservationFromPdm(info.result_details, info.observation_sets),
+      calibrationStrategy: calibrationStrategyFromPdm(info.calibration_strategy),
       sciencePDF: null,
       technicalPDF: null,
-      dataProducts: legacy.dataProducts,
-      // The same as seeding the form from the legacy store
-      observations: formObservationsFromLegacy(legacy.observations, legacy.groupObservations)
+      dataProducts: dataProductsFromPdm(info.data_product_sdps),
+      observations: observationsFromPdm(info.observation_sets)
     });
   });
 
   test('leaves observing mode on the observation, outside form values', () => {
-    const proposal = mapping(pdm);
-    expect(proposal.observations?.[0]?.type).toBe('continuum');
+    expect(mapPdmToForm(pdm).observations[0]?.observingMode).toBe(OBSERVING_MODE.CONTINUUM);
     expect(mapPdmToForm(pdm)).not.toHaveProperty('observingMode');
     const saved = mapFormToPdm(mapPdmToForm(pdm)).observation_info.observation_sets ?? [];
     expect(saved.map((set) => set.observation_type_details.observation_type)).toEqual(

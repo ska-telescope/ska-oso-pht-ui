@@ -1,5 +1,4 @@
-import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
+import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   ReferenceCoordinateGalactic,
   ReferenceCoordinateICRS,
@@ -17,12 +16,8 @@ import {
   TELESCOPE_LOW_BACKEND_MAPPING,
   SA_AA2,
   FREQUENCY_UNITS,
-  PDF_NAME_PREFIXES,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
-  PROPOSAL_TYPE,
-  ProposalSubTypeType,
-  ProposalTypeType,
   TYPE_PST,
   PST_MODES,
   FREQUENCY_STR_MHZ,
@@ -31,17 +26,11 @@ import {
   TYPE_ZOOM_LONG,
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
-import { DocumentPDF } from '@utils/types/document.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { type ApiResult, handleApiError, UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import { osoApiConfiguration } from '../../generatedClient/osoApiConfig.ts';
-import { targetsFromPdm } from '@/models/proposals/targets';
-import { targetObservationFromPdm } from '@/models/proposals/targetObservation';
-import { calibrationStrategyFromPdm } from '@/models/proposals/calibrationStrategy';
-import { dataProductsFromPdm } from '@/models/proposals/dataProducts';
 import type {
-  Document as DocumentTransport,
   GalacticCoordinates,
   ICRSCoordinates,
   LowArray,
@@ -78,22 +67,6 @@ export const getScienceCategory = (scienceCat: string) => {
     (c) => c.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat === null || cat === undefined ? null : cat;
-};
-
-const getPDF = (
-  documents: DocumentTransport[] | null | undefined,
-  documentId: string
-): DocumentPDF | null => {
-  if (!documents) return null;
-
-  const documentById = documents.find((document) => document.document_id === documentId);
-
-  if (!documentById) return null;
-
-  return {
-    documentId: documentById.document_id,
-    isUploadedPdf: documentById.uploaded_pdf
-  };
 };
 
 export const getReferenceCoordinate = (
@@ -293,66 +266,6 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
   }
   return results;
 };
-
-/*************************************************************************************************************************/
-
-export function mapping(inRec: ProposalBackend): Proposal {
-  const isSV: boolean =
-    inRec.proposal_info?.proposal_type?.main_type === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-
-  const sciencePDF: DocumentPDF = getPDF(
-    inRec?.observation_info?.documents,
-    PDF_NAME_PREFIXES.SCIENCE + inRec.prsl_id
-  ) as unknown as DocumentPDF;
-  const technicalPDF: DocumentPDF | undefined = isSV
-    ? undefined
-    : (getPDF(
-        inRec?.observation_info?.documents,
-        PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
-      ) as unknown as DocumentPDF);
-
-  const targets = targetsFromPdm(inRec.observation_info?.targets);
-
-  const convertedProposal = {
-    metadata: inRec.metadata,
-    id: inRec.prsl_id,
-    title: inRec.proposal_info?.title,
-    proposalType: inRec.proposal_info?.proposal_type?.main_type as ProposalTypeType,
-    proposalSubType: (inRec.proposal_info?.proposal_type?.attributes ??
-      []) as ProposalSubTypeType[],
-    status: inRec.status,
-    lastUpdated: inRec.metadata?.last_modified_on,
-    lastUpdatedBy: inRec.metadata?.last_modified_by,
-    createdOn: inRec.metadata?.created_on,
-    createdBy: inRec.metadata?.created_by,
-    version: inRec.metadata?.version,
-    cycle: inRec.cycle,
-    investigators: getInvestigators(inRec.proposal_info?.investigators),
-    abstract: inRec.proposal_info?.abstract,
-    scienceCategory: getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
-    scienceSubCategory: [1], // Not used currently
-    sciencePDF: sciencePDF,
-    scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL,
-    targetOption: 1, // TODO check what to map to
-    targets: targets,
-    observations: getObservations(inRec.observation_info?.observation_sets),
-    groupObservations: getGroupObservations(inRec.observation_info?.observation_sets),
-    targetObservation: targetObservationFromPdm(
-      inRec.observation_info?.result_details,
-      inRec.observation_info?.observation_sets
-    ),
-    calibrationStrategy: calibrationStrategyFromPdm(inRec.observation_info?.calibration_strategy),
-    technicalPDF: isSV ? undefined : technicalPDF,
-    technicalLoadStatus: isSV
-      ? FileUploadStatus.INITIAL
-      : technicalPDF
-        ? FileUploadStatus.OK
-        : FileUploadStatus.INITIAL,
-    dataProducts: dataProductsFromPdm(inRec.observation_info?.data_product_sdps),
-    pipeline: '' // TODO remove this property from type as not needed
-  };
-  return convertedProposal as Proposal;
-}
 
 /** Fetches the proposal from the ODA in its PDM shape, without mapping it. */
 export async function GetProposalPdm(id: string): Promise<ApiResult<ProposalBackend>> {

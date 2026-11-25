@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, test } from 'vitest';
-import { mapping } from '@services/axios/get/getProposal/getProposal';
+import { mapPdmToForm } from './pdmMapper';
 import {
   MockProposalBackend,
   MockProposalBackendZoom
@@ -20,7 +20,7 @@ describe('targets schema', () => {
   const schema = getTargetsSchema();
 
   test.each(mockPdms)('accepts the targets the legacy mapper loads from %s', (_, pdm) => {
-    const { targets } = mapping(pdm);
+    const { targets } = mapPdmToForm(pdm);
     expect(targets).not.toHaveLength(0);
     expect(schema.safeParse(targets).error).toBeUndefined();
   });

@@ -1,29 +1,21 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
   FREQUENCY_UNITS,
-  BAND_LOW_STR,
-  PROPOSAL_TYPE
+  BAND_LOW_STR
 } from '@utils/constants.ts';
 import { AxiosError, type AxiosResponse } from 'axios';
 import { UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import {
   GetProposalPdm,
-  mapping,
   getInvestigators,
   getScienceCategory,
   getReferenceCoordinate,
   getBandwidth,
   getFrequencyAndBandwidthUnits
 } from './getProposal.tsx';
-import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
-import {
-  MockNullProposalFrontend,
-  MockProposalFrontend,
-  MockProposalFrontendZoom
-} from './mockProposalFrontend.tsx';
+import { MockProposalBackend } from './mockProposalBackend.tsx';
 
 const { mockGetProposal } = vi.hoisted(() => ({ mockGetProposal: vi.fn() }));
 
@@ -35,51 +27,6 @@ vi.mock('@/generated', async (importOriginal) => ({
 }));
 
 type ReferenceCoordinateInput = Parameters<typeof getReferenceCoordinate>[0];
-
-describe('Helper Functions', () => {
-  test('mapping returns mapped continuum proposal from backend to frontend format', () => {
-    const proposalFrontEnd: Proposal = mapping(MockProposalBackend);
-    expect(proposalFrontEnd).to.deep.equal(MockProposalFrontend);
-  });
-
-  test('mapping returns mapped zoom proposal from backend to frontend format', () => {
-    const proposalFrontEnd: Proposal = mapping(MockProposalBackendZoom);
-    expect(proposalFrontEnd).to.deep.equal(MockProposalFrontendZoom);
-  });
-
-  test('mapping passes the science verification type through with no science category', () => {
-    const proposalFrontEnd: Proposal = mapping({
-      ...MockProposalBackend,
-      proposal_info: {
-        ...MockProposalBackend.proposal_info,
-        proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, attributes: [] },
-        science_category: undefined
-      }
-    });
-    expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
-    expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
-    expect(proposalFrontEnd.scienceCategory).to.equal(null);
-    expect(proposalFrontEnd.technicalPDF).to.equal(undefined);
-  });
-
-  test('mapping returns an empty sub-type list when the backend sends no attributes', () => {
-    const proposalFrontEnd: Proposal = mapping({
-      ...MockProposalBackend,
-      proposal_info: {
-        ...MockProposalBackend.proposal_info,
-        proposal_type: { main_type: PROPOSAL_TYPE.STANDARD }
-      }
-    });
-    expect(proposalFrontEnd.proposalType).to.equal(PROPOSAL_TYPE.STANDARD);
-    expect(proposalFrontEnd.proposalSubType).to.deep.equal([]);
-  });
-
-  test("mapping doesn't crash when receiving unexpected data", () => {
-    expect(mapping({ not: 'expected' } as unknown as ProposalBackend)).toEqual(
-      MockNullProposalFrontend
-    );
-  });
-});
 
 describe('GetProposalPdm', () => {
   beforeEach(() => {

@@ -4,7 +4,6 @@ import { act, renderHook } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { PROPOSAL_STATUS, PROPOSAL_TYPE, SENSITIVITY_STATE } from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { mapping } from '@services/axios/get/getProposal/getProposal';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
@@ -14,7 +13,6 @@ import { useProposalOda } from './useProposalOda';
 import { getDetailsSchema } from './details';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import { InvestigatorBackend } from '@/utils/types/investigator';
-import { getProposalFormValues } from './useProposalForm';
 
 const { mockGet, mockPut, mockCreate, mockRefreshAuthToken } = vi.hoisted(() => ({
   mockGet: vi.fn(),
@@ -45,7 +43,7 @@ const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) =>
     useForm<ProposalType>({
       // The other slices match the proposal being saved, as they do when seeded from the store
       defaultValues: {
-        ...getProposalFormValues(mapping(pdm)),
+        ...mapPdmToForm(pdm),
         title,
         proposalType: { type: proposalType, subTypes: [] }
       }
@@ -111,7 +109,7 @@ describe('useProposalOda', () => {
       await oda.current.loadFromOda('prsl-1');
     });
 
-    const [observation] = mapping(pdm).observations ?? [];
+    const [observation] = mapPdmToForm(pdm).observations;
     const dataProducts = form.current.getValues('dataProducts');
     expect(dataProducts.map((dp) => [dp.observationId, dp.kind])).toEqual([
       [observation.id, DATA_PRODUCT_KIND.CONTINUUM_IMAGE],
@@ -151,7 +149,7 @@ describe('useProposalOda', () => {
         }))
       }
     };
-    expect(() => mapping(malformed)).toThrow();
+    expect(() => mapPdmToForm(malformed)).toThrow();
     mockGet.mockResolvedValue({ data: malformed });
     const { form, oda } = renderWithForm('Unsaved title');
     act(() => {
@@ -331,13 +329,6 @@ describe('useProposalOda', () => {
       await act(async () => {
         await oda.current.loadFromOda(proposalId);
       });
-      const expectedInvestigator = {
-        id: investigator.id,
-        status: investigator.status,
-        phdThesis: false,
-        pi: false
-      };
-      expect(mapping(withInvestigator).investigators).toEqual([expectedInvestigator]);
       expect(form.current.getValues('investigators')).toEqual([
         {
           id: investigator.id,
