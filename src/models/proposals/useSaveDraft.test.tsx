@@ -85,6 +85,7 @@ describe('useSaveDraft', () => {
     test.each([
       ['an empty title', { title: '' }],
       ['no id', { id: null }],
+      ['an empty id', { id: '' }],
       ['a title over the word limit', { title: words(maxTitleWords + 1) }],
       ['an abstract over the word limit', { abstract: words(maxAbstractWords + 1) }]
     ])('is blocked with %s', (_, changes) => {

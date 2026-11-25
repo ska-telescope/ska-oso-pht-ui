@@ -4,8 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { MemoryRouter } from 'react-router';
 import PHT from './PHT';
-import { NAV, PATH, PROPOSAL_STATUS, SENSITIVITY_STATE } from '@/utils/constants';
-import PutProposal from '@/services/axios/put/putProposal/putProposal';
+import { NAV, PATH, SENSITIVITY_STATE } from '@/utils/constants';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
@@ -185,60 +184,8 @@ describe('<PHT />', () => {
     expect(screen.getByText('Test notification message')).toBeInTheDocument();
   });
 
-  test('auto-saves when navigating between proposal pages', async () => {
-    const { rerenderPHT } = renderPHT();
-
-    mockPathname.current = NAV[1];
-    rerenderPHT();
-
-    mockPathname.current = NAV[2];
-    rerenderPHT();
-
-    await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
-        title: '',
-        proposalType: null,
-        abstract: '',
-        scienceCategory: null,
-        investigators: [],
-        targets: [],
-        targetObservation: [],
-        calibrationStrategy: [],
-        sciencePDF: null,
-        technicalPDF: null,
-        dataProducts: []
-      });
-    });
-  });
-
-  test('auto-saves when navigating from proposal page to home', async () => {
-    const { rerenderPHT } = renderPHT();
-
-    mockPathname.current = NAV[3];
-    rerenderPHT();
-
-    mockPathname.current = PATH[0];
-    rerenderPHT();
-
-    await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
-        title: '',
-        proposalType: null,
-        abstract: '',
-        scienceCategory: null,
-        investigators: [],
-        targets: [],
-        targetObservation: [],
-        calibrationStrategy: [],
-        sciencePDF: null,
-        technicalPDF: null,
-        dataProducts: []
-      });
-    });
-  });
-
   test.each(['Latest summary before blur', '', 'word '.repeat(251).trim()])(
-    'saves and synchronizes current RHF abstract on navigation without blur: %s',
+    'synchronizes current RHF abstract to the store on navigation without blur: %s',
     async (abstract) => {
       const formSpy = vi.spyOn(proposalForm, 'useProposalForm');
       try {
@@ -256,12 +203,6 @@ describe('<PHT />', () => {
         await waitFor(() => {
           expect(mockUpdateAppContent2).toHaveBeenCalledWith(
             expect.objectContaining({ id: 'prsl-123', abstract })
-          );
-          expect(PutProposal).toHaveBeenCalledWith(
-            {},
-            expect.objectContaining({ abstract: 'Stale store summary' }),
-            PROPOSAL_STATUS.DRAFT,
-            expect.objectContaining({ abstract })
           );
         });
       } finally {

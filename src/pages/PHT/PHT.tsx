@@ -17,7 +17,6 @@ import {
   NAV,
   PATH,
   PMT,
-  PROPOSAL_STATUS,
   REVIEW_TYPE,
   SKA_OSO_SERVICES_URL,
   SKA_SENSITIVITY_CALCULATOR_API_URL,
@@ -49,14 +48,12 @@ import LinkingPage from '../LinkingPage/LinkingPage';
 import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
 import Proposal from '@/utils/types/proposal';
 import Notification from '@/utils/types/notification';
-import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { useNotify } from '@/utils/notify/useNotify';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
@@ -66,6 +63,7 @@ import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 import { AutoSaveTimerService } from '@/models/proposals/AutoSaveTimerService';
+import { AutoSaveNavigationService } from '@/models/proposals/AutoSaveNavigationService';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -121,9 +119,7 @@ export default function PHT({
   const location = useLocation();
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { setHelp } = useHelp();
-  const { notifyError } = useNotify();
   const theme = useTheme();
-  const previousPathRef = React.useRef(location.pathname);
 
   const belowLg = useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
@@ -145,7 +141,6 @@ export default function PHT({
   const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
 
   const formMethods = useProposalForm(getProposal());
-  const { getValues } = formMethods;
   useCopySlicesToStore(formMethods);
 
   // A target can end up linked with no matching targetObservation entry (e.g. an older
@@ -169,33 +164,6 @@ export default function PHT({
     autoRepairAttemptedForIdRef.current = proposal.id;
     void linkTarget(target, getProposal, setProposal, formMethods, authClient);
   }, [getProposal(), autoLink]);
-
-  React.useEffect(() => {
-    const previousPath = previousPathRef.current;
-    const currentPath = location.pathname;
-
-    if (previousPath === currentPath) {
-      return;
-    }
-
-    const isProposalPageTransition =
-      NAV.includes(previousPath) && (NAV.includes(currentPath) || currentPath === PATH[0]);
-    const proposal = getProposal();
-    const canAutoSave =
-      isProposalPageTransition && loggedIn && proposal?.id != null && proposal.id !== '';
-
-    if (canAutoSave) {
-      const values = getValues();
-      void (async () => {
-        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT, values);
-        if ('error' in response) {
-          notifyError(response.error);
-        }
-      })();
-    }
-
-    previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, loggedIn, authClient, notifyError, getValues]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
@@ -379,6 +347,7 @@ export default function PHT({
             <FormProvider {...formMethods}>
               <SensitivityService />
               <AutoSaveTimerService />
+              <AutoSaveNavigationService />
               {REQUIRED_WIDTH ? (
                 <Routes>
                   {ROUTES.map((ROUTE) => (

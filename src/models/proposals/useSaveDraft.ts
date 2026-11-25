@@ -31,7 +31,7 @@ export function useSaveDraft() {
 
   const isSaveBlocked = () =>
     !loggedIn ||
-    proposal.id == null ||
+    !proposal.id ||
     proposal.title?.trim()?.length === 0 ||
     countWords(proposal.title ?? '') > Number(phtTranslations.title.maxWord) ||
     countWords(proposal.abstract ?? '') > Number(phtTranslations.abstract.maxWord);
