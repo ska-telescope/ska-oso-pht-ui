@@ -13,7 +13,7 @@ vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: () => ({ notifyError: vi.fn(), notifySuccess: mockNotifySuccess })
 }));
 
-vi.mock('@/models/proposals/useSaveDraft', () => ({
+vi.mock('@/services/saveDraft/useSaveDraft', () => ({
   useSaveDraft: () => ({
     saveDraft: mockSaveDraft,
     isSavePage: () => true,

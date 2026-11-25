@@ -8,8 +8,8 @@ import {
   STATUS_ARRAY_PAGES_PROPOSAL,
   STATUS_ARRAY_PAGES_SV
 } from '@utils/constants.ts';
-import { useProposalOda } from './useProposalOda';
-import { ProposalType } from './proposal';
+import { useProposalOda } from '@/models/proposals/useProposalOda';
+import { ProposalType } from '@/models/proposals/proposal';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import phtTranslations from '../../../public/locales/en/pht.json';

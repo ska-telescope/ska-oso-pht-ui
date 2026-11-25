@@ -62,8 +62,8 @@ import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
-import { AutoSaveTimerService } from '@/models/proposals/AutoSaveTimerService';
-import { AutoSaveNavigationService } from '@/models/proposals/AutoSaveNavigationService';
+import { AutoSaveTimerService } from '@/services/saveDraft/AutoSaveTimerService';
+import { AutoSaveNavigationService } from '@/services/saveDraft/AutoSaveNavigationService';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },

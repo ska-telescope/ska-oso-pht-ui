@@ -30,7 +30,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useValidateProposal } from '@/utils/validation/validation';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
-import { useSaveDraft } from '@/models/proposals/useSaveDraft';
+import { useSaveDraft } from '@/services/saveDraft/useSaveDraft';
 
 interface PageBannerPPTProps {
   pageNo: number;

@@ -6,7 +6,7 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { storageObject } from '@utils/storage/store';
 import completeMockStore from '@utils/MockStore';
 import { useSaveDraft } from './useSaveDraft';
-import { ProposalType } from './proposal';
+import { ProposalType } from '@/models/proposals/proposal';
 import phtTranslations from '../../../public/locales/en/pht.json';
 import { PAGE_LANDING, PAGE_LINKING, PAGE_TEAM, PROPOSAL_STATUS } from '@/utils/constants';
 
@@ -18,7 +18,7 @@ vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: () => ({ notifyError: mockNotifyError })
 }));
 
-vi.mock('./useProposalOda', () => ({
+vi.mock('@/models/proposals/useProposalOda', () => ({
   useProposalOda: () => ({ saveToOda: mockSaveToOda })
 }));
 
