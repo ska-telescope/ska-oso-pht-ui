@@ -17,7 +17,8 @@ UNRELEASED
 * Library update: SKA GUI Components v4.0.0
 * Changed: Target name resolution error improved and shown in a pop-up
 * Changed: Do not allow duplicate target names when adding multiple targets
-* Bugfix: Page now scrolls to top after proposal selection 
+* Bugfix: Page now scrolls to top after proposal selection
+* Changed: ska-oso-services dependency updated to v17.2.2
 
 11.1.0
 ----------
