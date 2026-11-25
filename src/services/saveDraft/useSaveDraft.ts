@@ -1,4 +1,3 @@
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import { Proposal } from '@utils/types/proposal.tsx';
@@ -28,16 +27,13 @@ export function useSaveDraft() {
 
   // TODO: Get the proposal from the new form context
   const proposal = application.content2 as Proposal;
-  const loggedIn = isLoggedIn();
 
   // Saving is offered on the proposal pages, once there is a proposal
   const isSavePage = (pageNo: number) =>
-    loggedIn &&
     proposal.id !== null &&
     (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL).includes(pageNo);
 
   const isSaveBlocked = () =>
-    !loggedIn ||
     !proposal.id ||
     proposal.title?.trim()?.length === 0 ||
     countWords(proposal.title ?? '') > Number(phtTranslations.title.maxWord) ||

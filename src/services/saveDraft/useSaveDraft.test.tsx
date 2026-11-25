@@ -2,7 +2,6 @@ import React from 'react';
 import { act, renderHook } from '@testing-library/react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { storageObject } from '@utils/storage/store';
 import completeMockStore from '@utils/MockStore';
 import { useSaveDraft } from './useSaveDraft';
@@ -24,10 +23,6 @@ vi.mock('@/models/proposals/useProposalOda', () => ({
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ isSV: mockOSD.isSV })
-}));
-
-vi.mock('@ska-telescope/ska-login-page', () => ({
-  isLoggedIn: vi.fn(() => true)
 }));
 
 const proposal = completeMockStore.application.content2;
@@ -52,7 +47,6 @@ const words = (n: number) => Array(n).fill('word').join(' ');
 describe('useSaveDraft', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(isLoggedIn).mockReturnValue(true);
     mockOSD.isSV = false;
   });
 
@@ -157,11 +151,6 @@ describe('useSaveDraft', () => {
     ])('is blocked with %s', (_, changes) => {
       expect(renderWith(changes).isSaveBlocked()).toBe(true);
     });
-
-    test('is blocked when not logged in', () => {
-      vi.mocked(isLoggedIn).mockReturnValue(false);
-      expect(renderWith().isSaveBlocked()).toBe(true);
-    });
   });
 
   describe('isSavePage', () => {
@@ -177,10 +166,8 @@ describe('useSaveDraft', () => {
       expect(renderWith().isSavePage(PAGE_LINKING)).toBe(false);
     });
 
-    test('is false before the proposal has an id, or when not logged in', () => {
+    test('is false before the proposal has an id', () => {
       expect(renderWith({ id: null }).isSavePage(PAGE_TEAM)).toBe(false);
-      vi.mocked(isLoggedIn).mockReturnValue(false);
-      expect(renderWith().isSavePage(PAGE_TEAM)).toBe(false);
     });
   });
 });
