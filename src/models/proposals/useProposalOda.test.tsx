@@ -475,7 +475,7 @@ describe('useProposalOda', () => {
     let loaded = mapping(withTeam);
     await act(async () => {
       const result = await oda.current.loadFromOda('prsl-1');
-      if (typeof result === 'string') throw new Error(result);
+      if (typeof result === 'string' || result === null) throw new Error(String(result));
       loaded = result;
     });
     const [member] = form.current.getValues('investigators') ?? [];

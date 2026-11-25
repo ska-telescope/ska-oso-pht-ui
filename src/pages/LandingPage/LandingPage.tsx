@@ -88,6 +88,14 @@ export default function LandingPage() {
   const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
   const { loadFromOda } = useProposalOda();
 
+  const pageMounted = React.useRef(true);
+  React.useEffect(() => {
+    pageMounted.current = true;
+    return () => {
+      pageMounted.current = false;
+    };
+  }, []);
+
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
@@ -132,8 +140,11 @@ export default function LandingPage() {
   const getTheProposal = async (id: string) => {
     setHelp('');
     updateAppContent5({});
+    setAxiosViewError('');
 
-    const response = await loadFromOda(id);
+    const response = await loadFromOda(id, () => pageMounted.current);
+    if (response === null || !pageMounted.current) return false;
+
     if (typeof response === 'string') {
       updateAppContent1({});
       updateAppContent2({});
@@ -153,32 +164,38 @@ export default function LandingPage() {
     navigate(NAV[0]);
   };
 
-  const viewIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenViewDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
+  const proposalLoadPending = React.useRef(false);
+
+  const openProposal = async (id: string, onSuccess: () => void) => {
+    if (proposalLoadPending.current) return;
+
+    proposalLoadPending.current = true;
+    try {
+      const loaded = await getTheProposal(id);
+      if (!pageMounted.current) return;
+
+      if (loaded) {
+        onSuccess();
+      } else {
+        alert(t('error.iconClicked'));
+      }
+    } finally {
+      proposalLoadPending.current = false;
     }
   };
 
-  const editIconClicked = async (id: string) => {
+  const viewIconClicked = (id: string) => openProposal(id, () => setOpenViewDialog(true));
+
+  const editIconClicked = (id: string) => {
     if (!loggedIn) return;
 
-    const response = await getTheProposal(id);
-    if (typeof response === 'string') {
-      alert(t('error.iconClicked'));
-    } else {
+    return openProposal(id, () => {
+      window.scrollTo(0, 0);
       goToTitlePage();
-    }
+    });
   };
 
-  const cloneIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenCloneDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
-    }
-  };
+  const cloneIconClicked = (id: string) => openProposal(id, () => setOpenCloneDialog(true));
 
   // The clone keeps the original's target/observation/data-product links (same targets and
   // observations carry over), but not the calculated sensitivity results attached to them - those
@@ -240,6 +257,7 @@ export default function LandingPage() {
 
       updateAppContent4([...acc, newAcc]);
 
+      window.scrollTo(0, 0);
       goToTitlePage();
     } else {
       notifyError((response as { error: string }).error);
@@ -410,7 +428,7 @@ export default function LandingPage() {
           {!axiosViewError && loggedIn && (!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
-          {!axiosViewError && filteredData.length > 0 && (
+          {filteredData.length > 0 && (
             <Box
               sx={{
                 pt: 5

@@ -21,8 +21,15 @@ export function useProposalOda() {
   const { osdPolicies } = useOSDAccessors();
 
   const loadFromOda = React.useCallback(
-    async (id: string): Promise<Proposal | string> => {
+    async (
+      id: string,
+      isStillWanted: () => boolean = () => true
+    ): Promise<Proposal | string | null> => {
       const pdm = await GetProposalPdm(authClient, id);
+      // The form is shared across routes, so a superseded load must not reset it; null means skipped
+      if (!isStillWanted()) {
+        return null;
+      }
       if (typeof pdm === 'string') {
         return pdm;
       }

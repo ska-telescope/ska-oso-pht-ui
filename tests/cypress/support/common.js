@@ -1,13 +1,11 @@
 import { click, verifyContent, verifyExists, verifyVisible } from './cypress';
-import { loginAsUser, stubMsalForceRefresh } from './auth';
+import { loginAsUser } from './auth';
 
 // visitWithAuth logs in via a real MSAL session (see auth.js's loginAsUser) and then
 // does its own cy.visit() on top of that restored session - login itself no longer happens here.
 export const visitWithAuth = (user) => {
   loginAsUser(user.username);
   cy.visit('/');
-  // stub until User Portal is fully integrated with the new auth flow. Otherwise this can cause the tests to timeout.
-  stubMsalForceRefresh();
 };
 
 // IMPROVEMENT  move cy. commands out of this file into cypress.js and create a function for it
