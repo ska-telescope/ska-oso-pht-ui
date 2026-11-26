@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { getProposalSchema } from './proposal';
 import { getProposalFormDefaults, getProposalFormValues } from './useProposalForm';
 import { PROPOSAL_TYPE } from '@/utils/constants';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 const emptySlices = {
   abstract: 'A valid abstract',

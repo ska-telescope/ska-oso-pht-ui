@@ -8,7 +8,7 @@ import { getCalibrationStrategySchema } from './calibrationStrategy';
 import { getDocumentRefSchema } from './documents';
 import { getDataProductsSchema } from './dataProducts';
 import { PROPOSAL_TYPE } from '@/utils/constants';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import { getDetailsSchema } from './details';
 import { getTeamSchema } from './team';
 
