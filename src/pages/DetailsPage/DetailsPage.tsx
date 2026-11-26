@@ -3,7 +3,6 @@ import { ProposalType } from '@/models/proposals/proposal';
 import { useFormContext } from 'react-hook-form';
 import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
-import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
   ControlledSelect,
   ControlledTextField
@@ -150,16 +149,16 @@ export default function DetailsPage() {
         maxWidth: 500
       }}
     >
-      <DropDown
+      <ControlledSelect
+        name="observations.0.observingMode"
         label={t('observationType.label')}
         options={observingModeOptions}
         disabled={observingModeOptions.length < 2}
         required
-        testId="observationType"
         value={observation?.observingMode ?? OBSERVING_MODE.CONTINUUM}
-        setValue={(mode: ObservingMode) => {
-          void changeObservingMode(mode);
-        }}
+        // onChange completely resets the observation so leave form update to be done there
+        withFormUpdate={false}
+        onChange={(evt) => void changeObservingMode(evt.target.value as ObservingMode)}
         onFocus={() => setHelp('observationType.help')}
       />
     </Box>

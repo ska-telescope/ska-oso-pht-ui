@@ -17,7 +17,7 @@ export default function AddProposal() {
         pt: 2
       }}
     >
-      <Shell page={PAGE} footerPage={PAGE_FOOTER} helpDisabled>
+      <Shell page={PAGE} footerPage={PAGE_FOOTER} isNewProposal helpDisabled>
         <TitleEntry page={PAGE_INNER} />
       </Shell>
     </Box>

@@ -9,7 +9,8 @@ import { type ApiResult, UNKNOWN_API_ERROR } from '@services/axios/apiResult/api
 import { useRefreshAuthToken } from '@services/axios/axiosAuthClient/axiosAuthClient';
 import { ProposalType } from './proposal';
 import { mapPdmToForm } from './pdmMapper';
-import { relinkSvTarget } from '@/utils/autoLinking/AutoLinking';
+import { withSvDefaults } from '@/utils/autoLinking/AutoLinking';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 /**
  * Moves the proposal between the ODA (PDM) and the global proposal form (RHF). A load or create
@@ -18,26 +19,42 @@ import { relinkSvTarget } from '@/utils/autoLinking/AutoLinking';
 export function useProposalOda() {
   const form = useFormContext<ProposalType>() as UseFormReturn<ProposalType> | null;
   const refreshAuthToken = useRefreshAuthToken();
+  const { osdPolicies } = useOSDAccessors();
 
-  // Puts a proposal from the ODA in the form. A PDM the form can't hold (e.g. a required field
-  // missing) leaves the form as it was.
+  // Puts a proposal from the ODA in the form, with the SV defaults a save may have left out. A
+  // PDM the form can't hold (e.g. a required field missing) leaves the form as it was.
   const applyPdm = React.useCallback(
     (pdm: ProposalBackend): ApiResult<ProposalType> => {
       let values: ProposalType;
       try {
-        values = relinkSvTarget(mapPdmToForm(pdm));
+        // The proposal's own cycle, as it is only selected once the proposal has loaded
+        const policy = osdPolicies.find((p) => p.cycleInformation?.cycleId === pdm.cycle);
+        values = withSvDefaults(
+          mapPdmToForm(pdm),
+          policy?.capabilities?.low?.basicCapabilities?.minElevationDeg ?? null
+        );
       } catch (err) {
         return { error: err instanceof Error ? err.message : UNKNOWN_API_ERROR };
       }
       form?.reset(values);
       return { data: values };
     },
-    [form]
+    [form, osdPolicies]
   );
 
+  /**
+   * Loads a proposal into the form. The form is shared across routes, so a load the caller no
+   * longer wants (isStillWanted false once the response arrives) leaves it alone and returns null.
+   */
   const loadFromOda = React.useCallback(
-    async (id: string): Promise<ApiResult<ProposalType>> => {
+    async (
+      id: string,
+      isStillWanted: () => boolean = () => true
+    ): Promise<ApiResult<ProposalType> | null> => {
       const { data: pdm, error } = await GetProposalPdm(id);
+      if (!isStillWanted()) {
+        return null;
+      }
       return pdm ? applyPdm(pdm) : { error: error ?? UNKNOWN_API_ERROR };
     },
     [applyPdm]

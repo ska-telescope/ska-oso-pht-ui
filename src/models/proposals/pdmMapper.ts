@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PROPOSAL_TYPE } from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getProposalSubTypesSchema, getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
@@ -47,6 +48,7 @@ export function mapPdmToForm(pdm: ProposalBackend): ProposalType {
  */
 export function mapFormToPdm(form: ProposalType): ProposalPDM {
   const saved = observationInfoToSave({
+    isSV: form.proposalType.type === PROPOSAL_TYPE.SCIENCE_VERIFICATION,
     observations: form.observations,
     dataProducts: form.dataProducts,
     links: form.targetObservation,

@@ -30,7 +30,7 @@ interface ProposalDisplayProps {
   proposal: ProposalType | null;
   open: boolean;
   onClose: Function;
-  onConfirm: Function;
+  onConfirm?: Function;
   onConfirmLabel?: string;
 }
 
@@ -57,7 +57,7 @@ export default function ProposalDisplay({
   const getFont = (bold: boolean) => (bold ? 600 : 300);
 
   const handleConfirm = () => {
-    onConfirm();
+    onConfirm?.();
   };
 
   const handleCancel = () => {

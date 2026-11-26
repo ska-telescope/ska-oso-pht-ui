@@ -1,5 +1,5 @@
 import { PROPOSAL_TYPE, SENSITIVITY_STATE, STATUS_ERROR, STATUS_OK } from '@/utils/constants';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import { getProposalSchema, ProposalType } from './proposal';
 import { getTargetsSchema } from './targets';
 import { getTargetObservationSchema } from './targetObservation';

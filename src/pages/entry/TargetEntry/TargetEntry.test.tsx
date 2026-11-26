@@ -11,7 +11,7 @@ import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 // Exposes the global form, which holds the entry and the targets
 let formProbe: UseFormReturn<ProposalType>;

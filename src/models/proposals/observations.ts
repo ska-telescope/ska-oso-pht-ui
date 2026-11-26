@@ -26,7 +26,7 @@ import type {
   subarrayConfigurationLow,
   subarrayConfigurationMid
 } from '@/utils/types/observatoryData';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import {
   PstMode,
   ResultsType,
@@ -786,7 +786,8 @@ export const observationsToPdm = (observations: ObservationValues[]) =>
 export const newSvObservation = (
   observingMode: ObservingMode,
   minElevation: number | null,
-  maxZoomChannels?: number
+  maxZoomChannels?: number,
+  pstMode: PstMode = PstMode.PulsarTiming
 ): ObservationInput => {
   const shared = {
     id: generateObsSetId(),
@@ -816,7 +817,7 @@ export const newSvObservation = (
         observingMode,
         centralFrequency,
         bandwidth,
-        pstMode: PstMode.PulsarTiming
+        pstMode
       };
     default:
       return { ...shared, observingMode, centralFrequency, bandwidth };

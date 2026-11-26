@@ -2,7 +2,7 @@ import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -32,16 +32,21 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useValidateProposal } from '@/utils/validation/validation';
 import { countWords } from '@utils/helpers.ts';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 interface PageBannerPPTProps {
   pageNo: number;
   backPage?: number;
+  isNewProposal?: boolean;
 }
 
 const widthWrapStatusArray = '1500px';
 
-export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
+export default function PageBannerPPT({
+  pageNo,
+  backPage,
+  isNewProposal = false
+}: PageBannerPPTProps) {
   const theme = useTheme();
   const { isSV } = useOSDAccessors();
   const validateProposal = useValidateProposal();
@@ -55,8 +60,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  // A proposal on the Add proposal page is not created in the backend yet
-  const isNewProposal = useLocation().pathname === PATH[1];
   const { updateAppContent1 } = storageObject.useStore();
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);

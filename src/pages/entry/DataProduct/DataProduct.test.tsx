@@ -72,7 +72,7 @@ const openProposal = (proposal: {
   targetObservation?: object[];
   targets?: object[];
 }) => {
-  openedProposal = { id: 'prsl-1', ...proposal };
+  openedProposal = { id: 'prp-1', ...proposal };
 };
 
 // Exposes the global form, which holds the proposal

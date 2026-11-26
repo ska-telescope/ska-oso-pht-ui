@@ -6,7 +6,6 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface TableSubmissionsProps {
   data: any;
-  deleteFunction?: (item: any) => void;
   editFunction?: (item: any) => void;
   cloneFunction?: (item: any) => void;
   viewFunction?: (item: any) => void;
@@ -14,7 +13,6 @@ interface TableSubmissionsProps {
 
 export default function TableSubmissions({
   data,
-  deleteFunction,
   editFunction,
   cloneFunction,
   viewFunction
@@ -46,7 +44,6 @@ export default function TableSubmissions({
               key={item.id}
               item={item}
               index={index}
-              deleteClicked={deleteFunction}
               editClicked={editFunction}
               cloneClicked={cloneFunction}
               viewClicked={viewFunction}

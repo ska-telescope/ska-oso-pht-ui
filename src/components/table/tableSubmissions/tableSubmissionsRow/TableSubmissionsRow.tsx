@@ -5,7 +5,6 @@ import { getColors } from '@ska-telescope/ska-gui-components';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
-import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { accessUpdate, useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
 import { NOT_SPECIFIED, PROPOSAL_STATUS } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -15,7 +14,6 @@ import { presentDateTime, presentLatex } from '@/utils/present/present';
 interface TableSubmissionsRowProps {
   item: any;
   index: number;
-  deleteClicked?: Function;
   editClicked?: Function;
   cloneClicked?: Function;
   viewClicked?: Function;
@@ -25,7 +23,6 @@ interface TableSubmissionsRowProps {
 export default function TableSubmissionsRow({
   item,
   index,
-  deleteClicked,
   editClicked,
   cloneClicked,
   viewClicked,
@@ -45,9 +42,6 @@ export default function TableSubmissionsRow({
     const update = accessUpdate(getAccess(), item.id);
     return update;
   };
-
-  const canDelete = (item: { status: string }) =>
-    item.status === PROPOSAL_STATUS.DRAFT || item.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const getStatusColor = (status: string) => {
     return getColors({
@@ -120,24 +114,6 @@ export default function TableSubmissionsRow({
                   toolTip={t('cloneProposal.toolTip')}
                 />
                 <Typography variant="caption">{t('cloneProposal.label')}</Typography>
-              </Box>
-            )}
-            {deleteClicked && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center'
-                }}
-              >
-                <TrashIcon
-                  onClick={() => deleteClicked(item.id)}
-                  disabled={!canDelete(item)}
-                  toolTip={t(
-                    canDelete(item) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled'
-                  )}
-                />
-                <Typography variant="caption">{t('delete.label')}</Typography>
               </Box>
             )}
           </Box>

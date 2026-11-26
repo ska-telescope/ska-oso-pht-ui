@@ -15,7 +15,7 @@ const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
 const mockPathname = { current: PATH[0] };
 // The proposal open in the form when PHT mounts, in the legacy shape
-const mockOpenProposal = { current: { id: 'prsl-123' } as any };
+const mockOpenProposal = { current: { id: 'prp-123' } as any };
 const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } as any };
 
 vi.mock('react-router', () => ({
@@ -47,7 +47,7 @@ vi.mock('@utils/storage/store', () => ({
 }));
 
 vi.mock('@/services/axios/put/putProposal/putProposal', () => ({
-  default: vi.fn().mockResolvedValue({ data: { id: 'prsl-123' } })
+  default: vi.fn().mockResolvedValue({ data: { id: 'prp-123' } })
 }));
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
@@ -113,7 +113,7 @@ const fullProps = {
 
 const { mockProposal } = vi.hoisted(() => ({
   mockProposal: {
-    id: 'prsl-t0001-20250101-00001',
+    id: 'prp-123',
     scienceCategory: null,
     abstract: 'Test abstract',
     targets: [{ id: 1, name: 'Target 1' }],
@@ -181,7 +181,7 @@ describe('<PHT />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockPathname.current = PATH[0];
-    mockOpenProposal.current = { id: 'prsl-123' };
+    mockOpenProposal.current = { id: 'prp-123' };
     mockApplicationContent5.current = { message: '', level: '', delay: 0 };
   });
 
@@ -213,7 +213,7 @@ describe('<PHT />', () => {
     await waitFor(() => {
       expect(PutProposal).toHaveBeenCalledWith(
         {
-          prslId: 'prsl-123',
+          prslId: 'prp-123',
           cycle: '',
           title: '',
           proposalType: { type: null, subTypes: [] },
@@ -245,7 +245,7 @@ describe('<PHT />', () => {
     await waitFor(() => {
       expect(PutProposal).toHaveBeenCalledWith(
         {
-          prslId: 'prsl-123',
+          prslId: 'prp-123',
           cycle: '',
           title: '',
           proposalType: { type: null, subTypes: [] },
@@ -288,13 +288,13 @@ describe('<PHT />', () => {
     mockPathname.current = NAV[0];
     rerenderPHT();
 
-    expect(currentForm().getValues('prslId')).toBe('prsl-123');
+    expect(currentForm().getValues('prslId')).toBe('prp-123');
   });
 
   test.each(['Latest summary before blur', '', 'word '.repeat(251).trim()])(
     'saves the current RHF abstract on navigation without blur: %s',
     async (abstract) => {
-      mockOpenProposal.current = { id: 'prsl-123', abstract: 'Saved summary' };
+      mockOpenProposal.current = { id: 'prp-123', abstract: 'Saved summary' };
       mockPathname.current = NAV[2];
       const { rerenderPHT } = renderPHT();
       act(() => {
@@ -306,7 +306,7 @@ describe('<PHT />', () => {
 
       await waitFor(() => {
         expect(PutProposal).toHaveBeenCalledWith(
-          expect.objectContaining({ prslId: 'prsl-123', abstract }),
+          expect.objectContaining({ prslId: 'prp-123', abstract }),
           PROPOSAL_STATUS.DRAFT
         );
       });

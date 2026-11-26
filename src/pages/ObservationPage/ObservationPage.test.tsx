@@ -71,7 +71,7 @@ const renderWithProposal = (proposal: object, statuses: number[] = []) => {
       content1: statuses
     }
   } as any);
-  wrapper(<ObservationPage />, { id: 'prsl-1', ...proposal } as ProposalSeed);
+  wrapper(<ObservationPage />, { id: 'prp-1', ...proposal } as ProposalSeed);
 };
 
 describe('<ObservationPage />', () => {

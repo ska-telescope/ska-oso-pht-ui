@@ -24,5 +24,6 @@ declare module '@/env' {
     INDIGO_CLIENT_ID: string;
     INDIGO_SCOPE: string;
     INDIGO_AUDIENCE: string;
+    REQUEST_TIMEOUT_MS?: string;
   };
 }

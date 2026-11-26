@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { useNavigate } from 'react-router';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
@@ -79,7 +79,11 @@ const mockNotification = {
 beforeEach(() => {
   vi.clearAllMocks();
   mockOSD.isSV = false;
-  mockCreateInOda.mockImplementation(async (values: ProposalType) => ({ data: values }));
+  // Opens the created proposal in the form, as the real createInOda does
+  mockCreateInOda.mockImplementation(async (values: ProposalType) => {
+    currentForm.reset(values);
+    return { data: values };
+  });
 
   storageObject.useStore = () =>
     ({
@@ -96,6 +100,9 @@ beforeEach(() => {
       updateAppContent4: vi.fn()
     }) as any;
 });
+
+// The form of the last render, to check what the component left in it
+let currentForm: UseFormReturn<ProposalType>;
 
 const wrapper = (
   component: React.ReactElement,
@@ -115,6 +122,7 @@ const wrapper = (
         ...formValues
       }
     });
+    currentForm = methods;
     return (
       <StoreProvider>
         <ThemeA11yProvider>
@@ -203,6 +211,13 @@ describe('PageFooterPPT', () => {
         expect.objectContaining({ observationId: proposal.observations?.[0].id }),
         expect.objectContaining({ observationId: proposal.observations?.[0].id })
       ]);
+      // The form has them too, once the proposal is created
+      await waitFor(() =>
+        expect(currentForm.getValues('observations')).toEqual([
+          expect.objectContaining({ id: proposal.observations?.[0].id })
+        ])
+      );
+      expect(currentForm.getValues('dataProducts')).toEqual(proposal.dataProducts);
     });
 
     it('is not created for other proposals', async () => {

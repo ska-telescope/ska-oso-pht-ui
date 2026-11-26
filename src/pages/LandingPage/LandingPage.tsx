@@ -33,7 +33,6 @@ import {
   NAV,
   PAGE_LANDING,
   PATH,
-  PROPOSAL_STATUS,
   PROPOSAL_STATUS_OPTIONS,
   PROPOSAL_TYPE
 } from '@/utils/constants';
@@ -69,7 +68,6 @@ export default function LandingPage() {
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
   const [openCycleDialog, setOpenCycleDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
@@ -79,7 +77,15 @@ export default function LandingPage() {
   useOSDAPI(setAxiosError, Boolean(loggedIn));
 
   const { axiosClient: authClient } = useAxiosAuthClient();
-  const { loadFromOda, saveToOda, createInOda } = useProposalOda();
+  const { loadFromOda, createInOda } = useProposalOda();
+
+  const pageMounted = React.useRef(true);
+  React.useEffect(() => {
+    pageMounted.current = true;
+    return () => {
+      pageMounted.current = false;
+    };
+  }, []);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -124,8 +130,12 @@ export default function LandingPage() {
   const getTheProposal = async (id: string) => {
     setHelp('');
     updateAppContent5({});
+    setAxiosViewError('');
 
-    const { data: values, error } = await loadFromOda(id);
+    const response = await loadFromOda(id, () => pageMounted.current);
+    if (response === null || !pageMounted.current) return false;
+
+    const { data: values, error } = response;
     if (!values) {
       updateAppContent1({});
       setAxiosViewError(error ?? UNKNOWN_API_ERROR);
@@ -140,31 +150,38 @@ export default function LandingPage() {
     navigate(NAV[0]);
   };
 
-  const viewIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenViewDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
+  const proposalLoadPending = React.useRef(false);
+
+  const openProposal = async (id: string, onSuccess: () => void) => {
+    if (proposalLoadPending.current) return;
+
+    proposalLoadPending.current = true;
+    try {
+      const loaded = await getTheProposal(id);
+      if (!pageMounted.current) return;
+
+      if (loaded) {
+        onSuccess();
+      } else {
+        alert(t('error.iconClicked'));
+      }
+    } finally {
+      proposalLoadPending.current = false;
     }
   };
 
-  const editIconClicked = async (id: string) => {
+  const viewIconClicked = (id: string) => openProposal(id, () => setOpenViewDialog(true));
+
+  const editIconClicked = (id: string) => {
     if (!loggedIn) return;
 
-    if (await getTheProposal(id)) {
+    return openProposal(id, () => {
+      window.scrollTo(0, 0);
       goToTitlePage();
-    } else {
-      alert(t('error.iconClicked'));
-    }
+    });
   };
 
-  const cloneIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      setOpenCloneDialog(true);
-    } else {
-      alert(t('error.iconClicked'));
-    }
-  };
+  const cloneIconClicked = (id: string) => openProposal(id, () => setOpenCloneDialog(true));
 
   // The clone is made from the original, which getTheProposal loaded into the form. It keeps the
   // original's content and links; PostProposal leaves out the links' sensitivity results, which
@@ -206,23 +223,13 @@ export default function LandingPage() {
 
     updateAppContent4([...acc, newAcc]);
 
+    window.scrollTo(0, 0);
     goToTitlePage();
   };
 
   const cloneConfirmed = () => {
     setOpenCloneDialog(false);
     createProposal();
-  };
-
-  // The proposal was loaded into the form by getTheProposal, so it is withdrawn from there
-  const deleteConfirmed = async () => {
-    const response = await saveToOda(PROPOSAL_STATUS.WITHDRAWN);
-    if (!response.error) {
-      setOpenDeleteDialog(false);
-      setFetchList(!fetchList);
-    } else {
-      setOpenDeleteDialog(false);
-    }
   };
 
   const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
@@ -311,16 +318,6 @@ export default function LandingPage() {
     />
   );
 
-  const deleteClicked = () => (
-    <ProposalDisplay
-      proposal={proposal}
-      open={openDeleteDialog}
-      onClose={() => setOpenDeleteDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel="deleteProposal.confirm"
-    />
-  );
-
   const cloneClicked = () => (
     <ProposalDisplay
       proposal={proposal}
@@ -336,8 +333,6 @@ export default function LandingPage() {
       proposal={proposal}
       open={openViewDialog}
       onClose={() => setOpenViewDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel=""
     />
   );
 
@@ -395,7 +390,7 @@ export default function LandingPage() {
           {!axiosViewError && loggedIn && (!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
-          {!axiosViewError && filteredData.length > 0 && (
+          {filteredData.length > 0 && (
             <Box
               sx={{
                 pt: 5
@@ -480,7 +475,6 @@ export default function LandingPage() {
         )}
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}
       {openCycleDialog && cycleClicked()}

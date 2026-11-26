@@ -6,7 +6,7 @@ import TitleEntry from './TitleEntry';
 import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ isSV: false })

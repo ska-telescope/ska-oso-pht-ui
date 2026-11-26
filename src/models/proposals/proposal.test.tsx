@@ -2,10 +2,10 @@ import { describe, expect, test } from 'vitest';
 import { getProposalSchema } from './proposal';
 import { getProposalFormDefaults, getProposalFormValues } from './useProposalForm';
 import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 const emptySlices = {
-  prslId: 'prsl-t0001-20261120-00001',
+  prslId: 'prp-1',
   cycle: 'SKAO_2027_1',
   abstract: 'A valid abstract',
   scienceCategory: null,
@@ -132,7 +132,7 @@ describe('proposal form values', () => {
 
   test("lays a proposal's slices over the defaults, without checking them", () => {
     const values = getProposalFormValues({
-      id: 'prsl-t0001-20261120-00001',
+      id: 'prp-1',
       cycle: 'SKAO_2027_1',
       title: 'A title that is far too long to pass the title check '.repeat(10),
       proposalType: PROPOSAL_TYPE.STANDARD,
@@ -140,7 +140,7 @@ describe('proposal form values', () => {
     });
     expect(values.title).toContain('far too long');
     // The store has the ID as id
-    expect(values.prslId).toBe('prsl-t0001-20261120-00001');
+    expect(values.prslId).toBe('prp-1');
     expect(values.cycle).toBe('SKAO_2027_1');
     // The store has the type flat, with its sub-types beside it
     expect(values.proposalType).toEqual({

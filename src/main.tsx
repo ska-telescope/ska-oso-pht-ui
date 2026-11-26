@@ -5,14 +5,12 @@ import { AuthProvider } from '@ska-telescope/ska-login-page';
 import { StoreProvider } from '@utils/storage/store';
 import App from './App/App';
 import { buildAuthConfig } from './utils/authConfig';
-import CypressMsalHydrationBridge from './testSupport/CypressMsalHydrationBridge';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <StoreProvider>
       <AuthProvider {...buildAuthConfig()}>
         <App />
-        <CypressMsalHydrationBridge />
       </AuthProvider>
     </StoreProvider>
   </StrictMode>

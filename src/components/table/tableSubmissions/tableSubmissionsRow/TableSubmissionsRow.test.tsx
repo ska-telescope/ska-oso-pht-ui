@@ -73,7 +73,6 @@ describe('TableSubmissionsRow', () => {
     item: mockItem,
     index: 0,
     expanded: false,
-    deleteClicked: vi.fn(),
     editClicked: vi.fn(),
     toggleRow: vi.fn(),
     expandButtonRef: () => null,

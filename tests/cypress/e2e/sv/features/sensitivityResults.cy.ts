@@ -3,7 +3,7 @@ import { standardUser } from '../../../support/users';
 import { buildSvContinuumProposal } from '../../../support/editor/data/sv';
 import { SV_CYCLE } from '../../../support/editor/cycles';
 import { createProposal, goToPage } from '../../../support/editor/editorActions';
-import { enter, section, select } from '../../../support/editor/fields';
+import { enter, select } from '../../../support/editor/fields';
 import { dataProductPage } from '../../../support/editor/pageObjects/dataProductPage';
 import { detailsPage } from '../../../support/editor/pageObjects/detailsPage';
 import { observationPage } from '../../../support/editor/pageObjects/observationPage';
@@ -59,7 +59,7 @@ describe('SV sensitivity results', () => {
       .then((before) => {
         // A longer integration gives a better sensitivity
         goToPage(observationPage);
-        enter(section('Array Setup').findByRole('textbox'), '4');
+        enter(cy.findByRole('spinbutton', { name: 'Integration time' }), '4');
 
         goToPage(dataProductPage);
         result(CONTINUUM_SENSITIVITY).should(($value) => {

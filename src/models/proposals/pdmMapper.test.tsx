@@ -178,7 +178,7 @@ describe('mapFormToPdm', () => {
       scienceCategory: 7,
       investigators: [],
       ...emptySlices,
-      prslId: 'prsl-t0001-20261120-00002',
+      prslId: 'prp-1223',
       cycle: 'SKAO_2027_2'
     });
 
@@ -189,7 +189,7 @@ describe('mapFormToPdm', () => {
       main_type: PROPOSAL_TYPE.KEY_SCIENCE,
       attributes: [PROPOSAL_SUBTYPE.JOINT]
     });
-    expect(result.prsl_id).toBe('prsl-t0001-20261120-00002');
+    expect(result.prsl_id).toBe('prp-1223');
     expect(result.cycle).toBe('SKAO_2027_2');
   });
 

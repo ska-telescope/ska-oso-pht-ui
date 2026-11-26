@@ -52,7 +52,7 @@ const renderWithProposal = (
       content1: statuses
     }
   } as any);
-  wrapper(<DataProductPage />, { id: 'prsl-1', ...proposal } as ProposalSeed);
+  wrapper(<DataProductPage />, { id: 'prp-1', ...proposal } as ProposalSeed);
 };
 
 describe('<DataProductPage />', () => {

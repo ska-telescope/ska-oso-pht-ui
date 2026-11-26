@@ -6,7 +6,7 @@ import PageBannerPPT from './PageBannerPPT';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { countWords } from '@utils/helpers.ts';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 const wrapper = (component: React.ReactElement) => {
   return render(

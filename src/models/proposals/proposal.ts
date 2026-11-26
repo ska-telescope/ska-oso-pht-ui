@@ -10,7 +10,7 @@ import { getDataProductsSchema } from './dataProducts';
 import { getObservationsSchema, ObservationOsd } from './observations';
 import { required } from './required';
 import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import { getDetailsSchema } from './details';
 import { getTeamSchema } from './team';
 

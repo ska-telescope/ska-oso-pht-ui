@@ -1,6 +1,6 @@
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
 import { cloneElement } from 'react';
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
@@ -16,7 +16,7 @@ import {
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { getProposalResolver, ProposalFormAccess, ProposalType } from '@/models/proposals/proposal';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import { ObservationInput, ObservingMode, OBSERVING_MODE } from '@/models/proposals/observations';
 
@@ -166,8 +166,8 @@ const renderPage = async () => {
   });
 };
 
-const observingModeCombobox = () =>
-  within(screen.getByTestId('observationType')).getByRole('combobox');
+const OBSERVING_MODE_LABEL = /^observationType.label/;
+const observingModeCombobox = () => screen.getByRole('combobox', { name: OBSERVING_MODE_LABEL });
 
 const selectObservingMode = async (label: string) => {
   fireEvent.mouseDown(observingModeCombobox());
@@ -201,7 +201,7 @@ describe('<DetailsPage /> observing mode', () => {
     await renderPage();
 
     expect(screen.getByTestId('categoryId')).toBeInTheDocument();
-    expect(screen.queryByTestId('observationType')).not.toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: OBSERVING_MODE_LABEL })).not.toBeInTheDocument();
   });
 
   it('stores abstract edits in RHF', async () => {
@@ -342,6 +342,9 @@ describe('<DetailsPage /> observing mode', () => {
     await renderPage();
 
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
+    // Showing the mode doesn't add an observation to the form
+    const formValues = JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '');
+    expect(formValues.observations).toEqual([]);
   });
 
   it('sets the observing mode on the observation when changed', async () => {
