@@ -1,102 +1,47 @@
-// ------------------------------------------------------------
-// 1. MOCKS MUST COME BEFORE IMPORTS
-// ------------------------------------------------------------
-import { vi } from 'vitest';
-
-// Mock OSD accessors
-vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
-  useOSDAccessors: () => ({
-    osdLOW: {
-      basicCapabilities: {
-        minFrequencyHz: 100_000_000,
-        maxFrequencyHz: 200_000_000
-      }
-    },
-    osdMID: {
-      basicCapabilities: {
-        receiverInformation: [
-          {
-            rxId: '1',
-            minFrequencyHz: 100_000_000,
-            maxFrequencyHz: 200_000_000
-          }
-        ]
-      }
-    }
-  })
-}));
-
-// Partial mock of constants — keeps all real exports
-vi.mock('@/utils/constants', async () => {
-  const actual = await vi.importActual<any>('@/utils/constants');
-  return {
-    ...actual
-  };
-});
-
-vi.mock('@/utils/helpers', async () => {
-  const actual = await vi.importActual<any>('@/utils/helpers');
-  return {
-    ...actual,
-    frequencyConversion: (val: number, from: number, to: number) => {
-      if (from === FREQUENCY_HZ && to === FREQUENCY_MHZ) return val / 1e6;
-      if (from === FREQUENCY_HZ && to === FREQUENCY_GHZ) return val / 1e9;
-      return val;
-    }
-  };
-});
-
-// ------------------------------------------------------------
-// 2. IMPORTS (AFTER MOCKS)
-// ------------------------------------------------------------
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import TableObservationsRow from './TableObservationsRow';
-import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
-import { FREQUENCY_GHZ, FREQUENCY_HZ, FREQUENCY_MHZ } from '@/utils/constants';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
-// ------------------------------------------------------------
-// 3. TEST DATA
-// ------------------------------------------------------------
-const mockItem = {
-  id: 1,
-  id2: 'group-1',
-  type: 'CONTINUUM',
-  telescope: 1,
-  subarray: 'A',
-  bandwidth: 1,
-  rec: {
-    observingBand: '1',
-    centralFrequency: 1_000_000_000,
-    centralFrequencyUnits: 'Hz',
-    continuumBandwidth: 1_000_000
-  }
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdLOW: { basicCapabilities: { minFrequencyHz: 50e6, maxFrequencyHz: 350e6 } },
+    osdMID: undefined
+  })
+}));
+
+const observation = {
+  ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
+  id: 'obs-1',
+  groupId: 'group-1'
 };
 
 const wrapper = (component: React.ReactElement) =>
   render(<StoreProvider>{component}</StoreProvider>);
 
-// ------------------------------------------------------------
-// 4. TESTS
-// ------------------------------------------------------------
 describe('TableObservationsRow', () => {
-  const defaultProps = {
-    item: mockItem,
-    proposal: MockProposalFrontend,
+  const props = {
+    observation,
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
     editClicked: vi.fn(),
     toggleRow: vi.fn(),
     expandButtonRef: () => null,
-    updateItem: vi.fn(),
-    tableLength: 1,
     t: (key: string) => key
   };
 
-  it('renders without crashing', () => {
-    wrapper(<TableObservationsRow {...defaultProps} />);
+  it("shows the observation's id, group, mode, telescope and subarray", () => {
+    wrapper(<TableObservationsRow {...props} />);
+    expect(screen.getByText('obs-1')).toBeInTheDocument();
     expect(screen.getByText('group-1')).toBeInTheDocument();
+    expect(screen.getByText('observationType.continuum')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, element) => element?.textContent === 'telescopes.ska_low subArrayConfiguration.aa2_sv',
+        { selector: 'p' }
+      )
+    ).toBeInTheDocument();
   });
 });

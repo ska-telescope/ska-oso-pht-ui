@@ -7,6 +7,7 @@ import { storageObject } from '@utils/storage/store';
 import {
   NAV,
   PROPOSAL_STATUS,
+  PROPOSAL_TYPE,
   PAGE_TITLE_ADD,
   PAGE_TARGET,
   PAGE_OBSERVATION,
@@ -24,6 +25,10 @@ import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUt
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getProposalSchema, ProposalType } from '@/models/proposals/proposal';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
+import { legacyObservationsFromForm } from '@/models/proposals/legacyObservations';
+import { getTeamValues } from '@/models/proposals/team';
+import { newDataProductsForMode } from '@/utils/autoLinking/AutoLinking';
 
 const createProposalSchema = getProposalSchema().pick({ title: true, proposalType: true });
 
@@ -39,8 +44,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { axiosClient: authClient, refreshAuthToken } = useAxiosAuthClient();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
-  const { isSV, osdCycleId } = useOSDAccessors();
-  const { trigger, getValues } = useFormContext<ProposalType>();
+  const { isSV, osdLOW } = useOSDAccessors();
+  const { trigger, getValues, setValue } = useFormContext<ProposalType>();
   const [title, proposalType] = useWatch<ProposalType, ['title', 'proposalType']>({
     name: ['title', 'proposalType']
   });
@@ -53,44 +58,64 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     [isSV]
   );
 
-  const currPageNo = proposal?.id == null ? -1 : pageNo;
-
   React.useEffect(() => {
-    if (currPageNo === -1) {
+    if (pageNo === -1) {
       void trigger(['title', 'proposalType']);
     }
-  }, [currPageNo, trigger]);
+  }, [pageNo, trigger]);
 
   const { prevPageNo, nextPageNo } = React.useMemo(() => {
-    const idx = pages.findIndex((p) => p === currPageNo);
+    const idx = pages.findIndex((p) => p === pageNo);
     return {
       prevPageNo: idx > 0 ? pages[idx - 1] : -2,
       nextPageNo: idx >= 0 && idx < pages.length - 1 ? pages[idx + 1] : -2
     };
-  }, [currPageNo, pages]);
+  }, [pageNo, pages]);
 
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
     // Only the slices a new proposal takes from the form; the rest come from the legacy defaults
-    const { title, proposalType, abstract, scienceCategory, investigators } = getValues();
+    const { prslId, cycle, title, proposalType, abstract, scienceCategory, investigators } =
+      getValues();
+    // An SV proposal starts with an observation in the default observing mode, which the user can
+    // change on the Details page, and its data products
+    const observations =
+      proposalType.type === PROPOSAL_TYPE.SCIENCE_VERIFICATION
+        ? [
+            newSvObservation(
+              OBSERVING_MODE.CONTINUUM,
+              osdLOW?.basicCapabilities?.minElevationDeg ?? null
+            )
+          ]
+        : [];
+    const dataProducts = observations.flatMap(newDataProductsForMode);
     const response = await PostProposal(
       authClient,
       refreshAuthToken,
       {
         ...proposal,
+        id: prslId,
         title,
         abstract,
         scienceCategory,
         investigators,
-        proposalType: proposalType ?? undefined,
-        cycle: osdCycleId ?? null
+        ...legacyObservationsFromForm(observations),
+        dataProducts,
+        proposalType: proposalType.type ?? undefined,
+        proposalSubType: proposalType.subTypes,
+        cycle
       },
       PROPOSAL_STATUS.DRAFT
     );
 
     if (response && !('error' in response)) {
       notifySuccess(t('addProposal.success') + response.id);
+      // The store keeps the same ID, so it doesn't re-seed the form with them
+      setValue('observations', observations);
+      setValue('dataProducts', dataProducts);
+      // The backend adds the creator as PI
+      setValue('investigators', getTeamValues(response as Proposal).investigators);
       updateAppContent2(response as Proposal);
 
       const newAcc: Partial<ProposalAccess> = {
@@ -111,7 +136,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   }, [
     proposal,
     getValues,
-    osdCycleId,
+    setValue,
     authClient,
     refreshAuthToken,
     notifyWarning,
@@ -125,43 +150,42 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   ]);
 
   const showPrevNav = () => {
-    if (loggedIn && currPageNo > 0) {
+    if (loggedIn && pageNo > 0) {
       return true;
     }
-    return !loggedIn && currPageNo !== PAGE_TARGET;
+    return !loggedIn && pageNo !== PAGE_TARGET;
   };
 
   const showNextNav = () => {
     return (
-      (!loggedIn && currPageNo === PAGE_TARGET) ||
-      (loggedIn && (currPageNo === -1 || nextPageNo !== -2))
+      (!loggedIn && pageNo === PAGE_TARGET) || (loggedIn && (pageNo === -1 || nextPageNo !== -2))
     );
   };
 
   const nextLabel = React.useCallback(() => {
-    if (currPageNo === -2) return 'addBtn.label';
-    if (currPageNo === -1) return 'createBtn.label';
+    if (pageNo === -2) return 'addBtn.label';
+    if (pageNo === -1) return 'createBtn.label';
     return `page.${nextPageNo}.title`;
-  }, [currPageNo, nextPageNo]);
+  }, [pageNo, nextPageNo]);
 
   const prevLabel = React.useCallback(() => {
-    if (!loggedIn && currPageNo === 4) {
+    if (!loggedIn && pageNo === 4) {
       return `page.${PAGE_TITLE_ADD}.title`;
     }
     return `page.${prevPageNo}.title`;
-  }, [currPageNo, prevPageNo, loggedIn]);
+  }, [pageNo, prevPageNo, loggedIn]);
 
   const prevPageNav = React.useCallback(() => {
-    if (!loggedIn && currPageNo === PAGE_TARGET) {
+    if (!loggedIn && pageNo === PAGE_TARGET) {
       navigate(NAV[0]);
     } else if (prevPageNo > -1) {
       navigate(NAV[prevPageNo]);
     }
-  }, [currPageNo, prevPageNo, loggedIn, navigate]);
+  }, [pageNo, prevPageNo, loggedIn, navigate]);
 
   const nextPageNav = React.useCallback(() => {
-    if (!loggedIn && currPageNo === PAGE_OBSERVATION) return;
-    if (!loggedIn && currPageNo === 0) {
+    if (!loggedIn && pageNo === PAGE_OBSERVATION) return;
+    if (!loggedIn && pageNo === 0) {
       navigate(NAV[PAGE_TARGET]);
       return;
     }
@@ -169,10 +193,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (nextPageNo < NAV.length) {
       navigate(NAV[nextPageNo]);
     }
-  }, [currPageNo, nextPageNo, loggedIn, navigate]);
+  }, [pageNo, nextPageNo, loggedIn, navigate]);
 
   const nextPageClicked = () => {
-    if (currPageNo === -1) createProposal();
+    if (pageNo === -1) createProposal();
     else nextPageNav();
   };
 
@@ -213,10 +237,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         <Grid sx={{ pointerEvents: 'auto' }}>
           {showNextNav() && (
             <NextPageButton
-              disabled={buttonDisabled || (currPageNo === -1 && !canCreate)}
+              disabled={buttonDisabled || (pageNo === -1 && !canCreate)}
               testId="nextButtonTestId"
               title={nextLabel()}
-              page={currPageNo}
+              page={pageNo}
               primary
               action={nextPageClicked}
             />

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { StoreProvider } from '@utils/storage/store';
 import TableDataProductsRow from './TableDataProductsRow';
-import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
@@ -19,11 +19,9 @@ describe('TableDataProductsRow', () => {
     reviews: []
   };
 
-  const mockProposal = MockProposalFrontend;
-
   const defaultProps = {
     item: mockItem,
-    proposal: mockProposal,
+    observation: { ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id: 'obs-dummy-id' },
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
@@ -37,6 +35,24 @@ describe('TableDataProductsRow', () => {
 
   it('renders review title and category', () => {
     wrapper(<TableDataProductsRow {...defaultProps} />);
+
+    expect(screen.getByText(/obs-dummy-id/i)).toBeInTheDocument();
+  });
+
+  it("shows its observation's mode, telescope and subarray", () => {
+    wrapper(<TableDataProductsRow {...defaultProps} />);
+
+    expect(screen.getByText('observationType.continuum')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, element) => element?.textContent === 'telescopes.ska_low subArrayConfiguration.aa2_sv',
+        { selector: 'p' }
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('renders without its observation details when the observation is gone', () => {
+    wrapper(<TableDataProductsRow {...defaultProps} observation={undefined} />);
 
     expect(screen.getByText(/obs-dummy-id/i)).toBeInTheDocument();
   });

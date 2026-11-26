@@ -72,8 +72,7 @@ describe('<GridObservationSummary />', () => {
                 value: 0,
                 units: 0
               },
-              spectralResolution: '',
-              effectiveResolution: ''
+              spectralResolution: ''
             }
           ],
           groupObservations: undefined,

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { helpers, leadZero, trailingZeros } from '@/utils/helpers.ts';
+import { convertFrequency, helpers, leadZero, trailingZeros } from '@/utils/helpers.ts';
 
 describe('Helper functions, validateTextEntry', () => {
   test('Valid input passes TITLE validation', () => {
@@ -201,5 +201,13 @@ describe('trailingZeros', () => {
 
   it('returns non-sexagesimal input unchanged', () => {
     expect(trailingZeros('123.45')).toBe('123.45');
+  });
+});
+
+describe('convertFrequency', () => {
+  test('converts between units', () => {
+    expect(convertFrequency(1.4, 'GHz', 'MHz')).toBeCloseTo(1400);
+    expect(convertFrequency(250, 'kHz')).toBe(250000);
+    expect(convertFrequency(3360, 'Hz', 'kHz')).toBeCloseTo(3.36);
   });
 });

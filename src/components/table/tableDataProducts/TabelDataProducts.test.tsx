@@ -28,7 +28,14 @@ describe('TableDataProducts', () => {
       { id: 2, name: 'Product B' }
     ];
 
-    render(<TableDataProducts data={mockData} updateFunction={vi.fn()} deleteFunction={vi.fn()} />);
+    render(
+      <TableDataProducts
+        data={mockData}
+        observations={[]}
+        updateFunction={vi.fn()}
+        deleteFunction={vi.fn()}
+      />
+    );
 
     const rows = screen.getAllByTestId('row');
     expect(rows).toHaveLength(2);
@@ -39,13 +46,13 @@ describe('TableDataProducts', () => {
   it('renders inside TableContainer', () => {
     const mockData = [{ id: 1, name: 'Product A' }];
 
-    render(<TableDataProducts data={mockData} updateFunction={vi.fn()} />);
+    render(<TableDataProducts data={mockData} observations={[]} updateFunction={vi.fn()} />);
 
     expect(screen.getByTestId('table-container')).toBeInTheDocument();
   });
 
   it('handles empty data gracefully', () => {
-    render(<TableDataProducts data={[]} updateFunction={vi.fn()} />);
+    render(<TableDataProducts data={[]} observations={[]} updateFunction={vi.fn()} />);
     expect(screen.queryByTestId('row')).toBeNull();
   });
 });

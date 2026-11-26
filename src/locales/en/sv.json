@@ -40,10 +40,6 @@
   "decisionComments": {
     "help": "Comments provided by the chairperson when making a decision on the Science Verification Idea."
   },
-  "deleteProposal": {
-    "toolTip": "Delete Science Verification Idea",
-    "confirm": "Confirm Science Verification Idea Deletion."
-  },
   "displayProposal": {
     "warning": "Please wait whilst we load the selected Science Verification Idea."
   },

@@ -116,8 +116,8 @@ export const osdMapping = (
       mid: inData?.capabilities?.mid
         ? {
             basicCapabilities: {
-              dishElevationLimitDeg:
-                inData?.capabilities?.mid?.basic_capabilities?.dish_elevation_limit_deg,
+              minElevationDeg: odtConfig.ska_mid.constraints.min_elevation_deg,
+              maxElevationDeg: odtConfig.ska_mid.constraints.max_elevation_deg,
               receiverInformation:
                 inData?.capabilities?.mid?.basic_capabilities?.receiver_information?.map(
                   (rx: ReceiverInformationBackend) => ({
@@ -179,6 +179,8 @@ export const osdMapping = (
       low: inData?.capabilities?.low?.basic_capabilities
         ? {
             basicCapabilities: {
+              minElevationDeg: odtConfig.ska_low.constraints.min_elevation_deg,
+              maxElevationDeg: odtConfig.ska_low.constraints.max_elevation_deg,
               // The half-channel-inset band edges - deliberately left unrounded (e.g.
               // 49,609,375 Hz rather than a "clean" 50 MHz), since this is the actual grid
               // anchor for LOW zoom channel-grid math (see zoomWindow.ts) as well as the

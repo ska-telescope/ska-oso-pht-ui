@@ -23,19 +23,19 @@ export const BACKEND_TIMEOUT = 70000;
 
 const verifyOnPage = (page: PageObject) => cy.findByRole('heading', { name: page.heading });
 
-// Creates a proposal in the given cycle with the fixture's title through the UI, and stores its
-// ID as the '@proposalId' alias.
-export const createProposal = (
-  user: typeof standardUser,
-  cycle: Cycle,
-  proposal: ProposalFixture
-) => {
+// Logs in and starts a new proposal in the given cycle, up to the title entry.
+export const startProposal = (user: typeof standardUser, cycle: Cycle) => {
   visitWithAuth(user);
   cy.findByRole('button', { name: 'Submission' }).click();
   cy.findByRole('dialog', { name: 'Cycle Selection' }).within(() => {
     cy.findByRole('button', { name: cycle.option, timeout: BACKEND_TIMEOUT }).click();
     cy.findByRole('button', { name: 'Confirm' }).click();
   });
+};
+
+// Creates the started proposal with the fixture's title, and stores its ID as the '@proposalId'
+// alias.
+export const finishCreatingProposal = (cycle: Cycle, proposal: ProposalFixture) => {
   cy.findByRole('textbox', { name: 'Title' }).type(proposal.title);
   cy.findByRole('button', { name: 'Create' }).click();
   // Waits on the real backend creating the proposal, so allow longer than the default
@@ -46,6 +46,17 @@ export const createProposal = (
     .then((text) => text.replace('Submission ID:', '').trim())
     .as('proposalId');
   verifyOnPage(cycle.pageAfterCreate);
+};
+
+// Creates a proposal in the given cycle with the fixture's title through the UI, and stores its
+// ID as the '@proposalId' alias.
+export const createProposal = (
+  user: typeof standardUser,
+  cycle: Cycle,
+  proposal: ProposalFixture
+) => {
+  startProposal(user, cycle);
+  finishCreatingProposal(cycle, proposal);
 };
 
 // Every status indicator has the accessible name "Page Status", so pick the one whose caption

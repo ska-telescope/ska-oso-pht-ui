@@ -16,7 +16,8 @@ import ObservatoryData, { ObservatoryDataCapabilities } from '@/utils/types/obse
 const mockCapabilities: ObservatoryDataCapabilities = {
   mid: {
     basicCapabilities: {
-      dishElevationLimitDeg: 15,
+      minElevationDeg: 15,
+      maxElevationDeg: 85,
       receiverInformation: [
         {
           rxId: BAND_1_STR,
@@ -104,6 +105,8 @@ const mockCapabilities: ObservatoryDataCapabilities = {
   },
   low: {
     basicCapabilities: {
+      minElevationDeg: 15,
+      maxElevationDeg: 90,
       minFrequencyHz: 49609375,
       maxFrequencyHz: 349609375,
       minCoarseChannel: 64,

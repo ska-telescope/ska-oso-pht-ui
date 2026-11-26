@@ -32,7 +32,6 @@ vi.mock('@utils/storage/store', () => ({
             },
             mid: {
               basicCapabilities: {
-                dishElevationLimitDeg: 15,
                 receiverInformation: [
                   {
                     rxId: 'B1',

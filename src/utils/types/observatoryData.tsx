@@ -85,12 +85,13 @@ export type CycleInformationFrontend = {
 };
 
 export type BasicCapabilitiesMidBackend = {
-  dish_elevation_limit_deg: number;
   receiver_information: ReceiverInformationBackend[];
 };
 
 export type BasicCapabilitiesMid = {
-  dishElevationLimitDeg: number;
+  // The elevation range an observation can have
+  minElevationDeg: number;
+  maxElevationDeg: number;
   receiverInformation: ReceiverInformationFrontend[];
 };
 
@@ -100,6 +101,9 @@ export type BasicCapabilitiesLowBackend = {
 };
 
 export type BasicCapabilitiesLow = {
+  // The elevation range an observation can have
+  minElevationDeg: number;
+  maxElevationDeg: number;
   minFrequencyHz: number;
   maxFrequencyHz: number;
   minCoarseChannel: number;

@@ -114,8 +114,7 @@ export const MockSlicesPdm = {
       observationSet('obs-spectral', {
         observation_type: 'spectral line',
         spectral_resolution: '5.43 kHz (8.1 km/s)',
-        effective_resolution: '5.43 kHz (8.1 km/s)',
-        number_of_channels: '1000'
+        number_of_channels: 1000
       }),
       observationSet('obs-pst', { observation_type: 'pst', pst_mode: 'detected filterbank' })
     ],

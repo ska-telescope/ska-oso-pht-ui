@@ -3,20 +3,21 @@ import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ProposalType } from '@/models/proposals/proposal';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { REFERENCE_COORDINATE_TYPE_ICRS, SENSITIVITY_STATE } from '@/utils/constants';
 import {
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  SENSITIVITY_STATE
-} from '@/utils/constants';
+  newSvObservation,
+  OBSERVING_MODE,
+  type ObservationInput
+} from '@/models/proposals/observations';
 import {
   DATA_PRODUCT_KIND,
   type DataProductInput,
   newDataProduct
 } from '@/models/proposals/dataProducts';
-import type Proposal from '@/utils/types/proposal';
 import type { Sensitivity } from '@/models/proposals/targetObservation';
 import type { TargetType } from '@/models/proposals/targets';
 import type TargetObservation from '@/utils/types/targetObservation';
+import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import { SENS_CALC_ERROR_KIND, SensCalcError, SensCalcSuccess } from './client';
 import { sendSensitivityRequest, SensitivityResult } from './calculate';
 import type { ZoomResult } from './types';
@@ -30,10 +31,14 @@ vi.mock('./calculate', async (importOriginal) => ({
 const notifyError = vi.fn();
 vi.mock('@/utils/notify/useNotify', () => ({ useNotify: () => ({ notifyError }) }));
 
-// The service reads the observations from the store's proposal, and the rest from the form
-const store = vi.hoisted(() => ({ proposal: undefined as unknown }));
+// The service starts again for each proposal in the store; it reads the rest from the form
 vi.mock('@utils/storage/store', () => ({
-  storageObject: { useStore: () => ({ application: { content2: store.proposal } }) }
+  storageObject: { useStore: () => ({ application: { content2: { id: 'proposal-1' } } }) }
+}));
+// Without the OSD unless a test loads it, so its rules aren't checked
+const mockOsd = vi.hoisted(() => ({ low: undefined as unknown }));
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({ osdLOW: mockOsd.low, osdMID: undefined })
 }));
 
 type Response = SensCalcSuccess<SensitivityResult> | SensCalcError;
@@ -46,7 +51,10 @@ const TARGET = {
   decStr: '+22:00:52.2'
 } as TargetType;
 
-const OBSERVATION = { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' };
+const OBSERVATION: ObservationInput = {
+  ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
+  id: 'obs-1'
+};
 
 const DATA_PRODUCT = {
   ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'),
@@ -87,20 +95,15 @@ const STORED_VALUES = {
 };
 const STORED_RESULTS: Sensitivity = { state: SENSITIVITY_STATE.DONE, spectral: STORED_VALUES };
 
-const proposalWith = (observation = OBSERVATION) =>
-  ({ id: 'proposal-1', observations: [observation] }) as Proposal;
-
-/** Renders the service in a proposal form, with the proposal's observation in the store. */
+/** Renders the service in a proposal form. */
 const renderService = (link: TargetObservation, dataProducts = [DATA_PRODUCT]) => {
-  store.proposal = proposalWith();
   let form!: UseFormReturn<ProposalType>;
   const Editor = () => {
     form = useForm<ProposalType>({
-      defaultValues: getProposalFormValues({
-        targets: [TARGET],
-        targetObservation: [link],
-        dataProducts
-      } as Partial<ProposalType>)
+      defaultValues: {
+        ...getProposalFormValues({ targets: [TARGET], targetObservation: [link], dataProducts }),
+        observations: [OBSERVATION]
+      }
     });
     return (
       <FormProvider {...form}>
@@ -108,14 +111,12 @@ const renderService = (link: TargetObservation, dataProducts = [DATA_PRODUCT]) =
       </FormProvider>
     );
   };
-  const { rerender } = render(<Editor />);
+  render(<Editor />);
   return {
     getForm: () => form,
-    /** Puts a changed proposal in the store, as an edit on another page would. */
-    setProposal: (changed: Proposal) => {
-      store.proposal = changed;
-      rerender(<Editor />);
-    },
+    /** Changes the observation in the form, as an edit on the observation page would. */
+    setObservation: (changed: ObservationInput) =>
+      act(() => form.setValue('observations', [changed])),
     /** Changes the data products in the form, as an edit on the data product page would. */
     setDataProducts: (changed: DataProductInput[]) =>
       act(() => form.setValue('dataProducts', changed))
@@ -150,6 +151,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers();
+  mockOsd.low = undefined;
 });
 
 describe('useSensitivityService', () => {
@@ -208,9 +210,9 @@ describe('useSensitivityService', () => {
   });
 
   test('calculates from the current inputs when they change before the first debounce', async () => {
-    const { setProposal } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
+    const { setObservation } = renderService({ ...LINK, sensitivity: STORED_RESULTS });
 
-    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    setObservation({ ...OBSERVATION, minElevation: 30 } as ObservationInput);
     await debounce();
 
     expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
@@ -220,9 +222,9 @@ describe('useSensitivityService', () => {
   });
 
   test('recalculates when a change alters the request', async () => {
-    const { setProposal } = await renderOpenedService();
+    const { setObservation } = await renderOpenedService();
 
-    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    setObservation({ ...OBSERVATION, minElevation: 30 } as ObservationInput);
     await debounce();
 
     expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
@@ -255,14 +257,43 @@ describe('useSensitivityService', () => {
     expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
   });
 
+  test('sends nothing for an invalid observation, and clears its results until it is valid', async () => {
+    const { getForm, setObservation } = await renderOpenedService();
+
+    // Being edited: the integration time has no value yet
+    setObservation({ ...OBSERVATION, integrationTime: { value: null, unit: 'h' } });
+    await debounce();
+
+    expect(sendSensitivityRequest).not.toHaveBeenCalled();
+    expect(storedResults(getForm())).toBeUndefined();
+
+    setObservation(OBSERVATION);
+    await debounce();
+
+    expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
+    expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
+  });
+
+  test('sends nothing for an observation the OSD rules show an error on', async () => {
+    mockOsd.low = MockObservatoryDataFrontend.capabilities.low;
+    const { getForm, setObservation } = await renderOpenedService();
+
+    // Off the LOW coarse channel grid
+    setObservation({ ...OBSERVATION, centralFrequency: { value: 200, unit: 'MHz' } });
+    await debounce();
+
+    expect(sendSensitivityRequest).not.toHaveBeenCalled();
+    expect(storedResults(getForm())).toBeUndefined();
+  });
+
   test('cancels a superseded request and ignores its response', async () => {
     const resolveFirst = holdNextRequest();
-    const { getForm, setProposal } = renderService(LINK);
+    const { getForm, setObservation } = renderService(LINK);
     await debounce();
     const firstSignal = vi.mocked(sendSensitivityRequest).mock.calls[0][1]?.signal;
 
     const resolveSecond = holdNextRequest();
-    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    setObservation({ ...OBSERVATION, minElevation: 30 } as ObservationInput);
     await debounce();
 
     expect(firstSignal?.aborted).toBe(true);
@@ -276,11 +307,11 @@ describe('useSensitivityService', () => {
 
   test('ignores a response that arrives after its inputs change, before the debounce', async () => {
     const resolveFirst = holdNextRequest();
-    const { getForm, setProposal } = renderService(LINK);
+    const { getForm, setObservation } = renderService(LINK);
     await debounce();
     const firstSignal = vi.mocked(sendSensitivityRequest).mock.calls[0][1]?.signal;
 
-    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    setObservation({ ...OBSERVATION, minElevation: 30 } as ObservationInput);
     expect(firstSignal?.aborted).toBe(true);
     await resolveFirst(FAILURE);
 
@@ -293,10 +324,10 @@ describe('useSensitivityService', () => {
   });
 
   test('marks a link as calculating, without its previous results, while its request runs', async () => {
-    const { getForm, setProposal } = await renderOpenedService();
+    const { getForm, setObservation } = await renderOpenedService();
 
     const resolve = holdNextRequest();
-    setProposal(proposalWith({ ...OBSERVATION, elevation: 30 }));
+    setObservation({ ...OBSERVATION, minElevation: 30 } as ObservationInput);
     await debounce();
 
     expect(storedResults(getForm())).toEqual({ state: SENSITIVITY_STATE.CALCULATING });

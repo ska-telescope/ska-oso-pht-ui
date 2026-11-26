@@ -78,9 +78,8 @@
     "label": "Array Configuration",
     "short": "Array",
     "help": "Specify an array configuration. Currently the SKA has two arrays - SKA-MID (350MHz - 154GHz) and SKA-LOW (50MHz – 350 MHz).",
-    "0": "Not specified",
-    "1": "SKA-MID",
-    "2": "SKA-LOW"
+    "ska_mid": "SKA-MID",
+    "ska_low": "SKA-LOW"
   },
   "assignBtn": {
     "label": "Assign",
@@ -300,11 +299,6 @@
     "label": "Delete this observation ? ",
     "info": "Deleting this observation will also remove any related links to targets"
   },
-  "deleteProposal": {
-    "toolTip": "Delete proposal",
-    "confirm": "Confirm Proposal Deletion.",
-    "disabled": "This function is not available"
-  },
   "dispersionMeasure": {
     "help": "This field displays the dispersion Measure.",
     "label": "Dispersion Measure",
@@ -346,7 +340,7 @@
     "error": "Unable to calculate value"
   },
   "elevation": {
-    "help": "Specify the minimum elevation angle at which the target will be observed. This value must fall between the horizon and the target's zenith elevation. If the specified elevation is outside this range, an error message will be displayed. The default minimum elevation is 20 deg for LOW and 45 deg for MID",
+    "help": "Specify the minimum elevation angle at which the target will be observed. This value must fall between the horizon and the target's zenith elevation. If the specified elevation is outside this range, an error message will be displayed. The default is the lowest elevation the telescope allows",
     "label": "Minimum Elevation",
     "range": {
       "error": "Value must be within the range of {{min}} to {{max}} degrees inclusive"
@@ -565,7 +559,8 @@
       "Band_2": "Band 2",
       "Band_3": "Band 5a",
       "Band_4": "Band 5b"
-    }
+    },
+    "error": "Select a band"
   },
   "observationId": {
     "label": "Observation ID",
@@ -1304,7 +1299,9 @@
   },
   "spectralResolution": {
     "help": "",
-    "label": "Spectral Resolution"
+    "label": "Spectral Resolution",
+    "error": "Select a spectral resolution",
+    "restrictedError": "This spectral resolution is not available for the selected subarray"
   },
   "srcNet": {
     "label": "SRCNet"
@@ -1358,7 +1355,8 @@
     "aa4_15m": "AA4 (15-m antennas only)",
     "aa4_core": "AA4 (core only)",
     "aa*_13.5m": "AA*/AA4 (13.5-m antennas only)",
-    "custom": "Custom"
+    "custom": "Custom",
+    "error": "Select a subarray configuration"
   },
   "subjectExpertise": {
     "0": "All expertise",
@@ -1379,10 +1377,6 @@
   "velocityType": {
     "help": "Select either Velocity or Redshift as required",
     "label": "Velocity Type"
-  },
-  "suppliedType": {
-    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. If the integration time of the observation is given, this is used to calculate the sensitivity that will be reached with this integration time.",
-    "label": "Supplied Type"
   },
   "suppliedUnits": {
     "help": "Select the unit that is appropriate"
@@ -1445,8 +1439,8 @@
     "missing": "No targets have been added to this proposal yet"
   },
   "telescopes": {
-    "2": "LOW",
-    "1": "MID",
+    "ska_low": "LOW",
+    "ska_mid": "MID",
     "label": "Telescope",
     "name": {
       "2": "SKA-Low",
@@ -1710,7 +1704,6 @@
     "noCalibrationsNoTarget": "Define a target to show calibration strategy",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
-    "proposalNotLoaded": "No proposal loaded — please select a proposal to continue.",
     "invalidString": "Invalid input: Only numeric characters are allowed"
   },
   "pstMode": {
@@ -1720,7 +1713,8 @@
       "0": "Flow Through",
       "1": "Detected Filterbank",
       "2": "Pulsar Timing"
-    }
+    },
+    "error": "Select a PST mode"
   },
   "fieldPattern": {
     "groupLabel": "Field Pattern",
@@ -1734,6 +1728,7 @@
   },
   "zoomChannels": {
     "help": "Maximum number of channels for Low AA2 is {{max}}. To increase bandwidth, increase the spectral averaging parameter",
-    "label": "Number of channels"
+    "label": "Number of channels",
+    "error": "Number of channels must be a whole number of at least {{min}}"
   }
 }

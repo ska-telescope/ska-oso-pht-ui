@@ -2,7 +2,10 @@ import { Grid, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alertDialog/AlertDialog';
 import FieldWrapper from '../../wrappers/fieldWrapper/FieldWrapper';
-import Observation from '../../../utils/types/observation';
+import {
+  OBSERVING_MODE_TRANSLATION_KEY,
+  type ObservationInput
+} from '@/models/proposals/observations';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -10,7 +13,7 @@ const LABEL_WIDTH = 6;
 
 interface DeleteObservationConfirmationProps {
   action: Function;
-  observation: Observation;
+  observation: ObservationInput;
   open: boolean;
   setOpen: Function;
 }
@@ -23,7 +26,7 @@ export default function DeleteObservationConfirmation({
 }: DeleteObservationConfirmationProps) {
   const { t } = useScopedTranslation();
 
-  const alertContent = (rec: any) => {
+  const alertContent = (rec: ObservationInput) => {
     return (
       <Grid
         container
@@ -53,7 +56,7 @@ export default function DeleteObservationConfirmation({
           testId="observationType"
         >
           <Typography id="observationTypeData" variant="body1">
-            {t('observationType.' + rec.type)}
+            {t('observationType.' + OBSERVING_MODE_TRANSLATION_KEY[rec.observingMode])}
           </Typography>
         </FieldWrapper>
 
