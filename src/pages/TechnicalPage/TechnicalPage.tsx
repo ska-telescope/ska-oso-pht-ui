@@ -1,7 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Grid } from '@mui/material';
-import { useController } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
@@ -9,7 +9,6 @@ import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
 import GetPresignedDeleteUrl from '@services/axios/get/getPresignedDeleteUrl/getPresignedDeleteUrl';
 import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
-import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import { getDocumentPageStatus } from '@/models/proposals/documents';
 import { ProposalType } from '@/models/proposals/proposal';
@@ -50,10 +49,7 @@ export default function TechnicalPage() {
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
-  const getProposal = () => application.content2 as Proposal;
-  const proposalId = getProposal()?.id;
-  const activeProposalIdRef = React.useRef(getProposal()?.id);
-  activeProposalIdRef.current = getProposal()?.id;
+  const { getValues } = useFormContext<ProposalType>();
   const { axiosClient: authClient } = useAxiosAuthClient();
 
   const getProposalState = () => application.content1 as number[];
@@ -77,18 +73,19 @@ export default function TechnicalPage() {
   };
 
   const uploadPdftoSignedUrl = async (theFile: File) => {
-    const proposal = getProposal();
+    const proposalId = getValues('prslId');
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
       notifyWarning(t('pdfUpload.technical.warning'));
-      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-technical.pdf`);
+      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposalId}-technical.pdf`);
       if (typeof signedUrl != 'string') {
         setUploadStatus(FileUploadStatus.ERROR);
         new Error('Not able to Get Technical PDF Upload URL');
       }
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
-      if (activeProposalIdRef.current !== proposal.id) return;
+      // An upload or delete takes time, so its result is dropped if another proposal was opened since
+      if (getValues('prslId') !== proposalId) return;
       if (uploadResult.error) {
         setUploadStatus(FileUploadStatus.ERROR);
         notifyError(t('pdfUpload.technical.error'));
@@ -96,7 +93,7 @@ export default function TechnicalPage() {
       }
 
       const technicalPDFUploaded = {
-        documentId: `technical-doc-${proposal.id}`,
+        documentId: `technical-doc-${proposalId}`,
         isUploadedPdf: true
       };
 
@@ -104,7 +101,7 @@ export default function TechnicalPage() {
       setTechnicalLoadStatus(FileUploadStatus.OK);
       notifySuccess(t('pdfUpload.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
-      if (activeProposalIdRef.current !== proposal.id) return;
+      if (getValues('prslId') !== proposalId) return;
       setFile('');
       setUploadStatus(FileUploadStatus.ERROR);
     }
@@ -112,8 +109,8 @@ export default function TechnicalPage() {
 
   const downloadPDFToSignedUrl = async () => {
     try {
-      const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
+      const proposalId = getValues('prslId');
+      const selectedFile = `${proposalId}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || technicalPDF != null) {
@@ -126,20 +123,20 @@ export default function TechnicalPage() {
 
   const deletePdfUsingSignedUrl = async () => {
     try {
-      const proposal = getProposal();
-      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-technical.pdf`);
+      const proposalId = getValues('prslId');
+      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposalId}-technical.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
 
       const deleteResult = await DeletePDF(signedUrl);
-      if (activeProposalIdRef.current !== proposal.id) return;
+      if (getValues('prslId') !== proposalId) return;
 
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to delete Technical PDF');
       }
 
       const technicalPDFDeleted = {
-        documentId: `technical-doc-${proposal.id}`,
+        documentId: `technical-doc-${proposalId}`,
         isUploadedPdf: false
       };
 
@@ -155,8 +152,8 @@ export default function TechnicalPage() {
 
   const previewSignedUrl = async () => {
     try {
-      const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
+      const proposalId = getValues('prslId');
+      const selectedFile = `${proposalId}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || technicalPDF != null) {
@@ -178,7 +175,7 @@ export default function TechnicalPage() {
 
   React.useEffect(() => {
     setUploadStatus(technicalPDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL);
-  }, [proposalId, technicalPDF]);
+  }, [technicalPDF]);
 
   React.useEffect(() => {
     setTheProposalState(getDocumentPageStatus(technicalPDF));

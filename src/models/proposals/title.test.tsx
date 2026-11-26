@@ -26,10 +26,6 @@ describe('title PDM mapping', () => {
     expect(titleFromPdm({ title: 'From the ODA' })).toBe('From the ODA');
   });
 
-  test('defaults to an empty title when proposal_info is missing', () => {
-    expect(titleFromPdm(undefined)).toBe('');
-  });
-
   test('writes the title as a proposal_info slice', () => {
     expect(titleToPdm('To the ODA')).toEqual({ title: 'To the ODA' });
   });

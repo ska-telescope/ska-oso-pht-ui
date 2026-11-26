@@ -1,1470 +1,173 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Box, Grid, Paper, Typography, Stack } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
-import { useFormContext } from 'react-hook-form';
-import { ProposalType } from '@/models/proposals/proposal';
-import { getFormLinks, getFormTargets, getFormCalibration } from '@/models/proposals/formSlices';
+import { FormProvider, Resolver, useForm, useFormContext } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Box, Grid, Paper } from '@mui/material';
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import {
-  buildCalibrationStrategy,
-  calibrationNotesFor,
-  withCalibrationFor
-} from '@/models/proposals/calibrationOperations';
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { useTheme } from '@mui/material/styles';
-import {
-  DropDown,
-  FrequencySpectrum,
-  getColors,
-  NumberEntry,
-  Spacer,
-  SPACER_VERTICAL,
-  TextEntry,
-  BorderedSection,
-  AlertColorTypes
-} from '@ska-telescope/ska-gui-components';
-import {
-  NAV,
-  PROPOSAL_TYPE,
-  SUPPLIED_VALUE_DEFAULT_MID,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  SUPPLIED_INTEGRATION_TIME_UNITS_H,
-  SUPPLIED_INTEGRATION_TIME_UNITS_M,
-  SUPPLIED_VALUE_DEFAULT_LOW,
-  FREQUENCY_UNITS,
-  FREQUENCY_MHZ,
-  FREQUENCY_GHZ,
-  FOOTER_SPACER,
-  FLOW_THROUGH_VALUE,
-  WRAPPER_HEIGHT,
-  TYPE_ZOOM,
-  TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_NUM,
-  FOOTER_HEIGHT_PHT,
-  PAGE_OBSERVATION,
-  PAGE_OBSERVATION_UPDATE,
-  PAGE_OBSERVATION_ADD,
-  FREQUENCY_HZ,
-  ZOOM_BANDWIDTH_DEFAULT_LOW,
-  ZOOM_CHANNELS_DEFAULT_LOW,
-  TYPE_PST,
-  ZOOM_BANDWIDTH_DEFAULT_MID,
-  TEL_UNITS,
   BAND_LOW_STR,
-  SA_AA2,
-  SA_CUSTOM,
-  PULSAR_TIMING_VALUE,
-  SUPPLIED_TYPE_INTEGRATION,
-  TIME_HOURS,
-  SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
-  INTEGRATION_TIME_UNITS,
-  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
-} from '@utils/constants.ts';
+  FOOTER_HEIGHT_PHT,
+  FOOTER_SPACER,
+  NAV,
+  PAGE_OBSERVATION,
+  PAGE_OBSERVATION_ADD,
+  PAGE_OBSERVATION_UPDATE,
+  SA_AA2
+} from '@/utils/constants';
+import { ProposalType } from '@/models/proposals/proposal';
 import {
-  frequencyConversion,
-  generateObsSetId,
-  getBandwidthZoom,
-  timeConversion
-} from '@utils/helpers.ts';
-import {
-  channelsToBandwidthHz,
-  getZoomResolutionHz,
-  snapCentralFrequencyToChannelGridHz
-} from '@utils/zoomWindow.ts';
-import WeatherField from '@/components/fields/weather/weather';
-import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
-import Proposal from '@/utils/types/proposal';
-import AddButton from '@/components/button/Add/Add';
-import GroupObservationsField from '@/components/fields/groupObservations/groupObservations';
-import Observation from '@/utils/types/observation';
-import SubArrayField from '@/components/fields/subArray/SubArray';
-import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
-import ObservationTypeField from '@/components/fields/observationType/ObservationType';
-import { useObservationTypeOptions } from '@/components/fields/observationType/useObservationTypeOptions';
-import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
-import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
-import NumStations from '@/components/fields/numStations/NumStations';
-import ContinuumBandwidthField from '@/components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
-import BandwidthField from '@/components/fields/bandwidthFields/bandwidth/bandwidth';
-import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+  getObservationsSchema,
+  newObservation,
+  ObservationInput,
+  ObservationOsd,
+  ObservingBand,
+  OBSERVING_MODE
+} from '@/models/proposals/observations';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import {
-  calculateCentralFrequency,
-  calculateContinuumBandwidth
-} from '@/utils/calculate/calculate';
-import HelpShell from '@/components/layout/HelpShell/HelpShell';
-import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
-import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
-import SubBands from '@/components/fields/subBands/subBands';
-import updateObservations from '@/utils/update/observations/updateObservations';
+import HelpShell from '@/components/layout/HelpShell/HelpShell';
+import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
+import AddButton from '@/components/button/Add/Add';
 import {
-  isImageDataProduct,
-  newDataProduct,
-  pstDataProductKind,
-  updateImageSizes
-} from '@/models/proposals/dataProducts';
-import { withZoomChannels } from '@/utils/autoLinking/AutoLinking';
-import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
-import lowAA2Image from '@assets/low_aa2.png';
-import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
-import QuantityField from '@/components/fields/quantity/quantity';
-import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
+  calibratorInputsChanged,
+  refreshCalibrators,
+  replacePstDataProduct,
+  resizeImageDataProducts,
+  setSpectralChannelsOut
+} from '@/models/proposals/observationUpdates';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import ObservationView, { ObservationsForm } from '@/pages/ObservationPage/ObservationView';
 
-const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
 
-interface ObservationEntryProps {
-  data?: Observation;
-}
+const getEntrySchema = (osd: ObservationOsd) =>
+  z.object({ observations: getObservationsSchema(osd).length(1) });
 
-export const resolvePstMode = (pstMode?: number | null): number =>
-  pstMode === undefined || pstMode === null || Number.isNaN(pstMode)
-    ? FLOW_THROUGH_VALUE
-    : Number(pstMode);
-
-export default function ObservationEntry({ data }: ObservationEntryProps) {
-  const { t } = useScopedTranslation();
+/**
+ * The page to add an observation, or to update the one passed in the route state, for a proposal
+ * with several observations. It is edited in an entry form of its own, and written to the proposal
+ * form only when it is valid and the user adds or updates it. An SV proposal's observation is
+ * edited in place on the observations page instead (ObservationInPlace).
+ */
+export default function ObservationEntry() {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const locationProperties = useLocation();
-  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
-  const loggedIn = isLoggedIn();
-  const {
-    isSV,
-    osdLOW,
-    osdMID,
-    observatoryConstants,
-    osdCyclePolicy,
-    selectedPolicy,
-    telescopeBand
-  } = useOSDAccessors();
-  const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
-
-  const isEdit = () => locationProperties.state !== null || data !== undefined;
-
-  const PAGE = isEdit() ? PAGE_OBSERVATION_UPDATE : PAGE_OBSERVATION_ADD;
-
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const location = useLocation();
   const { setHelp } = useHelp();
+  const { osdLOW, osdMID, selectedPolicy } = useOSDAccessors();
+  const proposalForm = useFormContext<ProposalType>();
+  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  // Counts calibrator lookups, so only the latest one is applied
-  const latestCalibratorRequestIdRef = React.useRef(0);
+  // Rebuilt when the OSD changes, as the proposal form's is
+  const resolver = React.useMemo(
+    () => zodResolver(getEntrySchema({ low: osdLOW, mid: osdMID })) as Resolver<ObservationsForm>,
+    [osdLOW, osdMID]
+  );
 
-  const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
-  const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
-  const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
-  const [weather, setWeather] = React.useState(() => Number(t('weather.default')));
-  const [centralFrequency, setCentralFrequency] = React.useState(0);
-  const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
-  const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
-  const [spectralResolution, setSpectralResolution] = React.useState('');
-  const [suppliedType, setSuppliedType] = React.useState(SUPPLIED_TYPE_INTEGRATION);
-  const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
-  const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
-  const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
-  const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(2);
-  const [subBands, setSubBands] = React.useState(1);
-  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState<number | undefined>(4);
-  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState<number | undefined>(0);
-  const [numOfStations, setNumOfStations] = React.useState<number | undefined>(0);
-  const [validateToggle, setValidateToggle] = React.useState(false);
-  const [zoomChannels, setZoomChannels] = React.useState<number>(0);
-  // Tracks a genuine user edit, as opposed to the value merely matching the interim default -
-  // e.g. the user deliberately choosing/keeping ZOOM_CHANNELS_DEFAULT_LOW is not "unedited".
-  const zoomChannelsEditedByUserRef = React.useRef(false);
-  const handleZoomChannelsChange = (newValue: number) => {
-    zoomChannelsEditedByUserRef.current = true;
-    setZoomChannels(newValue);
-    // Snapped synchronously (same batch as the state update above) rather than left to the
-    // effect further down, so the channel-grid warning never has a render where zoomChannels has
-    // already changed but centralFrequency hasn't caught up yet.
-    snapCentralFrequencyForChannelCount(newValue);
-  };
-  const [pstMode, setPstMode] = React.useState(PULSAR_TIMING_VALUE);
-  const [maxZoomChannels, setMaxZoomChannels] = React.useState<number>(0);
+  const editId = (location.state as { id?: string } | null)?.id;
+  const observations = proposalForm.getValues('observations');
+  const existing = editId ? observations.find((obs) => obs.id === editId) : undefined;
+  const firstBand = (selectedPolicy?.cyclePolicies?.bands?.[0] ?? BAND_LOW_STR) as ObservingBand;
 
-  const [groupObservation, setGroupObservation] = React.useState(0);
-  const [myObsId, setMyObsId] = React.useState('');
-  const [once, setOnce] = React.useState<Observation | null>(null);
-
-  // The form owns the targets, links and calibration; observations stay in the store
-  const form = useFormContext<ProposalType>();
-  const getLinks = () => getFormLinks(form);
-
-  /**
-   * Looks up the calibrators again for an observation's linked target, keeping the strategy's
-   * notes. A lookup that a newer one has overtaken is ignored.
-   */
-  const refreshCalibrators = async (ob: Observation) => {
-    const linkedTarget = getFormTargets(form).find((t) =>
-      getLinks().some((to) => to.observationId === ob.id && to.targetId === t.id)
-    );
-    if (!linkedTarget) {
-      return;
+  const entryForm = useForm<ObservationsForm>({
+    mode: 'all',
+    resolver,
+    defaultValues: {
+      observations: [
+        existing ??
+          newObservation(firstBand, SA_AA2, OBSERVING_MODE.CONTINUUM, {
+            low: osdLOW,
+            mid: osdMID
+          })
+      ]
     }
-    const requestId = ++latestCalibratorRequestIdRef.current;
-    const strategy = await buildCalibrationStrategy(authAxiosClient, {
-      observationId: ob.id,
-      observation: ob,
-      target: linkedTarget,
-      notes: calibrationNotesFor(getFormCalibration(form), ob.id)
-    });
-    if (requestId !== latestCalibratorRequestIdRef.current) {
-      return;
-    }
-    // The lookup takes time, so the strategy is only applied if the same target is still linked
-    const stillLinked = getLinks().some(
-      (to) => to.observationId === ob.id && to.targetId === linkedTarget.id
-    );
-    if (!stillLinked) {
-      return;
-    }
-    form.setValue('calibrationStrategy', withCalibrationFor(getFormCalibration(form), strategy));
-  };
-
-  const observationIn = (ob: Observation) => {
-    setMyObsId(ob?.id);
-    setSubarrayConfig(ob?.subarray);
-    setObservationType(ob.type);
-    if (!once) setObservingBand(ob?.observingBand);
-    setWeather(ob?.weather ?? Number(t('weather.default')));
-    setElevation(ob?.elevation);
-    setCentralFrequency(ob?.centralFrequency);
-    setCentralFrequencyUnits(ob?.centralFrequencyUnits);
-    setBandwidth(
-      ob?.bandwidth ??
-        (ob?.observingBand === BAND_LOW_STR
-          ? ZOOM_BANDWIDTH_DEFAULT_LOW
-          : ZOOM_BANDWIDTH_DEFAULT_MID)
-    );
-    setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
-    setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
-    setSpectralResolution(ob?.spectralResolution ?? '');
-    setSuppliedType(ob?.supplied?.type);
-
-    // If the supplied units are not one of the integration time units,
-    // we will convert the value to the default units for the telescope.
-    // Currently the default units are hours for low and minutes for mid.
-    const loadedUnits = ob?.supplied?.units;
-    const loadedValue = ob?.supplied?.value;
-    const isValidUnit =
-      ob?.supplied?.type !== SUPPLIED_TYPE_INTEGRATION ||
-      INTEGRATION_TIME_UNITS.some((u) => u.id === loadedUnits);
-    if (isValidUnit) {
-      setSuppliedValue(loadedValue);
-      setSuppliedUnits(loadedUnits);
-    } else {
-      const defaultUnits =
-        ob?.observingBand === BAND_LOW_STR
-          ? SUPPLIED_INTEGRATION_TIME_UNITS_H
-          : SUPPLIED_INTEGRATION_TIME_UNITS_M;
-      setSuppliedValue(timeConversion(loadedValue, loadedUnits, defaultUnits));
-      setSuppliedUnits(defaultUnits);
-    }
-    setSubBands(ob?.numSubBands ?? 0);
-    setNumOf15mAntennas(ob?.num15mAntennas ?? 0);
-    setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
-    setNumOfStations(ob?.numStations ?? 0);
-    setZoomChannels(ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW);
-    // A saved PST observation without a mode is flow-through (see resolvePstMode); pulsar timing
-    // stays the default for an observation that is switched to PST here
-    setPstMode(
-      ob?.type === TYPE_PST ? resolvePstMode(ob?.pstMode) : (ob?.pstMode ?? PULSAR_TIMING_VALUE)
-    );
-  };
-
-  // Storing sub-Hz precision doesn't reflect anything a real receiver can tune to, so round to
-  // the nearest Hz at the point of save rather than trusting whatever precision the field held.
-  const roundCentralFrequencyToHz = (value: number, units: number): number => {
-    const hz = Math.round(frequencyConversion(Number(value), units, FREQUENCY_HZ));
-    return Number(frequencyConversion(hz, FREQUENCY_HZ, units).toFixed(6));
-  };
-
-  const observationOut = () => {
-    const newObservation: Observation = {
-      id: myObsId,
-      telescope: telescope(),
-      subarray: subarrayConfig,
-      type: observationType,
-      observingBand,
-      weather,
-      elevation: elevation,
-      centralFrequency: roundCentralFrequencyToHz(centralFrequency, centralFrequencyUnits),
-      centralFrequencyUnits: centralFrequencyUnits,
-      bandwidth: bandwidth,
-      continuumBandwidth: continuumBandwidth,
-      continuumBandwidthUnits: continuumBandwidthUnits,
-      supplied: {
-        type: suppliedType,
-        value: suppliedValue,
-        units: suppliedUnits
-      },
-      spectralResolution,
-      effectiveResolution: spectralResolution,
-      numSubBands: subBands,
-      num15mAntennas: numOf15mAntennas,
-      num13mAntennas: numOf13mAntennas,
-      numStations: numOfStations,
-      zoomChannels: zoomChannels,
-      pstMode: pstMode
-    };
-    return newObservation;
-  };
-
-  /*--------------------------------------------------*/
-
-  // A PST observation has one data product, of the kind its PST mode needs
-  const replacePstDataProduct = (observation: Observation) => {
-    const dataProducts = form.getValues('dataProducts');
-    const current = dataProducts.find((dp) => dp.observationId === observation.id);
-    if (!current) {
-      return;
-    }
-    const replacement = newDataProduct(pstDataProductKind(observation.pstMode), observation.id);
-    form.setValue('dataProducts', [
-      ...dataProducts.filter((dp) => dp.observationId !== observation.id),
-      { ...replacement, id: current.id }
-    ]);
-  };
-
-  // The image sizes follow the observation's central frequency
-  const resizeImageDataProducts = (observation: Observation) => {
-    const centralFrequencyMhz = frequencyConversion(
-      observation.centralFrequency,
-      observation.centralFrequencyUnits ?? FREQUENCY_MHZ,
-      FREQUENCY_MHZ
-    );
-    form.setValue(
-      'dataProducts',
-      form
-        .getValues('dataProducts')
-        .map((dp) =>
-          dp.observationId === observation.id && isImageDataProduct(dp)
-            ? updateImageSizes(dp, centralFrequencyMhz)
-            : dp
-        )
-    );
-  };
-
-  // A spectral image's output channels follow the observation's zoom channels
-  const setChannelsOutFromZoomChannels = (observation: Observation) =>
-    form.setValue(
-      'dataProducts',
-      form
-        .getValues('dataProducts')
-        .map((dp) => (dp.observationId === observation.id ? withZoomChannels(dp, observation) : dp))
-    );
-
-  const updateObservationOnProposal = () => {
-    const proposal = getProposal();
-    const newObservation: Observation = observationOut();
-
-    const oldObservations = proposal.observations ?? [];
-    const oldObservation = oldObservations.find((obs) => obs.id === newObservation.id);
-
-    setProposal({
-      ...proposal,
-      observations: updateObservations(oldObservations ?? [], newObservation)
-    });
-
-    // Compared with the stored observation, so revisiting this page keeps the user's data product
-    // values. A new observation has no data products yet.
-    if (oldObservation) {
-      // A PST observation saved without a mode is flow-through, so loading one isn't a change
-      const pstModeChanged =
-        newObservation.type === TYPE_PST &&
-        (oldObservation.type !== TYPE_PST ||
-          resolvePstMode(oldObservation.pstMode) !== resolvePstMode(newObservation.pstMode));
-      const frequencyChanged =
-        newObservation.type !== TYPE_PST &&
-        (oldObservation.centralFrequency !== newObservation.centralFrequency ||
-          oldObservation.centralFrequencyUnits !== newObservation.centralFrequencyUnits);
-      if (pstModeChanged) {
-        replacePstDataProduct(newObservation);
-      }
-      if (frequencyChanged) {
-        resizeImageDataProducts(newObservation);
-      }
-      if (oldObservation.zoomChannels !== newObservation.zoomChannels) {
-        setChannelsOutFromZoomChannels(newObservation);
-      }
-    }
-
-    // The calibrators depend on the telescope and the integration time
-    const calibratorInputsChanged =
-      !oldObservation ||
-      oldObservation.telescope !== newObservation.telescope ||
-      oldObservation.supplied?.value !== newObservation.supplied.value ||
-      oldObservation.supplied?.units !== newObservation.supplied.units;
-    if (calibratorInputsChanged) {
-      void refreshCalibrators(newObservation);
-    }
-  };
-
-  const addObservationToProposal = () => {
-    const newObservation: Observation = observationOut();
-    setProposal({
-      ...getProposal(),
-      observations: [...(getProposal().observations ?? []), newObservation]
-    });
-  };
-
-  const updateStorageProposal = () => {
-    if (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
-      isEdit() ? updateObservationOnProposal() : addObservationToProposal();
-    }
-  };
-
-  const setDefaultCentralFrequency = (inBand: string) => {
-    const obsBand = telescopeBand
-      ? telescopeBand(inBand) === TELESCOPE_LOW_NUM
-        ? osdLOW
-        : osdMID
-      : null;
-    const newUnits = inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ;
-    const newValueHz = calculateCentralFrequency(obsBand, inBand);
-    const newValue = frequencyConversion(newValueHz, FREQUENCY_HZ, newUnits);
-    setCentralFrequency(newValue);
-    setCentralFrequencyUnits(newUnits);
-  };
-
-  const setDefaultContinuumBandwidth = (inBand: string) => {
-    if (!isContinuum() && !isPST()) {
-      return;
-    }
-    const newUnits = inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ;
-    const newArray = telescopeBand(inBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
-    const newValue = frequencyConversion(
-      calculateContinuumBandwidth(newArray, subarrayConfig),
-      FREQUENCY_HZ,
-      newUnits
-    );
-    setContinuumBandwidth(newValue);
-    setContinuumBandwidthUnits(newUnits);
-  };
-
-  const setDefaultElevation = () => {
-    if (elevation === ELEVATION_DEFAULT[(isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM) - 1]) {
-      setElevation(ELEVATION_DEFAULT[telescope() - 1]);
-    }
-  };
-
-  const validateId = () =>
-    getProposal()?.observations?.find((t) => t.id === myObsId) ? t('observationId.notUnique') : '';
-
-  const setTheObservingBand = (e: React.SetStateAction<number>) => {
-    if (isLow() && e !== 0) {
-      setDefaultElevation();
-      setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_M);
-      setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
-    }
-    if (isMid() && e === 0) {
-      setDefaultElevation();
-      setSuppliedType(SUPPLIED_TYPE_INTEGRATION);
-      setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
-      setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
-    }
-
-    setDefaultCentralFrequency(String(e));
-    setDefaultContinuumBandwidth(String(e));
-    setObservingBand(String(e));
-    // The zoom-mode bandwidth default is telescope-specific (MID and LOW use different lookup
-    // tables) - reset it whenever the band changes, otherwise a stale value from the previously
-    // selected telescope can be out of range for the new one.
-    setBandwidth(
-      String(e) === BAND_LOW_STR ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID
-    );
-    updateStorageProposal();
-  };
-
-  const setTheSubarrayConfig = (e: React.SetStateAction<string>) => {
-    const record = observatoryConstants.array[telescope() - 1].subarray.find(
-      (element) => element.value === e
-    );
-    if (record) {
-      if (isLow()) {
-        const sArray = osdLOW?.subArrays.find((sub) => sub.subArray === subarrayConfig);
-        setNumOfStations(sArray?.numberStations ?? undefined);
-      }
-      if (isMid()) {
-        const sArray = osdMID?.subArrays.find((sub) => sub.subArray === subarrayConfig);
-        setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
-        setNumOf13mAntennas(sArray?.numberMeerkatDishes ?? undefined);
-      }
-    }
-    setSubarrayConfig(e);
-    updateStorageProposal();
-  };
-
-  // Returns the newly computed cap (not just the pending maxZoomChannels state setter) so
-  // callers that need the fresh value in the same tick - e.g. to default zoomChannels to it -
-  // don't read back the stale pre-update state.
-  const setMaxChannelsZoom = (subarrayConfig: string, low = isLow()): number => {
-    const record = low ? osdLOW : osdMID;
-    setMaxZoomChannels(0);
-    if (record) {
-      const sArray = (
-        record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
-      )?.find((sub) => sub.subArray === subarrayConfig);
-      const max = sArray?.numberZoomChannels ?? 0;
-      setMaxZoomChannels(max);
-      return max;
-    }
-    return 0;
-  };
+  });
 
   React.useEffect(() => {
     setHelp('observationId');
-    if (isEdit()) {
-      const loaded = data ? data : locationProperties.state;
-      observationIn(loaded);
-      // observationIn only schedules setObservingBand/setSubarrayConfig - subarrayConfig/isLow()
-      // below would still read the pre-load state in this same tick, so pass the loaded
-      // observation's own band/subarray directly rather than via setMaxChannelsZoom's defaults.
-      setMaxChannelsZoom(
-        loaded?.subarray ?? subarrayConfig,
-        loaded?.observingBand === BAND_LOW_STR
-      );
-      setOnce(loaded);
-    } else {
-      const obsBand = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
-      setMyObsId(generateObsSetId());
-      setTheSubarrayConfig(subarrayConfig);
-      const maxChannels = setMaxChannelsZoom(subarrayConfig);
-      setCentralFrequency(
-        frequencyConversion(
-          calculateCentralFrequency(obsBand, observingBand),
-          FREQUENCY_HZ,
-          isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-        )
-      );
-      setCentralFrequencyUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-      setContinuumBandwidth(
-        frequencyConversion(
-          calculateContinuumBandwidth(obsBand, subarrayConfig),
-          FREQUENCY_HZ,
-          isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-        )
-      );
-      setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-      setBandwidth(isLow() ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID);
-      if (isLow()) {
-        // Default to the subarray's full channel cap rather than an arbitrary fixed count. If
-        // osdLOW/osdMID hasn't loaded yet, maxChannels is 0 - fall back to the old constant until
-        // the catch-up effect below corrects it once the real cap is available.
-        setZoomChannels(maxChannels || ZOOM_CHANNELS_DEFAULT_LOW);
-      }
-    }
   }, []);
 
-  const setAfterChange = () => {
-    setValidateToggle(!validateToggle);
-    setMaxChannelsZoom(subarrayConfig);
-  };
+  const groupIds = [
+    ...new Set(
+      observations
+        .filter((obs) => obs.id !== editId)
+        .flatMap((obs) => (obs.groupId ? [obs.groupId] : []))
+    )
+  ];
 
-  React.useEffect(() => {
-    setAfterChange();
-  }, [subarrayConfig]);
+  const addObservation = () => {
+    const newObservation = entryForm.getValues('observations.0');
+    const existingObservations = proposalForm.getValues('observations');
+    proposalForm.setValue(
+      'observations',
+      existingObservations.some((obs) => obs.id === newObservation.id)
+        ? existingObservations.map((obs) => (obs.id === newObservation.id ? newObservation : obs))
+        : [...existingObservations, newObservation]
+    );
 
-  const hasRefreshedMaxChannelsCapRef = React.useRef(false);
-
-  // If this mounted before osdLOW/osdMID arrived, setMaxChannelsZoom ran against an undefined
-  // record and fell back to a 0 cap, and (being tied only to mount/subarrayConfig) never
-  // recalculated once the real record loaded. Recalculate once here as soon as it's available -
-  // guarded to fire at most once, since osdLOW/osdMID may be a new object reference on every
-  // render and this would otherwise loop against setAfterChange's own state updates. Only marks
-  // itself done once the lookup actually succeeds (maxChannels > 0) - if subarrayConfig hasn't
-  // settled to a value the loaded record recognises yet, this keeps retrying (also depends on
-  // subarrayConfig) rather than giving up.
-  React.useEffect(() => {
-    if (hasRefreshedMaxChannelsCapRef.current) return;
-    const record = isLow() ? osdLOW : osdMID;
-    if (!record) return;
-    const maxChannels = setMaxChannelsZoom(subarrayConfig);
-    if (maxChannels <= 0) return;
-    hasRefreshedMaxChannelsCapRef.current = true;
-  }, [osdLOW, osdMID, subarrayConfig]);
-
-  const hasSetZoomChannelsDefaultRef = React.useRef(false);
-
-  // Correcting zoomChannels used to be duplicated inside whichever effect happened to first
-  // compute a real maxZoomChannels, which meant it only actually fired for the specific
-  // code path that ref-guard logic anticipated. Driving it directly off maxZoomChannels itself
-  // instead catches the moment the cap becomes valid regardless of which of the several places
-  // that call setMaxChannelsZoom is the one that gets there first.
-  React.useEffect(() => {
-    if (hasSetZoomChannelsDefaultRef.current) return;
-    if (isEdit() || !isLow() || maxZoomChannels <= 0 || zoomChannelsEditedByUserRef.current) return;
-    hasSetZoomChannelsDefaultRef.current = true;
-    setZoomChannels(maxZoomChannels);
-  }, [maxZoomChannels]);
-
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-    updateStorageProposal();
-  }, [
-    groupObservation,
-    elevation,
-    weather,
-    suppliedType,
-    suppliedValue,
-    suppliedUnits,
-    centralFrequency,
-    centralFrequencyUnits,
-    bandwidth,
-    continuumBandwidth,
-    continuumBandwidthUnits,
-    subBands,
-    numOf15mAntennas,
-    numOf13mAntennas,
-    numOfStations,
-    pstMode,
-    spectralResolution,
-    zoomChannels,
-    observationType
-  ]);
-
-  React.useEffect(() => {
-    const calculateSubarray = () => {
-      if (isEdit()) {
-        return;
-      }
-      setSubarrayConfig(subarrayConfig);
-    };
-
-    const setFrequencyUnits = () => {
-      if (isLow()) {
-        setCentralFrequencyUnits(FREQUENCY_MHZ);
-      }
-    };
-
-    if (once) {
-      // We just need to do this one more time as some fields could not be updated until observingBand has changed.
-      observationIn(once);
-      setOnce(null);
-      // Only fall back to the band defaults when the saved observation has no value
-      if (!once.centralFrequency) {
-        setDefaultCentralFrequency(observingBand);
-      }
-      if (!once.continuumBandwidth) {
-        setDefaultContinuumBandwidth(observingBand);
-      }
+    // The proposal's data products and calibration follow what the update changed. A new
+    // observation has no data products or link yet.
+    const changed = (field: (obs: ObservationInput) => unknown) =>
+      existing !== undefined &&
+      JSON.stringify(field(existing)) !== JSON.stringify(field(newObservation));
+    if (changed((obs) => obs.centralFrequency)) {
+      resizeImageDataProducts(proposalForm, newObservation);
     }
-    calculateSubarray();
-    setAfterChange();
-    setFrequencyUnits();
-  }, [observingBand]);
-
-  const isContinuum = () =>
-    observationType === TYPE_CONTINUUM || observationType === TYPE_CONTINUUM_SPECTRAL;
-  const isZoom = () => observationType === TYPE_ZOOM;
-  const isPST = () => observationType === TYPE_PST;
-  const isLow = () => observingBand === BAND_LOW_STR;
-  const isMid = () => observingBand !== BAND_LOW_STR;
-  const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
-  // TODO: Min channel width for Mid hardcoded for now since I'm not sure if it's correct
-  // Without the OSD channel width the minimum-width constraint is skipped; the bandwidth fields
-  // treat 0 as "no constraint"
-  const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz;
-  const minimumChannelWidthHz = isLow()
-    ? coarseChannelWidthHz === undefined
-      ? 0
-      : coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
-    : 13.44e3;
-
-  // LOW-zoom channel resolution (Hz) for the selected `bandwidth` index, and the total zoom
-  // window bandwidth (Hz) derived from it and the current channel count - replaces the old
-  // bandwidthLookup/getBandwidthLowZoom lookup, which only ever reflected a per-channel value.
-  const getResolutionHz = () => (isLow() && isZoom() ? getZoomResolutionHz(bandwidth) : 0);
-  const getZoomBandwidthHz = () => channelsToBandwidthHz(zoomChannels, getResolutionHz());
-  // continuumBandwidthUnits is explicitly null (not undefined) on zoom/spectral observations
-  // (they have no continuum bandwidth), and the load path folds that null down to 0 - which isn't
-  // a valid FREQUENCY_UNITS index, so it must be treated as "unset" (||) rather than merely
-  // nullish (??).
-  const getContinuumBandwidthHz = () =>
-    frequencyConversion(
-      continuumBandwidth ?? 0,
-      continuumBandwidthUnits || FREQUENCY_HZ,
-      FREQUENCY_HZ
-    );
-  const getCentralFrequencyHz = () =>
-    frequencyConversion(centralFrequency ?? 0, centralFrequencyUnits ?? FREQUENCY_HZ, FREQUENCY_HZ);
-
-  // Changing zoomChannels shifts the channel grid by half a channel whenever channel-count parity
-  // flips (even <-> odd) - re-snap centralFrequency onto the new grid so a previously-valid centre
-  // frequency doesn't spuriously fail the channel-grid check and surface the generic out-of-band
-  // warning purely because the channel count changed underneath it.
-  const snapCentralFrequencyForChannelCount = (channels: number) => {
-    if (!isLow() || !isZoom()) return;
-    const channelWidthHz = getResolutionHz();
-    if (channelWidthHz <= 0) return;
-    const minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
-    const cfHz = getCentralFrequencyHz();
-    const snappedHz = snapCentralFrequencyToChannelGridHz(cfHz, channelWidthHz, channels, minHz);
-    if (Math.abs(snappedHz - cfHz) < 1) return;
-    setCentralFrequency(
-      Number(
-        frequencyConversion(
-          snappedHz,
-          FREQUENCY_HZ,
-          centralFrequencyUnits ?? FREQUENCY_MHZ
-        ).toFixed(6)
-      )
-    );
+    if (
+      changed((obs) => (obs.observingMode === OBSERVING_MODE.SPECTRAL ? obs.zoomChannels : null))
+    ) {
+      setSpectralChannelsOut(proposalForm, newObservation);
+    }
+    if (changed((obs) => (obs.observingMode === OBSERVING_MODE.PST ? obs.pstMode : null))) {
+      replacePstDataProduct(proposalForm, newObservation);
+    }
+    if (calibratorInputsChanged(existing, newObservation)) {
+      void refreshCalibrators(proposalForm, newObservation.id, authAxiosClient);
+    }
+    navigate(NAV[BACK_PAGE]);
   };
 
-  // handleZoomChannelsChange (the interactive path) already re-snaps synchronously, in the same
-  // batch as the zoomChannels update, so the warning never has stale state to flash against. This
-  // effect is the fallback for the other, non-interactive places zoomChannels gets set (loading a
-  // saved observation, defaulting to the subarray's channel cap) - those don't go through
-  // handleZoomChannelsChange, so this is what keeps them consistent too.
-  React.useEffect(() => {
-    snapCentralFrequencyForChannelCount(zoomChannels);
-  }, [zoomChannels]);
-
-  const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box
+  const footer = (
+    <Paper
       sx={{
-        p: 0,
-        pt: 1,
-        height: WRAPPER_HEIGHT
+        bgcolor: 'transparent',
+        position: 'fixed',
+        bottom: FOOTER_HEIGHT_PHT,
+        left: 0,
+        right: 0
       }}
+      elevation={0}
     >
-      {children}
-    </Box>
-  );
-
-  const showWarning = () => {
-    // For LOW zoom, `bandwidth` is a resolution-mode index, not a real bandwidth - use the actual
-    // channel-count-derived window bandwidth instead (MID zoom is unaffected, out of scope).
-    const useBandwidth =
-      observationType === TYPE_ZOOM
-        ? isLow()
-          ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
-          : bandwidth
-        : continuumBandwidth;
-    return isFrequencyOutOfRange(centralFrequency, useBandwidth, isLow(), String(observingBand));
-  };
-
-  const emptyField = () => <></>;
-
-  /******************************************************/
-
-  const idField = () => {
-    return fieldWrapper(
-      <Box
-        sx={{
-          pt: 1
-        }}
-      >
-        <TextEntry
-          disabled
-          errorText={isEdit() ? '' : validateId()}
-          label={t('observationId.label')}
-          onFocus={() => setHelp('observationId')}
-          testId="observationId"
-          value={myObsId}
-          setValue={setMyObsId}
-        />
-      </Box>
-    );
-  };
-
-  const groupObservationsField = () =>
-    fieldWrapper(
-      <GroupObservationsField
-        onFocus={() => setHelp('groupObservations')}
-        setValue={setGroupObservation}
-        value={groupObservation}
-        obsId={myObsId}
-      />
-    );
-
-  const frequencySpectrumField = () => {
-    const colors = getColors({
-      type: 'telescope',
-      colors: isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM,
-      content: 'bg',
-      asArray: true,
-      paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
-    }) ?? [theme.palette.primary.main, theme.palette.primary.contrastText];
-
-    let min: number;
-    let max: number;
-    if (isMid()) {
-      const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
-        (e) => e.rxId === String(observingBand)
-      );
-      min = receiver?.minFrequencyHz ?? 0;
-      max = receiver?.maxFrequencyHz ?? 0;
-    } else {
-      min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
-      max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
-    }
-    // TODO: The first set of minFreq and maxFreq variables is what we would ideally want as the range but different range for
-    //  display and validation is not currently supported by the spectral view GUI component. See MR of BTN-3416 for more details.
-    // const minFreq = Math.round(frequencyConversion(min - 5e6, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ));
-    // const maxFreq = Math.round(frequencyConversion(max + 5e6, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ));
-    const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-    const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-    const cenFreq = frequencyConversion(
-      centralFrequency ?? 0,
-      centralFrequencyUnits ?? FREQUENCY_HZ,
-      isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-    );
-
-    return fieldWrapper(
-      <Grid
-        container
-        sx={{
-          justifyContent: 'space-around'
-        }}
-      >
-        <Grid size={{ xs: 12 }}>
-          <FrequencySpectrum
-            minFreq={minFreq}
-            maxFreq={maxFreq}
-            centerFreq={cenFreq}
-            bandWidth={
-              isContinuum() || isPST()
-                ? (continuumBandwidth ?? 0)
-                : (frequencyConversion(
-                    isLow()
-                      ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
-                      : getBandwidthZoom(observationOut()),
-                    isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ,
-                    FREQUENCY_MHZ
-                  ) ?? 0)
-            }
-            bandColor={colors[0]}
-            boxWidth="100%"
-            unit={TEL_UNITS[isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM]}
-          />
-        </Grid>
-        {showWarning() && (
-          <Grid>
-            <Typography color={AlertColorTypes.Error}>
-              {t('frequencyBandwidthOutOfRange.warning')}
-            </Typography>
-          </Grid>
-        )}
-      </Grid>
-    );
-  };
-
-  const observationsBandField = () =>
-    fieldWrapper(
-      <ObservingBandField
-        disabled={(selectedPolicy?.cyclePolicies?.bands?.length ?? 0) < 2}
-        required
-        value={observingBand}
-        setValue={setTheObservingBand}
-      />
-    );
-
-  const subArrayField = () =>
-    fieldWrapper(
-      <SubArrayField
-        observingBand={observingBand}
-        required
-        telescope={telescope()}
-        value={subarrayConfig}
-        setValue={setTheSubarrayConfig}
-      />
-    );
-
-  const pstModeField = () =>
-    fieldWrapper(<PstModeField required value={pstMode} setValue={setPstMode} />);
-
-  const numStationsField = () =>
-    fieldWrapper(
-      <NumStations
-        disabled={subarrayConfig !== SA_CUSTOM}
-        setValue={setNumOfStations}
-        value={numOfStations ?? 0}
-        rangeLower={Number(t('numStations.range.lower'))}
-        rangeUpper={Number(t('numStations.range.upper'))}
-      />
-    );
-
-  const antennasFields = () => {
-    const renderNumOf15mAntennasField = () => {
-      const validate = (e: number) => {
-        const num = Number(Math.abs(e).toFixed(0));
-        if (num < Number(t('numOf15mAntennas.range.lower'))) {
-          setNumOf15mAntennas(Number(t('numOf15mAntennas.range.lower')));
-        } else if (num > Number(t('numOf15mAntennas.range.upper'))) {
-          setNumOf15mAntennas(Number(t('numOf15mAntennas.range.upper')));
-        } else {
-          setNumOf15mAntennas(num);
-        }
-      };
-
-      return (
-        <NumberEntry
-          disabled={subarrayConfig !== SA_CUSTOM}
-          label={t('numOf15mAntennas.label')}
-          testId="numOf15mAntennas"
-          value={numOf15mAntennas}
-          setValue={validate}
-          onFocus={() => setHelp('numOf15mAntennas')}
-        />
-      );
-    };
-
-    const numOf13mAntennasField = () => {
-      const validate = (e: number) => {
-        const num = Number(Math.abs(e).toFixed(0));
-        if (num < Number(t('numOf13mAntennas.range.lower'))) {
-          setNumOf13mAntennas(Number(t('numOf13mAntennas.range.lower')));
-        } else if (num > Number(t('numOf13mAntennas.range.upper'))) {
-          setNumOf13mAntennas(Number(t('numOf13mAntennas.range.upper')));
-        } else {
-          setNumOf13mAntennas(num);
-        }
-      };
-
-      return (
-        <NumberEntry
-          disabled={subarrayConfig !== SA_CUSTOM}
-          label={t('numOf13mAntennas.label')}
-          testId="numOf13mAntennas"
-          value={numOf13mAntennas}
-          setValue={validate}
-          onFocus={() => setHelp('numOf13mAntennas')}
-        />
-      );
-    };
-
-    return fieldWrapper(
       <Grid
         container
         direction="row"
-        spacing={GAP}
-        sx={{
-          pt: 1
-        }}
+        sx={{ p: 2, alignItems: 'space-between', justifyContent: 'space-between' }}
       >
-        <Grid size={{ xs: 6 }}>{renderNumOf15mAntennasField()}</Grid>
-        <Grid size={{ xs: 6 }}>{numOf13mAntennasField()}</Grid>
+        <Grid />
+        <Grid />
+        <Grid>
+          <AddButton
+            action={addObservation}
+            disabled={!entryForm.formState.isValid}
+            primary
+            testId={existing ? 'updateObservationButtonEntry' : 'addObservationButtonEntry'}
+            title={existing ? 'updateBtn.label' : 'addBtn.label'}
+          />
+        </Grid>
       </Grid>
-    );
-  };
+    </Paper>
+  );
 
-  const elevationField = () =>
-    fieldWrapper(
-      <ElevationField
-        isLow={isLow()}
-        label={t('elevation.label')}
-        onFocus={() => setHelp('elevation')}
-        setValue={setElevation}
-        testId="elevation"
-        value={elevation}
-      />
-    );
-
-  const weatherField = () =>
-    fieldWrapper(
-      <WeatherField
-        disabled={isLow()}
-        label={t('weather.label')}
-        onFocus={() => setHelp('weather')}
-        setValue={setWeather}
-        testId="weather"
-        value={weather}
-      />
-    );
-
-  /**************************************************************/
-
-  const obsTypeOptions = useObservationTypeOptions(subarrayConfig, isLow());
-
-  React.useEffect(() => {
-    if (obsTypeOptions.length === 0) return;
-
-    if (!observationType && obsTypeOptions.length > 0) {
-      setObservationType(obsTypeOptions[0].value);
-      return;
-    }
-
-    const isValid = obsTypeOptions.some((opt) => opt.value === observationType);
-    if (!isValid && obsTypeOptions.length > 0) {
-      setObservationType(obsTypeOptions[0].value);
-    }
-  }, [observationType, obsTypeOptions, setObservationType]);
-
-  // SV proposals set their observing mode on the Details page
-  const observationTypeField = () =>
-    fieldWrapper(
-      <ObservationTypeField
-        disabled={getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION}
-        options={obsTypeOptions}
-        required
-        value={observationType}
-        setValue={setObservationType}
-      />
-    );
-
-  const suppliedTypeField = () => {
-    const getOptions = () => {
-      const supplied = observatoryConstants?.Supplied ?? [];
-      if (supplied.length === 0) return [];
-      const options = isLow() ? [supplied[0]] : supplied;
-      return options.map((opt) => ({
-        ...opt,
-        label: t(`sensitivityCalculatorResults.${opt.sensCalcResultsLabel}`)
-      }));
-    };
-
-    return (
-      <Box
-        sx={{
-          pt: 2
-        }}
-      >
-        <DropDown
-          options={getOptions()}
-          testId="suppliedType"
-          value={suppliedType ?? ''}
-          setValue={setSuppliedType}
-          disabled={getOptions()?.length < 2}
-          label=""
-          onFocus={() => setHelp('suppliedType')}
-        />
-      </Box>
-    );
-  };
-
-  const suppliedField = () => {
-    const getUnitOptions = () => {
-      const supplied = observatoryConstants?.Supplied ?? [];
-      if (!suppliedType || suppliedType <= 0) return [];
-      const entry = supplied[suppliedType - 1];
-      if (!entry || !Array.isArray(entry.units)) return [];
-      if (suppliedType === SUPPLIED_TYPE_INTEGRATION)
-        return entry.units.filter((u) =>
-          INTEGRATION_TIME_UNITS.some((allowed) => allowed.id === u.value)
-        );
-      return entry.units;
-    };
-
-    const FIELD = 'suppliedValue';
-    const minValue = 0;
-    const maxValue =
-      suppliedType === SUPPLIED_TYPE_INTEGRATION
-        ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
-        : undefined;
-    const label = '';
-    const currentUnitLabel = getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? '';
-
-    let rangeMessage = '';
-    if (maxValue !== undefined) {
-      rangeMessage = t(`${FIELD}.range.error`, {
-        min: minValue,
-        max: maxValue,
-        units: currentUnitLabel
-      });
-    } else {
-      rangeMessage = t(`${FIELD}.range.minError`, {
-        min: minValue,
-        units: currentUnitLabel
-      });
-    }
-    const validateSuppliedValue = (nextValue: number) =>
-      isSuppliedValueValid({
-        type: suppliedType,
-        value: nextValue,
-        units: suppliedUnits
-      })
-        ? ''
-        : rangeMessage;
-
-    return (
-      <QuantityField
-        value={suppliedValue}
-        setValue={setSuppliedValue}
-        label={label}
-        unitsDisabled={isLow()}
-        minValue={minValue}
-        maxValue={maxValue}
-        minInclusive={false}
-        maxInclusive={true}
-        requiredMessage={t(`${FIELD}.required`)}
-        rangeMessage={rangeMessage}
-        onFocus={() => setHelp(FIELD)}
-        onUnitsFocus={() => setHelp('suppliedUnits')}
-        units={suppliedUnits}
-        setUnits={setSuppliedUnits}
-        unitOptions={getUnitOptions()}
-        unitsTestId="suppliedUnits"
-        validate={validateSuppliedValue}
-        required
-      />
-    );
-  };
-
-  const centralFrequencyField = () => {
-    return fieldWrapper(
-      <Box
-        sx={{
-          pt: 1
-        }}
-      >
-        <CentralFrequency
-          observingBand={observingBand}
-          value={centralFrequency}
-          setValue={setCentralFrequency}
-          suffix={centralFrequencyUnitsField()}
-          isLowZoom={isLow() && isZoom()}
-          channelWidthHz={getResolutionHz()}
-          windowBandwidthHz={getZoomBandwidthHz()}
-          continuumBandwidthHz={getContinuumBandwidthHz()}
-          required
-        />
-      </Box>
-    );
-  };
-
-  const continuumBandwidthField = () => {
-    const continuumBandwidthUnitsField = () => {
-      const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
-      if (options?.length === 1) {
-        return options[0].label;
-      }
-      return (
-        <DropDown
-          disabledUnderline
-          options={options}
-          testId="continuumBandwidthUnits"
-          value={continuumBandwidthUnits}
-          setValue={setContinuumBandwidthUnits}
-          label=""
-          onFocus={() => setHelp('frequencyUnits')}
-        />
-      );
-    };
-    return fieldWrapper(
-      <Box
-        sx={{
-          pt: 1
-        }}
-      >
-        <ContinuumBandwidthField
-          setValue={setContinuumBandwidth}
-          value={continuumBandwidth}
-          suffix={continuumBandwidthUnitsField()}
-          telescope={telescope()}
-          observingBand={observingBand}
-          continuumBandwidthUnits={continuumBandwidthUnits}
-          centralFrequency={centralFrequency}
-          centralFrequencyUnits={centralFrequencyUnits}
-          subarrayConfig={subarrayConfig}
-          minimumChannelWidthHz={minimumChannelWidthHz}
-        />
-      </Box>
-    );
-  };
-
-  const bandwidthField = () =>
-    fieldWrapper(
-      <BandwidthField
-        required
-        setValue={setBandwidth}
-        value={bandwidth}
-        telescope={telescope()}
-        zoomChannels={zoomChannels}
-        setZoomChannels={handleZoomChannelsChange}
-        maxZoomChannels={maxZoomChannels}
-        resolutionHz={getResolutionHz()}
-        centralFrequencyHz={getCentralFrequencyHz()}
-      />
-    );
-
-  const spectralResolutionField = () =>
-    fieldWrapper(
-      <SpectralResolutionField
-        bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
-        bandWidthUnits={isContinuum() ? continuumBandwidthUnits : isLow() ? 3 : 2}
-        frequency={centralFrequency}
-        frequencyUnits={centralFrequencyUnits}
-        interactive={isLow() && isZoom()}
-        label={t('spectralResolution.label')}
-        observingBand={observingBand}
-        observationType={observationType}
-        onFocus={() => setHelp('spectralResolution')}
-        setBandWidth={setBandwidth}
-        setValue={setSpectralResolution}
-        subarrayConfig={subarrayConfig}
-      />
-    );
-
-  const centralFrequencyUnitsField = () => {
-    // Only have MHz for Low
-    const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
-    if (options?.length === 1) {
-      return options[0].label;
-    }
-    return (
-      <DropDown
-        options={options}
-        testId="frequencyUnits"
-        value={centralFrequencyUnits}
-        setValue={setCentralFrequencyUnits}
-        label=""
-        onFocus={() => setHelp('frequencyUnits')}
-      />
-    );
-  };
-
-  const SubBandsField = () =>
-    fieldWrapper(
-      <SubBands
-        disabled={true}
-        value={subBands}
-        setValue={setSubBands}
-        isMid={isMid()}
-        isContinuum={isContinuum()}
-        continuumBandwidth={continuumBandwidth}
-        continuumBandwidthUnits={continuumBandwidthUnits}
-        minimumChannelWidthHz={minimumChannelWidthHz}
-      />
-    );
-
-  const frequencySetUp = () => {
-    if (isLow() && isZoom()) {
-      return (
-        <>
-          <Grid
-            size={{ md: 12, lg: 12 }}
-            sx={{
-              p: 2
-            }}
-          >
-            {frequencySpectrumField()}
-          </Grid>
-          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
-          <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
-          <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
-        </>
-      );
-    }
-    if (isZoom()) {
-      return (
-        <>
-          <Grid
-            size={{ md: 12, lg: 12 }}
-            sx={{
-              p: 2
-            }}
-          >
-            {frequencySpectrumField()}
-          </Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-        </>
-      );
-    }
-    if (isPST()) {
-      return (
-        <>
-          <Grid
-            size={{ md: 12, lg: 12 }}
-            sx={{
-              p: 2
-            }}
-          >
-            {frequencySpectrumField()}
-          </Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
-        </>
-      );
-    }
-    // Sub-bands are not shown for SV proposals
-    const isSVProposal = getProposal().proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-    return (
-      <>
-        <Grid
-          size={{ md: 12, lg: 12 }}
-          sx={{
-            p: 2
-          }}
-        >
-          {frequencySpectrumField()}
-        </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isSVProposal ? emptyField() : SubBandsField()}</Grid>
-      </>
-    );
-  };
-
-  const addButtonDisabled = () => {
-    return isEdit() ? false : validateId() ? true : false;
-  };
-
-  const pageFooter = () => {
-    const buttonClicked = () => {
-      isEdit() ? updateObservationOnProposal() : addObservationToProposal();
-      if (!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) {
-        navigate(NAV[BACK_PAGE]);
-      }
-    };
-
-    return (
-      <Paper
-        sx={{
-          bgcolor: 'transparent',
-          position: 'fixed',
-          bottom:
-            FOOTER_HEIGHT_PHT + (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 60 : 0),
-          left: 0,
-          right: loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 30 : 0
-        }}
-        elevation={0}
-      >
-        <Grid
-          container
-          direction="row"
-          sx={{
-            p: 2,
-            alignItems: 'space-between',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Grid />
-          <Grid />
-          <Grid>
-            {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) && (
-              <AddButton
-                action={buttonClicked}
-                disabled={addButtonDisabled()}
-                primary
-                testId={isEdit() ? 'updateObservationButtonEntry' : 'addObservationButtonEntry'}
-                title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
-              />
-            )}
-          </Grid>
-        </Grid>
-      </Paper>
-    );
-  };
-
+  const page = existing ? PAGE_OBSERVATION_UPDATE : PAGE_OBSERVATION_ADD;
   return (
-    <HelpShell page={PAGE}>
-      <Box
-        sx={{
-          pt: 2
-        }}
-      >
-        {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
-          <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
-        )}
-        <Grid
-          container
-          direction="row"
-          spacing={1}
-          sx={{
-            pl: 4,
-            pr: 4,
-            alignItems: 'space-evenly',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Grid size={{ md: 12, lg: 9 }}>
-            <Grid
-              container
-              direction="row"
-              spacing={2}
-              sx={{
-                pb: 2,
-                alignItems: 'stretch',
-                justifyContent: 'flex-start'
-              }}
-            >
-              <Grid size={{ md: 6 }}>
-                <BorderedSection
-                  title={t('observationSections.arraySetUp')}
-                  sx={{ height: '100%' }}
-                >
-                  <Stack>
-                    {observationsBandField()}
-                    {subArrayField()}
-                    {!isSV && (isLow() ? numStationsField() : antennasFields())}
-                    {suppliedTypeField()}
-                    {suppliedField()}
-                  </Stack>
-                </BorderedSection>
-              </Grid>
-
-              {!isSV && (
-                <Grid size={{ md: 12, lg: 6 }}>
-                  <BorderedSection
-                    title={t('observationSections.identifiers')}
-                    sx={{ height: '100%' }}
-                  >
-                    <Stack>
-                      {idField()}
-                      {observationTypeField()}
-                      {groupObservationsField()}
-                      {elevationField()}
-                      {isLow() ? emptyField() : weatherField()}
-                    </Stack>
-                  </BorderedSection>
-                </Grid>
-              )}
-
-              {isSV && (
-                <Grid size={{ md: 6 }}>
-                  <BorderedSection
-                    title={t('observationSections.identifiers')}
-                    sx={{ height: '100%' }}
-                  >
-                    <Stack>{observationTypeField()}</Stack>
-                  </BorderedSection>
-                </Grid>
-              )}
-            </Grid>
-
-            <BorderedSection title={t('observationSections.frequencySetUp')}>
-              <Grid
-                container
-                direction="row"
-                columnSpacing={6}
-                rowSpacing={1}
-                sx={{
-                  p: 0,
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}
-              >
-                {frequencySetUp()}
-              </Grid>
-            </BorderedSection>
-          </Grid>
-          {isLow() &&
-            subarrayConfig === SA_AA2 && ( // STAR-1923 : Need to make this generic from OSD Data or endpoint
-              <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
-                <Box
-                  sx={{
-                    px: 3
-                  }}
-                >
-                  <img src={lowAA2Image} alt="Low AA2" width="100%" />
-                </Box>
-              </Grid>
-            )}
-        </Grid>
+    <HelpShell page={page}>
+      <Box sx={{ pt: 2 }}>
+        <PageBannerPPT backPage={BACK_PAGE} pageNo={page} />
+        <FormProvider {...entryForm}>
+          <ObservationView index={0} groupIds={groupIds} />
+        </FormProvider>
         <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-        {pageFooter()}
+        {footer}
       </Box>
     </HelpShell>
   );

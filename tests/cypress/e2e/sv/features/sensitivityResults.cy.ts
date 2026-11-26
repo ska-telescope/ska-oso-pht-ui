@@ -3,7 +3,7 @@ import { standardUser } from '../../../support/users';
 import { buildSvContinuumProposal } from '../../../support/editor/data/sv';
 import { SV_CYCLE } from '../../../support/editor/cycles';
 import { createProposal, goToPage } from '../../../support/editor/editorActions';
-import { enter, section, select } from '../../../support/editor/fields';
+import { enter, select } from '../../../support/editor/fields';
 import { dataProductPage } from '../../../support/editor/pageObjects/dataProductPage';
 import { detailsPage } from '../../../support/editor/pageObjects/detailsPage';
 import { observationPage } from '../../../support/editor/pageObjects/observationPage';
@@ -59,7 +59,7 @@ describe('SV sensitivity results', () => {
       .then((before) => {
         // A longer integration gives a better sensitivity
         goToPage(observationPage);
-        enter(section('Array Setup').findByRole('textbox'), '4');
+        enter(cy.findByRole('spinbutton', { name: 'Integration time' }), '4');
 
         goToPage(dataProductPage);
         result(CONTINUUM_SENSITIVITY).should(($value) => {
@@ -95,12 +95,7 @@ describe('SV sensitivity results', () => {
     cy.findByText(CONTINUUM_SENSITIVITY).should('not.exist');
   });
 
-  // TODO: Fails intermittently on CI from a race in the app: Changing the observing mode can
-  //  take a while to generate new observation due to a wait on calibration results to return.
-  //  This means Data Product page can give incorrect information if it is opened before the
-  //  observation is properly reset. Re-enable once form migration is complete and the mode
-  //  change sets the observation without waiting on the calibrator lookup (BTN-3595).
-  it.skip('shows that the results are not available in PST mode', () => {
+  it('shows that the results are not available in PST mode', () => {
     goToPage(targetPage);
     targetPage.fill(proposal);
     changeObservingMode('PST');

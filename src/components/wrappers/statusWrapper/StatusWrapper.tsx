@@ -1,10 +1,8 @@
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { NAV, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
+import { NAV, PATH, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import Proposal from '@utils/types/proposal.tsx';
-import { storageObject } from '@utils/storage/store';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StatusWrapperProps {
@@ -17,8 +15,8 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const navigate = useNavigate();
   const SIZE = 30;
   const loggedIn = isLoggedIn();
-  const { application } = storageObject.useStore();
-  const getProposal = () => application.content2 as Proposal;
+  // A proposal on the Add proposal page is not created in the backend yet
+  const isNewProposal = useLocation().pathname === PATH[1];
 
   const ClickFunction = () => {
     navigate(NAV[page]);
@@ -33,7 +31,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
         default:
           return true;
       }
-    } else if (getProposal().id == null) {
+    } else if (isNewProposal) {
       switch (pageName()) {
         case 'Title':
           return false;

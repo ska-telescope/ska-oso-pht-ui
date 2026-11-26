@@ -1,8 +1,16 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import TableObservations from './TableObservations';
+import {
+  newSvObservation,
+  OBSERVING_MODE,
+  type ObservationInput
+} from '@/models/proposals/observations';
+
+const observation = (id: string) => ({ ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id });
 
 // --- Mocks ---
+// The translations read the OSD, which is in the store
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => ({
@@ -13,7 +21,9 @@ vi.mock('@utils/storage/store', () => ({
 
 // Stub child components so we can assert they’re called
 vi.mock('./tableObservationsRow/TableObservationsRow', () => ({
-  default: ({ item }: any) => <div data-testid="row">Row for {item.name}</div>
+  default: ({ observation }: { observation: ObservationInput }) => (
+    <div data-testid="row">Row for {observation.id}</div>
+  )
 }));
 
 vi.mock('../tableContainer/TableContainer', () => ({
@@ -23,29 +33,28 @@ vi.mock('../tableContainer/TableContainer', () => ({
 // --- Tests ---
 describe('TableObservations', () => {
   it('renders rows for given data', () => {
-    const mockData = [
-      { id: 1, name: 'Product A' },
-      { id: 2, name: 'Product B' }
-    ];
-
-    render(<TableObservations data={mockData} updateFunction={vi.fn()} deleteFunction={vi.fn()} />);
+    render(
+      <TableObservations
+        observations={[observation('obs-1'), observation('obs-2')]}
+        updateFunction={vi.fn()}
+        deleteFunction={vi.fn()}
+      />
+    );
 
     const rows = screen.getAllByTestId('row');
     expect(rows).toHaveLength(2);
-    expect(rows[0]).toHaveTextContent('Row for Product A');
-    expect(rows[1]).toHaveTextContent('Row for Product B');
+    expect(rows[0]).toHaveTextContent('Row for obs-1');
+    expect(rows[1]).toHaveTextContent('Row for obs-2');
   });
 
   it('renders inside TableContainer', () => {
-    const mockData = [{ id: 1, name: 'Product A' }];
-
-    render(<TableObservations data={mockData} updateFunction={vi.fn()} />);
+    render(<TableObservations observations={[observation('obs-1')]} updateFunction={vi.fn()} />);
 
     expect(screen.getByTestId('table-container')).toBeInTheDocument();
   });
 
   it('handles empty data gracefully', () => {
-    render(<TableObservations data={[]} updateFunction={vi.fn()} />);
+    render(<TableObservations observations={[]} updateFunction={vi.fn()} />);
     expect(screen.queryByTestId('row')).toBeNull();
   });
 });

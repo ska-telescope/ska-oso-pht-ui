@@ -1,7 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Box, FormHelperText, Grid } from '@mui/material';
-import { useController } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
@@ -14,7 +14,6 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
-import { Proposal } from '@utils/types/proposal.tsx';
 import { ProposalType } from '@/models/proposals/proposal';
 import { getDocumentPageStatus } from '@/models/proposals/documents';
 import {
@@ -57,10 +56,7 @@ export default function SciencePage() {
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
-  const getProposal = () => application.content2 as Proposal;
-  const proposalId = getProposal()?.id;
-  const activeProposalIdRef = React.useRef(getProposal()?.id);
-  activeProposalIdRef.current = getProposal()?.id;
+  const { getValues } = useFormContext<ProposalType>();
 
   const getSciencePdfDisplayFilename = () => sciencePDF?.documentId + t('fileType.pdf');
 
@@ -269,17 +265,18 @@ export default function SciencePage() {
       return;
     }
     setPdfError(null);
-    const proposal = getProposal();
+    const proposalId = getValues('prslId');
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
       notifyWarning(t('pdfUpload.science.warning'));
-      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-science.pdf`);
+      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposalId}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
-      if (activeProposalIdRef.current !== proposal.id) return;
+      // An upload or delete takes time, so its result is dropped if another proposal was opened since
+      if (getValues('prslId') !== proposalId) return;
 
       if (uploadResult.error) {
         setUploadStatus(FileUploadStatus.ERROR);
@@ -287,7 +284,7 @@ export default function SciencePage() {
         throw new Error('Science PDF Not Uploaded');
       }
       const sciencePDFUploaded = {
-        documentId: `science-doc-${proposal.id}`,
+        documentId: `science-doc-${proposalId}`,
         isUploadedPdf: true
       };
 
@@ -296,7 +293,7 @@ export default function SciencePage() {
 
       notifySuccess(t('pdfUpload.science.success'));
     } catch (e) {
-      if (activeProposalIdRef.current !== proposal.id) return;
+      if (getValues('prslId') !== proposalId) return;
       setFile('');
       setUploadStatus(FileUploadStatus.ERROR);
     }
@@ -304,8 +301,8 @@ export default function SciencePage() {
 
   const downloadPDFToSignedUrl = async () => {
     try {
-      const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
+      const proposalId = getValues('prslId');
+      const selectedFile = `${proposalId}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || sciencePDF != null) {
@@ -318,13 +315,13 @@ export default function SciencePage() {
 
   const deletePdfUsingSignedUrl = async () => {
     try {
-      const proposal = getProposal();
-      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-science.pdf`);
+      const proposalId = getValues('prslId');
+      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposalId}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
       const deleteResult = await DeletePDF(signedUrl);
-      if (activeProposalIdRef.current !== proposal.id) return;
+      if (getValues('prslId') !== proposalId) return;
 
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to Delete Science PDF');
@@ -351,8 +348,8 @@ export default function SciencePage() {
 
   const previewSignedUrl = async () => {
     try {
-      const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
+      const proposalId = getValues('prslId');
+      const selectedFile = `${proposalId}-` + t('pdfDownload.science.label') + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || sciencePDF != null) {
@@ -374,7 +371,7 @@ export default function SciencePage() {
 
   React.useEffect(() => {
     setUploadStatus(sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL);
-  }, [proposalId, sciencePDF]);
+  }, [sciencePDF]);
 
   React.useEffect(() => {
     setTheProposalState(getDocumentPageStatus(sciencePDF));

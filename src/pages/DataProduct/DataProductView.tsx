@@ -20,27 +20,24 @@ import {
   STEPPED_FIELD
 } from '@/models/proposals/dataProducts';
 import {
-  BAND_LOW_STR,
   CHANNELS_OUT_MAX,
   CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN_CONTINUUM,
   CHANNELS_OUT_MIN_SPECTRAL,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
-  FREQUENCY_GHZ,
   IMAGE_WEIGHTING,
   PST_DEDICATED_FILTERBANK_BIT_DEPTH_VALUES,
   PST_FLOW_THROUGH_BIT_DEPTH_VALUES,
-  ROBUST_DEFAULT,
-  TYPE_CONTINUUM
+  ROBUST_DEFAULT
 } from '@/utils/constants';
 import { ImageWeighting } from '@/generated/models';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import Observation from '@/utils/types/observation';
+import { OBSERVING_MODE, TELESCOPE, type ObservationInput } from '@/models/proposals/observations';
 import GridObservation from '@/components/grid/observation/GridObservation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useHelp } from '@/utils/help/useHelp';
-import { frequencyConversion } from '@/utils/helpers';
+import { convertFrequency } from '@/utils/helpers';
 
 const GAP = 5;
 // The space between the fields of a section, across and down
@@ -62,9 +59,9 @@ const POLARISATION_OPTIONS: Partial<Record<DataProductKind, string[]>> = {
 
 interface DataProductViewProps {
   index: number;
-  observation: Observation;
-  observations: Observation[];
-  onSelectObservation?: (observation: Observation) => void;
+  observation: ObservationInput;
+  observations: ObservationInput[];
+  onSelectObservation?: (observation: ObservationInput) => void;
   // Called with the kind the user switches a continuum data product to (images or visibilities)
   onContinuumKindChange: (kind: DataProductKind) => void;
   sensitivityPanel?: React.JSX.Element;
@@ -111,7 +108,7 @@ export default function DataProductView({
     dp.kind === DATA_PRODUCT_KIND.PST_FLOW_THROUGH ||
     dp.kind === DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK ||
     dp.kind === DATA_PRODUCT_KIND.PST_TIMING;
-  const isLow = observation.observingBand === BAND_LOW_STR;
+  const isLow = observation.telescope === TELESCOPE.LOW;
 
   const unitAdornment = (unit: string) => ({
     input: { endAdornment: <InputAdornment position="end">{unit}</InputAdornment> }
@@ -140,11 +137,9 @@ export default function DataProductView({
 
   // The MID tapers, labelled with their size in arcseconds at the observation's central frequency
   const taperOptions = () => {
-    const centralFrequencyGhz = frequencyConversion(
-      observation.centralFrequency,
-      observation.centralFrequencyUnits,
-      FREQUENCY_GHZ
-    );
+    const { value, unit } = observation.centralFrequency;
+    const centralFrequencyGhz =
+      value !== null && unit !== null ? convertFrequency(value, unit, 'GHz') : null;
     const sizes = centralFrequencyGhz
       ? [0.25, 1, 4, 16, 64, 256, 1024].map((taper) => ({
           label: (taper * (1.4 / centralFrequencyGhz)).toFixed(3) + '"',
@@ -428,7 +423,7 @@ export default function DataProductView({
               <GridObservation
                 data={observations}
                 autoSelectId={observation.id}
-                rowClick={(e: { row: Observation }) => onSelectObservation?.(e.row)}
+                rowClick={(e: { row: ObservationInput }) => onSelectObservation?.(e.row)}
                 disabled={maxObservationsReached}
               />
             </Box>
@@ -436,7 +431,7 @@ export default function DataProductView({
         </Grid>
         <Grid size={{ md: 7, lg: 7 }}>
           <Stack spacing={GAP}>
-            {observation.type === TYPE_CONTINUUM && (
+            {observation.observingMode === OBSERVING_MODE.CONTINUUM && (
               <Grid container spacing={FIELD_SPACING} sx={{ py: 1 }}>
                 <Grid size={6}>
                   <ControlledSelect

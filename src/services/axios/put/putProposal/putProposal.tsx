@@ -22,9 +22,9 @@ async function PutProposal(
   formValues?: ProposalType
 ): Promise<ProposalBackend | { error: string }> {
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     const convertedProposal = MappingPutProposal(proposal, status as string);
     const payload = formValues ? mapFormToPdm(formValues, convertedProposal) : convertedProposal;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${payload.prsl_id}`;
 
     const result = await authAxiosClient.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, payload);
     if (!result || !result?.data) {

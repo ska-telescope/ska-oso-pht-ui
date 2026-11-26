@@ -8,13 +8,14 @@ UNRELEASED
 ----------
 * Changed: e2e test auth moved into the test framework; Indigo token renewal uses a new `auth-callback.html` page (register `<app URL>auth-callback.html` as an Indigo redirect URI)
 * Added: Indigo smoke tests, a REQUEST_TIMEOUT_MS setting (default 20s, 60s for CI e2e deployments), and --clean-db for local e2e runs
+* Changed: CI runs the e2e tests as parallel jobs
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
 * Bugfix: Keep the automatic-save timer running when page renders update its callback
 * Bugfix: The edit target dialog cannot be confirmed while the velocity or redshift is invalid
 * Bugfix: Calibration notes edited while calibrators are being looked up are kept
 * Dependency update: Sensitivity Calculator v12.0.2
-* Library update: SKA GUI Components v4.0.0
+* Library update: SKA GUI Components v4.1.0
 * Changed: Target name resolution error improved and shown in a pop-up
 * Changed: Do not allow duplicate target names when adding multiple targets
 * Bugfix: Page now scrolls to top after proposal selection

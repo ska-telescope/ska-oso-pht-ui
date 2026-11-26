@@ -4,12 +4,17 @@ import { useState, useEffect, useMemo } from 'react';
 import { storageObject } from '@utils/storage/store';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDateTime } from '@/utils/present/present';
+import { ObservatoryPolicy } from '@/utils/types/observatoryData';
 import {
   BAND_LOW_STR,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
   COUNTDOWN_URGENT_THRESHOLD_MS
 } from '@/utils/constants';
+
+/** Whether a cycle policy is for a science verification cycle */
+export const isSVPolicy = (policy: Pick<ObservatoryPolicy, 'type'> | null) =>
+  (policy?.type?.toLowerCase() ?? '').includes('science verification');
 
 export function useOSDAccessors() {
   const osd = useOSD();
@@ -55,9 +60,7 @@ export function useOSDAccessors() {
 
   const autoLink = cyclePolicies?.maxTargets === 1 && cyclePolicies?.maxObservations === 1;
 
-  const isSV = useMemo(() => {
-    return (selectedPolicy?.type?.toLowerCase() ?? '').includes('science verification') ?? false;
-  }, [selectedPolicy]);
+  const isSV = useMemo(() => isSVPolicy(selectedPolicy), [selectedPolicy]);
 
   useEffect(() => {
     if (!cycleInformation?.proposalClose) return;

@@ -1,46 +1,23 @@
-import React from 'react';
-import { useFormContext } from 'react-hook-form';
-import { storageObject } from '@utils/storage/store';
 import { Box } from '@mui/material';
-import { EMPTY_STATUS, PAGE_TITLE_ADD, PROPOSAL_TYPE, TYPE_CONTINUUM } from '@utils/constants.ts';
+import { PAGE_TITLE_ADD } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
-import { NEW_PROPOSAL } from '../../../utils/types/proposal';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { newDataProductsForMode, newObservationForMode } from '@/utils/autoLinking/AutoLinking';
-import { ProposalType } from '@/models/proposals/proposal';
-import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 
 const PAGE = PAGE_TITLE_ADD;
 const PAGE_INNER = 0;
 const PAGE_FOOTER = -1;
 
+// The new proposal template is set on cycle selection so here the
+// form context is already populated and all we need to do is ask
+// user to fill in the title and type before posting to the backend.
 export default function AddProposal() {
-  const { updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const { isSV } = useOSDAccessors();
-  const { reset } = useFormContext<ProposalType>();
-
-  // SV cycles have no type picker, so a new SV proposal gets its type straight away. The cycle
-  // is always selected on the Landing page before this page opens.
-  React.useEffect(() => {
-    const proposalType = isSV ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined;
-    // SV proposals have a single observation whose type is the observing mode, so they start with
-    // one in the default mode, which the user can change on the Details page.
-    const observations = isSV ? [newObservationForMode(TYPE_CONTINUUM)] : [];
-    const dataProducts = observations.flatMap(newDataProductsForMode);
-    reset(getProposalFormValues({ ...NEW_PROPOSAL, id: undefined, proposalType, dataProducts }));
-    updateAppContent1(EMPTY_STATUS);
-    // The store gets the data products too: the form re-seeds from it when the proposal changes
-    updateAppContent2({ ...NEW_PROPOSAL, proposalType, observations, dataProducts });
-  }, []);
-
   return (
     <Box
       sx={{
         pt: 2
       }}
     >
-      <Shell page={PAGE} footerPage={PAGE_FOOTER} helpDisabled>
+      <Shell page={PAGE} footerPage={PAGE_FOOTER} isNewProposal helpDisabled>
         <TitleEntry page={PAGE_INNER} />
       </Shell>
     </Box>

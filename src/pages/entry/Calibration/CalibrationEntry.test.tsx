@@ -13,56 +13,58 @@ import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 // MOCKS
 // ----------------------
 
-vi.mock('@ska-telescope/ska-login-page', () => ({
-  isLoggedIn: vi.fn(() => true)
-}));
-
-vi.mock('@utils/storage/store', () => ({
-  storageObject: {
-    useStore: () => ({
-      application: {
-        content2: {
-          targets: [{ id: 'T1', name: 'Target A' }],
-          targetObservation: [{ targetId: 'T1' }],
-          calibrationStrategy: [
-            {
-              observatoryDefined: true,
-              id: 'cal-1',
-              observationIdRef: 'obs-1',
-              calibrators: [
-                {
-                  targetId: '',
-                  name: 'Hercules A',
-                  calibrationIntent: 'flux',
-                  durationSeconds: 600,
-                  selectionStrategy: 'highest_elevation',
-                  relativeToScan: 'before_each_scan',
-                  notes: null
-                },
-                {
-                  targetId: '',
-                  name: 'Hercules A',
-                  calibrationIntent: 'flux',
-                  durationSeconds: 600,
-                  selectionStrategy: 'highest_elevation',
-                  relativeToScan: 'after_each_scan',
-                  notes: null
-                }
-              ],
-              notes: null
-            }
-          ],
-          observations: [
-            {
-              supplied: { type: 1, units: 1, value: 10 }
-            }
-          ]
-        }
-      },
-      updateAppContent2: vi.fn()
-    })
-  }
-}));
+vi.mock('@utils/storage/store', async () => {
+  const { newSvObservation, OBSERVING_MODE } = await import('@/models/proposals/observations');
+  const { legacyObservationsFromForm } = await import('@/models/proposals/legacyObservations');
+  const observation = {
+    ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
+    id: 'obs-1',
+    integrationTime: { value: 30, unit: 'min' as const }
+  };
+  return {
+    storageObject: {
+      useStore: () => ({
+        application: {
+          content2: {
+            targets: [{ id: 'T1', name: 'Target A' }],
+            targetObservation: [{ targetId: 'T1', observationId: 'obs-1' }],
+            calibrationStrategy: [
+              {
+                observatoryDefined: true,
+                id: 'cal-1',
+                observationIdRef: 'obs-1',
+                calibrators: [
+                  {
+                    targetId: '',
+                    name: 'Hercules A',
+                    calibrationIntent: 'flux',
+                    durationSeconds: 600,
+                    selectionStrategy: 'highest_elevation',
+                    relativeToScan: 'before_each_scan',
+                    notes: null
+                  },
+                  {
+                    targetId: '',
+                    name: 'Hercules A',
+                    calibrationIntent: 'flux',
+                    durationSeconds: 600,
+                    selectionStrategy: 'highest_elevation',
+                    relativeToScan: 'after_each_scan',
+                    notes: null
+                  }
+                ],
+                notes: null
+              }
+            ],
+            // TODO BTN-3595 Seed the form directly once it no longer takes its observations from the store's legacy shape
+            ...legacyObservationsFromForm([observation])
+          }
+        },
+        updateAppContent2: vi.fn()
+      })
+    }
+  };
+});
 
 vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({
@@ -72,9 +74,6 @@ vi.mock('@/utils/help/useHelp', () => ({
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
-    observatoryConstants: {
-      Supplied: [{ units: [{ label: 'min' }] }, { units: [{ label: 'sec' }] }]
-    },
     osdCyclePolicy: { calibrationFactoryDefined: false }
   })
 }));
@@ -128,6 +127,14 @@ describe('CalibrationEntry', () => {
     wrapper(<CalibrationEntry />);
 
     expect(screen.getByText('calibrator.desc')).toBeInTheDocument();
+  });
+
+  it("shows the linked observation's integration time", () => {
+    wrapper(<CalibrationEntry />);
+
+    const integrationTime = screen.getByTestId('integrationTime');
+    expect(within(integrationTime).getByRole('textbox')).toHaveValue('30');
+    expect(integrationTime).toHaveTextContent('min');
   });
 
   it('writes the comment to the calibration in the form, keeping its calibrators', () => {

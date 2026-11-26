@@ -14,7 +14,7 @@ import * as proposalForm from '@/models/proposals/useProposalForm';
 const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
 const mockPathname = { current: PATH[0] };
-const mockApplicationContent2 = { current: { id: 'prsl-123' } as any };
+const mockApplicationContent2 = { current: { id: 'prp-123' } as any };
 const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } as any };
 
 vi.mock('react-router', () => ({
@@ -48,7 +48,7 @@ vi.mock('@utils/storage/store', () => ({
 }));
 
 vi.mock('@/services/axios/put/putProposal/putProposal', () => ({
-  default: vi.fn().mockResolvedValue({ id: 'prsl-123' })
+  default: vi.fn().mockResolvedValue({ id: 'prp-123' })
 }));
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
@@ -109,7 +109,7 @@ const fullProps = {
 
 const { mockProposal, mockUpdateAppContent2 } = vi.hoisted(() => ({
   mockProposal: {
-    id: 'prsl-t0001-20250101-00001',
+    id: 'prp-123',
     scienceCategory: null,
     abstract: 'Test abstract',
     targets: [{ id: 1, name: 'Target 1' }],
@@ -165,7 +165,7 @@ describe('<PHT />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockPathname.current = PATH[0];
-    mockApplicationContent2.current = { id: 'prsl-123' };
+    mockApplicationContent2.current = { id: 'prp-123' };
     mockApplicationContent5.current = { message: '', level: '', delay: 0 };
   });
 
@@ -211,9 +211,11 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
+      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prp-123' }, PROPOSAL_STATUS.DRAFT, {
+        prslId: 'prp-123',
+        cycle: '',
         title: '',
-        proposalType: null,
+        proposalType: { type: null, subTypes: [] },
         abstract: '',
         scienceCategory: null,
         investigators: [],
@@ -222,7 +224,8 @@ describe('<PHT />', () => {
         calibrationStrategy: [],
         sciencePDF: null,
         technicalPDF: null,
-        dataProducts: []
+        dataProducts: [],
+        observations: []
       });
     });
   });
@@ -237,9 +240,11 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT, {
+      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prp-123' }, PROPOSAL_STATUS.DRAFT, {
+        prslId: 'prp-123',
+        cycle: '',
         title: '',
-        proposalType: null,
+        proposalType: { type: null, subTypes: [] },
         abstract: '',
         scienceCategory: null,
         investigators: [],
@@ -248,7 +253,8 @@ describe('<PHT />', () => {
         calibrationStrategy: [],
         sciencePDF: null,
         technicalPDF: null,
-        dataProducts: []
+        dataProducts: [],
+        observations: []
       });
     });
   });
@@ -258,7 +264,7 @@ describe('<PHT />', () => {
     async (abstract) => {
       const formSpy = vi.spyOn(proposalForm, 'useProposalForm');
       try {
-        mockApplicationContent2.current = { id: 'prsl-123', abstract: 'Stale store summary' };
+        mockApplicationContent2.current = { id: 'prp-123', abstract: 'Stale store summary' };
         mockPathname.current = NAV[2];
         const { rerenderPHT } = renderPHT();
         const form = formSpy.mock.results[formSpy.mock.results.length - 1].value;
@@ -271,7 +277,7 @@ describe('<PHT />', () => {
 
         await waitFor(() => {
           expect(mockUpdateAppContent2).toHaveBeenCalledWith(
-            expect.objectContaining({ id: 'prsl-123', abstract })
+            expect.objectContaining({ id: 'prp-123', abstract })
           );
           expect(PutProposal).toHaveBeenCalledWith(
             {},
@@ -306,10 +312,9 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
 
     expect(vi.mocked(linkTarget)).toHaveBeenCalledWith(
       mockProposal.targets[0],
-      expect.any(Function),
-      expect.any(Function),
       expect.objectContaining({ getValues: expect.any(Function) }),
-      {}
+      {},
+      null
     );
   });
 

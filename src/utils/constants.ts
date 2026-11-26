@@ -94,6 +94,10 @@ export const FREQUENCY_STR_GHZ = 'GHz';
 export const TEL = ['', 'Mid', 'Low'];
 export const TEL_UNITS = ['', FREQUENCY_STR_GHZ, FREQUENCY_STR_MHZ];
 
+/** Each frequency unit, as the backend names it, and its size in Hz. */
+export const FREQUENCY_UNIT_HZ = { GHz: 1e9, MHz: 1e6, kHz: 1e3, Hz: 1 } as const;
+export type FrequencyUnit = keyof typeof FREQUENCY_UNIT_HZ;
+
 export const FREQUENCY_UNITS = [
   { label: FREQUENCY_STR_GHZ, value: FREQUENCY_GHZ, mapping: FREQUENCY_STR_GHZ, toHz: 1 },
   { label: FREQUENCY_STR_MHZ, value: FREQUENCY_MHZ, mapping: FREQUENCY_STR_MHZ, toHz: 1000 },
@@ -275,7 +279,6 @@ export const INTEGRATION_TIME_UNITS = [
 export const DECIMAL_PLACES = 2;
 
 export const DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME = { value: 1, unit: '2' };
-export const DEFAULT_LOW_SUPPLIED_SENSITIVITY = { value: 1, unit: '1' };
 
 export const PAGE_TITLE_ADD = 0;
 export const PAGE_TEAM = 1;
@@ -470,13 +473,11 @@ export const NANOSECOND_LABEL = 'us';
 export const MICROSECOND_LABEL = 'ns';
 
 export const SUPPLIED_TYPE_INTEGRATION = 1;
-export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_M = 3;
 export const SUPPLIED_INTEGRATION_TIME_MAX_HOURS = 4;
 export const SUPPLIED_INTEGRATION_TIME_STEP_HOURS = 0.1;
 export const SUPPLIED_INTEGRATION_TIME_STEP_MINS = 1;
-export const SUPPLIED_SENSITIVITY_STEP = 1;
 
 export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
@@ -678,8 +679,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
     value: SUPPLIED_VALUE_DEFAULT_LOW,
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
-  spectralResolution: '',
-  effectiveResolution: ''
+  spectralResolution: ''
 };
 
 export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
@@ -702,7 +702,6 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
   spectralResolution: '1808.45 Hz (2.7 km/s)',
-  effectiveResolution: '1808.45 Hz (2.7 km/s)',
   zoomChannels: 1000
 };
 
@@ -728,7 +727,6 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
   spectralResolution: '',
-  effectiveResolution: '',
   pstMode: PULSAR_TIMING_VALUE
 };
 

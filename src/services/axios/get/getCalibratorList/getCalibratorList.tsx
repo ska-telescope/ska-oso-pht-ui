@@ -1,12 +1,7 @@
 import {
   OSO_SERVICES_CALIBRATORS_PATH,
   REFERENCE_COORDINATE_TYPE_SSO,
-  SKA_OSO_SERVICES_URL,
-  SUPPLIED_TYPE_INTEGRATION,
-  TELESCOPE_LOW_BACKEND_MAPPING,
-  TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_BACKEND_MAPPING,
-  TIME_MS
+  SKA_OSO_SERVICES_URL
 } from '@utils/constants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import {
@@ -16,8 +11,10 @@ import {
   SelectionStrategy
 } from '@/utils/types/calibrationStrategy.tsx';
 import Target from '@utils/types/target.tsx';
-import Observation from '@utils/types/observation.tsx';
-import { timeConversion } from '@utils/helpers.ts';
+import {
+  INTEGRATION_TIME_UNIT_HOURS,
+  type ObservationInput
+} from '@/models/proposals/observations';
 import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.tsx';
 
 /*****************************************************************************************************************************/
@@ -44,27 +41,18 @@ function calibratorMapping(data: CalibratorBackend): Calibrator {
 
 async function GetCalibratorList(
   authAxiosClient: AxiosAuthClient,
-  observation: Observation,
+  observation: ObservationInput,
   target: Target
 ): Promise<Calibrator[] | string> {
   if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
     return 'error.CALIBRATOR_NOT_SUPPORTED_FOR_SSO';
   }
 
-  if (observation.supplied.type !== SUPPLIED_TYPE_INTEGRATION) {
+  const { value, unit } = observation.integrationTime;
+  if (value === null || unit === null) {
     return 'error.CALIBRATOR_REQUIRES_INTEGRATION_TIME';
   }
-
-  const telescopeBackendString =
-    observation.telescope === TELESCOPE_LOW_NUM
-      ? TELESCOPE_LOW_BACKEND_MAPPING
-      : TELESCOPE_MID_BACKEND_MAPPING;
-
-  const scanDurationMs = timeConversion(
-    observation.supplied.value,
-    observation.supplied.units,
-    TIME_MS
-  );
+  const scanDurationMs = value * INTEGRATION_TIME_UNIT_HOURS[unit] * 3600 * 1000;
 
   // this isn't great, but works ahead of the SV call - we should/could extend the
   // add an oso-services endpoint that takes a list of targets, and then returns
@@ -73,7 +61,7 @@ async function GetCalibratorList(
 
   try {
     const params = new URLSearchParams({
-      telescope: telescopeBackendString,
+      telescope: observation.telescope,
       scan_duration_ms: String(scanDurationMs),
       strategy: DEFAULT_SELECTION_STRATEGY
     });

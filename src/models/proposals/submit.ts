@@ -5,13 +5,15 @@ import { getTargetsSchema } from './targets';
 import { getTargetObservationSchema } from './targetObservation';
 import { getCalibrationStrategySchema } from './calibrationStrategy';
 import { getDataProductsSchema } from './dataProducts';
+import { getObservationsSchema, type ObservationOsd } from './observations';
 
 /** The pages whose status comes from the submit schema. */
-export type SubmitPage = 'target' | 'linking' | 'calibration' | 'dataProducts';
+export type SubmitPage = 'target' | 'observation' | 'linking' | 'calibration' | 'dataProducts';
 
 // The form subgroup each page edits: an issue anywhere in the subgroup marks the page
 const PAGE_SUBGROUP = {
   target: 'targets',
+  observation: 'observations',
   linking: 'targetObservation',
   calibration: 'calibrationStrategy',
   dataProducts: 'dataProducts'
@@ -25,11 +27,14 @@ const PAGE_SUBGROUP = {
 // spans several subgroups is a root refinement, given the path of the subgroup whose page it
 // marks.
 //
-// TODO(BTN-3595): Rules that need the observations (every observation linked to a target, data
-// product compatibility, hidden companion data products) are added once they move to the form.
-export function getProposalSubmitSchema() {
+// The observations' rules that need the OSD (the band, the channel grid and the bandwidths) are
+// part of the proposal schema, so the OSD is always given here.
+//
+// TODO(BTN-3595): Rules across the observations and other subgroups (every observation linked to a
+//  target, data product compatibility, hidden companion data products) are still to be added.
+export function getProposalSubmitSchema(osd: ObservationOsd) {
   return (
-    getProposalSchema()
+    getProposalSchema(osd)
       .extend({
         targets: getTargetsSchema().refine(
           (targets) => targets.length > 0,
@@ -43,6 +48,10 @@ export function getProposalSubmitSchema() {
           (strategies) => strategies.length > 0,
           phtTranslations.error.noCalibrationsLoggedOut
         ),
+        observations: getObservationsSchema(osd).refine(
+          (observations) => observations.length > 0,
+          phtTranslations.error.noObservations
+        ),
         dataProducts: getDataProductsSchema().refine(
           (dataProducts) => dataProducts.length > 0,
           phtTranslations.page['7'].pageError
@@ -51,7 +60,7 @@ export function getProposalSubmitSchema() {
       // An SV proposal has no Linking page, so check that data product and target are linked here.
       .refine(
         (values) =>
-          values?.proposalType !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
+          values?.proposalType?.type !== PROPOSAL_TYPE.SCIENCE_VERIFICATION ||
           (Array.isArray(values.targetObservation) &&
             Array.isArray(values.dataProducts) &&
             values.targetObservation.some(
@@ -70,12 +79,16 @@ export function getProposalSubmitSchema() {
 }
 
 /** The status of each of those pages: an error when there is an issue in the page it edits. */
-export const getSubmitPageStatuses = (values: ProposalType): Record<SubmitPage, number> => {
-  const issues = getProposalSubmitSchema().safeParse(values).error?.issues ?? [];
+export const getSubmitPageStatuses = (
+  values: ProposalType,
+  osd: ObservationOsd
+): Record<SubmitPage, number> => {
+  const issues = getProposalSubmitSchema(osd).safeParse(values).error?.issues ?? [];
   const status = (page: SubmitPage) =>
     issues.some((issue) => issue.path[0] === PAGE_SUBGROUP[page]) ? STATUS_ERROR : STATUS_OK;
   return {
     target: status('target'),
+    observation: status('observation'),
     linking: status('linking'),
     calibration: status('calibration'),
     dataProducts: status('dataProducts')

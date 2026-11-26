@@ -2,14 +2,22 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import { useNavigate } from 'react-router';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, type UseFormReturn } from 'react-hook-form';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { NAV, PAGE_OBSERVATION, PAGE_TARGET, PROPOSAL_TYPE } from '@/utils/constants';
+import {
+  NAV,
+  PAGE_OBSERVATION,
+  PAGE_TARGET,
+  PROPOSAL_SUBTYPE,
+  PROPOSAL_TYPE,
+  TYPE_CONTINUUM,
+  type ProposalTypeType
+} from '@/utils/constants';
 import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 
@@ -38,6 +46,7 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
     isSV: mockOSD.isSV,
     osdCycleId: 'CYCLE-1',
+    osdLOW: { basicCapabilities: { minElevationDeg: 15 } },
     osdCyclePolicy: {
       maxTargets: 1,
       maxObservations: 1
@@ -95,6 +104,9 @@ beforeEach(() => {
     }) as any;
 });
 
+// The form of the last render, to check what the component left in it
+let currentForm: UseFormReturn<ProposalType>;
+
 const wrapper = (
   component: React.ReactElement,
   title = mockProposal.title,
@@ -107,13 +119,13 @@ const wrapper = (
       defaultValues: {
         ...getProposalFormDefaults(),
         title,
-        proposalType: (storageObject.useStore().application.content2 as Partial<ProposalType>)
-          .proposalType,
+        proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
         abstract: '',
         scienceCategory: null,
         ...formValues
       }
     });
+    currentForm = methods;
     return (
       <StoreProvider>
         <ThemeA11yProvider>
@@ -153,8 +165,26 @@ describe('PageFooterPPT', () => {
     });
   });
 
-  it('creates the proposal with its own type and the selected cycle', async () => {
-    const newProposal = { id: null, title: 'New SV idea', proposalType: 'science_verification' };
+  it('puts the PI the backend added in the form', async () => {
+    const creator = {
+      id: 'creator-account-id',
+      status: 'accepted',
+      phdThesis: false,
+      pi: true
+    };
+    (PostProposal as unknown as Mock).mockResolvedValueOnce({
+      ...MockProposalBackend,
+      investigators: [creator]
+    });
+    wrapper(<PageFooterPPT pageNo={-1} />);
+    await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+    fireEvent.click(screen.getByTestId('nextButtonTestId'));
+
+    await waitFor(() => expect(currentForm.getValues('investigators')).toEqual([creator]));
+  });
+
+  it('creates the proposal with its own ID, type and cycle', async () => {
+    const newProposal = { id: null, title: 'New SV idea' };
     const store = storageObject.useStore();
     storageObject.useStore = () =>
       ({
@@ -162,7 +192,11 @@ describe('PageFooterPPT', () => {
         application: { ...store.application, content2: newProposal }
       }) as any;
 
-    wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title);
+    wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title, {
+      prslId: 'prsl-t0001-20261120-00001',
+      cycle: 'CYCLE-1',
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] }
+    });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
@@ -170,15 +204,58 @@ describe('PageFooterPPT', () => {
       expect(PostProposal).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
-        {
-          ...newProposal,
+        expect.objectContaining({
+          id: 'prsl-t0001-20261120-00001',
+          title: newProposal.title,
+          proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
           abstract: '',
           scienceCategory: null,
           investigators: [],
           cycle: 'CYCLE-1'
-        },
+        }),
         'draft'
       );
+    });
+  });
+
+  describe('a new proposal observation', () => {
+    const createProposal = async (type: ProposalTypeType) => {
+      const newProposal = { id: null, title: 'New idea' };
+      const store = storageObject.useStore();
+      storageObject.useStore = () =>
+        ({ ...store, application: { ...store.application, content2: newProposal } }) as any;
+      wrapper(<PageFooterPPT pageNo={-1} />, newProposal.title, {
+        proposalType: { type, subTypes: [] }
+      });
+      await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
+      fireEvent.click(screen.getByTestId('nextButtonTestId'));
+      await waitFor(() => expect(PostProposal).toHaveBeenCalled());
+      return vi.mocked(PostProposal).mock.calls[0][2];
+    };
+
+    it('is a default continuum observation with its data products for an SV proposal', async () => {
+      const proposal = await createProposal(PROPOSAL_TYPE.SCIENCE_VERIFICATION);
+
+      expect(proposal.observations).toEqual([expect.objectContaining({ type: TYPE_CONTINUUM })]);
+      // Continuum has an images data product plus a hidden visibilities one
+      expect(proposal.dataProducts).toEqual([
+        expect.objectContaining({ observationId: proposal.observations?.[0].id }),
+        expect.objectContaining({ observationId: proposal.observations?.[0].id })
+      ]);
+      // The form has them too, once the proposal is created
+      await waitFor(() =>
+        expect(currentForm.getValues('observations')).toEqual([
+          expect.objectContaining({ id: proposal.observations?.[0].id })
+        ])
+      );
+      expect(currentForm.getValues('dataProducts')).toEqual(proposal.dataProducts);
+    });
+
+    it('is not created for other proposals', async () => {
+      const proposal = await createProposal(PROPOSAL_TYPE.STANDARD);
+
+      expect(proposal.observations).toEqual([]);
+      expect(proposal.dataProducts).toEqual([]);
     });
   });
 
@@ -188,7 +265,7 @@ describe('PageFooterPPT', () => {
       ...store,
       application: {
         ...store.application,
-        content2: { id: null, title: 'Invalid @ title', proposalType: PROPOSAL_TYPE.STANDARD }
+        content2: { id: null, title: 'Invalid @ title' }
       }
     });
 
@@ -200,9 +277,9 @@ describe('PageFooterPPT', () => {
     expect(mockNotifyError).not.toHaveBeenCalled();
   });
 
-  it('creates with the latest form title and type rather than stale store values', async () => {
+  it('creates with the latest form title, type and sub-types rather than stale store values', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />, 'Edited title', {
-      proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+      proposalType: { type: PROPOSAL_TYPE.KEY_SCIENCE, subTypes: [PROPOSAL_SUBTYPE.JOINT] }
     });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeEnabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
@@ -213,7 +290,8 @@ describe('PageFooterPPT', () => {
         expect.anything(),
         expect.objectContaining({
           title: 'Edited title',
-          proposalType: PROPOSAL_TYPE.KEY_SCIENCE
+          proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+          proposalSubType: [PROPOSAL_SUBTYPE.JOINT]
         }),
         'draft'
       )
@@ -222,7 +300,9 @@ describe('PageFooterPPT', () => {
 
   // The form holds an unselected type as null
   it('disables Create when the form has no proposal type', async () => {
-    wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, { proposalType: null });
+    wrapper(<PageFooterPPT pageNo={-1} />, mockProposal.title, {
+      proposalType: { type: null, subTypes: [] }
+    });
     await waitFor(() => expect(screen.getByTestId('nextButtonTestId')).toBeDisabled());
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 

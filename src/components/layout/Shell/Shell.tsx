@@ -11,6 +11,7 @@ interface ShellProps {
   children?: JSX.Element | JSX.Element[];
   buttonDisabled?: boolean;
   helpDisabled?: boolean;
+  isNewProposal?: boolean;
 }
 
 export default function Shell({
@@ -18,11 +19,12 @@ export default function Shell({
   children,
   footerPage = page,
   buttonDisabled = false,
-  helpDisabled = false
+  helpDisabled = false,
+  isNewProposal = false
 }: ShellProps) {
   return (
     <>
-      <PageBannerPPT pageNo={page} />
+      <PageBannerPPT pageNo={page} isNewProposal={isNewProposal} />
       {!helpDisabled && <EdgeSlider />}
       {children}
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />

@@ -1,12 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { Proposal } from '@utils/types/proposal.tsx';
-import { useValidateProposal } from '@utils/validation/validation.tsx';
+import { getSubmitPageStatuses } from '@/models/proposals/submit';
 import {
   PAGE_CALIBRATION,
   PAGE_LINKING,
@@ -14,16 +13,14 @@ import {
   PAGE_OBSERVATION_ENTRY,
   PATH
 } from '@utils/constants.ts';
-import GroupObservation from '@utils/types/groupObservation.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import Observation from '../../utils/types/observation';
+import type { ObservationInput } from '@/models/proposals/observations';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
-import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
+import ObservationInPlace from './ObservationInPlace';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { useNotify } from '@/utils/notify/useNotify';
 import TableObservations from '@/components/table/tableObservations/TableObservations';
 
 const PAGE = PAGE_OBSERVATION;
@@ -32,116 +29,75 @@ const GAP = 4;
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  const { notifyWarning } = useNotify();
-  const { osdCyclePolicy } = useOSDAccessors();
-  const validateProposal = useValidateProposal();
+  const { osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
 
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currObs, setCurrObs] = React.useState<Observation | null>(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const [elementsO, setElementsO] = React.useState<any[]>([]);
+  const { application, updateAppContent1 } = storageObject.useStore();
+  // The observation the user is asked to confirm deleting, while the dialog is open
+  const [observationToDelete, setObservationToDelete] = React.useState<ObservationInput | null>(
+    null
+  );
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const form = useFormContext<ProposalType>();
+  // The form has every observation, including ones still being edited
+  const observations = useWatch({ control: form.control, name: 'observations' });
+  useWatch({ control: form.control, name: ['targetObservation', 'calibrationStrategy'] });
 
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number, valueLinking: number, valueCalibration: number) => {
-    const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
-      // validate observation page, linking page & calibration page
-      temp.push(
-        PAGE === i
-          ? value
-          : PAGE_CALIBRATION === i
-            ? valueCalibration
-            : PAGE_LINKING === i
-              ? valueLinking
-              : getProposalState()[i]
-      );
+  // Write submit status checks into the status store (to be deleted in future refactor). Deleting
+  // an observation also deletes its links and calibration, so the Linking and Calibration pages'
+  // statuses are written too
+  const {
+    observation: observationStatus,
+    linking: linkingStatus,
+    calibration: calibrationStatus
+  } = getSubmitPageStatuses(form.getValues(), { low: osdLOW, mid: osdMID });
+  React.useEffect(() => {
+    const current = application.content1 as number[];
+    if (!current || current.length <= PAGE) {
+      return;
     }
-    updateAppContent1(temp);
-  };
+    const next = current.map((value, i) =>
+      i === PAGE
+        ? observationStatus
+        : i === PAGE_LINKING
+          ? linkingStatus
+          : i === PAGE_CALIBRATION
+            ? calibrationStatus
+            : value
+    );
+    if (next.every((value, i) => value === current[i])) {
+      return;
+    }
+    updateAppContent1(next);
+  }, [
+    observationStatus,
+    linkingStatus,
+    calibrationStatus,
+    application.content1,
+    updateAppContent1
+  ]);
 
-  const popElementO = (rec: Observation) => {
-    const groupId = getProposal().groupObservations?.find(
-      (e: GroupObservation) => e.observationId === rec.id
-    )?.groupId;
-    return {
-      id: rec.id,
-      id2: groupId /* Only here to satisfy syntax of DataGrid headers */,
-      rec: rec,
-      telescope: rec.telescope,
-      subarray: rec.subarray,
-      type: rec.type,
-      status: 0
-    };
-  };
-
-  const editIconClicked = (row: any) => {
-    setCurrObs(row.rec);
-    navigate(PATH[2], { replace: true, state: row.rec });
-  };
-
-  const deleteIconClicked = (row: any) => {
-    setCurrObs(row.rec);
-    setOpenDeleteDialog(true);
-  };
-
-  const closeDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-  };
+  const editIconClicked = (observation: ObservationInput) =>
+    navigate(PATH[2], { replace: true, state: { id: observation.id } });
 
   const deleteConfirmed = () => {
-    const obs1 = (getProposal().observations ?? []).filter((e) => e.id !== currObs?.id);
-    const obs3 = (getProposal().groupObservations ?? []).filter(
-      (e) => e.observationId !== currObs?.id
-    );
+    const id = observationToDelete?.id;
     // The links and calibration for the observation go too; the form owns them
     form.setValue(
       'targetObservation',
-      (form.getValues('targetObservation') ?? []).filter((e) => e.observationId !== currObs?.id)
+      (form.getValues('targetObservation') ?? []).filter((e) => e.observationId !== id)
     );
     form.setValue(
       'calibrationStrategy',
-      (form.getValues('calibrationStrategy') ?? []).filter(
-        (e) => e.observationIdRef !== currObs?.id
-      )
+      (form.getValues('calibrationStrategy') ?? []).filter((e) => e.observationIdRef !== id)
     );
-    setProposal({
-      ...getProposal(),
-      observations: obs1,
-      groupObservations: obs3
-    });
-    setElementsO(elementsO.filter((e) => e.id !== currObs?.id));
-    setCurrObs(null);
-    closeDeleteDialog();
+    form.setValue(
+      'observations',
+      form.getValues('observations').filter((e) => e.id !== id)
+    );
+    setObservationToDelete(null);
   };
 
-  React.useEffect(() => {
-    if (!getProposal()?.id) {
-      notifyWarning(t('error.proposalNotLoaded'));
-      navigate(PATH[0]);
-      return;
-    }
-    setValidateToggle(!validateToggle);
-    setElementsO(getProposal().observations?.map((rec) => popElementO(rec)) ?? []);
-  }, []);
-
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-    setElementsO(getProposal().observations?.map((rec) => popElementO(rec)) ?? []);
-  }, [getProposal()]);
-
-  React.useEffect(() => {
-    const proposal = getProposal();
-    if (!proposal) return;
-    const statuses = validateProposal(proposal);
-    setTheProposalState(statuses[PAGE], statuses[PAGE_LINKING], statuses[PAGE_CALIBRATION]);
-  }, [validateToggle]);
-
-  const hasObservations = () => (getProposal()?.observations?.length ?? 0) > 0;
+  const hasObservations = () => observations.length > 0;
 
   const noObservations = () => {
     return (
@@ -189,16 +145,16 @@ export default function ObservationPage() {
         }}
       >
         <TableObservations
-          data={elementsO ?? []}
-          deleteFunction={deleteIconClicked}
+          observations={observations}
+          deleteFunction={setObservationToDelete}
           updateFunction={editIconClicked}
         />
-        {currObs && (
+        {observationToDelete && (
           <DeleteObservationConfirmation
             action={deleteConfirmed}
-            observation={currObs}
-            open={openDeleteDialog}
-            setOpen={setOpenDeleteDialog}
+            observation={observationToDelete}
+            open={true}
+            setOpen={() => setObservationToDelete(null)}
           />
         )}
       </Box>
@@ -211,13 +167,7 @@ export default function ObservationPage() {
         {osdCyclePolicy?.maxObservations !== 1 && renderAddTheButton()}
         {!hasObservations() && noObservations()}
         {osdCyclePolicy?.maxObservations !== 1 && hasObservations() && observationList()}
-        {osdCyclePolicy?.maxObservations === 1 && hasObservations() && (
-          // Keyed on id so the form reloads when auto-linking replaces the observation
-          <ObservationEntry
-            key={getProposal()?.observations?.[0]?.id}
-            data={getProposal()?.observations?.[0]}
-          />
-        )}
+        {osdCyclePolicy?.maxObservations === 1 && hasObservations() && <ObservationInPlace />}
       </>
     </Shell>
   );
