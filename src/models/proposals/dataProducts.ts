@@ -18,7 +18,7 @@ import {
   TAPER_DEFAULT
 } from '@/utils/constants';
 import { generateDataProductId } from '@/utils/helpers';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import {
   ImageWeighting,
   Polarisation,

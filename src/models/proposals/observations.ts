@@ -26,7 +26,7 @@ import type {
   subarrayConfigurationLow,
   subarrayConfigurationMid
 } from '@/utils/types/observatoryData';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import {
   PstMode,
   ResultsType,

@@ -15,7 +15,7 @@ import {
   steppedToPdm,
   updateImageSizes
 } from './dataProducts';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 const continuumImage = dataProductFromPdm(pdmDataProducts[0]);
 

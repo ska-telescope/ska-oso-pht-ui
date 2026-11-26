@@ -16,7 +16,7 @@ import {
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { getProposalResolver, ProposalFormAccess, ProposalType } from '@/models/proposals/proposal';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import { ObservationInput, ObservingMode, OBSERVING_MODE } from '@/models/proposals/observations';
 

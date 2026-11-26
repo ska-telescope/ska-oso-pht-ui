@@ -11,7 +11,7 @@ import {
   SA_CUSTOM
 } from '@/utils/constants';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import {
   centralFrequencyGridHz,
   getObservationSchema,
