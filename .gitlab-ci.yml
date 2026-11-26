@@ -124,17 +124,14 @@ stop-dev-environment:
   before_script:
     - make js-install
   script:
-    - >-
-      E2E_SUITE=smoke yarn cypress run --e2e --headless
-      --config baseUrl=$KUBE_HOST/$KUBE_NAMESPACE/pht/
-      --reporter junit --reporter-options "mochaFile=build/reports/smoke-[hash].xml"
+    - make js-smoke-test
   artifacts:
     when: always
     paths:
       - build/reports/
       - tests/cypress/artefacts/
     reports:
-      junit: build/reports/smoke-*.xml
+      junit: build/reports/e2e-tests.xml
 
 # After test-dev-environment has checked the pods are ready (deploying to dev is manual)
 smoke-test-dev-environment:
