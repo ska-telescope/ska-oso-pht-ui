@@ -1,0 +1,210 @@
+{
+  "abstract": {
+    "label": "Idea Summary",
+    "help": "The Science Verification Idea summary should clearly communicate the Science Verification Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Verification Idea's essential points. The summary should be succinct yet detailed enough to convey the essence of the Science Verification Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
+    "helper": "Please enter the summary of your Science Verification Idea. This field allows latex syntax. - Word count {{current}} / {{max}}"
+  },
+  "addProposal": {
+    "success": "Science Verification Idea added with unique identifier ",
+    "toolTip": "Click to add a new Science Verification Idea.",
+    "warning": "Please wait whilst we create a new Science Verification Idea."
+  },
+  "addTarget": {
+    "toolTip": "Will add the target to the list associated with this Science Verification Idea.",
+    "clearToolTip": "Clear all entered target form values"
+  },
+  "assignBtn": {
+    "toolTip": "Assign Science Verification Ideas to a review panel"
+  },
+  "assignProposals": {
+    "label": "Assign Science Verification Ideas",
+    "success": "Science Verification Ideas assigned successfully.",
+    "toolTip": "Click to assign Science Verification Ideas to the panel.",
+    "warning": "Please wait whilst we assign the Science Verification Ideas."
+  },
+  "bandwidth": {
+    "help": "The overall bandwidth is limited by the number of channels. To increase/decrease the bandwidth, increase/decrease the spectral averaging parameter."
+  },
+  "changeProposal": {
+    "label": "Change Science Verification Idea's type?",
+    "content1": "You are about to change the type of your Science Verification Idea.",
+    "content2": "Some data specific to the Science Verification Idea type may be lost."
+  },
+  "cloneProposal": {
+    "toolTip": "Clone Science Verification Idea",
+    "confirm": "Clone this Science Verification Idea"
+  },
+  "conflict": {
+    "tooltip": "Indicate whether there is a conflict of interest with this Science Verification Idea"
+  },
+  "decisionComments": {
+    "help": "Comments provided by the chairperson when making a decision on the Science Verification Idea."
+  },
+  "displayProposal": {
+    "warning": "Please wait whilst we load the selected Science Verification Idea."
+  },
+  "downloadProposal": {
+    "label": "Download Science Verification Idea"
+  },
+  "editProposal": {
+    "toolTip": "Edit Science Verification Idea"
+  },
+  "email": {
+    "label": "Email",
+    "help": "The email is a required field. The participant will be invited to participate in this Science Verification Idea using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
+    "invitation": {
+      "subject": "Science Verification Idea invitation.",
+      "body": "You have been invited to contribute to Science Verification Idea {{id}}"
+    },
+    "success": "Email invite has been sent.",
+    "warning": "Sending email request for processing",
+    "error": "Email invite was unsuccessful and member is not added"
+  },
+  "emailSearch": {
+    "success": "User was successfully found.",
+    "error": "User could not be found. Please check the email address and try again.",
+    "reset": "Reset user search"
+  },
+  "firstName": {
+    "help": "First name of the team member"
+  },
+  "lastName": {
+    "help": "Last name of the team member"
+  },
+  "overview": {
+    "toolTip": "Overview of Science Verification Ideas"
+  },
+  "pht": {
+    "short": "SV Idea Submission Tool",
+    "title": "Science Verification Idea Submission Tool"
+  },
+  "pi": {
+    "short": "Participant"
+  },
+  "proposal": {
+    "error": "Unable to retrieve the Science Verification Idea from the server"
+  },
+  "proposals": {
+    "empty": "THERE ARE NO SCIENCE VERIFICATION IDEAS TO BE DISPLAYED",
+    "label": "Science Verification Ideas"
+  },
+  "proposalType": {
+    "help": "Select from the options below the most appropriate type classification for the Science Verification Idea. This can be changed later if needed, but be aware that this may affect information previously entered.",
+    "all": "All Science Verification Idea types"
+  },
+  "members": {
+    "empty": "THERE ARE NO PARTICIPANTS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA",
+    "label": "Participants"
+  },
+  "reviewDashboard": {
+    "toolTip": "Overview of Science Verification Ideas",
+    "proposal": {
+      "title": "Science Ideas",
+      "subtitle": "Science Idea Statistics"
+    },
+    "panel": {
+      "title3": "Observing Modes",
+      "title6": "Observing Mode Distribution"
+    },
+    "cell": {
+      "title3": "Number of Science Ideas",
+      "title8": "Observing Mode"
+    }
+  },
+  "reviewOverview": {
+    "panel1": {
+      "title": "Science Verification Idea Assignment"
+    },
+    "panel3": {
+      "title": "Observing Modes"
+    }
+  },
+  "reviewProposal": {
+    "science": "Review Science Verification Idea science",
+    "submit": "Submit the review of the Science Verification Idea",
+    "technical": "Review Science Verification Idea technical",
+    "title": "Review Science Verification Idea",
+    "toolTip": "Review Science Verification Idea"
+  },
+  "reviewProposalList": {
+    "title": "Review Science Verification Ideas",
+    "toolTip": "List of Science Verification Ideas for review"
+  },
+  "saveBtn": {
+    "tooltip": "Saves the Science Verification Idea in the current state to the database"
+  },
+  "submitAllBtn": {
+    "tooltip": "Submit all reviewed Science Verification Ideas"
+  },
+  "submitProposalBtn": {
+    "tooltip": "Progress the Science Verification Ideas to the submitted state"
+  },
+  "targets": {
+    "empty": "There are no targets associated with this Science Verification Idea",
+    "limitReached": "Only {{value}} target/object is allowed for this Science Verification Idea call.",
+    "limitReached_plural": "Only {{value}} target/object are allowed for Science Verification Ideas."
+  },
+  "uploadCsvBtn": {
+    "uploadSuccessMsg": "All targets in file have been uploaded into the Science Verification Idea"
+  },
+  "validation": {
+    "success": "Science Verification Idea is Valid"
+  },
+  "viewProposal": {
+    "toolTip": "View Science Verification Idea"
+  },
+  "viewProposalIcon": {
+    "clicked": "View Science Verification Idea Icon clicked"
+  },
+  "page": {
+    "0": {
+      "desc": "Submit a Science Verification Idea. Welcome to the Ideas submission tool for Science Verification! The current call is for SKA-Low AA2. In just a few simple steps, you can share an idea with us. During this stage of SV, ideas are limited to one source observed in one observing mode. To begin, provide a title for the Science Verification Idea."
+    },
+    "1": {
+      "desc": "Add idea collaborators. All collaborators must have an SKA account. If you add someone that does not yet have an account, they will receive an invitation to register.",
+      "help": "Before submitting a Science Verification Idea, ensure that all collaborators are registered in the SKAO system - you can register here. There is no formal limit on the number of idea originators that can be included in a Science Verification Idea."
+    },
+    "2": {
+      "status": "Details",
+      "title": "Details",
+      "titleShort": "Details",
+      "pageError": "The DETAILS page is not complete",
+      "desc": "Describe the Science Verification Idea. Choose the mode (Continuum, Spectral Line, or PST) the Science Verification Idea will be testing. Only one mode can be chosen for this stage of Science Verification. Your selection will define the available settings on the pages that follow. Add a summary describing the Science Verification Idea.",
+      "help": "Detailed information about the capabilities available during the current call for SKA-Low Science Verification Ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification opportunities, and the choice of target. Indicate what will be tested or demonstrated through the observation."
+    },
+    "3": {
+      "label": "Description",
+      "status": "Description",
+      "title": "Description",
+      "titleShort": "Description",
+      "desc": "Upload a description of the Science Verification Idea. Provide a description of the Science Verification Idea, outlining how it will contribute to the Science Verification of SKA-Low. The description must be uploaded as a PDF file and must not exceed 4 pages.",
+      "pageError": "The DESCRIPTION page is not complete",
+      "help": "Please refer to the call for SKA-Low Science Verification Ideas for guidance on the required content of a submission. The description must be uploaded as a single PDF file, including all text, figures, and references. The document may be prepared using LaTeX or any standard word processing software. The document must not exceed 4 pages, the recommended format is Noto Sans, 12 pt font size."
+    },
+    "4": {
+      "desc": "Add the target. Science Verification Ideas in the current call are limited to one target only. Enter the target details below. The system will generate a visibility plot for SKA-Low to support planning. Please ensure the coordinates and source information are correct.",
+      "help": "The form can resolve targets using standard astronomical databases. The returned coordinates correspond to the catalogued source position, so please review and adjust them if necessary to ensure they match the intended target. A visibility plot for the selected target is shown as a reference for the current day."
+    },
+    "5": {
+      "desc": "Review the Observation Configuration. The available parameters on this page are determined by the mode you selected earlier. Review the configuration below and provide the required observing details. Some parameters are predefined for Science Verification and cannot be modified.",
+      "help": "The array layout for SKA-Low Science Verification is shown for reference. Further details on the array configuration and parameters are available here. Descriptions of the available modes can be found here (Continuum, Spectral Line, PST). The Spectral Line page provides additional information on available spectral resolutions, while the PST page describes the supported PST modes in more detail. Please note that the frequency range 242–272 MHz is significantly affected by radio frequency interference (RFI) and should be used with caution."
+    },
+    "7": {
+      "desc": "Review the Observatory Data Products. This page outlines the data products available for the selected mode. Science Verification includes a predefined set of ODPs. You may adjust the active parameters. Sensitivity estimates for the target are provided below to help you assess the expected performance.",
+      "help": "The observation setup panel on the left provides a summary of the parameters selected in previous steps. To modify any of these values, please return to the Details section. The data product panel describes the standard outputs available based on the mode selected. Further details on standard SKA-Low Science Verification data products are available here. The default image size and pixel size provide a suitable starting point for typical SKA-Low imaging observations. Review these values carefully and adjust them to suit your Science Verification Idea and target characteristics. Please adjust these parameters if this default setup does not match the science verification case. Sensitivity estimates are shown based on the selected parameters to help assess expected performance. For more detailed analysis, you can access the full Sensitivity Calculator."
+    },
+    "8": {
+      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA"
+    },
+    "9": {
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS SCIENCE VERIFICATION IDEA"
+    },
+    "11": {
+      "desc": "Optionally add further suggested parameters of the observation setup.",
+      "empty": "NO SCIENCE VERIFICATION IDEAS AVAILABLE"
+    }
+  },
+  "error": {
+    "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA"
+  }
+}

@@ -28,7 +28,7 @@ describe('TableSubmissions', () => {
       { id: 2, name: 'Product B' }
     ];
 
-    render(<TableSubmissions data={mockData} updateFunction={vi.fn()} deleteFunction={vi.fn()} />);
+    render(<TableSubmissions data={mockData} updateFunction={vi.fn()} />);
 
     const rows = screen.getAllByTestId('row');
     expect(rows).toHaveLength(2);

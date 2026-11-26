@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PDF_NAME_PREFIXES, STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '@/utils/constants';
+import { PDF_NAME_PREFIXES, STATUS_ERROR, STATUS_OK } from '@/utils/constants';
 import type { Document as DocumentTransport } from '@/generated/models/document';
 
 // Reference and upload status only; file payloads never enter the form.
@@ -20,11 +20,9 @@ export type DocumentValues = {
   technicalPDF: DocumentRef;
 };
 
-// Same rule as validateSciencePage / validateTechnicalPage.
-export const getDocumentPageStatus = (ref: DocumentRef): number => {
-  if (!ref || typeof ref !== 'object') return STATUS_ERROR;
-  return ref.isUploadedPdf ? STATUS_OK : STATUS_PARTIAL;
-};
+// The Science and Technical pages are complete once their document is uploaded
+export const getDocumentPageStatus = (ref: DocumentRef): number =>
+  ref?.isUploadedPdf ? STATUS_OK : STATUS_ERROR;
 
 // Finds a document in the PDM by its filename prefix, returning the first match if any.
 const findDocument = (documents: DocumentTransport[] | null | undefined, prefix: string) =>

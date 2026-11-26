@@ -26,7 +26,6 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
   capabilities: {
     mid: {
       basic_capabilities: {
-        dish_elevation_limit_deg: 15.0,
         receiver_information: [
           {
             rx_id: 'Band_1',

@@ -3,16 +3,14 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import SensCalcModalMultiple, { SensCalcRow } from './SensCalcModalMultiple';
-import {
-  BAND_LOW_STR,
-  SENSITIVITY_STATE,
-  TIME_HOURS,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_ZOOM
-} from '@/utils/constants';
+import { SENSITIVITY_STATE } from '@/utils/constants';
 import type { SensitivityValues } from '@/models/proposals/targetObservation';
-import type Observation from '@/utils/types/observation';
+import {
+  newSvObservation,
+  OBSERVING_MODE,
+  type ObservationInput,
+  type ObservingMode
+} from '@/models/proposals/observations';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const values = (weighted: number): SensitivityValues => ({
@@ -51,29 +49,13 @@ const ZOOM_ROWS: SensCalcRow[] = [
   { id: 't1', title: 'M1', sensitivity: { state: SENSITIVITY_STATE.DONE, spectral: values(5) } }
 ];
 
-const observation = (type: string): Observation => ({
+const observation = (mode: ObservingMode): ObservationInput => ({
+  ...newSvObservation(mode, 15),
   id: 'obs1',
-  telescope: 0,
-  subarray: '',
-  type,
-  observingBand: BAND_LOW_STR,
-  weather: undefined,
-  elevation: 0,
-  centralFrequency: 0,
-  centralFrequencyUnits: 0,
-  bandwidth: 0,
-  continuumBandwidth: 0,
-  continuumBandwidthUnits: 0,
-  supplied: { type: 0, value: 1.5, units: TIME_HOURS },
-  spectralResolution: '',
-  effectiveResolution: '',
-  numSubBands: undefined,
-  num15mAntennas: undefined,
-  num13mAntennas: undefined,
-  numStations: undefined
+  integrationTime: { value: 1.5, unit: 'h' }
 });
 
-const renderModal = (data: SensCalcRow[], type: string, { isCustom = false } = {}) =>
+const renderModal = (data: SensCalcRow[], mode: ObservingMode, { isCustom = false } = {}) =>
   render(
     <StoreProvider>
       <ThemeA11yProvider>
@@ -81,7 +63,7 @@ const renderModal = (data: SensCalcRow[], type: string, { isCustom = false } = {
           open={true}
           onClose={vi.fn()}
           data={data}
-          observation={observation(type)}
+          observation={observation(mode)}
           level={0}
           levelError={''}
           isCustom={isCustom}
@@ -92,7 +74,7 @@ const renderModal = (data: SensCalcRow[], type: string, { isCustom = false } = {
 
 describe('<SensCalcModalMultiple />', () => {
   test('shows the continuum and spectral results of a continuum observation', async () => {
-    renderModal(CONTINUUM_ROWS, TYPE_CONTINUUM);
+    renderModal(CONTINUUM_ROWS, OBSERVING_MODE.CONTINUUM);
 
     await waitFor(() => {
       expect(screen.getByText('M1')).toBeInTheDocument();
@@ -104,7 +86,7 @@ describe('<SensCalcModalMultiple />', () => {
   });
 
   test('shows only the spectral results of a zoom observation', async () => {
-    renderModal(ZOOM_ROWS, TYPE_ZOOM);
+    renderModal(ZOOM_ROWS, OBSERVING_MODE.SPECTRAL);
 
     await waitFor(() => {
       expect(screen.getByTestId('field-spectralSensitivityWeighted')).toHaveTextContent('5.00 Jy');
@@ -113,7 +95,7 @@ describe('<SensCalcModalMultiple />', () => {
   });
 
   test('shows only the continuum results of the combined mode', async () => {
-    renderModal(CONTINUUM_ROWS, TYPE_CONTINUUM_SPECTRAL);
+    renderModal(CONTINUUM_ROWS, OBSERVING_MODE.CONTINUUM_SPECTRAL);
 
     await waitFor(() => {
       expect(screen.getByTestId('field-continuumSensitivityWeighted')).toHaveTextContent('1.00 Jy');
@@ -122,7 +104,7 @@ describe('<SensCalcModalMultiple />', () => {
   });
 
   test('shows the custom subarray message for the results the calculator did not give', async () => {
-    renderModal(WEIGHTED_ONLY_ROWS, TYPE_CONTINUUM, { isCustom: true });
+    renderModal(WEIGHTED_ONLY_ROWS, OBSERVING_MODE.CONTINUUM, { isCustom: true });
 
     await waitFor(() => {
       expect(screen.getByTestId('field-continuumConfusionNoise')).toHaveTextContent(
@@ -133,7 +115,7 @@ describe('<SensCalcModalMultiple />', () => {
   });
 
   test('shows the non-Gaussian message for the results the calculator did not give', async () => {
-    renderModal(WEIGHTED_ONLY_ROWS, TYPE_CONTINUUM);
+    renderModal(WEIGHTED_ONLY_ROWS, OBSERVING_MODE.CONTINUUM);
 
     await waitFor(() => {
       expect(screen.getByTestId('field-spectralTotalSensitivity')).toHaveTextContent(
@@ -146,7 +128,7 @@ describe('<SensCalcModalMultiple />', () => {
   test('shows no result columns when no link has results', async () => {
     renderModal(
       [{ id: 't1', title: 'M1', sensitivity: { state: SENSITIVITY_STATE.FAILED, error: 'bad' } }],
-      TYPE_CONTINUUM
+      OBSERVING_MODE.CONTINUUM
     );
 
     await waitFor(() => {

@@ -7,6 +7,8 @@ import { SA_AA2 } from '@/utils/constants';
 const mockCapabilities: ObservatoryData['capabilities'] = {
   low: {
     basicCapabilities: {
+      minElevationDeg: 15,
+      maxElevationDeg: 90,
       minFrequencyHz: 50,
       maxFrequencyHz: 350,
       minCoarseChannel: 64,
@@ -41,7 +43,8 @@ const mockCapabilities: ObservatoryData['capabilities'] = {
   },
   mid: {
     basicCapabilities: {
-      dishElevationLimitDeg: 15,
+      minElevationDeg: 15,
+      maxElevationDeg: 85,
       receiverInformation: [
         {
           rxId: 'B1',

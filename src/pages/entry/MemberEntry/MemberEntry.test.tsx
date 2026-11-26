@@ -7,6 +7,7 @@ import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 
 let isSVFromContext: boolean;
 
@@ -48,10 +49,12 @@ const AppFlowTestBridge = () => {
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>
-        <AppFlowTestBridge />
-        {component}
-      </ThemeA11yProvider>
+      <TestProposalFormProvider>
+        <ThemeA11yProvider>
+          <AppFlowTestBridge />
+          {component}
+        </ThemeA11yProvider>
+      </TestProposalFormProvider>
     </StoreProvider>
   );
 };

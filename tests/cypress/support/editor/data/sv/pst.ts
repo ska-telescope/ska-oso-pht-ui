@@ -22,7 +22,7 @@ export const buildSvPstProposal = (): ProposalFixture => ({
 
   observation: {
     centralFrequency: '179.296875', // MHz
-    bandwidth: '150', // MHz
+    bandwidth: '150.000000', // MHz
     pstMode: 'Detected Filterbank',
     integrationTime: '1' // h
   },

@@ -19,6 +19,7 @@ export type Target = {
 
 // Which fields an observation has depends on the observing mode: spectral has a number of
 // channels and a spectral resolution instead of a bandwidth, and PST also has a PST mode
+// The values are written as the editor shows them: the frequencies in MHz, to 6 decimal places
 export interface Observation {
   centralFrequency: string;
   integrationTime: string;

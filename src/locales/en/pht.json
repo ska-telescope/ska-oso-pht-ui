@@ -1,0 +1,1729 @@
+{
+  "language": "English",
+  "dummy": "I am in ENGLISH translation file only",
+  "intlNumber": "{{val, number}}",
+  "yes": "Yes",
+  "yesWithRevision": "Yes with Revision",
+  "maybe": "Maybe",
+  "no": "No",
+  "none": "None",
+  "abstract": {
+    "label": "Abstract",
+    "help": "The proposal abstract should be a maximum of 250 words.",
+    "helper": "Please enter the abstract of your proposal. This field allows latex syntax. - Word count {{current}} / {{max}}",
+    "maxChar": "2300",
+    "maxWord": "250",
+    "minDisplayRows": "10",
+    "latexPreviewTitle": "Abstract Preview"
+  },
+  "actions": {
+    "label": "Actions"
+  },
+  "addBtn": {
+    "label": "Add"
+  },
+  "addObservation": {
+    "idPrefix": "obs-",
+    "button": "Observation Setup"
+  },
+  "addPanel": {
+    "short": "Add",
+    "label": "Add Panel",
+    "success": "Panel added with unique identifier ",
+    "toolTip": "Click to add a new panel.",
+    "warning": "Please wait whilst we create a new panel."
+  },
+  "addProposal": {
+    "short": "Add",
+    "label": "Submission",
+    "success": "Submission added with unique identifier ",
+    "toolTip": "Click to add a new submission.",
+    "warning": "Please wait whilst we create a new submission."
+  },
+  "addMockProposal": {
+    "short": "Add",
+    "label": "Submission",
+    "toolTip": "Click to navigate to the Target and Observations screens"
+  },
+  "addReview": {
+    "success": "Review record has been updated",
+    "warning": "Please wait whilst the review is stored."
+  },
+  "addTarget": {
+    "error": "Failed to add target - check for duplicate",
+    "valueError": "Please provide a target name",
+    "label": "Add Target",
+    "toolTip": "Will add the target to the list associated with this proposal",
+    "clearToolTip": "Clear all entered target form values",
+    "galacticDisabled": "Galactic targets are not yet supported, full integration imminient",
+    "success": "Target is successfully added",
+    "warning": "Saving the target"
+  },
+  "panelName": {
+    "label": "Panel Name",
+    "toolTip": "Name of Panel to be created."
+  },
+  "affiliation": {
+    "0": "All Affiliations",
+    "label": "Affiliation"
+  },
+  "apiVersion": {
+    "label": "API",
+    "sensCalc": "Sensitivity Calculator"
+  },
+  "array": {
+    "label": "Telescope"
+  },
+  "arrayConfiguration": {
+    "label": "Array Configuration",
+    "short": "Array",
+    "help": "Specify an array configuration. Currently the SKA has two arrays - SKA-MID (350MHz - 154GHz) and SKA-LOW (50MHz – 350 MHz).",
+    "ska_mid": "SKA-MID",
+    "ska_low": "SKA-LOW"
+  },
+  "assignBtn": {
+    "label": "Assign",
+    "toolTip": "Assign proposals to a review panel"
+  },
+  "assignProposals": {
+    "short": "Assign",
+    "label": "Assign Proposals",
+    "success": "Proposals assigned successfully.",
+    "toolTip": "Click to assign proposals to the panel.",
+    "warning": "Please wait whilst we assign the proposals."
+  },
+  "assignedProposal": {
+    "label": "Assigned Proposal"
+  },
+  "authors": {
+    "label": "Authors"
+  },
+  "bandwidth": {
+    "help": "Spectral Bandwidth of the observation. LOW supports eight channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth.",
+    "label": "Bandwidth",
+    "range": {
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
+      "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
+      "rangeError": "Bandwidth must be fully contained within the band",
+      "divisibilityError": "Bandwidth must be a multiple of {{value}} kHz"
+    }
+  },
+  "colors": {
+    "label": "Colors",
+    "toolTip": "Click here for color variations of the application"
+  },
+  "docs": {
+    "label": "Docs",
+    "toolTip": "Click here for PHT documentation",
+    "URL": "https://developer.skao.int/projects/ska-oso-pht-ui/en/{{version}}/userGuide/UserIntroduction.html"
+  },
+  "frequencyBandwidthOutOfRange": {
+    "warning": "Frequency & bandwidth must be fully contained within the band limits."
+  },
+  "baseBtn": {
+    "label": "Add"
+  },
+  "bitDepth": {
+    "help": "Select the desired bit depth for the data product.",
+    "label": "Bit Depth",
+    "0": "1",
+    "1": "2",
+    "2": "4",
+    "3": "8",
+    "4": "16",
+    "5": "32",
+    "error": "A bit depth from the list is required"
+  },
+  "calibrator": {
+    "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.):",
+    "note": "The choice of calibrators assumes that the target scan will be centred at transit.",
+    "disclaimer": "The use of these calibrators is not guaranteed.",
+    "calibratorStart": "Starting Calibrator",
+    "calibratorEnd": "Ending Calibrator",
+    "durationStart": "Starting Duration",
+    "durationEnd": "Ending Duration",
+    "minutes": "minute(s)",
+    "observatoryDefined": "Observatory-defined Calibration Strategy",
+    "intentStart": "Starting Intent",
+    "intentEnd": "Ending Intent",
+    "target": "Target",
+    "integrationTime": "Integration Time",
+    "comment": {
+      "label": "Comments on this strategy",
+      "help": "You can provide a comment on the observatory defined calibration strategy here."
+    }
+  },
+  "cancelBtn": {
+    "label": "Cancel"
+  },
+  "centralFrequency": {
+    "help": "The central frequency of the observation. Must be within the selected band.",
+    "label": "Central Frequency",
+    "error": {
+      "range": "Observing frequency out of range",
+      "divisibility": "Invalid central frequency - please adjust using the arrows"
+    }
+  },
+  "changeProposal": {
+    "label": "Change Proposal's type?",
+    "content1": "You are about to change the type of your proposal.",
+    "content2": "Some data specific to the proposal type may be lost."
+  },
+  "clearBtn": {
+    "label": "Clear",
+    "toolTip": "This will clear the file upload selection"
+  },
+  "cloneProposal": {
+    "label": "Clone",
+    "toolTip": "Clone proposal",
+    "confirm": "Clone this proposal.",
+    "suffix": " - Copy"
+  },
+  "closeBtn": {
+    "label": "Close"
+  },
+  "collapse": {
+    "label": "Collapse"
+  },
+  "comments": {
+    "label": "Comments"
+  },
+  "confirmBtn": {
+    "label": "Confirm"
+  },
+  "confirmDeleteMemberBtn": {
+    "label": "Confirm Team Member Deletion"
+  },
+  "confirmSubmitBtn": {
+    "label": "Confirm Submission"
+  },
+  "conflict": {
+    "button": "Confirm conflict declaration",
+    "column": "Conflict?",
+    "label": "Conflict Declaration",
+    "reason": {
+      "conflict-none": "I have no conflict of interest",
+      "conflict-investigator": "I am an investigator on this Science Verification Idea",
+      "conflict-collaborator": "I am a current / recent collaborator of the author(s)",
+      "conflict-other": "Other reasons prevent me from rendering a fair and impartial judgement"
+    },
+    "tooltip": "Indicate whether there is a conflict of interest with this proposal"
+  },
+  "continuumBandwidth": {
+    "help": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
+    "label": "Bandwidth",
+    "range": {
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} MHz)",
+      "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
+      "rangeError": "Bandwidth must be fully contained within the band",
+      "divisibilityError": "Bandwidth must be a multiple of {{value}} MHz"
+    }
+  },
+  "continuumUnits": {
+    "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
+  },
+  "continuumSubtraction": {
+    "label": "Apply continuum subtraction?",
+    "help": "Check to indicate that you wish to have continuum subtraction applied to the spectral line data product."
+  },
+  "createBtn": {
+    "label": "Create"
+  },
+  "cycle": {
+    "label": "Cycle Selection",
+    "error": "Unable to retrieve Cycle data"
+  },
+  "cycleCloses": {
+    "label": "Call Closes",
+    "countdown": "Call closes in {{days}}d {{hours}}h {{minutes}}m",
+    "countdownUrgent": "Call closes in {{minutes}}m {{seconds}}s"
+  },
+  "cycleDescription": {
+    "label": "Cycle description"
+  },
+  "cycleOpens": {
+    "label": "Call Opens"
+  },
+  "dataProduct": {
+    "button": "Data Product"
+  },
+  "dataProductType": {
+    "label": "Product type",
+    "help": "Select the desired data product(s) by checking the boxes as appropriate.",
+    "options": {
+      "spectral": {
+        "1": "Spectral ODPs",
+        "2": "Spectral ODPs"
+      },
+      "continuum": {
+        "1": "Images",
+        "2": "Visibilities"
+      },
+      "pst": {
+        "1": "Flow Through",
+        "2": "Timing",
+        "3": "Detected Filterbank"
+      }
+    }
+  },
+  "dateAssigned": {
+    "label": "Date Assigned"
+  },
+  "decisionComments": {
+    "label": "Decision Comments",
+    "help": "Comments provided by the chairperson when making a decision on the proposal."
+  },
+  "decisionSubmit": {
+    "help": "Submit the review decision"
+  },
+  "declination": {
+    "label": "Declination"
+  },
+  "deleteBtn": {
+    "label": "Delete"
+  },
+  "deleteDataProduct": {
+    "toolTip": "Delete data product",
+    "confirmTitle": "Delete this data product ? "
+  },
+  "deleteTarget": {
+    "label": "Delete this target ? ",
+    "info": "Deleting this target will also remove any related links to observations and calibrations",
+    "toolTip": "Delete the target"
+  },
+  "deleteTeamMember": {
+    "toolTip": "Delete team member",
+    "query": "Delete this team member ? "
+  },
+  "deleteObservation": {
+    "label": "Delete this observation ? ",
+    "info": "Deleting this observation will also remove any related links to targets"
+  },
+  "dispersionMeasure": {
+    "help": "This field displays the dispersion Measure.",
+    "label": "Dispersion Measure",
+    "units": "pc/cm³",
+    "minimum": {
+      "error": "A value of {{min}} or greater is required"
+    }
+  },
+  "displayProposal": {
+    "noneSelected": "None selected",
+    "warning": "Please wait whilst we load the selected proposal."
+  },
+  "downloadBtn": {
+    "label": "Download"
+  },
+  "downloadProposal": {
+    "label": "Download proposal"
+  },
+  "dropzone": {
+    "prompt": "Drag and drop your files here, or click to select"
+  },
+  "edit": {
+    "label": "Edit"
+  },
+  "editDataProduct": {
+    "toolTip": "Edit data product"
+  },
+  "editProposal": {
+    "toolTip": "Edit proposal",
+    "disabled": "This function is not available"
+  },
+  "editTarget": {
+    "label": "Edit target",
+    "toolTip": "Edit the target"
+  },
+  "effectiveResolution": {
+    "help": "This field displays the channel width after applying the spectral averaging",
+    "label": "Averaged channel width",
+    "error": "Unable to calculate value"
+  },
+  "elevation": {
+    "help": "Specify the minimum elevation angle at which the target will be observed. This value must fall between the horizon and the target's zenith elevation. If the specified elevation is outside this range, an error message will be displayed. The default is the lowest elevation the telescope allows",
+    "label": "Minimum Elevation",
+    "range": {
+      "error": "Value must be within the range of {{min}} to {{max}} degrees inclusive"
+    }
+  },
+  "email": {
+    "label": "Email",
+    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
+    "invitation": {
+      "subject": "Proposal invitation.",
+      "body": "You have been invited to contribute to proposal {{id}}"
+    },
+    "success": "Email invite has been sent.",
+    "warning": "Sending email request for processing",
+    "error": "Email invite was unsuccessful and member is not added"
+  },
+  "emailSearch": {
+    "success": "User was successfully found.",
+    "error": "User could not be found. Please check the email address and try again.",
+    "reset": "Reset user search"
+  },
+  "empty": {
+    "cell": "There are no contents for this cell"
+  },
+  "expand": {
+    "label": "Expand"
+  },
+  "fileName": {
+    "label": "File name"
+  },
+
+  "fileType": {
+    "pdf": ".pdf"
+  },
+  "unavailable": "Unavailable",
+  "firstName": {
+    "label": "First Name",
+    "help": "First name of the Principal Investigator or Co-Investigator."
+  },
+  "frequencyAveraging": {
+    "label": "Frequency Averaging",
+    "help": "Frequency Averaging Help",
+    "error": {
+      "range": "Enter an averaging value between {{min}} and {{max}} kHz.",
+      "step": "Enter a valid averaging value. Use the arrows to choose an allowed value."
+    },
+    "0": "kHz"
+  },
+  "frequencyRange": {
+    "label": "Frequency Range"
+  },
+  "frequencyUnits": {
+    "help": "Select the appropriate unit."
+  },
+  "generalComments": {
+    "label": "General Comments",
+    "tooltip": ""
+  },
+  "technicalComments": {
+    "label": "Technical Comments",
+    "tooltip": ""
+  },
+  "getReviewers": {
+    "short": "Get",
+    "label": "Get Reviewers",
+    "success": "Reviewers retrieved successfully.",
+    "toolTip": "Click to get the list of reviewers.",
+    "warning": "Please wait whilst we retrieve the reviewers."
+  },
+  "groupObservations": {
+    "label": "Group",
+    "help": "This field allows you to group observations. To create a group select the `New Group` from the dropdown and type a name of choice. 'None' is the default, in which case, the observation is not added to any group. After creating a group, observations can be added to the same group using the dropdown and selecting the created group name or a new one can be created.",
+    "new": "New Group",
+    "none": "None",
+    "idPrefix": "group-",
+    "toolTip": "Add a group if observations need to be grouped."
+  },
+  "helpText": {
+    "label": "Help",
+    "notAvailable": {
+      "help": "Help text is not available in this field/page"
+    },
+    "urlLabel": "Click for link"
+  },
+  "homeBtn": {
+    "label": "Home",
+    "title": "Submissions",
+    "tooltip": "Returns to the list of submissions",
+    "warningNotLoggedIn": {
+      "title": "Warning",
+      "message": "You are not logged in. The save function is currently disabled, and any unsaved progress will be lost if you return to the landing page. Are you sure you want to continue?"
+    }
+  },
+  "id": {
+    "label": "Id"
+  },
+  "imageSize": {
+    "0": "degree",
+    "1": "arcmin",
+    "2": "arcsec",
+    "label": "Image Size",
+    "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees.",
+    "error": "A value greater than zero is required",
+    "unitError": "A unit is required"
+  },
+  "imageWeighting": {
+    "help": "Select natural, uniform or Briggs weighting.\n\nFor Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting).",
+    "helpURL": "https://sensitivity-calculator.skao.int/",
+    "label": "Image Weighting",
+    "0": "Natural",
+    "1": "Uniform",
+    "2": "Briggs",
+    "error": "An image weighting is required"
+  },
+  "importFromFile": {
+    "label": "Import from file",
+    "descriptionTarget": "Import targets from a CSV file. The file should contain a header row with the following columns: Name, Right Ascension, Declination, Epoch (optional). Each subsequent row should contain the target details. Ensure that the Right Ascension and Declination are in the correct format (e.g., HH:MM:SS for RA and DD:MM:SS for Dec)."
+  },
+  "inviteTeamMember": {
+    "label": "Invite Team Member"
+  },
+  "landingWelcome": {
+    "button": "Register / Sign in",
+    "label": "Submit an SKA-Low Science Idea",
+    "description": "Use this tool to develop and submit an SKA-Low Science Verification Idea.\nAccess is available to registered users only.\nPlease sign in or create an account to continue.",
+    "tooltip": "Sign in or create an account to use the Submission Tool"
+  },
+  "latex": {
+    "toolTip": "LaTex Preview.",
+    "previewTitle": "LaTeX Preview"
+  },
+  "lastName": {
+    "label": "Last Name",
+    "help": "Last name of the Principal Investigator or Co-Investigator."
+  },
+  "listOfTargets": {
+    "label": "List of Targets",
+    "toolTip": "A list of targets can be created individually or imported from a csv file using the appropriate tab."
+  },
+  "location": {
+    "label": "Location"
+  },
+  "manageTeamMember": {
+    "label": "Manage Team Member Rights",
+    "success": "Team member's access has been updated.",
+    "toolTip": "Manage Team Member Rights",
+    "error": "Failed to update team member's access.",
+    "help": "Select the rights for this team member. The Principal Investigator (PI) has all rights by default. The PI can assign rights to other team members as needed.",
+    "rights": "Rights",
+    "submit": {
+      "label": "Submit rights",
+      "short": "Submit",
+      "help": "Check to indicate that this individual can submit, edit and view the proposal."
+    },
+    "edit": {
+      "label": "Edit rights",
+      "short": "Edit",
+      "help": "Check to indicate that this individual can edit and view the proposal."
+    },
+    "update": {
+      "label": "Update rights",
+      "short": "Update",
+      "help": "Check to indicate that this individual can update and view the proposal."
+    },
+    "view": {
+      "label": "View rights",
+      "short": "View",
+      "help": "Check to indicate that this individual can view the proposal."
+    }
+  },
+  "mediaSize": {
+    "notSupported": "The application is not supported on a screen with these dimensions"
+  },
+  "name": {
+    "label": "Name",
+    "help": "Name of the target/object. If you want to automatically populate the coordinates, then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values. "
+  },
+  "notSelected": {
+    "label": "Not Selected"
+  },
+  "numOfAntennas": {
+    "label": "Number of antennas"
+  },
+  "numOf15mAntennas": {
+    "help": "Valid range is 0 - 133 inclusive",
+    "label": "Number of 15-m antennas",
+    "short": "15-m",
+    "range": {
+      "lower": 0,
+      "upper": 133
+    }
+  },
+  "numOf13mAntennas": {
+    "help": "Valid range is 0 - 64 inclusive",
+    "label": "Number of 13.5-m antennas",
+    "short": "13.5-m",
+    "range": {
+      "lower": 0,
+      "upper": 64
+    }
+  },
+  "numStations": {
+    "help": "Valid range is 0 - 512 inclusive",
+    "label": "Number of Stations",
+    "range": {
+      "lower": 0,
+      "upper": 512
+    }
+  },
+  "observingBand": {
+    "help": "Select the observing band to use for the observation. The available bands are 50 MHz - 350 MHz for LOW; and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for MID.",
+    "label": "Band",
+    "short": {
+      "low_band": "Band Low",
+      "Band_1": "Band 1",
+      "Band_2": "Band 2",
+      "Band_3": "Band 5a",
+      "Band_4": "Band 5b"
+    },
+    "error": "Select a band"
+  },
+  "observationId": {
+    "label": "Observation ID",
+    "help": "A unique identifier of the observation. A default identifier is auto-generated but this can be overridden by typing into the field.",
+    "short": "ID",
+    "notUnique": "Another observation with this unique identifier exists"
+  },
+  "groupId": {
+    "label": "Observation Group ID",
+    "short": "Group ID"
+  },
+  "observations": {
+    "label": "Observations",
+    "single": "Observation",
+    "all": "All observations",
+    "delete": "Delete observation",
+    "edit": "Edit observation",
+    "id": "Obs Id",
+    "dp": {
+      "label": "Observation",
+      "help": "Select the observation set for which you want to request a data product(s)."
+    },
+    "group": "Group",
+    "missing": "No observations have been added to this proposal yet"
+  },
+  "observationType": {
+    "label": "Observing Mode",
+    "help": "Specify if the observation type is continuum or spectral. Note that not all sub-arrays have spectral mode so this option is available based on the sub-array selected.",
+    "short": "Mode",
+    "0": "Spectral",
+    "1": "Continuum",
+    "2": "PST",
+    "spectral": "Spectral",
+    "continuum": "Continuum",
+    "continuumSpectral": "Continuum-Spectral",
+    "pst": "PST"
+  },
+  "observingMode": {
+    "label": "Observing Mode",
+    "notSpecified": "Not specified"
+  },
+  "observatoryDataProduct": {
+    "id": "SDP Id",
+    "label": "Observatory Data Product",
+    "linkedObservation": "Observation / Data Product",
+    "help": "Select the desired data product(s) by checking the boxes as appropriate.",
+    "options": {
+      "1": "Images",
+      "2": "Visibilities"
+    }
+  },
+  "observationDetails": {
+    "help": "Provide any further details about specific targets or any other considerations about observation(s).",
+    "label": "Details",
+    "minDisplayRows": "5"
+  },
+  "observationSections": {
+    "identifiers": "Identifiers",
+    "arraySetUp": "Array Setup",
+    "frequencySetUp": "Frequency Setup"
+  },
+  "outputFrequencyResolution": {
+    "help": "This field displays the output frequency resolution.",
+    "label": "Output frequency resolution",
+    "units": "kHz",
+    "error": {
+      "multiple": "Value must be in multiples of {{value}} kHz"
+    },
+    "range": {
+      "error": "A value between {{min}} and {{max}} is required"
+    }
+  },
+  "outputSamplingInterval": {
+    "help": "This field displays the output sampling interval.",
+    "label": "Output sampling interval",
+    "units": "ms",
+    "error": {
+      "multiple": "Value must be in multiples of {{value}} ms"
+    },
+    "range": {
+      "error": "A value between {{min}} and {{max}} is required"
+    }
+  },
+  "overview": {
+    "title": "Overview",
+    "toolTip": "Overview of proposals"
+  },
+  "pageStatus": {
+    "toolTip": "Status of the {{pageName}} page : {{status}}"
+  },
+  "panels": {
+    "empty": "THERE ARE NO PANELS TO BE DISPLAYED",
+    "label": "Panels",
+    "name": "Name",
+    "overviewTooltip": "Tooltip for the card on the Overview"
+  },
+  "pdfDelete": {
+    "science": {
+      "label": "science",
+      "toolTip": "Click delete the Science Justification PDF",
+      "error": "Not able to delete Science Justification PDF",
+      "success": "Science Justification PDF successfully deleted"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "Click delete the Technical Justification PDF",
+      "error": "Not able to delete Technical Justification PDF",
+      "success": "Technical Justification PDF successfully deleted"
+    }
+  },
+  "pdfDownload": {
+    "error": "Not able to Get PDF Download URL",
+    "science": {
+      "label": "science",
+      "toolTip": "Click to download the Science Justification PDF"
+    },
+    "technical": {
+      "label": "technical",
+      "toolTip": "Click to download the Technical Justification PDF"
+    },
+    "sampleData": "https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf"
+  },
+  "pdfPreview": {
+    "science": {
+      "label": "Science Justification",
+      "notUploaded": "No Science Justification PDF uploaded"
+    },
+    "technical": {
+      "label": "Technical justification",
+      "notUploaded": "No Technical Justification PDF uploaded"
+    }
+  },
+  "pdfUpload": {
+    "disabled": "You are not logged in and PDF upload function has been disabled",
+    "science": {
+      "label": {
+        "choose": "Choose file",
+        "clear": "Clear",
+        "delete": "Delete",
+        "download": "Download",
+        "preview": "Preview",
+        "upload": "Upload"
+      },
+      "error": "It was unable to upload the Science Justification PDF",
+      "sizeError": "Exceeded maximum file size: {{current}} MB / {{max}} MB",
+      "pageError": "Exceeded maximum page count: {{current}} / {{max}} pages",
+      "invalidFileError": "Unable to read the selected file. Please ensure it is a valid PDF.",
+      "prompt": {
+        "deleteToEnableUpload": "Delete PDF to enable file selection and upload"
+      },
+      "success": "Science Justification PDF successfully uploaded",
+      "tooltip": {
+        "choose": "Choose the science justification PDF for upload",
+        "clear": "Clears the currently selected file",
+        "delete": "Delete the science justification PDF",
+        "download": "Download the science justification PDF",
+        "preview": "Preview the science justification PDF",
+        "upload": "Upload the selected PDF for use as the science justification",
+        "uploadDisabled": "PDF cannot be uploaded: the selected file does not meet the size or page count requirements"
+      },
+      "warning": "Science Justification PDF being processed"
+    },
+    "technical": {
+      "label": {
+        "choose": "Choose file",
+        "clear": "Clear",
+        "delete": "Delete",
+        "download": "Download",
+        "preview": "Preview",
+        "upload": "Upload"
+      },
+      "error": "It was unable to upload the Technical Justification PDF",
+      "success": "Technical Justification PDF successfully uploaded",
+      "tooltip": {
+        "choose": "Choose the technical justification PDF for upload",
+        "clear": "Clears the currently selected file",
+        "delete": "Delete the technical justification PDF",
+        "download": "Download the technical justification PDF",
+        "preview": "This is the PDF preview button on the technical page",
+        "upload": "Upload the selected PDF for use as the technical justification"
+      },
+      "warning": "Technical Justification PDF being processed"
+    }
+  },
+  "pdfViewer": {
+    "error": "It was unable to preview the PDF",
+    "loading": "...",
+    "noFile": "There is no PDF file"
+  },
+  "phdThesis": {
+    "grid": "PhD",
+    "title": "PhD Thesis",
+    "label": "For PhD Thesis",
+    "help": "Check to indicate that part of the data from this proposal will be used towards a PhD thesis."
+  },
+  "pht": {
+    "short": "Submission Tool",
+    "title": "Submission Tool"
+  },
+  "pi": {
+    "initials": "PI",
+    "label": "Principal Investigator",
+    "help": "Check to indicate that this individual is the Principal Investigator of this proposal.",
+    "short": "PI"
+  },
+  "pixelSize": {
+    "0": "degree",
+    "1": "arcmin",
+    "2": "arcsec",
+    "label": "Pixel Size",
+    "help": "Pixel size of the image requested.",
+    "helpURL": "https://sensitivity-calculator.skao.int/",
+    "notFound": "No value found",
+    "precision": 3,
+    "unableToDetermine": "Unable to determine",
+    "error": "A value greater than zero is required",
+    "unitError": "A unit is required"
+  },
+  "polarisations": {
+    "help": "Polarisations help text TBD",
+    "label": "Polarisations",
+    "error": "A polarisation selection is required",
+    "I": "I",
+    "Q": "Q",
+    "U": "U",
+    "V": "V",
+    "X": "X",
+    "Y": "Y",
+    "XX": "XX",
+    "XY": "XY",
+    "YX": "YX",
+    "YY": "YY"
+  },
+  "proposal": {
+    "error": "Unable to retrieve the proposal from the server"
+  },
+  "proposalId": {
+    "label": "Submission ID"
+  },
+  "proposalAttribute": {
+    "code": {
+      "target_of_opportunity": "ToO",
+      "joint_proposal": "JSP",
+      "coordinated_proposal": "CP",
+      "long_term_proposal": "LTP"
+    },
+    "desc": {
+      "target_of_opportunity": "These projects will be rapid responses to events that may be triggered either internal or external to the Observatory. ToO status may be recommended by the TAC or awarded by the Director-General. In some cases ToOs will have override status over other projects currently (or about to be) executing on the telescope.",
+      "joint_proposal": "A JSP project requires both SKA-Low and SKA-Mid telescopes to achieve its science goals and may require observations to be executed contemporaneously.",
+      "coordinated_proposal": "A project requiring SKA observations to be coordinated with another facility (either ground-based or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.",
+      "long_term_proposal": "These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
+    },
+    "help": "One or more of these optional attributes may be selected to further refine the proposal.",
+    "label": "Attribute",
+    "plural": "Attributes",
+    "title": {
+      "target_of_opportunity": "Target of Opportunity",
+      "joint_proposal": "Joint SKA proposal",
+      "coordinated_proposal": "Coordinated Project",
+      "long_term_proposal": "Long-term Projects"
+    }
+  },
+  "proposals": {
+    "empty": "THERE ARE NO SUBMISSIONS TO BE DISPLAYED",
+    "underTest": "This site is under test and will become available once the call for SKA-Low Science Verification Ideas opens.",
+    "label": "submissions",
+    "name": "Name",
+    "overviewTooltip": "Tooltip for the card on the Overview"
+  },
+  "proposalStatus": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "accepted": "Accepted",
+    "withdrawn": "Withdrawn",
+    "rejected": "Rejected",
+    "under review": "Under Review"
+  },
+  "proposalType": {
+    "code": {
+      "standard_proposal": "PI",
+      "key_science_proposal": "KSP",
+      "director_time_proposal": "DDT",
+      "science_verification": "SV",
+      "notSpecified": ""
+    },
+    "desc": {
+      "standard_proposal": "Observing projects that require less time than a KSP, typically over a single time allocation cycle.",
+      "key_science_proposal": "Observing projects that require the allocation of significant observing time and resources, often over a period longer than a single observing cycle. Specific criteria that define a KSP will be described in each call for proposals.",
+      "director_time_proposal": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TAC).",
+      "science_verification": "Ideas submitted during a Science Verification cycle to test and characterise the capabilities of the telescope."
+    },
+    "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, but be aware that this may affect information previously entered.",
+    "label": "Type",
+    "plural": "Types",
+    "short": "Type",
+    "all": "All proposal types",
+    "title": {
+      "standard_proposal": "Principal Investigator (PI)",
+      "key_science_proposal": "Key Science Projects",
+      "director_time_proposal": "Director-General's Discretionary Time",
+      "science_verification": "Science Verification Idea"
+    }
+  },
+  "members": {
+    "label": "Investigator(s)",
+    "empty": "THERE ARE NO INVESTIGATORS ASSOCIATED WITH THIS PROPOSAL"
+  },
+  "noSpecificTarget": {
+    "label": "No Specific Target",
+    "toolTip": "Current functionality is not yet available"
+  },
+  "feasibility": {
+    "label": "Feasibility",
+    "info": "A comment is required for this response",
+    "toolTip": "Feasibility"
+  },
+  "rank": {
+    "hovering": "Hovering - Click to select this rank",
+    "selected": "Selected rank",
+    "label": "Rank",
+    "helper": "Click on the center (0) or any segment (1-9) to set your ranking",
+    "0": {
+      "title": "Neutral",
+      "description": "No preference or opinion. This represents a completely neutral stance with no positive or negative feelings."
+    },
+    "1": {
+      "title": "Strongly Dislike",
+      "description": "Very negative feelings. This represents the lowest level of preference with strong opposition or dislike."
+    },
+    "2": {
+      "title": "Dislike",
+      "description": "Negative feelings. This indicates a clear preference against this option, though not as strong as level 1."
+    },
+    "3": {
+      "title": "Somewhat Dislike",
+      "description": "Mild negative feelings. This represents a slight preference against this option with some reservations."
+    },
+    "4": {
+      "title": "Slightly Dislike",
+      "description": "Minor negative feelings. This indicates a very slight preference against this option."
+    },
+    "5": {
+      "title": "Slightly Like",
+      "description": "Minor positive feelings. This indicates a very slight preference for this option."
+    },
+    "6": {
+      "title": "Somewhat Like",
+      "description": "Mild positive feelings. This represents a slight preference for this option with some positive aspects."
+    },
+    "7": {
+      "title": "Like",
+      "description": "Positive feelings. This indicates a clear preference for this option with good positive feelings."
+    },
+    "8": {
+      "title": "Strongly Like",
+      "description": "Very positive feelings. This represents the highest level of preference with strong positive feelings."
+    },
+    "9": {
+      "title": "Perfect",
+      "description": "Absolute positive feelings. This represents the ultimate level of preference with perfect satisfaction."
+    }
+  },
+  "recommendations": {
+    "label": "Recommendation",
+    "RECOMMEND-ACCEPT": "Accepted",
+    "RECOMMEND-ACCEPT-REVISION": "Accepted with Revision",
+    "RECOMMEND-REJECT": "Rejected",
+    "undefined": ""
+  },
+  "referenceCoordinates": {
+    "help": "Only targets with ICRS coordinates are supported at this time.",
+    "label": "Coordinate Type",
+    "tooltip": "This feature is not available in edit mode",
+    "0": "ICRS",
+    "1": "Galactic"
+  },
+  "coordinate": {
+    "label": "Coordinate"
+  },
+  "radialMotion": {
+    "label": "Radial Motion"
+  },
+  "referenceFrame": {
+    "label": "Reference Frame",
+    "help": "The reference frame of the velocity entered. The default is Heliocentric.",
+    "0": "Heliocentric",
+    "1": "Local Standard of Rest"
+  },
+  "reset": {
+    "label": "Reset",
+    "toolTip": "Click to reset the search and filtering fields"
+  },
+  "resolve": {
+    "label": "Resolve",
+    "toolTip": "Query SIMBAD, NED and VizieR",
+    "error": {
+      "mapping": "Unable to map results from API.",
+      "name": "Unable to resolve provided name",
+      "notFound": "Object not found in SIMBAD, NED or VizieR",
+      "unavailable": "The name resolver (SIMBAD, NED, VizieR) is currently unavailable. Please try again later, or enter the coordinates manually.",
+      "API_UNKNOWN_ERROR": "An unexpected error occurred while resolving the target."
+    }
+  },
+  "reviewDashboard": {
+    "noData": "No data available",
+    "unknown": "Unknown",
+    "undecided": "Undecided",
+    "title": "Overview",
+    "toolTip": "Overview of proposals",
+    "proposal": {
+      "title": "Proposals",
+      "subtitle": "Proposal Statistics"
+    },
+    "review": {
+      "title": "Reviews",
+      "subtitle": "Review Statistics"
+    },
+    "decision": {
+      "title": "Decisions",
+      "subtitle": "Decision Statistics"
+    },
+    "panel": {
+      "title1": "Assignment",
+      "title2": "Status",
+      "title3": "Science Categories",
+      "title4": "Panel Distribution",
+      "title5": "Reviewer Distribution",
+      "title6": "Category Distribution",
+      "title7": "Decision Breakdown",
+      "title8": "Review Distribution (Grouped / Single)",
+      "title9": "Location Breakdown",
+      "title10": "Score — Min / Mean / Max",
+      "title11": "Rank — Min / Mean / Max",
+      "title12": "Review Status"
+    },
+    "cell": {
+      "title1": "Panel Name",
+      "title2": "Number of Reviewers",
+      "title3": "Number of Proposals",
+      "title4": "Reviewed (%)",
+      "title5": "Pending Review (%)",
+      "title6": "In Progress (%)",
+      "title7": "Reviewer ID",
+      "title8": "Science Category"
+    },
+    "chart": {
+      "label1": "X-axis",
+      "label2": "Group by"
+    }
+  },
+  "reviewDecision": {
+    "title": "Review Decision",
+    "toolTip": "Review Decision"
+  },
+  "reviewDecisionsList": {
+    "title": "Review Decisions",
+    "toolTip": "Review Decisions"
+  },
+  "reviewOverview": {
+    "panel1": {
+      "title": "Proposal Assignment"
+    },
+    "panel2": {
+      "title": "Review Status"
+    },
+    "panel3": {
+      "title": "Science Categories"
+    },
+    "panel4": {
+      "title": "Panel Distribution"
+    },
+    "panel5": {
+      "title": "Reviewer Distribution"
+    },
+    "panel6": {
+      "title": "Category Distribution"
+    }
+  },
+  "reviewProposal": {
+    "disabled": "This function is not available",
+    "science": "Review proposal science",
+    "submit": "Submit the review of the proposal",
+    "technical": "Review proposal technical",
+    "title": "Review Proposal",
+    "toolTip": "Review proposal"
+  },
+  "reviewProposalList": {
+    "short": "Panel Reviews",
+    "title": "Review Proposals",
+    "toolTip": "List of proposals for review",
+    "disabled": "This function is not available"
+  },
+  "reviewType": {
+    "science": {
+      "label": "Science Review"
+    },
+    "technical": {
+      "label_one": "Technical Review",
+      "label_multiple": "Technical Reviews"
+    }
+  },
+  "reviewers": {
+    "label": "Reviewers",
+    "empty": "THERE ARE NO REVIEWERS TO BE DISPLAYED",
+    "title": "Title",
+    "displayName": "Name",
+    "givenName": "Given Name",
+    "surname": "Surname",
+    "officeLocation": "Office Location",
+    "overviewTooltip": "Tooltip for the card on the Overview",
+    "reviewerType": "Reviewer type",
+    "subExpertise": "Expertise",
+    "status": "Status",
+    "subExpertiseCategory": {
+      "Pulsar Timing": "Pulsar Timing",
+      "Galaxy Evolution": "Galaxy Evolution",
+      "Radio Transients": "Radio Transients",
+      "Cosmic Magnetism": "Cosmic Magnetism",
+      "HI Surveys": "HI Surveys",
+      "undefined": ""
+    },
+    "statusCategory": {
+      "notSpecified": "Not specified",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "inviteSent": "Invite sent"
+    }
+  },
+  "reviewerType": {
+    "all": "Review types",
+    "both": "Scientific / Technical",
+    "science": "Scientific",
+    "technical": "Technical"
+  },
+  "reviewStatus": {
+    "label": "Review Status",
+    "to do": "To Do",
+    "in progress": "In Progress",
+    "decided": "Decided",
+    "reviewed": "Reviewed",
+    "submitted": "Submitted",
+    "under review": "Under review"
+  },
+  "reviewPanelEntry": {
+    "title": "Review Panel Entry"
+  },
+  "rightAscension": {
+    "help": "Right ascension can be in hours, minutes, and seconds, where 24 hours represents a full 360-degree rotation. For example, '+33:55:00.00'.",
+    "label": "Right ascension"
+  },
+  "robust": {
+    "help": "For Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting).",
+    "label": "Robust",
+    "error": "Numeric value between -2 and 2 required"
+  },
+  "rotationMeasure": {
+    "help": "This field displays the rotationMeasure.",
+    "label": "Rotation Measure",
+    "units": "rad/m²",
+    "required": "A numeric value is required"
+  },
+  "channelsOut": {
+    "help": "The number of output channels for this data product. Enter a whole number between {{min}} and {{max}}.",
+    "label": "Channels Out",
+    "error": "Valid range is {{min}} - {{max}}"
+  },
+  "fitSpectralPol": {
+    "help": "Fit Spectral Pol help text TBD",
+    "label": "Fit Spectral Pol "
+  },
+  "saveBtn": {
+    "label": "Save",
+    "success": "Save was successful",
+    "tooltip": "Saves the proposal in the current state to the database"
+  },
+  "scienceCategory": {
+    "1": "Cosmology",
+    "2": "Cradle of Life",
+    "3": "Epoch of Re-ionization",
+    "4": "Extragalactic continuum",
+    "5": "Extragalactic Spectral line",
+    "6": "Gravitational Waves",
+    "7": "High Energy Cosmic Particles",
+    "8": "HI Galaxy science",
+    "9": "Magnetism",
+    "10": "Our Galaxy",
+    "11": "Pulsars",
+    "12": "Solar, Heliospheric and Ionospheric Physics",
+    "13": "Transients",
+    "14": "VLBI",
+    "null": "Not specified",
+    "label": "Science Category",
+    "help": "Select a category that best describes the science of your proposal.",
+    "notSpecified": "Not specified",
+    "error": "A value is required",
+    "all": "All Science Categories",
+    "continuum": "Continuum",
+    "continuumSpectral": "Continuum-Spectral",
+    "spectral": "Spectral",
+    "pst": "PST"
+  },
+  "searchForMember": {
+    "label": "Search for a member"
+  },
+  "sendInviteBtn": {
+    "label": "Send invitation"
+  },
+  "skyDirection": {
+    "1": {
+      "help": "Right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
+    },
+    "2": {
+      "help": "Declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
+    },
+    "label": {
+      "1": {
+        "0": "Right Ascension",
+        "1": "Longitude"
+      },
+      "2": {
+        "0": "Declination",
+        "1": "Latitude"
+      }
+    },
+    "mask": {
+      "1": {
+        "0": "00:00:00.000",
+        "1": ""
+      },
+      "2": {
+        "0": "00:00:00.000",
+        "1": ""
+      }
+    },
+    "short": {
+      "1": {
+        "0": "RA",
+        "1": "Long"
+      },
+      "2": {
+        "0": "Dec",
+        "1": "Lat"
+      }
+    },
+    "units": {
+      "1": {
+        "0": "hh:mm:ss.s",
+        "1": "deg"
+      },
+      "2": {
+        "0": "dd:mm:ss.s",
+        "1": "deg"
+      }
+    },
+    "error": {
+      "1": {
+        "0": "Input formatted incorrectly",
+        "1": "Valid range is 0 to 24 hours"
+      },
+      "2": {
+        "0": "Input formatted incorrectly",
+        "1": "Valid range is -90 to 90 degrees"
+      }
+    }
+  },
+  "spatialImaging": {
+    "label": "Spatial Imaging"
+  },
+  "sdp": {
+    "label": "Observatory Data Product"
+  },
+  "search": {
+    "label": "Search"
+  },
+  "selected": {
+    "label": "Selected"
+  },
+  "sensCalc": {
+    "button": "Open Sensitivity Calculator",
+    "label": "Sensitivity Calculator",
+    "description": "If you are still developing a Science Verification Idea, the SKA Sensitivity Calculator provides a useful starting point. The SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters and uses the most up-to-date information on the telescope performance.",
+    "tooltip": "Open the SKA sensitivity calculator in a new tab",
+    "url": "https://sensitivity-calculator.skao.int/",
+    "0": "All sensitivity calculations for this observation are valid",
+    "1": "One or more sensitivity calculations for this observation are invalid",
+    "3": "Sensitivity calculations for this observation are in progress",
+    "5": "No Sensitivity calculations",
+    "headerLabel": "Sens Calc"
+  },
+  "sensitivityCalculatorResults": {
+    "beamSize": "Beam Size",
+    "calculating": "Calculating sensitivity…",
+    "continuumSensitivityWeighted": "Weighted continuum sensitivity",
+    "continuumConfusionNoise": "Continuum confusion noise",
+    "continuumTotalSensitivity": "Total continuum sensitivity",
+    "continuumSynthBeamSize": "Continuum synthesized beam-size",
+    "continuumSurfaceBrightnessSensitivity": "Continuum surface-brightness sensitivity",
+    "continuumIntegrationTime": "Continuum integration time",
+    "integrationTime": "Integration time",
+    "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
+    "maxFaradayDepth": "Maximum Faraday Extent",
+    "noData": "No data available",
+    "noObservationOrDataProduct": "No observation or data product found for this sensitivity result",
+    "noTarget": "Define a target to see sensitivity results",
+    "notApplicableForSSO": "Currently unavailable for non-sidereal objects",
+    "sensitivity": "Sensitivity",
+    "spectralSensitivityWeighted": "Weighted spectral sensitivity",
+    "spectralConfusionNoise": "Spectral confusion noise",
+    "spectralTotalSensitivity": "Total spectral sensitivity",
+    "spectralSynthBeamSize": "Spectral synthesized beam-size",
+    "spectralSurfaceBrightnessSensitivity": "Spectral surface-brightness sensitivity",
+    "spectralIntegrationTime": "Spectral integration time",
+    "title": "Sensitivity Results",
+    "targetName": "Target name",
+    "centralFrequency": "Central Frequency",
+    "bandwidth": "Bandwidth",
+    "spectralResolution": "Spectral resolution",
+    "weightedSensitivity": "Weighted sensitivity",
+    "status": "Status : {{status}} {{error}}",
+    "errorUnknown": "The error is undetermined at this time",
+    "partial": "Fetching results...",
+    "nonGaussian": "N/A (non-Gaussian beam)",
+    "customArray": "N/A (no beam information available)"
+  },
+  "specialCharacters": {
+    "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",
+    "numWord": "Exceeded expected word count",
+    "email": "Please enter a valid email address"
+  },
+  "spectralAveraging": {
+    "help": "The factor by which the intrinsic spectral resolution should be averaged. The Effective resolution field displays the channel width after applying the spectral averaging.",
+    "label": "Spectral Averaging",
+    "range": {
+      "error": "Value is outside of allowed range"
+    }
+  },
+  "spectralResolution": {
+    "help": "",
+    "label": "Spectral Resolution",
+    "error": "Select a spectral resolution",
+    "restrictedError": "This spectral resolution is not available for the selected subarray"
+  },
+  "srcNet": {
+    "label": "SRCNet"
+  },
+  "srcNetComments": {
+    "label": "SRCNet Comments",
+    "tooltip": ""
+  },
+  "status": {
+    "0": "Status types",
+    "label": "Status",
+    "sci": "Sci. Status",
+    "tec": "Tec. Status"
+  },
+  "statusValue": {
+    "0": "OK",
+    "1": "Error",
+    "3": "Partial",
+    "5": "Not indicated"
+  },
+  "statusLoading": {
+    "0": "OK",
+    "1": "Error",
+    "3": "Loading",
+    "5": "Not indicated"
+  },
+  "subBands": {
+    "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32 for MID and 1-4 for LOW. The default number of sub-bands is 1.",
+    "label": "Number of sub-bands",
+    "short": "Sub-bands",
+    "range": {
+      "lower": 0,
+      "upper": 32,
+      "error": "Value is outside of allowed range",
+      "bandwidthSubBand": "Sub-band bandwidth is too low - reduce number of sub-bands"
+    }
+  },
+  "subArrayConfiguration": {
+    "label": "Subarray Configuration",
+    "help": "Select a subarray configuration from the list.",
+    "short": "Subarray",
+    "aa0.5": "AA0.5",
+    "aa1": "AA1",
+    "aa2": "AA2",
+    "aa2_sv": "AA2 (Science Verification)",
+    "aa2_core": "AA2 (core only)",
+    "aa*": "AA*",
+    "aa*_15m": "AA* (15-m antennas only)",
+    "aa*_core": "AA* (core only)",
+    "aa4": "AA4",
+    "aa4_15m": "AA4 (15-m antennas only)",
+    "aa4_core": "AA4 (core only)",
+    "aa*_13.5m": "AA*/AA4 (13.5-m antennas only)",
+    "custom": "Custom",
+    "error": "Select a subarray configuration"
+  },
+  "subjectExpertise": {
+    "0": "All expertise",
+    "label": "Expertise"
+  },
+  "submitAllBtn": {
+    "label": "Submit All",
+    "tooltip": "Submit all reviewed proposals"
+  },
+  "submitBtn": {
+    "label": "Submit",
+    "success": "Submission was successful"
+  },
+  "submitProposalBtn": {
+    "label": "Validate / Submit",
+    "tooltip": "Progress the proposals to the submitted state"
+  },
+  "velocityType": {
+    "help": "Select either Velocity or Redshift as required",
+    "label": "Velocity Type"
+  },
+  "suppliedUnits": {
+    "help": "Select the unit that is appropriate"
+  },
+  "suppliedValue": {
+    "help": "Add the required time, selecting the appropriate unit, to reach the desired target sensitivity or the required sensitivity which will be used to estimate the required integration time",
+    "required": "A value is required",
+    "range": {
+      "minError": "Must be greater than {{min}} {{units}}",
+      "error": "Must be between {{min}} and {{max}} {{units}}"
+    }
+  },
+  "tableReviewDecision": {
+    "actions": "Actions",
+    "expandDetails": "Expand Details",
+    "excluded": "Excluded?",
+    "included": "Included?",
+    "lastUpdated": "Last Updated",
+    "decisionComments": "Decision Comments",
+    "decisionScore": "Score",
+    "decisionStatus": "Status",
+    "feasible": "Feasible",
+    "rank": "Rank",
+    "reviews": "Reviews",
+    "sciReviews": "Science Reviews",
+    "title": "Title"
+  },
+  "tapering": {
+    "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
+    "label": "Tapering",
+    "0": "No tapering"
+  },
+  "taper": {
+    "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
+    "label": "Gaussian Taper",
+    "units": "Wavelengths (λ)",
+    "0": "No gaussian taper",
+    "error": "A value equal or greater than zero is required"
+  },
+  "targetImport": {
+    "help": "Upload a list of targets in .csv format in the reference system selected. Currently only ICRS is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format. Example is .csv file with name, ra, dec. Fields with incomplete row entry and duplicate target names will be removed when uploaded."
+  },
+  "targetObservation": {
+    "filters": "Filters",
+    "label": "Targets to be linked"
+  },
+  "targetSelection": {
+    "label": "Target selection"
+  },
+  "targetMosaic": {
+    "label": "Target Mosaic",
+    "toolTip": "Current functionality is not yet available"
+  },
+  "targets": {
+    "label": "Targets",
+    "empty": "There are no targets associated with this proposal",
+    "loggedOut": "There are no targets created",
+    "limitReached": "Only {{value}} target/object is allowed for this Proposal cycle.",
+    "limitReached_plural": "Only {{value}} target/object are allowed for Proposals.",
+    "missing": "No targets have been added to this proposal yet"
+  },
+  "telescopes": {
+    "ska_low": "LOW",
+    "ska_mid": "MID"
+  },
+  "timeAveraging": {
+    "label": "Time Averaging",
+    "help": "Time Averaging Help",
+    "error": {
+      "range": "Enter an averaging value between {{min}} and {{max}} seconds.",
+      "step": "Enter a valid averaging value. Use the arrows to choose an allowed value."
+    },
+    "0": "seconds"
+  },
+  "title": {
+    "label": "Title",
+    "short": "Title",
+    "empty": "A value is required",
+    "maxChar": "939",
+    "maxWord": "20",
+    "helper": "Please enter your title information. This field supports latex syntax. - Word count {{current}} / {{max}}"
+  },
+  "updateBtn": {
+    "label": "Update"
+  },
+  "updated": {
+    "label": "Last Updated"
+  },
+  "uploadCsvBtn": {
+    "label": "Upload CSV File",
+    "uploadSuccessMsg": "All targets in file have been uploaded into the proposal",
+    "uploadErrorPartialMsg": "Partially uploaded - some rows contain empty values which will be omitted",
+    "uploadErrorEquatorialNotValidMsg": "ICRS schema not valid",
+    "uploadErrorGalacticNotValidMsg": "Galactic schema not valid",
+    "uploadErrorUnknownParserMsg": "Unknown error in file parser - "
+  },
+  "uploadPDF": {
+    "label": "Upload PDF"
+  },
+  "validation": {
+    "success": "Proposal is Valid"
+  },
+  "validationResults": {
+    "title": "Validation issues",
+    "pageError": "{{page}} page has not been completed"
+  },
+  "velRed": {
+    "0": "Velocity",
+    "1": "Redshift"
+  },
+  "velocity": {
+    "label": "Velocity",
+    "helpType": "Specify either velocity or redshift",
+    "help": "Selected either velocity or redshift",
+    "units": {
+      "0": "km/s",
+      "1": "m/s"
+    },
+    "0": {
+      "label": "Velocity",
+      "help": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED"
+    },
+    "1": {
+      "label": "Redshift",
+      "help": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED"
+    },
+    "error": "Numeric value required"
+  },
+  "velocityRedshift": {
+    "label": "Vel/Redshift"
+  },
+  "viewProposal": {
+    "label": "View",
+    "toolTip": "View proposal"
+  },
+  "viewProposalIcon": {
+    "clicked": "View Proposal Icon clicked"
+  },
+  "weather": {
+    "help": "The default value for the weather PWV (Precipitable Water Vapour) is 10 mm, corresponding to “average” conditions. Allowed values range between 3 and 25 mm. The PWV is used in the calculation of the atmospheric brightness temperature.",
+    "label": "Weather",
+    "units": "mm",
+    "default": 10,
+    "range": {
+      "lower": 3,
+      "upper": 25,
+      "error": "Value is outside of allowed range"
+    }
+  },
+  "weighting": {
+    "label": "Weighting",
+    "help": "The calculator offers natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting)."
+  },
+  "page": {
+    "0": {
+      "status": "Title",
+      "title": "Title",
+      "titleShort": "Title",
+      "desc": "This page allows users to provide the title and proposal type",
+      "pageError": "The TITLE page is not complete"
+    },
+    "1": {
+      "status": "Team",
+      "title": "Team",
+      "titleShort": "Team",
+      "desc": "Principal Investigators should ensure that Co-Investigators are registered through the SKAO portal. Co-Investigators with pending status will be removed from the proposal during validation of a submitted proposal.",
+      "pageError": "The TEAM page is not complete"
+    },
+    "2": {
+      "status": "General",
+      "title": "General",
+      "titleShort": "General",
+      "desc": "This page allows the user to provide general details about the proposal.",
+      "help": "Select a category that best describes the science of your proposal.",
+      "pageError": "The GENERAL page is not complete"
+    },
+    "3": {
+      "status": "Science",
+      "title": "Science",
+      "titleShort": "Science",
+      "label": "Science justification",
+      "desc": "Upload your Science justification as a PDF.",
+      "pageError": "The SCIENCE JUSTIFICATION page is not complete",
+      "help": "This is help for the Science Page"
+    },
+    "4": {
+      "status": "Target",
+      "title": "Target",
+      "titleShort": "Target",
+      "label": "Target(s)",
+      "desc": "Select a category to associate target(s) with this proposal.",
+      "pageError": "The TARGET page is not complete"
+    },
+    "5": {
+      "status": "Observation",
+      "title": "Observation",
+      "titleShort": "Observation",
+      "desc": "Add one or more continuum or spectral observation setup(s) and select relevant targets to request sensitivity/integration time results.",
+      "pageError": "The OBSERVATION page is not complete"
+    },
+    "6": {
+      "status": "Technical",
+      "title": "Technical",
+      "titleShort": "Technical",
+      "label": "Technical justification",
+      "desc": "Upload a Technical justification for this proposal in a portable document format (pdf).",
+      "pageError": "The TECHNICAL JUSTIFICATION page is not complete",
+      "help": "This is help for the Technical Page"
+    },
+    "7": {
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OBSERVATIONS FOR THIS PROPOSAL",
+      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
+      "pstUnavailable": "PST mode is not currently supported within the Sensitivity Calculator application.",
+      "obsTitle": "Observations",
+      "descTitle": "Data Product Description",
+      "descContent": {
+        "continuumImage": "In Science Verification, Continuum data products include: \n\n• MFS image\n• Channel images for spectral-index estimation\n• Model images per channel\n• PSF images per channel\n• Residual images per channel\n• Calibrated visibilities averaged to 3.4 s and 21.7 kHz (to enable full verification of the imaging ODPs)\n• Ancillary data products including Local Sky Model catalogue and QA report.",
+        "continuumVisibilities": "In Science Verification, Continuum data products include: \n\n• Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs).\n• MFS image, generated using the Briggs weighting scheme with robust parameter set to 0.\n• Model image\n• PSF image\n• Residual image\n• Ancillary data products including Local Sky Model catalogue and QA report.",
+        "spectralImage": "In Science Verification, Spectral Line data products include:\n\n• Spectral-line cube without continuum subtraction\n• If requested, spectral-line cube after continuum subtraction\n• Model images per channel\n• PSF images per channel\n• Residual images per channel\n• Calibrated visibilities averaged to 3.4 s and native channel width (to enable full verification of the imaging ODPs)\n• Ancillary data product including Local Sky Model catalogue and QA report.",
+        "continuumSpectralImage": "In Science Verification, Continuum-Spectral data products include:\n\n• Spectral-line cube without continuum subtraction\n• If requested, spectral-line cube after continuum subtraction\n• Model images per channel\n• PSF images per channel\n• Residual images per channel\n• Calibrated visibilities averaged to 3.4 s and native channel width (to enable full verification of the imaging ODPs)\n• Ancillary data product including Local Sky Model catalogue and QA report.",
+        "pstFlowThrough": "In Science Verification, PST Flow Through data products include: \n\n• Single or dual-polarisation beam-formed voltages requantised to the specified bit depth\n• QA report.",
+        "pstDetectedFilterbank": "In Science Verification, PST Detected Filterbank data product include: \n\n• Filterbank data, averaged and requantised as specified in the panel on the left.\n• QA report.",
+        "pstTiming": "In Science Verification, PST Pulsar Timing data products include: \n\n• Beam-formed voltages\n• Time of arrival\n• Residuals from the best-fit timing model for the pulsar \n• Updated ephemerides \n• QA report."
+      },
+      "status": "Data Product",
+      "plural": "Data Products",
+      "title": "Observatory Data Product",
+      "titleShort": "Data Product",
+      "desc": "This page allows you to request and define observatory data products for Observation(s).",
+      "pageError": "The DATA PRODUCTS page is not complete",
+      "group": {
+        "continuumImage": "Continuum Imaging ODPs",
+        "continuumVisibilities": "Visibility ODP",
+        "spectralImage": "Spectral ODPs",
+        "continuumSpectralImage": "Spectral ODPs",
+        "pstFlowThrough": "PST Flow Through Data Products",
+        "pstDetectedFilterbank": "PST Detected Filterbank Data Products",
+        "pstTiming": "PST Timing Data Products"
+      }
+    },
+    "8": {
+      "status": "Linking",
+      "title": "Linking",
+      "desc": "Linking strategies",
+      "empty": "NO LINKING STRATEGIES AVAILABLE",
+      "toolTip": "Linking tooltip",
+      "pageError": "The Linking page is not complete"
+    },
+    "9": {
+      "status": "Calibration",
+      "title": "Calibration",
+      "titleShort": "Calibration",
+      "desc": "Review Calibration strategy. This page outlines the standard calibration strategy planned for the selected mode during SKA-Low Science Verification. The listed calibrators assume that the target scan will be centred at transit. Please note that the use of these calibrators is not guaranteed. You may add comments or suggestions regarding the calibration strategy in the field below.",
+      "pageError": "The CALIBRATION STRATEGY page is not complete",
+      "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
+    },
+    "11": {
+      "title": "Observation Setup",
+      "titleShort": "Observation Setup",
+      "label": "Observation Setup(s)",
+      "desc": "Define the parameters of the observation setup."
+    },
+    "12": {
+      "title": "Landing page",
+      "desc": "A central workspace displaying submissions and related information accessible to the current user.",
+      "empty": "NO PROPOSALS AVAILABLE"
+    },
+    "13": {
+      "short": "Cycle",
+      "title": "SKAO Cycle",
+      "desc": ""
+    },
+    "14": {
+      "title": "Data Product",
+      "titleShort": "Data Product",
+      "label": "Data Product(s)",
+      "desc": "Add data product(s) to observation set(s). You can request more than one data products for an observation set."
+    },
+    "15": {
+      "title": "Observation Update",
+      "titleShort": "Observation Update",
+      "empty": "NO PANELS AVAILABLE",
+      "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
+    },
+    "16": {
+      "title": "Panel Management",
+      "desc": "Panel Management",
+      "toolTip": "Panel Management tooltip"
+    },
+    "17": {
+      "title": "Calibration Addition",
+      "desc": "Calibration Addition",
+      "toolTip": "Calibration Addition tooltip"
+    },
+    "next": "Next",
+    "pageOf": "Page {{current}} of {{max}}",
+    "previous": "Previous"
+  },
+  "label": {
+    "button": {
+      "telescopeToggle": "Telescope Toggle"
+    }
+  },
+  "toolTip": {
+    "button": {
+      "mode": "Color Mode Toggle",
+      "skao": "SKAO WebSite",
+      "telescopeToggle": "Switch between available telescopes"
+    }
+  },
+  "error": {
+    "axios": {
+      "format": "Unexpected data format returned from API."
+    },
+    "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS PROPOSAL",
+    "noObservationsLoggedOut": "NO OBSERVATION SETUP CREATED",
+    "noCalibrationsLoggedOut": "NO CALIBRATIONS CREATED",
+    "noCalibrationsLinking": "THERE NEEDS TO BE TARGETS LINKED TO OBSERVATION / DATA PRODUCT COMBINATIONS",
+    "noCalibrationsNoTarget": "Define a target to show calibration strategy",
+    "pdf": "Syntax error or PDF not available",
+    "iconClicked": "An error was encountered, please refresh page to continue",
+    "invalidString": "Invalid input: Only numeric characters are allowed"
+  },
+  "pstMode": {
+    "label": "PST Mode",
+    "help": "Select the appropriate Pulsar Search Mode for the observation.",
+    "options": {
+      "0": "Flow Through",
+      "1": "Detected Filterbank",
+      "2": "Pulsar Timing"
+    },
+    "error": "Select a PST mode"
+  },
+  "fieldPattern": {
+    "groupLabel": "Field Pattern",
+    "label": "Type",
+    "toolTip": "Field Pattern selected.",
+    "help": "Default value is Pointing Centres. Field Pattern selection currently unavailable."
+  },
+  "visualization": {
+    "loading": "Loading visualization",
+    "error": "An error occurred while loading the visualization. Please try again later."
+  },
+  "zoomChannels": {
+    "help": "Maximum number of channels for Low AA2 is {{max}}. To increase bandwidth, increase the spectral averaging parameter",
+    "label": "Number of channels",
+    "error": "Number of channels must be a whole number of at least {{min}}"
+  }
+}

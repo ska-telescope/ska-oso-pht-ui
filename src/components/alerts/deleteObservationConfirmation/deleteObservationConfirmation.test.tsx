@@ -4,7 +4,7 @@ import { StoreProvider } from '@utils/storage/store';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import DeleteObservationConfirmation from './deleteObservationConfirmation';
-import { BAND_LOW_STR } from '@/utils/constants';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
 // Mock AlertDialog to expose the onClose handler
 vi.mock('../alertDialog/AlertDialog', () => ({
@@ -24,49 +24,25 @@ const wrapper = (component: React.ReactElement) => {
 describe('<DeleteObservationConfirmation />', () => {
   const mockSetOpen = vi.fn();
   const mockAction = vi.fn();
-  const mockObservation = {
-    telescope: 'testTelescope',
-    subarray: 'testSubArray',
-    type: 'testType'
-  };
+  const mockObservation = newSvObservation(OBSERVING_MODE.SPECTRAL, 15);
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  test('renders correctly', () => {
+  test("shows the observation's telescope, subarray and observing mode", () => {
     wrapper(
       <DeleteObservationConfirmation
-        action={vi.fn()}
-        observation={{
-          id: '',
-          telescope: 0,
-          subarray: '',
-          type: 0,
-          observingBand: BAND_LOW_STR,
-          weather: undefined,
-          elevation: 0,
-          centralFrequency: 0,
-          centralFrequencyUnits: 0,
-          bandwidth: 0,
-          continuumBandwidth: 0,
-          continuumBandwidthUnits: 0,
-          supplied: {
-            type: 0,
-            value: 0,
-            units: 0
-          },
-          spectralResolution: '',
-          effectiveResolution: '',
-          numSubBands: undefined,
-          num15mAntennas: undefined,
-          num13mAntennas: undefined,
-          numStations: undefined
-        }}
+        action={mockAction}
+        observation={mockObservation}
         open={true}
-        setOpen={vi.fn()}
+        setOpen={mockSetOpen}
       />
     );
+
+    expect(screen.getByText('arrayConfiguration.ska_low')).toBeInTheDocument();
+    expect(screen.getByText('subArrayConfiguration.aa2_sv')).toBeInTheDocument();
+    expect(screen.getByText('observationType.spectral')).toBeInTheDocument();
   });
 
   test('calls setOpen(false) when dialog is closed', async () => {

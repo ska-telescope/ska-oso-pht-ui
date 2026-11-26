@@ -12,7 +12,7 @@ const wrapper = (component: React.ReactElement) => {
     const methods = useForm<ProposalType>({
       defaultValues: {
         title: '',
-        proposalType: null,
+        proposalType: { type: null, subTypes: [] },
         abstract: '',
         scienceCategory: null
       }

@@ -4,15 +4,19 @@ import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.t
 import { MockCalibratorFrontendList } from './mockCalibratorListFrontend';
 import { MockCalibratorBackendList } from './mockCalibratorListBackend';
 import {
+  BAND_1_STR,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_SSO,
-  SUPPLIED_INTEGRATION_TIME_UNITS_H,
-  SUPPLIED_TYPE_INTEGRATION,
-  TELESCOPE_LOW_NUM
+  SA_AA2
 } from '@utils/constants.ts';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
 import { Target } from '@/utils/types/target';
-import Observation from '@/utils/types/observation';
+import {
+  newObservation,
+  newSvObservation,
+  OBSERVING_MODE,
+  type ObservationInput
+} from '@/models/proposals/observations';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList.tsx';
 
 describe('GetCalibratorList Service', () => {
@@ -35,15 +39,8 @@ describe('GetCalibratorList Service', () => {
     kind: REFERENCE_COORDINATE_TYPE_SSO.value
   };
 
-  const mockObservation: Observation = {
-    id: 'obs-1',
-    telescope: TELESCOPE_LOW_NUM,
-    supplied: {
-      type: SUPPLIED_TYPE_INTEGRATION,
-      value: 1,
-      units: SUPPLIED_INTEGRATION_TIME_UNITS_H // TIME_HOURS
-    }
-  } as Observation;
+  // LOW, for 1 h
+  const mockObservation = newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -76,6 +73,34 @@ describe('GetCalibratorList Service', () => {
     )) as Calibrator[];
 
     expect(result).to.deep.equal(MockCalibratorFrontendList);
+  });
+
+  test('returns an error without calling the API while the integration time is missing', async () => {
+    const result = await GetCalibratorList(
+      mockedAuthClient,
+      { ...mockObservation, integrationTime: { value: null, unit: 'h' } } as ObservationInput,
+      mockTarget
+    );
+
+    expect(result).toBe('error.CALIBRATOR_REQUIRES_INTEGRATION_TIME');
+    expect(mockedAuthClient.post).not.toHaveBeenCalled();
+  });
+
+  test('sends the scan duration of an integration time in minutes', async () => {
+    mockedAuthClient.post.mockResolvedValue({ data: MockCalibratorBackendList });
+
+    await GetCalibratorList(
+      mockedAuthClient,
+      {
+        ...newObservation(BAND_1_STR, SA_AA2, OBSERVING_MODE.CONTINUUM, {}),
+        integrationTime: { value: 30, unit: 'min' }
+      } as ObservationInput,
+      mockTarget
+    );
+
+    const [calledUrl] = mockedAuthClient.post.mock.calls[0];
+    expect(calledUrl).toContain('telescope=ska_mid');
+    expect(calledUrl).toContain('scan_duration_ms=1800000');
   });
 
   test('sends the correct query params and body in the request', async () => {
