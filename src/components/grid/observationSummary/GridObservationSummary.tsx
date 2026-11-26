@@ -4,6 +4,7 @@ import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import {
   FLOW_THROUGH_VALUE,
+  FREQUENCY_HZ,
   FREQUENCY_UNITS,
   NOT_SPECIFIED,
   SENSITIVITY_STATE,
@@ -15,6 +16,7 @@ import {
   TYPE_PST
 } from '@utils/constants.ts';
 import {
+  frequencyConversion,
   getBandwidthOrFrequencyUnitsLabel,
   getBandwidthZoom,
   timeConversion
@@ -128,15 +130,27 @@ export default function GridObservationSummary({
     return `${rec.centralFrequency} ${units ? presentUnits(units) : ''}`.trim();
   };
 
-  const bandwidth = (rec: Observation) => {
+  const bandwidthValue = (rec: Observation) => {
     if (CONTINUUM_TYPES.includes(rec.type)) {
-      return valueWithUnits(
-        rec.continuumBandwidth,
-        FREQUENCY_UNITS[(rec.continuumBandwidthUnits ?? 0) - 1]?.label
-      );
+      return {
+        value: rec.continuumBandwidth,
+        unit: FREQUENCY_UNITS[(rec.continuumBandwidthUnits ?? 0) - 1]?.label
+      };
     }
-    const zoom = getBandwidthZoom(rec);
-    return valueWithUnits(zoom.value, zoom.unit);
+    return getBandwidthZoom(rec);
+  };
+
+  const bandwidthHz = (rec: Observation) => {
+    const { value, unit } = bandwidthValue(rec);
+    const frequencyUnit = FREQUENCY_UNITS.find((entry) => entry.label === unit);
+    return value != null && frequencyUnit
+      ? frequencyConversion(value, frequencyUnit.value, FREQUENCY_HZ)
+      : value;
+  };
+
+  const bandwidth = (rec: Observation) => {
+    const { value, unit } = bandwidthValue(rec);
+    return valueWithUnits(value, unit);
   };
 
   // The weighted sensitivities of the observation's links, as the Data Products page shows them
@@ -151,12 +165,13 @@ export default function GridObservationSummary({
     return (proposal?.targetObservation ?? []).flatMap((link) => {
       const results = link.observationId === rec.id ? link.sensitivity : undefined;
       if (results?.state !== SENSITIVITY_STATE.DONE) return [];
+      const targetName = proposal?.targets?.find((target) => target.id === link.targetId)?.name;
       return parts.flatMap((part) => {
         const values = results[part];
         if (!values) return [];
         const label = t(`observationType.${part}`);
         return [
-          `${label}: ${valueWithUnits(values.weightedSensitivity.value, values.weightedSensitivity.unit)}`
+          `${targetName || link.targetId}: ${label}: ${valueWithUnits(values.weightedSensitivity.value, values.weightedSensitivity.unit)}`
         ];
       });
     });
@@ -213,17 +228,25 @@ export default function GridObservationSummary({
 
   const colCentralFrequency = {
     field: 'centralFrequency',
+    type: 'number',
     renderHeader: () => headerDisplay('centralFrequency.label'),
     flex: 1,
     disableClickEventBubbling: true,
+    valueGetter: (_value: unknown, row: Observation) =>
+      row.centralFrequency != null &&
+      FREQUENCY_UNITS.some((unit) => unit.value === row.centralFrequencyUnits)
+        ? frequencyConversion(row.centralFrequency, row.centralFrequencyUnits, FREQUENCY_HZ)
+        : row.centralFrequency,
     renderCell: (e: { row: Observation }) => element(centralFrequency(e.row))
   };
 
   const colBandwidth = {
     field: 'bandwidth',
+    type: 'number',
     renderHeader: () => headerDisplay('bandwidth.label'),
     flex: 1,
     disableClickEventBubbling: true,
+    valueGetter: (_value: unknown, row: Observation) => bandwidthHz(row),
     renderCell: (e: { row: Observation }) => element(bandwidth(e.row))
   };
 

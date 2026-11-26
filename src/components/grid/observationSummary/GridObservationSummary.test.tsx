@@ -5,6 +5,9 @@ import '@testing-library/jest-dom';
 import GridObservationSummary from './GridObservationSummary';
 import {
   BAND_LOW_STR,
+  FREQUENCY_GHZ,
+  FREQUENCY_HZ,
+  FREQUENCY_MHZ,
   SENSITIVITY_STATE,
   SUPPLIED_TYPE_INTEGRATION,
   SUPPLIED_TYPE_SENSITIVITY,
@@ -180,6 +183,7 @@ const renderSensitivity = (type: string, sensitivity: Sensitivity, observationId
     <GridObservationSummary
       proposal={{
         ...MockProposalFrontend,
+        targets: [{ ...MockProposalFrontend.targets![0], id: 't1', name: 'Target One' }],
         observations: [{ ...MockProposalFrontend.observations![0], id: 'summary-obs', type }],
         targetObservation: [{ targetId: 't1', observationId, dataProductsSDPId: '', sensitivity }]
       }}
@@ -203,10 +207,12 @@ describe.each([TYPE_CONTINUUM_SPECTRAL, TYPE_CONTINUUM_SPECTRAL_LONG])(
           continuum,
           spectral
         } as Sensitivity);
-        expect(screen.queryByText('observationType.continuum: 12.00 Jy') !== null).toBe(
+        expect(screen.queryByText('Target One: observationType.continuum: 12.00 Jy') !== null).toBe(
           hasContinuum
         );
-        expect(screen.queryByText('observationType.spectral: 34.00 Jy') !== null).toBe(hasSpectral);
+        expect(screen.queryByText('Target One: observationType.spectral: 34.00 Jy') !== null).toBe(
+          hasSpectral
+        );
       }
     );
 
@@ -231,14 +237,73 @@ test.each([TYPE_CONTINUUM, TYPE_ZOOM, TYPE_ZOOM_LONG])(
   '%s retains its existing sensitivity',
   (type) => {
     renderSensitivity(type, { state: SENSITIVITY_STATE.DONE, continuum, spectral });
-    expect(screen.queryByText('observationType.continuum: 12.00 Jy') !== null).toBe(
+    expect(screen.queryByText('Target One: observationType.continuum: 12.00 Jy') !== null).toBe(
       type === TYPE_CONTINUUM
     );
-    expect(screen.queryByText('observationType.spectral: 34.00 Jy') !== null).toBe(
+    expect(screen.queryByText('Target One: observationType.spectral: 34.00 Jy') !== null).toBe(
       type !== TYPE_CONTINUUM
     );
   }
 );
+
+test('identifies each sensitivity by its linked target, including partial results', () => {
+  const target = MockProposalFrontend.targets![0];
+  const { container } = wrapper(
+    <GridObservationSummary
+      proposal={{
+        ...MockProposalFrontend,
+        targets: [
+          { ...target, id: 'a', name: 'Target A' },
+          { ...target, id: 'b', name: 'Target B' },
+          { ...target, id: 'c', name: 'Target C' }
+        ],
+        observations: [
+          {
+            ...MockProposalFrontend.observations![0],
+            id: 'summary-obs',
+            type: TYPE_CONTINUUM_SPECTRAL
+          }
+        ],
+        targetObservation: [
+          {
+            targetId: 'a',
+            observationId: 'summary-obs',
+            dataProductsSDPId: '',
+            sensitivity: { state: SENSITIVITY_STATE.FAILED, error: 'Failed' }
+          },
+          {
+            targetId: 'b',
+            observationId: 'summary-obs',
+            dataProductsSDPId: '',
+            sensitivity: { state: SENSITIVITY_STATE.DONE, continuum } as Sensitivity
+          },
+          {
+            targetId: 'c',
+            observationId: 'summary-obs',
+            dataProductsSDPId: '',
+            sensitivity: { state: SENSITIVITY_STATE.DONE, spectral }
+          },
+          {
+            targetId: 'missing-target',
+            observationId: 'summary-obs',
+            dataProductsSDPId: '',
+            sensitivity: { state: SENSITIVITY_STATE.DONE, continuum, spectral }
+          }
+        ]
+      }}
+    />
+  );
+  const targetCell = container.querySelector('[role="gridcell"][data-field="elevation"]');
+  expect(targetCell).toHaveTextContent('Target A');
+  expect(targetCell).toHaveTextContent('Target B');
+  expect(targetCell).toHaveTextContent('Target C');
+  const sensitivityCell = container.querySelector('[role="gridcell"][data-field="sensitivity"]');
+  expect(sensitivityCell).not.toHaveTextContent('Target A');
+  expect(sensitivityCell).toHaveTextContent('Target B: observationType.continuum: 12.00 Jy');
+  expect(sensitivityCell).toHaveTextContent('Target C: observationType.spectral: 34.00 Jy');
+  expect(sensitivityCell).toHaveTextContent('missing-target: observationType.continuum: 12.00 Jy');
+  expect(sensitivityCell).toHaveTextContent('missing-target: observationType.spectral: 34.00 Jy');
+});
 
 test.each([199.609375, 199.609375123456])(
   'displays the saved central frequency precision for %s MHz',
@@ -254,3 +319,126 @@ test.each([199.609375, 199.609375123456])(
     expect(screen.getByText(`${centralFrequency} MHz`)).toBeInTheDocument();
   }
 );
+
+test('sorts central frequencies numerically in Hz while displaying saved values', () => {
+  const observation = MockProposalFrontend.observations![0];
+  const { container } = wrapper(
+    <GridObservationSummary
+      height={900}
+      proposal={{
+        ...MockProposalFrontend,
+        observations: [
+          {
+            ...observation,
+            id: 'ghz',
+            centralFrequency: 0.2,
+            centralFrequencyUnits: FREQUENCY_GHZ
+          },
+          {
+            ...observation,
+            id: 'mhz',
+            centralFrequency: 150,
+            centralFrequencyUnits: FREQUENCY_MHZ
+          },
+          { ...observation, id: 'unknown', centralFrequency: 120000000, centralFrequencyUnits: 0 },
+          { ...observation, id: 'ten', centralFrequency: 10, centralFrequencyUnits: FREQUENCY_HZ },
+          { ...observation, id: 'nine', centralFrequency: 9, centralFrequencyUnits: FREQUENCY_HZ },
+          { ...observation, id: 'zero', centralFrequency: 0, centralFrequencyUnits: FREQUENCY_GHZ }
+        ]
+      }}
+    />
+  );
+  expect(screen.getByText('0.2 GHz')).toBeInTheDocument();
+  expect(screen.getByText('150 MHz')).toBeInTheDocument();
+  expect(screen.getByText('120000000')).toBeInTheDocument();
+
+  const header = container.querySelector('[role="columnheader"][data-field="centralFrequency"]');
+  expect(header).toBeInTheDocument();
+  const rowIds = () =>
+    Array.from(container.querySelectorAll('[role="row"][data-id]')).map((row) =>
+      row.getAttribute('data-id')
+    );
+  if (header) fireEvent.click(header);
+  expect(rowIds()).toEqual(['zero', 'nine', 'ten', 'unknown', 'mhz', 'ghz']);
+  if (header) fireEvent.click(header);
+  expect(rowIds()).toEqual(['ghz', 'mhz', 'unknown', 'ten', 'nine', 'zero']);
+});
+
+test('sorts displayed continuum and zoom bandwidths in Hz', () => {
+  const observation = MockProposalFrontend.observations![0];
+  const { container } = wrapper(
+    <GridObservationSummary
+      height={900}
+      proposal={{
+        ...MockProposalFrontend,
+        observations: [
+          {
+            ...observation,
+            id: 'ghz',
+            type: TYPE_CONTINUUM,
+            bandwidth: null,
+            continuumBandwidth: 0.2,
+            continuumBandwidthUnits: FREQUENCY_GHZ
+          },
+          {
+            ...observation,
+            id: 'zoom',
+            type: TYPE_ZOOM,
+            bandwidth: 1,
+            zoomChannels: 150000,
+            spectralResolution: '1 kHz'
+          },
+          {
+            ...observation,
+            id: 'unknown',
+            type: TYPE_CONTINUUM,
+            bandwidth: null,
+            continuumBandwidth: 120000000,
+            continuumBandwidthUnits: 0
+          },
+          {
+            ...observation,
+            id: 'ninety',
+            type: TYPE_CONTINUUM_SPECTRAL,
+            bandwidth: null,
+            continuumBandwidth: 90,
+            continuumBandwidthUnits: FREQUENCY_MHZ
+          },
+          {
+            ...observation,
+            id: 'ten',
+            type: TYPE_CONTINUUM,
+            bandwidth: null,
+            continuumBandwidth: 10,
+            continuumBandwidthUnits: FREQUENCY_MHZ
+          },
+          {
+            ...observation,
+            id: 'missing',
+            type: TYPE_CONTINUUM,
+            bandwidth: null,
+            continuumBandwidth: null,
+            continuumBandwidthUnits: FREQUENCY_MHZ
+          }
+        ]
+      }}
+    />
+  );
+  const cell = (id: string) =>
+    container.querySelector(`[role="row"][data-id="${id}"] [data-field="bandwidth"]`);
+  expect(cell('ghz')).toHaveTextContent('0.20 GHz');
+  expect(cell('zoom')).toHaveTextContent('150.00 MHz');
+  expect(cell('unknown')).toHaveTextContent('1.2e+8');
+  expect(cell('missing')).toHaveTextContent('-');
+
+  const header = container.querySelector('[role="columnheader"][data-field="bandwidth"]');
+  expect(header).toBeInTheDocument();
+  const rowIds = () =>
+    Array.from(container.querySelectorAll('[role="row"][data-id]')).map((row) =>
+      row.getAttribute('data-id')
+    );
+  if (header) fireEvent.click(header);
+  expect(rowIds()).toEqual(['missing', 'ten', 'ninety', 'unknown', 'zoom', 'ghz']);
+  if (header) fireEvent.click(header);
+  expect(rowIds()).toEqual(['ghz', 'zoom', 'unknown', 'ninety', 'ten', 'missing']);
+});
