@@ -133,12 +133,12 @@ stop-dev-environment:
     reports:
       junit: build/reports/e2e-tests.xml
 
-# After test-dev-environment has checked the pods are ready (deploying to dev is manual)
+
 smoke-test-dev-environment:
   extends: .smoke_test
   stage: deploy
   needs:
-    - test-dev-environment
+    - deploy-dev-environment
   variables: *dev_env_vars
 
 deploy-integration:
