@@ -134,7 +134,7 @@ The smoke suite (``tests/cypress/smoke``) logs in through Indigo's real login pa
 that Indigo accepts the deployment's redirect URIs: the app URL, and ``<app URL>auth-callback.html``
 for silent token renewal. Both must be registered on the app's Indigo client, so it only runs
 against deployments with fixed URLs. Use ``make js-smoke-test`` to run it.
-(note: JavaScript E2E target; ``make js-e2e-test`` runs only ``tests/cypress/e2e`` by default.
+(note: JavaScript E2E target; ``make js-e2e-test`` runs only ``tests/cypress/e2e`` by default.)
 
 .. code-block:: bash
 
