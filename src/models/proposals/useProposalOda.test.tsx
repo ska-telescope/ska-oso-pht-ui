@@ -17,7 +17,7 @@ import { ProposalType } from './proposal';
 import { DATA_PRODUCT_KIND } from './dataProducts';
 import { useProposalOda } from './useProposalOda';
 import { getDetailsSchema } from './details';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import { InvestigatorBackend } from '@/utils/types/investigator';
 import { getProposalFormValues } from './useProposalForm';
 

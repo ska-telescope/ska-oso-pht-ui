@@ -20,7 +20,7 @@ import {
   ValueError
 } from '@/utils/validation/validation';
 import type Target from '@/utils/types/target';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import { getTargetSchema } from './targets';
 
 // A target the user is still entering, before it becomes part of the proposal. It is held in a

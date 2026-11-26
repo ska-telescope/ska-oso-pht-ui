@@ -17,7 +17,7 @@ import {
   targetEntryFromTarget,
   TargetEntryType
 } from './targetEntry';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 const icrsTarget: Target = {
   id: 'target-1',
