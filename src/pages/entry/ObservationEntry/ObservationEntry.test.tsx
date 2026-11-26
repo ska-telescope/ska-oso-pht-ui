@@ -1,639 +1,340 @@
 import React from 'react';
-import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
-import { render, screen, act } from '@testing-library/react';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import { ProposalType } from '@/models/proposals/proposal';
+import { storageObject, StoreProvider } from '@utils/storage/store';
+import completeMockStore from '@/utils/MockStore';
+import {
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  NAV,
+  PAGE_OBSERVATION,
+  PROPOSAL_TYPE
+} from '@/utils/constants';
+import ObservationEntry from './ObservationEntry';
+import ObservationInPlace from '@/pages/ObservationPage/ObservationInPlace';
 import {
   DATA_PRODUCT_KIND,
   newDataProduct,
-  STEPPED_FIELD,
-  steppedFromPdm
+  updateImageSizes
 } from '@/models/proposals/dataProducts';
-import userEvent from '@testing-library/user-event';
-import { describe, test, it, vi, expect, beforeEach, afterEach } from 'vitest';
-import '@testing-library/jest-dom';
-import { StoreProvider } from '@utils/storage/store';
-import {
-  PROPOSAL_TYPE,
-  BAND_1_STR,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  DEFAULT_PST_OBSERVATION_LOW,
-  DEFAULT_ZOOM_OBSERVATION_LOW,
-  DETECTED_FILTER_BANK_VALUE,
-  FREQUENCY_GHZ,
-  TELESCOPE_MID_NUM,
-  TYPE_PST,
-  ZOOM_BANDWIDTH_DEFAULT_LOW,
-  ZOOM_CHANNELS_DEFAULT_LOW
-} from '@utils/constants';
-import ObservationEntry from './ObservationEntry';
-
-// ---- Module mocks ----
 
 const mockState = vi.hoisted(() => ({
-  proposalType: undefined as string | undefined,
-  observationTypes: ['spectral'],
-  observations: [] as any[],
-  dataProducts: [] as any[],
-  targets: [] as any[],
-  targetObservation: [] as any[]
+  locationState: null as unknown,
+  navigate: vi.fn()
 }));
 
-// The calibrator lookup goes to the backend; these tests only check when it's made
-const mockBuildCalibrationStrategy = vi.hoisted(() =>
-  vi.fn(async (_client: unknown, { observationId }: { observationId: string }) => ({
-    observatoryDefined: true,
-    id: 'cal-1',
-    observationIdRef: observationId,
-    calibrators: null,
-    notes: null
-  }))
-);
-vi.mock('@/models/proposals/calibrationOperations', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/models/proposals/calibrationOperations')>()),
-  buildCalibrationStrategy: mockBuildCalibrationStrategy
+vi.mock('react-router', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('react-router')>()),
+  useLocation: () => ({ pathname: '/', state: mockState.locationState, search: '', hash: '' }),
+  useNavigate: () => mockState.navigate
 }));
 
-// Setting `state=null` ensures that we can define some non "edit mode" tests.
-// (If we didn't do this the testing environment created state would
-// look as though it had some content so the component would always think
-// it's in edit mode.)
-// Edit-mode tests supply a `data` prop instead to explicitly trigger edit mode.
-vi.mock('react-router', async () => {
-  const actual = await vi.importActual('react-router');
-  return {
-    ...actual,
-    useLocation: () => ({ pathname: '/', state: null, search: '', hash: '' }),
-    useNavigate: () => vi.fn()
-  };
-});
-
+// A cycle with LOW and MID band 5b, with the mock OSD
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
-  const { OSD_CONSTANTS } =
-    await vi.importActual<typeof import('@utils/OSDConstants')>('@utils/OSDConstants');
+  const { MockObservatoryDataFrontend } = await vi.importActual<
+    typeof import('@services/axios/get/getObservatoryData/mockObservatoryDataFrontend')
+  >('@services/axios/get/getObservatoryData/mockObservatoryDataFrontend');
+  const policy = MockObservatoryDataFrontend.policies[1];
+  const capabilities = MockObservatoryDataFrontend.capabilities;
   return {
     useOSDAccessors: () => ({
-      osdLOW: {
-        basicCapabilities: {
-          minFrequencyHz: 50_000_000,
-          maxFrequencyHz: 350_000_000
-        },
-        subArrays: []
-      },
-      osdMID: {
-        basicCapabilities: {
-          receiverInformation: [
-            {
-              rxId: '1',
-              minFrequencyHz: 100_000_000,
-              maxFrequencyHz: 200_000_000
-            }
-          ]
-        },
-        subArrays: []
-      },
-      observatoryConstants: OSD_CONSTANTS,
-      telescopeBand: vi.fn(() => 2),
-      findBand: vi.fn(() => ({
-        minFrequencyHz: 50_000_000,
-        maxFrequencyHz: 350_000_000
-      })),
-      isSV: false,
-      selectedPolicy: null,
-      osdCyclePolicy: null
+      osdLOW: capabilities.low,
+      osdMID: capabilities.mid,
+      osdCapabilities: capabilities,
+      selectedPolicy: policy,
+      osdCyclePolicy: policy.cyclePolicies,
+      isCustomAllowed: () => true,
+      telescopeBand: (band: string) => (band === 'low_band' ? 1 : 2)
     })
   };
 });
 
-vi.mock('@ska-telescope/ska-login-page', () => ({
-  isLoggedIn: () => true
+vi.mock('@/utils/help/useHelp', () => ({ useHelp: () => ({ setHelp: vi.fn() }) }));
+vi.mock('@/components/layout/HelpShell/HelpShell', () => ({
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
-
-const mockUpdateAppContent2 = vi.fn();
-const mockHelpComponent = vi.fn();
-const mockHelpComponentURL = vi.fn();
-
-vi.mock('@utils/storage/store', () => ({
-  storageObject: {
-    useStore: () => ({
-      application: {
-        content2: {
-          proposalType: mockState.proposalType,
-          observations: mockState.observations,
-          dataProducts: mockState.dataProducts,
-          targets: mockState.targets,
-          targetObservation: mockState.targetObservation
-        }
-      },
-      updateAppContent2: mockUpdateAppContent2,
-      helpComponent: mockHelpComponent,
-      helpComponentURL: mockHelpComponentURL
-    })
-  },
-  StoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
-}));
-
-// Force a spectral zoom observation type by default, so we can verify bandwidth changes
-vi.mock('@utils/helpers.ts', async () => {
-  const actual = await vi.importActual<typeof import('@utils/helpers')>('@utils/helpers.ts');
-  return {
-    ...actual,
-    obTypeTransform: () => mockState.observationTypes
-  };
-});
-
-// Replace BandwidthField with a button so tests can drive setBandwidth
-// without needing to operate a full MUI Select.
-const NEW_BANDWIDTH = 6; // must differ from ZOOM_BANDWIDTH_DEFAULT_LOW (8), and be a legal coarse zoom value (5-8)
-vi.mock('@/components/fields/bandwidthFields/bandwidth/bandwidth', () => ({
-  default: ({ setValue }: { setValue: (v: number) => void }) => (
-    <button data-testid="bandwidth-change-btn" onClick={() => setValue(NEW_BANDWIDTH)}>
-      change bandwidth
-    </button>
+vi.mock('@/components/layout/pageBannerPPT/PageBannerPPT', () => ({ default: () => null }));
+vi.mock('@/components/button/Add/Add', () => ({
+  default: (props: { testId: string; action: () => void; disabled: boolean }) => (
+    <button data-testid={props.testId} onClick={props.action} disabled={props.disabled} />
   )
 }));
 
-// ---- Helpers ----
-
-// Exposes the global form, which holds the links and calibration
+// Exposes the proposal form
 let formProbe: UseFormReturn<ProposalType>;
-const FormProbe = ({ onForm }: { onForm: (form: UseFormReturn<ProposalType>) => void }) => {
-  onForm(useFormContext<ProposalType>());
+const FormProbe = () => {
+  formProbe = useFormContext<ProposalType>();
   return null;
 };
-const keepForm = (form: UseFormReturn<ProposalType>) => {
-  formProbe = form;
-};
 
-const wrapper = (component: React.ReactElement) =>
+// The proposal form is seeded from the store, which holds the observations in its own shape
+const renderWithProposal = (component: React.ReactElement, proposal: object = {}) => {
+  vi.spyOn(storageObject, 'useStore').mockReturnValue({
+    ...completeMockStore,
+    application: {
+      ...completeMockStore.application,
+      content2: {
+        id: 'prsl-1',
+        proposalType: PROPOSAL_TYPE.STANDARD,
+        targets: [],
+        targetObservation: [],
+        observations: [],
+        ...proposal
+      }
+    }
+  } as never);
   render(
     <StoreProvider>
       <TestProposalFormProvider>
-        <FormProbe onForm={keepForm} />
+        <FormProbe />
         {component}
       </TestProposalFormProvider>
     </StoreProvider>
   );
+};
 
-// ---- Tests ----
+const numberField = (label: string) => screen.getByLabelText(label, { exact: false });
+// Typed as a user does: a field with decimal places takes a change without typing as a step
+const typeInto = async (label: string, value: string) => {
+  const user = userEvent.setup();
+  await user.clear(numberField(label));
+  await user.type(numberField(label), value);
+};
+const select = (label: string, option: RegExp | string) => {
+  fireEvent.mouseDown(screen.getByRole('combobox', { name: label }));
+  fireEvent.click(screen.getByRole('option', { name: option }));
+};
+const addButton = () => screen.getByTestId('addObservationButtonEntry');
+
+const legacyObservation = (id: string) => ({ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id });
 
 describe('<ObservationEntry />', () => {
-  test('renders correctly', async () => {
-    await act(async () => {
-      wrapper(<ObservationEntry />);
-    });
+  afterEach(() => {
+    vi.restoreAllMocks();
+    mockState.locationState = null;
+    mockState.navigate.mockClear();
   });
 
-  test('defaults a new LOW zoom observation to the coarsest resolution, 1000 channels, and the band centre frequency', async () => {
-    vi.clearAllMocks();
+  test('adds a new observation in the first band of the cycle', async () => {
+    renderWithProposal(<ObservationEntry />);
 
-    await act(async () => {
-      wrapper(<ObservationEntry />);
-    });
+    await waitFor(() => expect(addButton()).toBeEnabled());
+    fireEvent.click(addButton());
 
-    expect(mockUpdateAppContent2).toHaveBeenCalledWith(
+    expect(formProbe.getValues('observations')).toEqual([
       expect.objectContaining({
-        observations: expect.arrayContaining([
-          expect.objectContaining({
-            bandwidth: ZOOM_BANDWIDTH_DEFAULT_LOW,
-            zoomChannels: ZOOM_CHANNELS_DEFAULT_LOW,
-            centralFrequency: 200
-          })
-        ])
+        observingBand: 'low_band',
+        subarray: 'aa2_sv',
+        observingMode: 'continuum',
+        centralFrequency: { value: 199.609375, unit: 'MHz' },
+        bandwidth: { value: 150, unit: 'MHz' }
       })
+    ]);
+    expect(mockState.navigate).toHaveBeenCalledWith(NAV[PAGE_OBSERVATION]);
+  });
+
+  test('updates the observation passed in the route state, keeping the others', async () => {
+    mockState.locationState = { id: 'obs-2' };
+    renderWithProposal(<ObservationEntry />, {
+      observations: [legacyObservation('obs-1'), legacyObservation('obs-2')]
+    });
+    const update = screen.getByTestId('updateObservationButtonEntry');
+
+    fireEvent.change(numberField('sensitivityCalculatorResults.integrationTime'), {
+      target: { value: '3' }
+    });
+    await waitFor(() => expect(update).toBeEnabled());
+    fireEvent.click(update);
+
+    const [first, second] = formProbe.getValues('observations');
+    expect(first).toMatchObject({ id: 'obs-1', integrationTime: { value: 1, unit: 'h' } });
+    expect(second).toMatchObject({ id: 'obs-2', integrationTime: { value: 3, unit: 'h' } });
+  });
+
+  test("can't be added while invalid, and shows the error on the field", async () => {
+    renderWithProposal(<ObservationEntry />);
+    await waitFor(() => expect(addButton()).toBeEnabled());
+
+    // Less than 8 coarse channels
+    await typeInto('bandwidth.label', '5');
+
+    expect(
+      await screen.findByText('Bandwidth must be larger than the channel width (6250.00 kHz)')
+    ).toBeInTheDocument();
+    expect(addButton()).toBeDisabled();
+  });
+
+  test('starts again from the MID defaults when the band changes to MID', async () => {
+    renderWithProposal(<ObservationEntry />);
+
+    select('observingBand.label', /Band_5b/);
+
+    expect(numberField('weather.label')).toBeInTheDocument();
+    await waitFor(() => expect(addButton()).toBeEnabled());
+    fireEvent.click(addButton());
+    expect(formProbe.getValues('observations')).toEqual([
+      expect.objectContaining({
+        telescope: 'ska_mid',
+        observingBand: 'Band_5b',
+        integrationTime: { value: 10, unit: 'min' },
+        elevation: 15,
+        weather: 10
+      })
+    ]);
+  });
+
+  test('keeps the zoom factor, channels and bandwidth of a spectral line observation in step', async () => {
+    renderWithProposal(<ObservationEntry />);
+    select('observationType.label', 'observationType.spectral');
+    const channels = () => numberField('zoomChannels.label') as HTMLInputElement;
+    const bandwidth = () => numberField('bandwidth.label') as HTMLInputElement;
+
+    // 1000 channels of 1808.45 Hz
+    fireEvent.change(channels(), { target: { value: '1000' } });
+    expect(bandwidth().value).toBe('1.808449');
+
+    // Half the width keeps the channels and halves the bandwidth
+    select('spectralResolution.label', /^904\.22 Hz/);
+    expect(channels().value).toBe('1000');
+    expect(bandwidth().value).toBe('0.904225');
+
+    // A bandwidth that isn't a whole number of channels
+    await typeInto('bandwidth.label', '0.9');
+    expect(Number(channels().value)).toBeCloseTo(995.33, 2);
+    // On the channels, and on the bandwidth that set them
+    const notWhole = 'Number of channels must be a whole number of at least 2';
+    expect(await screen.findAllByText(notWhole)).toHaveLength(2);
+
+    // The bandwidth's up arrow steps to the next whole number of channels, which clears both
+    fireEvent.change(bandwidth(), { target: { value: '0.901' } });
+    expect(channels().value).toBe('996');
+    await waitFor(() => expect(screen.queryByText(notWhole)).toBeNull());
+  });
+
+  test('shows the central frequency is off the grid when an odd number of channels moves it', async () => {
+    renderWithProposal(<ObservationEntry />);
+    select('observationType.label', 'observationType.spectral');
+    const offGrid = 'Invalid central frequency - please adjust using the arrows';
+
+    // The default central frequency is on the grid of the default 1800 channels
+    await typeInto('zoomChannels.label', '1798');
+    expect(screen.queryByText(offGrid)).toBeNull();
+
+    await typeInto('zoomChannels.label', '1801');
+    expect(await screen.findByText(offGrid)).toBeInTheDocument();
+  });
+
+  test('joins a new group', async () => {
+    renderWithProposal(<ObservationEntry />);
+
+    select('groupObservations.label', 'groupObservations.new');
+    await waitFor(() => expect(addButton()).toBeEnabled());
+    fireEvent.click(addButton());
+
+    expect(formProbe.getValues('observations')[0].groupId).toMatch(/^group-/);
+  });
+});
+
+// An image of the observation with the user's sizes
+const image = (observationId: string) =>
+  ({
+    ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, observationId),
+    id: 'dp-1',
+    imageSize: { value: 12.3, unit: 'deg' },
+    pixelSize: { value: 4.5, unit: 'arcsec' }
+  }) as Parameters<typeof updateImageSizes>[0];
+
+describe('the data products of an edited observation', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    mockState.locationState = null;
+  });
+
+  // 249.609375 MHz is on the LOW coarse channel grid
+
+  test('follow each change of the central frequency in place', async () => {
+    renderWithProposal(<ObservationInPlace />, {
+      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      observations: [legacyObservation('obs-1')],
+      dataProducts: [image('obs-1')]
+    });
+
+    await typeInto('centralFrequency.label', '249.609375');
+
+    expect(formProbe.getValues('dataProducts')).toEqual([
+      updateImageSizes(image('obs-1'), 249.609375)
+    ]);
+  });
+
+  test("follow the entry page's observation when it is updated, and not before", async () => {
+    mockState.locationState = { id: 'obs-1' };
+    renderWithProposal(<ObservationEntry />, {
+      observations: [legacyObservation('obs-1')],
+      dataProducts: [image('obs-1')]
+    });
+    const update = screen.getByTestId('updateObservationButtonEntry');
+
+    await typeInto('centralFrequency.label', '249.609375');
+    expect(formProbe.getValues('dataProducts')).toEqual([image('obs-1')]);
+
+    await waitFor(() => expect(update).toBeEnabled());
+    fireEvent.click(update);
+    expect(formProbe.getValues('dataProducts')).toEqual([
+      updateImageSizes(image('obs-1'), 249.609375)
+    ]);
+  });
+
+  test("stay as they are when the entry page's observation is updated without a change", async () => {
+    mockState.locationState = { id: 'obs-1' };
+    renderWithProposal(<ObservationEntry />, {
+      observations: [legacyObservation('obs-1')],
+      dataProducts: [image('obs-1')]
+    });
+    const update = screen.getByTestId('updateObservationButtonEntry');
+
+    await waitFor(() => expect(update).toBeEnabled());
+    fireEvent.click(update);
+
+    expect(formProbe.getValues('dataProducts')).toEqual([image('obs-1')]);
+  });
+});
+
+describe('<ObservationInPlace />', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test("edits the SV proposal's observation in the proposal form", () => {
+    renderWithProposal(<ObservationInPlace />, {
+      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      observations: [legacyObservation('obs-1')]
+    });
+
+    fireEvent.change(numberField('sensitivityCalculatorResults.integrationTime'), {
+      target: { value: '3' }
+    });
+
+    expect(formProbe.getValues('observations')).toEqual([
+      expect.objectContaining({ id: 'obs-1', integrationTime: { value: 3, unit: 'h' } })
+    ]);
+  });
+
+  test('has the observing mode of the Details page, and no identifier, group or elevation', () => {
+    renderWithProposal(<ObservationInPlace />, {
+      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      observations: [legacyObservation('obs-1')]
+    });
+
+    expect(screen.getByRole('combobox', { name: 'observationType.label' })).toHaveAttribute(
+      'aria-disabled',
+      'true'
     );
-  });
-
-  describe('calibrator refresh', () => {
-    const TARGET = { id: 'T1', name: 'M1', kind: 0, raStr: '0:0:0', decStr: '0:0:0' };
-
-    beforeEach(() => {
-      vi.clearAllMocks();
-      mockState.targets = [TARGET];
-      mockState.targetObservation = [
-        { targetId: 'T1', observationId: DEFAULT_ZOOM_OBSERVATION_LOW.id, dataProductsSDPId: 'DP1' }
-      ];
-    });
-
-    afterEach(() => {
-      mockState.observations = [];
-      mockState.targets = [];
-      mockState.targetObservation = [];
-    });
-
-    it('looks up the calibrators again for the linked target when the integration time changes', async () => {
-      // The stored observation has a different integration time from the one being edited
-      mockState.observations = [
-        {
-          ...DEFAULT_ZOOM_OBSERVATION_LOW,
-          supplied: { ...DEFAULT_ZOOM_OBSERVATION_LOW.supplied, value: 99 }
-        }
-      ];
-
-      await act(async () => {
-        wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
-      });
-
-      expect(mockBuildCalibrationStrategy).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.objectContaining({
-          observationId: DEFAULT_ZOOM_OBSERVATION_LOW.id,
-          target: expect.objectContaining({ id: 'T1' })
-        })
-      );
-    });
-
-    it('does not look up the calibrators when only another field changes', async () => {
-      const user = userEvent.setup();
-      mockState.observations = [DEFAULT_ZOOM_OBSERVATION_LOW];
-
-      await act(async () => {
-        wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
-      });
-      await user.click(screen.getByTestId('bandwidth-change-btn'));
-      await act(async () => {});
-
-      expect(mockUpdateAppContent2).toHaveBeenCalled();
-      expect(mockBuildCalibrationStrategy).not.toHaveBeenCalled();
-    });
-
-    describe('when the lookup returns', () => {
-      // Holds the lookup open, so the links can change while it runs
-      let finishLookup: () => void;
-
-      beforeEach(() => {
-        mockState.observations = [
-          {
-            ...DEFAULT_ZOOM_OBSERVATION_LOW,
-            supplied: { ...DEFAULT_ZOOM_OBSERVATION_LOW.supplied, value: 99 }
-          }
-        ];
-        mockBuildCalibrationStrategy.mockImplementationOnce(async (_client, { observationId }) => {
-          await new Promise<void>((resolve) => (finishLookup = resolve));
-          return {
-            observatoryDefined: true,
-            id: 'cal-1',
-            observationIdRef: observationId,
-            calibrators: null,
-            notes: null
-          };
-        });
-      });
-
-      const strategyIds = () =>
-        formProbe.getValues('calibrationStrategy').map((cal) => cal.observationIdRef);
-
-      it('applies the strategy while the target is still linked', async () => {
-        await act(async () => {
-          wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
-        });
-        await act(async () => finishLookup());
-
-        expect(strategyIds()).toEqual([DEFAULT_ZOOM_OBSERVATION_LOW.id]);
-      });
-
-      it('leaves the strategy out when the target was unlinked during the lookup', async () => {
-        await act(async () => {
-          wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
-        });
-        act(() => formProbe.setValue('targetObservation', []));
-        await act(async () => finishLookup());
-
-        expect(strategyIds()).toEqual([]);
-      });
-    });
-  });
-
-  describe('bandwidth propagation to storage', () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-    });
-
-    it('saves updated zoom bandwidth to storage when bandwidth is changed (add mode)', async () => {
-      const user = userEvent.setup();
-
-      // Add mode (no data prop, state=null) → updateStorageProposal routes through
-      // the synchronous addObservationToProposal path.
-      await act(async () => {
-        wrapper(<ObservationEntry />);
-      });
-      mockUpdateAppContent2.mockClear();
-
-      await user.click(screen.getByTestId('bandwidth-change-btn'));
-      await act(async () => {});
-
-      expect(mockUpdateAppContent2).toHaveBeenCalledWith(
-        expect.objectContaining({
-          observations: expect.arrayContaining([
-            expect.objectContaining({ bandwidth: NEW_BANDWIDTH })
-          ])
-        })
-      );
-    });
-
-    it('saves updated zoom bandwidth to storage when bandwidth is changed (edit mode)', async () => {
-      const user = userEvent.setup();
-
-      // Edit mode: passing an existing observation as `data` makes isEdit()=true,
-      // so updateStorageProposal routes through the async
-      // updateObservationOnProposal path. setProposal is mocked (no React state
-      // update), so the async function resolves cleanly without scheduler noise.
-      await act(async () => {
-        wrapper(<ObservationEntry data={DEFAULT_ZOOM_OBSERVATION_LOW} />);
-      });
-      mockUpdateAppContent2.mockClear();
-
-      await user.click(screen.getByTestId('bandwidth-change-btn'));
-      await act(async () => {});
-
-      expect(mockUpdateAppContent2).toHaveBeenCalledWith(
-        expect.objectContaining({
-          observations: expect.arrayContaining([
-            expect.objectContaining({ bandwidth: NEW_BANDWIDTH })
-          ])
-        })
-      );
-    });
-  });
-
-  describe('central frequency rounding and grid-snapping', () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-    });
-
-    it('rounds central frequency to the nearest Hz when saving to storage', async () => {
-      const observation = {
-        ...DEFAULT_CONTINUUM_OBSERVATION_LOW,
-        centralFrequency: 200.0000006 // 200,000,000.6 Hz
-      };
-
-      await act(async () => {
-        wrapper(<ObservationEntry data={observation} />);
-      });
-      await act(async () => {});
-
-      expect(mockUpdateAppContent2).toHaveBeenCalledWith(
-        expect.objectContaining({
-          observations: expect.arrayContaining([
-            expect.objectContaining({ centralFrequency: 200.000001 }) // rounds up to 200,000,001 Hz
-          ])
-        })
-      );
-    });
-
-    it('preserves a misaligned central frequency exactly when loading a LOW zoom observation, rather than auto-snapping it', async () => {
-      const observation = {
-        ...DEFAULT_ZOOM_OBSERVATION_LOW,
-        centralFrequency: 200.001 // not aligned to the 1808.449074-Hz channel grid
-      };
-
-      await act(async () => {
-        wrapper(<ObservationEntry data={observation} />);
-      });
-      await act(async () => {});
-
-      expect(mockUpdateAppContent2).toHaveBeenCalledWith(
-        expect.objectContaining({
-          observations: expect.arrayContaining([
-            expect.objectContaining({ centralFrequency: 200.001 })
-          ])
-        })
-      );
-    });
-  });
-
-  describe('observation type field', () => {
-    const observationTypeCombobox = () =>
-      screen.getByTestId('observationType').querySelector('[role="combobox"]');
-
-    beforeEach(() => {
-      mockState.observationTypes = ['continuum', 'spectral'];
-    });
-
-    afterEach(() => {
-      mockState.proposalType = undefined;
-      mockState.observationTypes = ['spectral'];
-    });
-
-    it('is enabled for proposals that are not science verification', async () => {
-      mockState.proposalType = PROPOSAL_TYPE.STANDARD;
-      await act(async () => {
-        wrapper(<ObservationEntry />);
-      });
-      expect(observationTypeCombobox()).not.toHaveAttribute('aria-disabled', 'true');
-    });
-
-    it('is disabled for science verification proposals', async () => {
-      mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-      await act(async () => {
-        wrapper(<ObservationEntry />);
-      });
-      expect(observationTypeCombobox()).toHaveAttribute('aria-disabled', 'true');
-    });
-  });
-
-  describe('frequency set up', () => {
-    beforeEach(() => {
-      mockState.observationTypes = ['continuum', 'spectral', 'pst'];
-    });
-
-    afterEach(() => {
-      mockState.proposalType = undefined;
-      mockState.observationTypes = ['spectral'];
-    });
-
-    it('shows the continuum bandwidth for a PST observation', async () => {
-      mockState.proposalType = PROPOSAL_TYPE.STANDARD;
-      await act(async () => {
-        wrapper(<ObservationEntry data={DEFAULT_PST_OBSERVATION_LOW} />);
-      });
-      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
-      expect(screen.queryByTestId('bandwidth-change-btn')).not.toBeInTheDocument();
-      expect(screen.getByTestId('pstMode')).toBeInTheDocument();
-    });
-
-    it('shows sub-bands for a continuum observation', async () => {
-      mockState.proposalType = PROPOSAL_TYPE.STANDARD;
-      await act(async () => {
-        wrapper(<ObservationEntry data={DEFAULT_CONTINUUM_OBSERVATION_LOW} />);
-      });
-      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
-      expect(screen.getByTestId('subBands')).toBeInTheDocument();
-    });
-
-    it('hides sub-bands for a continuum observation in a science verification proposal', async () => {
-      mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-      await act(async () => {
-        wrapper(<ObservationEntry data={DEFAULT_CONTINUUM_OBSERVATION_LOW} />);
-      });
-      expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
-      expect(screen.queryByTestId('subBands')).not.toBeInTheDocument();
-    });
-  });
-
-  describe('revisiting the observation page', () => {
-    // The data product as the form holds it after the page has written the observation
-    const savedDataProduct = (id: string) =>
-      formProbe.getValues('dataProducts').find((dp) => dp.id === id);
-
-    const renderWithDataProduct = async (observation: any, dataProduct: any) => {
-      mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-      mockState.observationTypes = [observation.type];
-      mockState.observations = [observation];
-      mockState.dataProducts = [dataProduct];
-      await act(async () => {
-        wrapper(<ObservationEntry data={observation} />);
-      });
-    };
-
-    beforeEach(() => {
-      vi.clearAllMocks();
-    });
-
-    afterEach(() => {
-      mockState.proposalType = undefined;
-      mockState.observationTypes = ['spectral'];
-      mockState.observations = [];
-      mockState.dataProducts = [];
-    });
-
-    it('keeps the user-entered image size and pixel size of a continuum data product', async () => {
-      await renderWithDataProduct(DEFAULT_CONTINUUM_OBSERVATION_LOW, {
-        ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, DEFAULT_CONTINUUM_OBSERVATION_LOW.id),
-        id: 'SDP-IMAGES',
-        imageSize: { value: 12.3, unit: 'deg' },
-        pixelSize: { value: 4.5, unit: 'arcsec' }
-      });
-
-      expect(mockUpdateAppContent2).toHaveBeenCalled();
-      expect(savedDataProduct('SDP-IMAGES')).toEqual(
-        expect.objectContaining({
-          imageSize: { value: 12.3, unit: 'deg' },
-          pixelSize: { value: 4.5, unit: 'arcsec' }
-        })
-      );
-    });
-
-    // TODO Opening a saved MID observation writes it with the central frequency's units briefly in
-    //  MHz, which counts as a frequency change and resizes the image data products, replacing the
-    //  user's sizes. Fix when the observation moves to the form.
-    it.skip('keeps the saved central frequency and image sizes of a MID continuum observation', async () => {
-      const observation = {
-        ...DEFAULT_CONTINUUM_OBSERVATION_LOW,
-        telescope: TELESCOPE_MID_NUM,
-        observingBand: BAND_1_STR,
-        centralFrequency: 0.85,
-        centralFrequencyUnits: FREQUENCY_GHZ,
-        continuumBandwidth: 0.4,
-        continuumBandwidthUnits: FREQUENCY_GHZ
-      };
-      await renderWithDataProduct(observation, {
-        ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, observation.id),
-        id: 'SDP-IMAGES',
-        imageSize: { value: 12.3, unit: 'deg' },
-        pixelSize: { value: 4.5, unit: 'arcsec' }
-      });
-
-      const savedProposal = mockUpdateAppContent2.mock.calls.at(-1)?.[0];
-      expect(savedProposal.observations[0]).toEqual(
-        expect.objectContaining({
-          centralFrequency: 0.85,
-          centralFrequencyUnits: FREQUENCY_GHZ,
-          continuumBandwidth: 0.4,
-          continuumBandwidthUnits: FREQUENCY_GHZ
-        })
-      );
-      expect(savedDataProduct('SDP-IMAGES')).toEqual(
-        expect.objectContaining({
-          imageSize: { value: 12.3, unit: 'deg' },
-          pixelSize: { value: 4.5, unit: 'arcsec' }
-        })
-      );
-    });
-
-    it("sets a spectral data product's channels out to the observation's zoom channels", async () => {
-      const saved = { ...DEFAULT_ZOOM_OBSERVATION_LOW, zoomChannels: 100 };
-      mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-      mockState.observationTypes = [saved.type];
-      mockState.observations = [saved];
-      mockState.dataProducts = [
-        {
-          ...newDataProduct(DATA_PRODUCT_KIND.SPECTRAL_IMAGE, saved.id),
-          id: 'SDP-SPECTRAL',
-          channelsOut: 100
-        }
-      ];
-      // The page holds other zoom channels than the stored observation, as after an edit
-      await act(async () => {
-        wrapper(<ObservationEntry data={{ ...saved, zoomChannels: 200 }} />);
-      });
-
-      expect(savedDataProduct('SDP-SPECTRAL')).toMatchObject({ channelsOut: 200 });
-    });
-
-    describe('for a PST observation saved without a mode', () => {
-      const saved = { ...DEFAULT_PST_OBSERVATION_LOW, pstMode: undefined };
-      // The user's values, which differ from the flow-through defaults
-      const flowThrough = {
-        id: 'SDP-PST',
-        observationId: saved.id,
-        kind: DATA_PRODUCT_KIND.PST_FLOW_THROUGH,
-        polarisations: ['X'],
-        bitDepth: 4
-      };
-
-      const formDataProducts = () => formProbe.getValues('dataProducts');
-
-      it('keeps its data product, as it is flow-through', async () => {
-        mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-        mockState.observationTypes = [TYPE_PST];
-        mockState.observations = [saved];
-        mockState.dataProducts = [flowThrough];
-        await act(async () => {
-          wrapper(<ObservationEntry data={saved} />);
-        });
-
-        expect(formDataProducts()).toEqual([flowThrough]);
-      });
-
-      it("replaces its data product with the new mode's when the mode changes", async () => {
-        mockState.proposalType = PROPOSAL_TYPE.SCIENCE_VERIFICATION;
-        mockState.observationTypes = [TYPE_PST];
-        mockState.observations = [saved];
-        mockState.dataProducts = [flowThrough];
-        await act(async () => {
-          wrapper(<ObservationEntry data={{ ...saved, pstMode: DETECTED_FILTER_BANK_VALUE }} />);
-        });
-
-        expect(formDataProducts()).toEqual([
-          expect.objectContaining({
-            id: 'SDP-PST',
-            kind: DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK
-          })
-        ]);
-      });
-    });
-
-    it('keeps the user-entered values of a PST detected filterbank data product', async () => {
-      const observation = { ...DEFAULT_PST_OBSERVATION_LOW, pstMode: DETECTED_FILTER_BANK_VALUE };
-      const userValues = {
-        id: 'SDP-PST',
-        observationId: observation.id,
-        kind: DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK,
-        polarisations: ['I'],
-        outputFrequencyResolutionKhz: steppedFromPdm(
-          3,
-          STEPPED_FIELD.OUTPUT_FREQUENCY_RESOLUTION_KHZ
-        ),
-        outputSamplingIntervalMs: steppedFromPdm(5, STEPPED_FIELD.OUTPUT_SAMPLING_INTERVAL_MS),
-        bitDepth: 4,
-        dispersionMeasure: 12,
-        rotationMeasure: 7
-      };
-      await renderWithDataProduct(observation, userValues);
-
-      expect(mockUpdateAppContent2).toHaveBeenCalled();
-      expect(savedDataProduct('SDP-PST')).toEqual(userValues);
-    });
+    expect(screen.queryByTestId('observationId')).not.toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: 'groupObservations.label' })).toBeNull();
+    expect(screen.queryByLabelText('elevation.label', { exact: false })).toBeNull();
   });
 });

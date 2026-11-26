@@ -15,7 +15,7 @@ export const buildSvContinuumSpectralProposal = (): ProposalFixture => ({
 
   observation: {
     centralFrequency: '199.609375', // MHz
-    bandwidth: '150', // MHz
+    bandwidth: '150.000000', // MHz
     integrationTime: '1' // h
   },
 

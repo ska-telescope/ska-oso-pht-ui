@@ -23,7 +23,7 @@ export const buildSvSpectralProposal = (): ProposalFixture => ({
   // The bandwidth isn't entered: it follows from the number of channels and the spectral
   // resolution (2000 x 226.06 Hz = 0.45212 MHz)
   observation: {
-    centralFrequency: '200', // MHz
+    centralFrequency: '200.000000', // MHz
     numberOfChannels: '2000',
     spectralResolution: '226.06 Hz (338.8 m/s)',
     integrationTime: '1' // h

@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '@/utils/constants';
+import { STATUS_ERROR, STATUS_OK } from '@/utils/constants';
 import { documentsFromPdm, documentsToPdm, getDocumentPageStatus } from './documents';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 
@@ -33,9 +33,9 @@ describe('documents slice', () => {
     expect(documentsToPdm({ sciencePDF: null, technicalPDF: null })).toEqual([]);
   });
 
-  test('page status follows the reference and upload state', () => {
+  test('page status is complete only once the document is uploaded', () => {
     expect(getDocumentPageStatus(null)).toBe(STATUS_ERROR);
-    expect(getDocumentPageStatus({ documentId: 'x', isUploadedPdf: false })).toBe(STATUS_PARTIAL);
+    expect(getDocumentPageStatus({ documentId: 'x', isUploadedPdf: false })).toBe(STATUS_ERROR);
     expect(getDocumentPageStatus({ documentId: 'x', isUploadedPdf: true })).toBe(STATUS_OK);
   });
 

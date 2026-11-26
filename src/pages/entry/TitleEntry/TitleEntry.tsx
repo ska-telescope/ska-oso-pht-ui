@@ -21,7 +21,6 @@ import {
   STATUS_ERROR
 } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
-import { Proposal } from '@utils/types/proposal.tsx';
 import { validateTitlePage } from '@utils/validation/validation.tsx';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexPreviewModal';
@@ -41,12 +40,14 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   const { t } = useScopedTranslation();
   const theme = useTheme();
   const { isSV } = useOSDAccessors();
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const title = useWatch<ProposalType, 'title'>({ name: 'title' }) ?? '';
   const {
     field: { value: selectedProposalType, onChange: onProposalTypeChange }
-  } = useController<ProposalType, 'proposalType'>({ name: 'proposalType' });
-  const proposalType = selectedProposalType ?? undefined;
+  } = useController<ProposalType, 'proposalType.type'>({ name: 'proposalType.type' });
+  const {
+    field: { value: subTypes, onChange: onSubTypesChange }
+  } = useController<ProposalType, 'proposalType.subTypes'>({ name: 'proposalType.subTypes' });
   const { errors } = useFormState<ProposalType>();
 
   const [tempValue, setTempValue] = React.useState<ProposalTypeType | undefined>(undefined);
@@ -58,15 +59,6 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const MAX_CHAR = Number(t('title.maxChar'));
   const MAX_WORD = Number(t('title.maxWord'));
-
-  const getProposal = React.useCallback(
-    () => application.content2 as Proposal,
-    [application.content2]
-  );
-  const setProposal = React.useCallback(
-    (proposal: Proposal) => updateAppContent2(proposal),
-    [updateAppContent2]
-  );
 
   const getProposalState = React.useCallback(
     () => application.content1 as number[],
@@ -88,15 +80,20 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     const status =
       errors.title || errors.proposalType
         ? STATUS_ERROR
-        : validateTitlePage({ ...getProposal(), title, proposalType });
+        : validateTitlePage({ title, proposalType: { type: selectedProposalType, subTypes } });
     setTheProposalState(status);
-  }, [errors.title, errors.proposalType, getProposal, setTheProposalState, title, proposalType]);
+  }, [
+    errors.title,
+    errors.proposalType,
+    setTheProposalState,
+    title,
+    selectedProposalType,
+    subTypes
+  ]);
 
   const handleDialogResponse = () => {
     onProposalTypeChange(tempValue);
-    // The sub-types belong to the type, so they start again; the type itself reaches the store
-    // through useCopySlicesToStore
-    setProposal({ ...getProposal(), proposalSubType: [] });
+    onSubTypesChange([]);
     setOpenDialog(false);
   };
 
@@ -106,34 +103,24 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   };
 
   function clickProposal(type: ProposalTypeType) {
-    if (!proposalType) {
+    if (!selectedProposalType) {
       onProposalTypeChange(type);
-    } else if (proposalType !== type) {
+    } else if (selectedProposalType !== type) {
       confirmChange(type);
     }
   }
 
   function clickSubProposal(id: ProposalSubTypeType) {
-    let removed = false;
-    const newList: ProposalSubTypeType[] = [];
-    getProposal().proposalSubType?.forEach((subType) => {
-      if (subType !== id) {
-        newList.push(subType);
-      } else {
-        removed = true;
-      }
-    });
-    if (!removed) {
-      newList.push(id);
-    }
-    setProposal({ ...getProposal(), proposalSubType: newList });
+    onSubTypesChange(
+      subTypes.includes(id) ? subTypes.filter((subType) => subType !== id) : [...subTypes, id]
+    );
   }
 
-  const setCardBG = (in1: ProposalTypeType | undefined, in2: ProposalTypeType) =>
+  const setCardBG = (in1: ProposalTypeType | null, in2: ProposalTypeType) =>
     in1 === in2 ? theme.palette.secondary.main : theme.palette.primary.main;
-  const setCardFG = (in1: ProposalTypeType | undefined, in2: ProposalTypeType) =>
+  const setCardFG = (in1: ProposalTypeType | null, in2: ProposalTypeType) =>
     in1 === in2 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
-  const setCardClassName = (in1: ProposalTypeType | undefined, in2: ProposalTypeType) =>
+  const setCardClassName = (in1: ProposalTypeType | null, in2: ProposalTypeType) =>
     in1 === in2 ? 'active' : 'inactive';
 
   const setCardBG2 = (in1: ProposalSubTypeType[], in2: ProposalSubTypeType) => {
@@ -153,12 +140,12 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     return (
       <Grid key={id} size={{ md: 4, lg: 3 }}>
         <CardTitle
-          className={setCardClassName(proposalType, id)}
+          className={setCardClassName(selectedProposalType, id)}
           code={t('proposalType.code.' + id)}
-          colorAvatarBG={setCardFG(proposalType, id)}
-          colorAvatarFG={setCardBG(proposalType, id)}
-          colorCardBG={setCardBG(proposalType, id)}
-          colorCardFG={setCardFG(proposalType, id)}
+          colorAvatarBG={setCardFG(selectedProposalType, id)}
+          colorAvatarFG={setCardBG(selectedProposalType, id)}
+          colorCardBG={setCardBG(selectedProposalType, id)}
+          colorCardFG={setCardFG(selectedProposalType, id)}
           id={`ProposalType-${id}`}
           onClick={() => clickProposal(id)}
           title={t('proposalType.title.' + id)}
@@ -174,13 +161,13 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
           <Card
             style={{
-              color: setCardFG2(getProposal().proposalSubType ?? [], id),
-              backgroundColor: setCardBG2(getProposal().proposalSubType ?? [], id),
+              color: setCardFG2(subTypes, id),
+              backgroundColor: setCardBG2(subTypes, id),
               display: 'flex',
               justifyContent: 'center',
               minHeight: '90px'
             }}
-            className={setCardClassName2(getProposal().proposalSubType ?? [], id)}
+            className={setCardClassName2(subTypes, id)}
             onClick={() => clickSubProposal(id)}
             variant="outlined"
             id={`proposalAttribute-${id}`}
@@ -191,8 +178,8 @@ export default function TitleEntry({ page }: TitleEntryProps) {
                   <Avatar
                     variant="rounded"
                     style={{
-                      color: setCardBG2(getProposal().proposalSubType ?? [], id),
-                      backgroundColor: setCardFG2(getProposal().proposalSubType ?? [], id)
+                      color: setCardBG2(subTypes, id),
+                      backgroundColor: setCardFG2(subTypes, id)
                     }}
                   >
                     <Typography variant="body2" component="div">
@@ -286,10 +273,8 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     );
   };
 
-  const getSubTypes = (): ProposalSubTypeType[] => {
-    const type = proposalType;
-    return type ? (PROPOSAL_TYPE_SUBTYPES[type] ?? []) : [];
-  };
+  const getSubTypes = (): ProposalSubTypeType[] =>
+    selectedProposalType ? (PROPOSAL_TYPE_SUBTYPES[selectedProposalType] ?? []) : [];
 
   const proposalAttributes = () => (
     <Grid
@@ -309,37 +294,35 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const row1 = () => {
     return (
-      getProposal().title !== undefined && (
+      <Grid
+        container
+        direction="row"
+        spacing={2}
+        sx={{
+          pl: 2,
+          pb: 4,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <Grid
-          container
-          direction="row"
-          spacing={2}
+          size={{ md: 12, lg: 6 }}
           sx={{
-            pl: 2,
-            pb: 4,
-            justifyContent: 'center',
-            alignItems: 'center'
+            display: { xs: 'block', lg: 'none' }
           }}
         >
-          <Grid
-            size={{ md: 12, lg: 6 }}
-            sx={{
-              display: { xs: 'block', lg: 'none' }
-            }}
-          >
-            {titleField(true)}
-          </Grid>
-
-          <Grid
-            size={{ md: 12, lg: 6 }}
-            sx={{
-              display: { xs: 'none', lg: 'block' }
-            }}
-          >
-            {titleField()}
-          </Grid>
+          {titleField(true)}
         </Grid>
-      )
+
+        <Grid
+          size={{ md: 12, lg: 6 }}
+          sx={{
+            display: { xs: 'none', lg: 'block' }
+          }}
+        >
+          {titleField()}
+        </Grid>
+      </Grid>
     );
   };
 
@@ -394,13 +377,9 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   return (
     <>
-      {getProposal() && (
-        <>
-          {row1()}
-          {!isSV && row2()}
-          {!isSV && !!proposalType && row3()}
-        </>
-      )}
+      {row1()}
+      {!isSV && row2()}
+      {!isSV && !!selectedProposalType && row3()}
       <LatexPreviewModal
         value={title}
         open={openTitleLatexModal}

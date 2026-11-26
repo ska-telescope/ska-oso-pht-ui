@@ -18,10 +18,9 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { getColors } from '@ska-telescope/ska-gui-components';
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
-import Observation from '../../utils/types/observation';
 import { getSubmitPageStatuses } from '@/models/proposals/submit';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import {
   SA_CUSTOM,
   PAGE_CALIBRATION,
@@ -35,12 +34,10 @@ import {
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
-import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import SensCalcModalMultiple, {
   SensCalcRow
 } from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
-import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -49,58 +46,71 @@ import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductInput } from '@/models/proposals/dataProducts';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
+import { OBSERVING_MODE_TRANSLATION_KEY, TELESCOPE_NUMBER } from '@/models/proposals/observations';
+
+const PAGE = PAGE_LINKING;
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
   const DATA_GRID_OBSERVATION = '60vh';
-  const PAGE = PAGE_LINKING;
   const GAP = 5;
 
   const { t } = useScopedTranslation();
 
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currRec, setCurrRec] = React.useState<any | null>(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const { osdLOW, osdMID } = useOSDAccessors();
+  const { application, updateAppContent1 } = storageObject.useStore();
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
-  const [elementsO, setElementsO] = React.useState<ReturnType<typeof popElementO>[]>([]);
-  const [elementsT, setElementsT] = React.useState<ElementT[] | null>(null);
   const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
     'indeterminate'
   );
-  const loggedIn = isLoggedIn();
 
   const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-
-  // The form owns the targets, links and calibration; watching them re-renders the page on change
+  // The form owns the observations, data products, targets, links and calibration; watching them
+  // re-renders the page on change
   const form = useFormContext<ProposalType>();
-  const watchedSlices = useWatch({
+  const observations = useWatch({ control: form.control, name: 'observations' });
+  const dataProducts = useWatch({ control: form.control, name: 'dataProducts' });
+  useWatch({
     control: form.control,
     name: ['targets', 'targetObservation', 'calibrationStrategy']
   });
+
+  const observationOf = (dataProduct: DataProductInput) =>
+    observations.find((obs) => obs.id === dataProduct.observationId);
+  const rows = dataProducts.filter((dataProduct) => observationOf(dataProduct));
+  const selectedDataProduct = rows.find((dataProduct) => dataProduct.id === selectedId);
+  const selectedObservation = selectedDataProduct && observationOf(selectedDataProduct);
   const getTargets = () => getFormTargets(form);
   const getLinks = () => getFormLinks(form);
   const getCalibration = () => getFormCalibration(form);
 
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number, valueCalibration: number) => {
-    const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
-      // validate linking page & calibration page
-      temp.push(
-        PAGE === i ? value : PAGE_CALIBRATION === i ? valueCalibration : getProposalState()[i]
-      );
+  // Write submit status checks into the status store (to be deleted in future refactor)
+  const { linking, calibration } = getSubmitPageStatuses(form.getValues(), {
+    low: osdLOW,
+    mid: osdMID
+  });
+  React.useEffect(() => {
+    const statuses = application.content1 as number[];
+    if (
+      !statuses ||
+      statuses.length <= PAGE ||
+      (statuses[PAGE] === linking && statuses[PAGE_CALIBRATION] === calibration)
+    ) {
+      return;
     }
-    updateAppContent1(temp);
-  };
+    updateAppContent1(
+      statuses.map((value, i) =>
+        i === PAGE ? linking : i === PAGE_CALIBRATION ? calibration : value
+      )
+    );
+  }, [linking, calibration, application.content1, updateAppContent1]);
 
-  const getLevel = (obs: any) => {
+  const getLevel = (dataProductId: string) => {
     let result = STATUS_INITIAL;
-    filteredByDataProduct(obs.id).forEach(({ sensitivity }) => {
+    filteredByDataProduct(dataProductId).forEach(({ sensitivity }) => {
       switch (sensitivity.state) {
         case SENSITIVITY_STATE.FAILED:
           result = STATUS_ERROR;
@@ -117,9 +127,9 @@ export default function LinkingPage() {
     return result;
   };
 
-  const getError = (obs: Observation) => {
+  const getError = (dataProductId: string) => {
     let result = '';
-    filteredByDataProduct(obs.id).forEach(({ sensitivity }) => {
+    filteredByDataProduct(dataProductId).forEach(({ sensitivity }) => {
       if (sensitivity.state === SENSITIVITY_STATE.FAILED) {
         result = sensitivity.error;
       }
@@ -155,13 +165,13 @@ export default function LinkingPage() {
   // The observation's calibration goes with its last link; other observations keep theirs. While
   // another target is still linked, the calibrators are looked up again for it, as they may have
   // been chosen for the target just unlinked.
-  const deleteObservationTargetAndCalibration = async (row: any) => {
-    const observationId = currRec?.id2;
+  const deleteObservationTargetAndCalibration = async (target: Target) => {
+    const observationId = selectedDataProduct?.observationId;
     if (!observationId) return;
     form.setValue(
       'targetObservation',
       getLinks().filter(
-        (link) => !(link.observationId === observationId && link.targetId === row.id)
+        (link) => !(link.observationId === observationId && link.targetId === target.id)
       )
     );
 
@@ -174,9 +184,10 @@ export default function LinkingPage() {
       return;
     }
 
+    const observation = form.getValues('observations').find((o) => o.id === observationId);
+    if (!observation) return;
     const calibration = await buildCalibrationStrategy(authAxiosClient, {
-      observationId,
-      observation: getProposal().observations?.find((o) => o.id === observationId),
+      observation,
       target: remainingTarget,
       notes: calibrationNotesFor(getCalibration(), observationId)
     });
@@ -184,19 +195,6 @@ export default function LinkingPage() {
     if (linkedTargetFor(observationId)) {
       form.setValue('calibrationStrategy', withCalibrationFor(getCalibration(), calibration));
     }
-  };
-
-  const popElementO = (dp: DataProductInput, obs: Observation) => {
-    return {
-      id: dp.id,
-      id2: obs.id,
-      rec: obs,
-      telescope: obs.telescope,
-      subarray: obs.subarray,
-      type: obs.type,
-      dp: dp,
-      status: 0
-    };
   };
 
   /* This type is required for the DataGrid showing the Targets */
@@ -218,48 +216,23 @@ export default function LinkingPage() {
     };
   };
 
-  const closeDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-  };
-
-  const deleteConfirmed = () => {
-    const obs1 = getProposal().observations?.filter((e) => e.id !== currRec?.id2) ?? [];
-    const obs3 =
-      getProposal().groupObservations?.filter((e) => e.observationId !== currRec?.id2) ?? [];
-    form.setValue(
-      'targetObservation',
-      getLinks().filter((e) => e.observationId !== currRec?.id2)
-    );
-    setProposal({
-      ...getProposal(),
-      observations: obs1,
-      groupObservations: obs3
-    });
-    setElementsO(elementsO.filter((e) => e.id !== currRec?.id));
-    setCurrRec(null);
-    closeDeleteDialog();
-  };
-
   const addObservationTargetAndCalibration = async (target: Target) => {
-    if (!currRec) return;
+    if (!selectedDataProduct || !selectedObservation) return;
+    const observation = selectedObservation;
     const targetObs: TargetObservation = {
-      observationId: currRec.id2,
+      observationId: observation.id,
       targetId: target.id,
-      dataProductsSDPId: currRec.id ?? '',
+      dataProductsSDPId: selectedDataProduct.id,
       sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     };
 
-    const calibration = await buildCalibrationStrategy(authAxiosClient, {
-      observationId: currRec.id2,
-      observation: getProposal().observations?.find((o) => o.id === currRec.id2),
-      target
-    });
+    const calibration = await buildCalibrationStrategy(authAxiosClient, { observation, target });
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 
   const isTargetSelected = (targetId: string) =>
     (getLinks() ?? []).filter(
-      (entry) => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
+      (entry) => entry.dataProductsSDPId === selectedId && entry.targetId === targetId
     ).length > 0;
 
   const targetSelectedToggle = async (el: ElementT) => {
@@ -270,38 +243,16 @@ export default function LinkingPage() {
     }
   };
 
-  React.useEffect(() => {
-    const proposal = getProposal();
-    setValidateToggle(!validateToggle);
-    setElementsO(
-      form
-        .getValues('dataProducts')
-        .map((rec) => {
-          const obs = proposal.observations?.find((o) => o.id === rec.observationId);
-          return obs ? popElementO(rec, obs) : null;
-        })
-        .filter((item): item is ReturnType<typeof popElementO> => item !== null)
-    );
-    setElementsT(getTargets().map((rec) => popElementT(rec)));
-  }, []);
+  const targetRows = getTargets().map((rec) => popElementT(rec));
 
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, [getProposal(), ...watchedSlices]);
+  const hasTargets = () => targetRows.length > 0;
 
-  React.useEffect(() => {
-    const statuses = getSubmitPageStatuses(form.getValues());
-    setTheProposalState(statuses.linking, statuses.calibration);
-  }, [validateToggle]);
-
-  const hasTargets = () => (elementsT?.length ?? 0) > 0;
-
-  const hasObservations = () => elementsO?.length > 0;
+  const hasObservations = () => rows.length > 0;
 
   const getTargetObservationForTargetGrid = (targetId: string): TargetObservation | undefined =>
-    getLinks()?.find((p) => p.observationId === currRec?.id2 && p.targetId === targetId);
+    getLinks()?.find((p) => p.dataProductsSDPId === selectedId && p.targetId === targetId);
 
-  const isCustom = () => currRec?.subarray === SA_CUSTOM || currRec?.rec?.subarray === SA_CUSTOM;
+  const isCustom = () => selectedObservation?.subarray === SA_CUSTOM;
 
   const getSensCalcSingle = (id: string, field: string) => {
     return (
@@ -317,15 +268,15 @@ export default function LinkingPage() {
   const extendedColumnsObservations = [
     ...[
       {
-        field: 'id2',
+        field: 'observationId',
         headerName: t('observations.id'),
         flex: 0.75,
         minWidth: 150,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { id2: string } }) => {
+        renderCell: (e: { row: DataProductInput }) => {
           return (
             <Typography variant="body2" sx={{ whiteSpace: 'nowrap', pt: 1 }}>
-              {e.row.id2}
+              {e.row.observationId}
             </Typography>
           );
         }
@@ -336,7 +287,7 @@ export default function LinkingPage() {
         flex: 0.75,
         minWidth: 150,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: string } }) => {
+        renderCell: (e: { row: DataProductInput }) => {
           return (
             <Typography variant="body2" sx={{ whiteSpace: 'nowrap', pt: 1 }}>
               {e.row.id}
@@ -360,11 +311,15 @@ export default function LinkingPage() {
         headerName: t('observingBand.label'),
         flex: 1,
         disableClickEventBubbling: true,
-        renderCell: (e: {
-          row: { telescope: number; rec: { observingBand: string | number } };
-        }) => {
+        renderCell: (e: { row: DataProductInput }) => {
+          const observation = observationOf(e.row);
           return (
-            <ObservingBand telescope={e.row.telescope} band={String(e.row.rec.observingBand)} />
+            observation && (
+              <ObservingBand
+                telescope={TELESCOPE_NUMBER[observation.telescope]}
+                band={observation.observingBand ?? undefined}
+              />
+            )
           );
         }
       },
@@ -373,10 +328,12 @@ export default function LinkingPage() {
         headerName: t('subArrayConfiguration.short'),
         flex: 1,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { telescope: number; subarray: string } }) => {
+        renderCell: (e: { row: DataProductInput }) => {
+          const observation = observationOf(e.row);
+          if (!observation) return null;
           const colorsTelescope = getColors({
             type: 'telescope',
-            colors: String(e.row.telescope),
+            colors: String(TELESCOPE_NUMBER[observation.telescope]),
             content: 'both',
             asArray: true,
             paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
@@ -398,19 +355,25 @@ export default function LinkingPage() {
                   p: 1
                 }}
               >
-                {t('telescopes.' + e.row.telescope)} {t('subArrayConfiguration.' + e.row.subarray)}
+                {t('telescopes.' + observation.telescope)}{' '}
+                {t('subArrayConfiguration.' + observation.subarray)}
               </Typography>
             </Box>
           );
         }
       },
       {
-        field: 'type',
+        field: 'observingMode',
         headerName: t('observationType.short'),
         flex: 1,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { type: number } }) => {
-          return <ObservingType type={String(e.row.type)} />;
+        renderCell: (e: { row: DataProductInput }) => {
+          const observation = observationOf(e.row);
+          return (
+            observation && (
+              <ObservingType type={OBSERVING_MODE_TRANSLATION_KEY[observation.observingMode]} />
+            )
+          );
         }
       },
       {
@@ -419,22 +382,16 @@ export default function LinkingPage() {
         sortable: false,
         width: 100,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: any }) => {
-          const rec = elementsO.find((p) => p.id === e.row.id);
+        renderCell: (e: { row: DataProductInput }) => {
+          const level = getLevel(e.row.id);
           return (
-            <>
-              {
-                <StatusIconDisplay
-                  ariaTitle={t('sensCalc.' + getLevel(rec))}
-                  level={getLevel(rec)}
-                  onClick={() =>
-                    getLevel(rec) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
-                  }
-                  testId="testId"
-                  toolTip={t('sensCalc.' + getLevel(rec))}
-                />
-              }
-            </>
+            <StatusIconDisplay
+              ariaTitle={t('sensCalc.' + level)}
+              level={level}
+              onClick={() => (level === STATUS_INITIAL ? null : setOpenMultipleDialog(true))}
+              testId="testId"
+              toolTip={t('sensCalc.' + level)}
+            />
           );
         }
       }
@@ -456,7 +413,11 @@ export default function LinkingPage() {
               margin: 0
             }}
           >
-            {currRec ? <TriStateCheckbox state={checkState} setState={setCheckState} /> : <></>}
+            {selectedDataProduct ? (
+              <TriStateCheckbox state={checkState} setState={setCheckState} />
+            ) : (
+              <></>
+            )}
           </Box>
         ),
         disableClickEventBubbling: true,
@@ -464,7 +425,7 @@ export default function LinkingPage() {
         sortable: false,
         disableColumnMenu: true,
         renderCell: (e: { row: ElementT }) => {
-          return currRec ? (
+          return selectedDataProduct ? (
             <Box
               sx={{
                 display: 'flex',
@@ -512,7 +473,11 @@ export default function LinkingPage() {
       {
         field: 'vel',
         renderHeader: () =>
-          currRec?.rec ? <>{t('sensitivityCalculatorResults.weightedSensitivity')}</> : <></>,
+          selectedDataProduct ? (
+            <>{t('sensitivityCalculatorResults.weightedSensitivity')}</>
+          ) : (
+            <></>
+          ),
         sortable: false,
         flex: 2,
         minWidth: 170,
@@ -524,7 +489,7 @@ export default function LinkingPage() {
       {
         field: 'vel2',
         renderHeader: () =>
-          currRec?.rec ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>,
+          selectedDataProduct ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>,
         sortable: false,
         flex: 2.5,
         minWidth: 150,
@@ -537,11 +502,9 @@ export default function LinkingPage() {
   ];
 
   const filteredTargets = () => {
-    const safeElementsT = elementsT ?? [];
-    if (checkState === 'indeterminate') return safeElementsT;
-    else if (checkState === 'checked') return safeElementsT.filter((e) => isTargetSelected(e.id));
-    else if (checkState === 'unchecked')
-      return safeElementsT.filter((e) => !isTargetSelected(e.id));
+    if (checkState === 'indeterminate') return targetRows;
+    else if (checkState === 'checked') return targetRows.filter((e) => isTargetSelected(e.id));
+    else if (checkState === 'unchecked') return targetRows.filter((e) => !isTargetSelected(e.id));
     else return [];
   };
 
@@ -576,12 +539,10 @@ export default function LinkingPage() {
           <BorderedSection title={t('observatoryDataProduct.linkedObservation')}>
             {hasObservations() && (
               <DataGrid
-                rows={elementsO}
+                rows={rows}
                 columns={extendedColumnsObservations}
                 height={DATA_GRID_OBSERVATION}
-                onRowClick={(e: { row: { rec: React.SetStateAction<Observation | null> } }) =>
-                  setCurrRec(e.row)
-                }
+                onRowClick={(e: { row: DataProductInput }) => setSelectedId(e.row.id)}
                 onRowSelectionModelChange={(
                   newRowSelectionModel: React.SetStateAction<GridRowSelectionModel>
                 ) => {
@@ -594,7 +555,7 @@ export default function LinkingPage() {
             {!hasObservations() && (
               <Alert
                 color={AlertColorTypes.Error}
-                text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
+                text={t('error.noObservations')}
                 testId="noObservationsNotification"
               />
             )}
@@ -613,7 +574,7 @@ export default function LinkingPage() {
             {!hasTargets() && (
               <Alert
                 color={AlertColorTypes.Error}
-                text={loggedIn ? t('targets.empty') : t('targets.loggedOut')}
+                text={t('targets.empty')}
                 testId="noTargetsNotification"
               />
             )}
@@ -621,22 +582,14 @@ export default function LinkingPage() {
         </Grid>
       </Grid>
       <>
-        {openDeleteDialog && currRec?.Obs && (
-          <DeleteObservationConfirmation
-            action={deleteConfirmed}
-            observation={currRec?.Obs}
-            open={openDeleteDialog}
-            setOpen={setOpenDeleteDialog}
-          />
-        )}
-        {openMultipleDialog && currRec?.rec && (
+        {openMultipleDialog && selectedDataProduct && selectedObservation && (
           <SensCalcModalMultiple
             open={openMultipleDialog}
             onClose={() => setOpenMultipleDialog(false)}
-            data={filteredByDataProduct(currRec?.id)}
-            observation={currRec?.rec}
-            level={getLevel(currRec?.rec)}
-            levelError={getError(currRec?.rec)}
+            data={filteredByDataProduct(selectedDataProduct.id)}
+            observation={selectedObservation}
+            level={getLevel(selectedDataProduct.id)}
+            levelError={getError(selectedDataProduct.id)}
             isCustom={isCustom()}
           />
         )}

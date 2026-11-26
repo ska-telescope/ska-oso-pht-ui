@@ -3,19 +3,11 @@ import { ProposalType } from '@/models/proposals/proposal';
 import { useFormContext } from 'react-hook-form';
 import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
-import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
   ControlledSelect,
   ControlledTextField
 } from '@ska-telescope/ska-gui-components/controlled';
-import {
-  DETAILS,
-  PAGE_DETAILS,
-  PROPOSAL_TYPE,
-  SA_AA2,
-  TELESCOPE_LOW_NUM,
-  TYPE_CONTINUUM
-} from '@utils/constants.ts';
+import { DETAILS, PAGE_DETAILS, PROPOSAL_TYPE, SA_AA2 } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateDetailsPage } from '@utils/validation/validation.tsx';
@@ -29,6 +21,8 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
+import { ObservingMode, OBSERVING_MODE, TELESCOPE } from '@/models/proposals/observations';
+import { OBSERVING_MODE_BY_LEGACY_TYPE } from '@/models/proposals/legacyObservations';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import { useWatch } from 'react-hook-form';
 import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';
@@ -43,12 +37,11 @@ export default function DetailsPage() {
   const { osdLOW, osdMID } = useOSDAccessors();
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
 
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const { setHelp } = useHelp();
   const form = useFormContext<ProposalType>();
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const abstract = useWatch<ProposalFormValues, 'abstract'>({
     control: form.control,
     name: 'abstract'
@@ -57,7 +50,12 @@ export default function DetailsPage() {
     control: form.control,
     name: 'scienceCategory'
   });
-  const status = validateDetailsPage({ ...getProposal(), abstract, scienceCategory });
+  // An SV proposal's observing mode, chosen here, is its observation's
+  const [proposalType, observations] = useWatch({
+    control: form.control,
+    name: ['proposalType', 'observations']
+  });
+  const status = validateDetailsPage({ abstract, scienceCategory, proposalType, observations });
   const proposalState = application.content1 as number[];
   React.useEffect(() => {
     if (proposalState[PAGE] === status) return;
@@ -123,22 +121,25 @@ export default function DetailsPage() {
 
   // SV proposals have a single observation whose type is the observing mode. The subarray is
   // AA2 until others are supported for SV.
-  const observation = getProposal().observations?.[0];
-  const isLow = observation ? observation.telescope === TELESCOPE_LOW_NUM : !!osdLOW;
-  const observingModeOptions = useObservationTypeOptions(SA_AA2, isLow);
+  const observation = useWatch({ control: form.control, name: 'observations.0' });
+  const isLow = observation ? observation.telescope === TELESCOPE.LOW : !!osdLOW;
+  // The options still use the legacy observation types
+  const observingModeOptions = useObservationTypeOptions(SA_AA2, isLow).map((option) => ({
+    ...option,
+    value: OBSERVING_MODE_BY_LEGACY_TYPE[option.value]
+  }));
 
-  const changeObservingMode = async (mode: string) => {
-    if (mode === observation?.type) return;
+  const changeObservingMode = async (mode: ObservingMode) => {
+    if (mode === observation?.observingMode) return;
     const record = isLow ? osdLOW : osdMID;
     const sArray = (
       record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
     )?.find((sub) => sub.subArray === SA_AA2);
     await setObservingMode(
       mode,
-      getProposal,
-      setProposal,
       form,
       authAxiosClient,
+      osdLOW?.basicCapabilities?.minElevationDeg ?? null,
       sArray?.numberZoomChannels
     );
   };
@@ -150,16 +151,16 @@ export default function DetailsPage() {
         maxWidth: 500
       }}
     >
-      <DropDown
+      <ControlledSelect
+        name="observations.0.observingMode"
         label={t('observationType.label')}
         options={observingModeOptions}
         disabled={observingModeOptions.length < 2}
         required
-        testId="observationType"
-        value={observation?.type ?? TYPE_CONTINUUM}
-        setValue={(mode: string) => {
-          void changeObservingMode(mode);
-        }}
+        value={observation?.observingMode ?? OBSERVING_MODE.CONTINUUM}
+        // onChange completely resets the observation so leave form update to be done there
+        withFormUpdate={false}
+        onChange={(evt) => void changeObservingMode(evt.target.value as ObservingMode)}
         onFocus={() => setHelp('observationType.help')}
       />
     </Box>

@@ -5,7 +5,9 @@ import { useTheme } from '@mui/material/styles';
 import { ProposalType } from '@/models/proposals/proposal';
 import {
   DATA_PRODUCT_KIND,
+  DataProductInput,
   DataProductKind,
+  isImageDataProduct,
   newDataProduct,
   STEPPED_FIELD,
   steppedFromPdm,
@@ -13,15 +15,11 @@ import {
 } from '@/models/proposals/dataProducts';
 import {
   CHANNELS_OUT_MIN_CONTINUUM,
-  FREQUENCY_MHZ,
   REFERENCE_COORDINATE_TYPE_SSO,
-  SENSITIVITY_STATE,
-  TYPE_CONTINUUM,
-  TYPE_PST
+  SENSITIVITY_STATE
 } from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import Observation from '@/utils/types/observation';
-import { frequencyConversion } from '@/utils/helpers';
+import { OBSERVING_MODE, type ObservationInput } from '@/models/proposals/observations';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import TargetObservation from '@/utils/types/targetObservation';
 import Target from '@/utils/types/target';
@@ -29,19 +27,12 @@ import DataProductView from './DataProductView';
 
 const GAP = 5;
 
-const centralFrequencyMhz = (observation: Observation) =>
-  frequencyConversion(
-    observation.centralFrequency,
-    observation.centralFrequencyUnits ?? FREQUENCY_MHZ,
-    FREQUENCY_MHZ
-  );
-
 /**
  * An SV proposal's one observation and its data products, edited in place in the proposal form.
  * The data product shown is the one the link points at, or before there is a link the
  * observation's main one, which comes first. The others are hidden companions.
  */
-export default function DataProductInPlace({ observation }: { observation: Observation }) {
+export default function DataProductInPlace({ observation }: { observation: ObservationInput }) {
   const { t } = useScopedTranslation();
   const theme = useTheme();
   const form = useFormContext<ProposalType>();
@@ -60,6 +51,12 @@ export default function DataProductInPlace({ observation }: { observation: Obser
       : dataProducts.findIndex((dp) => dp.observationId === observation.id);
   const dp = dataProducts[dpIndex];
 
+  // A new image is sized for the observation's central frequency
+  const resetImage = (dataProduct: DataProductInput) =>
+    observation.centralFrequency.value === null || !isImageDataProduct(dataProduct)
+      ? dataProduct
+      : updateImageSizes(dataProduct, observation.centralFrequency.value);
+
   // Switching between images and visibilities makes the other one the main data product. The one
   // switched from becomes the hidden companion again, so it gets its defaults back.
   const switchContinuumKind = (kind: DataProductKind) => {
@@ -77,12 +74,7 @@ export default function DataProductInPlace({ observation }: { observation: Obser
             frequencyAveragingKhz: steppedFromPdm(4, STEPPED_FIELD.FREQUENCY_AVERAGING_KHZ)
           }
         : {
-            ...updateImageSizes(
-              newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, observation.id) as Parameters<
-                typeof updateImageSizes
-              >[0],
-              centralFrequencyMhz(observation)
-            ),
+            ...resetImage(newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, observation.id)),
             id: dp.id
           };
     const others = dataProducts.filter(
@@ -113,7 +105,7 @@ export default function DataProductInPlace({ observation }: { observation: Obser
   const sensCalcUnavailable = ():
     | { message: string; color: typeof AlertColorTypes.Warning | typeof AlertColorTypes.Error }
     | undefined => {
-    if (observation.type === TYPE_PST) {
+    if (observation.observingMode === OBSERVING_MODE.PST) {
       return { message: t('page.7.pstUnavailable'), color: AlertColorTypes.Warning };
     }
     if (!link) {
@@ -155,7 +147,7 @@ export default function DataProductInPlace({ observation }: { observation: Obser
     <BorderedSection
       borderColor={sensitivityBorder()}
       title={
-        observation.type === TYPE_CONTINUUM
+        observation.observingMode === OBSERVING_MODE.CONTINUUM
           ? `${t('sensitivityCalculatorResults.title')} (Imaging ODP)`
           : t('sensitivityCalculatorResults.title')
       }

@@ -6,13 +6,15 @@ import { REFERENCE_COORDINATE_TYPE_SSO } from '@/utils/constants';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import Target from '@/utils/types/target';
 import { mockTarget } from '@/utils/autoLinking/mockTarget';
-import { mockObservation } from '@/utils/autoLinking/mockObservation';
+import { newSvObservation, OBSERVING_MODE } from './observations';
 import { mockCalibration } from '@/utils/autoLinking/mockCalibration';
 import {
   buildCalibrationStrategy,
   calibrationNotesFor,
   withCalibrationFor
 } from './calibrationOperations';
+
+const mockObservation = { ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id: 'obs-123' };
 
 const authClient = { post: vi.fn() };
 const client = authClient as unknown as AxiosAuthClient;
@@ -35,7 +37,6 @@ describe('buildCalibrationStrategy', () => {
     authClient.post.mockResolvedValue({ data: MockCalibratorBackendList });
 
     const calibration = await buildCalibrationStrategy(client, {
-      observationId: 'obs-123',
       observation: mockObservation,
       target: mockTarget as Target
     });
@@ -47,7 +48,6 @@ describe('buildCalibrationStrategy', () => {
     authClient.post.mockResolvedValue({ data: MockCalibratorBackendList });
 
     const calibration = await buildCalibrationStrategy(client, {
-      observationId: 'obs-123',
       observation: mockObservation,
       target: mockTarget as Target,
       notes: 'Keep these'
@@ -58,7 +58,6 @@ describe('buildCalibrationStrategy', () => {
 
   test('looks up no calibrators for a solar system object', async () => {
     const calibration = await buildCalibrationStrategy(client, {
-      observationId: 'obs-123',
       observation: mockObservation,
       target: { ...(mockTarget as Target), kind: REFERENCE_COORDINATE_TYPE_SSO.value }
     });
@@ -67,21 +66,10 @@ describe('buildCalibrationStrategy', () => {
     expect(authClient.post).not.toHaveBeenCalled();
   });
 
-  test('looks up no calibrators without an observation', async () => {
-    const calibration = await buildCalibrationStrategy(client, {
-      observationId: 'obs-123',
-      target: mockTarget as Target
-    });
-
-    expect(calibration).toEqual({ ...mockCalibration, calibrators: null });
-    expect(authClient.post).not.toHaveBeenCalled();
-  });
-
   test('has no calibrators when the lookup fails', async () => {
     authClient.post.mockRejectedValue(new Error('unavailable'));
 
     const calibration = await buildCalibrationStrategy(client, {
-      observationId: 'obs-123',
       observation: mockObservation,
       target: mockTarget as Target
     });

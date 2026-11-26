@@ -1,6 +1,6 @@
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
 import { cloneElement, useReducer } from 'react';
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
@@ -11,14 +11,14 @@ import {
   PAGE_DETAILS,
   PROPOSAL_TYPE,
   STATUS_ERROR,
-  STATUS_OK,
-  TYPE_PST
+  STATUS_OK
 } from '@/utils/constants';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { getProposalResolver, ProposalType } from '@/models/proposals/proposal';
+import { getProposalResolver, ProposalFormAccess, ProposalType } from '@/models/proposals/proposal';
 import phtTranslations from '@/locales/en/pht.json';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { ObservationInput, ObservingMode, OBSERVING_MODE } from '@/models/proposals/observations';
 
 // ---- Module mocks ----
 
@@ -172,8 +172,8 @@ const renderPage = async () => {
   });
 };
 
-const observingModeCombobox = () =>
-  within(screen.getByTestId('observationType')).getByRole('combobox');
+const OBSERVING_MODE_LABEL = /^observationType.label/;
+const observingModeCombobox = () => screen.getByRole('combobox', { name: OBSERVING_MODE_LABEL });
 
 const selectObservingMode = async (label: string) => {
   fireEvent.mouseDown(observingModeCombobox());
@@ -182,18 +182,20 @@ const selectObservingMode = async (label: string) => {
   });
 };
 
+// Stands in for setObservingMode, which replaces the observation with one in the new mode
+const setMode = (form: ProposalFormAccess, mode: ObservingMode) =>
+  form.setValue('observations', [
+    { ...form.getValues('observations')[0], observingMode: mode } as ObservationInput
+  ]);
+
 // ---- Tests ----
 
 describe('<DetailsPage /> observing mode', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockState.updateProposal.mockClear();
-    vi.mocked(setObservingMode).mockImplementation(async (mode, getProposal, setProposal) => {
-      const proposal = getProposal();
-      setProposal({
-        ...proposal,
-        observations: [{ ...proposal.observations[0], type: mode }]
-      });
+    vi.mocked(setObservingMode).mockImplementation(async (mode, form) => {
+      setMode(form, mode);
     });
   });
 
@@ -206,7 +208,7 @@ describe('<DetailsPage /> observing mode', () => {
     await renderPage();
 
     expect(screen.getByTestId('categoryId')).toBeInTheDocument();
-    expect(screen.queryByTestId('observationType')).not.toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: OBSERVING_MODE_LABEL })).not.toBeInTheDocument();
   });
 
   it('stores abstract edits in RHF without writing to the legacy store', async () => {
@@ -353,6 +355,9 @@ describe('<DetailsPage /> observing mode', () => {
     await renderPage();
 
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
+    // Showing the mode doesn't add an observation to the form
+    const formValues = JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '');
+    expect(formValues.observations).toEqual([]);
   });
 
   it('sets the observing mode on the observation when changed', async () => {
@@ -362,20 +367,16 @@ describe('<DetailsPage /> observing mode', () => {
     await selectObservingMode('observationType.pst');
 
     expect(observingModeCombobox()).toHaveTextContent('observationType.pst');
-    expect(mockState.updateProposal).toHaveBeenCalledWith(
-      expect.objectContaining({
-        observations: [expect.objectContaining({ type: TYPE_PST })]
-      })
-    );
-    expect(
-      JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '')
-    ).not.toHaveProperty('observingMode');
+    const formValues = JSON.parse(screen.getByTestId('detailsFormValues').textContent ?? '');
+    expect(formValues.observations).toEqual([
+      expect.objectContaining({ observingMode: OBSERVING_MODE.PST })
+    ]);
+    expect(formValues).not.toHaveProperty('observingMode');
     expect(setObservingMode).toHaveBeenCalledWith(
-      TYPE_PST,
-      expect.any(Function),
-      expect.any(Function),
+      OBSERVING_MODE.PST,
       expect.objectContaining({ getValues: expect.any(Function) }),
       {},
+      null,
       42
     );
   });
@@ -383,14 +384,10 @@ describe('<DetailsPage /> observing mode', () => {
   it('only updates the selected mode after the observation update succeeds', async () => {
     let completeUpdate!: () => void;
     vi.mocked(setObservingMode).mockImplementation(
-      (mode, getProposal, setProposal) =>
+      (mode, form) =>
         new Promise((resolve) => {
           completeUpdate = () => {
-            const proposal = getProposal();
-            setProposal({
-              ...proposal,
-              observations: [{ ...proposal.observations[0], type: mode }]
-            });
+            setMode(form, mode);
             resolve();
           };
         })
@@ -401,7 +398,6 @@ describe('<DetailsPage /> observing mode', () => {
     await selectObservingMode('observationType.pst');
 
     expect(observingModeCombobox()).toHaveTextContent('observationType.continuum');
-    expect(mockState.updateProposal).not.toHaveBeenCalled();
 
     await act(async () => {
       completeUpdate();
