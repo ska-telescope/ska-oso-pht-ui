@@ -81,9 +81,7 @@ export default function GridObservationSummary({
     return (
       rec.supplied.value +
       ' ' +
-      observatoryConstants?.Supplied[rec.supplied.type]?.units.find(
-        (e) => (e.value = rec.supplied.units)
-      )?.label
+      observatoryConstants?.Supplied[0]?.units.find((e) => e.value === rec.supplied.units)?.label
     );
   };
 

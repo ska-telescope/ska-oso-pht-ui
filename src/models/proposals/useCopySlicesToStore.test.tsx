@@ -4,11 +4,19 @@ import { act, renderHook } from '@testing-library/react';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
 import Target from '@utils/types/target';
-import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
+import {
+  BAND_LOW_STR,
+  PROPOSAL_SUBTYPE,
+  PROPOSAL_TYPE,
+  SA_AA_STAR,
+  VELOCITY_DEFINITION
+} from '@/utils/constants';
 import { useProposalForm } from './useProposalForm';
 import { useCopySlicesToStore } from './useCopySlicesToStore';
 import { dataProductsFromPdm } from './dataProducts';
 import { pdmDataProducts } from './testing/pdmDataProducts';
+import { ObservationInput, OBSERVING_MODE, TELESCOPE } from './observations';
+import { legacyObservationsFromForm } from './legacyObservations';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 
 const target = (id: string): Target => ({
@@ -141,14 +149,19 @@ describe('useCopySlicesToStore', () => {
 
     act(() => {
       result.current.form.setValue('title', 'Second');
-      result.current.form.setValue('proposalType', PROPOSAL_TYPE.KEY_SCIENCE);
+      result.current.form.setValue('proposalType', {
+        type: PROPOSAL_TYPE.KEY_SCIENCE,
+        subTypes: [PROPOSAL_SUBTYPE.JOINT]
+      });
       result.current.form.setValue('sciencePDF', { documentId: 'science-doc-p1' });
     });
 
     expect(storedProposal(result)).toEqual(
       expect.objectContaining({
         title: 'Second',
+        // The store has the type flat, with its sub-types beside it
         proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        proposalSubType: [PROPOSAL_SUBTYPE.JOINT],
         sciencePDF: { documentId: 'science-doc-p1' }
       })
     );
@@ -162,6 +175,34 @@ describe('useCopySlicesToStore', () => {
     act(() => result.current.form.setValue('dataProducts', dataProducts));
 
     expect(storedProposal(result).dataProducts).toEqual(dataProducts);
+  });
+
+  // TODO: Remove once nothing reads observations from the legacy store
+  test('copies the observations into the store in its own shape', () => {
+    const { result } = renderHarness();
+    const observation: ObservationInput = {
+      id: 'obs-1',
+      groupId: 'group-1',
+      telescope: TELESCOPE.LOW,
+      observingBand: BAND_LOW_STR,
+      subarray: SA_AA_STAR,
+      minElevation: 45,
+      numberOfStations: 307,
+      integrationTime: { value: 2, unit: 'h' },
+      centralFrequency: { value: 200, unit: 'MHz' },
+      observingMode: OBSERVING_MODE.CONTINUUM,
+      bandwidth: { value: 75, unit: 'MHz' }
+    };
+    open(result, { id: 'p1', ...legacyObservationsFromForm([observation]) });
+
+    act(() => result.current.form.setValue('observations.0.numberOfStations', 100));
+
+    expect(storedProposal(result).observations).toEqual([
+      expect.objectContaining({ id: 'obs-1', numStations: 100 })
+    ]);
+    expect(storedProposal(result).groupObservations).toEqual([
+      { observationId: 'obs-1', groupId: 'group-1' }
+    ]);
   });
 
   test('copies into a new proposal before it has an ID', () => {

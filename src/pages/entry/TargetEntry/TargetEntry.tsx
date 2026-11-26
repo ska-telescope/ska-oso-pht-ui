@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Grid, InputAdornment, Tooltip } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
 import {
   FormProvider,
   useFormContext,
@@ -15,7 +14,6 @@ import GetCoordinates, {
   ResolveError
 } from '@services/axios/get/getCoordinates/getCoordinates';
 import { generateTargetId } from '@utils/helpers.ts';
-import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import CancelButton from '@/components/button/Cancel/Cancel';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -84,16 +82,12 @@ export default function TargetEntry({
   target = undefined
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
-  const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
+  const { autoLink, isSV, osdCyclePolicy, osdLOW } = useOSDAccessors();
   const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
-  const { application, updateAppContent2 } = storageObject.useStore();
   const form = useFormContext<ProposalType>();
   const { setHelp } = useHelp();
-
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   // The entry is held in a small local form, so it is not saved and goes when the entry closes;
   // the targets it adds go to the global form. Each input is bound to the entry form, whose schema
@@ -205,7 +199,12 @@ export default function TargetEntry({
       const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
-        await linkTarget(newTarget, getProposal, setProposal, form, authAxiosClient);
+        await linkTarget(
+          newTarget,
+          form,
+          authAxiosClient,
+          osdLOW?.basicCapabilities?.minElevationDeg ?? null
+        );
         clearForm();
       };
 

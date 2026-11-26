@@ -6,8 +6,7 @@ import {
   SA_AA_STAR,
   SA_CUSTOM,
   SECOND_LABEL,
-  SUPPLIED_TYPE_INTEGRATION,
-  SUPPLIED_TYPE_SENSITIVITY
+  SUPPLIED_TYPE_INTEGRATION
 } from '@utils/constants.ts';
 
 //NOTE:: not to be referenced directly, outside useOSDAccessors
@@ -221,20 +220,6 @@ export const OSD_CONSTANTS = {
         { label: MILLISECOND_LABEL, value: 5 },
         { label: NANOSECOND_LABEL, value: 6 },
         { label: MICROSECOND_LABEL, value: 7 }
-      ]
-    },
-    {
-      sensCalcResultsLabel: 'sensitivity',
-      mappingLabel: 'sensitivity',
-      value: SUPPLIED_TYPE_SENSITIVITY,
-      units: [
-        { label: 'Jy/beam', value: 1 },
-        { label: 'mJy/beam', value: 2 },
-        { label: 'μJy/beam', value: 3 },
-        { label: 'nJy/beam', value: 4 },
-        { label: 'K', value: 5 },
-        { label: 'mK', value: 6 },
-        { label: 'uK', value: 7 }
       ]
     }
   ],

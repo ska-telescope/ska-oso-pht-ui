@@ -7,20 +7,33 @@ export const section = (title: string) =>
     .closest('[data-testid="borderedSection-label"]')
     .parent();
 
-// Replaces a field's value and leaves the field, so the app stores it. Types over the selected
-// value rather than clearing it, because number fields turn an empty value into 0.
+// Replaces a field's value and leaves the field, so the app stores it.
+// Cypress's typed input events have no inputType, which ska-gui-components' number fields read
+// as a click on their arrows, so each key steps the value. Until the component tells them apart,
+// the value is entered in one go, with the input event a browser sends for typing.
+// TODO: Go back to typing once ControlledNumberField no longer steps on Cypress's input events (BTN-3671)
+//  and replace the full content of the enter function just with this line:
+//  field.type(`{selectall}${value}`).blur();
 export const enter = (field: Cypress.Chainable<JQuery>, value: string) =>
-  field.type(`{selectall}${value}`).blur();
+  field
+    .focus()
+    .then(($input) => {
+      const input = $input[0] as HTMLInputElement | HTMLTextAreaElement;
+      // The app's own window, as events from the spec's window aren't the app's
+      const win = input.ownerDocument.defaultView as Window & typeof globalThis;
+      // React keeps track of the value it set, so the value is set past it for it to see a
+      // change: through the setter of the element's own type, an input or a textarea
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value')?.set?.call(
+        input,
+        value
+      );
+      input.dispatchEvent(
+        new win.InputEvent('input', { bubbles: true, inputType: 'insertText', data: value })
+      );
+    })
+    .blur();
 
-// TODO: Find by cy.findByRole('combobox', { name: label }) once the pages use the controlled
-//  components. Current gui-components implementation of dropdowns does not wire the labels to
-//  IDs correctly which is why we cannot do this yet.
-const dropdown = (label: string) =>
-  // cy.findByRole('combobox', { name: label })
-  cy
-    .contains('label', new RegExp(`^${label}`))
-    .parent()
-    .find('[role="combobox"]');
+const dropdown = (label: string) => cy.findByRole('combobox', { name: new RegExp(`^${label}`) });
 
 export const select = (label: string, option: string) => {
   dropdown(label).click();

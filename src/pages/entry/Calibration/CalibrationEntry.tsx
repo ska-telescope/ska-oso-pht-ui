@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router';
 import { Box, Grid, Typography } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
@@ -13,15 +12,12 @@ import {
   REFERENCE_COORDINATE_TYPE_SSO,
   WRAPPER_HEIGHT
 } from '@utils/constants.ts';
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import Proposal from '@/utils/types/proposal';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import Target from '@/utils/types/target';
-import Observation from '@/utils/types/observation';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { useTheme } from '@mui/material/styles';
@@ -58,22 +54,18 @@ function calibratorArrayToSet(list: Calibrator[]): CalibratorSet {
 export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const { t } = useScopedTranslation();
   const locationProperties = useLocation();
-  const loggedIn = isLoggedIn();
-  const { observatoryConstants, osdCyclePolicy } = useOSDAccessors();
-
-  const { application } = storageObject.useStore();
+  const { osdCyclePolicy } = useOSDAccessors();
   const { setHelp } = useHelp();
   const theme = useTheme();
   const form = useFormContext<ProposalType>();
 
-  const getProposal = () => application.content2 as Proposal;
-
-  // The form owns the calibration and the links; observations still come from the store
+  // The form owns the calibration, the links, the targets and the observations
   const strategies = (useWatch({ control: form.control, name: 'calibrationStrategy' }) ??
     []) as CalibrationStrategy[];
   const links = (useWatch({ control: form.control, name: 'targetObservation' }) ??
     []) as TargetObservation[];
   const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const observations = useWatch({ control: form.control, name: 'observations' });
 
   // A strategy handed to the page is shown until the proposal has one of its own
   const strategy: CalibrationStrategy = strategies[0] ??
@@ -105,8 +97,8 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const target = targetObservation
     ? targets.find((t) => t.id === targetObservation.targetId)
     : undefined;
-  const observation: Observation | undefined = targetObservation
-    ? getProposal()?.observations?.find((o) => o.id === targetObservation.observationId)
+  const observation = targetObservation
+    ? observations.find((o) => o.id === targetObservation.observationId)
     : undefined;
 
   React.useEffect(() => {
@@ -186,17 +178,13 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   };
 
   const integrationTimeField = () => {
-    const theType = observation ? observation.supplied.type : 0;
-    const obUnits = observation ? observation.supplied.units : 1;
-    const theLabel = t(theType ? 'calibrator.integrationTime' : 'calibrator.integrationTime');
-    const theUnits = observatoryConstants.Supplied[theType - 1]?.units[obUnits - 1].label;
     return fieldWrapper(
       <TextEntry
         testId="integrationTime"
-        value={observation ? observation.supplied.value : ''}
+        value={observation?.integrationTime.value ?? ''}
         disabled={true}
-        label={theLabel}
-        suffix={theUnits}
+        label={t('calibrator.integrationTime')}
+        suffix={observation?.integrationTime.unit ?? ''}
         errorText={observation ? '' : t('observations.missing')}
       />
     );
@@ -288,7 +276,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
           pr: GAP
         }}
       >
-        {(!loggedIn || osdCyclePolicy?.calibrationFactoryDefined !== true) && (
+        {osdCyclePolicy?.calibrationFactoryDefined !== true && (
           <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         )}
         <Grid

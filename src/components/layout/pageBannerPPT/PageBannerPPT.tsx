@@ -1,4 +1,6 @@
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router';
 import { Box, Grid, Typography } from '@mui/material';
@@ -12,9 +14,7 @@ import {
   PROPOSAL_STATUS,
   STATUS_ARRAY_PAGES_PROPOSAL,
   STATUS_ARRAY_PAGES_SV,
-  STATUS_ERROR,
-  STATUS_INITIAL,
-  STATUS_PARTIAL
+  STATUS_OK
 } from '@utils/constants.ts';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
 import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
@@ -32,19 +32,25 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useValidateProposal } from '@/utils/validation/validation';
 import { countWords } from '@utils/helpers.ts';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 interface PageBannerPPTProps {
   pageNo: number;
   backPage?: number;
+  isNewProposal?: boolean;
 }
 
 const widthWrapStatusArray = '1500px';
 
-export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
+export default function PageBannerPPT({
+  pageNo,
+  backPage,
+  isNewProposal = false
+}: PageBannerPPTProps) {
   const theme = useTheme();
   const { isSV } = useOSDAccessors();
   const validateProposal = useValidateProposal();
+  const form = useFormContext<ProposalType>();
   const LG = useMediaQuery(theme.breakpoints.down('lg'), {
     defaultMatches: false,
     noSsr: true
@@ -75,7 +81,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
     if (
       loggedIn &&
-      (getProposal().id == null ||
+      (isNewProposal ||
         getProposal()?.title?.trim()?.length === 0 ||
         countWords(getProposal().title ?? '') > maxTitleWords ||
         countWords(getProposal().abstract ?? '') > maxAbstractWords)
@@ -92,14 +98,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     setValidationResults([]);
     const results: string[] = [];
 
-    const statuses = validateProposal(getProposal());
+    // The form has every observation; the store only the valid ones
+    const statuses = validateProposal(form.getValues());
     updateAppContent1(statuses);
 
     statuses.forEach((status, key) => {
-      if (
-        pages.includes(key) &&
-        (status === STATUS_ERROR || status === STATUS_PARTIAL || status === STATUS_INITIAL)
-      ) {
+      if (pages.includes(key) && status !== STATUS_OK) {
         results.push(t('page.' + key + '.pageError'));
       }
     });
@@ -202,7 +206,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         {!backPage && <HomeButton />}
       </Grid>
       <Grid>
-        {loggedIn && getProposal().id !== null && pages.includes(pageNo) && (
+        {loggedIn && !isNewProposal && pages.includes(pageNo) && (
           <SaveButton
             testId={'saveBtn'}
             disabled={isDisableEndpoints()}
@@ -227,7 +231,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       }}
     >
       <Grid>
-        {getProposal().id !== null && pages.includes(pageNo) && (
+        {!isNewProposal && pages.includes(pageNo) && (
           <SubmitButton
             action={submitClicked}
             title="submitProposalBtn.label"
@@ -264,7 +268,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
             display: 'block'
           }}
         >
-          {getProposal().id !== '' && pages.includes(pageNo) && <StatusArray />}
+          {pages.includes(pageNo) && <StatusArray />}
         </Grid>
       )}
 
@@ -370,7 +374,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       {/* I'm assuming intention is to display row2() when loggedIn is true?
       if someone understands better than I do please feel free to
       remove in favour of whatever is supposed to happen here. */}
-      {loggedIn && getProposal().id !== '' && row2()}
+      {loggedIn && row2()}
       {row3()}
 
       {openProposalDisplay && (

@@ -17,7 +17,7 @@ const wrapper = (component: React.ReactElement, investigators: Investigator[] = 
     const methods = useForm<ProposalType>({
       defaultValues: {
         title: '',
-        proposalType: null,
+        proposalType: { type: null, subTypes: [] },
         abstract: '',
         scienceCategory: null,
         investigators

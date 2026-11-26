@@ -1,27 +1,25 @@
 import React from 'react';
 import { Table, TableBody } from '@mui/material';
-import { storageObject } from '@utils/storage/store';
 import TableContainer from '../tableContainer/TableContainer';
 import TableDataProductsHeader from './tableDataProductsHeader/TableDataProductsHeader';
 import TableDataProductsRow from './tableDataProductsRow/TableDataProductsRow';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import Proposal from '@/utils/types/proposal';
+import type { ObservationInput } from '@/models/proposals/observations';
 
 interface TableDataProductsProps {
   data: any;
+  observations: ObservationInput[];
   deleteFunction?: (item: any) => void;
   updateFunction: (item: any) => void;
 }
 
 export default function TableDataProducts({
   data,
+  observations,
   deleteFunction,
   updateFunction
 }: TableDataProductsProps) {
   const { t } = useScopedTranslation();
-  const { application } = storageObject.useStore();
-
-  const getProposal = () => application.content2 as Proposal;
 
   const expandButtonsRef = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
   const [expandedRows, setExpandedRows] = React.useState(() => new Set<number>());
@@ -51,7 +49,7 @@ export default function TableDataProducts({
             <TableDataProductsRow
               key={item.id}
               item={item}
-              proposal={getProposal()}
+              observation={observations.find((obs) => obs.id === item.observationId)}
               index={index}
               expanded={expandedRows.has(item.id)}
               toggleRow={toggleRow}

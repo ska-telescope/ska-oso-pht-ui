@@ -2,12 +2,12 @@ import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { presentUnits, presentValue } from '@utils/present/present';
-import { SENSITIVITY_STATE, TIME_UNITS, TYPE_CONTINUUM, TYPE_PST } from '@utils/constants.ts';
+import { SENSITIVITY_STATE } from '@utils/constants.ts';
 import { sensitivityStatusLevel } from '@utils/helpersSensCalc';
 import { SENSITIVITY_FIELDS } from '@/services/sensitivityCalculator/results';
 import type { Sensitivity } from '@/models/proposals/targetObservation';
 import CancelButton from '../../../button/Cancel/Cancel';
-import Observation from '../../../../utils/types/observation';
+import { OBSERVING_MODE, type ObservationInput } from '@/models/proposals/observations';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 /** A row of the table: a link with results, named by its target. */
@@ -19,7 +19,7 @@ interface SensCalcModalMultipleProps {
   open: boolean;
   onClose: Function;
   data: SensCalcRow[];
-  observation: Observation;
+  observation: ObservationInput;
   level: number;
   levelError: string;
   isCustom: boolean;
@@ -42,8 +42,8 @@ export default function SensCalcModalMultiple({
 
   const { t } = useScopedTranslation();
 
-  const isContinuum = () => observation.type === TYPE_CONTINUUM;
-  const isPST = () => observation.type === TYPE_PST;
+  const isContinuum = () => observation.observingMode === OBSERVING_MODE.CONTINUUM;
+  const isPST = () => observation.observingMode === OBSERVING_MODE.PST;
 
   // Shown for a result the calculator didn't give: the ones that depend on the synthesized beam,
   // which a custom subarray or a non-Gaussian beam has none of
@@ -110,8 +110,8 @@ export default function SensCalcModalMultiple({
       <div data-testid="field-integrationTime">
         {e.row.sensitivity.state === SENSITIVITY_STATE.DONE &&
           presentation({
-            value: observation.supplied.value,
-            unit: TIME_UNITS.find((u) => u.id === observation.supplied.units)?.value ?? ''
+            value: observation.integrationTime.value ?? '',
+            unit: observation.integrationTime.unit ?? ''
           })}
       </div>
     )

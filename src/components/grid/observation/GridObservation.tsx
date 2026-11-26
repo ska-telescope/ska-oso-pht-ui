@@ -2,21 +2,30 @@ import React from 'react';
 import { Box, Stack } from '@mui/system';
 import { Typography } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import Observation from '@/utils/types/observation';
-import { getBandwidthOrFrequencyUnitsLabel } from '@/utils/helpers';
+import {
+  OBSERVING_MODE,
+  OBSERVING_MODE_TRANSLATION_KEY,
+  spectralResolutionText,
+  type ObservationInput
+} from '@/models/proposals/observations';
 
 interface GridObservationProps {
-  data: Observation[];
+  data: ObservationInput[];
   disabled?: boolean;
   rowClick?: (params: any) => void;
   displayOption?: number;
   autoSelectId?: string | number;
 }
 
-const HARD_CODED_SPECTRAL_RESOLUTION_BY_TYPE: Record<string, string> = {
-  continuum: '5.43 kHz',
-  pst: '3.62 kHz'
+// The spectral resolution of the modes without a zoom factor
+const HARD_CODED_SPECTRAL_RESOLUTION_BY_MODE: Partial<Record<string, string>> = {
+  [OBSERVING_MODE.CONTINUUM]: '5.43 kHz',
+  [OBSERVING_MODE.PST]: '3.62 kHz'
 };
+
+// A value with its unit, or a dash while it's missing
+const withUnit = (quantity: { value: number | null; unit: string | null }) =>
+  quantity.value === null ? '-' : `${quantity.value} ${quantity.unit ?? ''}`;
 export default function GridObservation({
   data,
   disabled = false,
@@ -50,15 +59,14 @@ export default function GridObservation({
     rowClick?.(params);
   };
 
-  const rowContent = (row: Observation) => {
-    const centralFrequencyUnits =
-      getBandwidthOrFrequencyUnitsLabel(row.centralFrequencyUnits) ?? '';
-    const observingMode = t('observationType.' + row.type);
-    const integrationTime = row.supplied?.value != null ? `${row.supplied.value} h` : '-';
+  const rowContent = (row: ObservationInput) => {
+    const observingMode = t('observationType.' + OBSERVING_MODE_TRANSLATION_KEY[row.observingMode]);
     const spectralResolution =
-      row.type === 'spectral'
-        ? row.spectralResolution
-        : HARD_CODED_SPECTRAL_RESOLUTION_BY_TYPE[row.type];
+      row.observingMode === OBSERVING_MODE.SPECTRAL
+        ? row.zoomFactor === null
+          ? undefined
+          : spectralResolutionText(row.telescope, row.zoomFactor, row.centralFrequency)
+        : HARD_CODED_SPECTRAL_RESOLUTION_BY_MODE[row.observingMode];
 
     return (
       <Stack
@@ -95,7 +103,7 @@ export default function GridObservation({
         <Typography variant="subtitle2">
           Central Frequency:{' '}
           <Box component="span" sx={{ fontWeight: 'bold' }}>
-            {row.centralFrequency} {centralFrequencyUnits}
+            {withUnit(row.centralFrequency)}
           </Box>
         </Typography>
         {spectralResolution && (
@@ -109,7 +117,7 @@ export default function GridObservation({
         <Typography variant="subtitle2">
           Integration Time:{' '}
           <Box component="span" sx={{ fontWeight: 'bold' }}>
-            {integrationTime}
+            {withUnit(row.integrationTime)}
           </Box>
         </Typography>
       </Stack>

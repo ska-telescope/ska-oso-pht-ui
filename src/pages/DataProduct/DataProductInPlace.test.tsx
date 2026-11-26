@@ -9,15 +9,16 @@ import {
   STEPPED_FIELD,
   steppedFromPdm
 } from '@/models/proposals/dataProducts';
-import {
-  REFERENCE_COORDINATE_TYPE_SSO,
-  SENSITIVITY_STATE,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
-  TYPE_ZOOM
-} from '@/utils/constants.ts';
+import { REFERENCE_COORDINATE_TYPE_SSO, SENSITIVITY_STATE } from '@/utils/constants.ts';
 import DataProductInPlace from './DataProductInPlace';
+import { legacyObservationsFromForm } from '@/models/proposals/legacyObservations';
+import { PstMode } from '@/generated/models';
+import {
+  newSvObservation,
+  OBSERVING_MODE,
+  type ObservationInput,
+  type ObservingMode
+} from '@/models/proposals/observations';
 
 // --- Mocks ---
 vi.mock('@/utils/help/useHelp', () => ({ useHelp: () => ({ setHelp: vi.fn() }) }));
@@ -88,18 +89,8 @@ const DONE: Sensitivity = {
   spectral: values({ weighted: 2 })
 };
 
-const observation = (type: string, extra: object = {}) => ({
-  id: 'OBS1',
-  type,
-  observingBand: 'low',
-  centralFrequency: 1,
-  centralFrequencyUnits: 'Hz',
-  supplied: { value: 1 },
-  continuumBandwidth: 1,
-  continuumBandwidthUnits: 2,
-  bandwidth: 1,
-  ...extra
-});
+const observation = (mode: ObservingMode, extra: object = {}) =>
+  ({ ...newSvObservation(mode, 15), id: 'OBS1', ...extra }) as ObservationInput;
 
 const image = (kind: string, extra: object = {}) =>
   ({
@@ -131,19 +122,26 @@ const link = (sensitivity?: Sensitivity) => ({
   sensitivity
 });
 
-// The store the form is seeded from
-const openProposal = (proposal: {
-  observations: object[];
+// The observation the page shows, and the store the form is seeded from
+let openedObservation: ObservationInput;
+const openProposal = ({
+  observations,
+  ...proposal
+}: {
+  observations: ObservationInput[];
   dataProducts: DataProductInput[];
   targetObservation?: object[];
   targets?: object[];
 }) => {
+  openedObservation = observations[0];
   mockStoreReturn = {
     application: {
       content2: {
         id: 'prsl-1',
         targets: [],
         targetObservation: [],
+        // TODO BTN-3595 Seed the form directly once it no longer takes its observations from the store's legacy shape
+        ...legacyObservationsFromForm(observations),
         ...proposal
       }
     },
@@ -158,7 +156,7 @@ const renderPage = () =>
   render(
     <TestProposalFormProvider>
       <ThemeProvider theme={theme}>
-        <DataProductInPlace observation={mockStoreReturn.application.content2.observations[0]} />
+        <DataProductInPlace observation={openedObservation} />
       </ThemeProvider>
     </TestProposalFormProvider>
   );
@@ -171,7 +169,7 @@ describe('DataProductInPlace', () => {
   it('shows the linked data product and its results without changing them', () => {
     const dataProducts = [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE), visibilities];
     openProposal({
-      observations: [observation(TYPE_CONTINUUM)],
+      observations: [observation(OBSERVING_MODE.CONTINUUM)],
       dataProducts,
       targetObservation: [link(DONE)]
     });
@@ -186,7 +184,7 @@ describe('DataProductInPlace', () => {
 
   it("shows the observation's main data product before there is a link", () => {
     openProposal({
-      observations: [observation(TYPE_CONTINUUM)],
+      observations: [observation(OBSERVING_MODE.CONTINUUM)],
       dataProducts: [visibilities, image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE)]
     });
     renderPage();
@@ -197,7 +195,7 @@ describe('DataProductInPlace', () => {
   it('offers images or visibilities only for a continuum observation', () => {
     // A continuum-spectral observation's visibilities are its hidden companion, not a choice
     openProposal({
-      observations: [observation(TYPE_CONTINUUM_SPECTRAL)],
+      observations: [observation(OBSERVING_MODE.CONTINUUM_SPECTRAL)],
       dataProducts: [visibilities, image(DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE)]
     });
     renderPage();
@@ -209,7 +207,7 @@ describe('DataProductInPlace', () => {
 
   it('makes the visibilities the main data product when the user switches to them', async () => {
     openProposal({
-      observations: [observation(TYPE_CONTINUUM)],
+      observations: [observation(OBSERVING_MODE.CONTINUUM)],
       dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { channelsOut: 3 }), visibilities],
       targetObservation: [link(DONE)]
     });
@@ -233,7 +231,7 @@ describe('DataProductInPlace', () => {
 
   it('hides continuum spectral results when only one output channel is selected', () => {
     openProposal({
-      observations: [observation(TYPE_CONTINUUM)],
+      observations: [observation(OBSERVING_MODE.CONTINUUM)],
       dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { channelsOut: 1 })],
       targetObservation: [link(DONE)]
     });
@@ -249,7 +247,7 @@ describe('DataProductInPlace', () => {
   describe('when the sensitivity calculator does not apply', () => {
     it('reports PST as unsupported', () => {
       openProposal({
-        observations: [observation(TYPE_PST)],
+        observations: [observation(OBSERVING_MODE.PST)],
         dataProducts: [{ id: 'DP1', observationId: 'OBS1', kind: DATA_PRODUCT_KIND.PST_TIMING }]
       });
       renderPage();
@@ -259,7 +257,7 @@ describe('DataProductInPlace', () => {
 
     it('asks for a target when none is linked', () => {
       openProposal({
-        observations: [observation(TYPE_CONTINUUM)],
+        observations: [observation(OBSERVING_MODE.CONTINUUM)],
         dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE)]
       });
       renderPage();
@@ -269,7 +267,7 @@ describe('DataProductInPlace', () => {
 
     it('reports SSO targets as unsupported', () => {
       openProposal({
-        observations: [observation(TYPE_CONTINUUM)],
+        observations: [observation(OBSERVING_MODE.CONTINUUM)],
         dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE)],
         targetObservation: [link({ state: SENSITIVITY_STATE.CALCULATING })],
         targets: [
@@ -290,9 +288,9 @@ describe('DataProductInPlace', () => {
   });
 
   it.each([
-    [TYPE_CONTINUUM, DATA_PRODUCT_KIND.CONTINUUM_IMAGE],
-    [TYPE_ZOOM, DATA_PRODUCT_KIND.SPECTRAL_IMAGE],
-    [TYPE_CONTINUUM_SPECTRAL, DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE]
+    [OBSERVING_MODE.CONTINUUM, DATA_PRODUCT_KIND.CONTINUUM_IMAGE],
+    [OBSERVING_MODE.SPECTRAL, DATA_PRODUCT_KIND.SPECTRAL_IMAGE],
+    [OBSERVING_MODE.CONTINUUM_SPECTRAL, DATA_PRODUCT_KIND.CONTINUUM_SPECTRAL_IMAGE]
   ])('shows the robust field for briggs weighting in %s', (type, kind) => {
     openProposal({ observations: [observation(type)], dataProducts: [image(kind)] });
     renderPage();
@@ -302,7 +300,7 @@ describe('DataProductInPlace', () => {
 
   it("shows a spectral data product's own channels out, which the user can't edit", () => {
     openProposal({
-      observations: [observation(TYPE_ZOOM, { zoomChannels: 40 })],
+      observations: [observation(OBSERVING_MODE.SPECTRAL, { zoomChannels: 40 })],
       dataProducts: [image(DATA_PRODUCT_KIND.SPECTRAL_IMAGE, { channelsOut: 40 })]
     });
     renderPage();
@@ -314,7 +312,7 @@ describe('DataProductInPlace', () => {
 
   it('hides the robust field for other weightings', () => {
     openProposal({
-      observations: [observation(TYPE_CONTINUUM)],
+      observations: [observation(OBSERVING_MODE.CONTINUUM)],
       dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { weighting: { type: 'natural' } })]
     });
     renderPage();
@@ -332,7 +330,7 @@ describe('DataProductInPlace', () => {
 
     it('gives briggs the default robust when none was entered', async () => {
       openProposal({
-        observations: [observation(TYPE_CONTINUUM)],
+        observations: [observation(OBSERVING_MODE.CONTINUUM)],
         dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { weighting: { type: 'natural' } })]
       });
       renderPage();
@@ -344,7 +342,7 @@ describe('DataProductInPlace', () => {
 
     it('keeps the robust entered for briggs when switching away and back', async () => {
       openProposal({
-        observations: [observation(TYPE_CONTINUUM)],
+        observations: [observation(OBSERVING_MODE.CONTINUUM)],
         dataProducts: [
           image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, { weighting: { type: 'briggs', robust: 1.5 } })
         ]
@@ -372,7 +370,7 @@ describe('DataProductInPlace', () => {
     ['shows a beam result the calculator gave', values({ weighted: 7.18 }), '1.00 x 2.00']
   ])('%s', (_, continuum, beamSize) => {
     openProposal({
-      observations: [observation(TYPE_CONTINUUM)],
+      observations: [observation(OBSERVING_MODE.CONTINUUM)],
       dataProducts: [image(DATA_PRODUCT_KIND.CONTINUUM_IMAGE)],
       targetObservation: [
         link({
@@ -390,7 +388,7 @@ describe('DataProductInPlace', () => {
   // A whole number of steps from the backend is shown to the field's decimal places
   it('shows the detected filterbank resolution and sampling interval rounded', () => {
     openProposal({
-      observations: [observation(TYPE_PST, { pstMode: 1 })],
+      observations: [observation(OBSERVING_MODE.PST, { pstMode: PstMode.DetectedFilterbank })],
       dataProducts: [
         {
           id: 'DP1',
@@ -419,13 +417,23 @@ describe('DataProductInPlace', () => {
   });
 
   it.each([
-    [DATA_PRODUCT_KIND.PST_FLOW_THROUGH, 0, ['1', '2', '4', '8', '16'], ['X', 'Y']],
-    [DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK, 1, ['1', '2', '4', '8'], ['I', 'Q', 'U', 'V']]
+    [
+      DATA_PRODUCT_KIND.PST_FLOW_THROUGH,
+      PstMode.FlowThrough,
+      ['1', '2', '4', '8', '16'],
+      ['X', 'Y']
+    ],
+    [
+      DATA_PRODUCT_KIND.PST_DETECTED_FILTERBANK,
+      PstMode.DetectedFilterbank,
+      ['1', '2', '4', '8'],
+      ['I', 'Q', 'U', 'V']
+    ]
   ])(
     'gives %s its bit depth and polarisation options and description',
     (kind, pstMode, options, polarisations) => {
       openProposal({
-        observations: [observation(TYPE_PST, { pstMode })],
+        observations: [observation(OBSERVING_MODE.PST, { pstMode })],
         dataProducts: [
           {
             id: 'DP1',

@@ -18,7 +18,6 @@ type Observation = {
   continuumBandwidthUnits: number | null; // only for continuum
   supplied: Supplied;
   spectralResolution: string;
-  effectiveResolution: string;
   numSubBands?: number; // only for MID
   num15mAntennas?: number; // only for MID
   num13mAntennas?: number; // only for MID
