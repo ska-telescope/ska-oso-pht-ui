@@ -1,16 +1,13 @@
 import {
   FREQUENCY_HZ,
+  FREQUENCY_UNIT_HZ,
   FREQUENCY_UNITS,
+  type FrequencyUnit,
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
   VELOCITY_UNIT,
   VELOCITY_UNITS,
-  DEFAULT_PST_OBSERVATION_LOW,
-  DEFAULT_ZOOM_OBSERVATION_LOW,
-  TYPE_ZOOM,
-  TYPE_PST,
   TYPE_CONTINUUM_SPECTRAL,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
   TIME_UNITS,
   FREQUENCY_STR_KHZ,
   FREQUENCY_STR_MHZ,
@@ -57,6 +54,12 @@ export const countWords = (text: string) => {
   return !text ? 0 : text.trim().split(/\s+/).filter(Boolean).length;
 };
 
+/** Converts a frequency from one unit to another. */
+export const convertFrequency = (value: number, from: FrequencyUnit, to: FrequencyUnit = 'Hz') =>
+  (value * FREQUENCY_UNIT_HZ[from]) / FREQUENCY_UNIT_HZ[to];
+
+// TODO(BTN-3595): Takes the legacy numeric unit codes. Use convertFrequency instead; this is
+// removed once nothing holds the numeric codes.
 export const frequencyConversion = (inValue: any, from: number, to: number = FREQUENCY_HZ) => {
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };
@@ -264,18 +267,6 @@ export const obTypeTransform = (inData: string[]) => {
  * Returns the default LOW AA2 observation for the given observing mode, falling back to the
  * continuum default for combined or unrecognised modes.
  */
-export const getDefaultObservationLowAA2 = (type: string): Observation => {
-  switch (type) {
-    case TYPE_ZOOM:
-      return DEFAULT_ZOOM_OBSERVATION_LOW;
-    case TYPE_PST:
-      return DEFAULT_PST_OBSERVATION_LOW;
-    case TYPE_CONTINUUM_SPECTRAL:
-    default:
-      return DEFAULT_CONTINUUM_OBSERVATION_LOW;
-  }
-};
-
 export const timeConversion = (inValue: number, from: number, to: number) => {
   const fromUnit = TIME_UNITS.find((u) => u.id === from);
   const toUnit = TIME_UNITS.find((u) => u.id === to);

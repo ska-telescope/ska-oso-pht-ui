@@ -8,9 +8,8 @@ UNRELEASED
 ----------
 * Changed: e2e test auth moved into the test framework; Indigo token renewal uses a new `auth-callback.html` page (register `<app URL>auth-callback.html` as an Indigo redirect URI)
 * Added: Indigo smoke tests, a REQUEST_TIMEOUT_MS setting (default 20s, 60s for CI e2e deployments), and --clean-db for local e2e runs
-* Changed: js-e2e-test is no longer treated as having a separate environment
 * Changed: CI runs the e2e tests as parallel jobs
-* Added: CI runs the Indigo smoke tests after dev and staging deployments
+* Added: CI runs the Indigo smoke tests after dev, integration and staging deployments
 * Changed: CI now defaults to Cypress only being included for the e2e test and smoke test jobs which make use of it. For all other jobs the default is that it isn't downloaded.
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
@@ -18,10 +17,15 @@ UNRELEASED
 * Bugfix: The edit target dialog cannot be confirmed while the velocity or redshift is invalid
 * Bugfix: Calibration notes edited while calibrators are being looked up are kept
 * Dependency update: Sensitivity Calculator v12.0.2
-* Library update: SKA GUI Components v4.0.0
+* Library update: SKA GUI Components v4.1.0
 * Changed: Target name resolution error improved and shown in a pop-up
 * Changed: Do not allow duplicate target names when adding multiple targets
-* Bugfix: Page now scrolls to top after proposal selection 
+* Bugfix: Page now scrolls to top after proposal selection
+* Changed: ska-oso-services dependency updated to v17.2.2
+
+11.1.1
+----------
+* Bugfix: Translation files moved from `public` to `src` to avoid display text caching
 
 11.1.0
 ----------

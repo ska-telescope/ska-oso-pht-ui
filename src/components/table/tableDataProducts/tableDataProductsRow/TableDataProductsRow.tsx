@@ -6,27 +6,21 @@ import { FrequencySpectrum } from '@ska-telescope/ska-gui-components';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
-import Proposal from '@/utils/types/proposal';
-import {
-  FREQUENCY_GHZ,
-  FREQUENCY_HZ,
-  FREQUENCY_MHZ,
-  TEL_UNITS,
-  TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_NUM,
-  TYPE_CONTINUUM,
-  TYPE_PST
-} from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import DataProductDisplay from '@/components/info/dataProduct/DataProductDisplay';
-import { frequencyConversion, getBandwidthLowZoom, getBandwidthZoom } from '@/utils/helpers';
 import ExpandIcon from '@/components/icon/expandIcon/expandIcon';
 import ObservingBand from '@/components/display/observingBand/observingBand';
+import {
+  OBSERVING_MODE_TRANSLATION_KEY,
+  spectrumOf,
+  TELESCOPE_NUMBER,
+  type ObservationInput
+} from '@/models/proposals/observations';
 
 interface TableDataProductsRowProps {
   item: any;
   index: number;
-  proposal: Proposal;
+  observation: ObservationInput | undefined;
   expanded: boolean;
   deleteClicked?: Function;
   editClicked?: Function;
@@ -38,7 +32,7 @@ interface TableDataProductsRowProps {
 export default function TableDataProductsRow({
   item,
   index,
-  proposal,
+  observation,
   expanded,
   deleteClicked,
   editClicked,
@@ -50,35 +44,8 @@ export default function TableDataProductsRow({
   const { osdLOW, osdMID } = useOSDAccessors();
   useInitializeAccessStore();
 
-  const observation = useMemo(
-    () => proposal?.observations?.find((obs) => obs.id === item.observationId),
-    [proposal, item.observationId]
-  );
-
-  const isContinuum = observation?.type === TYPE_CONTINUUM;
-  const isPST = observation?.type === TYPE_PST;
-  const isLow = observation?.telescope === TELESCOPE_LOW_NUM;
-  const isMid = observation?.telescope === TELESCOPE_MID_NUM;
-
-  let min: number;
-  let max: number;
-  if (isMid) {
-    const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
-      (e) => e.rxId === String(observation?.observingBand)
-    );
-    min = receiver?.minFrequencyHz ?? 0;
-    max = receiver?.maxFrequencyHz ?? 0;
-  } else {
-    min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
-    max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
-  }
-  const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-  const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-  const centerFreq = frequencyConversion(
-    observation?.centralFrequency ?? 0,
-    observation?.centralFrequencyUnits ?? FREQUENCY_HZ,
-    isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ
-  );
+  const observingMode = observation && OBSERVING_MODE_TRANSLATION_KEY[observation.observingMode];
+  const telescopeNumber = observation && TELESCOPE_NUMBER[observation.telescope];
 
   const getObservationColors = (type: string, value?: unknown, dim?: number) =>
     getColors({
@@ -91,16 +58,16 @@ export default function TableDataProductsRow({
     }) ?? [];
 
   const colorsObType = useMemo(
-    () => getObservationColors('observationType', observation?.type, 0.6),
-    [observation?.type]
+    () => getObservationColors('observationType', observingMode, 0.6),
+    [observingMode]
   );
   const colorsTelescope = useMemo(
-    () => getObservationColors('telescope', observation?.telescope),
-    [observation?.telescope]
+    () => getObservationColors('telescope', telescopeNumber),
+    [telescopeNumber]
   );
   const colorsTelescopeDim = useMemo(
-    () => getObservationColors('telescope', observation?.telescope, 0.6),
-    [observation?.telescope]
+    () => getObservationColors('telescope', telescopeNumber, 0.6),
+    [telescopeNumber]
   );
 
   return (
@@ -195,7 +162,7 @@ export default function TableDataProductsRow({
                 color: 'text.secondary'
               }}
             >
-              {t('observationType.' + observation?.type)}
+              {t('observationType.' + observingMode)}
             </Typography>
           </Box>
         </TableCell>
@@ -239,33 +206,21 @@ export default function TableDataProductsRow({
         {/* Observing Band */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <ObservingBand
-            telescope={String(observation?.telescope)}
-            band={observation?.observingBand}
+            telescope={String(telescopeNumber)}
+            band={observation?.observingBand ?? undefined}
           />
         </TableCell>
 
         {/* Frequency Spectrum */}
         <TableCell>
-          <FrequencySpectrum
-            actual
-            minFreq={minFreq}
-            maxFreq={maxFreq}
-            centerFreq={centerFreq}
-            bandWidth={
-              isContinuum || isPST
-                ? (observation?.continuumBandwidth ?? 0)
-                : (frequencyConversion(
-                    isLow
-                      ? (getBandwidthLowZoom(observation?.bandwidth ?? 0)?.value ?? 0)
-                      : getBandwidthZoom(observation ?? null),
-                    isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ,
-                    FREQUENCY_MHZ
-                  ) ?? 0)
-            }
-            bandColor={colorsTelescopeDim.bg[0]}
-            bandColorContrast={colorsTelescopeDim.fg[0]}
-            unit={TEL_UNITS[observation?.telescope ?? 0]}
-          />
+          {observation && (
+            <FrequencySpectrum
+              actual
+              {...spectrumOf(observation, { low: osdLOW, mid: osdMID })}
+              bandColor={colorsTelescopeDim.bg[0]}
+              bandColorContrast={colorsTelescopeDim.fg[0]}
+            />
+          )}
         </TableCell>
       </TableRow>
 

@@ -3,10 +3,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import TitleEntry from './TitleEntry';
-import { PROPOSAL_TYPE } from '@/utils/constants';
+import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProposalType, getProposalResolver } from '@/models/proposals/proposal';
-import phtTranslations from '../../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ isSV: false })
@@ -37,7 +37,7 @@ const wrapper = (
   component: React.ReactElement,
   {
     validate = false,
-    proposalType
+    proposalType = { type: null, subTypes: [] }
   }: { validate?: boolean; proposalType?: ProposalType['proposalType'] } = {}
 ) => {
   const FormWrapper = () => {
@@ -51,7 +51,10 @@ const wrapper = (
         <FormProvider {...methods}>
           {component}
           <output data-testid="formTitle">{methods.watch('title')}</output>
-          <output data-testid="formProposalType">{methods.watch('proposalType')}</output>
+          <output data-testid="formProposalType">{methods.watch('proposalType.type')}</output>
+          <output data-testid="formSubTypes">
+            {methods.watch('proposalType.subTypes').join(',')}
+          </output>
         </FormProvider>
       </StoreProvider>
     );
@@ -99,24 +102,37 @@ describe('<TitleEntry />', () => {
 
   test('only changes the form type and clears subtypes after confirmation', async () => {
     const { container } = wrapper(<TitleEntry page={0} />, {
-      proposalType: PROPOSAL_TYPE.STANDARD
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [PROPOSAL_SUBTYPE.JOINT] }
     });
     fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
     expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.STANDARD);
+    expect(screen.getByTestId('formSubTypes')).toHaveTextContent(PROPOSAL_SUBTYPE.JOINT);
 
     fireEvent.click(screen.getByTestId('dialogConfirmationButton'));
     await waitFor(() =>
       expect(screen.getByTestId('formProposalType')).toHaveTextContent(PROPOSAL_TYPE.KEY_SCIENCE)
     );
-    // The sub-types are not in the form yet, so the page clears them in the store itself
-    expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
-      expect.objectContaining({ proposalSubType: [] })
-    );
+    expect(screen.getByTestId('formSubTypes')).toBeEmptyDOMElement();
+    expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
+  });
+
+  test('picks and unpicks a sub-type in the form', () => {
+    const { container } = wrapper(<TitleEntry page={0} />, {
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] }
+    });
+    const joint = container.querySelector(`#proposalAttribute-${PROPOSAL_SUBTYPE.JOINT}`)!;
+
+    fireEvent.click(joint);
+    expect(screen.getByTestId('formSubTypes')).toHaveTextContent(PROPOSAL_SUBTYPE.JOINT);
+
+    fireEvent.click(joint);
+    expect(screen.getByTestId('formSubTypes')).toBeEmptyDOMElement();
+    expect(mockStore.updateAppContent2).not.toHaveBeenCalled();
   });
 
   test('keeps the selected form type when a change is cancelled', () => {
     const { container } = wrapper(<TitleEntry page={0} />, {
-      proposalType: PROPOSAL_TYPE.STANDARD
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] }
     });
     fireEvent.click(container.querySelector(`#ProposalType-${PROPOSAL_TYPE.KEY_SCIENCE}`)!);
     fireEvent.click(screen.getByTestId('dialogCancelButton'));

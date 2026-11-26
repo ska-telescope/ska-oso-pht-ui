@@ -6,9 +6,9 @@ copyright = '2023, SKAO'
 author = 'SKAO, Stargazer'
 
 # The short X.Y version
-version = '11.1.0'
+version = '11.1.1'
 # The full version, including alpha/beta/rc tags
-release = '11.1.0'
+release = '11.1.1'
 
 
 rst_prolog = r"""

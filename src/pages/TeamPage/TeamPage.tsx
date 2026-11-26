@@ -61,6 +61,7 @@ export default function TeamPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { setValue } = useFormContext<ProposalFormValues>();
+  const prslId = useWatch<ProposalFormValues, 'prslId'>({ name: 'prslId' });
   const investigators = useWatch<ProposalFormValues, 'investigators'>({
     name: 'investigators',
     defaultValue: []
@@ -111,7 +112,7 @@ export default function TeamPage() {
   }, [currentInvestigators, errors.investigators, setTheProposalState]);
 
   const fetchProposalAccessData = async () => {
-    const response = await GetProposalAccessForProposal(authClient, getProposal()?.id);
+    const response = await GetProposalAccessForProposal(authClient, prslId);
     if (typeof response === 'string') {
       notifyError(response, NOTIFICATION_DELAY_IN_SECONDS);
     } else if (typeof response === 'object' && 'error' in response) {
@@ -145,7 +146,7 @@ export default function TeamPage() {
   };
 
   const actionsAvailable = () => {
-    return accessPI(getAccess(), getProposal().id);
+    return accessPI(getAccess(), prslId);
   };
 
   const closeDeleteDialog = () => {
@@ -167,7 +168,6 @@ export default function TeamPage() {
       'investigators',
       getTeamValues({ investigators: updatedInvestigators }).investigators,
       {
-        shouldDirty: true,
         shouldValidate: true
       }
     );
@@ -179,7 +179,7 @@ export default function TeamPage() {
   const accessConfirmed = () => {
     const access: ProposalAccess = {
       id: permissions.find((p) => p.userId === currentMember)?.id as string,
-      prslId: getProposal()?.id,
+      prslId,
       userId: currentMember,
       role: 'Co-Investigator',
       permissions: selectedOptions

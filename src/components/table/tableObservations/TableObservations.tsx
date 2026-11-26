@@ -4,24 +4,25 @@ import TableContainer from '../tableContainer/TableContainer';
 import TableObservationsHeader from './tableObservationsHeader/TableObservationsHeader';
 import TableObservationsRow from './tableObservationsRow/TableObservationsRow';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import type { ObservationInput } from '@/models/proposals/observations';
 
 interface TableObservationsProps {
-  data: any;
-  deleteFunction?: (item: any) => void;
-  updateFunction: (item: any) => void;
+  observations: ObservationInput[];
+  deleteFunction?: (observation: ObservationInput) => void;
+  updateFunction: (observation: ObservationInput) => void;
 }
 
 export default function TableObservations({
-  data,
+  observations,
   deleteFunction,
   updateFunction
 }: TableObservationsProps) {
   const { t } = useScopedTranslation();
 
-  const expandButtonsRef = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
-  const [expandedRows, setExpandedRows] = React.useState(() => new Set<number>());
+  const expandButtonsRef = React.useRef<{ [id: string]: HTMLButtonElement | null }>({});
+  const [expandedRows, setExpandedRows] = React.useState(() => new Set<string>());
 
-  const toggleRow = (id: number) => {
+  const toggleRow = (id: string) => {
     const newExpandedRows = new Set(expandedRows);
     newExpandedRows.has(id) ? newExpandedRows.delete(id) : newExpandedRows.add(id);
     setExpandedRows(newExpandedRows);
@@ -42,14 +43,14 @@ export default function TableObservations({
         </colgroup>
 
         <TableBody>
-          {data?.map((item: any, index: number) => (
+          {observations.map((observation, index) => (
             <TableObservationsRow
-              key={item.id}
-              item={item}
+              key={observation.id}
+              observation={observation}
               index={index}
-              expanded={expandedRows.has(item.id)}
+              expanded={expandedRows.has(observation.id)}
               toggleRow={toggleRow}
-              expandButtonRef={(el) => (expandButtonsRef.current[item.id] = el)}
+              expandButtonRef={(el) => (expandButtonsRef.current[observation.id] = el)}
               deleteClicked={deleteFunction}
               editClicked={updateFunction}
               t={t}

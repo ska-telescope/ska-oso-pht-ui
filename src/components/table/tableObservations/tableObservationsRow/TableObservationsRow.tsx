@@ -7,21 +7,15 @@ import { FrequencySpectrum } from '@ska-telescope/ska-gui-components';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
-import {
-  FREQUENCY_GHZ,
-  FREQUENCY_HZ,
-  FREQUENCY_MHZ,
-  TEL_UNITS,
-  TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_NUM,
-  TYPE_CONTINUUM,
-  TYPE_PST
-} from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import ObservationInfo from '@/components/info/observation/Observation';
-import { frequencyConversion, getBandwidthZoom } from '@/utils/helpers';
-import { OSD_CONSTANTS } from '@/utils/OSDConstants';
 import ObservingBand from '@/components/display/observingBand/observingBand';
+import {
+  OBSERVING_MODE_TRANSLATION_KEY,
+  spectrumOf,
+  TELESCOPE_NUMBER,
+  type ObservationInput
+} from '@/models/proposals/observations';
 
 // NOTE
 //
@@ -30,18 +24,18 @@ import ObservingBand from '@/components/display/observingBand/observingBand';
 // re-enabled.
 
 interface TableObservationsRowProps {
-  item: any;
+  observation: ObservationInput;
   index: number;
   expanded: boolean;
-  deleteClicked?: Function;
-  editClicked?: Function;
-  toggleRow: (id: number) => void;
+  deleteClicked?: (observation: ObservationInput) => void;
+  editClicked?: (observation: ObservationInput) => void;
+  toggleRow: (id: string) => void;
   expandButtonRef: (el: HTMLButtonElement | null) => void;
   t: any;
 }
 
 export default function TableObservationsRow({
-  item,
+  observation,
   index,
   expanded,
   deleteClicked,
@@ -54,36 +48,8 @@ export default function TableObservationsRow({
   const { osdLOW, osdMID } = useOSDAccessors();
   useInitializeAccessStore();
 
-  const observation = item;
-  const isContinuum = observation?.type === TYPE_CONTINUUM;
-  const isPST = observation?.type === TYPE_PST;
-  const isLow = observation?.telescope === TELESCOPE_LOW_NUM;
-  const isMid = observation?.telescope === TELESCOPE_MID_NUM;
-
-  const getBandwidthLowZoom = (inValue: number) => {
-    const obsTelescopeArray = OSD_CONSTANTS.array[1];
-    return obsTelescopeArray?.bandWidth?.find((b) => b.value === inValue);
-  };
-
-  let min: number;
-  let max: number;
-  if (isMid) {
-    const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
-      (e) => e.rxId === String(observation?.rec?.observingBand)
-    );
-    min = receiver?.minFrequencyHz ?? 0;
-    max = receiver?.maxFrequencyHz ?? 0;
-  } else {
-    min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
-    max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
-  }
-  const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-  const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-  const centerFreq = frequencyConversion(
-    observation?.rec?.centralFrequency ?? 0,
-    observation?.rec?.centralFrequencyUnits ?? FREQUENCY_HZ,
-    isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ
-  );
+  const observingMode = OBSERVING_MODE_TRANSLATION_KEY[observation.observingMode];
+  const telescopeNumber = TELESCOPE_NUMBER[observation.telescope];
 
   const getObservationColors = (type: string, value?: unknown, dim?: number) =>
     getColors({
@@ -96,23 +62,23 @@ export default function TableObservationsRow({
     }) ?? [];
 
   const colorsObType = useMemo(
-    () => getObservationColors('observationType', observation?.type, 0.6),
-    [observation?.type]
+    () => getObservationColors('observationType', observingMode, 0.6),
+    [observingMode]
   );
   const colorsTelescope = useMemo(
-    () => getObservationColors('telescope', observation?.telescope),
-    [observation?.telescope]
+    () => getObservationColors('telescope', telescopeNumber),
+    [telescopeNumber]
   );
   const colorsTelescopeDim = useMemo(
-    () => getObservationColors('telescope', observation?.telescope, 0.6),
-    [observation?.telescope]
+    () => getObservationColors('telescope', telescopeNumber, 0.6),
+    [telescopeNumber]
   );
 
   return (
     <>
       <TableRow
-        key={item.id}
-        data-testid={`row-${item.id}`}
+        key={observation.id}
+        data-testid={`row-${observation.id}`}
         sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
         role="row"
         aria-rowindex={index + 2}
@@ -122,12 +88,12 @@ export default function TableObservationsRow({
             {false && ( // Currently no expanded content to show
               <IconButton
                 ref={expandButtonRef}
-                aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
+                aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${observation.id}.`}
                 aria-expanded={expanded}
-                aria-controls={`observation-details-${item.id}`}
+                aria-controls={`observation-details-${observation.id}`}
                 size="small"
-                onClick={() => toggleRow(item.id)}
-                data-testid={`expand-button-${item.id}`}
+                onClick={() => toggleRow(observation.id)}
+                data-testid={`expand-button-${observation.id}`}
                 sx={{ transition: 'transform 0.2s' }}
               >
                 {expanded ? <ExpandMore /> : <ChevronRight />}
@@ -142,7 +108,10 @@ export default function TableObservationsRow({
                   alignItems: 'center'
                 }}
               >
-                <EditIcon onClick={() => editClicked(item)} toolTip={t('observations.edit')} />
+                <EditIcon
+                  onClick={() => editClicked(observation)}
+                  toolTip={t('observations.edit')}
+                />
                 <Typography variant="caption">{t('edit.label')}</Typography>
               </Box>
             )}
@@ -155,7 +124,10 @@ export default function TableObservationsRow({
                   alignItems: 'center'
                 }}
               >
-                <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('observations.delete')} />
+                <TrashIcon
+                  onClick={() => deleteClicked(observation)}
+                  toolTip={t('observations.delete')}
+                />
                 <Typography variant="caption">{t('deleteBtn.label')}</Typography>
               </Box>
             )}
@@ -179,7 +151,7 @@ export default function TableObservationsRow({
               color: 'text.secondary'
             }}
           >
-            {t('observationType.' + observation?.type)}
+            {t('observationType.' + observingMode)}
           </Typography>
         </TableCell>
 
@@ -191,7 +163,7 @@ export default function TableObservationsRow({
               color: 'text.secondary'
             }}
           >
-            {item.id}
+            {observation.id}
           </Typography>
         </TableCell>
 
@@ -203,7 +175,7 @@ export default function TableObservationsRow({
               color: 'text.secondary'
             }}
           >
-            {item.id2}
+            {observation.groupId}
           </Typography>
         </TableCell>
 
@@ -225,8 +197,8 @@ export default function TableObservationsRow({
                 p: 1
               }}
             >
-              {t('telescopes.' + observation?.telescope)}{' '}
-              {t('subArrayConfiguration.' + observation?.subarray)}
+              {t('telescopes.' + observation.telescope)}{' '}
+              {t('subArrayConfiguration.' + observation.subarray)}
             </Typography>
           </Box>
         </TableCell>
@@ -234,8 +206,8 @@ export default function TableObservationsRow({
         {/* Observing Band */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <ObservingBand
-            telescope={observation?.telescope}
-            band={observation?.rec?.observingBand}
+            telescope={telescopeNumber}
+            band={observation.observingBand ?? undefined}
           />
         </TableCell>
 
@@ -243,33 +215,19 @@ export default function TableObservationsRow({
         <TableCell>
           <FrequencySpectrum
             actual
-            minFreq={minFreq}
-            maxFreq={maxFreq}
-            centerFreq={centerFreq}
-            bandWidth={
-              isContinuum || isPST
-                ? (observation?.rec?.continuumBandwidth ?? 0)
-                : (frequencyConversion(
-                    isLow
-                      ? (getBandwidthLowZoom(observation.bandwidth)?.value ?? 0)
-                      : getBandwidthZoom(observation),
-                    isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ,
-                    FREQUENCY_MHZ
-                  ) ?? 0)
-            }
+            {...spectrumOf(observation, { low: osdLOW, mid: osdMID })}
             bandColor={colorsTelescopeDim.bg[0]}
             bandColorContrast={colorsTelescopeDim.fg[0]}
-            unit={TEL_UNITS[observation?.telescope]}
           />
         </TableCell>
       </TableRow>
 
       {/* Expanded Row */}
-      <TableRow key={`${item.id}-expanded`}>
+      <TableRow key={`${observation.id}-expanded`}>
         <TableCell sx={{ p: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Box sx={{ overflowX: 'hidden' }}>
-              {observation.rec && <ObservationInfo t={t} observation={observation.rec} />}
+              <ObservationInfo t={t} observation={observation} />
             </Box>
           </Collapse>
         </TableCell>

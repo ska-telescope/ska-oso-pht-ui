@@ -4,7 +4,6 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@utils/storage/store';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { Proposal } from '@utils/types/proposal.tsx';
 import { IMAGE_WEIGHTING, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
@@ -29,15 +28,15 @@ export default function DataProductsPage() {
   const { application, updateAppContent1 } = storageObject.useStore();
   const [currentRow, setCurrentRow] = React.useState('');
   const [openDialog, setOpenDialog] = React.useState(false);
-  const { osdCyclePolicy } = useOSDAccessors();
+  const { osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
   const navigate = useNavigate();
 
   const form = useFormContext<ProposalType>();
-  const getProposal = () => application.content2 as Proposal;
 
+  const observations = useWatch({ control: form.control, name: 'observations' });
   // Write submit status checks into the status store (to be deleted in future refactor)
   useWatch({ control: form.control, name: ['proposalType', 'dataProducts', 'targetObservation'] });
-  const status = getSubmitPageStatuses(form.getValues()).dataProducts;
+  const status = getSubmitPageStatuses(form.getValues(), { low: osdLOW, mid: osdMID }).dataProducts;
   React.useEffect(() => {
     const statuses = application.content1 as number[];
     if (!statuses || statuses.length <= PAGE || statuses[PAGE] === status) {
@@ -109,10 +108,7 @@ export default function DataProductsPage() {
     );
   };
 
-  const hasObservations = (): boolean => {
-    const proposal = getProposal();
-    return !!proposal && Array.isArray(proposal.observations) && proposal.observations.length > 0;
-  };
+  const hasObservations = () => observations.length > 0;
 
   const noObservations = () => {
     return (
@@ -157,6 +153,7 @@ export default function DataProductsPage() {
           />
           <TableDataProducts
             data={form.getValues('dataProducts')}
+            observations={observations}
             deleteFunction={deleteIconClicked}
             updateFunction={editIconClicked}
           />
@@ -184,7 +181,7 @@ export default function DataProductsPage() {
           <>
             {osdCyclePolicy?.maxDataProducts !== 1 && dataProductList()}
             {osdCyclePolicy?.maxDataProducts === 1 && (
-              <DataProductInPlace observation={getProposal().observations![0]} />
+              <DataProductInPlace observation={observations[0]} />
             )}
           </>
         )}

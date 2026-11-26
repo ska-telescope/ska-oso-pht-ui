@@ -5,6 +5,7 @@ import { storageObject, StoreProvider } from '@utils/storage/store';
 import TargetPage from './TargetPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import completeMockStore from '@/utils/MockStore';
+import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import {
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
@@ -13,13 +14,15 @@ import {
   PAGE_TITLE_ADD,
   PROPOSAL_TYPE,
   STATUS_ERROR,
-  STATUS_PARTIAL
+  STATUS_INITIAL
 } from '@/utils/constants';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      <TestProposalFormProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </TestProposalFormProvider>
     </StoreProvider>
   );
 };
@@ -54,7 +57,7 @@ describe('<TargetPage />>', () => {
       application: {
         ...completeMockStore.application,
         // Statuses left over from when the proposal still had a target
-        content1: Array(10).fill(STATUS_PARTIAL),
+        content1: Array(10).fill(STATUS_INITIAL),
         content2: {
           ...completeMockStore.application.content2,
           proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
@@ -74,6 +77,6 @@ describe('<TargetPage />>', () => {
     expect(statuses[PAGE_LINKING]).toBe(STATUS_ERROR);
     expect(statuses[PAGE_CALIBRATION]).toBe(STATUS_ERROR);
     // Pages that don't depend on the target are left as they were
-    expect(statuses[PAGE_TITLE_ADD]).toBe(STATUS_PARTIAL);
+    expect(statuses[PAGE_TITLE_ADD]).toBe(STATUS_INITIAL);
   });
 });

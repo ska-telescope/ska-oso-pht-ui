@@ -174,17 +174,14 @@ stop-dev-environment:
   before_script:
     - make js-install
   script:
-    - >-
-      E2E_SUITE=smoke yarn cypress run --e2e --headless
-      --config baseUrl=$KUBE_HOST/$KUBE_NAMESPACE/pht/
-      --reporter junit --reporter-options "mochaFile=build/reports/smoke-[hash].xml"
+    - make js-smoke-test
   artifacts:
     when: always
     paths:
       - build/reports/
       - tests/cypress/artefacts/
     reports:
-      junit: build/reports/smoke-*.xml
+      junit: build/reports/e2e-tests.xml
 
 # After test-dev-environment has checked the pods are ready (deploying to dev is manual)
 smoke-test-dev-environment:
@@ -197,6 +194,18 @@ smoke-test-dev-environment:
 deploy-integration:
   variables:
     KUBE_HOST: https://k8s.stfc.skao.int
+
+# After each deployment to integration
+smoke-test-integration:
+  extends: .smoke_test
+  stage: integration
+  needs:
+    - deploy-integration
+  variables:
+    KUBE_HOST: https://k8s.stfc.skao.int
+    KUBE_NAMESPACE: "integration-$CI_PROJECT_NAME"
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
 
 deploy-staging:
   <<: *staging_env
@@ -272,7 +281,6 @@ include:
     file: "gitlab-ci/includes/oci-image.gitlab-ci.yml"
   # Docs pages
   - project: 'ska-telescope/templates-repository'
-    ref: btn-3676-remove-jstest-env
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
   # .post step finalisers eg: badges
   - project: "ska-telescope/templates-repository"

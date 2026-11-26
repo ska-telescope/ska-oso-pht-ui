@@ -1,10 +1,12 @@
 import { describe, expect, test } from 'vitest';
 import { getProposalSchema } from './proposal';
 import { getProposalFormDefaults, getProposalFormValues } from './useProposalForm';
-import { PROPOSAL_TYPE } from '@/utils/constants';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
+import phtTranslations from '@/locales/en/pht.json';
 
 const emptySlices = {
+  prslId: 'prp-1',
+  cycle: 'SKAO_2027_1',
   abstract: 'A valid abstract',
   scienceCategory: null,
   investigators: [],
@@ -13,7 +15,8 @@ const emptySlices = {
   calibrationStrategy: [],
   sciencePDF: null,
   technicalPDF: null,
-  dataProducts: []
+  dataProducts: [],
+  observations: []
 };
 
 describe('proposal schema', () => {
@@ -22,7 +25,7 @@ describe('proposal schema', () => {
     const result = getProposalSchema().safeParse({
       ...emptySlices,
       title: 'A valid title',
-      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
       abstract: Array(wordLimit + extraWords)
         .fill('a')
         .join(' '),
@@ -43,8 +46,11 @@ describe('proposal schema', () => {
 
   test.each(Object.values(PROPOSAL_TYPE))('accepts a valid title and type %s', (proposalType) => {
     expect(
-      getProposalSchema().safeParse({ title: 'A valid title', proposalType, ...emptySlices })
-        .success
+      getProposalSchema().safeParse({
+        title: 'A valid title',
+        proposalType: { type: proposalType, subTypes: [] },
+        ...emptySlices
+      }).success
     ).toBe(true);
   });
 
@@ -54,22 +60,31 @@ describe('proposal schema', () => {
     (proposalType) => {
       const result = getProposalSchema().safeParse({
         title: 'A valid title',
-        proposalType,
+        proposalType: { type: proposalType, subTypes: [] },
         ...emptySlices
       });
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].path).toEqual(['proposalType']);
+        expect(result.error.issues[0].path).toEqual(['proposalType', 'type']);
       }
     }
   );
+
+  test('rejects an unknown sub-type', () => {
+    const result = getProposalSchema().safeParse({
+      title: 'A valid title',
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: ['unsupported'] },
+      ...emptySlices
+    });
+    expect(result.error?.issues[0].path).toEqual(['proposalType', 'subTypes', 0]);
+  });
 
   test.each(['targets', 'targetObservation', 'calibrationStrategy'])(
     'rejects %s that is not a list',
     (slice) => {
       const result = getProposalSchema().safeParse({
         title: 'A valid title',
-        proposalType: PROPOSAL_TYPE.STANDARD,
+        proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
         ...emptySlices,
         [slice]: null
       });
@@ -80,7 +95,7 @@ describe('proposal schema', () => {
   test('reports a malformed link under targetObservation', () => {
     const result = getProposalSchema().safeParse({
       title: 'A valid title',
-      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
       ...emptySlices,
       targetObservation: [{ targetId: 't1' }]
     });
@@ -92,8 +107,10 @@ describe('proposal schema', () => {
 describe('proposal form values', () => {
   test('a new proposal has empty defaults', () => {
     expect(getProposalFormDefaults()).toEqual({
+      prslId: '',
+      cycle: '',
       title: '',
-      proposalType: null,
+      proposalType: { type: null, subTypes: [] },
       abstract: '',
       scienceCategory: null,
       investigators: [],
@@ -102,7 +119,8 @@ describe('proposal form values', () => {
       calibrationStrategy: [],
       sciencePDF: null,
       technicalPDF: null,
-      dataProducts: []
+      dataProducts: [],
+      observations: []
     });
   });
 
@@ -114,11 +132,21 @@ describe('proposal form values', () => {
 
   test("lays a proposal's slices over the defaults, without checking them", () => {
     const values = getProposalFormValues({
+      id: 'prp-1',
+      cycle: 'SKAO_2027_1',
       title: 'A title that is far too long to pass the title check '.repeat(10),
-      proposalType: PROPOSAL_TYPE.STANDARD
+      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalSubType: [PROPOSAL_SUBTYPE.JOINT]
     });
     expect(values.title).toContain('far too long');
-    expect(values.proposalType).toBe(PROPOSAL_TYPE.STANDARD);
+    // The store has the ID as id
+    expect(values.prslId).toBe('prp-1');
+    expect(values.cycle).toBe('SKAO_2027_1');
+    // The store has the type flat, with its sub-types beside it
+    expect(values.proposalType).toEqual({
+      type: PROPOSAL_TYPE.STANDARD,
+      subTypes: [PROPOSAL_SUBTYPE.JOINT]
+    });
     expect(values.targets).toEqual([]);
     expect(values.sciencePDF).toBeNull();
   });

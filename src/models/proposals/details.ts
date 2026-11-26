@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { countWords } from '@/utils/helpers';
 import { DETAILS, SCIENCE_CATEGORY } from '@/utils/constants';
 import type { ProposalInfo } from '@/generated/models/proposal-info';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 
 const MAX_ABSTRACT_WORDS = Number(phtTranslations.abstract.maxWord);
 const MAX_ABSTRACT_CHARACTERS = Number(phtTranslations.abstract.maxChar);
@@ -52,13 +52,16 @@ export const getDetailsValues = (proposal?: DetailsSeed): DetailsType => ({
 
 export type DetailsType = z.input<ReturnType<typeof getDetailsSchema>>;
 
-export const detailsFromPdm = (proposalInfo?: Partial<ProposalInfo>): DetailsType => {
+// Both are optional in the PDM, so a missing one gets the form's default
+export const detailsFromPdm = (
+  proposalInfo: Pick<ProposalInfo, 'abstract' | 'science_category'>
+): DetailsType => {
   const scienceCategory = DETAILS.ScienceCategory.find(
-    (category) => category.label.toLowerCase() === proposalInfo?.science_category?.toLowerCase()
+    (category) => category.label.toLowerCase() === proposalInfo.science_category?.toLowerCase()
   )?.value;
 
   return {
-    abstract: proposalInfo?.abstract ?? '',
+    abstract: proposalInfo.abstract ?? '',
     scienceCategory: scienceCategory ?? null
   };
 };

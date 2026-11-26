@@ -5,7 +5,7 @@
 //
 // Run it against a deployment whose redirect URIs are registered for the app's Indigo client
 // (the app URL, and <app URL>auth-callback.html):
-//   E2E_SUITE=smoke yarn cypress run --config baseUrl=<deployment URL>
+//   JS_E2E_TESTS_DIR=tests/cypress/smoke yarn cypress run --config baseUrl=<deployment URL>
 import { INDIGO_IAM_ORIGIN, withTestUserCredentials } from '../support/auth';
 
 // Logs in through Indigo's login page and waits until the app shows the user as logged in.
