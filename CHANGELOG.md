@@ -10,7 +10,7 @@ UNRELEASED
 * Added: Indigo smoke tests, a REQUEST_TIMEOUT_MS setting (default 20s, 60s for CI e2e deployments), and --clean-db for local e2e runs
 * Changed: js-e2e-test is no longer treated as having a separate environment
 * Changed: CI runs the e2e tests as parallel jobs
-* Added: CI runs the Indigo smoke tests after dev and staging deployments
+* Added: CI runs the Indigo smoke tests after dev, integration and staging deployments
 * Bugfix: Editing an observation keeps its data product settings, except that a PST mode change resets PST settings and a central frequency change recalculates image and pixel sizes.
 * Refactor: Migrated Description, Targets, Linking and Calibrations to use RHF and Zod validation
 * Bugfix: Keep the automatic-save timer running when page renders update its callback

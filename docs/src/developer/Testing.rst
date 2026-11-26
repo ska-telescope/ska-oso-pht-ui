@@ -126,8 +126,8 @@ CI runs it through ``make js-e2e-test`` against a fresh deployment with an empty
 app waits 60 seconds for the backend (``REQUEST_TIMEOUT_MS``).
 It splits the specs between three parallel jobs in the same way.
 CI also runs the smoke suite (``tests/cypress/smoke``) as ``smoke-test-dev-environment``, after a
-(manual) deployment to the dev environment, and ``smoke-test-staging``, after each tagged
-deployment to staging.
+(manual) deployment to the dev environment, ``smoke-test-integration``, after each deployment
+to integration and ``smoke-test-staging``, after each tagged deployment to staging.
 Failing tests are retried twice in headless runs.
 
 The smoke suite (``tests/cypress/smoke``) logs in through Indigo's real login page, and checks

@@ -145,6 +145,18 @@ deploy-integration:
   variables:
     KUBE_HOST: https://k8s.stfc.skao.int
 
+# After each deployment to integration
+smoke-test-integration:
+  extends: .smoke_test
+  stage: integration
+  needs:
+    - deploy-integration
+  variables:
+    KUBE_HOST: https://k8s.stfc.skao.int
+    KUBE_NAMESPACE: "integration-$CI_PROJECT_NAME"
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+
 deploy-staging:
   <<: *staging_env
   script:
