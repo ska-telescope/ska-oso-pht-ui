@@ -5,14 +5,14 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { MockCalibratorFrontendList } from '@services/axios/get/getCalibratorList/mockCalibratorListFrontend.tsx';
 import { MockProposalFrontend } from '@/services/axios/put/putProposal/mockProposalFrontend';
-import { ProposalSeed } from '@/models/proposals/useProposalForm';
+import { ProposalType } from '@/models/proposals/proposal';
 import CalibrationPage from './CalibrationPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
-const wrapper = (component: React.ReactElement, proposal?: ProposalSeed) => {
+const wrapper = (component: React.ReactElement, values?: Partial<ProposalType>) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider proposal={proposal}>
+      <TestProposalFormProvider values={values}>
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
     </StoreProvider>
@@ -53,8 +53,14 @@ vi.mock('../entry/Calibration/CalibrationEntry', () => ({
   default: () => <div data-testid="calibrationEntryStub" />
 }));
 
-const renderWithProposal = (proposal: object) =>
-  wrapper(<CalibrationPage />, { ...MockProposalFrontend, ...proposal } as ProposalSeed);
+// The mock proposal's links and calibration, which are already the form's shape
+const renderWithProposal = (values: Partial<ProposalType>) =>
+  wrapper(<CalibrationPage />, {
+    targets: MockProposalFrontend.targets as ProposalType['targets'],
+    targetObservation: MockProposalFrontend.targetObservation,
+    calibrationStrategy: MockProposalFrontend.calibrationStrategy,
+    ...values
+  });
 
 describe('<CalibrationPage />', () => {
   afterEach(() => {
@@ -67,7 +73,7 @@ describe('<CalibrationPage />', () => {
   });
 
   test('shows that no calibration was created when a target is linked without one', () => {
-    renderWithProposal({ calibrationStrategy: null });
+    renderWithProposal({ calibrationStrategy: [] });
 
     expect(screen.getByText('error.noCalibrationsLoggedOut')).toBeInTheDocument();
     expect(screen.queryByTestId('calibrationEntryStub')).not.toBeInTheDocument();

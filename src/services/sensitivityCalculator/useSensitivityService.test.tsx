@@ -2,7 +2,7 @@ import { act, render } from '@testing-library/react';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ProposalType } from '@/models/proposals/proposal';
-import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { REFERENCE_COORDINATE_TYPE_ICRS, SENSITIVITY_STATE } from '@/utils/constants';
 import {
   newSvObservation,
@@ -97,12 +97,11 @@ const renderService = (link: TargetObservation, dataProducts = [DATA_PRODUCT]) =
   const Editor = () => {
     form = useForm<ProposalType>({
       defaultValues: {
-        ...getProposalFormValues({
-          id: 'proposal-1',
-          targets: [TARGET],
-          targetObservation: [link],
-          dataProducts
-        }),
+        ...getProposalFormDefaults(),
+        prslId: 'proposal-1',
+        targets: [TARGET],
+        targetObservation: [link],
+        dataProducts,
         observations: [OBSERVATION]
       }
     });

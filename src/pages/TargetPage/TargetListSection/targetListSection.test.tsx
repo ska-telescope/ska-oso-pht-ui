@@ -3,7 +3,6 @@ import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFor
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { ProposalSeed } from '@/models/proposals/useProposalForm';
 import { VELOCITY_TYPE } from '@utils/constants.ts';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
@@ -22,7 +21,7 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
 
 const tree = (component: React.ReactElement | null) => (
   <StoreProvider>
-    <TestProposalFormProvider proposal={mockProposal as unknown as ProposalSeed}>
+    <TestProposalFormProvider values={mockProposal}>
       <FormProbe onForm={keepForm} />
       <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </TestProposalFormProvider>
@@ -36,7 +35,7 @@ const clickIcon = (testId: string, index: number) =>
   fireEvent.click(within(screen.getAllByTestId(testId)[index]).getByRole('button'));
 
 // Mock proposal data, which the form is seeded with
-const mockProposal = {
+const mockProposal: Pick<ProposalType, 'targets' | 'targetObservation' | 'calibrationStrategy'> = {
   targets: [
     {
       id: '1',
@@ -48,9 +47,9 @@ const mockProposal = {
       redshift: '0.01',
       velType: 'velocity'
     }
-  ],
-  targetObservation: [{ targetId: '1' }],
-  calibrationStrategy: [] as unknown[]
+  ] as unknown as ProposalType['targets'],
+  targetObservation: [{ targetId: '1' }] as ProposalType['targetObservation'],
+  calibrationStrategy: []
 };
 
 vi.mock('@utils/storage/store', () => ({

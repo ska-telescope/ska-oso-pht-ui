@@ -18,13 +18,13 @@ import AddButton from '@/components/button/Add/Add';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
-import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { UNKNOWN_API_ERROR } from '@/services/axios/apiResult/apiResult';
 import { ProposalType } from '@/models/proposals/proposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
-import Proposal, { NEW_PROPOSAL } from '@/utils/types/proposal';
+import Proposal from '@/utils/types/proposal';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
   EMPTY_STATUS,
@@ -262,13 +262,15 @@ export default function LandingPage() {
   );
 
   const cycleConfirmed = (policy: ObservatoryPolicy) => {
-    const newProposal = {
-      ...NEW_PROPOSAL,
-      id: mintSkuid(Entity.PRP),
+    reset({
+      ...getProposalFormDefaults(),
+      prslId: mintSkuid(Entity.PRP),
       cycle: policy.cycleInformation.cycleId,
-      proposalType: isSVPolicy(policy) ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined
-    };
-    reset(getProposalFormValues(newProposal));
+      proposalType: {
+        type: isSVPolicy(policy) ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : null,
+        subTypes: []
+      }
+    });
     updateAppContent1(EMPTY_STATUS);
     navigate(PATH[1]);
   };

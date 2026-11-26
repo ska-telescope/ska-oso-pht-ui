@@ -5,7 +5,13 @@ import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DATA_PRODUCT_KIND, DataProductInput } from '@/models/proposals/dataProducts';
-import { TYPE_CONTINUUM, TYPE_PST } from '@/utils/constants.ts';
+import {
+  newSvObservation,
+  OBSERVING_MODE,
+  ObservationInput,
+  ObservingMode
+} from '@/models/proposals/observations';
+import { PstMode } from '@/generated/models';
 import DataProduct from './DataProduct';
 
 // --- Mocks ---
@@ -51,28 +57,22 @@ const theme = createTheme();
 const productType = () => screen.getByRole('combobox', { name: 'dataProductType.label' });
 const IMAGES = 'dataProductType.options.continuum.1';
 
-const observation = (type: string, extra: object = {}) => ({
-  id: 'OBS1',
-  type,
-  observingBand: 'low',
-  centralFrequency: 1,
-  centralFrequencyUnits: 'Hz',
-  supplied: { value: 1 },
-  continuumBandwidth: 1,
-  continuumBandwidthUnits: 2,
-  bandwidth: 1,
-  ...extra
+const observation = (
+  observingMode: ObservingMode,
+  id = 'OBS1',
+  pstMode?: PstMode
+): ObservationInput => ({
+  ...newSvObservation(observingMode, null, undefined, pstMode),
+  id
 });
 
-// The proposal the form is seeded with, in the legacy shape
-let openedProposal: object;
+// The values the form is seeded with
+let openedProposal: Partial<ProposalType>;
 const openProposal = (proposal: {
-  observations: object[];
+  observations: ObservationInput[];
   dataProducts: DataProductInput[];
-  targetObservation?: object[];
-  targets?: object[];
 }) => {
-  openedProposal = { id: 'prp-1', ...proposal };
+  openedProposal = { prslId: 'prp-1', ...proposal };
 };
 
 // Exposes the global form, which holds the proposal
@@ -87,7 +87,7 @@ const keepForm = (probed: UseFormReturn<ProposalType>) => {
 
 const renderPage = () =>
   render(
-    <TestProposalFormProvider proposal={openedProposal}>
+    <TestProposalFormProvider values={openedProposal}>
       <FormProbe onForm={keepForm} />
       <ThemeProvider theme={theme}>
         <DataProduct />
@@ -108,8 +108,8 @@ describe('DataProduct entry', () => {
   });
 
   const observations = [
-    observation(TYPE_CONTINUUM),
-    observation(TYPE_PST, { id: 'OBS2', pstMode: 1 })
+    observation(OBSERVING_MODE.CONTINUUM),
+    observation(OBSERVING_MODE.PST, 'OBS2', PstMode.DetectedFilterbank)
   ];
 
   it("starts a new data product with the first observation's defaults", () => {

@@ -7,15 +7,8 @@ import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import ObservationPage from './ObservationPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import {
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  PAGE_OBSERVATION,
-  PROPOSAL_TYPE,
-  STATUS_ERROR,
-  STATUS_OK
-} from '@/utils/constants';
+import { PAGE_OBSERVATION, PROPOSAL_TYPE, STATUS_ERROR, STATUS_OK } from '@/utils/constants';
 import completeMockStore from '@/utils/MockStore';
-import { ProposalSeed } from '@/models/proposals/useProposalForm';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
 // Exposes the global form, which holds the links and calibration
@@ -28,16 +21,19 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
   formProbe = form;
 };
 
-const wrapper = (component: React.ReactElement, proposal?: ProposalSeed) => {
+const wrapper = (component: React.ReactElement, proposal?: Partial<ProposalType>) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider proposal={proposal}>
+      <TestProposalFormProvider values={proposal}>
         <FormProbe onForm={keepForm} />
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
     </StoreProvider>
   );
 };
+// A LOW AA2 continuum observation
+const lowObservation = () => newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
+
 const mockOSD = vi.hoisted(() => ({ maxObservations: 1 }));
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
   const { MockObservatoryDataFrontend } =
@@ -63,7 +59,7 @@ vi.mock('./ObservationInPlace', () => ({
   default: () => <div data-testid="observationInPlaceStub" />
 }));
 
-const renderWithProposal = (proposal: object, statuses: number[] = []) => {
+const renderWithProposal = (proposal: Partial<ProposalType>, statuses: number[] = []) => {
   vi.spyOn(storageObject, 'useStore').mockReturnValue({
     ...completeMockStore,
     application: {
@@ -71,7 +67,7 @@ const renderWithProposal = (proposal: object, statuses: number[] = []) => {
       content1: statuses
     }
   } as any);
-  wrapper(<ObservationPage />, { id: 'prp-1', ...proposal } as ProposalSeed);
+  wrapper(<ObservationPage />, { prslId: 'prp-1', ...proposal });
 };
 
 describe('<ObservationPage />', () => {
@@ -86,8 +82,8 @@ describe('<ObservationPage />', () => {
 
   test('shows the observation when there is no target yet', () => {
     renderWithProposal({
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-      observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }]
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+      observations: [{ ...lowObservation(), id: 'obs-1' }]
     });
 
     expect(screen.getByTestId('observationInPlaceStub')).toBeInTheDocument();
@@ -95,7 +91,10 @@ describe('<ObservationPage />', () => {
   });
 
   test('keeps showing an observation being edited while it is invalid', async () => {
-    renderWithProposal({ proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, observations: [] });
+    renderWithProposal({
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+      observations: []
+    });
 
     act(() =>
       formProbe.setValue('observations', [
@@ -111,7 +110,10 @@ describe('<ObservationPage />', () => {
 
   test('marks the Observations page for an observation outside its band', async () => {
     renderWithProposal(
-      { proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, observations: [] },
+      {
+        proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+        observations: []
+      },
       Array(10).fill(STATUS_OK)
     );
     const lastObservationStatus = () =>
@@ -131,7 +133,10 @@ describe('<ObservationPage />', () => {
   });
 
   test('shows the same no-observation message for every proposal type', () => {
-    renderWithProposal({ proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION, observations: [] });
+    renderWithProposal({
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+      observations: []
+    });
 
     expect(screen.queryByTestId('observationInPlaceStub')).not.toBeInTheDocument();
     expect(screen.getByText('error.noObservations')).toBeInTheDocument();
@@ -146,13 +151,14 @@ describe('<ObservationPage />', () => {
       calibrators: null,
       notes: null
     });
+    const target = { id: 't1', name: 'M2', kind: 0, velocityDefinition: 'RADIO' } as const;
     renderWithProposal({
-      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
       observations: [
-        { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' },
-        { ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-2' }
+        { ...lowObservation(), id: 'obs-1' },
+        { ...lowObservation(), id: 'obs-2' }
       ],
-      targets: [{ id: 't1', name: 'M2', kind: 0 }],
+      targets: [target],
       targetObservation: [
         { targetId: 't1', observationId: 'obs-1', dataProductsSDPId: 'sdp-1' },
         { targetId: 't1', observationId: 'obs-2', dataProductsSDPId: 'sdp-2' }
@@ -169,6 +175,6 @@ describe('<ObservationPage />', () => {
       ]);
     });
     expect(formProbe.getValues('calibrationStrategy')).toEqual([strategy('obs-2')]);
-    expect(formProbe.getValues('targets')).toEqual([{ id: 't1', name: 'M2', kind: 0 }]);
+    expect(formProbe.getValues('targets')).toEqual([target]);
   });
 });

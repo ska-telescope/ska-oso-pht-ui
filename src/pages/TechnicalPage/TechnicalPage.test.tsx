@@ -1,11 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import TechnicalPage from './TechnicalPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -29,10 +28,9 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 }));
 
 // Mock storage
-const mockProposal = {
-  id: '123',
-  technicalPDF: { documentId: 'technical-doc-123', isUploadedPdf: true },
-  technicalLoadStatus: FileUploadStatus.INITIAL
+const mockProposal: Partial<ProposalType> = {
+  prslId: '123',
+  technicalPDF: { documentId: 'technical-doc-123', isUploadedPdf: true }
 };
 const mockStore = {
   application: {
@@ -81,11 +79,7 @@ vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: getProposalFormValues({
-        title: '',
-        proposalType: null,
-        ...(mockProposal as any)
-      })
+      defaultValues: { ...getProposalFormDefaults(), ...mockProposal }
     });
     return (
       <FormProvider {...methods}>

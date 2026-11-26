@@ -1,10 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
-import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
-import { getProposalFormDefaults, getProposalFormValues, useProposalForm } from './useProposalForm';
-import Investigator from '@/utils/types/investigator';
-import { getTeamValues } from './team';
-import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
+import { getProposalFormDefaults, useProposalForm } from './useProposalForm';
+import { PROPOSAL_TYPE, VELOCITY_DEFINITION } from '@/utils/constants';
 
 const slicesFor = (id: string) => ({
   targets: [
@@ -29,54 +26,6 @@ const slicesFor = (id: string) => ({
   ]
 });
 
-describe('getProposalFormValues', () => {
-  test('takes the title and ID from the proposal and defaults the rest', () => {
-    const values = getProposalFormValues({ id: 'p1', title: 'Saved title' });
-    expect(values.prslId).toBe('p1');
-    expect(values.title).toBe('Saved title');
-    expect(values.proposalType).toEqual({ type: null, subTypes: [] });
-    expect(values.abstract).toBe('');
-    expect(values.scienceCategory).toBeNull();
-    expect(values.investigators).toEqual([]);
-  });
-
-  test('takes the investigators from the proposal', () => {
-    const investigators: Investigator[] = [MockUserFrontendList[0]];
-    expect(getProposalFormValues({ investigators }).investigators).toEqual(
-      getTeamValues({ investigators }).investigators
-    );
-  });
-
-  test('takes the document references from the proposal', () => {
-    const sciencePDF = { documentId: 'science-doc-p1', isUploadedPdf: true };
-    expect(getProposalFormValues({ sciencePDF }).sciencePDF).toEqual(sciencePDF);
-    expect(getProposalFormValues({}).sciencePDF).toBeNull();
-  });
-
-  test('takes the proposal type and sub-types together', () => {
-    expect(
-      getProposalFormValues({
-        proposalType: PROPOSAL_TYPE.STANDARD,
-        proposalSubType: [PROPOSAL_SUBTYPE.JOINT]
-      }).proposalType
-    ).toEqual({ type: PROPOSAL_TYPE.STANDARD, subTypes: [PROPOSAL_SUBTYPE.JOINT] });
-  });
-
-  test('takes targets, links and calibration from the proposal', () => {
-    const { targets, targetObservation, calibrationStrategy } = getProposalFormValues(
-      slicesFor('p1')
-    );
-    expect({ targets, targetObservation, calibrationStrategy }).toEqual(slicesFor('p1'));
-  });
-
-  test('defaults targets, links and calibration to empty lists', () => {
-    const values = getProposalFormValues({ id: 'p1' });
-    expect(values.targets).toEqual([]);
-    expect(values.targetObservation).toEqual([]);
-    expect(values.calibrationStrategy).toEqual([]);
-  });
-});
-
 describe('useProposalForm', () => {
   test('starts with no proposal open', () => {
     const { result } = renderHook(() => useProposalForm());
@@ -84,7 +33,12 @@ describe('useProposalForm', () => {
   });
 
   test('starts with the initial values it is given', () => {
-    const initialValues = getProposalFormValues({ id: 'p1', title: 'First', ...slicesFor('p1') });
+    const initialValues = {
+      ...getProposalFormDefaults(),
+      prslId: 'p1',
+      title: 'First',
+      ...slicesFor('p1')
+    };
     const { result } = renderHook(() => useProposalForm({}, initialValues));
     expect(result.current.getValues()).toEqual(initialValues);
   });
@@ -92,7 +46,8 @@ describe('useProposalForm', () => {
   // The form is only changed by resetting it (load, create, clone, new proposal, closing)
   test('keeps in-progress edits when re-rendered with other initial values', () => {
     const { result, rerender } = renderHook(
-      ({ title }: { title: string }) => useProposalForm({}, getProposalFormValues({ title })),
+      ({ title }: { title: string }) =>
+        useProposalForm({}, { ...getProposalFormDefaults(), title }),
       { initialProps: { title: 'First' } }
     );
 
@@ -106,12 +61,13 @@ describe('useProposalForm', () => {
     const { result } = renderHook(() =>
       useProposalForm(
         {},
-        getProposalFormValues({
-          id: 'p1',
+        {
+          ...getProposalFormDefaults(),
+          prslId: 'p1',
           title: 'A title',
-          proposalType: PROPOSAL_TYPE.STANDARD,
+          proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
           abstract: 'A valid abstract'
-        })
+        }
       )
     );
     let valid = false;

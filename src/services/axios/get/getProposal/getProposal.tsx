@@ -1,9 +1,4 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import {
-  ReferenceCoordinateGalactic,
-  ReferenceCoordinateICRS,
-  ReferenceCoordinateSSO
-} from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
 import Supplied from '@utils/types/supplied.tsx';
 import {
@@ -16,28 +11,22 @@ import {
   TELESCOPE_LOW_BACKEND_MAPPING,
   SA_AA2,
   FREQUENCY_UNITS,
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
   TYPE_PST,
   PST_MODES,
   FREQUENCY_STR_MHZ,
   BAND_LOW_STR,
   FREQUENCY_STR_GHZ,
-  TYPE_ZOOM_LONG,
-  REFERENCE_COORDINATE_TYPE_SSO
+  TYPE_ZOOM_LONG
 } from '@utils/constants.ts';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { type ApiResult, handleApiError, UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import { osoApiConfiguration } from '../../generatedClient/osoApiConfig.ts';
 import type {
-  GalacticCoordinates,
-  ICRSCoordinates,
   LowArray,
   MidArray,
   ObservationSets,
   PstSetup,
-  SpecialCoordinates,
   SpectralLineSetup,
   Supplied as SuppliedTransport
 } from '@/generated/models';
@@ -67,61 +56,6 @@ export const getScienceCategory = (scienceCat: string) => {
     (c) => c.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat === null || cat === undefined ? null : cat;
-};
-
-export const getReferenceCoordinate = (
-  tar: ICRSCoordinates | GalacticCoordinates | SpecialCoordinates
-): ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO => {
-  switch (tar.kind) {
-    case REFERENCE_COORDINATE_TYPE_ICRS.label:
-      return {
-        kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-        raStr: (tar as ICRSCoordinates).ra_str as string,
-        decStr: (tar as ICRSCoordinates).dec_str as string,
-        pmRa: (tar as ICRSCoordinates).pm_ra as number | undefined,
-        pmDec: (tar as ICRSCoordinates).pm_dec as number | undefined,
-        epoch: (tar as ICRSCoordinates).epoch,
-        parallax: (tar as ICRSCoordinates).parallax as number | undefined
-      };
-
-    case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
-      return {
-        kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-        l: (tar as GalacticCoordinates).l,
-        b: (tar as GalacticCoordinates).b,
-        pmL: (tar as GalacticCoordinates).pm_l,
-        pmB: (tar as GalacticCoordinates).pm_b,
-        epoch: (tar as GalacticCoordinates).epoch,
-        parallax: (tar as GalacticCoordinates).parallax
-      };
-
-    case REFERENCE_COORDINATE_TYPE_SSO.label:
-      return {
-        kind: REFERENCE_COORDINATE_TYPE_SSO.label
-      };
-
-    default:
-      throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
-  }
-};
-
-export const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => {
-  const results: any = [];
-  if (!inValue || inValue.length === 0) {
-    return results;
-  }
-  for (let i = 0; i < inValue?.length; i++) {
-    if (inValue[i].group_id) {
-      const observationSetId = inValue[i].observation_set_id;
-      const observationId =
-        observationSetId && observationSetId.trim() !== '' ? observationSetId : i + 1;
-      results.push({
-        observationId: observationId,
-        groupId: inValue[i].group_id
-      });
-    }
-  }
-  return results;
 };
 
 /*********************************************************** observation parameters mapping *********************************************************/

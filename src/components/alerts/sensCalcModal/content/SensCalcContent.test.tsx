@@ -2,7 +2,8 @@ import { describe, expect, test } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
-import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
+import { MockProposalBackend } from '@/services/axios/get/getProposal/mockProposalBackend';
+import { mapPdmToForm } from '@/models/proposals/pdmMapper';
 import SensCalcContent from './SensCalcContent';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import type { ProposalType } from '@/models/proposals/proposal';
@@ -26,15 +27,17 @@ const values = (weighted: number): SensitivityValues => ({
   synthesizedBeamSize: { value: '1.00 x 2.00', unit: 'arcsec²' }
 });
 
+// The linked observation and data product come from the mock proposal
+const { observations, dataProducts } = mapPdmToForm(MockProposalBackend);
+
 // The linked target, observation and data product live in the form, which owns them
 const FormWithTarget = ({ children }: { children: React.ReactNode }) => (
   <TestProposalFormProvider
-    proposal={{
-      id: 'p1',
+    values={{
+      prslId: 'p1',
       targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets'],
-      observations: MockProposalFrontend.observations,
-      groupObservations: MockProposalFrontend.groupObservations,
-      dataProducts: MockProposalFrontend.dataProducts
+      observations,
+      dataProducts
     }}
   >
     {children}

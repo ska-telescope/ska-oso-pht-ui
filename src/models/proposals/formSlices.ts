@@ -1,4 +1,3 @@
-import Proposal from '@utils/types/proposal';
 import Target from '@utils/types/target';
 import TargetObservation from '@utils/types/targetObservation';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy';
@@ -16,10 +15,3 @@ export const getFormLinks = (form: FormReader) =>
 
 export const getFormCalibration = (form: FormReader) =>
   (form.getValues('calibrationStrategy') ?? []) as CalibrationStrategy[];
-
-/** The proposal with the form's targets and links, for code that still takes a whole proposal. */
-export const withFormSlices = (proposal: Proposal, form: FormReader): Proposal => ({
-  ...proposal,
-  targets: getFormTargets(form),
-  targetObservation: getFormLinks(form)
-});

@@ -11,14 +11,24 @@ const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
 const mockNotifyWarning = vi.hoisted(() => vi.fn());
-import { NAV, PATH, PROPOSAL_STATUS, PROPOSAL_TYPE, TMP_REVIEWER_ID } from '@/utils/constants';
+import {
+  NAV,
+  PATH,
+  PROPOSAL_STATUS,
+  PROPOSAL_TYPE,
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  TMP_REVIEWER_ID,
+  VELOCITY_DEFINITION
+} from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
 import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import type { ApiResult } from '@/services/axios/apiResult/apiResult';
-import { getProposalFormDefaults, getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
+import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 import { ObservatoryPolicy } from '@/utils/types/observatoryData';
 
 // ---- Module mocks ----
@@ -197,6 +207,28 @@ describe('<LandingPage />', () => {
 describe('clone proposal', () => {
   const ORIGINAL_PROPOSAL_ID = 'prp-1';
 
+  const originalInvestigators = [
+    {
+      id: TMP_REVIEWER_ID,
+      firstName: 'Jane',
+      lastName: 'Doe',
+      phdThesis: false,
+      status: 'accepted',
+      pi: true,
+      email: 'jane@example.com'
+    },
+    {
+      id: 'inv-2',
+      firstName: 'John',
+      lastName: 'Smith',
+      phdThesis: false,
+      status: 'accepted',
+      pi: false,
+      email: 'john@example.com'
+    }
+  ];
+
+  // The original in the proposal list, which still holds legacy proposals
   const mockRichOriginalProposal: Partial<Proposal> = {
     id: ORIGINAL_PROPOSAL_ID,
     title: 'In a galaxy far, far away',
@@ -207,26 +239,7 @@ describe('clone proposal', () => {
     abstract: 'Detailed science abstract about the cosmos and beyond',
     targets: [{ id: 'target-1', name: 'NGC 1275', ra: '03:19:48', dec: '+41:30:42' } as any],
     observations: [{ id: 'obs-1', telescope: 'SKA-LOW' } as any],
-    investigators: [
-      {
-        id: TMP_REVIEWER_ID,
-        firstName: 'Jane',
-        lastName: 'Doe',
-        phdThesis: false,
-        status: 'accepted',
-        pi: true,
-        email: 'jane@example.com'
-      },
-      {
-        id: 'inv-2',
-        firstName: 'John',
-        lastName: 'Smith',
-        phdThesis: false,
-        status: 'accepted',
-        pi: false,
-        email: 'john@example.com'
-      }
-    ],
+    investigators: originalInvestigators,
     dataProducts: [{ id: 'dp-1' } as any],
     calibrationStrategy: [],
     groupObservations: [],
@@ -246,7 +259,35 @@ describe('clone proposal', () => {
     pi: true
   };
 
-  const originalValues = () => getProposalFormValues(mockRichOriginalProposal as Proposal);
+  // The same original as the form holds it once loaded
+  const originalValues = (): ProposalType => ({
+    ...getProposalFormDefaults(),
+    prslId: ORIGINAL_PROPOSAL_ID,
+    title: 'In a galaxy far, far away',
+    cycle: 'SKA_5000_2023',
+    proposalType: {
+      type: PROPOSAL_TYPE.STANDARD,
+      subTypes: ['coordinated_proposal']
+    },
+    abstract: 'Detailed science abstract about the cosmos and beyond',
+    investigators: originalInvestigators,
+    targets: [
+      {
+        id: 'target-1',
+        name: 'NGC 1275',
+        kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
+        raStr: '03:19:48',
+        decStr: '+41:30:42',
+        velocityDefinition: VELOCITY_DEFINITION.RADIO
+      }
+    ],
+    observations: [{ ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id: 'obs-1' }],
+    dataProducts: [{ ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'dp-1' }],
+    calibrationStrategy: [],
+    targetObservation: [],
+    sciencePDF: null,
+    technicalPDF: null
+  });
 
   const mockAccessList: ProposalAccess[] = [
     {

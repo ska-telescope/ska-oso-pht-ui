@@ -8,15 +8,11 @@ import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook
 import { ProposalType } from '@/models/proposals/proposal';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import completeMockStore from '@/utils/MockStore';
-import {
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  PROPOSAL_TYPE,
-  SENSITIVITY_STATE,
-  STATUS_ERROR
-} from '@/utils/constants';
+import { PROPOSAL_TYPE, SENSITIVITY_STATE, STATUS_ERROR } from '@/utils/constants';
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
 import SensCalcModalMultiple from '@/components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
-import { getProposalFormDefaults, ProposalSeed } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
@@ -73,10 +69,10 @@ const keepForm = (form: UseFormReturn<ProposalType>) => {
   formProbe = form;
 };
 
-const linkingProposal = {
-  id: 'prp-1',
-  proposalType: PROPOSAL_TYPE.STANDARD,
-  observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
+const linkingProposal: Partial<ProposalType> = {
+  prslId: 'prp-1',
+  proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
+  observations: [{ ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id: 'obs-1' }],
   dataProducts: [{ ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'sdp-1' }],
   targets: [
     {
@@ -90,11 +86,11 @@ const linkingProposal = {
   ],
   targetObservation: [],
   calibrationStrategy: []
-} as ProposalSeed;
+};
 
 const linkingTree = (page: React.ReactElement | null) => (
   <StoreProvider>
-    <TestProposalFormProvider proposal={linkingProposal}>
+    <TestProposalFormProvider values={linkingProposal}>
       <FormProbe onForm={keepForm} />
       <ThemeA11yProvider>{page}</ThemeA11yProvider>
     </TestProposalFormProvider>

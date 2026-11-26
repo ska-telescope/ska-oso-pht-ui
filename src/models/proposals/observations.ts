@@ -17,7 +17,11 @@ import {
   SA_CUSTOM,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_NUM
+  TELESCOPE_MID_NUM,
+  TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_PST,
+  TYPE_ZOOM
 } from '@/utils/constants';
 import { calculateVelocity, convertFrequency, generateObsSetId } from '@/utils/helpers';
 import { isFineZoomRestricted, snapCentralFrequencyToChannelGridHz } from '@/utils/zoomWindow';
@@ -59,6 +63,14 @@ export const OBSERVING_MODE = {
 } as const;
 
 export type ObservingMode = (typeof OBSERVING_MODE)[keyof typeof OBSERVING_MODE];
+
+/** The observing mode of each observation type the observing mode options are listed by. */
+export const OBSERVING_MODE_BY_LEGACY_TYPE: Record<string, ObservingMode> = {
+  [TYPE_CONTINUUM]: OBSERVING_MODE.CONTINUUM,
+  [TYPE_CONTINUUM_SPECTRAL]: OBSERVING_MODE.CONTINUUM_SPECTRAL,
+  [TYPE_ZOOM]: OBSERVING_MODE.SPECTRAL,
+  [TYPE_PST]: OBSERVING_MODE.PST
+};
 
 /** The key of each observing mode's name in the observationType translations. */
 export const OBSERVING_MODE_TRANSLATION_KEY: Record<ObservingMode, string> = {

@@ -2,10 +2,10 @@ import { describe, expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
-import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
+import { MockProposalBackend } from '@/services/axios/get/getProposal/mockProposalBackend';
 import SensCalcModalSingle from './SensCalcModalSingle';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
-import { ProposalSeed } from '@/models/proposals/useProposalForm';
+import { mapPdmToForm } from '@/models/proposals/pdmMapper';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
@@ -32,7 +32,7 @@ const values = (weighted: number): SensitivityValues => ({
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider proposal={MockProposalFrontend as unknown as ProposalSeed}>
+      <TestProposalFormProvider values={mapPdmToForm(MockProposalBackend)}>
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
     </StoreProvider>

@@ -1,17 +1,11 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import {
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  FREQUENCY_UNITS,
-  BAND_LOW_STR
-} from '@utils/constants.ts';
+import { FREQUENCY_UNITS, BAND_LOW_STR } from '@utils/constants.ts';
 import { AxiosError, type AxiosResponse } from 'axios';
 import { UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import {
   GetProposalPdm,
   getInvestigators,
   getScienceCategory,
-  getReferenceCoordinate,
   getBandwidth,
   getFrequencyAndBandwidthUnits
 } from './getProposal.tsx';
@@ -25,8 +19,6 @@ vi.mock('@/generated', async (importOriginal) => ({
     getProposalOsoApiV17PhtPrslsPrslIdGet: mockGetProposal
   })
 }));
-
-type ReferenceCoordinateInput = Parameters<typeof getReferenceCoordinate>[0];
 
 describe('GetProposalPdm', () => {
   beforeEach(() => {
@@ -140,79 +132,6 @@ describe('getScienceCategory', () => {
     expect(getScienceCategory('')).toBeNull();
     expect(getScienceCategory(null as unknown as string)).toBeNull();
     expect(getScienceCategory('undefined')).toBeNull();
-  });
-});
-
-describe('getReferenceCoordinate', () => {
-  test('should return a galactic reference coordinate when kind is galactic', () => {
-    const input = {
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-      l: 123.45,
-      b: -67.89,
-      pm_l: 0.12,
-      pm_b: -0.34,
-      epoch: 2000,
-      parallax: 0.5
-    };
-
-    const expectedOutput = {
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-      l: 123.45,
-      b: -67.89,
-      pmL: 0.12,
-      pmB: -0.34,
-      epoch: 2000,
-      parallax: 0.5
-    };
-
-    const result = getReferenceCoordinate(input as unknown as ReferenceCoordinateInput);
-    expect(result).toEqual(expectedOutput);
-  });
-
-  test('should return an ICRS reference coordinate when kind is ICRS', () => {
-    const input = {
-      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-      ra_str: '12:34:56.78',
-      dec_str: '-12:34:56.78',
-      pm_ra: 1.23,
-      pm_dec: -1.23,
-      epoch: 2020,
-      parallax: 0.1
-    };
-
-    const expectedOutput = {
-      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-      raStr: '12:34:56.78',
-      decStr: '-12:34:56.78',
-      pmRa: 1.23,
-      pmDec: -1.23,
-      epoch: 2020,
-      parallax: 0.1
-    };
-
-    const result = getReferenceCoordinate(input as unknown as ReferenceCoordinateInput);
-    expect(result).toEqual(expectedOutput);
-  });
-
-  test('should handle missing properties gracefully', () => {
-    const input = {
-      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-      ra_str: '12:34:56.78',
-      dec_str: '-12:34:56.78'
-    };
-
-    const expectedOutput = {
-      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-      raStr: '12:34:56.78',
-      decStr: '-12:34:56.78',
-      pmRa: undefined,
-      pmDec: undefined,
-      epoch: undefined,
-      parallax: undefined
-    };
-
-    const result = getReferenceCoordinate(input as unknown as ReferenceCoordinateInput);
-    expect(result).toEqual(expectedOutput);
   });
 });
 

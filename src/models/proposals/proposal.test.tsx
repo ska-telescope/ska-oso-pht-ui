@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { getProposalSchema } from './proposal';
-import { getProposalFormDefaults, getProposalFormValues } from './useProposalForm';
-import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
+import { getProposalFormDefaults } from './useProposalForm';
+import { PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '@/locales/en/pht.json';
 
 const emptySlices = {
@@ -128,26 +128,5 @@ describe('proposal form values', () => {
     const first = getProposalFormDefaults();
     first.targets.push({ id: 't1', name: 'M2', kind: 0, velocityDefinition: 'RADIO' });
     expect(getProposalFormDefaults().targets).toEqual([]);
-  });
-
-  test("lays a proposal's slices over the defaults, without checking them", () => {
-    const values = getProposalFormValues({
-      id: 'prp-1',
-      cycle: 'SKAO_2027_1',
-      title: 'A title that is far too long to pass the title check '.repeat(10),
-      proposalType: PROPOSAL_TYPE.STANDARD,
-      proposalSubType: [PROPOSAL_SUBTYPE.JOINT]
-    });
-    expect(values.title).toContain('far too long');
-    // The store has the ID as id
-    expect(values.prslId).toBe('prp-1');
-    expect(values.cycle).toBe('SKAO_2027_1');
-    // The store has the type flat, with its sub-types beside it
-    expect(values.proposalType).toEqual({
-      type: PROPOSAL_TYPE.STANDARD,
-      subTypes: [PROPOSAL_SUBTYPE.JOINT]
-    });
-    expect(values.targets).toEqual([]);
-    expect(values.sciencePDF).toBeNull();
   });
 });

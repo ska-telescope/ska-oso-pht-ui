@@ -8,12 +8,7 @@ import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFor
 import { ProposalType } from '@/models/proposals/proposal';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import completeMockStore from '@/utils/MockStore';
-import {
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  NAV,
-  PAGE_OBSERVATION,
-  PROPOSAL_TYPE
-} from '@/utils/constants';
+import { NAV, PAGE_OBSERVATION, PROPOSAL_TYPE } from '@/utils/constants';
 import ObservationEntry from './ObservationEntry';
 import ObservationInPlace from '@/pages/ObservationPage/ObservationInPlace';
 import {
@@ -21,6 +16,7 @@ import {
   newDataProduct,
   updateImageSizes
 } from '@/models/proposals/dataProducts';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
 const mockState = vi.hoisted(() => ({
   locationState: null as unknown,
@@ -71,15 +67,18 @@ const FormProbe = () => {
   return null;
 };
 
-// The proposal form holds the proposal, given with the observations in the legacy shape
-const renderWithProposal = (component: React.ReactElement, proposal: object = {}) => {
+// The proposal form holds the proposal, over a standard proposal with nothing in it
+const renderWithProposal = (
+  component: React.ReactElement,
+  proposal: Partial<ProposalType> = {}
+) => {
   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as never);
   render(
     <StoreProvider>
       <TestProposalFormProvider
-        proposal={{
-          id: 'prsl-1',
-          proposalType: PROPOSAL_TYPE.STANDARD,
+        values={{
+          prslId: 'prsl-1',
+          proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
           targets: [],
           targetObservation: [],
           observations: [],
@@ -106,7 +105,11 @@ const select = (label: string, option: RegExp | string) => {
 };
 const addButton = () => screen.getByTestId('addObservationButtonEntry');
 
-const legacyObservation = (id: string) => ({ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id });
+// A LOW AA2 continuum observation
+const lowObservation = (id: string) => ({
+  ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
+  id
+});
 
 describe('<ObservationEntry />', () => {
   afterEach(() => {
@@ -136,7 +139,7 @@ describe('<ObservationEntry />', () => {
   test('updates the observation passed in the route state, keeping the others', async () => {
     mockState.locationState = { id: 'obs-2' };
     renderWithProposal(<ObservationEntry />, {
-      observations: [legacyObservation('obs-1'), legacyObservation('obs-2')]
+      observations: [lowObservation('obs-1'), lowObservation('obs-2')]
     });
     const update = screen.getByTestId('updateObservationButtonEntry');
 
@@ -254,8 +257,8 @@ describe('the data products of an edited observation', () => {
 
   test('follow each change of the central frequency in place', async () => {
     renderWithProposal(<ObservationInPlace />, {
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-      observations: [legacyObservation('obs-1')],
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+      observations: [lowObservation('obs-1')],
       dataProducts: [image('obs-1')]
     });
 
@@ -269,7 +272,7 @@ describe('the data products of an edited observation', () => {
   test("follow the entry page's observation when it is updated, and not before", async () => {
     mockState.locationState = { id: 'obs-1' };
     renderWithProposal(<ObservationEntry />, {
-      observations: [legacyObservation('obs-1')],
+      observations: [lowObservation('obs-1')],
       dataProducts: [image('obs-1')]
     });
     const update = screen.getByTestId('updateObservationButtonEntry');
@@ -287,7 +290,7 @@ describe('the data products of an edited observation', () => {
   test("stay as they are when the entry page's observation is updated without a change", async () => {
     mockState.locationState = { id: 'obs-1' };
     renderWithProposal(<ObservationEntry />, {
-      observations: [legacyObservation('obs-1')],
+      observations: [lowObservation('obs-1')],
       dataProducts: [image('obs-1')]
     });
     const update = screen.getByTestId('updateObservationButtonEntry');
@@ -306,8 +309,8 @@ describe('<ObservationInPlace />', () => {
 
   test("edits the SV proposal's observation in the proposal form", () => {
     renderWithProposal(<ObservationInPlace />, {
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-      observations: [legacyObservation('obs-1')]
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+      observations: [lowObservation('obs-1')]
     });
 
     fireEvent.change(numberField('sensitivityCalculatorResults.integrationTime'), {
@@ -321,8 +324,8 @@ describe('<ObservationInPlace />', () => {
 
   test('has the observing mode of the Details page, and no identifier, group or elevation', () => {
     renderWithProposal(<ObservationInPlace />, {
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-      observations: [legacyObservation('obs-1')]
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+      observations: [lowObservation('obs-1')]
     });
 
     expect(screen.getByRole('combobox', { name: 'observationType.label' })).toHaveAttribute(

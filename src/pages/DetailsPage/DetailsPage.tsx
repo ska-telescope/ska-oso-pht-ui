@@ -21,7 +21,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { ObservingMode, OBSERVING_MODE, TELESCOPE } from '@/models/proposals/observations';
-import { OBSERVING_MODE_BY_LEGACY_TYPE } from '@/models/proposals/legacyObservations';
+import { OBSERVING_MODE_BY_LEGACY_TYPE } from '@/models/proposals/observations';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import { useWatch } from 'react-hook-form';
 import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';

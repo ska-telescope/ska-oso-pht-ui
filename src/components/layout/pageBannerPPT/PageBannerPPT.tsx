@@ -91,14 +91,14 @@ export default function PageBannerPPT({
     }
   };
 
-  // TODO(T9): Full cleanup needed once everything is migrated to the form
+  // Checks each page of the form, then the proposal as the backend would validate it
   const validateTheProposal = async (): Promise<boolean> => {
     let result = false;
     setValidationResults([]);
     const results: string[] = [];
 
-    // The form has every observation; the store only the valid ones
     const statuses = validateProposal(form.getValues());
+    // TODO: The page statuses are kept in the store (content1) until they are derived from the form
     updateAppContent1(statuses);
 
     statuses.forEach((status, key) => {

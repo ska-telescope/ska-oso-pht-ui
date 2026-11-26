@@ -54,7 +54,7 @@ import {
   setSpectralChannelsOut
 } from '@/models/proposals/observationUpdates';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import { OBSERVING_MODE_BY_LEGACY_TYPE } from '@/models/proposals/legacyObservations';
+import { OBSERVING_MODE_BY_LEGACY_TYPE } from '@/models/proposals/observations';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';

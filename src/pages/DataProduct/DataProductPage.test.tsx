@@ -5,7 +5,6 @@ import { storageObject, StoreProvider } from '@utils/storage/store';
 import DataProductPage from './DataProductPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import {
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
   PAGE_DATA_PRODUCTS,
   PROPOSAL_TYPE,
   STATUS_ERROR,
@@ -14,14 +13,21 @@ import {
 } from '@/utils/constants';
 import completeMockStore from '@/utils/MockStore';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
-import { ProposalSeed } from '@/models/proposals/useProposalForm';
+import { ProposalType } from '@/models/proposals/proposal';
 import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
+import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
-const wrapper = (component: React.ReactElement, proposal?: ProposalSeed) => {
+// A LOW continuum observation, as the form holds it
+const continuumObservation = () => ({
+  ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
+  id: 'obs-1'
+});
+
+const wrapper = (component: React.ReactElement, values?: Partial<ProposalType>) => {
   return render(
     <StoreProvider>
       <ThemeA11yProvider>
-        <TestProposalFormProvider proposal={proposal}>{component}</TestProposalFormProvider>
+        <TestProposalFormProvider values={values}>{component}</TestProposalFormProvider>
       </ThemeA11yProvider>
     </StoreProvider>
   );
@@ -42,7 +48,7 @@ vi.mock('./DataProductInPlace', () => ({
 }));
 
 const renderWithProposal = (
-  proposal: object,
+  values: Partial<ProposalType>,
   statuses = Array(PAGE_DATA_PRODUCTS + 1).fill(STATUS_INITIAL)
 ) => {
   vi.spyOn(storageObject, 'useStore').mockReturnValue({
@@ -52,7 +58,7 @@ const renderWithProposal = (
       content1: statuses
     }
   } as any);
-  wrapper(<DataProductPage />, { id: 'prp-1', ...proposal } as ProposalSeed);
+  wrapper(<DataProductPage />, { prslId: 'prp-1', ...values });
 };
 
 describe('<DataProductPage />', () => {
@@ -66,8 +72,8 @@ describe('<DataProductPage />', () => {
 
   test('shows the data product when there is no target yet', () => {
     renderWithProposal({
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-      observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+      observations: [continuumObservation()],
       dataProducts: [{ ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'sdp-1' }]
     });
 
@@ -77,7 +83,7 @@ describe('<DataProductPage />', () => {
 
   test('shows the same no-observation message for every proposal type', () => {
     renderWithProposal({
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
       observations: [],
       dataProducts: []
     });
@@ -102,8 +108,8 @@ describe('<DataProductPage />', () => {
     (_, targetObservation, status) => {
       vi.mocked(completeMockStore.updateAppContent1).mockClear();
       renderWithProposal({
-        proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-        observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
+        proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+        observations: [continuumObservation()],
         dataProducts: [
           { ...newDataProduct(DATA_PRODUCT_KIND.CONTINUUM_IMAGE, 'obs-1'), id: 'sdp-1' }
         ],
@@ -118,8 +124,8 @@ describe('<DataProductPage />', () => {
     vi.mocked(completeMockStore.updateAppContent1).mockClear();
     renderWithProposal(
       {
-        proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
-        observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
+        proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
+        observations: [continuumObservation()],
         dataProducts: [],
         targetObservation: []
       },

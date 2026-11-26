@@ -1,11 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import SciencePage from './SciencePage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -31,10 +30,9 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 }));
 
 // Mock storage
-const mockProposal = {
-  id: '123',
-  sciencePDF: { documentId: 'science-doc-123', isUploadedPdf: true },
-  scienceLoadStatus: FileUploadStatus.INITIAL
+const mockProposal: Partial<ProposalType> = {
+  prslId: '123',
+  sciencePDF: { documentId: 'science-doc-123', isUploadedPdf: true }
 };
 const mockStore = {
   application: {
@@ -45,7 +43,7 @@ const mockStore = {
   updateAppContent1: vi.fn()
 };
 // The proposal the form is seeded with
-let currentProposal: Record<string, unknown> = mockProposal;
+let currentProposal: Partial<ProposalType> = mockProposal;
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
     useStore: () => mockStore
@@ -146,11 +144,7 @@ let formMethods: UseFormReturn<ProposalType>;
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {
     const methods = useForm<ProposalType>({
-      defaultValues: getProposalFormValues({
-        title: '',
-        proposalType: null,
-        ...(currentProposal as any)
-      })
+      defaultValues: { ...getProposalFormDefaults(), ...currentProposal }
     });
     formMethods = methods;
     return (

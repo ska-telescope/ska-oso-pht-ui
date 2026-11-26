@@ -6,25 +6,24 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import DetailsPage from './DetailsPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import {
-  DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  PAGE_DETAILS,
-  PROPOSAL_TYPE,
-  STATUS_ERROR,
-  STATUS_OK
-} from '@/utils/constants';
+import { PAGE_DETAILS, PROPOSAL_TYPE, STATUS_ERROR, STATUS_OK } from '@/utils/constants';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { getProposalResolver, ProposalFormAccess, ProposalType } from '@/models/proposals/proposal';
 import phtTranslations from '@/locales/en/pht.json';
-import { getProposalFormValues } from '@/models/proposals/useProposalForm';
-import { ObservationInput, ObservingMode, OBSERVING_MODE } from '@/models/proposals/observations';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import {
+  newSvObservation,
+  ObservationInput,
+  ObservingMode,
+  OBSERVING_MODE
+} from '@/models/proposals/observations';
 
 // ---- Module mocks ----
 
 const mockState = vi.hoisted(() => ({
-  // The proposal the form is seeded with, in the legacy shape
-  proposal: {} as Record<string, unknown>,
+  // The values the form is seeded with, over the defaults of a new proposal
+  proposal: {} as Partial<ProposalType>,
   updatePageStatus: vi.fn()
 }));
 
@@ -79,7 +78,7 @@ const wrapper = (component: React.ReactElement) => {
     const methods = useForm<ProposalType>({
       mode: 'all',
       resolver: getProposalResolver(),
-      defaultValues: getProposalFormValues(mockState.proposal)
+      defaultValues: { ...getProposalFormDefaults(), ...mockState.proposal }
     });
     const formValues = useWatch({ control: methods.control });
     return (
@@ -151,12 +150,12 @@ describe('Abstract helperFunction', () => {
 
 // ---- Helpers ----
 
-const svProposal = (extra: Record<string, unknown> = {}) => ({
-  proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+const svProposal = (extra: Partial<ProposalType> = {}): Partial<ProposalType> => ({
+  proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
   scienceCategory: null,
   abstract: '',
   targets: [],
-  observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW, id: 'obs-1' }],
+  observations: [{ ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id: 'obs-1' }],
   ...extra
 });
 
@@ -194,7 +193,7 @@ describe('<DetailsPage /> observing mode', () => {
 
   it('shows the science category and no observing mode for standard proposals', async () => {
     mockState.proposal = {
-      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
       scienceCategory: null,
       abstract: ''
     };
@@ -206,7 +205,7 @@ describe('<DetailsPage /> observing mode', () => {
 
   it('stores abstract edits in RHF', async () => {
     mockState.proposal = {
-      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
       scienceCategory: null,
       abstract: ''
     };
@@ -224,7 +223,7 @@ describe('<DetailsPage /> observing mode', () => {
 
   it('stores a selected science category in RHF', async () => {
     mockState.proposal = {
-      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
       scienceCategory: null,
       abstract: ''
     };
@@ -240,7 +239,7 @@ describe('<DetailsPage /> observing mode', () => {
 
   it('updates the breadcrumb from RHF', async () => {
     mockState.proposal = {
-      proposalType: PROPOSAL_TYPE.STANDARD,
+      proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
       scienceCategory: 1,
       abstract: ''
     };

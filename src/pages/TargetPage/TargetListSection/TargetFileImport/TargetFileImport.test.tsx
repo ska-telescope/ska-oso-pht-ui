@@ -1,7 +1,7 @@
 // TargetFileImport.test.tsx
 import { FormProvider, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { getProposalFormValues, useProposalForm } from '@/models/proposals/useProposalForm';
+import { getProposalFormDefaults, useProposalForm } from '@/models/proposals/useProposalForm';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as papaModule from 'papaparse';
@@ -60,7 +60,7 @@ const getParseMock = () => (papaModule as any).__parseMock as ReturnType<typeof 
 let form: UseFormReturn<ProposalType>;
 const renderImport = (referenceCoordinateType: number) => {
   const Wrapper = () => {
-    form = useProposalForm(undefined, getProposalFormValues({ id: 'p1', targets: [] }));
+    form = useProposalForm(undefined, { ...getProposalFormDefaults(), prslId: 'p1' });
     return (
       <FormProvider {...form}>
         <TargetFileImport referenceCoordinateType={referenceCoordinateType} />

@@ -10,12 +10,13 @@ import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import * as proposalForm from '@/models/proposals/useProposalForm';
+import { ProposalType } from '@/models/proposals/proposal';
 
 const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
 const mockPathname = { current: PATH[0] };
-// The proposal open in the form when PHT mounts, in the legacy shape
-const mockOpenProposal = { current: { id: 'prp-123' } as any };
+// The form values of the proposal open when PHT mounts, over the defaults of a new proposal
+const mockOpenProposal: { current: Partial<ProposalType> } = { current: { prslId: 'prp-123' } };
 const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } as any };
 
 vi.mock('react-router', () => ({
@@ -113,10 +114,10 @@ const fullProps = {
 
 const { mockProposal } = vi.hoisted(() => ({
   mockProposal: {
-    id: 'prp-123',
+    prslId: 'prp-123',
     scienceCategory: null,
     abstract: 'Test abstract',
-    targets: [{ id: 1, name: 'Target 1' }],
+    targets: [{ id: '1', name: 'Target 1' }] as ProposalType['targets'],
     observations: [] as any[],
     targetObservation: [] as any[],
     calibrationStrategy: [] as any[]
@@ -127,11 +128,12 @@ const { mockProposal } = vi.hoisted(() => ({
 const realUseProposalForm = proposalForm.useProposalForm;
 let formSpy: ReturnType<typeof vi.spyOn>;
 beforeEach(() => {
-  formSpy = vi
-    .spyOn(proposalForm, 'useProposalForm')
-    .mockImplementation((osd) =>
-      realUseProposalForm(osd, proposalForm.getProposalFormValues(mockOpenProposal.current))
-    );
+  formSpy = vi.spyOn(proposalForm, 'useProposalForm').mockImplementation((osd) =>
+    realUseProposalForm(osd, {
+      ...proposalForm.getProposalFormDefaults(),
+      ...mockOpenProposal.current
+    })
+  );
   return () => formSpy.mockRestore();
 });
 const currentForm = () => formSpy.mock.results[formSpy.mock.results.length - 1].value;
@@ -181,7 +183,7 @@ describe('<PHT />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockPathname.current = PATH[0];
-    mockOpenProposal.current = { id: 'prp-123' };
+    mockOpenProposal.current = { prslId: 'prp-123' };
     mockApplicationContent5.current = { message: '', level: '', delay: 0 };
   });
 
@@ -294,7 +296,7 @@ describe('<PHT />', () => {
   test.each(['Latest summary before blur', '', 'word '.repeat(251).trim()])(
     'saves the current RHF abstract on navigation without blur: %s',
     async (abstract) => {
-      mockOpenProposal.current = { id: 'prp-123', abstract: 'Saved summary' };
+      mockOpenProposal.current = { prslId: 'prp-123', abstract: 'Saved summary' };
       mockPathname.current = NAV[2];
       const { rerenderPHT } = renderPHT();
       act(() => {
@@ -342,7 +344,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
   it('does not re-run auto-link when a targetObservation entry already exists', async () => {
     mockProposal.targetObservation = [
       {
-        targetId: 1,
+        targetId: '1',
         observationId: 'obs-1',
         dataProductsSDPId: 'sdp-1',
         sensitivity: { id: 1, title: 'Target 1', state: SENSITIVITY_STATE.DONE }

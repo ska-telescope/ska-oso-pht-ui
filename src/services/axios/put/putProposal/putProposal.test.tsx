@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest';
-import { getProposalFormValues } from '@/models/proposals/useProposalForm';
-import { mapFormToPdm } from '@/models/proposals/pdmMapper';
+import { mapFormToPdm, mapPdmToForm } from '@/models/proposals/pdmMapper';
+import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
+import { referenceCoordinateToPdm } from '@/models/proposals/targets';
 import type { ProposalType } from '@/models/proposals/proposal';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import '@testing-library/jest-dom';
@@ -8,22 +9,11 @@ import {
   PROPOSAL_STATUS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
-  TYPE_CONTINUUM,
-  TYPE_ZOOM,
-  TYPE_PST,
-  PST_MODES,
-  TYPE_ZOOM_LONG,
   PROPOSAL_SUBTYPE,
   PROPOSAL_TYPE
 } from '@utils/constants.ts';
-import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 import PutProposal from './putProposal.tsx';
-import {
-  getObservationTypeDetails,
-  getReferenceCoordinate,
-  mapCalibrationStrategyToBackend
-} from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
 import { AxiosError } from 'axios';
 
@@ -36,8 +26,8 @@ vi.mock('@/generated', async (importOriginal) => ({
   })
 }));
 
-// The form's other slices match the proposal being saved, as they do when seeded from the store
-const formSlices = getProposalFormValues(MockProposalFrontend);
+// The form holding the proposal being saved
+const formSlices = mapPdmToForm(MockProposalBackend);
 
 describe('PutProposal Service', () => {
   afterEach(() => {
@@ -134,7 +124,7 @@ describe('PutProposal Service', () => {
   });
 });
 
-describe('mapCalibrationStrategyToBackend', () => {
+describe('calibrationStrategyToPdm', () => {
   test('should map calibration strategies with calibrators', () => {
     const input: CalibrationStrategy[] = [
       {
@@ -165,7 +155,7 @@ describe('mapCalibrationStrategyToBackend', () => {
       }
     ];
 
-    const result = mapCalibrationStrategyToBackend(input);
+    const result = calibrationStrategyToPdm(input);
 
     expect(result).toEqual([
       {
@@ -198,7 +188,7 @@ describe('mapCalibrationStrategyToBackend', () => {
       }
     ];
 
-    const result = mapCalibrationStrategyToBackend(input);
+    const result = calibrationStrategyToPdm(input);
 
     expect(result).toEqual([
       {
@@ -212,7 +202,7 @@ describe('mapCalibrationStrategyToBackend', () => {
   });
 });
 
-describe('getReferenceCoordinate', () => {
+describe('referenceCoordinateToPdm', () => {
   test('maps galactic coordinates, leaving the unused fields to the PDM', () => {
     const galactic = {
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
@@ -223,7 +213,7 @@ describe('getReferenceCoordinate', () => {
       epoch: 'J2000',
       parallax: 0.5
     };
-    const result = getReferenceCoordinate(galactic);
+    const result = referenceCoordinateToPdm(galactic);
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: 123.4,
@@ -241,64 +231,11 @@ describe('getReferenceCoordinate', () => {
       epoch: 'J2000',
       parallax: 0.3
     };
-    const result = getReferenceCoordinate(icrs);
+    const result = referenceCoordinateToPdm(icrs);
     expect(result).toEqual({
       kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       ra_str: '12:34:56.7',
       dec_str: '-12:34:56.7'
     });
-  });
-});
-
-describe('getObservationTypeDetails', () => {
-  const mockObsBase = {
-    getBandwidth: () => ({ value: 100, unit: 'MHz' }),
-    spectralResolution: '14.13 Hz (21.2 m/s)',
-    zoomChannels: 1000
-  };
-
-  test('should return correct details for TYPE_CONTINUUM', () => {
-    const obs = {
-      ...mockObsBase,
-      type: TYPE_CONTINUUM
-    } as any;
-    const result = getObservationTypeDetails(obs);
-    expect(result.observation_type).toBe(TYPE_CONTINUUM);
-    expect(result.bandwidth).toBeDefined();
-    expect(result.central_frequency).toBeDefined();
-    expect(result.supplied).toBeDefined();
-  });
-
-  test('should return correct details for TYPE_ZOOM', () => {
-    const obs = {
-      ...mockObsBase,
-      type: TYPE_ZOOM,
-      spectralResolution: '1.2 kHz (2.5 km/s)',
-      zoomChannels: 2000
-    } as any;
-    const result = getObservationTypeDetails(obs);
-    expect(result.observation_type).toBe(TYPE_ZOOM_LONG);
-    expect(result.spectral_resolution).toBe('1.2 kHz (2.5 km/s)');
-    expect(result.number_of_channels).toBe(2000);
-  });
-
-  test('should return correct details for TYPE_PST', () => {
-    const obs = {
-      ...mockObsBase,
-      type: TYPE_PST,
-      pstMode: 1
-    } as any;
-    const result = getObservationTypeDetails(obs);
-    expect(result.observation_type).toBe(TYPE_PST);
-    expect(result.pst_mode).toBe(PST_MODES[1].mapping);
-  });
-
-  test('should return correct details for unknown type (default)', () => {
-    const obs = {
-      ...mockObsBase,
-      type: 999
-    } as any;
-    const result = getObservationTypeDetails(obs);
-    expect(result.observation_type).toBe(TYPE_PST);
   });
 });

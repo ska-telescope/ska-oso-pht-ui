@@ -6,7 +6,7 @@ import TargetPage from './TargetPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import completeMockStore from '@/utils/MockStore';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
-import { ProposalSeed } from '@/models/proposals/useProposalForm';
+import { ProposalType } from '@/models/proposals/proposal';
 import {
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
@@ -18,10 +18,10 @@ import {
   STATUS_INITIAL
 } from '@/utils/constants';
 
-const wrapper = (component: React.ReactElement, proposal?: ProposalSeed) => {
+const wrapper = (component: React.ReactElement, proposal?: Partial<ProposalType>) => {
   return render(
     <StoreProvider>
-      <TestProposalFormProvider proposal={proposal}>
+      <TestProposalFormProvider values={proposal}>
         <ThemeA11yProvider>{component}</ThemeA11yProvider>
       </TestProposalFormProvider>
     </StoreProvider>
@@ -64,7 +64,7 @@ describe('<TargetPage />>', () => {
     } as any);
 
     wrapper(<TargetPage />, {
-      proposalType: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
       targets: [],
       targetObservation: [],
       calibrationStrategy: []

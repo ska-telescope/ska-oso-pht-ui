@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.tsx';
+import { targetsToPdm } from '@/models/proposals/targets';
 import { MockCalibratorFrontendList } from './mockCalibratorListFrontend';
 import { MockCalibratorBackendList } from './mockCalibratorListBackend';
 import {
@@ -112,7 +112,7 @@ describe('GetCalibratorList Service', () => {
     expect(calledUrl).toContain('telescope=ska_low');
     expect(calledUrl).toContain('scan_duration_ms=3600000');
     expect(calledUrl).toContain('strategy=highest_elevation');
-    expect(calledBody).toEqual(getTargets([mockTarget])[0]);
+    expect(calledBody).toEqual(targetsToPdm([mockTarget])[0]);
   });
 
   test('returns error message on API failure', async () => {

@@ -15,7 +15,7 @@ import {
   INTEGRATION_TIME_UNIT_HOURS,
   type ObservationInput
 } from '@/models/proposals/observations';
-import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.tsx';
+import { targetsToPdm } from '@/models/proposals/targets';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -57,7 +57,7 @@ async function GetCalibratorList(
   // this isn't great, but works ahead of the SV call - we should/could extend the
   // add an oso-services endpoint that takes a list of targets, and then returns
   // calibrators for every target in the proposal. For now, this works for SV calls.
-  const pdm_target = getTargets([target])[0];
+  const pdm_target = targetsToPdm([target])[0];
 
   try {
     const params = new URLSearchParams({

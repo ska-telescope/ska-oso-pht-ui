@@ -1,4 +1,3 @@
-import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { ProposalSubTypeType, ProposalTypeType } from '../constants';
 import { DocumentPDF } from './document';
 import GroupObservation from './groupObservation';
@@ -45,36 +44,6 @@ export type Proposal = {
   // The form's data products. The store holds a copy for readers not yet moved to the form
   dataProducts?: DataProductInput[];
   pipeline?: string;
-};
-
-export const NEW_PROPOSAL = {
-  id: null,
-  title: '',
-  status: '',
-  lastUpdated: '',
-  lastUpdatedBy: '',
-  createdOn: '',
-  createdBy: '',
-  version: 0,
-  cycle: '',
-  proposalType: undefined,
-  proposalSubType: [],
-  scienceCategory: null,
-  scienceSubCategory: [1],
-  investigators: [],
-  pi: '',
-  abstract: '',
-  sciencePDF: null,
-  scienceLoadStatus: FileUploadStatus.INITIAL,
-  targetOption: 1,
-  targets: [],
-  observations: [],
-  groupObservations: [],
-  targetObservation: [],
-  technicalPDF: null,
-  technicalLoadStatus: FileUploadStatus.INITIAL,
-  dataProducts: [],
-  pipeline: ''
 };
 
 export default Proposal;
