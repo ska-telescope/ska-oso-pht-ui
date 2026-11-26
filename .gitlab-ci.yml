@@ -182,7 +182,6 @@ include:
     file: "gitlab-ci/includes/oci-image.gitlab-ci.yml"
   # Docs pages
   - project: 'ska-telescope/templates-repository'
-    ref: btn-3676-remove-jstest-env
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
   # .post step finalisers eg: badges
   - project: "ska-telescope/templates-repository"
