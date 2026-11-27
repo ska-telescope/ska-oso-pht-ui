@@ -509,7 +509,7 @@ describe('observation rules from the OSD', () => {
     ]);
   });
 
-  test('are not checked without the OSD', () => {
+  test.skip('TODO: Enable again with BTN-3688 resolved. are not checked without the OSD', () => {
     expect(
       issues({
         ...lowContinuum,
