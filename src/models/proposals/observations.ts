@@ -594,7 +594,11 @@ const midObservationSchema = (osd: ObservationOsd) => {
 
 const lowObservationSchema = (osd: ObservationOsd) => {
   const base = lowBaseSchema.extend({
-    minElevation: elevationSchema(osd.low?.basicCapabilities)
+    // TODO: Elevation limits are relaxed for now so as to not invalidate
+    //  existing observations by suddenly raising the minimum elevation from 15
+    //  to OSD default of 45. This workaround should be fixed as part of BTN-3688
+    // minElevation: elevationSchema(osd.low?.basicCapabilities)
+    minElevation: elevationSchema({ minElevationDeg: 15, maxElevationDeg: 90 })
   });
   return z.discriminatedUnion('observingMode', [
     withOsdRules(base.extend(lowModes.continuum), osd),

@@ -514,7 +514,7 @@ describe('observation rules from the OSD', () => {
     expect(
       issues({
         ...lowContinuum,
-        minElevation: 5,
+        minElevation: 15, // TODO: make this an invalid value once BTN-3688 is resolved
         centralFrequency: { value: 60, unit: 'MHz' },
         bandwidth: { value: 5, unit: 'MHz' }
       })
