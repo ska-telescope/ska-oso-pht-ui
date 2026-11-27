@@ -25,7 +25,7 @@ import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUt
 import Proposal from '@/utils/types/proposal';
 import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import type { ApiResult } from '@/services/axios/apiResult/apiResult';
+import type { ApiResult } from '@/services/api/apiResult';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';

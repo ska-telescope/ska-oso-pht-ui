@@ -7,8 +7,19 @@ import {
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import Target from '@utils/types/target';
-import { VELOCITY_DEFINITION, VELOCITY_TYPE } from '@/utils/constants';
-import { getTargetsSchema, TargetsType, targetsFromPdm, targetsToPdm } from './targets';
+import {
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  VELOCITY_DEFINITION,
+  VELOCITY_TYPE
+} from '@/utils/constants';
+import {
+  getTargetsSchema,
+  referenceCoordinateToPdm,
+  TargetsType,
+  targetsFromPdm,
+  targetsToPdm
+} from './targets';
 
 const mockPdms = [
   ['MockSlicesPdm', MockSlicesPdm],
@@ -94,5 +105,46 @@ describe('targets PDM mapping', () => {
 
   test('reads missing targets as an empty list', () => {
     expect(targetsFromPdm(undefined)).toEqual([]);
+  });
+});
+
+// The tests give the coordinate kind by its value, as the target entry form holds it
+type ReferenceCoordinateInput = Parameters<typeof referenceCoordinateToPdm>[0];
+
+describe('referenceCoordinateToPdm', () => {
+  test('maps galactic coordinates, leaving the unused fields to the PDM', () => {
+    const galactic = {
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
+      l: 123.4,
+      b: 56.7,
+      pmL: 1.1,
+      pmB: 2.2,
+      epoch: 'J2000',
+      parallax: 0.5
+    };
+    const result = referenceCoordinateToPdm(galactic as unknown as ReferenceCoordinateInput);
+    expect(result).toEqual({
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
+      l: 123.4,
+      b: 56.7
+    });
+  });
+
+  test('maps ICRS coordinates, leaving the unused fields to the PDM', () => {
+    const icrs = {
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
+      raStr: '12:34:56.7',
+      decStr: '-12:34:56.7',
+      pmRa: 0.1,
+      pmDec: 0.2,
+      epoch: 'J2000',
+      parallax: 0.3
+    };
+    const result = referenceCoordinateToPdm(icrs as unknown as ReferenceCoordinateInput);
+    expect(result).toEqual({
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
+      ra_str: '12:34:56.7',
+      dec_str: '-12:34:56.7'
+    });
   });
 });

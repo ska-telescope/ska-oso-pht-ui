@@ -2,15 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { env } from '@/env';
-import useAxiosAuthClient, {
-  getRequestTimeoutMs,
-  mapAxiosError,
-  silentRequest
-} from './axiosAuthClient';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { getRequestTimeoutMs, mapAxiosError, silentRequest } from './auth';
 
 vi.stubGlobal('window', {
   location: { hostname: 'localhost', origin: 'http://localhost:3000' },
-  // createRequestInterceptor's tests re-import axiosAuthClient.ts fresh via vi.resetModules() (to
+  // createRequestInterceptor's tests re-import auth.ts fresh via vi.resetModules() (to
   // reset its module-level loginRedirectTriggered flag between tests), which re-runs
   // constants.ts's top-level window.localStorage.getItem calls - so this stub needs a
   // localStorage, unlike when the module was only ever evaluated once.
@@ -98,8 +95,8 @@ describe('createRequestInterceptor', () => {
   // concurrent requests only redirect once - see its own comment in axiosAuthClient.ts). Each of
   // these tests needs it to start false, so re-import the module fresh rather than let one test's
   // redirect leave it set for the next.
-  let createRequestInterceptor: typeof import('./axiosAuthClient').createRequestInterceptor;
-  let loginRequest: typeof import('./axiosAuthClient').loginRequest;
+  let createRequestInterceptor: typeof import('./auth').createRequestInterceptor;
+  let loginRequest: typeof import('./auth').loginRequest;
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -108,7 +105,7 @@ describe('createRequestInterceptor', () => {
     mockHandleRedirectPromise.mockResolvedValue(null);
     (window as any).location.hostname = 'localhost';
     vi.resetModules();
-    ({ createRequestInterceptor, loginRequest } = await import('./axiosAuthClient'));
+    ({ createRequestInterceptor, loginRequest } = await import('./auth'));
   });
 
   it('rejects HTTP requests on non-localhost', async () => {

@@ -1,4 +1,5 @@
-import { AxiosAuthClient, RefreshAuthToken } from '../../axiosAuthClient/axiosAuthClient';
+import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient';
+import type { RefreshAuthToken } from '@/services/api/auth';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
 import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL } from '@/utils/constants';

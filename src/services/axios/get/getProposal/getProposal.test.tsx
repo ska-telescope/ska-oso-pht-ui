@@ -1,64 +1,11 @@
-import { describe, test, expect, vi, beforeEach } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { FREQUENCY_UNITS, BAND_LOW_STR } from '@utils/constants.ts';
-import { AxiosError, type AxiosResponse } from 'axios';
-import { UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import {
-  GetProposal,
   getInvestigators,
   getScienceCategory,
   getBandwidth,
   getFrequencyAndBandwidthUnits
 } from './getProposal.tsx';
-import { MockProposalBackend } from './mockProposalBackend.tsx';
-
-const { mockGetProposal } = vi.hoisted(() => ({ mockGetProposal: vi.fn() }));
-
-vi.mock('@/generated', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/generated')>()),
-  PPTAPIProposalPreparationApiFactory: () => ({
-    getProposalOsoApiV17PhtPrslsPrslIdGet: mockGetProposal
-  })
-}));
-
-describe('GetProposal', () => {
-  beforeEach(() => {
-    mockGetProposal.mockReset();
-  });
-
-  test('fetches the proposal by ID and returns the unmapped PDM', async () => {
-    mockGetProposal.mockResolvedValue({ data: MockProposalBackend });
-    const result = await GetProposal(MockProposalBackend.prsl_id as string);
-    expect(mockGetProposal).toHaveBeenCalledExactlyOnceWith(MockProposalBackend.prsl_id);
-    expect(result).toEqual({ data: MockProposalBackend });
-  });
-
-  test('returns the standard error when the API returns no data', async () => {
-    mockGetProposal.mockResolvedValue(undefined);
-    await expect(GetProposal('prsl-1')).resolves.toEqual({ error: UNKNOWN_API_ERROR });
-  });
-
-  test('returns the error message when the request fails', async () => {
-    mockGetProposal.mockRejectedValue(new Error('Network Error'));
-    await expect(GetProposal('prsl-1')).resolves.toEqual({ error: 'Network Error' });
-  });
-
-  test('returns the standard error when something other than an Error is thrown', async () => {
-    mockGetProposal.mockRejectedValue({ unexpected: 'object' });
-    await expect(GetProposal('prsl-1')).resolves.toEqual({ error: UNKNOWN_API_ERROR });
-  });
-
-  test('returns the server error from a failed request', async () => {
-    mockGetProposal.mockRejectedValue(
-      new AxiosError('Request failed', 'ERR_BAD_RESPONSE', undefined, undefined, {
-        status: 500,
-        data: { title: 'Internal Server Error', detail: 'ODA unavailable' }
-      } as AxiosResponse)
-    );
-    await expect(GetProposal('prsl-1')).resolves.toEqual({
-      error: 'Internal Server Error: ODA unavailable'
-    });
-  });
-});
 
 describe('getInvestigators', () => {
   test('returns an empty array when input is null', () => {

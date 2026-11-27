@@ -19,8 +19,6 @@ import {
 } from '@utils/constants.ts';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { type ApiResult, handleApiError, UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
-import { osoApiConfiguration } from '../../generatedClient/osoApiConfig.ts';
 import type {
   LowArray,
   MidArray,
@@ -29,8 +27,6 @@ import type {
   SpectralLineSetup,
   Supplied as SuppliedTransport
 } from '@/generated/models';
-import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
-import { PPTAPIProposalPreparationApiFactory } from '@/generated';
 
 export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefined) => {
   const investigators = [] as Investigator[];
@@ -200,16 +196,3 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
   }
   return results;
 };
-
-/** Fetches the proposal from the ODA in its PDM shape, without mapping it. */
-export async function GetProposal(id: string): Promise<ApiResult<ProposalPDM>> {
-  try {
-    const result =
-      await PPTAPIProposalPreparationApiFactory(
-        osoApiConfiguration
-      ).getProposalOsoApiV17PhtPrslsPrslIdGet(id);
-    return result?.data ? { data: result.data } : { error: UNKNOWN_API_ERROR };
-  } catch (err) {
-    return handleApiError(err);
-  }
-}

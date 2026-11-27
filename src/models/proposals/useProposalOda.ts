@@ -1,11 +1,15 @@
 import React from 'react';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { PROPOSAL_STATUS, SENSITIVITY_STATE, TEAM_STATUS_TYPE_OPTIONS } from '@utils/constants.ts';
-import { GetProposal } from '@services/axios/get/getProposal/getProposal';
-import PutProposal from '@services/axios/put/putProposal/putProposal';
-import PostProposal from '@services/axios/post/postProposal/postProposal';
-import { type ApiResult, UNKNOWN_API_ERROR } from '@services/axios/apiResult/apiResult';
-import { useRefreshAuthToken } from '@services/axios/axiosAuthClient/axiosAuthClient';
+import {
+  createProposal,
+  getProposal,
+  type ProposalValidation,
+  updateProposal,
+  validateProposal
+} from '@/services/api/proposals';
+import { type ApiResult, UNKNOWN_API_ERROR } from '@/services/api/apiResult';
+import { useRefreshAuthToken } from '@/services/api/auth';
 import { ProposalType } from './proposal';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { withSvDefaults } from '@/utils/autoLinking/AutoLinking';
@@ -61,7 +65,7 @@ export async function saveValuesToOda(
   status: string = PROPOSAL_STATUS.DRAFT
 ): Promise<ApiResult<ProposalPDM>> {
   const { data: pdm, error } = formToPdm(values);
-  return pdm ? PutProposal(pdm, status) : { error: error ?? UNKNOWN_API_ERROR };
+  return pdm ? updateProposal(pdm, status) : { error: error ?? UNKNOWN_API_ERROR };
 }
 
 /**
@@ -104,7 +108,7 @@ export function useProposalOda() {
       id: string,
       isStillWanted: () => boolean = () => true
     ): Promise<ApiResult<ProposalType> | null> => {
-      const { data: pdm, error } = await GetProposal(id);
+      const { data: pdm, error } = await getProposal(id);
       if (!isStillWanted()) {
         return null;
       }
@@ -127,7 +131,7 @@ export function useProposalOda() {
       if (!newPdm) {
         return { error: mapError ?? UNKNOWN_API_ERROR };
       }
-      const { data: pdm, error } = await PostProposal(newPdm);
+      const { data: pdm, error } = await createProposal(newPdm);
       if (!pdm) {
         return { error: error ?? UNKNOWN_API_ERROR };
       }
@@ -139,5 +143,14 @@ export function useProposalOda() {
     [resetFormFromPdm, refreshAuthToken]
   );
 
-  return { loadFromOda, saveToOda, createInOda };
+  /** Asks the ODA whether the proposal in the form is valid, as it would be saved as a draft. */
+  const validateInOda = React.useCallback(async (): Promise<ApiResult<ProposalValidation>> => {
+    if (!form) {
+      return { error: UNKNOWN_API_ERROR };
+    }
+    const { data: pdm, error } = formToPdm(form.getValues());
+    return pdm ? validateProposal(pdm) : { error: error ?? UNKNOWN_API_ERROR };
+  }, [form]);
+
+  return { loadFromOda, saveToOda, createInOda, validateInOda };
 }

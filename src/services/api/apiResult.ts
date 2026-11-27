@@ -1,6 +1,6 @@
-import { isAxiosError } from 'axios';
-import { mapAxiosError } from '../axiosAuthClient/axiosAuthClient';
-import { osoApiBasePath } from '../generatedClient/osoApiConfig';
+import { type AxiosResponse, isAxiosError } from 'axios';
+import { mapAxiosError } from './auth';
+import { osoApiBasePath } from './client';
 
 // TODO: come back to this and consolidate with the ODT UI, which has the same ApiResult and
 // handleApiError in src/services/apiService.ts.
@@ -45,4 +45,25 @@ export function handleApiError<T>(error: unknown): ApiResult<T> {
   }
 
   return { error: UNKNOWN_API_ERROR };
+}
+
+/**
+ * Makes an API call and returns its result as an ApiResult, never throwing. The response data is
+ * mapped to the app's model by `map`; a response without data, or one that can't be mapped, is an
+ * error. `allowEmpty` is for calls that return nothing on success, such as a 204.
+ */
+export async function callApi<R, T = R>(
+  call: () => Promise<AxiosResponse<R>>,
+  map: (data: R) => T = (data) => data as unknown as T,
+  { allowEmpty = false }: { allowEmpty?: boolean } = {}
+): Promise<ApiResult<T>> {
+  try {
+    const response = await call();
+    if (response?.data === undefined || response?.data === null || response?.data === '') {
+      return allowEmpty ? { data: undefined } : { error: UNKNOWN_API_ERROR };
+    }
+    return { data: map(response.data) };
+  } catch (err) {
+    return handleApiError(err);
+  }
 }

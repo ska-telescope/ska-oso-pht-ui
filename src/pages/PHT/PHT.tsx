@@ -57,7 +57,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import useAxiosInterceptor from '@/services/axios/useAxiosInterceptor/useAxiosInterceptor';
+import useAxiosInterceptor from '@/services/api/useAxiosInterceptor';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import { getProposalFormDefaults, useProposalForm } from '@/models/proposals/useProposalForm';

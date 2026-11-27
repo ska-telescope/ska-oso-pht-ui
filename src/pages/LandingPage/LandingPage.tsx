@@ -19,7 +19,7 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
-import { UNKNOWN_API_ERROR } from '@/services/axios/apiResult/apiResult';
+import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
 import { ProposalType } from '@/models/proposals/proposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';

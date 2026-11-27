@@ -87,3 +87,81 @@ describe('calibration strategy PDM mapping', () => {
     expect(calibrationStrategyFromPdm(null)).toEqual([]);
   });
 });
+
+describe('calibrationStrategyToPdm', () => {
+  test('should map calibration strategies with calibrators', () => {
+    const input: CalibrationStrategy[] = [
+      {
+        observatoryDefined: true,
+        id: '1',
+        observationIdRef: 'obs-1',
+        calibrators: [
+          {
+            calibrationIntent: 'flux',
+            durationSeconds: 600,
+            name: '3C 444',
+            relativeToScan: 'before_each_scan',
+            selectionStrategy: 'highest_elevation',
+            targetId: 'calibrator-00001',
+            notes: null
+          },
+          {
+            calibrationIntent: 'flux',
+            durationSeconds: 600,
+            name: '3C 444',
+            relativeToScan: 'after_each_scan',
+            selectionStrategy: 'highest_elevation',
+            targetId: 'calibrator-00001',
+            notes: null
+          }
+        ],
+        notes: 'strategy notes'
+      }
+    ];
+
+    const result = calibrationStrategyToPdm(input);
+
+    expect(result).toEqual([
+      {
+        observatory_defined: true,
+        calibration_id: '1',
+        observation_set_ref: 'obs-1',
+        calibrators: [
+          {
+            kind: 'flux',
+            name: '3C 444'
+          },
+          {
+            kind: 'flux',
+            name: '3C 444'
+          }
+        ],
+        notes: 'strategy notes'
+      }
+    ]);
+  });
+
+  test('should return null calibrators when input strategy has none', () => {
+    const input: CalibrationStrategy[] = [
+      {
+        observatoryDefined: false,
+        id: '2',
+        observationIdRef: 'obs-2',
+        calibrators: null,
+        notes: null
+      }
+    ];
+
+    const result = calibrationStrategyToPdm(input);
+
+    expect(result).toEqual([
+      {
+        observatory_defined: false,
+        calibration_id: '2',
+        observation_set_ref: 'obs-2',
+        calibrators: null,
+        notes: null
+      }
+    ]);
+  });
+});

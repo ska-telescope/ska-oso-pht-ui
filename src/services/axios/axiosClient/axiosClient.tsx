@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getLocalToken, isLocalhost } from '../authToken/localAuthToken';
+import { getLocalToken, isLocalhost } from '@/services/api/localAuthToken';
 
 export enum LogLevel {
   Error,

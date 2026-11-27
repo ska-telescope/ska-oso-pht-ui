@@ -15,7 +15,7 @@ import {
 } from '@utils/constants.ts';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import { UNKNOWN_API_ERROR } from '@/services/axios/apiResult/apiResult';
+import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
 import { useNotify } from '@/utils/notify/useNotify';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';

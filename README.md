@@ -122,7 +122,7 @@ The UI is available at http://localhost:6101/
 The UI runs locally but talks to a backend deployed on a remote cluster (e.g. a dev environment on `k8s.stfc.skao.int`). The vite proxy avoids CORS issues.
 
 ```bash
-make dev-start BACKEND_PROXY=https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa
+make dev-start BACKEND_PROXY=https://k8s.stfc.skao.int/integration-ska-oso-pht-ui
 ```
 
 This proxies `/oso/` and `/senscalc/` requests to the remote cluster. No CORS headers needed on the backend.

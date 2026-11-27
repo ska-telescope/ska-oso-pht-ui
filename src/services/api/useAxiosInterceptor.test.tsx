@@ -2,17 +2,20 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import globalAxios from 'axios';
 import { useAxiosInterceptor } from './useAxiosInterceptor';
+import { getLocalToken, setLocalTokenProvider } from './localAuthToken';
 
-const { mockInstance, mockCreateRequestInterceptor } = vi.hoisted(() => ({
-  mockInstance: { name: 'msal-instance' },
-  mockCreateRequestInterceptor: vi.fn()
+const { mockInstance, mockCreateRequestInterceptor, mockAcquireAccessToken } = vi.hoisted(() => ({
+  mockInstance: { name: 'msal-instance', getAllAccounts: () => [{ username: 'testuser' }] },
+  mockCreateRequestInterceptor: vi.fn(),
+  mockAcquireAccessToken: vi.fn()
 }));
 
 vi.mock('@azure/msal-react', () => ({
   useMsal: () => ({ instance: mockInstance })
 }));
 
-vi.mock('../axiosAuthClient/axiosAuthClient', () => ({
+vi.mock('./auth', () => ({
+  acquireAccessToken: mockAcquireAccessToken,
   createRequestInterceptor: mockCreateRequestInterceptor
 }));
 
@@ -54,5 +57,16 @@ describe('useAxiosInterceptor', () => {
 
     await expect(registered(request)).resolves.toBe(request);
     expect(mockCreateRequestInterceptor).toHaveBeenCalledWith(mockInstance);
+  });
+
+  // jsdom runs on localhost, where the auth cookie isn't sent
+  it('registers the localhost token provider for unauthenticated requests', async () => {
+    setLocalTokenProvider(null);
+    mockAcquireAccessToken.mockResolvedValue('token-1');
+
+    renderHook(() => useAxiosInterceptor());
+
+    await expect(getLocalToken()).resolves.toBe('token-1');
+    expect(mockAcquireAccessToken).toHaveBeenCalledWith(mockInstance, { username: 'testuser' });
   });
 });

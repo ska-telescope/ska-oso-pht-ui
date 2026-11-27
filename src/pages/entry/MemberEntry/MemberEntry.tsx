@@ -4,7 +4,7 @@ import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-comp
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import type { ApiResult } from '@/services/axios/apiResult/apiResult';
+import type { ApiResult } from '@/services/api/apiResult';
 import { generateId, helpers } from '@utils/helpers.ts';
 import {
   LAB_POS_TICK,

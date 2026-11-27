@@ -17,8 +17,7 @@ import {
   STATUS_OK
 } from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import type { ApiResult } from '@/services/axios/apiResult/apiResult';
-import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
+import type { ApiResult } from '@/services/api/apiResult';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
@@ -70,7 +69,7 @@ export default function PageBannerPPT({
     [isSV]
   );
 
-  const { saveToOda } = useProposalOda();
+  const { saveToOda, validateInOda } = useProposalOda();
   const { notifyError, notifySuccess } = useNotify();
 
   const loggedIn = isLoggedIn();
@@ -106,13 +105,13 @@ export default function PageBannerPPT({
         results.push(t('page.' + key + '.pageError'));
       }
     });
-    const response = await PostProposalValidate(form.getValues());
+    const { data: validation, error } = await validateInOda();
 
-    if (response.valid && !response.error && results.length === 0) {
+    if (validation?.valid && results.length === 0) {
       notifySuccess(t('validation.success'));
       result = true;
     } else {
-      setValidationResults(response.error ? results.concat(response.error) : results);
+      setValidationResults(results.concat(error ? [error] : (validation?.errors ?? [])));
       setOpenValidationResults(true);
     }
 

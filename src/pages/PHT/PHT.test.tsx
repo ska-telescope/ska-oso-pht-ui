@@ -56,7 +56,7 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
 }));
 
-vi.mock('@/services/axios/useAxiosInterceptor/useAxiosInterceptor', () => ({
+vi.mock('@/services/api/useAxiosInterceptor', () => ({
   default: vi.fn(),
   useAxiosInterceptor: vi.fn()
 }));

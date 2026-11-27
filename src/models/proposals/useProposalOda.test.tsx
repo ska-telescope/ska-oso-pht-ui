@@ -20,15 +20,16 @@ import { getDetailsSchema } from './details';
 import phtTranslations from '@/locales/en/pht.json';
 import { InvestigatorBackend } from '@/utils/types/investigator';
 
-const { mockGet, mockPut, mockCreate, mockRefreshAuthToken } = vi.hoisted(() => ({
+const { mockGet, mockPut, mockCreate, mockValidate, mockRefreshAuthToken } = vi.hoisted(() => ({
   mockGet: vi.fn(),
   mockPut: vi.fn(),
   mockCreate: vi.fn(),
+  mockValidate: vi.fn(),
   mockRefreshAuthToken: vi.fn()
 }));
 
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/services/axios/axiosAuthClient/axiosAuthClient')>()),
+vi.mock('@/services/api/auth', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/services/api/auth')>()),
   useRefreshAuthToken: () => mockRefreshAuthToken
 }));
 
@@ -37,7 +38,8 @@ vi.mock('@/generated', async (importOriginal) => ({
   PPTAPIProposalPreparationApiFactory: () => ({
     getProposalOsoApiV17PhtPrslsPrslIdGet: mockGet,
     updateProposalOsoApiV17PhtPrslsPrslIdPut: mockPut,
-    createProposalOsoApiV17PhtPrslsCreatePost: mockCreate
+    createProposalOsoApiV17PhtPrslsCreatePost: mockCreate,
+    validateProposalOsoApiV17PhtPrslsValidatePost: mockValidate
   })
 }));
 
@@ -74,6 +76,7 @@ describe('useProposalOda', () => {
     mockGet.mockReset();
     mockPut.mockReset();
     mockCreate.mockReset();
+    mockValidate.mockReset();
     mockRefreshAuthToken.mockReset().mockResolvedValue(undefined);
   });
 
@@ -320,6 +323,31 @@ describe('useProposalOda', () => {
     const { result } = renderHook(() => useProposalOda());
     expect(await result.current.saveToOda()).toEqual({ error: 'error.API_UNKNOWN_ERROR' });
     expect(mockPut).not.toHaveBeenCalled();
+  });
+
+  test('Validate in ODA sends the proposal from the form as a draft', async () => {
+    mockValidate.mockResolvedValue({ data: { result: false, validation_errors: ['No targets'] } });
+    const { form, oda } = renderWithForm('Edited title');
+
+    await expect(oda.current.validateInOda()).resolves.toEqual({
+      data: { valid: false, errors: ['No targets'] }
+    });
+    expect(mockValidate).toHaveBeenCalledExactlyOnceWith({
+      ...mapFormToPdm(form.current.getValues()),
+      status: PROPOSAL_STATUS.DRAFT,
+      submitted_on: null,
+      submitted_by: ''
+    });
+  });
+
+  test('Validate in ODA returns an error, without a request, when the form cannot be mapped', async () => {
+    // No proposal type, which the PDM requires
+    const { oda } = renderWithForm('Title', null as never);
+
+    const { error } = await oda.current.validateInOda();
+
+    expect(error).toEqual(expect.any(String));
+    expect(mockValidate).not.toHaveBeenCalled();
   });
 
   test.each([0, Number(phtTranslations.abstract.maxWord) + 1])(
