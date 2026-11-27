@@ -1,162 +1,70 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
+import { generatePanels, listPanels } from '@/services/api/panels';
+import { Panel } from '@/utils/types/panel';
 import GridReviewPanels from './GridReviewPanels';
 
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => {
-    return { axiosClient: {}, refreshAuthToken: vi.fn() };
-  }
-}));
-
-vi.mock('@services/axios/get/getPanelList/getPanelList', () => ({
-  default: vi.fn()
-}));
-
-vi.mock('@/services/axios/put/putPanel/putPanel', () => ({
-  default: vi.fn()
+vi.mock('@/services/api/panels', () => ({
+  listPanels: vi.fn(),
+  generatePanels: vi.fn()
 }));
 
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
-    useStore: () => {
-      return {
-        application: {
-          content3: {
-            observatoryPolicy: {
-              cycleInformation: {
-                cycleId: 'mock-cycle-id'
-              }
-            }
-          }
-        }
-      };
-    }
+    useStore: () => ({
+      application: {
+        content3: { observatoryPolicy: { cycleInformation: { cycleId: 'mock-cycle-id' } } }
+      }
+    })
   }
 }));
 
+const mockPanels: Panel[] = [
+  { id: '1', name: 'Beta', proposals: [], sciReviewers: [], tecReviewers: [] },
+  { id: '2', name: 'Alpha', proposals: [], sciReviewers: [], tecReviewers: [] }
+];
+
 const theme = createTheme();
 
-const wrapper = (ui: React.ReactElement) => {
-  return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
-};
-
-/*
-const mockPanels = [
-  {
-    id: '1',
-    name: 'Alpha',
-    proposals: [],
-    sciReviewers: [],
-    tecReviewers: [],
-    expiresOn: '2025-08-29'
-  },
-  {
-    id: '2',
-    name: 'Beta',
-    proposals: [],
-    sciReviewers: [],
-    tecReviewers: [],
-    expiresOn: '2025-08-29'
-  }
-];
-*/
+const wrapper = (ui: React.ReactElement) =>
+  render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 
 describe('GridReviewPanels', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-    vi.clearAllMocks();
+    vi.mocked(listPanels).mockReset();
+    vi.mocked(generatePanels).mockReset().mockResolvedValue({ data: undefined });
   });
 
-  afterEach(() => {
-    vi.runAllTimers();
-    vi.useRealTimers();
-  });
-
-  it('renders alert when no data is returned', async () => {
-    (GetPanelList as any).mockImplementation(() => {
-      return Promise.resolve([]);
-    });
-
-    wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
-    await vi.runAllTicks();
-
-    const alert = screen.getByTestId('helpPanelId');
-    expect(alert).toBeInTheDocument();
-  });
-
-  /* 
-  it('renders DataGrid when data is returned', async () => {
-    (GetPanelList as any).mockImplementation(() => {
-      return Promise.resolve(mockPanels);
-    });
+  it('renders the alert, and has the panels generated, when there are none', async () => {
+    vi.mocked(listPanels).mockResolvedValue({ data: [] });
 
     wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
 
-    let grid;
-    for (let i = 0; i < 20; i++) {
-      grid = screen.queryByTestId('dataGridId');
-      if (grid) break;
-      await new Promise(res => setTimeout(res, 250));
-    }
-    expect(grid).toBeInTheDocument();
+    expect(screen.getByTestId('helpPanelId')).toBeInTheDocument();
+    await waitFor(() => expect(generatePanels).toHaveBeenCalled());
   });
 
-  it('calls onRowClick when a row is clicked', async () => {
-    (GetPanelList as any).mockResolvedValue(mockPanels);
-    const onRowClick = vi.fn();
-    wrapper(<GridReviewPanels onRowClick={onRowClick} />);
-    await vi.runAllTicks();
-
-    const grid = screen.getByTestId('dataGridId');
-    const row = grid.querySelector('[role="row"]');
-    if (row) fireEvent.click(row);
-    expect(onRowClick).toHaveBeenCalled();
-  });
-
-  it('does not render proposals section when listOnly is true', async () => {
-    (GetPanelList as any).mockResolvedValue(mockPanels);
-    wrapper(<GridReviewPanels onRowClick={vi.fn()} listOnly />);
-    await vi.runAllTicks();
-    const label = screen.queryByText('proposals.label');
-    expect(label).not.toBeInTheDocument();
-  });
-
-  it('renders proposals section when listOnly is false', async () => {
-    (GetPanelList as any).mockResolvedValue(mockPanels);
-    wrapper(<GridReviewPanels onRowClick={vi.fn()} listOnly={false} />);
-    await vi.runAllTicks();
-    const label = screen.getByText('proposals.label');
-    expect(label).toBeInTheDocument();
-  });
-
-  it('triggers PutPanel when noPanels is true', async () => {
-    (GetPanelList as any).mockImplementation(() => {
-      return Promise.resolve([]);
-    });
-
-    (PutPanel as any).mockImplementation(() => {
-      return Promise.resolve('success');
-    });
+  it('renders the panels, sorted by name, when there are some', async () => {
+    vi.mocked(listPanels).mockResolvedValue({ data: mockPanels });
 
     wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
-    await vi.runAllTicks();
-    expect(PutPanel).toHaveBeenCalled();
+
+    const grid = await screen.findByTestId('dataGridId');
+    const names = Array.from(grid.querySelectorAll('[role="row"]'))
+      .map((row) => row.textContent)
+      .filter((text) => text === 'Alpha' || text === 'Beta');
+    expect(names).toEqual(['Alpha', 'Beta']);
+    expect(generatePanels).not.toHaveBeenCalled();
   });
 
-  it('handles PutPanel error response', async () => {
-    (GetPanelList as any).mockImplementation(() => {
-      return Promise.resolve([]);
-    });
-
-    (PutPanel as any).mockImplementation(() => {
-      return Promise.resolve({ error: 'Failed to create panel' });
-    });
+  it('keeps the alert, without generating panels, when they cannot be fetched', async () => {
+    vi.mocked(listPanels).mockResolvedValue({ error: 'Network Error' });
 
     wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
-    await vi.runAllTicks();
-    expect(PutPanel).toHaveBeenCalled();
+
+    await waitFor(() => expect(listPanels).toHaveBeenCalled());
+    expect(screen.getByTestId('helpPanelId')).toBeInTheDocument();
+    expect(generatePanels).not.toHaveBeenCalled();
   });
-  */
 });

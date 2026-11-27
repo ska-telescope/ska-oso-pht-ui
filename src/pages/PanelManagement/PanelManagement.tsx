@@ -20,10 +20,9 @@ import { PanelProposal } from '@/utils/types/panelProposal';
 import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import PutPanel from '@/services/axios/put/putPanel/putPanel';
+import { assignToPanels, updatePanel } from '@/services/api/panels';
+import type { ApiResult } from '@/services/api/apiResult';
 import AssignButton from '@/components/button/Assign/Assign';
-import PostPanelAssignments from '@/services/axios/post/postPanelAssignments/postPanelAssignments';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
@@ -122,7 +121,6 @@ export default function PanelManagement() {
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
   const [makeAssignment, setMakeAssignment] = React.useState(false);
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleDescription, osdCycleId } = useOSDAccessors();
 
   /*------------------------------------------------------------------*/
@@ -133,7 +131,7 @@ export default function PanelManagement() {
 
   React.useEffect(() => {
     const autoAssignments = async () => {
-      await PostPanelAssignments(authClient, osdCycleDescription);
+      await assignToPanels(osdCycleDescription);
     };
     if (makeAssignment) {
       autoAssignments();
@@ -179,12 +177,9 @@ export default function PanelManagement() {
     });
   };
 
-  async function savePanel(panel: Panel): Promise<string | { error: string }> {
-    const response = await PutPanel(authClient, panel, osdCycleId);
-    if (typeof response === 'object' && response?.error) {
-      //
-    }
-    return response;
+  // A failed save is not reported to the user yet
+  async function savePanel(panel: Panel): Promise<ApiResult<Panel>> {
+    return updatePanel(panel, osdCycleId);
   }
 
   const handleProposalsChange = (proposalsList: PanelProposal[]) => {

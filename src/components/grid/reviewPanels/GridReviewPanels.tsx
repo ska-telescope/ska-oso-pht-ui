@@ -1,12 +1,10 @@
 import React from 'react';
 import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid } from '@mui/material';
-import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { Panel } from '@/utils/types/panel';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
+import { generatePanels, listPanels } from '@/services/api/panels';
 import { PAGE_OBSERVATION_UPDATE } from '@/utils/constants';
 
 interface GridReviewPanelsProps {
@@ -21,17 +19,12 @@ export default function GridReviewPanels({
   onRowClick
 }: GridReviewPanelsProps) {
   const { t } = useScopedTranslation();
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const [data, setData] = React.useState<Panel[]>([]);
   const [createList, setCreateList] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
 
-  const GetReviewPanels = async () => {
-    const response = await GetPanelList(authClient);
-    if (typeof response !== 'string') {
-      return response;
-    }
-  };
+  // The panels, or undefined when they can't be fetched
+  const GetReviewPanels = async () => (await listPanels()).data;
 
   React.useEffect(() => {
     setFetchList(!fetchList);
@@ -39,7 +32,7 @@ export default function GridReviewPanels({
 
   React.useEffect(() => {
     const autoGeneratePanels = async () => {
-      await PostPanelGenerate(authClient);
+      await generatePanels();
       setFetchList(!fetchList);
     };
     if (createList) {
@@ -51,9 +44,8 @@ export default function GridReviewPanels({
     const fetchData = async () => {
       const response = await GetReviewPanels();
       if (response) {
-        const panels = response as unknown as Panel[];
-        if (panels?.length > 0) {
-          setData(panels);
+        if (response.length > 0) {
+          setData(response);
         } else {
           setCreateList(!createList);
         }

@@ -3,7 +3,6 @@ import { Grid } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
-import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
 import { listReviewableProposals } from '@/services/api/proposals';
 import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
 import type { ProposalSummary } from '@/models/proposals/proposalSummary';
@@ -16,9 +15,8 @@ import { PanelDecision } from '@/utils/types/panelDecision';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { useNotify } from '@/utils/notify/useNotify';
-import { getUserId } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import PutPanelDecision from '@/services/axios/put/putPanelDecision/putPanelDecision';
+import { listPanelDecisions, updatePanelDecision } from '@/services/api/panelDecisions';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export default function ReviewDecisionListPage() {
@@ -32,7 +30,6 @@ export default function ReviewDecisionListPage() {
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleId } = useOSDAccessors();
-  const userId = getUserId();
 
   const getReviewDecision = (item: {
     id: any;
@@ -45,8 +42,6 @@ export default function ReviewDecisionListPage() {
       panelId: item.decisions?.panelId ?? null,
       cycle: osdCycleId,
       proposalId: item.id,
-      decidedOn: new Date().toISOString(),
-      decidedBy: userId,
       recommendation: item.decisions?.recommendation ?? null,
       rank: item.decisions?.rank ?? 0,
       status: item.decisions?.status ?? null
@@ -66,9 +61,9 @@ export default function ReviewDecisionListPage() {
     decisions: any;
     reviews: any[];
   }) => {
-    const response = await PutPanelDecision(authClient, getReviewDecision(item));
-    if ('error' in response) {
-      notifyError(response.error, AlertColorTypes.Error);
+    const { error } = await updatePanelDecision(getReviewDecision(item));
+    if (error) {
+      notifyError(error, AlertColorTypes.Error);
     } else {
       fetchReviewDecisionData();
       notifySuccess(t('addReview.success'), AlertColorTypes.Success);
@@ -76,11 +71,11 @@ export default function ReviewDecisionListPage() {
   };
 
   const fetchReviewDecisionData = async () => {
-    const response = await getPanelDecisionList(authClient, osdCycleId);
-    if (typeof response === 'string') {
-      notifyError(response);
+    const { data: decisions, error } = await listPanelDecisions(osdCycleId);
+    if (decisions) {
+      setReviewDecisions(decisions);
     } else {
-      setReviewDecisions(response);
+      notifyError(error as string);
     }
   };
 
