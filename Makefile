@@ -23,6 +23,13 @@ K8S_WAIT_LABEL_FILTER_ARGS = -l release=$(HELM_RELEASE)
 
 # JS Template Variables
 JS_E2E_TEST_BASE_URL = $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
+# cypress.config.mjs reads JS_E2E_TESTS_DIR from the environment for its specPattern. 
+# set here so we can override within the Makefile for the smoke test. 
+# js-smoke-test points it at `tests/cypress/smoke`.
+# Artefacts stay where cypress.config.mjs and the CI jobs put them.
+JS_E2E_TESTS_DIR ?= tests/cypress/e2e
+JS_E2E_VARS_BEFORE_TEST = JS_E2E_TESTS_DIR=$(JS_E2E_TESTS_DIR)
+JS_E2E_TEST_ARTEFACTS_DIR = tests/cypress/artefacts
 JS_E2E_COVERAGE_ENABLED = false
 JS_E2E_TEST_SWITCHES ?= $(if $(shell command -v google-chrome 2>/dev/null),--browser chrome)
 JS_ESLINT_CONFIG ?= eslint.config.js
@@ -45,6 +52,11 @@ typecheck:
 	$(JS_COMMAND_RUNNER) typecheck
 cypress-typecheck:
 	$(JS_COMMAND_RUNNER) typecheck:cypress
+
+js-smoke-test: JS_E2E_TESTS_DIR = tests/cypress/smoke
+js-smoke-test: js-e2e-test
+
+.PHONY: js-smoke-test
 
 AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
 ifeq ($(AWK),)

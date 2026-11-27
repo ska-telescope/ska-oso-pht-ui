@@ -2,6 +2,8 @@ import { defineConfig } from 'cypress';
 import vitePreprocessor from 'cypress-vite';
 import cypressSplit from 'cypress-split';
 
+const e2eTestsDir = process.env.JS_E2E_TESTS_DIR || 'tests/cypress/e2e';
+
 // Headless Chrome/Electron tries to persist GTK theme settings via dconf over D-Bus, which
 // doesn't exist in most CI containers. Forcing an in-memory GSettings backend stops it
 // from trying.
@@ -29,12 +31,7 @@ export default defineConfig({
     //
     experimentalRunAllSpecs: true,
     supportFile: 'tests/cypress/support/e2e.ts',
-    // E2E_SUITE=smoke runs only the real Indigo login specs (see tests/cypress/smoke), which need
-    // a deployment whose redirect URI is registered with Indigo
-    specPattern:
-      process.env.E2E_SUITE === 'smoke'
-        ? ['tests/cypress/smoke/**/*.cy.{js,jsx,ts,tsx}']
-        : ['tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}'],
+    specPattern: [`${e2eTestsDir}/**/*.cy.{js,jsx,ts,tsx}`],
     setupNodeEvents(on, config) {
       // Mode 'cypress' leaves the app's extra auth-callback.html page out of the build config
       // (see vite.config.mjs), as each spec has to be bundled as the only input

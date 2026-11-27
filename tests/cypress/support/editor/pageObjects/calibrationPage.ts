@@ -1,3 +1,4 @@
+import { BACKEND_TIMEOUT } from '../editorActions';
 import { enter, section } from '../fields';
 import type { PageObject } from '../types';
 
@@ -15,7 +16,8 @@ export const calibrationPage: PageObject = {
     }
   },
   verify: ({ calibration }) => {
-    cy.findByRole('textbox', { name: 'Starting Calibrator' }).should(
+    // The app gets the calibrator from oso-services, which can be slow under parallel CI load
+    cy.findByRole('textbox', { name: 'Starting Calibrator', timeout: BACKEND_TIMEOUT }).should(
       'have.value',
       calibration.calibrator
     );
