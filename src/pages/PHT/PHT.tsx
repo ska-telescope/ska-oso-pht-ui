@@ -47,7 +47,7 @@ import CalibrationPage from '../CalibrationPage/CalibrationPage';
 import LinkingPage from '../LinkingPage/LinkingPage';
 import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
 import Notification from '@/utils/types/notification';
-import PutProposal from '@/services/axios/put/putProposal/putProposal';
+import { saveValuesToOda } from '@/models/proposals/useProposalOda';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
@@ -202,7 +202,7 @@ export default function PHT({
     if (isProposalPageTransition) {
       const values = getValues();
       void (async () => {
-        const { error } = await PutProposal(values, PROPOSAL_STATUS.DRAFT);
+        const { error } = await saveValuesToOda(values, PROPOSAL_STATUS.DRAFT);
         if (error) {
           notifyError(error);
         }

@@ -3,7 +3,7 @@ import { FREQUENCY_UNITS, BAND_LOW_STR } from '@utils/constants.ts';
 import { AxiosError, type AxiosResponse } from 'axios';
 import { UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import {
-  GetProposalPdm,
+  GetProposal,
   getInvestigators,
   getScienceCategory,
   getBandwidth,
@@ -20,31 +20,31 @@ vi.mock('@/generated', async (importOriginal) => ({
   })
 }));
 
-describe('GetProposalPdm', () => {
+describe('GetProposal', () => {
   beforeEach(() => {
     mockGetProposal.mockReset();
   });
 
   test('fetches the proposal by ID and returns the unmapped PDM', async () => {
     mockGetProposal.mockResolvedValue({ data: MockProposalBackend });
-    const result = await GetProposalPdm(MockProposalBackend.prsl_id as string);
+    const result = await GetProposal(MockProposalBackend.prsl_id as string);
     expect(mockGetProposal).toHaveBeenCalledExactlyOnceWith(MockProposalBackend.prsl_id);
     expect(result).toEqual({ data: MockProposalBackend });
   });
 
   test('returns the standard error when the API returns no data', async () => {
     mockGetProposal.mockResolvedValue(undefined);
-    await expect(GetProposalPdm('prsl-1')).resolves.toEqual({ error: UNKNOWN_API_ERROR });
+    await expect(GetProposal('prsl-1')).resolves.toEqual({ error: UNKNOWN_API_ERROR });
   });
 
   test('returns the error message when the request fails', async () => {
     mockGetProposal.mockRejectedValue(new Error('Network Error'));
-    await expect(GetProposalPdm('prsl-1')).resolves.toEqual({ error: 'Network Error' });
+    await expect(GetProposal('prsl-1')).resolves.toEqual({ error: 'Network Error' });
   });
 
   test('returns the standard error when something other than an Error is thrown', async () => {
     mockGetProposal.mockRejectedValue({ unexpected: 'object' });
-    await expect(GetProposalPdm('prsl-1')).resolves.toEqual({ error: UNKNOWN_API_ERROR });
+    await expect(GetProposal('prsl-1')).resolves.toEqual({ error: UNKNOWN_API_ERROR });
   });
 
   test('returns the server error from a failed request', async () => {
@@ -54,7 +54,7 @@ describe('GetProposalPdm', () => {
         data: { title: 'Internal Server Error', detail: 'ODA unavailable' }
       } as AxiosResponse)
     );
-    await expect(GetProposalPdm('prsl-1')).resolves.toEqual({
+    await expect(GetProposal('prsl-1')).resolves.toEqual({
       error: 'Internal Server Error: ODA unavailable'
     });
   });

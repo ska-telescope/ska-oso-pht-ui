@@ -1,16 +1,13 @@
 import { describe, test, expect } from 'vitest';
-import { mapFormToPdm, mapPdmToForm } from '@/models/proposals/pdmMapper';
 import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
 import { referenceCoordinateToPdm } from '@/models/proposals/targets';
-import type { ProposalType } from '@/models/proposals/proposal';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import '@testing-library/jest-dom';
 import {
   PROPOSAL_STATUS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  PROPOSAL_SUBTYPE,
-  PROPOSAL_TYPE
+  REFERENCE_COORDINATE_TYPE_ICRS
 } from '@utils/constants.ts';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 import PutProposal from './putProposal.tsx';
@@ -26,8 +23,8 @@ vi.mock('@/generated', async (importOriginal) => ({
   })
 }));
 
-// The form holding the proposal being saved
-const formSlices = mapPdmToForm(MockProposalBackend);
+// The proposal being saved
+const pdm = MockProposalBackend as ProposalPDM;
 
 describe('PutProposal Service', () => {
   afterEach(() => {
@@ -40,37 +37,30 @@ describe('PutProposal Service', () => {
 
   test('returns data from API', async () => {
     mockUpdateProposal.mockResolvedValue({ data: MockProposalBackend });
-    const result = await PutProposal(formSlices, PROPOSAL_STATUS.DRAFT);
+    const result = await PutProposal(pdm, PROPOSAL_STATUS.DRAFT);
     expect(result).to.deep.equal({ data: MockProposalBackend });
   });
 
   test('saves a draft by default', async () => {
     mockUpdateProposal.mockResolvedValue({ data: MockProposalBackend });
-    await PutProposal(formSlices);
+    await PutProposal(pdm);
     expect(mockUpdateProposal).toHaveBeenCalledWith(
-      formSlices.prslId,
+      pdm.prsl_id,
       expect.objectContaining({ status: PROPOSAL_STATUS.DRAFT })
     );
   });
 
   test.each([PROPOSAL_STATUS.DRAFT, PROPOSAL_STATUS.SUBMITTED])(
-    'sends the form values with the save metadata for %s',
+    'sends the PDM with the save metadata for %s',
     async (status) => {
       vi.useFakeTimers({ toFake: ['Date'] });
       mockUpdateProposal.mockResolvedValue({ data: MockProposalBackend });
-      const form: ProposalType = {
-        ...formSlices,
-        title: 'Title from RHF',
-        proposalType: { type: PROPOSAL_TYPE.KEY_SCIENCE, subTypes: [PROPOSAL_SUBTYPE.JOINT] },
-        abstract: 'Abstract from RHF',
-        scienceCategory: 7
-      };
       const submitted = status === PROPOSAL_STATUS.SUBMITTED;
 
-      await PutProposal(form, status);
+      await PutProposal(pdm, status);
 
-      expect(mockUpdateProposal).toHaveBeenCalledExactlyOnceWith(form.prslId, {
-        ...mapFormToPdm(form),
+      expect(mockUpdateProposal).toHaveBeenCalledExactlyOnceWith(pdm.prsl_id, {
+        ...pdm,
         status,
         submitted_on: submitted ? new Date().toISOString() : null,
         submitted_by: submitted ? getUserId() : ''
@@ -78,10 +68,13 @@ describe('PutProposal Service', () => {
     }
   );
 
-  test('sends an empty title from the form', async () => {
+  test('sends an empty title', async () => {
     mockUpdateProposal.mockResolvedValue({ data: MockProposalBackend });
 
-    await PutProposal({ ...formSlices, title: '' }, PROPOSAL_STATUS.DRAFT);
+    await PutProposal(
+      { ...pdm, proposal_info: { ...pdm.proposal_info, title: '' } },
+      PROPOSAL_STATUS.DRAFT
+    );
 
     expect(mockUpdateProposal).toHaveBeenCalledWith(
       expect.any(String),
@@ -93,7 +86,7 @@ describe('PutProposal Service', () => {
 
   test('returns error message on API failure', async () => {
     mockUpdateProposal.mockRejectedValue(new Error('Network Error'));
-    const result = await PutProposal(formSlices, PROPOSAL_STATUS.DRAFT);
+    const result = await PutProposal(pdm, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
@@ -101,25 +94,25 @@ describe('PutProposal Service', () => {
     const axiosError = new AxiosError('Request failed with status code 500');
     axiosError.response = { status: 500 } as AxiosError['response'];
     mockUpdateProposal.mockRejectedValue(axiosError);
-    const result = await PutProposal(formSlices, PROPOSAL_STATUS.DRAFT);
+    const result = await PutProposal(pdm, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'Server responded with an error: 500' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     mockUpdateProposal.mockRejectedValue({ unexpected: 'object' });
-    const result = await PutProposal(formSlices, PROPOSAL_STATUS.DRAFT);
+    const result = await PutProposal(pdm, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     mockUpdateProposal.mockResolvedValue(undefined);
-    const result = await PutProposal(formSlices, PROPOSAL_STATUS.DRAFT);
+    const result = await PutProposal(pdm, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     mockUpdateProposal.mockResolvedValue(null);
-    const result = await PutProposal(formSlices, PROPOSAL_STATUS.DRAFT);
+    const result = await PutProposal(pdm, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });

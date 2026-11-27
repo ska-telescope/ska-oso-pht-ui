@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { PROPOSAL_TYPE } from '@utils/constants.ts';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getProposalSubTypesSchema, getProposalTypeSchema, ProposalType } from './proposal';
 import { titleFromPdm, titleToPdm } from './title';
 import { detailsFromPdm, detailsToPdm } from './details';
@@ -18,7 +17,7 @@ import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
  * as it is, so a proposal without it fails to load; what the PDM makes optional gets the form's
  * default.
  */
-export function mapPdmToForm(pdm: ProposalBackend): ProposalType {
+export function mapPdmToForm(pdm: ProposalPDM): ProposalType {
   const { proposal_info: proposalInfo, observation_info: observationInfo } = pdm;
   return {
     prslId: z.string().parse(pdm.prsl_id),

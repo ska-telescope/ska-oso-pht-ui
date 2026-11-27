@@ -184,7 +184,7 @@ export default function LandingPage() {
   const cloneIconClicked = (id: string) => openProposal(id, () => setOpenCloneDialog(true));
 
   // The clone is made from the original, which getTheProposal loaded into the form. It keeps the
-  // original's content and links; PostProposal leaves out the links' sensitivity results, which
+  // original's content and links; createInOda leaves out the links' sensitivity results, which
   // are stale for the new proposal.
   const createProposal = async () => {
     notifyWarning(t('addProposal.warning'));

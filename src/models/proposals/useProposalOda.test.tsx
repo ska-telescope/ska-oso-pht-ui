@@ -2,8 +2,13 @@ import React from 'react';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { PROPOSAL_STATUS, PROPOSAL_TYPE, SENSITIVITY_STATE } from '@utils/constants.ts';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+import {
+  PROPOSAL_STATUS,
+  PROPOSAL_TYPE,
+  SENSITIVITY_STATE,
+  TEAM_STATUS_TYPE_OPTIONS
+} from '@utils/constants.ts';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
@@ -42,7 +47,7 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({ osdPolicies: mockOsdPolicies.current })
 }));
 
-const pdm = MockProposalBackend as ProposalBackend;
+const pdm = MockProposalBackend as ProposalPDM;
 const investigator = MockUserFrontendList[0];
 
 const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) => {
@@ -356,7 +361,7 @@ describe('useProposalOda', () => {
     'saves edited details when an investigator organization is %s',
     async (organization) => {
       const proposalId = 'prp-1';
-      const withInvestigator: ProposalBackend = {
+      const withInvestigator: ProposalPDM = {
         ...pdm,
         prsl_id: proposalId,
         proposal_info: {
@@ -413,7 +418,7 @@ describe('useProposalOda', () => {
     'saves edits outside Team when investigator names and email are %s and flags are omitted',
     async (value) => {
       const proposalId = 'prp-1';
-      const withInvestigator: ProposalBackend = {
+      const withInvestigator: ProposalPDM = {
         ...pdm,
         prsl_id: proposalId,
         proposal_info: {
@@ -483,7 +488,7 @@ describe('useProposalOda', () => {
       for_phd: false,
       principal_investigator: true
     };
-    const withTeam: ProposalBackend = {
+    const withTeam: ProposalPDM = {
       ...pdm,
       proposal_info: {
         ...pdm.proposal_info,
@@ -526,6 +531,18 @@ describe('useProposalOda', () => {
     expect(form.current.getValues('investigators')?.[0]).not.toHaveProperty('affiliation');
   });
 
+  test('Save to ODA returns a mapping error without saving', async () => {
+    const { form, oda } = renderWithForm();
+    act(() => {
+      form.current.setValue('proposalType', { type: null, subTypes: [] });
+    });
+
+    const result = await oda.current.saveToOda();
+
+    expect(result.error).toEqual(expect.any(String));
+    expect(mockPut).not.toHaveBeenCalled();
+  });
+
   test('Save to ODA returns API errors', async () => {
     mockPut.mockRejectedValue(new Error('Save failed'));
     const { oda } = renderWithForm('Edited title');
@@ -542,7 +559,7 @@ describe('useProposalOda', () => {
       status: 'Accepted',
       principal_investigator: true
     };
-    const created: ProposalBackend = {
+    const created: ProposalPDM = {
       ...pdm,
       prsl_id: 'prsl-new',
       proposal_info: { ...pdm.proposal_info, investigators: [backendPi] }
@@ -570,6 +587,68 @@ describe('useProposalOda', () => {
       expect(form.current.getValues('investigators')).toEqual([
         expect.objectContaining({ id: backendPi.user_id, pi: true })
       ]);
+    });
+
+    test('keeps the links but not their stale sensitivity results', async () => {
+      expect(pdm.observation_info.result_details?.some((link) => link.result)).toBe(true);
+      mockCreate.mockResolvedValue({ data: created });
+      const { form, oda } = renderWithForm();
+      const values = form.current.getValues();
+      expect(values.targetObservation.length).toBeGreaterThan(0);
+
+      await act(async () => {
+        await oda.current.createInOda(values);
+      });
+
+      const links: NonNullable<ProposalPDM['observation_info']['result_details']> =
+        mockCreate.mock.calls[0][0].observation_info.result_details ?? [];
+      expect(
+        links.map(({ target_ref, observation_set_ref, data_product_ref }) => [
+          target_ref,
+          observation_set_ref,
+          data_product_ref
+        ])
+      ).toEqual(
+        values.targetObservation.map((link) => [
+          link.targetId,
+          link.observationId,
+          link.dataProductsSDPId
+        ])
+      );
+      expect(links.every((link) => link.result === null)).toBe(true);
+    });
+
+    test('sends every investigator as pending, as invitations to the new proposal start afresh', async () => {
+      mockCreate.mockResolvedValue({ data: created });
+      const { form, oda } = renderWithForm();
+      const accepted = { ...investigator, status: TEAM_STATUS_TYPE_OPTIONS.accepted };
+
+      await act(async () => {
+        await oda.current.createInOda({ ...form.current.getValues(), investigators: [accepted] });
+      });
+
+      expect(mockCreate.mock.calls[0][0].proposal_info.investigators).toEqual([
+        expect.objectContaining({
+          user_id: accepted.id,
+          status: TEAM_STATUS_TYPE_OPTIONS.pending
+        })
+      ]);
+    });
+
+    test('returns a mapping error without creating', async () => {
+      const { form, oda } = renderWithForm('Unsaved title');
+
+      let result: Awaited<ReturnType<typeof oda.current.createInOda>> | undefined;
+      await act(async () => {
+        result = await oda.current.createInOda({
+          ...form.current.getValues(),
+          proposalType: { type: null, subTypes: [] }
+        });
+      });
+
+      expect(result?.error).toEqual(expect.any(String));
+      expect(mockCreate).not.toHaveBeenCalled();
+      expect(form.current.getValues('title')).toBe('Unsaved title');
     });
 
     test('refreshes the token after the create and before returning', async () => {

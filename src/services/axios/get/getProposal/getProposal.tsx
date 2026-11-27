@@ -1,4 +1,3 @@
-import { ProposalBackend } from '@utils/types/proposal.tsx';
 import Observation from '@utils/types/observation.tsx';
 import Supplied from '@utils/types/supplied.tsx';
 import {
@@ -30,6 +29,7 @@ import type {
   SpectralLineSetup,
   Supplied as SuppliedTransport
 } from '@/generated/models';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { PPTAPIProposalPreparationApiFactory } from '@/generated';
 
 export const getInvestigators = (inValue: InvestigatorBackend[] | null | undefined) => {
@@ -202,7 +202,7 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
 };
 
 /** Fetches the proposal from the ODA in its PDM shape, without mapping it. */
-export async function GetProposalPdm(id: string): Promise<ApiResult<ProposalBackend>> {
+export async function GetProposal(id: string): Promise<ApiResult<ProposalPDM>> {
   try {
     const result =
       await PPTAPIProposalPreparationApiFactory(

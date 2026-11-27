@@ -5,7 +5,7 @@ import { StoreProvider } from '@utils/storage/store';
 import { MemoryRouter } from 'react-router';
 import PHT from './PHT';
 import { NAV, PATH, PMT, PROPOSAL_STATUS, SENSITIVITY_STATE } from '@/utils/constants';
-import PutProposal from '@/services/axios/put/putProposal/putProposal';
+import { saveValuesToOda } from '@/models/proposals/useProposalOda';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
@@ -47,8 +47,9 @@ vi.mock('@utils/storage/store', () => ({
   }
 }));
 
-vi.mock('@/services/axios/put/putProposal/putProposal', () => ({
-  default: vi.fn().mockResolvedValue({ data: { id: 'prp-123' } })
+vi.mock('@/models/proposals/useProposalOda', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/models/proposals/useProposalOda')>()),
+  saveValuesToOda: vi.fn().mockResolvedValue({ data: { id: 'prp-123' } })
 }));
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
@@ -213,7 +214,7 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith(
+      expect(saveValuesToOda).toHaveBeenCalledWith(
         {
           prslId: 'prp-123',
           cycle: '',
@@ -245,7 +246,7 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith(
+      expect(saveValuesToOda).toHaveBeenCalledWith(
         {
           prslId: 'prp-123',
           cycle: '',
@@ -279,7 +280,7 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     expect(currentForm().getValues()).toEqual(proposalForm.getProposalFormDefaults());
-    expect(PutProposal).not.toHaveBeenCalled();
+    expect(saveValuesToOda).not.toHaveBeenCalled();
   });
 
   test('keeps the proposal open when moving between editor pages', () => {
@@ -307,7 +308,7 @@ describe('<PHT />', () => {
       rerenderPHT();
 
       await waitFor(() => {
-        expect(PutProposal).toHaveBeenCalledWith(
+        expect(saveValuesToOda).toHaveBeenCalledWith(
           expect.objectContaining({ prslId: 'prp-123', abstract }),
           PROPOSAL_STATUS.DRAFT
         );
