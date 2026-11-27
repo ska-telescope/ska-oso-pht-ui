@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import Visualization from './visualization';
-import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
+import { getVisibilitySvg } from '@/services/api/visibility';
 
 // Mock async API call
-vi.mock('@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx', () => ({
-  default: vi.fn()
+vi.mock('@/services/api/visibility', () => ({
+  getVisibilitySvg: vi.fn()
 }));
 
 // Mock translation hook
@@ -32,7 +32,7 @@ describe('Visualization', () => {
   };
 
   it('shows loading placeholder while fetching', () => {
-    (GetVisibility as any).mockResolvedValue({ data: '<svg>test</svg>' });
+    vi.mocked(getVisibilitySvg).mockResolvedValue({ data: '<svg>test</svg>' });
 
     render(<Visualization target={mockTarget} show={true} />);
 
@@ -40,7 +40,7 @@ describe('Visualization', () => {
   });
 
   it('renders SVG once loaded', async () => {
-    (GetVisibility as any).mockResolvedValue({ data: '<svg>test</svg>' });
+    vi.mocked(getVisibilitySvg).mockResolvedValue({ data: '<svg>test</svg>' });
 
     render(<Visualization target={mockTarget} show={true} />);
 

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import { MockPanelDecisionFrontend } from '@services/axios/post/postPanelDecision/mockPanelDecisionFrontend.tsx';
 import { mappingPanelDecisionBackendToFrontend } from '@services/axios/put/putPanelDecision/putPanelDecision.tsx';
 import { MockPanelDecisionBackend } from '@services/axios/post/postPanelDecision/mockPanelDecisionBackend.tsx';
-import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 import { PanelDecision } from '@utils/types/panelDecision.tsx';
 import getPanelDecision from './getPanelDecision.tsx';
 

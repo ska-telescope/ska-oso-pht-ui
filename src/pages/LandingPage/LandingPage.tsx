@@ -43,7 +43,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { isSVPolicy, useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ObservatoryPolicy } from '@/utils/types/observatoryData';
 import { useHelp } from '@/utils/help/useHelp';
-import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
+import { useOSDAPI } from '@/utils/osd/useOSDAPI/useOSDAPI';
 import TableSubmissions from '@/components/table/tableSubmissions/TableSubmissions';
 import SensCalcButton from '@/components/button/SensCalc/SensCalc';
 

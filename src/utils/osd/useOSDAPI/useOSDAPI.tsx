@@ -1,12 +1,10 @@
 import { storageObject } from '@utils/storage/store';
 import { useState, useEffect } from 'react';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import ObservatoryData from '@/utils/types/observatoryData';
-import GetOSDCycles from '../../get/getObservatoryData/getOSDCycles';
+import { getCycles } from '@/services/api/osd';
 
 export const useOSDAPI = (setAxiosError: (error: string) => void, enabled: boolean) => {
   const { application, updateAppContent3 } = storageObject.useStore();
-  const { axiosClient: authClient } = useAxiosAuthClient();
 
   const [osdData, setOsdData] = useState<ObservatoryData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,13 +29,12 @@ export const useOSDAPI = (setAxiosError: (error: string) => void, enabled: boole
 
     const fetchObservatoryData = async () => {
       try {
-        // const response = await GetObservatoryData(authClient, SV_LOW_AA2_CYCLE_NUMBER); // use this call to only use 1 cycle
-        const response = await GetOSDCycles(authClient); // use this call to get all cycles
-        if (typeof response === 'string' || (response && (response as any).error)) {
-          setAxiosError(response.toString());
-        } else if (isObservatoryData(response)) {
-          updateAppContent3(response);
-          setOsdData(response);
+        const { data, error } = await getCycles();
+        if (error) {
+          setAxiosError(error);
+        } else if (isObservatoryData(data)) {
+          updateAppContent3(data);
+          setOsdData(data);
         } else {
           setAxiosError('Invalid observatory data format received.');
         }

@@ -18,7 +18,7 @@ import type { TargetObservationLink } from './targetObservation';
 import { getProposalSubmitSchema, getSubmitPageStatuses } from './submit';
 import { DATA_PRODUCT_KIND, DataProductInput, newDataProduct } from './dataProducts';
 import { newSvObservation, OBSERVING_MODE, type ObservationInput } from './observations';
-import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 
 const osd = MockObservatoryDataFrontend.capabilities;
 

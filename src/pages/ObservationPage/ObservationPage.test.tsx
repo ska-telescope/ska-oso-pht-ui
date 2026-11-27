@@ -37,7 +37,7 @@ const lowObservation = () => newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
 const mockOSD = vi.hoisted(() => ({ maxObservations: 1 }));
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
   const { MockObservatoryDataFrontend } =
-    await import('@services/axios/get/getObservatoryData/mockObservatoryDataFrontend');
+    await import('@/utils/osd/testing/mockObservatoryDataFrontend');
   return {
     useOSDAccessors: () => ({
       autoLink: true,

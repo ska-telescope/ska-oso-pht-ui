@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import Target from '@/utils/types/target';
-import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
+import { getVisibilitySvg } from '@/services/api/visibility';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface VisualizationProps {
@@ -32,13 +32,7 @@ export default function Visualization({ target, show }: VisualizationProps) {
     ) {
       setVisibilitySVG(null); // reset while loading
 
-      GetVisibility(ra, dec, 'LOW').then((response) => {
-        if (response && typeof response === 'object' && 'data' in response) {
-          setVisibilitySVG(response.data);
-        } else {
-          setVisibilitySVG(null);
-        }
-      });
+      getVisibilitySvg(ra, dec, 'LOW').then(({ data }) => setVisibilitySVG(data ?? null));
     }
   }, [target, show]);
 

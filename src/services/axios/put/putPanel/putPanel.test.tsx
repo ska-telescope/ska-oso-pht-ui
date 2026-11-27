@@ -11,7 +11,7 @@ import {
   MockPanelBackendWithProposals,
   MockPanelBackendWithReviewers
 } from './mockPanelBackend';
-import { MockObservatoryDataFrontend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 import { PanelBackend } from '@/utils/types/panel';
 
 const cycleId = MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId;

@@ -3,6 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { useOSDAPI } from './useOSDAPI';
 import ObservatoryData from '@/utils/types/observatoryData';
 import { SA_AA2 } from '@/utils/constants';
+import { getCycles } from '@/services/api/osd';
 
 const mockCapabilities: ObservatoryData['capabilities'] = {
   low: {
@@ -119,12 +120,8 @@ vi.mock('@utils/storage/store', () => ({
   }
 }));
 
-vi.mock('../../axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: 'mock-auth-client', refreshAuthToken: vi.fn() })
-}));
-
-vi.mock('../../get/getObservatoryData/getOSDCycles', () => ({
-  default: vi.fn(() => Promise.resolve(mockObservatoryData))
+vi.mock('@/services/api/osd', () => ({
+  getCycles: vi.fn(() => Promise.resolve({ data: mockObservatoryData }))
 }));
 
 describe('useOSDAPI hook', () => {
@@ -146,10 +143,7 @@ describe('useOSDAPI hook', () => {
 
   it('handles invalid response format', async () => {
     const mockErrorSetter = vi.fn();
-    const getObservatoryData = await import('../../get/getObservatoryData/getOSDCycles');
-    (getObservatoryData.default as any).mockImplementationOnce(() =>
-      Promise.resolve({ invalid: true })
-    );
+    vi.mocked(getCycles).mockResolvedValueOnce({ data: { invalid: true } as any });
 
     const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
 
@@ -163,10 +157,7 @@ describe('useOSDAPI hook', () => {
 
   it('handles fetch error', async () => {
     const mockErrorSetter = vi.fn();
-    const getObservatoryData = await import('../../get/getObservatoryData/getOSDCycles');
-    (getObservatoryData.default as any).mockImplementationOnce(() =>
-      Promise.reject(new Error('Network error'))
-    );
+    vi.mocked(getCycles).mockRejectedValueOnce(new Error('Network error'));
 
     const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
 
@@ -176,5 +167,19 @@ describe('useOSDAPI hook', () => {
 
     expect(result.current.osdData).toBeNull();
     expect(mockErrorSetter).toHaveBeenCalledWith('Network error');
+  });
+
+  it('passes on the error from the request', async () => {
+    const mockErrorSetter = vi.fn();
+    vi.mocked(getCycles).mockResolvedValueOnce({ error: 'Server not reachable' });
+
+    const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.osdData).toBeNull();
+    expect(mockErrorSetter).toHaveBeenCalledWith('Server not reachable');
   });
 });

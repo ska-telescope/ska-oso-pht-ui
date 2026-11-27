@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 import { PanelDecision } from '@utils/types/panelDecision.tsx';
 import getPanelDecisionList, { mappingList } from './getPanelDecisionList.tsx';
 import { MockPanelDecisionFrontendList } from './mockPanelDecisionFrontendList.tsx';

@@ -1,5 +1,5 @@
 import { isAxiosError, isCancel } from 'axios';
-import axiosClient from '@/services/axios/axiosClient/axiosClient';
+import { publicAxios } from '@/services/api/client';
 import { SKA_SENSITIVITY_CALCULATOR_API_URL } from '@/utils/constants';
 
 export const SENS_CALC_ERROR_KIND = {
@@ -45,7 +45,7 @@ export const post = async <Res>(
   options: SensCalcRequestOptions = {}
 ): Promise<SensCalcSuccess<Res> | SensCalcError> => {
   try {
-    const response = await axiosClient.post(`${SKA_SENSITIVITY_CALCULATOR_API_URL}${path}`, body, {
+    const response = await publicAxios.post(`${SKA_SENSITIVITY_CALCULATOR_API_URL}${path}`, body, {
       signal: options.signal
     });
     return { ok: true, data: response.data };

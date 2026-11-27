@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { PstMode } from '@/generated/models';
 import { BAND_1_STR, BAND_LOW_STR, SA_AA2 } from '@/utils/constants';
-import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
 import type { ProposalFormAccess, ProposalType } from './proposal';
 import { getProposalFormDefaults } from './useProposalForm';

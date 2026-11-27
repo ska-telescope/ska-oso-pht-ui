@@ -10,7 +10,7 @@ import {
   SA_AA_STAR,
   SA_CUSTOM
 } from '@/utils/constants';
-import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 import phtTranslations from '@/locales/en/pht.json';
 import {
   observingModesFor,

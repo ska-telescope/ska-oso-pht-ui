@@ -1,14 +1,4 @@
-import {
-  SA_AA2,
-  SA_AA_STAR,
-  OSO_SERVICES_PROPOSAL_PATH,
-  SKA_OSO_SERVICES_URL,
-  BAND_LOW_STR,
-  BAND_5B_STR,
-  BAND_1_STR
-} from '@utils/constants.ts';
-import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
-import { MockODTConfigurationBackend } from './mockODTConfigurationBackend.tsx';
+import { SA_AA2, SA_AA_STAR, BAND_LOW_STR, BAND_5B_STR, BAND_1_STR } from '@utils/constants.ts';
 import {
   ObservatoryDataBackend,
   ObservatoryData,
@@ -25,8 +15,6 @@ import {
 import { ODTConfigurationBackend } from '@utils/types/odtConfiguration.tsx';
 import { generateId } from '@/utils/helpers';
 
-/*****************************************************************************************************************************/
-
 export const toLowerCaseArray = (value: unknown): string[] => {
   const values = Array.isArray(value) ? value : [value];
   return values.filter((item) => typeof item === 'string').map((item) => item.toLowerCase());
@@ -37,6 +25,10 @@ export const toLowerCaseArray = (value: unknown): string[] => {
 // pickArrayAssemblyData below for the equivalent normalisation on the capabilities side).
 const normalizeArrayAssembly = (value: string): string => (value === 'aa2_sv' ? SA_AA2 : value);
 
+/**
+ * Maps the OSD cycles, with the ODT configuration, to the app's observatory data: a policy per
+ * cycle, and the capabilities merged across the cycles.
+ */
 export const osdMapping = (
   inData: ObservatoryDataBackend[],
   odtConfig: ODTConfigurationBackend
@@ -95,7 +87,7 @@ export const osdMapping = (
   // rather than assuming the key, but keep tagging the resulting entry as SA_AA2: that tag is
   // this app's internal "primary/default subarray slot" identifier, used throughout the UI to
   // look up the default subarray regardless of which real array_assembly backs it.
-  const pickArrayAssemblyData = <T,>(section?: Record<string, T>): T | undefined => {
+  const pickArrayAssemblyData = <T>(section?: Record<string, T>): T | undefined => {
     if (!section) return undefined;
     const key = Object.keys(section).find((k) => k !== 'basic_capabilities' && section[k] != null);
     return key ? section[key] : undefined;
@@ -270,34 +262,3 @@ export const osdMapping = (
 
   return result;
 };
-
-async function GetOSDCycles(authAxiosClient: AxiosAuthClient): Promise<string | ObservatoryData> {
-  try {
-    // TODO: The OSD related endpoints will be consolidated in oso-services in the future after
-    //   which we should not need to retrieve data from two different endpoints anymore
-    const [cyclesResult, odtResult] = await Promise.allSettled([
-      authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/osd/cycles`),
-      authAxiosClient.get(`${SKA_OSO_SERVICES_URL}/odt/configuration`)
-    ]);
-
-    const cyclesData =
-      cyclesResult.status === 'fulfilled'
-        ? (cyclesResult.value?.data as ObservatoryDataBackend[] | undefined)
-        : undefined;
-    if (!cyclesData) return 'error.API_UNKNOWN_ERROR';
-
-    const odtConfig: ODTConfigurationBackend =
-      odtResult.status === 'fulfilled' && odtResult.value?.data
-        ? (odtResult.value.data as ODTConfigurationBackend)
-        : MockODTConfigurationBackend;
-
-    return osdMapping(cyclesData.reverse(), odtConfig); // reverse to display LOW AA2 first
-  } catch (e) {
-    if (e instanceof Error) {
-      return e.message;
-    }
-    return 'error.API_UNKNOWN_ERROR';
-  }
-}
-
-export default GetOSDCycles;

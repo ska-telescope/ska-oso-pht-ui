@@ -13,7 +13,7 @@ import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observation
 
 vi.mock('../osd/useOSDAccessors/useOSDAccessors', async () => {
   const { MockObservatoryDataFrontend } =
-    await import('@services/axios/get/getObservatoryData/mockObservatoryDataFrontend');
+    await import('@/utils/osd/testing/mockObservatoryDataFrontend');
   return {
     useOSDAccessors: () => ({
       osdLOW: MockObservatoryDataFrontend.capabilities.low,

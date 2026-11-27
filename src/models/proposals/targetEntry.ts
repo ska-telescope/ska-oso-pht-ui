@@ -20,6 +20,7 @@ import {
   ValueError
 } from '@/utils/validation/validation';
 import type Target from '@/utils/types/target';
+import type { ICRSCoordinates, Target as TargetPDM } from '@/generated/models';
 import phtTranslations from '@/locales/en/pht.json';
 import { getTargetSchema } from './targets';
 
@@ -234,4 +235,36 @@ export const applyTargetEdit = (
     edited.vel = '';
   }
   return edited;
+};
+
+/**
+ * The entry fields set from a target resolved by name: its coordinates, and its velocity or
+ * redshift (a redshift when the resolvers give a non-zero one, otherwise the velocity, if any).
+ * Throws when the target has no coordinates.
+ */
+export const resolvedTargetFieldsFromPdm = (target: TargetPDM): Partial<TargetEntryType> => {
+  const coordinate = target.reference_coordinate;
+  if (!coordinate) {
+    throw new Error('The resolved target has no coordinates');
+  }
+  // Any coordinates other than galactic are read as equatorial (ICRS)
+  const coordinates =
+    coordinate.kind === 'galactic'
+      ? { l: coordinate.l, b: coordinate.b }
+      : {
+          raStr: (coordinate as ICRSCoordinates).ra_str as string,
+          decStr: (coordinate as ICRSCoordinates).dec_str as string
+        };
+
+  const velocity = target.radial_velocity?.quantity?.value;
+  const redshift = target.radial_velocity?.redshift;
+  const radialMotion = redshift
+    ? { velType: VELOCITY_TYPE.REDSHIFT, redshift: String(redshift), vel: '' }
+    : {
+        velType: VELOCITY_TYPE.VELOCITY,
+        vel: velocity != null ? String(velocity) : '',
+        redshift: ''
+      };
+
+  return { ...coordinates, ...radialMotion } as Partial<TargetEntryType>;
 };

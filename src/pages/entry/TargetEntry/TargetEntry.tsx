@@ -8,10 +8,11 @@ import {
   useWatch
 } from 'react-hook-form';
 import { BorderedSection, Progress } from '@ska-telescope/ska-gui-components';
-import GetCoordinates, {
+import {
+  resolveCoordinates,
   RESOLVE_ERROR_UNKNOWN,
   ResolveError
-} from '@services/axios/get/getCoordinates/getCoordinates';
+} from '@/services/api/coordinates';
 import { generateTargetId } from '@utils/helpers.ts';
 import AddButton from '@/components/button/Add/Add';
 import CancelButton from '@/components/button/Cancel/Cancel';
@@ -106,7 +107,7 @@ export default function TargetEntry({
 
   /**
    * Invalidates any pending coordinate-resolution response so it can't overwrite newer edits when
-   * it arrives - the underlying GetCoordinates request itself is not aborted. Any edit does this.
+   * it arrives - the underlying resolveCoordinates request itself is not aborted. Any edit does this.
    */
   const invalidatePendingResolve = () => {
     resolveRevisionRef.current += 1;
@@ -285,39 +286,20 @@ export default function TargetEntry({
     /**
      * Applies a coordinate-resolve response to the form, unless it's been superseded.
      */
-    const processCoordinatesResults = (response: any, requestRevision: number) => {
+    const processCoordinatesResults = (
+      response: Awaited<ReturnType<typeof resolveCoordinates>>,
+      requestRevision: number
+    ) => {
       if (resolveRevisionRef.current !== requestRevision) {
         return;
       }
 
-      if (response && !response.error) {
+      if (response.data) {
         invalidatePendingResolve();
-        if (response.reference_coordinate.kind === 'galactic') {
-          setEntryValues({
-            l: response.reference_coordinate.l,
-            b: response.reference_coordinate.b
-          });
-        } else {
-          setEntryValues({
-            raStr: response.reference_coordinate.ra_str,
-            decStr: response.reference_coordinate.dec_str
-          });
-        }
-
-        const velocity = response.radial_velocity?.quantity?.value;
-        const redshift = response.radial_velocity?.redshift;
-
-        if (redshift && redshift !== 0) {
-          setEntryValues({ velType: VELOCITY_TYPE.REDSHIFT, redshift: String(redshift), vel: '' });
-        } else {
-          setEntryValues({
-            velType: VELOCITY_TYPE.VELOCITY,
-            vel: velocity != null ? String(velocity) : '',
-            redshift: ''
-          });
-        }
+        // The coordinates, then the velocity or redshift
+        setEntryValues(response.data);
       } else {
-        showResolveError(response);
+        showResolveError(response as ResolveError);
       }
     };
 
@@ -332,7 +314,7 @@ export default function TargetEntry({
       setResolutionLoading(true);
 
       try {
-        const response = await GetCoordinates(requestName, kind);
+        const response = await resolveCoordinates(requestName, kind);
         processCoordinatesResults(response, requestRevision);
       } catch {
         if (resolveRevisionRef.current === requestRevision) {

@@ -83,7 +83,7 @@ vi.mock('@/utils/help/useHelp', () => ({
   useHelp: () => ({ setHelp: vi.fn() })
 }));
 
-vi.mock('@/services/axios/use/useOSDAPI/useOSDAPI', () => ({
+vi.mock('@/utils/osd/useOSDAPI/useOSDAPI', () => ({
   useOSDAPI: vi.fn()
 }));
 

@@ -10,7 +10,7 @@ import TargetEntry from './TargetEntry';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
-import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
+import { resolveCoordinates } from '@/services/api/coordinates';
 import phtTranslations from '@/locales/en/pht.json';
 
 // Exposes the global form, which holds the entry and the targets
@@ -51,8 +51,8 @@ vi.mock('@/utils/autoLinking/AutoLinking', () => ({
   linkTarget: vi.fn()
 }));
 
-vi.mock('@services/axios/get/getCoordinates/getCoordinates', () => ({
-  default: vi.fn(),
+vi.mock('@/services/api/coordinates', () => ({
+  resolveCoordinates: vi.fn(),
   RESOLVE_ERROR_UNKNOWN: 'API_UNKNOWN_ERROR'
 }));
 
@@ -204,7 +204,7 @@ describe('<TargetEntry /> resolving and clearing', { timeout: 10000 }, () => {
   });
 
   it('shows a loading state and disables editing and clearing while coordinates are resolving', async () => {
-    const mockedGetCoordinates = vi.mocked(GetCoordinates);
+    const mockedGetCoordinates = vi.mocked(resolveCoordinates);
     mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
 
     const user = userEvent.setup();
@@ -231,7 +231,7 @@ describe('<TargetEntry /> resolving and clearing', { timeout: 10000 }, () => {
       resolvePromiseResolver = resolve;
     });
 
-    vi.mocked(GetCoordinates).mockReturnValue(deferredResponse as never);
+    vi.mocked(resolveCoordinates).mockReturnValue(deferredResponse as never);
 
     const user = userEvent.setup();
 
@@ -249,8 +249,7 @@ describe('<TargetEntry /> resolving and clearing', { timeout: 10000 }, () => {
 
     await act(async () => {
       resolvePromiseResolver?.({
-        reference_coordinate: { kind: 'icrs', ra_str: '01:02:03', dec_str: '04:05:06' },
-        radial_velocity: { quantity: { value: 5 }, redshift: 0 }
+        data: { raStr: '01:02:03', decStr: '04:05:06', velType: 0, vel: '5', redshift: '' }
       });
     });
 
@@ -372,9 +371,27 @@ describe('<TargetEntry /> auto-linking route', () => {
   }, 15000);
 });
 
+describe('<TargetEntry /> resolving a name', () => {
+  it('fills in the fields from the resolved target', async () => {
+    vi.mocked(resolveCoordinates).mockResolvedValue({
+      data: { raStr: '01:02:03', decStr: '04:05:06', velType: 0, vel: '5', redshift: '' }
+    });
+    const user = userEvent.setup();
+    wrapper(<TargetEntry />);
+    await user.type(nameInput(), 'M31');
+    await user.click(resolveButton());
+
+    await waitFor(() => {
+      expect(raInput()).toHaveValue('01:02:03');
+    });
+    expect(decInput()).toHaveValue('04:05:06');
+    expect(resolveCoordinates).toHaveBeenCalledWith('M31', expect.any(Number));
+  }, 15000);
+});
+
 describe('<TargetEntry /> resolve errors', () => {
   const resolveFails = async (response: unknown) => {
-    vi.mocked(GetCoordinates).mockResolvedValue(response as never);
+    vi.mocked(resolveCoordinates).mockResolvedValue(response as never);
     const user = userEvent.setup();
     wrapper(<TargetEntry />);
     await user.type(nameInput(), 'Unknown object');
@@ -405,7 +422,7 @@ describe('<TargetEntry /> resolve errors', () => {
   }, 15000);
 
   it('shows a generic error when the lookup throws', async () => {
-    vi.mocked(GetCoordinates).mockRejectedValue(new Error('boom'));
+    vi.mocked(resolveCoordinates).mockRejectedValue(new Error('boom'));
     const user = userEvent.setup();
     wrapper(<TargetEntry />);
     await user.type(nameInput(), 'Unknown object');

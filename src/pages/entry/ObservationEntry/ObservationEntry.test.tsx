@@ -32,8 +32,8 @@ vi.mock('react-router', async (importOriginal) => ({
 // A cycle with LOW and MID band 5b, with the mock OSD
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
   const { MockObservatoryDataFrontend } = await vi.importActual<
-    typeof import('@services/axios/get/getObservatoryData/mockObservatoryDataFrontend')
-  >('@services/axios/get/getObservatoryData/mockObservatoryDataFrontend');
+    typeof import('@/utils/osd/testing/mockObservatoryDataFrontend')
+  >('@/utils/osd/testing/mockObservatoryDataFrontend');
   const policy = MockObservatoryDataFrontend.policies[1];
   const capabilities = MockObservatoryDataFrontend.capabilities;
   return {

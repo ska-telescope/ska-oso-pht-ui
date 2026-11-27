@@ -11,7 +11,7 @@ import {
   MockProposalScienceReviewExcludedBackend,
   MockProposalTechnicalReviewBackend
 } from './mockProposalReviewBackend';
-import { MockObservatoryDataFrontend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 
 const cycleId = MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId;

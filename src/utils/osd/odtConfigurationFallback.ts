@@ -1,6 +1,10 @@
 import { ODTConfigurationBackend } from '@utils/types/odtConfiguration.tsx';
 
-export const MockODTConfigurationBackend: ODTConfigurationBackend = {
+/**
+ * The ODT configuration used when the OSO services can't provide one, so the OSD cycles can still
+ * be mapped. Also a fixture for tests.
+ */
+export const ODT_CONFIGURATION_FALLBACK: ODTConfigurationBackend = {
   ska_mid: {
     frequency_band: [
       {

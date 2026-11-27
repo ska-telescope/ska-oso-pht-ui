@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { AxiosError, CanceledError, InternalAxiosRequestConfig } from 'axios';
-import axiosClient from '@/services/axios/axiosClient/axiosClient';
+import { publicAxios } from '@/services/api/client';
 import {
   BAND_1_STR,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
@@ -133,7 +133,7 @@ const CONTINUUM_RESULT: ContinuumResult = {
 const continuumResponse = { data: [{ transformed_result: CONTINUUM_RESULT }] };
 const zoomResponse = { data: [{ transformed_result: [SPECTRAL_RESULT] }] };
 
-const mockPost = (response: unknown) => vi.spyOn(axiosClient, 'post').mockResolvedValue(response);
+const mockPost = (response: unknown) => vi.spyOn(publicAxios, 'post').mockResolvedValue(response);
 
 /** The request for an observation, target and data product the calculator supports. */
 const build = (...args: Parameters<typeof buildSensitivityRequest>) => {
@@ -416,7 +416,7 @@ describe('sendSensitivityRequest errors', () => {
     });
 
   test("uses the calculator's own title and detail", async () => {
-    vi.spyOn(axiosClient, 'post').mockRejectedValue(
+    vi.spyOn(publicAxios, 'post').mockRejectedValue(
       responseError(400, {
         title: 'Validation Error',
         detail: 'Maximum bandwidth (150 MHz) for this subarray has been exceeded.'
@@ -432,7 +432,7 @@ describe('sendSensitivityRequest errors', () => {
   });
 
   test('falls back to the request error when the body is not from the calculator', async () => {
-    vi.spyOn(axiosClient, 'post').mockRejectedValue(responseError(502, '<html>Bad Gateway</html>'));
+    vi.spyOn(publicAxios, 'post').mockRejectedValue(responseError(502, '<html>Bad Gateway</html>'));
 
     expect(await calculate()).toEqual({
       ok: false,
@@ -443,7 +443,7 @@ describe('sendSensitivityRequest errors', () => {
   });
 
   test('falls back to the request error when there is no response', async () => {
-    vi.spyOn(axiosClient, 'post').mockRejectedValue(new AxiosError('Network Error'));
+    vi.spyOn(publicAxios, 'post').mockRejectedValue(new AxiosError('Network Error'));
 
     expect(await calculate()).toEqual({
       ok: false,
@@ -454,7 +454,7 @@ describe('sendSensitivityRequest errors', () => {
   });
 
   test('reports a canceled request as aborted', async () => {
-    vi.spyOn(axiosClient, 'post').mockRejectedValue(new CanceledError());
+    vi.spyOn(publicAxios, 'post').mockRejectedValue(new CanceledError());
 
     expect(await calculate()).toMatchObject({
       ok: false,

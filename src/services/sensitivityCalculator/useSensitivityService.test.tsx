@@ -17,7 +17,7 @@ import {
 import type { Sensitivity } from '@/models/proposals/targetObservation';
 import type { TargetType } from '@/models/proposals/targets';
 import type TargetObservation from '@/utils/types/targetObservation';
-import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 import { SENS_CALC_ERROR_KIND, SensCalcError, SensCalcSuccess } from './client';
 import { sendSensitivityRequest, SensitivityResult } from './calculate';
 import type { ZoomResult } from './types';

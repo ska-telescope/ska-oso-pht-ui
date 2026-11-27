@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
+import { MockObservatoryDataFrontend } from '@/utils/osd/testing/mockObservatoryDataFrontend';
 import { PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
 import PostPanelDecision, { mappingPanelDecisionFrontendToBackend } from './postPanelDecision.tsx';
 import { MockPanelDecisionFrontend } from './mockPanelDecisionFrontend.tsx';

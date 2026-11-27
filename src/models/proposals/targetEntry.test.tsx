@@ -13,11 +13,13 @@ import {
   applyTargetEdit,
   getTargetEntryDefaults,
   getTargetEntrySchema,
+  resolvedTargetFieldsFromPdm,
   TARGET_ENTRY_DEFAULTS,
   targetEntryFromTarget,
   TargetEntryType
 } from './targetEntry';
 import phtTranslations from '@/locales/en/pht.json';
+import type { Target as TargetPDM } from '@/generated/models';
 
 const icrsTarget: Target = {
   id: 'target-1',
@@ -224,5 +226,55 @@ describe('applyTargetEdit', () => {
   test('does not change the original target', () => {
     applyTargetEdit(icrsTarget, before, { ...before, name: 'Changed' });
     expect(icrsTarget.name).toBe('M2');
+  });
+});
+
+describe('resolvedTargetFieldsFromPdm', () => {
+  const icrs = { kind: 'icrs', ra_str: '00:42:44.330', dec_str: '+41:16:07.50' };
+
+  test('sets the equatorial coordinates and the velocity', () => {
+    const target = {
+      reference_coordinate: icrs,
+      radial_velocity: { quantity: { value: -300 }, redshift: 0 }
+    } as TargetPDM;
+    expect(resolvedTargetFieldsFromPdm(target)).toEqual({
+      raStr: '00:42:44.330',
+      decStr: '+41:16:07.50',
+      velType: VELOCITY_TYPE.VELOCITY,
+      vel: '-300',
+      redshift: ''
+    });
+  });
+
+  test('sets the galactic coordinates', () => {
+    const target = {
+      reference_coordinate: { kind: 'galactic', l: 121.17, b: -21.57 }
+    } as TargetPDM;
+    expect(resolvedTargetFieldsFromPdm(target)).toMatchObject({ l: 121.17, b: -21.57 });
+  });
+
+  test('sets the redshift, not the velocity, when there is a non-zero redshift', () => {
+    const target = {
+      reference_coordinate: icrs,
+      radial_velocity: { quantity: { value: -300 }, redshift: 0.5 }
+    } as TargetPDM;
+    expect(resolvedTargetFieldsFromPdm(target)).toMatchObject({
+      velType: VELOCITY_TYPE.REDSHIFT,
+      redshift: '0.5',
+      vel: ''
+    });
+  });
+
+  test('leaves the velocity empty when there is none', () => {
+    const target = { reference_coordinate: icrs } as TargetPDM;
+    expect(resolvedTargetFieldsFromPdm(target)).toMatchObject({
+      velType: VELOCITY_TYPE.VELOCITY,
+      vel: '',
+      redshift: ''
+    });
+  });
+
+  test('throws when the target has no coordinates', () => {
+    expect(() => resolvedTargetFieldsFromPdm({ name: 'M31' })).toThrow();
   });
 });
