@@ -53,11 +53,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
   };
 });
 
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: {} }),
-  useRefreshAuthToken: () => vi.fn()
-}));
-
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({
   setObservingMode: vi.fn()
 }));
@@ -361,7 +356,6 @@ describe('<DetailsPage /> observing mode', () => {
     expect(setObservingMode).toHaveBeenCalledWith(
       OBSERVING_MODE.PST,
       expect.objectContaining({ getValues: expect.any(Function) }),
-      {},
       null,
       42
     );

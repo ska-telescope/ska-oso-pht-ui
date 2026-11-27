@@ -56,7 +56,6 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import useAxiosInterceptor from '@/services/api/useAxiosInterceptor';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
@@ -133,7 +132,6 @@ export default function PHT({
   } = useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
-  const { axiosClient: authClient } = useAxiosAuthClient();
   useAxiosInterceptor();
   const { setHelp } = useHelp();
   const { notifyError } = useNotify();
@@ -183,12 +181,7 @@ export default function PHT({
       return;
     }
     autoRepairAttemptedForIdRef.current = prslId;
-    void linkTarget(
-      target,
-      formMethods,
-      authClient,
-      osdLOW?.basicCapabilities?.minElevationDeg ?? null
-    );
+    void linkTarget(target, formMethods, osdLOW?.basicCapabilities?.minElevationDeg ?? null);
   }, [prslId, autoLink]);
 
   React.useEffect(() => {

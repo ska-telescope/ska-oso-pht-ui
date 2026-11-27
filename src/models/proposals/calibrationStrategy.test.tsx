@@ -6,11 +6,14 @@ import {
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
+import { MockCalibratorBackendList } from './testing/mockCalibratorsPdm';
+import { MockCalibratorFrontendList } from './testing/mockCalibrators';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy';
 import {
   CalibrationStrategyType,
   calibrationStrategyFromPdm,
   calibrationStrategyToPdm,
+  calibratorFromPdm,
   getCalibrationStrategySchema
 } from './calibrationStrategy';
 
@@ -163,5 +166,11 @@ describe('calibrationStrategyToPdm', () => {
         notes: null
       }
     ]);
+  });
+});
+
+describe('calibratorFromPdm', () => {
+  test('maps a looked-up calibrator, with the defaults for the fields the lookup does not give', () => {
+    expect(MockCalibratorBackendList.map(calibratorFromPdm)).toEqual(MockCalibratorFrontendList);
   });
 });

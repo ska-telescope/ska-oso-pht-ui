@@ -156,7 +156,7 @@ describe('refreshCalibrators', () => {
   test("sets the calibrators on the observation's calibration, keeping its notes", async () => {
     const { form, values } = linked();
 
-    const refreshing = refreshCalibrators(form, 'obs-1', {} as never);
+    const refreshing = refreshCalibrators(form, 'obs-1');
     finishLookup();
     await refreshing;
 
@@ -168,7 +168,7 @@ describe('refreshCalibrators', () => {
   test('ignores a lookup that another change of the integration time has overtaken', async () => {
     const { form, values } = linked();
 
-    const refreshing = refreshCalibrators(form, 'obs-1', {} as never);
+    const refreshing = refreshCalibrators(form, 'obs-1');
     form.setValue('observations', [
       { ...values.observations[0], integrationTime: { value: 3, unit: 'h' } }
     ]);
@@ -181,7 +181,7 @@ describe('refreshCalibrators', () => {
   test('ignores a lookup for a target that was unlinked meanwhile', async () => {
     const { form, values } = linked();
 
-    const refreshing = refreshCalibrators(form, 'obs-1', {} as never);
+    const refreshing = refreshCalibrators(form, 'obs-1');
     form.setValue('targetObservation', []);
     finishLookup();
     await refreshing;

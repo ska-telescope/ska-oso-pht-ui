@@ -1,4 +1,3 @@
-import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient';
 import { generateCalibrationId } from '@/utils/helpers';
 import { withZoomChannels } from '@/utils/autoLinking/AutoLinking';
 import type { ProposalFormAccess } from './proposal';
@@ -87,8 +86,7 @@ export const calibratorInputsChanged = (
  */
 export async function refreshCalibrators(
   form: ProposalFormAccess,
-  observationId: string,
-  authAxiosClient: AxiosAuthClient
+  observationId: string
 ): Promise<void> {
   const findObservation = () =>
     form.getValues('observations').find((obs) => obs.id === observationId);
@@ -101,7 +99,7 @@ export async function refreshCalibrators(
     return;
   }
 
-  const calibrators = await lookupCalibrators(authAxiosClient, observation, target);
+  const calibrators = await lookupCalibrators(observation, target);
 
   const stillLinked = form
     .getValues('targetObservation')

@@ -31,14 +31,16 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
-vi.mock('@/services/axios/get/getCalibratorList/getCalibratorList', () => ({
-  default: vi.fn(async () => [
-    {
-      name: 'Calibrator X',
-      durationMin: 5,
-      calibrationIntent: 'TestIntent'
-    }
-  ])
+vi.mock('@/services/api/calibrators', () => ({
+  findCalibrators: vi.fn(async () => ({
+    data: [
+      {
+        name: 'Calibrator X',
+        durationMin: 5,
+        calibrationIntent: 'TestIntent'
+      }
+    ]
+  }))
 }));
 
 // ----------------------

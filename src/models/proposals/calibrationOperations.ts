@@ -1,6 +1,4 @@
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
-import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient';
-import { REFERENCE_COORDINATE_TYPE_SSO } from '@/utils/constants';
+import { findCalibrators } from '@/services/api/calibrators';
 import { generateCalibrationId } from '@/utils/helpers';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import type { ObservationInput } from './observations';
@@ -15,37 +13,31 @@ import Target from '@/utils/types/target';
  * system object, or when the lookup fails.
  */
 export const lookupCalibrators = async (
-  authAxiosClient: AxiosAuthClient,
   observation: ObservationInput,
   target: Target
 ): Promise<Calibrator[] | null> => {
-  if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
-    return null;
-  }
-  const response = await GetCalibratorList(authAxiosClient, observation, target);
-  return typeof response === 'string' ? null : response;
+  // findCalibrators makes no request for a solar system object, returning an error instead
+  const { data } = await findCalibrators(observation, target);
+  return data ?? null;
 };
 
 /**
  * A new observatory-defined calibration strategy for an observation of a target, with its
  * calibrators looked up.
  */
-export const buildCalibrationStrategy = async (
-  authAxiosClient: AxiosAuthClient,
-  {
-    observation,
-    target,
-    notes = null
-  }: {
-    observation: ObservationInput;
-    target: Target;
-    notes?: string | null;
-  }
-): Promise<CalibrationStrategy> => ({
+export const buildCalibrationStrategy = async ({
+  observation,
+  target,
+  notes = null
+}: {
+  observation: ObservationInput;
+  target: Target;
+  notes?: string | null;
+}): Promise<CalibrationStrategy> => ({
   observatoryDefined: true,
   id: generateCalibrationId(),
   observationIdRef: observation.id,
-  calibrators: await lookupCalibrators(authAxiosClient, observation, target),
+  calibrators: await lookupCalibrators(observation, target),
   notes
 });
 

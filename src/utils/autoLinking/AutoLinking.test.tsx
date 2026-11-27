@@ -91,8 +91,6 @@ const formOver = (initial: Partial<ProposalType>) => {
   return { form, values };
 };
 
-const mockAuthAxiosClient = {} as never;
-
 beforeEach(() => {
   vi.clearAllMocks();
   mockLookupCalibrators.mockImplementation(async () => null);
@@ -163,7 +161,7 @@ describe('setObservingMode()', () => {
       dataProducts: [{ ...CONTINUUM_IMAGE_DATA_PRODUCT, observationId: 'existing-obs' }]
     });
 
-    await setObservingMode(OBSERVING_MODE.PST, form, mockAuthAxiosClient, MIN_ELEVATION);
+    await setObservingMode(OBSERVING_MODE.PST, form, MIN_ELEVATION);
 
     expect(values.observations).toEqual([
       expect.objectContaining({
@@ -184,7 +182,7 @@ describe('setObservingMode()', () => {
   it('gives a spectral line observation all the zoom channels of the subarray', async () => {
     const { form, values } = formOver({ observations: [existing] });
 
-    await setObservingMode(OBSERVING_MODE.SPECTRAL, form, mockAuthAxiosClient, null, 1234);
+    await setObservingMode(OBSERVING_MODE.SPECTRAL, form, null, 1234);
 
     expect(values.observations).toEqual([
       expect.objectContaining({ observingMode: OBSERVING_MODE.SPECTRAL, zoomChannels: 1234 })
@@ -206,7 +204,7 @@ describe('setObservingMode()', () => {
       ]
     });
 
-    await setObservingMode(OBSERVING_MODE.SPECTRAL, form, mockAuthAxiosClient, MIN_ELEVATION);
+    await setObservingMode(OBSERVING_MODE.SPECTRAL, form, MIN_ELEVATION);
 
     expect(values.targets).toEqual([mockTarget]);
     expect(values.targetObservation).toEqual([
@@ -241,7 +239,7 @@ describe('setObservingMode()', () => {
     it('has already written the observation, data products, link and calibration', async () => {
       const { form, values } = formOver({ targets: [mockTarget], observations: [existing] });
 
-      const changing = setObservingMode(OBSERVING_MODE.PST, form, mockAuthAxiosClient, null);
+      const changing = setObservingMode(OBSERVING_MODE.PST, form, null);
 
       expect(values.observations).toEqual([expect.objectContaining({ id: 'mock-obs' })]);
       expect(values.dataProducts).toEqual([expect.objectContaining({ observationId: 'mock-obs' })]);
@@ -258,7 +256,7 @@ describe('setObservingMode()', () => {
     it('adds the calibrators when it returns, keeping notes edited meanwhile', async () => {
       const { form, values } = formOver({ targets: [mockTarget], observations: [existing] });
 
-      const changing = setObservingMode(OBSERVING_MODE.PST, form, mockAuthAxiosClient, null);
+      const changing = setObservingMode(OBSERVING_MODE.PST, form, null);
       form.setValue('calibrationStrategy', [
         { ...values.calibrationStrategy[0], notes: 'Edited notes' }
       ]);
@@ -273,9 +271,9 @@ describe('setObservingMode()', () => {
     it("doesn't add them when another mode change has replaced the calibration", async () => {
       const { form, values } = formOver({ targets: [mockTarget], observations: [existing] });
 
-      const first = setObservingMode(OBSERVING_MODE.PST, form, mockAuthAxiosClient, null);
+      const first = setObservingMode(OBSERVING_MODE.PST, form, null);
       vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('newer-cal');
-      await setObservingMode(OBSERVING_MODE.CONTINUUM, form, mockAuthAxiosClient, null);
+      await setObservingMode(OBSERVING_MODE.CONTINUUM, form, null);
       finishLookup();
       await first;
 
@@ -315,7 +313,7 @@ describe('linkTarget()', () => {
       dataProducts: existingDataProducts
     });
 
-    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
+    await linkTarget(mockTarget, form, MIN_ELEVATION);
 
     expect(values.observations).toEqual([existing]);
     expect(values.dataProducts).toEqual(existingDataProducts);
@@ -340,7 +338,7 @@ describe('linkTarget()', () => {
       ]
     });
 
-    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
+    await linkTarget(mockTarget, form, MIN_ELEVATION);
 
     expect(values.targetObservation[0].dataProductsSDPId).toBe('existing-sdp');
   });
@@ -360,7 +358,7 @@ describe('linkTarget()', () => {
       ]
     });
 
-    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
+    await linkTarget(mockTarget, form, MIN_ELEVATION);
 
     expect(values.calibrationStrategy).toEqual([
       expect.objectContaining({ observationIdRef: 'existing-obs', notes: 'Existing notes' })
@@ -370,7 +368,7 @@ describe('linkTarget()', () => {
   it('creates a default continuum observation and data products when there is none', async () => {
     const { form, values } = formOver({});
 
-    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
+    await linkTarget(mockTarget, form, MIN_ELEVATION);
 
     expect(values.observations).toEqual([
       expect.objectContaining({
@@ -388,7 +386,7 @@ describe('linkTarget()', () => {
   it('creates default data products when the observation has none', async () => {
     const { form, values } = formOver({ observations: [existing] });
 
-    await linkTarget(mockTarget, form, mockAuthAxiosClient, MIN_ELEVATION);
+    await linkTarget(mockTarget, form, MIN_ELEVATION);
 
     expect(values.observations).toEqual([existing]);
     expect(values.dataProducts.length).toBeGreaterThan(0);

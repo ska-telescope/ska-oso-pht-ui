@@ -20,7 +20,6 @@ import {
 } from '@/models/proposals/observations';
 import Target from '../types/target';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { PstMode } from '@/generated/models';
 
 /** The kind of the observation's main data product, the one its link points at. */
@@ -84,8 +83,7 @@ const linkObservation = async (
   form: ProposalFormAccess,
   target: Target,
   observation: ObservationInput,
-  mainDataProduct: DataProductInput,
-  authAxiosClient: AxiosAuthClient
+  mainDataProduct: DataProductInput
 ): Promise<void> => {
   const targetObservation: TargetObservation = {
     targetId: target.id,
@@ -104,7 +102,7 @@ const linkObservation = async (
   form.setValue('targetObservation', [targetObservation]);
   form.setValue('calibrationStrategy', [calibrationStrategy]);
 
-  const calibrators = await lookupCalibrators(authAxiosClient, observation, target);
+  const calibrators = await lookupCalibrators(observation, target);
   // Only while this calibration is still there: another change may have replaced it meanwhile.
   // The notes are the ones there now, which the author may have edited during the lookup.
   const strategies = form.getValues('calibrationStrategy');
@@ -125,7 +123,6 @@ const linkObservation = async (
 export async function linkTarget(
   target: Target,
   form: ProposalFormAccess,
-  authAxiosClient: AxiosAuthClient,
   minElevation: number | null
 ): Promise<void> {
   const observation =
@@ -138,7 +135,7 @@ export async function linkTarget(
 
   form.setValue('observations', [observation]);
   form.setValue('dataProducts', [...dataProducts, ...newDataProducts]);
-  await linkObservation(form, target, observation, mainDataProduct, authAxiosClient);
+  await linkObservation(form, target, observation, mainDataProduct);
 }
 
 // The data product a link points at; an imaging observation also has a hidden visibilities one
@@ -234,7 +231,6 @@ export const withSvDefaults = (values: ProposalType, minElevation: number | null
 export async function setObservingMode(
   observingMode: ObservingMode,
   form: ProposalFormAccess,
-  authAxiosClient: AxiosAuthClient,
   minElevation: number | null,
   maxZoomChannels?: number
 ): Promise<void> {
@@ -245,6 +241,6 @@ export async function setObservingMode(
 
   const target = form.getValues('targets')?.[0] as Target | undefined;
   if (target) {
-    await linkObservation(form, target, observation, dataProducts[0], authAxiosClient);
+    await linkObservation(form, target, observation, dataProducts[0]);
   }
 }

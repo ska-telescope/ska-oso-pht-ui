@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import type { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
+import type {
+  CalibrationStrategy,
+  Calibrator,
+  CalibratorBackend
+} from '@/utils/types/calibrationStrategy';
 import {
   CalibrationWhen,
   CalibratorChoice,
@@ -96,3 +100,21 @@ export const calibrationStrategyToPdm = (
       }) as CalibrationStrategyTransport
   );
 };
+
+// The calibrator lookup gives only the calibrator and when to observe it; the rest are defaults
+// for now. At least the duration should eventually come from the backend.
+const DEFAULT_CALIBRATION_INTENT: Calibrator['calibrationIntent'] = 'flux';
+export const DEFAULT_CALIBRATOR_SELECTION: Calibrator['selectionStrategy'] =
+  CalibratorChoice.HighestElevation;
+const DEFAULT_CALIBRATOR_DURATION_SECS = 600;
+
+/** A calibrator from the ODA's calibrator lookup, with the defaults for the rest of its fields. */
+export const calibratorFromPdm = (data: CalibratorBackend): Calibrator => ({
+  targetId: data.calibrator.target_id as string,
+  name: data.calibrator.name as string,
+  calibrationIntent: DEFAULT_CALIBRATION_INTENT,
+  durationSeconds: DEFAULT_CALIBRATOR_DURATION_SECS,
+  selectionStrategy: DEFAULT_CALIBRATOR_SELECTION,
+  notes: null,
+  relativeToScan: data.when
+});

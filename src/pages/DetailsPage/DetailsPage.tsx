@@ -18,7 +18,6 @@ import { useObservationTypeOptions } from '../../components/fields/observationTy
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { ObservingMode, OBSERVING_MODE, TELESCOPE } from '@/models/proposals/observations';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
@@ -33,7 +32,6 @@ export default function DetailsPage() {
   const { t } = useScopedTranslation();
   const theme = useTheme();
   const { osdLOW, osdMID } = useOSDAccessors();
-  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
 
   const { application, updateAppContent1 } = storageObject.useStore();
   const { setHelp } = useHelp();
@@ -131,7 +129,6 @@ export default function DetailsPage() {
     await setObservingMode(
       mode,
       form,
-      authAxiosClient,
       osdLOW?.basicCapabilities?.minElevationDeg ?? null,
       sArray?.numberZoomChannels
     );

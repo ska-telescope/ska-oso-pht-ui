@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { MockCalibratorBackendList } from '@services/axios/get/getCalibratorList/mockCalibratorListBackend.tsx';
-import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient';
+import { MockCalibratorBackendList } from './testing/mockCalibratorsPdm';
 import * as helpers from '@/utils/helpers';
 import { REFERENCE_COORDINATE_TYPE_SSO } from '@/utils/constants';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
@@ -16,8 +15,12 @@ import {
 
 const mockObservation = { ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15), id: 'obs-123' };
 
-const authClient = { post: vi.fn() };
-const client = authClient as unknown as AxiosAuthClient;
+// The generated client's calibrator lookup, which findCalibrators calls
+const { mockGetCalibrators } = vi.hoisted(() => ({ mockGetCalibrators: vi.fn() }));
+vi.mock('@/services/api/client', () => ({
+  osoApiBasePath: '',
+  api: { proposals: { getCalibratorsOsoApiV17PhtCalibratorsPost: mockGetCalibrators } }
+}));
 
 const strategy = (observationIdRef: string, notes: string | null = null): CalibrationStrategy => ({
   observatoryDefined: true,
@@ -34,9 +37,9 @@ describe('buildCalibrationStrategy', () => {
   });
 
   test('creates an observatory-defined strategy with the calibrators looked up', async () => {
-    authClient.post.mockResolvedValue({ data: MockCalibratorBackendList });
+    mockGetCalibrators.mockResolvedValue({ data: MockCalibratorBackendList });
 
-    const calibration = await buildCalibrationStrategy(client, {
+    const calibration = await buildCalibrationStrategy({
       observation: mockObservation,
       target: mockTarget as Target
     });
@@ -45,9 +48,9 @@ describe('buildCalibrationStrategy', () => {
   });
 
   test('keeps the notes it is given', async () => {
-    authClient.post.mockResolvedValue({ data: MockCalibratorBackendList });
+    mockGetCalibrators.mockResolvedValue({ data: MockCalibratorBackendList });
 
-    const calibration = await buildCalibrationStrategy(client, {
+    const calibration = await buildCalibrationStrategy({
       observation: mockObservation,
       target: mockTarget as Target,
       notes: 'Keep these'
@@ -57,19 +60,19 @@ describe('buildCalibrationStrategy', () => {
   });
 
   test('looks up no calibrators for a solar system object', async () => {
-    const calibration = await buildCalibrationStrategy(client, {
+    const calibration = await buildCalibrationStrategy({
       observation: mockObservation,
       target: { ...(mockTarget as Target), kind: REFERENCE_COORDINATE_TYPE_SSO.value }
     });
 
     expect(calibration.calibrators).toBeNull();
-    expect(authClient.post).not.toHaveBeenCalled();
+    expect(mockGetCalibrators).not.toHaveBeenCalled();
   });
 
   test('has no calibrators when the lookup fails', async () => {
-    authClient.post.mockRejectedValue(new Error('unavailable'));
+    mockGetCalibrators.mockRejectedValue(new Error('unavailable'));
 
-    const calibration = await buildCalibrationStrategy(client, {
+    const calibration = await buildCalibrationStrategy({
       observation: mockObservation,
       target: mockTarget as Target
     });

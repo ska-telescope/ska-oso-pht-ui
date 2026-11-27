@@ -55,7 +55,6 @@ import {
   resizeImageDataProducts,
   setSpectralChannelsOut
 } from '@/models/proposals/observationUpdates';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -108,7 +107,6 @@ export default function ObservationView({ index, groupIds, proposalForm }: Obser
   const { osdLOW, osdMID, selectedPolicy, isCustomAllowed } = useOSDAccessors();
   const osd = { low: osdLOW, mid: osdMID };
   const form = useFormContext<ObservationsForm>();
-  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const path = `observations.${index}` as const;
   const observation = useWatch({ control: form.control, name: path });
 
@@ -133,7 +131,7 @@ export default function ObservationView({ index, groupIds, proposalForm }: Obser
 
   const refreshCalibratorsInPlace = () => {
     if (proposalForm) {
-      void refreshCalibrators(proposalForm, observation.id, authAxiosClient);
+      void refreshCalibrators(proposalForm, observation.id);
     }
   };
 

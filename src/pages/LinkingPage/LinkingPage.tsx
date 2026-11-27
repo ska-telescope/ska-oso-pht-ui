@@ -10,7 +10,6 @@ import {
   calibrationNotesFor,
   withCalibrationFor
 } from '@/models/proposals/calibrationOperations';
-import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import {
   AlertColorTypes,
   BorderedSection,
@@ -57,7 +56,6 @@ export default function LinkingPage() {
 
   const { t } = useScopedTranslation();
 
-  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const { osdLOW, osdMID } = useOSDAccessors();
   const { application, updateAppContent1 } = storageObject.useStore();
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
@@ -186,7 +184,7 @@ export default function LinkingPage() {
 
     const observation = form.getValues('observations').find((o) => o.id === observationId);
     if (!observation) return;
-    const calibration = await buildCalibrationStrategy(authAxiosClient, {
+    const calibration = await buildCalibrationStrategy({
       observation,
       target: remainingTarget,
       notes: calibrationNotesFor(getCalibration(), observationId)
@@ -226,7 +224,7 @@ export default function LinkingPage() {
       sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     };
 
-    const calibration = await buildCalibrationStrategy(authAxiosClient, { observation, target });
+    const calibration = await buildCalibrationStrategy({ observation, target });
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 

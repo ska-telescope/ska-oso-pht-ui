@@ -52,10 +52,6 @@ vi.mock('@/models/proposals/useProposalOda', async (importOriginal) => ({
   saveValuesToOda: vi.fn().mockResolvedValue({ data: { id: 'prp-123' } })
 }));
 
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
-}));
-
 vi.mock('@/services/api/useAxiosInterceptor', () => ({
   default: vi.fn(),
   useAxiosInterceptor: vi.fn()
@@ -337,7 +333,6 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
     expect(vi.mocked(linkTarget)).toHaveBeenCalledWith(
       mockProposal.targets[0],
       expect.objectContaining({ getValues: expect.any(Function) }),
-      {},
       null
     );
   });

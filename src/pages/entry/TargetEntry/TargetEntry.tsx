@@ -7,7 +7,6 @@ import {
   UseFormReturn,
   useWatch
 } from 'react-hook-form';
-import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { BorderedSection, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates, {
   RESOLVE_ERROR_UNKNOWN,
@@ -83,7 +82,6 @@ export default function TargetEntry({
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { autoLink, isSV, osdCyclePolicy, osdLOW } = useOSDAccessors();
-  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
   const form = useFormContext<ProposalType>();
@@ -199,12 +197,7 @@ export default function TargetEntry({
       const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
-        await linkTarget(
-          newTarget,
-          form,
-          authAxiosClient,
-          osdLOW?.basicCapabilities?.minElevationDeg ?? null
-        );
+        await linkTarget(newTarget, form, osdLOW?.basicCapabilities?.minElevationDeg ?? null);
         clearForm();
       };
 

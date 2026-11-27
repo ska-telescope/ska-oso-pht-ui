@@ -3,7 +3,7 @@ import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFor
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
-import { MockCalibratorFrontendList } from '@services/axios/get/getCalibratorList/mockCalibratorListFrontend.tsx';
+import { MockCalibratorFrontendList } from '@/models/proposals/testing/mockCalibrators';
 import { MockProposalFrontend } from '@/services/axios/put/putProposal/mockProposalFrontend';
 import { ProposalType } from '@/models/proposals/proposal';
 import CalibrationPage from './CalibrationPage';
@@ -19,8 +19,8 @@ const wrapper = (component: React.ReactElement, values?: Partial<ProposalType>) 
   );
 };
 
-vi.mock('@/services/axios/get/getCalibratorList/getCalibratorList', () => ({
-  default: vi.fn().mockResolvedValue(MockCalibratorFrontendList)
+vi.mock('@/services/api/calibrators', () => ({
+  findCalibrators: vi.fn().mockResolvedValue({ data: MockCalibratorFrontendList })
 }));
 
 vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {

@@ -36,7 +36,6 @@ import {
   resizeImageDataProducts,
   setSpectralChannelsOut
 } from '@/models/proposals/observationUpdates';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import ObservationView, { ObservationsForm } from '@/pages/ObservationPage/ObservationView';
 
 const BACK_PAGE = PAGE_OBSERVATION;
@@ -56,7 +55,6 @@ export default function ObservationEntry() {
   const { setHelp } = useHelp();
   const { osdLOW, osdMID, selectedPolicy } = useOSDAccessors();
   const proposalForm = useFormContext<ProposalType>();
-  const { axiosClient: authAxiosClient } = useAxiosAuthClient();
 
   // Rebuilt when the OSD changes, as the proposal form's is
   const resolver = React.useMemo(
@@ -122,7 +120,7 @@ export default function ObservationEntry() {
       replacePstDataProduct(proposalForm, newObservation);
     }
     if (calibratorInputsChanged(existing, newObservation)) {
-      void refreshCalibrators(proposalForm, newObservation.id, authAxiosClient);
+      void refreshCalibrators(proposalForm, newObservation.id);
     }
     navigate(NAV[BACK_PAGE]);
   };

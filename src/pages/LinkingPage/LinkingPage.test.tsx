@@ -9,15 +9,15 @@ import { ProposalType } from '@/models/proposals/proposal';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 import completeMockStore from '@/utils/MockStore';
 import { PROPOSAL_TYPE, SENSITIVITY_STATE, STATUS_ERROR } from '@/utils/constants';
-import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
+import { findCalibrators } from '@/services/api/calibrators';
 import SensCalcModalMultiple from '@/components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 
 vi.mock('@ska-telescope/ska-login-page', () => ({ isLoggedIn: () => true }));
-vi.mock('@services/axios/get/getCalibratorList/getCalibratorList', () => ({
-  default: vi.fn(async () => [])
+vi.mock('@/services/api/calibrators', () => ({
+  findCalibrators: vi.fn(async () => ({ data: [] }))
 }));
 // The results dialog, to see what the page passes it
 vi.mock('@/components/alerts/sensCalcModal/multiple/SensCalcModalMultiple', () => ({
@@ -193,8 +193,8 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
       );
     });
     const calibratorsForM3 = [{ name: 'calibrator for M3' }];
-    vi.mocked(GetCalibratorList).mockClear();
-    vi.mocked(GetCalibratorList).mockResolvedValueOnce(calibratorsForM3 as never);
+    vi.mocked(findCalibrators).mockClear();
+    vi.mocked(findCalibrators).mockResolvedValueOnce({ data: calibratorsForM3 as never });
 
     // Unlinking M2 (the first target) leaves M3 linked, so the calibrators are chosen for M3
     const [m2TickBox] = await screen.findAllByTestId('linkedTickBox');
@@ -209,8 +209,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
       ]);
     });
     expect(formProbe.getValues('targetObservation')).toEqual([secondLink]);
-    expect(GetCalibratorList).toHaveBeenCalledWith(
-      expect.anything(),
+    expect(findCalibrators).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'obs-1' }),
       expect.objectContaining({ id: 't2' })
     );
@@ -235,10 +234,8 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
         formProbe.getValues('calibrationStrategy').map((c) => ({ ...c, notes: 'old notes' }))
       );
     });
-    let resolveCalibrators: (
-      value: Awaited<ReturnType<typeof GetCalibratorList>>
-    ) => void = () => {};
-    vi.mocked(GetCalibratorList).mockImplementationOnce(
+    let resolveCalibrators: (value: Awaited<ReturnType<typeof findCalibrators>>) => void = () => {};
+    vi.mocked(findCalibrators).mockImplementationOnce(
       () => new Promise((resolve) => (resolveCalibrators = resolve))
     );
     const [m2TickBox] = await screen.findAllByTestId('linkedTickBox');
@@ -253,7 +250,7 @@ describe('<LinkingPage /> manual linking', { timeout: 15000 }, () => {
       )
     );
     const calibratorsForM3 = [{ name: 'calibrator for M3' }];
-    await act(async () => resolveCalibrators(calibratorsForM3 as never));
+    await act(async () => resolveCalibrators({ data: calibratorsForM3 as never }));
 
     await waitFor(() => {
       expect(formProbe.getValues('calibrationStrategy')).toEqual([
