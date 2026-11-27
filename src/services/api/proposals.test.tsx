@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
-import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import MockProposalBackendList from '@services/axios/get/getProposalList/mockProposalBackendList';
+import { MockProposalBackend } from '@/models/proposals/testing/mockProposalBackend';
+import MockProposalBackendList from '@/models/proposals/testing/mockProposalBackendList';
 import MockProposalSummaries from '@/models/proposals/testing/mockProposalSummaries';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { UNKNOWN_API_ERROR } from './apiResult';

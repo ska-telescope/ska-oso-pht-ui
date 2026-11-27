@@ -44,6 +44,7 @@ The Proposal Handling Tool (PHT) allows you to prepare and submit a proposal to 
    developer/Installation
    developer/NewRelease
    developer/Services
+   developer/ApiLayer
    developer/SensCalc
    developer/RunningBuilding
    developer/Testing

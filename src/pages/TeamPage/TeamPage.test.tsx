@@ -10,7 +10,7 @@ import Investigator from '@/utils/types/investigator';
 import { storageObject } from '@utils/storage/store';
 import { PAGE_TEAM, STATUS_ERROR, STATUS_OK } from '@/utils/constants';
 import { waitFor } from '@testing-library/react';
-import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
+import { MockUserFrontendList } from '@/models/proposals/testing/mockUserFrontend';
 
 const wrapper = (component: React.ReactElement, investigators: Investigator[] = []) => {
   const FormWrapper = () => {

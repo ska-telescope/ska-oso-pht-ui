@@ -1,15 +1,15 @@
 import { describe, expect, test } from 'vitest';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
+import { MockProposalBackend } from '@/models/proposals/testing/mockProposalBackend';
 import { STATUS_ERROR, STATUS_OK } from '@/utils/constants';
 import { documentsFromPdm, documentsToPdm, getDocumentPageStatus } from './documents';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 
 const science = { document_id: 'science-doc-p1', uploaded_pdf: true };
 const technical = { document_id: 'technical-doc-p1', uploaded_pdf: false };
-const pdm = MockProposalBackend as ProposalBackend;
+const pdm = MockProposalBackend as ProposalPDM;
 const withDocuments = (documents: typeof pdm.observation_info.documents) =>
-  ({ ...pdm, observation_info: { ...pdm.observation_info, documents } }) as ProposalBackend;
+  ({ ...pdm, observation_info: { ...pdm.observation_info, documents } }) as ProposalPDM;
 
 describe('documents slice', () => {
   test('maps PDM documents to references by prefix', () => {

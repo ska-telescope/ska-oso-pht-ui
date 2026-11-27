@@ -3,8 +3,8 @@ import { mapPdmToForm } from './pdmMapper';
 import {
   MockProposalBackend,
   MockProposalBackendZoom
-} from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+} from '@/models/proposals/testing/mockProposalBackend';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import Target from '@utils/types/target';
 import {
@@ -23,8 +23,8 @@ import {
 
 const mockPdms = [
   ['MockSlicesPdm', MockSlicesPdm],
-  ['MockProposalBackend', MockProposalBackend as unknown as ProposalBackend],
-  ['MockProposalBackendZoom', MockProposalBackendZoom as unknown as ProposalBackend]
+  ['MockProposalBackend', MockProposalBackend as unknown as ProposalPDM],
+  ['MockProposalBackendZoom', MockProposalBackendZoom as unknown as ProposalPDM]
 ] as const;
 
 describe('targets schema', () => {
@@ -61,7 +61,7 @@ describe('targets PDM mapping', () => {
 
   // Saving gives back every field that was loaded except the pointing pattern, which is not kept,
   // and the unused coordinate fields above
-  const savedFrom = (pdm: ProposalBackend) =>
+  const savedFrom = (pdm: ProposalPDM) =>
     structuredClone(pdm.observation_info.targets ?? []).map(
       ({ pointing_pattern: _, ...target }) => ({
         ...target,

@@ -1,4 +1,4 @@
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { SA_AA2, BAND_LOW_STR, DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
 import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 
@@ -231,7 +231,7 @@ export const MockProposalBackend = {
       }
     ]
   }
-} as unknown as ProposalBackend;
+} as unknown as ProposalPDM;
 
 export const MockProposalBackendZoom = {
   prsl_id: 'prsl-t0001-20250624-00049',
@@ -402,4 +402,4 @@ export const MockProposalBackendZoom = {
       }
     ]
   }
-} as unknown as ProposalBackend;
+} as unknown as ProposalPDM;

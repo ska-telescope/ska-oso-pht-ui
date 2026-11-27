@@ -9,8 +9,8 @@ import {
   TEAM_STATUS_TYPE_OPTIONS
 } from '@utils/constants.ts';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
-import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
+import { MockProposalBackend } from '@/models/proposals/testing/mockProposalBackend';
+import { MockUserFrontendList } from '@/models/proposals/testing/mockUserFrontend';
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { useProposalForm } from './useProposalForm';
 import { ProposalType } from './proposal';

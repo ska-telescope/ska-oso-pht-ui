@@ -12,18 +12,6 @@ vi.mock('react-router', () => {
   };
 });
 
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => {
-  return {
-    default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
-  };
-});
-
-vi.mock('@/services/axios/getProposal/getProposal', () => {
-  return {
-    default: vi.fn()
-  };
-});
-
 vi.mock('@/utils/validation/validation', () => {
   return {
     validateProposal: vi.fn()

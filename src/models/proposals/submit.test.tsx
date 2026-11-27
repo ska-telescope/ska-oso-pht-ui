@@ -3,7 +3,7 @@ import { mapPdmToForm } from './pdmMapper';
 import {
   MockProposalBackend,
   MockProposalBackendZoom
-} from '@services/axios/get/getProposal/mockProposalBackend.tsx';
+} from '@/models/proposals/testing/mockProposalBackend';
 import {
   PROPOSAL_TYPE,
   SENSITIVITY_STATE,
@@ -11,7 +11,7 @@ import {
   STATUS_OK,
   VELOCITY_DEFINITION
 } from '@/utils/constants';
-import { ProposalBackend } from '@/utils/types/proposal';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import { getProposalSchema, ProposalType } from './proposal';
 import type { TargetObservationLink } from './targetObservation';
@@ -106,7 +106,7 @@ describe('getSubmitPageStatuses', () => {
     ['MockProposalBackendZoom', MockProposalBackendZoom, STATUS_OK],
     ['MockSlicesPdm', MockSlicesPdm, STATUS_ERROR]
   ])('passes the pages for the proposal loaded from %s', (_, pdm, dataProductsStatus) => {
-    const values = mapPdmToForm(pdm as unknown as ProposalBackend);
+    const values = mapPdmToForm(pdm as unknown as ProposalPDM);
     expect(getSubmitPageStatuses(values, osd)).toEqual({
       target: STATUS_OK,
       observation: STATUS_ERROR,

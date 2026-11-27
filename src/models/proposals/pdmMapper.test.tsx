@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
+import { MockProposalBackend } from '@/models/proposals/testing/mockProposalBackend';
+import { MockUserFrontendList } from '@/models/proposals/testing/mockUserFrontend';
 const investigator = MockUserFrontendList[0];
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { getProposalSchema } from './proposal';
@@ -12,7 +12,7 @@ import { calibrationStrategyFromPdm } from './calibrationStrategy';
 import { OBSERVING_MODE, observationsFromPdm } from './observations';
 import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 
-const pdm = MockProposalBackend as ProposalBackend;
+const pdm = MockProposalBackend as ProposalPDM;
 // The proposal as the form saves it. A PDM saved from the form loads and saves back unchanged.
 const saved = mapFormToPdm(mapPdmToForm(pdm));
 const emptySlices = {

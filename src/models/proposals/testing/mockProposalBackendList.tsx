@@ -9,7 +9,7 @@ import {
   TYPE_CONTINUUM,
   TYPE_ZOOM_LONG
 } from '@/utils/constants';
-import { ProposalBackend } from '@/utils/types/proposal';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { Metadata } from '@/utils/types/metadata';
 import { InvestigatorBackend } from '@/utils/types/investigator';
 import type {
@@ -169,7 +169,7 @@ const standardObservationInfo = {
   calibration_strategy: [observatoryCalibration('low-001')],
   data_product_sdps: [continuumImage('low-001')],
   result_details: [continuumResult('low-001', targetM28.target_id as string)]
-} as unknown as ProposalBackend['observation_info'];
+} as unknown as ProposalPDM['observation_info'];
 
 const MockProposalBackendList = [
   {
@@ -240,6 +240,6 @@ const MockProposalBackendList = [
     },
     observation_info: standardObservationInfo
   }
-] as unknown as ProposalBackend[];
+] as unknown as ProposalPDM[];
 
 export default MockProposalBackendList;

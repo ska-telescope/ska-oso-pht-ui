@@ -3,8 +3,8 @@ import { mapPdmToForm } from './pdmMapper';
 import {
   MockProposalBackend,
   MockProposalBackendZoom
-} from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+} from '@/models/proposals/testing/mockProposalBackend';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import { MockCalibratorBackendList } from './testing/mockCalibratorsPdm';
 import { MockCalibratorFrontendList } from './testing/mockCalibrators';
@@ -19,8 +19,8 @@ import {
 
 const mockPdms = [
   ['MockSlicesPdm', MockSlicesPdm],
-  ['MockProposalBackend', MockProposalBackend as unknown as ProposalBackend],
-  ['MockProposalBackendZoom', MockProposalBackendZoom as unknown as ProposalBackend]
+  ['MockProposalBackend', MockProposalBackend as unknown as ProposalPDM],
+  ['MockProposalBackendZoom', MockProposalBackendZoom as unknown as ProposalPDM]
 ] as const;
 
 const strategy = {

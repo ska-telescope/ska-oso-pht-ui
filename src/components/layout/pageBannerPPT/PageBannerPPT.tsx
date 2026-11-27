@@ -16,7 +16,7 @@ import {
   STATUS_ARRAY_PAGES_SV,
   STATUS_OK
 } from '@utils/constants.ts';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import type { ApiResult } from '@/services/api/apiResult';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
@@ -124,7 +124,7 @@ export default function PageBannerPPT({
     }
   };
 
-  const updateProposalResponse = (response: ApiResult<ProposalBackend>) => {
+  const updateProposalResponse = (response: ApiResult<ProposalPDM>) => {
     if (!response.error) {
       // Not needed as the save is not automatic : notifySuccess(t('saveBtn.success'));
     } else {

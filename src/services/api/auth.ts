@@ -140,7 +140,7 @@ export const createRequestInterceptor =
             if (retryError instanceof InteractionRequiredAuthError && !loginRedirectTriggered) {
               loginRedirectTriggered = true;
               console.warn(
-                '[axiosAuthClient] acquireTokenSilent failed after retry, redirecting to login:',
+                '[auth] acquireTokenSilent failed after retry, redirecting to login:',
                 (retryError as InteractionRequiredAuthError).errorCode,
                 (retryError as InteractionRequiredAuthError).message
               );
@@ -162,7 +162,7 @@ export const createRequestInterceptor =
     if (!loginRedirectTriggered) {
       loginRedirectTriggered = true;
       console.warn(
-        '[axiosAuthClient] No MSAL account found after startup completed - redirecting to login.'
+        '[auth] No MSAL account found after startup completed - redirecting to login.'
       );
       instance.loginRedirect(loginRequest);
     }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import MockProposalBackendList from '@services/axios/get/getProposalList/mockProposalBackendList';
+import MockProposalBackendList from '@/models/proposals/testing/mockProposalBackendList';
 import { PROPOSAL_TYPE, TYPE_ZOOM, TYPE_ZOOM_LONG } from '@utils/constants.ts';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { proposalSummariesFromPdm, proposalSummaryFromPdm } from './proposalSummary';

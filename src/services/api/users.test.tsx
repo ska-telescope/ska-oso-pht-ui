@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
-import { MockUserMSGraphList } from '@services/axios/get/getUserByEmail/mockUserMSGraph';
+import { MockUserFrontendList } from '@/models/proposals/testing/mockUserFrontend';
+import { MockUserMSGraphList } from '@/models/proposals/testing/mockUserMSGraph';
 import { UNKNOWN_API_ERROR } from './apiResult';
 import { findUserByEmail, sendInvite } from './users';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Stack } from '@mui/material';
 import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import type { ApiResult } from '@/services/api/apiResult';
 import { generateId, helpers } from '@utils/helpers.ts';
 import {
@@ -151,7 +151,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     setPi(event.target.checked);
   };
 
-  const updateProposalResponse = (response: ApiResult<ProposalBackend>) => {
+  const updateProposalResponse = (response: ApiResult<ProposalPDM>) => {
     if (!response.error) {
       notifySuccess(t('saveBtn.success'));
     } else {

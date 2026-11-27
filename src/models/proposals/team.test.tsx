@@ -7,8 +7,8 @@ import {
   teamFromPdm,
   teamToPdm
 } from './team';
-import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
-import { MockUserMSGraphList } from '@services/axios/get/getUserByEmail/mockUserMSGraph';
+import { MockUserFrontendList } from '@/models/proposals/testing/mockUserFrontend';
+import { MockUserMSGraphList } from '@/models/proposals/testing/mockUserMSGraph';
 import Investigator from '@/utils/types/investigator';
 
 const investigator: Investigator = {

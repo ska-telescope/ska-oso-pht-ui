@@ -2,7 +2,7 @@ import { describe, test, expect, vi } from 'vitest';
 import { fireEvent, render, waitFor, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
-import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
+import { MockUserFrontendList } from '@/models/proposals/testing/mockUserFrontend';
 import MemberEntry from './MemberEntry';
 import { findUserByEmail } from '@/services/api/users';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';

@@ -21,12 +21,6 @@ vi.mock('@/utils/notify/useNotify', () => ({
   })
 }));
 
-// Mock axios client
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() }),
-  useRefreshAuthToken: () => vi.fn()
-}));
-
 // Mock storage
 const mockProposal: Partial<ProposalType> = {
   prslId: '123',

@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import GridProposals, { filterProposals } from './GridProposals';
 import MockProposalFrontendList from '@/models/proposals/testing/mockProposalSummaries';
-import MockProposalBackendList from '@/services/axios/get/getProposalList/mockProposalBackendList';
+import MockProposalBackendList from '@/models/proposals/testing/mockProposalBackendList';
 import { listReviewableProposals } from '@/services/api/proposals';
 import { proposalSummariesFromPdm } from '@/models/proposals/proposalSummary';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';

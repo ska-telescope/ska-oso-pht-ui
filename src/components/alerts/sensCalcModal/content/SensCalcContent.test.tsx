@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
-import { MockProposalBackend } from '@/services/axios/get/getProposal/mockProposalBackend';
+import { MockProposalBackend } from '@/models/proposals/testing/mockProposalBackend';
 import { mapPdmToForm } from '@/models/proposals/pdmMapper';
 import SensCalcContent from './SensCalcContent';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';

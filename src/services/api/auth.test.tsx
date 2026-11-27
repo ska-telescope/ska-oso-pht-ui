@@ -2,8 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { env } from '@/env';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import { getRequestTimeoutMs, mapAxiosError, silentRequest } from './auth';
+import { createRefreshAuthToken, getRequestTimeoutMs, mapAxiosError, silentRequest } from './auth';
 
 vi.stubGlobal('window', {
   location: { hostname: 'localhost', origin: 'http://localhost:3000' },
@@ -31,23 +30,6 @@ vi.mock('@azure/msal-react', () => ({
     }
   })
 }));
-
-const mockRequestUse = vi.fn();
-const mockResponseUse = vi.fn();
-const mockAxiosInstance = {
-  interceptors: {
-    request: { use: mockRequestUse },
-    response: { use: mockResponseUse }
-  }
-};
-
-vi.mock('axios', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('axios')>();
-  return {
-    ...actual,
-    default: { create: vi.fn(() => mockAxiosInstance) }
-  };
-});
 
 const asAxiosError = (partial: Partial<AxiosError>) => partial as AxiosError;
 const asRequestConfig = (partial: Partial<InternalAxiosRequestConfig>) =>
@@ -92,7 +74,7 @@ describe('createRequestInterceptor', () => {
   } as any;
 
   // loginRedirectTriggered is module-level state (shared across every request, deliberately, so
-  // concurrent requests only redirect once - see its own comment in axiosAuthClient.ts). Each of
+  // concurrent requests only redirect once - see its own comment in auth.ts). Each of
   // these tests needs it to start false, so re-import the module fresh rather than let one test's
   // redirect leave it set for the next.
   let createRequestInterceptor: typeof import('./auth').createRequestInterceptor;
@@ -241,36 +223,31 @@ describe('getRequestTimeoutMs', () => {
   });
 });
 
-describe('useAxiosAuthClient', () => {
+describe('createRefreshAuthToken', () => {
+  // The MSAL instance as the app gets it from useMsal (mocked above)
+  const instance = {
+    acquireTokenSilent: mockAcquireTokenSilent,
+    getAllAccounts: mockGetAllAccounts
+  } as unknown as Parameters<typeof createRefreshAuthToken>[0];
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('creates an axios instance and registers both interceptors', () => {
-    const { axiosClient, refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
-
-    expect(axiosClient).toBe(mockAxiosInstance);
-    expect(refreshAuthToken).toEqual(expect.any(Function));
-    expect(mockRequestUse).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
-    expect(mockResponseUse).toHaveBeenCalledWith(expect.any(Function), expect.any(Function));
-  });
-
-  it('refreshAuthToken force-refreshes the token for the current account', async () => {
+  it('force-refreshes the token for the current account', async () => {
     mockAcquireTokenSilent.mockResolvedValue({ accessToken: 'mock-token' });
-    const { refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
 
-    await refreshAuthToken();
+    await createRefreshAuthToken(instance)();
 
     expect(mockAcquireTokenSilent).toHaveBeenCalledWith(
       expect.objectContaining({ account: { username: 'testuser' }, forceRefresh: true })
     );
   });
 
-  it('refreshAuthToken is a no-op when no account is signed in', async () => {
+  it('is a no-op when no account is signed in', async () => {
     mockGetAllAccounts.mockReturnValueOnce([]);
-    const { refreshAuthToken } = useAxiosAuthClient('http://localhost:3000');
 
-    await expect(refreshAuthToken()).resolves.toBeUndefined();
+    await expect(createRefreshAuthToken(instance)()).resolves.toBeUndefined();
     expect(mockAcquireTokenSilent).not.toHaveBeenCalled();
   });
 });

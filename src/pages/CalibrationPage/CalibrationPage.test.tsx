@@ -4,7 +4,9 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { MockCalibratorFrontendList } from '@/models/proposals/testing/mockCalibrators';
-import { MockProposalFrontend } from '@/services/axios/put/putProposal/mockProposalFrontend';
+import { MockProposalBackend } from '@/models/proposals/testing/mockProposalBackend';
+import { mapPdmToForm } from '@/models/proposals/pdmMapper';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { ProposalType } from '@/models/proposals/proposal';
 import CalibrationPage from './CalibrationPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
@@ -53,12 +55,13 @@ vi.mock('../entry/Calibration/CalibrationEntry', () => ({
   default: () => <div data-testid="calibrationEntryStub" />
 }));
 
-// The mock proposal's links and calibration, which are already the form's shape
+// The mock proposal's targets, links and calibration, in the form's shape
+const mockProposal = mapPdmToForm(MockProposalBackend as ProposalPDM);
 const renderWithProposal = (values: Partial<ProposalType>) =>
   wrapper(<CalibrationPage />, {
-    targets: MockProposalFrontend.targets as ProposalType['targets'],
-    targetObservation: MockProposalFrontend.targetObservation,
-    calibrationStrategy: MockProposalFrontend.calibrationStrategy,
+    targets: mockProposal.targets,
+    targetObservation: mockProposal.targetObservation,
+    calibrationStrategy: mockProposal.calibrationStrategy,
     ...values
   });
 

@@ -17,15 +17,8 @@ Allows for text to be displayed in the language of the browser, with English as 
 The data is stored in folders under src/locales, with each language in its own folder ( e.g. en ).
 In this application, all the json files needed to be called pht.json or sv.json.
 
-axios
-=====
+API
+===
 
-.. csv-table:: axios endpoints
-   :header: "Endpoint", "Type", "LocalData", "Parameters", "Purpose"
-
-    "Proposal/list", "GET", "MockProposalBackendList", "current user", "A list of proposals that the user is involved with is obtained from the API"
-    "Proposal", "GET", "MockProposalBackend", "proposal Id", "Complete details of a single proposal is obtained from the API"
-    "Proposal", "PUT", "", "", "Complete details of a proposal are sent to the API for storage"
-    "Proposal/validate", "POST", "TBD", "TBD", "A request to validate the proposal is requested of the API, which return validation results"
-    "coordinated", "GET", "TBD", "Point of reference", "The API is asked to supply the coordinate information for the provided point of reference"
-    "/osd{cycle}", "GET", "MockObservatoryDataBackend", "cycle", "Observatory data is obtained from the API"
+Calls to ska-oso-services are made through the API layer in ``src/services/api``, on the
+generated OpenAPI client. See :doc:`ApiLayer`.

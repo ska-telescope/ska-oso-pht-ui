@@ -3,8 +3,8 @@ import { mapPdmToForm } from './pdmMapper';
 import {
   MockProposalBackend,
   MockProposalBackendZoom
-} from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+} from '@/models/proposals/testing/mockProposalBackend';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { SENSITIVITY_STATE, TYPE_CONTINUUM } from '@/utils/constants';
 import type { ObservationSets } from '@/generated/models';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
@@ -18,8 +18,8 @@ import {
 
 const mockPdms = [
   ['MockSlicesPdm', MockSlicesPdm],
-  ['MockProposalBackend', MockProposalBackend as unknown as ProposalBackend],
-  ['MockProposalBackendZoom', MockProposalBackendZoom as unknown as ProposalBackend]
+  ['MockProposalBackend', MockProposalBackend as unknown as ProposalPDM],
+  ['MockProposalBackendZoom', MockProposalBackendZoom as unknown as ProposalPDM]
 ] as const;
 
 const link = { targetId: 't1', observationId: 'obs1', dataProductsSDPId: 'sdp1' };
@@ -60,7 +60,7 @@ describe('target observation PDM mapping', () => {
     expect(targetObservationToPdm(targetObservationFromPdm(saved, sets))).toEqual(saved);
   });
 
-  const save = (pdm: ProposalBackend) => {
+  const save = (pdm: ProposalPDM) => {
     const sets = pdm.observation_info.observation_sets ?? [];
     return targetObservationToPdm(
       targetObservationFromPdm(pdm.observation_info.result_details, sets)
@@ -90,12 +90,12 @@ describe('target observation PDM mapping', () => {
   });
 
   test('saves the results of MockProposalBackend', () => {
-    const pdm = MockProposalBackend as unknown as ProposalBackend;
+    const pdm = MockProposalBackend as unknown as ProposalPDM;
     expect(save(pdm)).toEqual(pdm.observation_info.result_details);
   });
 
   test('saves the results of MockProposalBackendZoom', () => {
-    const pdm = MockProposalBackendZoom as unknown as ProposalBackend;
+    const pdm = MockProposalBackendZoom as unknown as ProposalPDM;
     const expected = structuredClone(pdm.observation_info.result_details) as any[];
     // A zoom observation saves no continuum beam size
     expected[0].synthesized_beam_size.continuum = '';

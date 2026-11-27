@@ -1,4 +1,4 @@
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 
 // A PDM covering the variants the targets, links and calibration mappers handle: each coordinate
 // kind, each observation type, results supplied as integration time and as sensitivity, a link
@@ -181,4 +181,4 @@ export const MockSlicesPdm = {
       }
     ]
   }
-} as unknown as ProposalBackend;
+} as unknown as ProposalPDM;
