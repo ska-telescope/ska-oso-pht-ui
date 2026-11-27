@@ -32,7 +32,6 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useValidateProposal } from '@/utils/validation/validation';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { useSaveDraft } from '@/services/saveDraft/useSaveDraft';
-import { useLastSaved } from '@/services/saveDraft/LastSavedContext';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -65,7 +64,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const { axiosClient: authClient } = useAxiosAuthClient();
   const { saveToOda } = useProposalOda();
   const { saveDraft, isSavePage, isSaveBlocked } = useSaveDraft();
-  const { lastSavedOn } = useLastSaved();
   const { notifyError, notifySuccess } = useNotify();
 
   const loggedIn = isLoggedIn();
@@ -180,7 +178,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
             <SaveButton testId={'saveBtn'} disabled={isSaveBlocked()} action={handleSave} />
           </Grid>
           <Grid>
-            <LastSaved savedOn={lastSavedOn(getProposal())} />
+            <LastSaved />
           </Grid>
         </>
       )}
