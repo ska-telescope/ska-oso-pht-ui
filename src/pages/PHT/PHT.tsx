@@ -201,7 +201,12 @@ export default function PHT({
 
     const isProposalPageTransition =
       NAV.includes(previousPath) && (NAV.includes(currentPath) || currentPath === PATH[0]);
-    if (isProposalPageTransition) {
+    // A navigation that has just saved the proposal itself (e.g. after submitting it) asks for no
+    // draft save, which would put a submitted proposal back to draft.
+    // TODO remove along with this effect once the form flow moves to the URL
+    const skipDraftSave =
+      (location.state as { skipDraftSave?: boolean } | null)?.skipDraftSave === true;
+    if (isProposalPageTransition && !skipDraftSave) {
       const values = getValues();
       void (async () => {
         const { error } = await saveValuesToOda(values, PROPOSAL_STATUS.DRAFT);
@@ -219,7 +224,7 @@ export default function PHT({
     }
 
     previousPathRef.current = currentPath;
-  }, [location.pathname, notifyError, getValues, reset]);
+  }, [location.pathname, location.state, notifyError, getValues, reset]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />

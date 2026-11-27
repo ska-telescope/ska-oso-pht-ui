@@ -1,6 +1,6 @@
 import { Configuration } from '@/generated';
 import { SKA_OSO_SERVICES_URL } from '@utils/constants';
-import { getRequestTimeoutMs } from '../axiosAuthClient/axiosAuthClient';
+import { getRequestTimeoutMs } from '../requestTimeout/requestTimeout';
 
 // TODO: come back to this and consolidate with the ODT UI. The ODT passes window.env.BACKEND_URL
 // straight to the generated factories as the basePath, because its backend URL is just the

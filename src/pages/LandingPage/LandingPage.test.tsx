@@ -499,6 +499,27 @@ describe('clone proposal', () => {
     });
   });
 
+  test('does not open another proposal while the clone is being created', async () => {
+    let finishCreate = () => {};
+    mockCreateInOda.mockImplementation(
+      (values: ProposalType) =>
+        new Promise((resolve) => {
+          finishCreate = () => resolve({ data: values });
+        })
+    );
+
+    await triggerCloneConfirm();
+    await waitFor(() => expect(mockCreateInOda).toHaveBeenCalledOnce());
+    // Opening the original for cloning loaded it once
+    const loads = mockLoadFromOda.mock.calls.length;
+
+    fireEvent.click(screen.getByTestId('editIcon'));
+    expect(mockLoadFromOda).toHaveBeenCalledTimes(loads);
+
+    finishCreate();
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith(NAV[0]));
+  });
+
   test('opens the created clone, with the PI the backend added, on the Title page', async () => {
     await triggerCloneConfirm();
 

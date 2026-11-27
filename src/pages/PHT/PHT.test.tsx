@@ -15,13 +15,14 @@ import { ProposalType } from '@/models/proposals/proposal';
 const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
 const mockPathname = { current: PATH[0] };
+const mockLocationState: { current: unknown } = { current: null };
 // The form values of the proposal open when PHT mounts, over the defaults of a new proposal
 const mockOpenProposal: { current: Partial<ProposalType> } = { current: { prslId: 'prp-123' } };
 const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } as any };
 
 vi.mock('react-router', () => ({
   useNavigate: () => mockNavigate,
-  useLocation: () => ({ pathname: mockPathname.current }),
+  useLocation: () => ({ pathname: mockPathname.current, state: mockLocationState.current }),
   MemoryRouter: ({ children }: React.PropsWithChildren) => <>{children}</>,
   Routes: () => null,
   Route: () => null
@@ -184,6 +185,7 @@ describe('<PHT />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockPathname.current = PATH[0];
+    mockLocationState.current = null;
     mockOpenProposal.current = { prslId: 'prp-123' };
     mockApplicationContent5.current = { message: '', level: '', delay: 0 };
   });
@@ -267,6 +269,21 @@ describe('<PHT />', () => {
       );
     });
     // Returning home closes the proposal, after its values were taken for the save
+    expect(currentForm().getValues()).toEqual(proposalForm.getProposalFormDefaults());
+  });
+
+  test('does not save a draft when going home straight after a submit', async () => {
+    const { rerenderPHT } = renderPHT();
+
+    mockPathname.current = NAV[3];
+    rerenderPHT();
+
+    mockPathname.current = PATH[0];
+    mockLocationState.current = { skipDraftSave: true };
+    rerenderPHT();
+
+    expect(saveValuesToOda).not.toHaveBeenCalled();
+    // The proposal is still closed
     expect(currentForm().getValues()).toEqual(proposalForm.getProposalFormDefaults());
   });
 

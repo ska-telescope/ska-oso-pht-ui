@@ -150,7 +150,8 @@ export default function PageBannerPPT({
     if (!response.error) {
       notifySuccess(t('submitBtn.success'));
       setOpenProposalDisplay(false);
-      navigate(PATH[0]);
+      // The proposal was just saved as submitted, so PHT mustn't save it again as a draft
+      navigate(PATH[0], { state: { skipDraftSave: true } });
     } else {
       notifyError(response.error);
       setOpenProposalDisplay(false);

@@ -6,6 +6,7 @@ import { MSENTRA_API_URI } from '@/utils/constants';
 import { getAuthCallbackUri, getUseIndigo } from '@/utils/authConfig';
 import { env } from '@/env';
 import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
+import { getRequestTimeoutMs } from '../requestTimeout/requestTimeout';
 
 export enum LogLevel {
   Error,
@@ -31,14 +32,8 @@ type MsalInstance = ReturnType<typeof useMsal>['instance'];
 // ReturnType<typeof useAxiosAuthClient>, whose shape now includes refreshAuthToken too.
 export type AxiosAuthClient = AxiosInstance;
 
-const DEFAULT_REQUEST_TIMEOUT_MS = 20000;
-
-// Test deployments raise this through REQUEST_TIMEOUT_MS (the chart's runtimeEnv.requestTimeoutMs),
-// as a backend with a lot of test data can take longer to answer than users should wait
-export const getRequestTimeoutMs = (): number => {
-  const configured = Number(env.REQUEST_TIMEOUT_MS);
-  return configured > 0 ? configured : DEFAULT_REQUEST_TIMEOUT_MS;
-};
+// Re-exported for existing callers; it lives in its own module (see requestTimeout.ts)
+export { getRequestTimeoutMs };
 
 // Call after any action known to grant new group membership server-side (e.g. creating a
 // proposal or panel, which calls ska-oso-services' create_membership) - acquireTokenSilent

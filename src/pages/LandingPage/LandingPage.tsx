@@ -150,12 +150,14 @@ export default function LandingPage() {
     navigate(NAV[0]);
   };
 
-  const proposalLoadPending = React.useRef(false);
+  // Set while a proposal is being opened or cloned into the form, so that another open or clone
+  // can't start until it finishes: both reset the form, and the later reset would win
+  const proposalRequestPending = React.useRef(false);
 
   const openProposal = async (id: string, onSuccess: () => void) => {
-    if (proposalLoadPending.current) return;
+    if (proposalRequestPending.current) return;
 
-    proposalLoadPending.current = true;
+    proposalRequestPending.current = true;
     try {
       const loaded = await getTheProposal(id);
       if (!pageMounted.current) return;
@@ -166,7 +168,7 @@ export default function LandingPage() {
         alert(t('error.iconClicked'));
       }
     } finally {
-      proposalLoadPending.current = false;
+      proposalRequestPending.current = false;
     }
   };
 
@@ -187,44 +189,51 @@ export default function LandingPage() {
   // original's content and links; createInOda leaves out the links' sensitivity results, which
   // are stale for the new proposal.
   const createProposal = async () => {
-    notifyWarning(t('addProposal.warning'));
-    const original = getValues();
+    if (proposalRequestPending.current) return;
 
-    // The person doing the cloning always becomes the sole PI of the new proposal — not the
-    // original proposal's full investigator list. Rather than guessing their identity
-    // client-side, send no investigators at all: POST /create already builds a PI record from
-    // the caller's verified auth token and appends it server-side (see
-    // ska_oso_services/pht/api/prsls.py's create_proposal), so the proposal it returns, which
-    // createInOda puts in the form, is the authoritative source for who that investigator is.
-    const { data: cloned, error } = await createInOda({
-      ...original,
-      prslId: mintSkuid(Entity.PRP),
-      title: original.title + ' ' + t('cloneProposal.suffix'),
-      cycle: osdCycleId ?? '',
-      investigators: []
-    });
+    proposalRequestPending.current = true;
+    try {
+      notifyWarning(t('addProposal.warning'));
+      const original = getValues();
 
-    if (!cloned) {
-      notifyError(error ?? UNKNOWN_API_ERROR);
-      return;
+      // The person doing the cloning always becomes the sole PI of the new proposal — not the
+      // original proposal's full investigator list. Rather than guessing their identity
+      // client-side, send no investigators at all: POST /create already builds a PI record from
+      // the caller's verified auth token and appends it server-side (see
+      // ska_oso_services/pht/api/prsls.py's create_proposal), so the proposal it returns, which
+      // createInOda puts in the form, is the authoritative source for who that investigator is.
+      const { data: cloned, error } = await createInOda({
+        ...original,
+        prslId: mintSkuid(Entity.PRP),
+        title: original.title + ' ' + t('cloneProposal.suffix'),
+        cycle: osdCycleId ?? '',
+        investigators: []
+      });
+
+      if (!cloned) {
+        notifyError(error ?? UNKNOWN_API_ERROR);
+        return;
+      }
+      notifySuccess(t('addProposal.success') + cloned.prslId);
+      updateAppContent1(validateProposal(cloned));
+      // Create a new access entry for the PI.  Saves doing the endpoint
+      const newAcc: Partial<ProposalAccess> = {
+        prslId: cloned.prslId,
+        role: PROPOSAL_ROLE_PI,
+        permissions: PROPOSAL_ACCESS_PERMISSIONS
+      };
+
+      const acc = Array.isArray(application.content4)
+        ? (application.content4 as ProposalAccess[])
+        : [];
+
+      updateAppContent4([...acc, newAcc]);
+
+      window.scrollTo(0, 0);
+      goToTitlePage();
+    } finally {
+      proposalRequestPending.current = false;
     }
-    notifySuccess(t('addProposal.success') + cloned.prslId);
-    updateAppContent1(validateProposal(cloned));
-    // Create a new access entry for the PI.  Saves doing the endpoint
-    const newAcc: Partial<ProposalAccess> = {
-      prslId: cloned.prslId,
-      role: PROPOSAL_ROLE_PI,
-      permissions: PROPOSAL_ACCESS_PERMISSIONS
-    };
-
-    const acc = Array.isArray(application.content4)
-      ? (application.content4 as ProposalAccess[])
-      : [];
-
-    updateAppContent4([...acc, newAcc]);
-
-    window.scrollTo(0, 0);
-    goToTitlePage();
   };
 
   const cloneConfirmed = () => {
