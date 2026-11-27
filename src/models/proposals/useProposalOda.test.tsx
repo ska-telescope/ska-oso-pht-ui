@@ -304,9 +304,7 @@ describe('useProposalOda', () => {
 
     expect(mockPut).toHaveBeenCalledExactlyOnceWith(pdm.prsl_id, {
       ...mapFormToPdm(form.current.getValues()),
-      status: PROPOSAL_STATUS.DRAFT,
-      submitted_on: null,
-      submitted_by: ''
+      status: PROPOSAL_STATUS.DRAFT
     });
     expect(mockPut.mock.calls[0][1].proposal_info).toMatchObject({
       title: 'Edited title',

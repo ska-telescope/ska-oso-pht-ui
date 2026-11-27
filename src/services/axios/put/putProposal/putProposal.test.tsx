@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest';
 import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
 import { referenceCoordinateToPdm } from '@/models/proposals/targets';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
+import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import '@testing-library/jest-dom';
 import {
   PROPOSAL_STATUS,
@@ -26,6 +27,10 @@ vi.mock('@/generated', async (importOriginal) => ({
 const pdm = MockProposalBackend as ProposalPDM;
 
 describe('PutProposal Service', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   beforeEach(() => {
     vi.resetAllMocks();
   });
@@ -48,13 +53,17 @@ describe('PutProposal Service', () => {
   test.each([PROPOSAL_STATUS.DRAFT, PROPOSAL_STATUS.SUBMITTED])(
     'sends the PDM with the status for %s',
     async (status) => {
+      vi.useFakeTimers({ toFake: ['Date'] });
       mockUpdateProposal.mockResolvedValue({ data: MockProposalBackend });
+      const submitted = status === PROPOSAL_STATUS.SUBMITTED;
 
       await PutProposal(pdm, status);
 
+      // Submission metadata is only set when submitting
       expect(mockUpdateProposal).toHaveBeenCalledExactlyOnceWith(pdm.prsl_id, {
         ...pdm,
-        status
+        status,
+        ...(submitted && { submitted_on: new Date().toISOString(), submitted_by: getUserId() })
       });
     }
   );
