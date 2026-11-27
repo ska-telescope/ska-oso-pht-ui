@@ -120,7 +120,8 @@ stop-dev-environment:
 
 # Temporary: the smoke jobs don't set KUBE_HOST, so the Makefile's CI default (the
 # STFC ingress load balancer) is used, as for js-e2e-test.
-# TODO: Point to real URL once double logon issue fixed.
+# TODO: Point to real URL once double logon issue fixed. Until then the public URLs'
+# redirect URIs (dev, integration, staging) aren't checked.
 .smoke_test:
   image: ${JS_BUILD_IMAGE}
   tags:
