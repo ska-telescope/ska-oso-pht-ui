@@ -21,9 +21,10 @@ export function useProposalOda() {
   const refreshAuthToken = useRefreshAuthToken();
   const { osdPolicies } = useOSDAccessors();
 
-  // Puts a proposal from the ODA in the form, with the SV defaults a save may have left out. A
+  // Maps a proposal from the ODA to form values, adding the SV defaults a save may have left out,
+  // and resets the form to them (so they are also its defaults, and it is no longer dirty). A
   // PDM the form can't hold (e.g. a required field missing) leaves the form as it was.
-  const applyPdm = React.useCallback(
+  const resetFormFromPdm = React.useCallback(
     (pdm: ProposalBackend): ApiResult<ProposalType> => {
       let values: ProposalType;
       try {
@@ -55,9 +56,9 @@ export function useProposalOda() {
       if (!isStillWanted()) {
         return null;
       }
-      return pdm ? applyPdm(pdm) : { error: error ?? UNKNOWN_API_ERROR };
+      return pdm ? resetFormFromPdm(pdm) : { error: error ?? UNKNOWN_API_ERROR };
     },
-    [applyPdm]
+    [resetFormFromPdm]
   );
 
   const saveToOda = React.useCallback(
@@ -77,9 +78,9 @@ export function useProposalOda() {
       // The backend has just made the caller a member of the new proposal. Awaited, so that the
       // next request (e.g. a page fetching on mount) carries a token that reflects it.
       await refreshAuthToken();
-      return applyPdm(pdm);
+      return resetFormFromPdm(pdm);
     },
-    [applyPdm, refreshAuthToken]
+    [resetFormFromPdm, refreshAuthToken]
   );
 
   return { loadFromOda, saveToOda, createInOda };
