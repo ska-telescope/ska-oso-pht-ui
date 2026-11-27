@@ -117,6 +117,10 @@ stop-dev-environment:
 # the deployment's redirect URIs (the app URL and <app URL>auth-callback.html). Runs in addition
 # to each environment's own checks, against deployments whose URLs are registered with Indigo -
 # not the per-commit e2e namespaces, which aren't.
+
+# Temporary: the dev and integration jobs don't set KUBE_HOST, so the Makefile's CI default (the
+# STFC ingress load balancer) is used, as for js-e2e-test.
+# TODO: Point to real URL once double logon issue fixed.
 .smoke_test:
   image: ${JS_BUILD_IMAGE}
   tags:
@@ -139,7 +143,9 @@ smoke-test-dev-environment:
   stage: deploy
   needs:
     - deploy-dev-environment
-  variables: *dev_env_vars
+  # Not *dev_env_vars, which sets the public KUBE_HOST (see .smoke_test)
+  variables:
+    KUBE_NAMESPACE: "dev-ska-oso-pht-ui-aaa"
 
 deploy-integration:
   variables:
@@ -152,7 +158,6 @@ smoke-test-integration:
   needs:
     - deploy-integration
   variables:
-    KUBE_HOST: https://k8s.stfc.skao.int
     KUBE_NAMESPACE: "integration-$CI_PROJECT_NAME"
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
