@@ -1,7 +1,12 @@
-import { PANEL_DECISION_STATUS, REVIEW_TYPE, TECHNICAL_FEASIBILITY } from '@/utils/constants';
-import { ProposalReviewBackend, TechnicalReviewBackend } from '@/utils/types/proposalReview';
+import { PANEL_DECISION_STATUS } from '@/utils/constants';
+import {
+  FeasibilityStatus,
+  ScienceReviewKindEnum,
+  TechnicalReviewKindEnum
+} from '@/generated/models';
+import type { ReviewPDM } from '../reviews';
 
-export const MockProposalScienceReviewBackend: ProposalReviewBackend = {
+export const MockProposalScienceReviewPdm: ReviewPDM = {
   panel_id: 'panel-12345',
   review_id: 'review-12345',
   cycle: 'cycle1',
@@ -13,17 +18,17 @@ export const MockProposalScienceReviewBackend: ProposalReviewBackend = {
   submitted_by: 'user1',
   status: PANEL_DECISION_STATUS.REVIEWED,
   review_type: {
-    kind: REVIEW_TYPE.SCIENCE,
+    kind: ScienceReviewKindEnum.ScienceReview,
     rank: 9,
     conflict: {
       has_conflict: false,
       reason: 'string'
     },
-    excluded_from_decision: 'False'
+    excluded_from_decision: false
   }
 };
 
-export const MockProposalScienceReviewExcludedBackend: ProposalReviewBackend = {
+export const MockProposalScienceReviewExcludedPdm: ReviewPDM = {
   panel_id: 'panel-12345',
   review_id: 'review-12345',
   cycle: 'cycle1',
@@ -35,17 +40,17 @@ export const MockProposalScienceReviewExcludedBackend: ProposalReviewBackend = {
   submitted_by: 'user1',
   status: PANEL_DECISION_STATUS.REVIEWED,
   review_type: {
-    kind: REVIEW_TYPE.SCIENCE,
+    kind: ScienceReviewKindEnum.ScienceReview,
     rank: 9,
     conflict: {
       has_conflict: false,
       reason: 'string'
     },
-    excluded_from_decision: 'False'
+    excluded_from_decision: false
   }
 };
 
-export const MockProposalTechnicalReviewBackend: ProposalReviewBackend = {
+export const MockProposalTechnicalReviewPdm: ReviewPDM = {
   panel_id: 'panel-12345',
   review_id: 'review-12345',
   cycle: 'cycle1',
@@ -57,7 +62,7 @@ export const MockProposalTechnicalReviewBackend: ProposalReviewBackend = {
   submitted_by: 'user1',
   status: PANEL_DECISION_STATUS.REVIEWED,
   review_type: {
-    kind: REVIEW_TYPE.TECHNICAL,
-    is_feasible: TECHNICAL_FEASIBILITY.MAYBE
-  } as TechnicalReviewBackend
+    kind: TechnicalReviewKindEnum.TechnicalReview,
+    is_feasible: FeasibilityStatus.Maybe
+  }
 };

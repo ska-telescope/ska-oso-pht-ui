@@ -9,7 +9,6 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList.tsx';
 import {
   PROPOSAL_STATUS_OPTIONS,
   BANNER_PMT_SPACER,
@@ -30,8 +29,7 @@ import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
-import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { listMyReviews, updateReview as saveReview } from '@/services/api/reviews';
 import { useNotify } from '@/utils/notify/useNotify';
 import {
   getUserId,
@@ -71,7 +69,6 @@ export default function ReviewListPage() {
   const [proposals, setProposals] = React.useState<ProposalSummary[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
 
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleId, getCycle } = useOSDAccessors();
   const userId = getUserId();
 
@@ -92,11 +89,11 @@ export default function ReviewListPage() {
 
   React.useEffect(() => {
     const fetchProposalReviewData = async (_proposalId: string) => {
-      const response = await GetProposalReviewList(authClient);
-      if (typeof response === 'string') {
-        notifyError(response);
+      const { data: reviews, error } = await listMyReviews();
+      if (reviews) {
+        setProposalReviews(reviews);
       } else {
-        setProposalReviews(response);
+        notifyError(error ?? UNKNOWN_API_ERROR);
       }
     };
 
@@ -177,13 +174,10 @@ export default function ReviewListPage() {
       return;
     }
 
-    const response: ProposalReview | { error: string } = await PutProposalReview(
-      authClient,
-      rec as ProposalReview
-    );
+    const { error } = await saveReview(rec as ProposalReview);
 
-    if ('error' in response) {
-      notifyError(response.error);
+    if (error) {
+      notifyError(error);
     } else {
       notifySuccess(t('addReview.success'));
     }
@@ -231,12 +225,9 @@ export default function ReviewListPage() {
         }
       };
       setConflictRow(updatedRow);
-      const response: ProposalReview | string | { error: string } = await PutProposalReview(
-        authClient,
-        updatedRow.sciReview
-      );
-      if (typeof response === 'object' && (response as { error: string })?.error) {
-        notifyError((response as { error: string })?.error);
+      const { error } = await saveReview(updatedRow.sciReview);
+      if (error) {
+        notifyError(error);
       }
 
       if (reason === CONFLICT_REASONS[0]) {

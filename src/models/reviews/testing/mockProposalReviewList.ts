@@ -1,7 +1,7 @@
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@utils/constants.ts';
 import { ProposalReview } from '@utils/types/proposalReview.tsx';
 
-export const MockProposalReviewListFrontend: ProposalReview[] = [
+export const MockProposalReviewList: ProposalReview[] = [
   {
     panelId: 'panel-12345',
     id: 'review-12345',

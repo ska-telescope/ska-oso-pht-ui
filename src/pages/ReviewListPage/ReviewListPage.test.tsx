@@ -5,7 +5,7 @@ import { StoreProvider } from '@utils/storage/store';
 import ReviewListPage from './ReviewListPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { listReviewableProposals } from '@/services/api/proposals';
-import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList.tsx';
+import { listMyReviews } from '@/services/api/reviews';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 
@@ -23,16 +23,9 @@ vi.mock('@/services/api/proposals', () => ({
   listReviewableProposals: vi.fn()
 }));
 
-vi.mock('@services/axios/get/getProposalReviewList/getProposalReviewList.tsx', () => ({
-  default: vi.fn()
-}));
-
-vi.mock('@/services/axios/put/putProposalReview/putProposalReview', () => ({
-  default: vi.fn()
-}));
-
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
+vi.mock('@/services/api/reviews', () => ({
+  listMyReviews: vi.fn(),
+  updateReview: vi.fn()
 }));
 
 vi.mock('@/utils/notify/useNotify', () => ({
@@ -85,7 +78,7 @@ const mockProposal = (cycle: string): Partial<ProposalSummary> => ({
 describe('<ReviewListPage />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (GetProposalReviewList as Mock).mockResolvedValue([]);
+    (listMyReviews as Mock).mockResolvedValue({ data: [] });
     (useOSDAccessors as Mock).mockReturnValue({
       isSV: false,
       osdCycleId: 'CYCLE-1',

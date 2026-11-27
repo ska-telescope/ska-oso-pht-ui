@@ -13,11 +13,10 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import getReviewDashboard from '@services/axios/get/getReviewDashboard/getReviewDashboard';
+import { getReviewDashboard } from '@/services/api/report';
 import { BANNER_PMT_SPACER_MIN, PANEL_DECISION_STATUS } from '@/utils/constants';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
 import D3ColumnWrapper from '@/components/charts/column/wrapper/D3Wrapper';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
@@ -57,7 +56,6 @@ export default function ReviewDashboard() {
   const [panelScienceCategoryTableData, setPanelScienceCategoryTableData] = React.useState<any[]>(
     []
   );
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const [activeView, setActiveView] = useState<DashboardView>(VIEW_PROPOSAL);
 
   const paletteIndex = Number(localStorage.getItem('skao_accessibility_mode'));
@@ -321,14 +319,11 @@ export default function ReviewDashboard() {
   const fetchReport = () => {
     const fetchData = async () => {
       setCurrentReport([]);
-      const response = await getReviewDashboard(authClient);
-      if (typeof response === 'string') {
-        return;
+      // A failed fetch leaves the report empty, as the dashboard has no error display
+      const { data: report } = await getReviewDashboard();
+      if (report) {
+        setCurrentReport(report);
       }
-      if (response && typeof response === 'object' && 'error' in response) {
-        return;
-      }
-      setCurrentReport(response);
     };
     fetchData();
   };

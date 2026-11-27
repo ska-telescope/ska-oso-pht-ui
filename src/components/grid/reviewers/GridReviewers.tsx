@@ -7,7 +7,8 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid, Box } from '@mui/material';
 import React from 'react';
-import GetReviewerList from '@services/axios/get/getReviewerList/getReviewerList';
+import { listReviewers } from '@/services/api/reviewers';
+import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import {
   getColJobTitle,
@@ -21,7 +22,6 @@ import { SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -68,7 +68,6 @@ export default function GridReviewers({
   const [axiosError, setAxiosError] = React.useState('');
   const [fetchList] = React.useState(false);
   const [reviewersCollection, setReviewersCollection] = React.useState<IdObject[]>([]);
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
     'indeterminate'
   );
@@ -100,12 +99,12 @@ export default function GridReviewers({
     };
 
     const fetchData = async () => {
-      const response = await GetReviewerList(authClient);
+      const { data: list, error } = await listReviewers();
 
-      if (typeof response === 'string') {
-        setAxiosError(response);
+      if (list) {
+        setReviewers(filterScienceAndTechnical(list));
       } else {
-        setReviewers(filterScienceAndTechnical(response));
+        setAxiosError(error ?? UNKNOWN_API_ERROR);
       }
     };
     fetchData();

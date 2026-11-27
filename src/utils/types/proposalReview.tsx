@@ -29,33 +29,3 @@ export type ProposalReview = {
   submittedBy: string | null;
   status: string;
 };
-
-export type ScienceReviewBackend = {
-  kind: string;
-  rank: number;
-  conflict: {
-    has_conflict: boolean;
-    reason: string;
-  };
-  excluded_from_decision: string;
-};
-
-export type TechnicalReviewBackend = {
-  kind: string;
-  is_feasible: string;
-};
-
-export type ProposalReviewBackend = {
-  metadata?: Metadata;
-  panel_id: string;
-  review_id: string;
-  cycle: string;
-  reviewer_id: string;
-  prsl_id: string;
-  comments: string;
-  src_net: string;
-  submitted_on: string | null;
-  submitted_by: string | null;
-  status: string;
-  review_type: ScienceReviewBackend | TechnicalReviewBackend;
-};

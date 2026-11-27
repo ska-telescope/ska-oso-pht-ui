@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
 import { listReviewableProposals } from '@/services/api/proposals';
 import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
 import type { ProposalSummary } from '@/models/proposals/proposalSummary';
@@ -12,8 +11,7 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/table/tableReviewDecision/TableReviewDecision';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
 import { PanelDecision } from '@/utils/types/panelDecision';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
+import { createReview, listMyReviews } from '@/services/api/reviews';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { listPanelDecisions, updatePanelDecision } from '@/services/api/panelDecisions';
@@ -28,7 +26,6 @@ export default function ReviewDecisionListPage() {
   const [proposals, setProposals] = React.useState<ProposalSummary[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const { osdCycleId } = useOSDAccessors();
 
   const getReviewDecision = (item: {
@@ -49,9 +46,9 @@ export default function ReviewDecisionListPage() {
   };
 
   const updateReview = async (review: ProposalReview) => {
-    const response = await PostProposalReview(authClient, review, osdCycleId);
-    if (typeof response === 'object' && response?.error) {
-      notifyError(response.error, AlertColorTypes.Error);
+    const { error } = await createReview(review, osdCycleId);
+    if (error) {
+      notifyError(error, AlertColorTypes.Error);
     }
   };
 
@@ -94,11 +91,11 @@ export default function ReviewDecisionListPage() {
       }
     };
     const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList(authClient);
-      if (typeof response === 'string') {
-        notifyError(response);
+      const { data: reviews, error } = await listMyReviews();
+      if (reviews) {
+        setProposalReviews(reviews);
       } else {
-        setProposalReviews(response);
+        notifyError(error ?? UNKNOWN_API_ERROR);
       }
     };
     fetchProposalData();

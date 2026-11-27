@@ -2,10 +2,7 @@ import { describe, test, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
-import {
-  MockReviewerInternal,
-  MockReviewersList
-} from '@services/axios/get/getReviewerList/mockReviewerList';
+import { MockReviewerInternal, MockReviewersList } from '@/models/reviews/testing/mockReviewerList';
 import { PanelProposal } from '@utils/types/panelProposal.tsx';
 import PanelManagement, {
   addProposalPanel,

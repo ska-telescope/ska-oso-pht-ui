@@ -27,8 +27,7 @@ import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
+import { updateReview as saveReview } from '@/services/api/reviews';
 import { getUserId } from '@/utils/aaa/aaaUtils';
 import { useNotify } from '@/utils/notify/useNotify';
 import { ChoiceCards } from '@/components/fields/choiceCards/choiceCards';
@@ -58,7 +57,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const ROW_HEIGHT_PX = 28.5; /* approximate height of one row in pixels */
 
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const userId = getUserId();
 
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
@@ -121,12 +119,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   /*---------------------------------------------------------------------------*/
 
   const updateReview = async (submitted = false) => {
-    const response: ProposalReview | string | { error: string } = await PutProposalReview(
-      authClient,
-      getReview(submitted)
-    );
-    if (typeof response === 'object' && (response as { error: string })?.error) {
-      notifyError((response as { error: string })?.error);
+    const { error } = await saveReview(getReview(submitted));
+    if (error) {
+      notifyError(error);
     } else {
       notifySuccess(t('addReview.success'));
     }

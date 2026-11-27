@@ -1,8 +1,7 @@
-import { OSO_SERVICES_REPORT_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import { ReviewDashboard, ReviewDashboardBackend } from '@utils/types/reviewDashboard.tsx';
-import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.tsx';
 
-export function mappingReviewDashboardBackendToFrontend(
+/** The rows of the review dashboard report, as the PMT holds them. */
+export function reviewDashboardFromPdm(
   reviewDashboardBackend: ReviewDashboardBackend[]
 ): ReviewDashboard[] {
   const transformedReviewDashboard = (
@@ -40,23 +39,3 @@ export function mappingReviewDashboardBackendToFrontend(
 
   return reviewDashboardBackend.map((item) => transformedReviewDashboard(item));
 }
-
-async function getReviewDashboard(
-  authAxiosClient: AxiosAuthClient
-): Promise<ReviewDashboard[] | { error: string }> {
-  try {
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${OSO_SERVICES_REPORT_PATH}`);
-
-    if (!result || !Array.isArray(result.data)) {
-      return { error: 'error.API_UNKNOWN_ERROR' };
-    }
-    return mappingReviewDashboardBackendToFrontend(result.data) as ReviewDashboard[];
-  } catch (e) {
-    if (e instanceof Error) {
-      return { error: e.message };
-    }
-    return { error: 'error.API_UNKNOWN_ERROR' };
-  }
-}
-
-export default getReviewDashboard;
