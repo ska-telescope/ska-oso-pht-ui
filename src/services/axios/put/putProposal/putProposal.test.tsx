@@ -3,8 +3,6 @@ import { getProposalFormValues } from '@/models/proposals/useProposalForm';
 import '@testing-library/jest-dom';
 import {
   PROPOSAL_STATUS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
-  REFERENCE_COORDINATE_TYPE_ICRS,
   TYPE_CONTINUUM,
   TYPE_ZOOM,
   TYPE_PST,
@@ -19,7 +17,6 @@ import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBack
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
   getObservationTypeDetails,
-  getReferenceCoordinate,
   mapCalibrationStrategyToBackend
 } from './putProposalMapping.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
@@ -284,44 +281,6 @@ describe('mapCalibrationStrategyToBackend', () => {
         notes: null
       }
     ]);
-  });
-});
-
-describe('getReferenceCoordinate', () => {
-  test('maps galactic coordinates, leaving the unused fields to the PDM', () => {
-    const galactic = {
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
-      l: 123.4,
-      b: 56.7,
-      pmL: 1.1,
-      pmB: 2.2,
-      epoch: 'J2000',
-      parallax: 0.5
-    };
-    const result = getReferenceCoordinate(galactic);
-    expect(result).toEqual({
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-      l: 123.4,
-      b: 56.7
-    });
-  });
-
-  test('maps ICRS coordinates, leaving the unused fields to the PDM', () => {
-    const icrs = {
-      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-      raStr: '12:34:56.7',
-      decStr: '-12:34:56.7',
-      pmRa: 0.1,
-      pmDec: 0.2,
-      epoch: 'J2000',
-      parallax: 0.3
-    };
-    const result = getReferenceCoordinate(icrs);
-    expect(result).toEqual({
-      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-      ra_str: '12:34:56.7',
-      dec_str: '-12:34:56.7'
-    });
   });
 });
 

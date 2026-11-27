@@ -9,6 +9,8 @@ import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { SKAThemeProvider, THEME_LIGHT } from '@ska-telescope/ska-gui-components';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
+import { formTargetFromLegacy } from '@/models/proposals/legacyTargets';
+import type Target from '@/utils/types/target';
 import * as proposalForm from '@/models/proposals/useProposalForm';
 
 const mockNavigate = vi.fn();
@@ -295,7 +297,7 @@ describe('<PHT /> auto-repair for a linked target with no observation', () => {
     });
 
     expect(vi.mocked(linkTarget)).toHaveBeenCalledWith(
-      mockProposal.targets[0],
+      formTargetFromLegacy(mockProposal.targets[0] as unknown as Target),
       expect.objectContaining({ getValues: expect.any(Function) }),
       {},
       null

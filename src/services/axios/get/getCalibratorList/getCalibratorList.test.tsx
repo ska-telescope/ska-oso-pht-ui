@@ -1,16 +1,16 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.tsx';
 import { MockCalibratorFrontendList } from './mockCalibratorListFrontend';
 import { MockCalibratorBackendList } from './mockCalibratorListBackend';
-import {
-  BAND_1_STR,
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  SA_AA2
-} from '@utils/constants.ts';
+import { BAND_1_STR, SA_AA2 } from '@utils/constants.ts';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
-import { Target } from '@/utils/types/target';
+import {
+  newTarget,
+  RADIAL_MOTION_TYPE,
+  REFERENCE_COORDINATE_KIND,
+  type TargetInput,
+  targetsToPdm
+} from '@/models/proposals/targets';
 import {
   newObservation,
   newSvObservation,
@@ -22,21 +22,21 @@ import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibrat
 describe('GetCalibratorList Service', () => {
   let mockedAuthClient: any;
 
-  const mockTarget: Target = {
-    id: 1,
+  const mockTarget: TargetInput = {
+    ...newTarget('target-1', REFERENCE_COORDINATE_KIND.ICRS),
     name: 'M89',
-    kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-    raStr: '12:35:39.8073',
-    decStr: '12:33:22.831',
+    referenceCoordinate: {
+      kind: REFERENCE_COORDINATE_KIND.ICRS,
+      raStr: '12:35:39.8073',
+      decStr: '12:33:22.831'
+    },
+    radialMotion: { type: RADIAL_MOTION_TYPE.REDSHIFT, redshift: 0.000914 }
+  };
 
-    velType: 1,
-    redshift: '0.000914'
-  } as Target;
-
-  const mockSSOTarget: Target = {
-    id: 1,
+  const mockSSOTarget: TargetInput = {
+    ...newTarget('target-1', REFERENCE_COORDINATE_KIND.SPECIAL),
     name: 'Venus',
-    kind: REFERENCE_COORDINATE_TYPE_SSO.value
+    referenceCoordinate: { kind: REFERENCE_COORDINATE_KIND.SPECIAL, name: 'Venus' }
   };
 
   // LOW, for 1 h
@@ -112,7 +112,7 @@ describe('GetCalibratorList Service', () => {
     expect(calledUrl).toContain('telescope=ska_low');
     expect(calledUrl).toContain('scan_duration_ms=3600000');
     expect(calledUrl).toContain('strategy=highest_elevation');
-    expect(calledBody).toEqual(getTargets([mockTarget])[0]);
+    expect(calledBody).toEqual(targetsToPdm([mockTarget])[0]);
   });
 
   test('returns error message on API failure', async () => {

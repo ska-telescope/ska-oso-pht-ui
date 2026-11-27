@@ -3,7 +3,7 @@ import { FormProvider, useForm, UseFormReturn } from 'react-hook-form';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { ProposalType } from '@/models/proposals/proposal';
 import { getProposalFormValues } from '@/models/proposals/useProposalForm';
-import { REFERENCE_COORDINATE_TYPE_ICRS, SENSITIVITY_STATE } from '@/utils/constants';
+import { SENSITIVITY_STATE } from '@/utils/constants';
 import {
   newSvObservation,
   OBSERVING_MODE,
@@ -15,7 +15,7 @@ import {
   newDataProduct
 } from '@/models/proposals/dataProducts';
 import type { Sensitivity } from '@/models/proposals/targetObservation';
-import type { TargetType } from '@/models/proposals/targets';
+import { newTarget, REFERENCE_COORDINATE_KIND, type TargetInput } from '@/models/proposals/targets';
 import type TargetObservation from '@/utils/types/targetObservation';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import { SENS_CALC_ERROR_KIND, SensCalcError, SensCalcSuccess } from './client';
@@ -43,13 +43,15 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 
 type Response = SensCalcSuccess<SensitivityResult> | SensCalcError;
 
-const TARGET = {
-  id: 'target-1',
+const TARGET: TargetInput = {
+  ...newTarget('target-1', REFERENCE_COORDINATE_KIND.ICRS),
   name: 'M1',
-  kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-  raStr: '05:34:31.94',
-  decStr: '+22:00:52.2'
-} as TargetType;
+  referenceCoordinate: {
+    kind: REFERENCE_COORDINATE_KIND.ICRS,
+    raStr: '05:34:31.94',
+    decStr: '+22:00:52.2'
+  }
+};
 
 const OBSERVATION: ObservationInput = {
   ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
@@ -101,7 +103,8 @@ const renderService = (link: TargetObservation, dataProducts = [DATA_PRODUCT]) =
   const Editor = () => {
     form = useForm<ProposalType>({
       defaultValues: {
-        ...getProposalFormValues({ targets: [TARGET], targetObservation: [link], dataProducts }),
+        ...getProposalFormValues({ targetObservation: [link], dataProducts }),
+        targets: [TARGET],
         observations: [OBSERVATION]
       }
     });
@@ -272,6 +275,28 @@ describe('useSensitivityService', () => {
 
     expect(sendSensitivityRequest).toHaveBeenCalledTimes(1);
     expect(storedResults(getForm())?.state).toBe(SENSITIVITY_STATE.DONE);
+  });
+
+  test('sends nothing for an invalid target', async () => {
+    const { getForm } = await renderOpenedService();
+
+    // A right ascension out of range
+    act(() =>
+      getForm().setValue('targets', [
+        {
+          ...TARGET,
+          referenceCoordinate: {
+            kind: REFERENCE_COORDINATE_KIND.ICRS,
+            raStr: '25:00:00',
+            decStr: '+22:00:52.2'
+          }
+        }
+      ])
+    );
+    await debounce();
+
+    expect(sendSensitivityRequest).not.toHaveBeenCalled();
+    expect(storedResults(getForm())).toBeUndefined();
   });
 
   test('sends nothing for an observation the OSD rules show an error on', async () => {

@@ -3,13 +3,15 @@ import Target from '@utils/types/target';
 import TargetObservation from '@utils/types/targetObservation';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy';
 import type { ProposalFormAccess } from './proposal';
+import { legacyTargetsFromForm } from './legacyTargets';
 
 // The form's targets, links and calibration, read as the legacy types the pages still work with.
 // The casts go once the pages use the slice types directly.
 
 type FormReader = Pick<ProposalFormAccess, 'getValues'>;
 
-export const getFormTargets = (form: FormReader) => (form.getValues('targets') ?? []) as Target[];
+export const getFormTargets = (form: FormReader): Target[] =>
+  legacyTargetsFromForm(form.getValues('targets') ?? []);
 
 export const getFormLinks = (form: FormReader) =>
   (form.getValues('targetObservation') ?? []) as TargetObservation[];

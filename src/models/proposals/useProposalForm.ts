@@ -6,13 +6,21 @@ import { getTeamValues } from './team';
 import Investigator from '@/utils/types/investigator';
 import Observation from '@/utils/types/observation';
 import GroupObservation from '@/utils/types/groupObservation';
+import Target from '@/utils/types/target';
 import { formObservationsFromLegacy } from './legacyObservations';
+import { formTargetsFromLegacy } from './legacyTargets';
 import { ObservationOsd } from './observations';
 import type { ProposalSubTypeType, ProposalTypeType } from '@/utils/constants';
 
 type ProposalSeed = Omit<
   Partial<ProposalType>,
-  'prslId' | 'cycle' | 'proposalType' | 'scienceCategory' | 'investigators' | 'observations'
+  | 'prslId'
+  | 'cycle'
+  | 'proposalType'
+  | 'scienceCategory'
+  | 'investigators'
+  | 'targets'
+  | 'observations'
 > & {
   id?: string | null;
   cycle?: string | null;
@@ -21,7 +29,8 @@ type ProposalSeed = Omit<
   proposalSubType?: ProposalSubTypeType[] | null;
   scienceCategory?: number | string | null;
   investigators?: Investigator[] | null;
-  // The legacy store's shape, until nothing reads observations from there
+  // The legacy store's shape, until nothing reads targets or observations from there
+  targets?: Target[] | null;
   observations?: Observation[] | null;
   groupObservations?: GroupObservation[] | null;
 };
@@ -68,6 +77,7 @@ export const getProposalFormValues = (proposal?: ProposalSeed): ProposalType => 
     },
     ...getDetailsValues(proposal),
     ...getTeamValues(proposal),
+    targets: formTargetsFromLegacy(proposal?.targets),
     observations: formObservationsFromLegacy(proposal?.observations, proposal?.groupObservations)
   };
 };

@@ -1,4 +1,5 @@
-import type { VelocityDefinition, VelocityType } from '@/utils/constants';
+import type { VelocityType } from '@/utils/constants';
+import type { PointingKind, RadialVelocityDefinition } from '@/generated/models';
 
 /*
 export type TargetBackend = {
@@ -62,7 +63,8 @@ export type Target = {
   name: string;
   redshift?: string;
   referenceFrame?: string;
-  velocityDefinition: VelocityDefinition;
+  velocityDefinition: RadialVelocityDefinition;
+  fieldPatternType?: PointingKind;
   velType?: VelocityType;
   vel?: string;
   velUnit?: number;

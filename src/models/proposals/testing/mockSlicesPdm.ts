@@ -67,7 +67,7 @@ export const MockSlicesPdm = {
           epoch: 2000
         },
         radial_velocity: {
-          quantity: { value: 25, unit: 'km/s' },
+          quantity: { value: 25, unit: 'km / s' },
           definition: 'RADIO',
           reference_frame: 'LSRK',
           redshift: 0
@@ -85,7 +85,7 @@ export const MockSlicesPdm = {
           epoch: 2000
         },
         radial_velocity: {
-          quantity: { value: 0, unit: 'm/s' },
+          quantity: { value: 0, unit: 'km / s' },
           definition: 'OPTICAL',
           reference_frame: 'BARYCENTRIC',
           redshift: 0.5
@@ -96,7 +96,7 @@ export const MockSlicesPdm = {
         name: 'Jupiter',
         reference_coordinate: { kind: 'special', name: 'Jupiter' },
         radial_velocity: {
-          quantity: { value: 0, unit: 'km/s' },
+          quantity: { value: 0, unit: 'km / s' },
           definition: 'RADIO',
           reference_frame: 'LSRK',
           redshift: 0

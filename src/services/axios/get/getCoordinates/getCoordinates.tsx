@@ -1,8 +1,12 @@
 import { isAxiosError } from 'axios';
 import { SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import axiosClient from '../../axiosClient/axiosClient.tsx';
+import { REFERENCE_COORDINATE_KIND } from '@/models/proposals/targets';
 
-const UNITS = ['equatorial', 'galactic'];
+const COORDINATE_MAPPING = {
+  [REFERENCE_COORDINATE_KIND.ICRS]: 'equatorial',
+  [REFERENCE_COORDINATE_KIND.GALACTIC]: 'galactic'
+} as const;
 
 // Error codes are keys under resolve.error in the translations. They are only shown when the
 // backend sends no message of its own (e.g. the request got no response).
@@ -34,14 +38,15 @@ const resolveErrorMessage = (e: unknown): string | undefined => {
 
 export type ResolveError = { error: string; message?: string };
 
-async function GetCoordinates(targetName: string, skyUnits: number) {
-  const units = skyUnits < 0 || skyUnits > UNITS.length - 1 ? 0 : skyUnits;
-
+async function GetCoordinates(
+  targetName: string,
+  kind: typeof REFERENCE_COORDINATE_KIND.ICRS | typeof REFERENCE_COORDINATE_KIND.GALACTIC
+) {
   try {
     const URL_PATH = `/coordinates/`;
     /* This is a rare case where the OSO-services endpoint is open to the public */
     const result = await axiosClient.get(
-      `${SKA_OSO_SERVICES_URL}${URL_PATH}${targetName}/${UNITS[units]}`
+      `${SKA_OSO_SERVICES_URL}${URL_PATH}${targetName}/${COORDINATE_MAPPING[kind]}`
     );
     return typeof result === 'undefined' ? { error: RESOLVE_ERROR_UNKNOWN } : result.data;
   } catch (e) {

@@ -12,6 +12,7 @@ import { ProposalType } from '@/models/proposals/proposal';
 import { linkTarget } from '@/utils/autoLinking/AutoLinking';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import phtTranslations from '@/locales/en/pht.json';
+import { newTarget, REFERENCE_COORDINATE_KIND } from '@/models/proposals/targets';
 
 // Exposes the global form, which holds the entry and the targets
 let formProbe: UseFormReturn<ProposalType>;
@@ -35,11 +36,12 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 const mockStore = vi.hoisted(() => ({ targets: [] as unknown[] }));
-const mockOSD = vi.hoisted(() => ({ autoLink: true }));
+const mockOSD = vi.hoisted(() => ({ autoLink: true, isSV: false }));
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
     autoLink: mockOSD.autoLink,
+    isSV: mockOSD.isSV,
     osdCycleId: 'CYCLE-1',
     osdCyclePolicy: {
       maxTargets: 1,
@@ -88,7 +90,7 @@ const DEC = 'skyDirection.label.2.0';
 const nameInput = () => screen.getByRole('textbox', { name: 'name.label' });
 const raInput = () => screen.getByRole('textbox', { name: RA });
 const decInput = () => screen.getByRole('textbox', { name: DEC });
-const velocityInput = () => screen.getByRole('textbox', { name: 'velocity.0.label' });
+const velocityInput = () => screen.getByRole('spinbutton', { name: 'velocity.0.label' });
 const addButton = () => screen.getByRole('button', { name: 'addTarget.label' });
 const clearButton = () => screen.getByRole('button', { name: 'clearBtn.label' });
 const resolveButton = () => screen.getByRole('button', { name: 'resolve.label' });
@@ -96,6 +98,25 @@ const resolveButton = () => screen.getByRole('button', { name: 'resolve.label' }
 describe('<TargetEntry />', () => {
   test('renders correctly', () => {
     wrapper(<TargetEntry />);
+  });
+});
+
+describe('<TargetEntry /> field pattern', () => {
+  afterEach(() => {
+    mockOSD.isSV = false;
+  });
+
+  it("shows a new target's field pattern type, which can't be changed yet", () => {
+    wrapper(<TargetEntry />);
+    const fieldPattern = screen.getByRole('combobox', { name: 'fieldPattern.label' });
+    expect(fieldPattern).toHaveTextContent('PointedMosaicParameters');
+    expect(fieldPattern).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('does not show the field pattern for science verification', () => {
+    mockOSD.isSV = true;
+    wrapper(<TargetEntry />);
+    expect(screen.queryByRole('combobox', { name: 'fieldPattern.label' })).not.toBeInTheDocument();
   });
 });
 
@@ -145,7 +166,10 @@ describe('<TargetEntry /> coordinate system', () => {
     fireEvent.click(await screen.findByRole('option', { name: 'Galactic' }));
 
     // Galactic longitude and latitude replace right ascension and declination
-    await waitFor(() => expect(screen.getAllByRole('spinbutton')).toHaveLength(2));
+    await waitFor(() =>
+      expect(screen.getByRole('spinbutton', { name: 'skyDirection.label.1.1' })).toBeInTheDocument()
+    );
+    expect(screen.getByRole('spinbutton', { name: 'skyDirection.label.2.1' })).toBeInTheDocument();
     expect(screen.queryByRole('textbox', { name: RA })).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox', { name: DEC })).not.toBeInTheDocument();
   }, 15000);
@@ -161,10 +185,10 @@ describe('<TargetEntry /> velocity type', () => {
     await user.type(nameInput(), 'M2');
     await user.type(raInput(), '21:33:27.02');
     await user.type(decInput(), '-00:49:23.7');
-    await user.type(velocityInput(), 'abc');
+    await user.clear(velocityInput());
     await waitFor(() => expect(addButton()).toBeDisabled());
 
-    // Redshift is in use now, so the invalid velocity no longer stops the target being added
+    // Redshift is in use now, so the missing velocity no longer stops the target being added
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'velocityType.label' }));
     fireEvent.click(await screen.findByRole('option', { name: 'velocity.1.label' }));
     await waitFor(() => expect(addButton()).toBeEnabled());
@@ -179,7 +203,7 @@ describe('<TargetEntry /> name validation', () => {
     });
     act(() => {
       formProbe.setValue('targets', [
-        { id: 'target-1', name: 'M2', kind: 0, velocityDefinition: 'RADIO' }
+        { ...newTarget('target-1', REFERENCE_COORDINATE_KIND.ICRS), name: 'M2' }
       ]);
     });
 
@@ -364,9 +388,37 @@ describe('<TargetEntry /> auto-linking route', () => {
 
     expect(linkTarget).not.toHaveBeenCalled();
     expect(formProbe.getValues('targets')).toEqual([
-      expect.objectContaining({ name: 'My Target', raStr: '12:34:56' })
+      expect.objectContaining({
+        name: 'My Target',
+        referenceCoordinate: expect.objectContaining({ raStr: '12:34:56' })
+      })
     ]);
     expect(nameInput()).toHaveValue('');
+  }, 15000);
+
+  it("names a solar system object's target after the object", async () => {
+    mockOSD.autoLink = false;
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'referenceCoordinates.label' }));
+    fireEvent.click(await screen.findByRole('option', { name: 'Solar System Object' }));
+    fireEvent.mouseDown(await screen.findByRole('combobox', { name: 'name.label' }));
+    fireEvent.click(await screen.findByRole('option', { name: 'Mars' }));
+    await waitFor(() => expect(addButton()).toBeEnabled());
+    fireEvent.click(addButton());
+
+    await waitFor(() =>
+      expect(formProbe.getValues('targets')).toEqual([
+        expect.objectContaining({
+          name: 'Mars',
+          referenceCoordinate: { kind: REFERENCE_COORDINATE_KIND.SPECIAL, name: 'Mars' },
+          velocityDefinition: 'OPTICAL',
+          referenceFrame: 'TOPOCENTRIC'
+        })
+      ])
+    );
   }, 15000);
 
   it('keeps the target being entered out of the proposal, and drops it when closed', async () => {

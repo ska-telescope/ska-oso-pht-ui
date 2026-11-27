@@ -1,10 +1,9 @@
 import GetCalibratorList from '@services/axios/get/getCalibratorList/getCalibratorList';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient';
-import { REFERENCE_COORDINATE_TYPE_SSO } from '@/utils/constants';
 import { generateCalibrationId } from '@/utils/helpers';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import type { ObservationInput } from './observations';
-import Target from '@/utils/types/target';
+import { REFERENCE_COORDINATE_KIND, type TargetInput } from './targets';
 
 // Calibration operations: everything that creates or replaces a calibration strategy, including
 // the calibrator lookup. Kept apart from the calibrationStrategy slice so its mappers stay free
@@ -17,9 +16,9 @@ import Target from '@/utils/types/target';
 export const lookupCalibrators = async (
   authAxiosClient: AxiosAuthClient,
   observation: ObservationInput,
-  target: Target
+  target: TargetInput
 ): Promise<Calibrator[] | null> => {
-  if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+  if (target.referenceCoordinate.kind === REFERENCE_COORDINATE_KIND.SPECIAL) {
     return null;
   }
   const response = await GetCalibratorList(authAxiosClient, observation, target);
@@ -38,7 +37,7 @@ export const buildCalibrationStrategy = async (
     notes = null
   }: {
     observation: ObservationInput;
-    target: Target;
+    target: TargetInput;
     notes?: string | null;
   }
 ): Promise<CalibrationStrategy> => ({

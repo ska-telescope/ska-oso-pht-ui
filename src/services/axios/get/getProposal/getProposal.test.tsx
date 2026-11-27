@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import Proposal from '@utils/types/proposal.tsx';
+import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
@@ -102,10 +102,10 @@ describe('GetProposal Service', () => {
         ...MockProposalBackend.observation_info,
         targets: MockProposalBackend.observation_info?.targets?.map((target) => ({
           ...target,
-          radial_velocity: undefined
+          reference_coordinate: { kind: 'altaz' }
         }))
       }
-    };
+    } as unknown as ProposalBackend;
     expect(() => mapping(malformed)).toThrow();
     mockedAuthClient.get.mockResolvedValue({ data: malformed });
 

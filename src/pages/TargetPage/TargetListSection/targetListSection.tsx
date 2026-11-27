@@ -3,13 +3,15 @@ import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material
 import { useFormContext, useFormState, useWatch } from 'react-hook-form';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { ProposalType } from '@/models/proposals/proposal';
+import { useTargetEntryForm } from '@/models/proposals/targetEntry';
 import {
-  applyTargetEdit,
-  targetEntryFromTarget,
-  TargetEntryType,
-  useTargetEntryForm
-} from '@/models/proposals/targetEntry';
-import { REFERENCE_COORDINATE_TYPE_ICRS, REFERENCE_COORDINATE_TYPE_SSO } from '@utils/constants.ts';
+  RADIAL_MOTION_TYPE,
+  REFERENCE_COORDINATE_KIND,
+  TargetInput
+} from '@/models/proposals/targets';
+import { legacyTargetsFromForm } from '@/models/proposals/legacyTargets';
+import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
+import { leadZero } from '@utils/helpers.ts';
 import { removeTarget } from '@/models/proposals/targetOperations';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
@@ -29,22 +31,23 @@ export default function TargetListSection() {
   const { t } = useScopedTranslation();
   const theme = useTheme();
   const form = useFormContext<ProposalType>();
-  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
-  // The edit dialog's entry is a local form, so it is not saved; editStartRef holds the entry as the
-  // dialog opened with it, so only the fields the user changes are applied
-  const editEntryForm = useTargetEntryForm();
-  // Checks the whole entry, so only the velocity or redshift in use counts
+  const targets = useWatch({ control: form.control, name: 'targets' }) ?? [];
+  // The edit dialog's entry is a local form, so it is not saved. The edited target can't take
+  // another target's name.
+  const editEntryForm = useTargetEntryForm(targets);
   const { isValid: editIsValid } = useFormState({ control: editEntryForm.control });
-  const editStartRef = React.useRef<TargetEntryType | null>(null);
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const [rowTarget, setRowTarget] = React.useState<Target | null>(null);
+  const [rowTarget, setRowTarget] = React.useState<TargetInput | null>(null);
   const { isSV, osdCyclePolicy } = useOSDAccessors();
 
   const maxTargets = osdCyclePolicy?.maxTargets ?? null;
 
-  const deleteIconClicked = (e: Target) => {
-    setRowTarget(e);
+  // The grid shows the targets in the legacy shape, so its rows are found in the form by ID
+  const formTarget = (row: Target) => targets.find((rec) => rec.id === row.id) ?? null;
+
+  const deleteIconClicked = (row: Target) => {
+    setRowTarget(formTarget(row));
     setOpenDeleteDialog(true);
   };
 
@@ -61,33 +64,53 @@ export default function TargetListSection() {
     closeDialog();
   };
 
-  const editIconClicked = (e: Target) => {
-    const entry = targetEntryFromTarget(e);
-    editStartRef.current = entry;
-    editEntryForm.reset(entry);
-    setRowTarget(e);
+  const editIconClicked = (row: Target) => {
+    const target = formTarget(row);
+    if (!target) {
+      return;
+    }
+    editEntryForm.reset(target);
+    setRowTarget(target);
     setOpenEditDialog(true);
   };
 
-  // The edit as the schema parsed it, so its text is trimmed
+  // The edit as the schema parsed it, so its text is trimmed. An edited ICRS coordinate gets its
+  // lead zero.
   const editConfirmed = () =>
-    editEntryForm.handleSubmit((after) => {
-      if (rowTarget && editStartRef.current) {
-        const edited = applyTargetEdit(rowTarget, editStartRef.current, after);
-        form.setValue(
-          'targets',
-          targets.map((rec) => (rec.id === edited.id ? edited : rec))
-        );
-      }
+    editEntryForm.handleSubmit((edited: TargetInput) => {
+      const coord = edited.referenceCoordinate;
+      const withLeadZero: TargetInput =
+        coord.kind === REFERENCE_COORDINATE_KIND.ICRS
+          ? {
+              ...edited,
+              referenceCoordinate: {
+                ...coord,
+                raStr: leadZero(coord.raStr),
+                decStr: leadZero(coord.decStr)
+              }
+            }
+          : edited;
+      form.setValue(
+        'targets',
+        targets.map((rec) => (rec.id === withLeadZero.id ? withLeadZero : rec))
+      );
       setRowTarget(null);
       closeDialog();
     })();
 
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = targets.find((p) => p.id === rowTarget?.id);
-    const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
-    const isSSO = rec?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+    const coord = rowTarget?.referenceCoordinate;
+    const radialMotion = rowTarget?.radialMotion;
+    // The coordinate pair of a target that has one
+    const [first, second] =
+      coord?.kind === REFERENCE_COORDINATE_KIND.ICRS
+        ? [coord.raStr, coord.decStr]
+        : coord?.kind === REFERENCE_COORDINATE_KIND.GALACTIC
+          ? [coord.l, coord.b]
+          : [];
+    const isICRS = coord?.kind === REFERENCE_COORDINATE_KIND.ICRS;
+    const isSSO = coord?.kind === REFERENCE_COORDINATE_KIND.SPECIAL;
     return (
       <Grid
         container
@@ -100,7 +123,7 @@ export default function TargetListSection() {
         }}
       >
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec?.name}</Typography>
+          <Typography variant="body1">{rowTarget?.name}</Typography>
         </FieldWrapper>
         {!isSSO && (
           <>
@@ -108,19 +131,23 @@ export default function TargetListSection() {
               label={isICRS ? t('skyDirection.label.1.0') : t('skyDirection.label.1.1')}
               labelWidth={LABEL_WIDTH}
             >
-              <Typography>{isICRS ? rec?.raStr : rec?.l}</Typography>
+              <Typography>{first}</Typography>
             </FieldWrapper>
             <FieldWrapper
               label={isICRS ? t('skyDirection.label.2.0') : t('skyDirection.label.2.1')}
               labelWidth={LABEL_WIDTH}
             >
-              <Typography>{isICRS ? rec?.decStr : rec?.b}</Typography>
+              <Typography>{second}</Typography>
             </FieldWrapper>
             <FieldWrapper label={t('velocity.0.label')} labelWidth={LABEL_WIDTH}>
-              <Typography variant="body1">{rec?.vel}</Typography>
+              <Typography variant="body1">
+                {radialMotion?.type === RADIAL_MOTION_TYPE.VELOCITY && radialMotion.velocity.value}
+              </Typography>
             </FieldWrapper>
             <FieldWrapper label={t('velocity.1.label')} labelWidth={LABEL_WIDTH}>
-              <Typography variant="body1">{rec?.redshift}</Typography>
+              <Typography variant="body1">
+                {radialMotion?.type === RADIAL_MOTION_TYPE.REDSHIFT && radialMotion.redshift}
+              </Typography>
             </FieldWrapper>
           </>
         )}
@@ -146,7 +173,9 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
-  const rows = targets.map((t) => {
+  // The grid and the visualisation still take the legacy shape
+  const legacyTargets = legacyTargetsFromForm(targets);
+  const rows = legacyTargets.map((t) => {
     const isICRS = t.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     return {
       ...t,
@@ -156,8 +185,7 @@ export default function TargetListSection() {
   });
 
   const displayRow1 = () => {
-    const target = targets[0];
-    const isSSO = target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+    const isSSO = targets[0]?.referenceCoordinate.kind === REFERENCE_COORDINATE_KIND.SPECIAL;
 
     return (
       <Grid
@@ -193,7 +221,7 @@ export default function TargetListSection() {
                 rows={rows}
               />
             </Box>
-            {!isSSO && <Visualization target={targets[0] ?? undefined} show={maxTargets === 1} />}
+            {!isSSO && <Visualization target={legacyTargets[0]} show={maxTargets === 1} />}
           </Stack>
         </Grid>
         <Grid
@@ -223,7 +251,7 @@ export default function TargetListSection() {
             </Tabs>
             {value === 0 && <TargetEntry textAlign="left" />}
             {value === 1 && (
-              <TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />
+              <TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_KIND.ICRS} />
             )}
             {value === 2 && <SpatialImaging />}
           </Box>

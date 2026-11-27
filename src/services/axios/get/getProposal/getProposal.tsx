@@ -38,6 +38,7 @@ import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import { targetsFromPdm } from '@/models/proposals/targets';
+import { legacyTargetsFromForm } from '@/models/proposals/legacyTargets';
 import { targetObservationFromPdm } from '@/models/proposals/targetObservation';
 import { calibrationStrategyFromPdm } from '@/models/proposals/calibrationStrategy';
 import { dataProductsFromPdm } from '@/models/proposals/dataProducts';
@@ -311,7 +312,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
         PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
       ) as unknown as DocumentPDF);
 
-  const targets = targetsFromPdm(inRec.observation_info?.targets);
+  const targets = legacyTargetsFromForm(targetsFromPdm(inRec.observation_info?.targets));
 
   const convertedProposal = {
     metadata: inRec.metadata,

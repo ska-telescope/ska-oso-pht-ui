@@ -50,6 +50,7 @@ export const MockProposalFrontend: Proposal = {
       redshift: '0',
       referenceFrame: 'LSRK',
       velocityDefinition: 'RADIO',
+      fieldPatternType: 'PointedMosaicParameters',
       velType: 1,
       vel: '0',
       velUnit: 0
@@ -66,6 +67,7 @@ export const MockProposalFrontend: Proposal = {
       redshift: '0',
       referenceFrame: 'LSRK',
       velocityDefinition: 'RADIO',
+      fieldPatternType: 'PointedMosaicParameters',
       velType: 1,
       vel: '0',
       velUnit: 0
@@ -82,6 +84,7 @@ export const MockProposalFrontend: Proposal = {
       redshift: '0',
       referenceFrame: 'LSRK',
       velocityDefinition: 'RADIO',
+      fieldPatternType: 'PointedMosaicParameters',
       velType: 1,
       vel: '0',
       velUnit: 0
@@ -206,6 +209,7 @@ export const MockProposalFrontendZoom: Proposal = {
       redshift: '0',
       referenceFrame: 'LSRK',
       velocityDefinition: 'RADIO',
+      fieldPatternType: 'PointedMosaicParameters',
       velType: 1,
       vel: '-3.6',
       velUnit: 0

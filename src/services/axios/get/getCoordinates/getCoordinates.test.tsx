@@ -52,7 +52,7 @@ describe('GetCoordinates Service', () => {
       data: mocked_response
     });
 
-    const result = await GetCoordinates('M31', 0);
+    const result = await GetCoordinates('M31', 'icrs');
     expect(axiosClient.get).toHaveBeenCalledWith(
       expect.stringContaining('/coordinates/M31/equatorial')
     );
@@ -63,7 +63,7 @@ describe('GetCoordinates Service', () => {
   test('returns error.API_UNKNOWN_ERROR if axiosClient returns undefined', async () => {
     vi.mocked(axiosClient.get).mockResolvedValueOnce(undefined);
 
-    const result = await GetCoordinates('M1', 0);
+    const result = await GetCoordinates('M1', 'icrs');
     expect(result).toEqual({ error: 'API_UNKNOWN_ERROR' });
   });
 
@@ -80,7 +80,7 @@ describe('GetCoordinates Service', () => {
     const detail = 'Object M1 not found in SIMBAD, NED or VizieR.';
     vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(404, { detail }));
 
-    const result = await GetCoordinates('M1', 0);
+    const result = await GetCoordinates('M1', 'icrs');
     expect(result).toEqual({ error: 'notFound', message: detail });
   });
 
@@ -88,7 +88,7 @@ describe('GetCoordinates Service', () => {
     const detail = 'Error occurred while resolving target.';
     vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(500, { detail }));
 
-    const result = await GetCoordinates('M1', 0);
+    const result = await GetCoordinates('M1', 'icrs');
     expect(result).toEqual({ error: 'unavailable', message: detail });
   });
 
@@ -97,7 +97,7 @@ describe('GetCoordinates Service', () => {
     async (data) => {
       vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(500, data));
 
-      const result = await GetCoordinates('M1', 0);
+      const result = await GetCoordinates('M1', 'icrs');
       expect(result).toEqual({ error: 'unavailable' });
     }
   );
@@ -105,7 +105,7 @@ describe('GetCoordinates Service', () => {
   test('returns notFound if the resolver responds with 404', async () => {
     vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(404));
 
-    const result = await GetCoordinates('M1', 0);
+    const result = await GetCoordinates('M1', 'icrs');
     expect(result).toEqual({ error: 'notFound' });
   });
 
@@ -114,7 +114,7 @@ describe('GetCoordinates Service', () => {
     async (status) => {
       vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(status));
 
-      const result = await GetCoordinates('M1', 0);
+      const result = await GetCoordinates('M1', 'icrs');
       expect(result).toEqual({ error: 'unavailable' });
     }
   );
@@ -122,28 +122,28 @@ describe('GetCoordinates Service', () => {
   test('returns unavailable if the request gets no response', async () => {
     vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus());
 
-    const result = await GetCoordinates('M1', 0);
+    const result = await GetCoordinates('M1', 'icrs');
     expect(result).toEqual({ error: 'unavailable' });
   });
 
   test('returns generic error for any other status', async () => {
     vi.mocked(axiosClient.get).mockRejectedValueOnce(axiosErrorWithStatus(400));
 
-    const result = await GetCoordinates('M1', 0);
+    const result = await GetCoordinates('M1', 'icrs');
     expect(result).toEqual({ error: 'API_UNKNOWN_ERROR' });
   });
 
   test('returns generic error if axiosClient throws a non-axios Error', async () => {
     vi.mocked(axiosClient.get).mockRejectedValueOnce(new Error('Network failure'));
 
-    const result = await GetCoordinates('M1', 0);
+    const result = await GetCoordinates('M1', 'icrs');
     expect(result).toEqual({ error: 'API_UNKNOWN_ERROR' });
   });
 
   test('returns generic error if axiosClient throws a non-Error', async () => {
     vi.mocked(axiosClient.get).mockRejectedValueOnce('unexpected');
 
-    const result = await GetCoordinates('M1', 0);
+    const result = await GetCoordinates('M1', 'icrs');
     expect(result).toEqual({ error: 'API_UNKNOWN_ERROR' });
   });
 });

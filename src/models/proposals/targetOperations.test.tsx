@@ -1,12 +1,12 @@
 import { expect } from 'vitest';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
-import Target from '@utils/types/target';
+import type { TargetInput } from './targets';
 import type { ProposalFormAccess } from './proposal';
 import { removeTarget } from './targetOperations';
 
 describe('removeTarget', () => {
-  const target: Target = { id: 't1' } as Target;
+  const target = { id: 't1' } as TargetInput;
   let values: Record<string, unknown>;
   let form: ProposalFormAccess;
 
@@ -42,7 +42,7 @@ describe('removeTarget', () => {
 
   it('leaves the form unchanged if the target is not found', () => {
     const before = structuredClone(values);
-    removeTarget(form, { id: 'notfound' } as Target);
+    removeTarget(form, { id: 'notfound' } as TargetInput);
 
     expect(values).toEqual(before);
   });

@@ -37,11 +37,17 @@ export const MockProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km/s'
+            unit: 'km / s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
           redshift: 0
+        },
+        pointing_pattern: {
+          active: 'PointedMosaicParameters',
+          parameters: [
+            { kind: 'PointedMosaicParameters', offsets: [{ x: 0, y: 0 }], units: 'arcsec' }
+          ]
         }
       },
       {
@@ -55,11 +61,17 @@ export const MockProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km/s'
+            unit: 'km / s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
           redshift: 0
+        },
+        pointing_pattern: {
+          active: 'PointedMosaicParameters',
+          parameters: [
+            { kind: 'PointedMosaicParameters', offsets: [{ x: 0, y: 0 }], units: 'arcsec' }
+          ]
         }
       },
       {
@@ -73,11 +85,17 @@ export const MockProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km/s'
+            unit: 'km / s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
           redshift: 0
+        },
+        pointing_pattern: {
+          active: 'PointedMosaicParameters',
+          parameters: [
+            { kind: 'PointedMosaicParameters', offsets: [{ x: 0, y: 0 }], units: 'arcsec' }
+          ]
         }
       }
     ],
@@ -224,11 +242,17 @@ export const MockProposalBackendZoom = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km/s'
+            unit: 'km / s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
           redshift: 0
+        },
+        pointing_pattern: {
+          active: 'PointedMosaicParameters',
+          parameters: [
+            { kind: 'PointedMosaicParameters', offsets: [{ x: 0, y: 0 }], units: 'arcsec' }
+          ]
         }
       }
     ],

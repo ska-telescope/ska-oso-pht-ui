@@ -44,7 +44,7 @@
         "radial_velocity": {
           "quantity": {
             "value": -12.345,
-            "unit": "m/s"
+            "unit": "m / s"
           },
           "definition": "OPTICAL",
           "reference_frame": "LSRK",

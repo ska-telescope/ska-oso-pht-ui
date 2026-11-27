@@ -1,15 +1,11 @@
-import Target from '../types/target';
+import type { TargetInput } from '@/models/proposals/targets';
 
-export const mockTarget: Target = {
-  kind: 0,
-  decStr: '-00:49:23.700',
-  id: 1,
+export const mockTarget: TargetInput = {
+  id: 'target-1',
   name: 'm2',
-  b: 0,
-  l: 0,
-  raStr: '21:33:27.0200',
-  redshift: '',
-  vel: '-3.6',
-  velType: 0,
-  velUnit: 0
+  referenceCoordinate: { kind: 'icrs', raStr: '21:33:27.0200', decStr: '-00:49:23.700' },
+  radialMotion: { type: 'velocity', velocity: { value: -3.6, unit: 'km / s' } },
+  velocityDefinition: 'RADIO',
+  referenceFrame: 'LSRK',
+  fieldPatternType: 'PointedMosaicParameters'
 };

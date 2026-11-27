@@ -13,16 +13,12 @@ import {
   steppedFromPdm,
   updateImageSizes
 } from '@/models/proposals/dataProducts';
-import {
-  CHANNELS_OUT_MIN_CONTINUUM,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  SENSITIVITY_STATE
-} from '@/utils/constants';
+import { CHANNELS_OUT_MIN_CONTINUUM, SENSITIVITY_STATE } from '@/utils/constants';
+import { REFERENCE_COORDINATE_KIND } from '@/models/proposals/targets';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { OBSERVING_MODE, type ObservationInput } from '@/models/proposals/observations';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import TargetObservation from '@/utils/types/targetObservation';
-import Target from '@/utils/types/target';
 import DataProductView from './DataProductView';
 
 const GAP = 5;
@@ -41,7 +37,7 @@ export default function DataProductInPlace({ observation }: { observation: Obser
     control: form.control,
     name: 'targetObservation'
   }) as TargetObservation[];
-  const targets = useWatch({ control: form.control, name: 'targets' }) as Target[];
+  const targets = useWatch({ control: form.control, name: 'targets' });
 
   const link = links.find((rec) => rec.observationId === observation.id);
   const linkedIndex = dataProducts.findIndex((dp) => dp.id === link?.dataProductsSDPId);
@@ -112,7 +108,7 @@ export default function DataProductInPlace({ observation }: { observation: Obser
       return { message: t('sensitivityCalculatorResults.noTarget'), color: AlertColorTypes.Error };
     }
     const target = targets.find((tgt) => tgt.id === link.targetId);
-    if (target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+    if (target?.referenceCoordinate.kind === REFERENCE_COORDINATE_KIND.SPECIAL) {
       return {
         message: t('sensitivityCalculatorResults.notApplicableForSSO'),
         color: AlertColorTypes.Warning

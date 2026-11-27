@@ -481,21 +481,6 @@ export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
 export const REFERENCE_COORDINATE_TYPE_SSO = { value: 2, label: 'special' };
 
-export const REFERENCE_COORDINATE_OPTIONS = [
-  {
-    label: 'ICRS',
-    value: REFERENCE_COORDINATE_TYPE_ICRS.value
-  },
-  {
-    label: 'Galactic',
-    value: REFERENCE_COORDINATE_TYPE_GALACTIC.value
-  },
-  {
-    label: 'Solar System Object',
-    value: REFERENCE_COORDINATE_TYPE_SSO.value
-  }
-];
-
 export const SSO_OPTIONS = [
   { label: 'Mercury', value: 'Mercury' },
   { label: 'Venus', value: 'Venus' },
@@ -508,24 +493,18 @@ export const SSO_OPTIONS = [
   { label: 'Sun', value: 'Sun' }
 ];
 
-export const SEPARATOR0 = '?';
-export const SEPARATOR1 = '&';
-
-export const FIELD_PATTERN_POINTING_CENTRES = 'Pointing centres';
-
-export const DEFAULT_GALACTIC = '00:00:00.0';
-export const DEFAULT_EQUATORIAL = 0;
-
 export const UPLOAD_MAX_WIDTH_CSV = 25;
 export const UPLOAD_MAX_WIDTH_PDF = 25;
 export const SCIENCE_PDF_MAX_PAGES = 4;
 export const SCIENCE_PDF_MAX_SIZE_MB = 100;
 
-export const VELOCITY_UNIT = { KM_PER_S: 0, M_PER_S: 1 } as const;
-
-export const VELOCITY_UNITS = [
-  { label: 'km/s', value: VELOCITY_UNIT.KM_PER_S, metresPerSecond: 1000 },
-  { label: 'm/s', value: VELOCITY_UNIT.M_PER_S, metresPerSecond: 1 }
+// A velocity's unit as the PDM writes it, and so as the database gives it back
+/** Each velocity unit, as the PDM names it, and its size in m/s. */
+export const VELOCITY_UNIT_METRES_PER_SECOND = { 'km / s': 1000, 'm / s': 1 } as const;
+export type VelocityUnit = keyof typeof VELOCITY_UNIT_METRES_PER_SECOND;
+export const VELOCITY_UNITS = Object.keys(VELOCITY_UNIT_METRES_PER_SECOND) as [
+  VelocityUnit,
+  ...VelocityUnit[]
 ];
 
 // The two coordinates of a sky direction: right ascension and declination for ICRS, longitude
@@ -622,15 +601,6 @@ export const VELOCITY_TYPE = {
 } as const;
 
 export type VelocityType = (typeof VELOCITY_TYPE)[keyof typeof VELOCITY_TYPE];
-
-/** The convention a target's radial velocity is given in. New targets use RADIO, the PDM default. */
-export const VELOCITY_DEFINITION = {
-  RADIO: 'RADIO',
-  OPTICAL: 'OPTICAL',
-  RELATIVISTIC: 'RELATIVISTIC'
-} as const;
-
-export type VelocityDefinition = (typeof VELOCITY_DEFINITION)[keyof typeof VELOCITY_DEFINITION];
 
 export const WRAPPER_HEIGHT = '75px';
 

@@ -4,13 +4,7 @@ import {
   MockProposalBackend,
   MockProposalBackendZoom
 } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
-import {
-  PROPOSAL_TYPE,
-  SENSITIVITY_STATE,
-  STATUS_ERROR,
-  STATUS_OK,
-  VELOCITY_DEFINITION
-} from '@/utils/constants';
+import { PROPOSAL_TYPE, SENSITIVITY_STATE, STATUS_ERROR, STATUS_OK } from '@/utils/constants';
 import { ProposalBackend } from '@/utils/types/proposal';
 import { MockSlicesPdm } from './testing/mockSlicesPdm';
 import { getProposalSchema, ProposalType } from './proposal';
@@ -19,11 +13,22 @@ import { getProposalSubmitSchema, getSubmitPageStatuses } from './submit';
 import { getProposalFormValues } from './useProposalForm';
 import { DATA_PRODUCT_KIND, DataProductInput, newDataProduct } from './dataProducts';
 import { newSvObservation, OBSERVING_MODE, type ObservationInput } from './observations';
+import { newTarget, REFERENCE_COORDINATE_KIND, type TargetInput } from './targets';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 
 const osd = MockObservatoryDataFrontend.capabilities;
 
-const target = { id: 't1', name: 'M2', kind: 0, velocityDefinition: VELOCITY_DEFINITION.RADIO };
+const target: TargetInput = {
+  ...newTarget('t1', REFERENCE_COORDINATE_KIND.ICRS),
+  name: 'M2',
+  referenceCoordinate: {
+    kind: REFERENCE_COORDINATE_KIND.ICRS,
+    raStr: '21:33:27.02',
+    decStr: '-00:49:23.7'
+  }
+};
+// A target whose coordinate system can't be read
+const malformedTarget = { ...target, referenceCoordinate: { kind: 'not a kind' } };
 const link = { targetId: 't1', observationId: 'o1', dataProductsSDPId: 'sdp1' };
 const strategy = {
   observatoryDefined: true,
@@ -224,7 +229,7 @@ describe('getSubmitPageStatuses, Data Products page', () => {
       getSubmitPageStatuses(
         values({
           proposalType: { type: PROPOSAL_TYPE.SCIENCE_VERIFICATION, subTypes: [] },
-          targets: [{ ...target, kind: 'not a number' } as never],
+          targets: [malformedTarget as never],
           targetObservation: []
         }),
         osd
@@ -241,7 +246,18 @@ describe('getSubmitPageStatuses, Data Products page', () => {
 });
 
 test.each([
-  ['target', { targets: [{ ...target, kind: 'not a number' }] }],
+  ['target', { targets: [malformedTarget] }],
+  [
+    'target',
+    {
+      targets: [
+        {
+          ...target,
+          referenceCoordinate: { ...target.referenceCoordinate, raStr: '25:00:00' }
+        }
+      ]
+    }
+  ],
   ['linking', { targetObservation: [{ ...link, sensitivity: { state: 'unknown' } }] }],
   ['calibration', { calibrationStrategy: [{ ...strategy, calibrators: 'not a list' }] }]
 ] as const)('marks the %s page, and only that page, for a malformed entry', (page, slices) => {

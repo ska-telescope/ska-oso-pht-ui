@@ -24,7 +24,8 @@ import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
-import { referenceCoordinateToPdm, targetsToPdm } from '@/models/proposals/targets';
+import { targetsToPdm } from '@/models/proposals/targets';
+import { formTargetsFromLegacy } from '@/models/proposals/legacyTargets';
 import { targetObservationToPdm } from '@/models/proposals/targetObservation';
 import { observationInfoToSave } from '@/models/proposals/save';
 import { formObservationsFromLegacy } from '@/models/proposals/legacyObservations';
@@ -41,9 +42,6 @@ import type {
 const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
 const isPST = (type: string) => type === TYPE_PST;
 
-// The slice mappers now hold these; the names stay for existing callers
-export const getReferenceCoordinate = referenceCoordinateToPdm;
-export const getTargets = targetsToPdm;
 export const mapCalibrationStrategyToBackend = calibrationStrategyToPdm;
 
 // const isZoom = (type: number) => type === TYPE_ZOOM;
@@ -237,7 +235,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         : (null as unknown as undefined) // still sent as null; the PDM type has no null here
     },
     observation_info: {
-      targets: targetsToPdm(proposal?.targets ? proposal.targets : []),
+      targets: targetsToPdm(formTargetsFromLegacy(proposal?.targets)),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       observation_sets: saved.observationSets,
       calibration_strategy: calibrationStrategyToPdm(saved.calibrationStrategy),

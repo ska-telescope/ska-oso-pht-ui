@@ -13,6 +13,7 @@ import {
 import { toSensitivity } from './results';
 import { getDataProductSchema } from '@/models/proposals/dataProducts';
 import { getObservationSchema } from '@/models/proposals/observations';
+import { getTargetSchema } from '@/models/proposals/targets';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export const SENS_CALC_DEBOUNCE_MS = 500;
@@ -84,9 +85,12 @@ export const useSensitivityService = () => {
       const validObservation = getObservationSchema({ low: osdLOW, mid: osdMID }).safeParse(
         observation
       );
+      const validTarget = getTargetSchema().safeParse(target);
       const request =
-        validObservation.success && getDataProductSchema().safeParse(dataProduct).success
-          ? buildSensitivityRequest(validObservation.data, target, dataProduct)
+        validObservation.success &&
+        validTarget.success &&
+        getDataProductSchema().safeParse(dataProduct).success
+          ? buildSensitivityRequest(validObservation.data, validTarget.data, dataProduct)
           : null;
       const requestKey = request ? request.path + JSON.stringify(request.body) : '';
       return [{ link, linkId: getLinkId(link), request, requestKey }];

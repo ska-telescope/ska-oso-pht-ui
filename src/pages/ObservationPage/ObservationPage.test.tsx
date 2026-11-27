@@ -169,6 +169,9 @@ describe('<ObservationPage />', () => {
       ]);
     });
     expect(formProbe.getValues('calibrationStrategy')).toEqual([strategy('obs-2')]);
-    expect(formProbe.getValues('targets')).toEqual([{ id: 't1', name: 'M2', kind: 0 }]);
+    // The target stays, in the form's shape
+    expect(formProbe.getValues('targets')).toEqual([
+      expect.objectContaining({ id: 't1', name: 'M2' })
+    ]);
   });
 });

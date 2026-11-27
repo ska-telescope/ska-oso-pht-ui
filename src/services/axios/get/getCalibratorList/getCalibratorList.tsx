@@ -1,8 +1,4 @@
-import {
-  OSO_SERVICES_CALIBRATORS_PATH,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  SKA_OSO_SERVICES_URL
-} from '@utils/constants.ts';
+import { OSO_SERVICES_CALIBRATORS_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import { AxiosAuthClient } from '../../axiosAuthClient/axiosAuthClient.ts';
 import {
   CalibrationIntent,
@@ -10,12 +6,15 @@ import {
   CalibratorBackend,
   SelectionStrategy
 } from '@/utils/types/calibrationStrategy.tsx';
-import Target from '@utils/types/target.tsx';
 import {
   INTEGRATION_TIME_UNIT_HOURS,
   type ObservationInput
 } from '@/models/proposals/observations';
-import { getTargets } from '@services/axios/put/putProposal/putProposalMapping.tsx';
+import {
+  REFERENCE_COORDINATE_KIND,
+  type TargetInput,
+  targetsToPdm
+} from '@/models/proposals/targets';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -42,9 +41,9 @@ function calibratorMapping(data: CalibratorBackend): Calibrator {
 async function GetCalibratorList(
   authAxiosClient: AxiosAuthClient,
   observation: ObservationInput,
-  target: Target
+  target: TargetInput
 ): Promise<Calibrator[] | string> {
-  if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
+  if (target.referenceCoordinate.kind === REFERENCE_COORDINATE_KIND.SPECIAL) {
     return 'error.CALIBRATOR_NOT_SUPPORTED_FOR_SSO';
   }
 
@@ -57,7 +56,7 @@ async function GetCalibratorList(
   // this isn't great, but works ahead of the SV call - we should/could extend the
   // add an oso-services endpoint that takes a list of targets, and then returns
   // calibrators for every target in the proposal. For now, this works for SV calls.
-  const pdm_target = getTargets([target])[0];
+  const pdm_target = targetsToPdm([target])[0];
 
   try {
     const params = new URLSearchParams({

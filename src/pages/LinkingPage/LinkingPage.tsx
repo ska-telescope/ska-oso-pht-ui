@@ -5,6 +5,7 @@ import { storageObject } from '@utils/storage/store';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import { getFormCalibration, getFormLinks, getFormTargets } from '@/models/proposals/formSlices';
+import { formTargetFromLegacy } from '@/models/proposals/legacyTargets';
 import {
   buildCalibrationStrategy,
   calibrationNotesFor,
@@ -188,7 +189,7 @@ export default function LinkingPage() {
     if (!observation) return;
     const calibration = await buildCalibrationStrategy(authAxiosClient, {
       observation,
-      target: remainingTarget,
+      target: formTargetFromLegacy(remainingTarget),
       notes: calibrationNotesFor(getCalibration(), observationId)
     });
     // The lookup takes time, so the strategy is only replaced if the observation is still linked
@@ -226,7 +227,10 @@ export default function LinkingPage() {
       sensitivity: { state: SENSITIVITY_STATE.CALCULATING }
     };
 
-    const calibration = await buildCalibrationStrategy(authAxiosClient, { observation, target });
+    const calibration = await buildCalibrationStrategy(authAxiosClient, {
+      observation,
+      target: formTargetFromLegacy(target)
+    });
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 

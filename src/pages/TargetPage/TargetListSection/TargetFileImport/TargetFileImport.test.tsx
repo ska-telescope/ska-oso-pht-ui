@@ -7,11 +7,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as papaModule from 'papaparse';
 import TargetFileImport from './TargetFileImport';
 import {
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
-  VELOCITY_TYPE
-} from '@/utils/constants';
-import { getTargetsSchema } from '@/models/proposals/targets';
+  getTargetsSchema,
+  RADIAL_MOTION_TYPE,
+  REFERENCE_COORDINATE_KIND,
+  ReferenceCoordinateKind
+} from '@/models/proposals/targets';
 
 // Helper to get the exposed mock
 
@@ -62,7 +62,7 @@ const getParseMock = () => (papaModule as any).__parseMock as ReturnType<typeof 
 
 // The imported targets go to the global form, which owns them
 let form: UseFormReturn<ProposalType>;
-const renderImport = (referenceCoordinateType: number) => {
+const renderImport = (referenceCoordinateType: ReferenceCoordinateKind) => {
   const Wrapper = () => {
     form = useProposalForm({ id: 'p1', targets: [] });
     return (
@@ -87,7 +87,7 @@ describe('TargetFileImport', () => {
       });
     });
 
-    renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
+    renderImport(REFERENCE_COORDINATE_KIND.ICRS);
     screen.getByTestId('csvUpload').click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
@@ -102,19 +102,16 @@ describe('TargetFileImport', () => {
       });
     });
 
-    renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
+    renderImport(REFERENCE_COORDINATE_KIND.GALACTIC);
     screen.getByTestId('csvUpload').click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
     const targets = form.getValues('targets');
     expect(targets).toHaveLength(1);
     expect(targets[0]).toMatchObject({
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
-      l: 20,
-      b: 10,
-      redshift: '',
-      velType: VELOCITY_TYPE.VELOCITY,
-      velUnit: 0
+      name: 'TargetGal',
+      referenceCoordinate: { kind: REFERENCE_COORDINATE_KIND.GALACTIC, l: 20, b: 10 },
+      radialMotion: { type: RADIAL_MOTION_TYPE.VELOCITY, velocity: { value: 0, unit: 'km / s' } }
     });
   });
 
@@ -126,7 +123,7 @@ describe('TargetFileImport', () => {
       });
     });
 
-    renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
+    renderImport(REFERENCE_COORDINATE_KIND.GALACTIC);
     screen.getByTestId('csvUpload').click();
 
     expect(getTargetsSchema().safeParse(form.getValues('targets')).error).toBeUndefined();
@@ -137,7 +134,7 @@ describe('TargetFileImport', () => {
       opts.complete({ meta: { fields: ['wrong', 'header'] }, data: [] });
     });
 
-    renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
+    renderImport(REFERENCE_COORDINATE_KIND.ICRS);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -148,7 +145,7 @@ describe('TargetFileImport', () => {
       opts.complete({ meta: { fields: ['bad', 'header'] }, data: [] });
     });
 
-    renderImport(REFERENCE_COORDINATE_TYPE_GALACTIC.value);
+    renderImport(REFERENCE_COORDINATE_KIND.GALACTIC);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -162,7 +159,7 @@ describe('TargetFileImport', () => {
       });
     });
 
-    renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
+    renderImport(REFERENCE_COORDINATE_KIND.ICRS);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -173,7 +170,7 @@ describe('TargetFileImport', () => {
       opts.error('Parser failed');
     });
 
-    renderImport(REFERENCE_COORDINATE_TYPE_ICRS.value);
+    renderImport(REFERENCE_COORDINATE_KIND.ICRS);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();

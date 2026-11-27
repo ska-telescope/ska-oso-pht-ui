@@ -58,7 +58,7 @@ const target = (targetId: string, raStr: string, decStr: string): TargetTranspor
       epoch: 2000
     },
     radial_velocity: {
-      quantity: { value: 0, unit: 'km/s' },
+      quantity: { value: 0, unit: 'km / s' },
       definition: 'RADIO',
       reference_frame: 'LSRK',
       redshift: 0

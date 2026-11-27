@@ -4,16 +4,13 @@ import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUse
 import { useProposalForm } from './useProposalForm';
 import Investigator from '@/utils/types/investigator';
 import { getTeamValues } from './team';
-import {
-  PROPOSAL_SUBTYPE,
-  PROPOSAL_TYPE,
-  VELOCITY_DEFINITION,
-  type ProposalSubTypeType
-} from '@/utils/constants';
+import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE, type ProposalSubTypeType } from '@/utils/constants';
 import Target from '@/utils/types/target';
 import TargetObservation from '@/utils/types/targetObservation';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import type { DocumentValues } from './documents';
+import { legacyTargetFromForm } from './legacyTargets';
+import { newTarget, REFERENCE_COORDINATE_KIND, type TargetInput } from './targets';
 
 type Props = {
   id?: string;
@@ -28,15 +25,14 @@ type Props = {
   calibrationStrategy?: CalibrationStrategy[];
 };
 
+// The proposal's target as the form holds it; the store holds it in the legacy shape
+const formTargetFor = (id: string): TargetInput => ({
+  ...newTarget(`target-${id}`, REFERENCE_COORDINATE_KIND.ICRS),
+  name: `Target ${id}`
+});
+
 const slicesFor = (id: string) => ({
-  targets: [
-    {
-      id: `target-${id}`,
-      name: `Target ${id}`,
-      kind: 0,
-      velocityDefinition: VELOCITY_DEFINITION.RADIO
-    }
-  ],
+  targets: [legacyTargetFromForm(formTargetFor(id))],
   targetObservation: [
     { targetId: `target-${id}`, observationId: `obs-${id}`, dataProductsSDPId: `sdp-${id}` }
   ],
@@ -189,7 +185,10 @@ describe('useProposalForm', () => {
       useProposalForm({ id: 'p1', title: 'First', ...slicesFor('p1') })
     );
     const { targets, targetObservation, calibrationStrategy } = result.current.getValues();
-    expect({ targets, targetObservation, calibrationStrategy }).toEqual(slicesFor('p1'));
+    expect({ targets, targetObservation, calibrationStrategy }).toEqual({
+      ...slicesFor('p1'),
+      targets: [formTargetFor('p1')]
+    });
   });
 
   test('defaults targets, links and calibration to empty lists', () => {
@@ -207,7 +206,10 @@ describe('useProposalForm', () => {
     rerender({ id: 'p2', title: 'Second', ...slicesFor('p2') });
 
     const { targets, targetObservation, calibrationStrategy } = result.current.getValues();
-    expect({ targets, targetObservation, calibrationStrategy }).toEqual(slicesFor('p2'));
+    expect({ targets, targetObservation, calibrationStrategy }).toEqual({
+      ...slicesFor('p2'),
+      targets: [formTargetFor('p2')]
+    });
   });
 
   test('clears targets, links and calibration when switching to a proposal without them', () => {
@@ -229,7 +231,7 @@ describe('useProposalForm', () => {
 
     rerender({ id: 'p1', title: 'First', ...slicesFor('other') });
 
-    expect(result.current.getValues('targets')).toEqual(slicesFor('p1').targets);
+    expect(result.current.getValues('targets')).toEqual([formTargetFor('p1')]);
   });
 
   test('starts valid with a completed abstract and empty structural slices', async () => {

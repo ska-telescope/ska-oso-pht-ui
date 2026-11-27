@@ -3,28 +3,23 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { storageObject, StoreProvider } from '@utils/storage/store';
 import Proposal from '@utils/types/proposal';
-import Target from '@utils/types/target';
-import {
-  BAND_LOW_STR,
-  PROPOSAL_SUBTYPE,
-  PROPOSAL_TYPE,
-  SA_AA_STAR,
-  VELOCITY_DEFINITION
-} from '@/utils/constants';
+import { BAND_LOW_STR, PROPOSAL_SUBTYPE, PROPOSAL_TYPE, SA_AA_STAR } from '@/utils/constants';
 import { useProposalForm } from './useProposalForm';
 import { useCopySlicesToStore } from './useCopySlicesToStore';
 import { dataProductsFromPdm } from './dataProducts';
 import { pdmDataProducts } from './testing/pdmDataProducts';
 import { ObservationInput, OBSERVING_MODE, TELESCOPE } from './observations';
 import { legacyObservationsFromForm } from './legacyObservations';
+import { legacyTargetFromForm } from './legacyTargets';
+import { newTarget, REFERENCE_COORDINATE_KIND, type TargetInput } from './targets';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 
-const target = (id: string): Target => ({
-  id,
-  name: `Target ${id}`,
-  kind: 0,
-  velocityDefinition: VELOCITY_DEFINITION.RADIO
+// A target as the form holds it, and as the store holds it
+const formTarget = (id: string): TargetInput => ({
+  ...newTarget(id, REFERENCE_COORDINATE_KIND.ICRS),
+  name: `Target ${id}`
 });
+const storeTarget = (id: string) => legacyTargetFromForm(formTarget(id));
 
 // The global form seeded from the store with the copy back to it, as PHT.tsx sets them up
 const useHarness = () => {
@@ -61,11 +56,11 @@ describe('useCopySlicesToStore', () => {
 
   test('copies form edits of the slices into the store', () => {
     const { result } = renderHarness();
-    open(result, { id: 'p1', title: 'First', targets: [target('a')] });
+    open(result, { id: 'p1', title: 'First', targets: [storeTarget('a')] });
 
-    act(() => result.current.form.setValue('targets', [target('a'), target('b')]));
+    act(() => result.current.form.setValue('targets', [formTarget('a'), formTarget('b')]));
 
-    expect(storedProposal(result).targets).toEqual([target('a'), target('b')]);
+    expect(storedProposal(result).targets).toEqual([storeTarget('a'), storeTarget('b')]);
     expect(storedProposal(result).title).toBe('First');
   });
 
@@ -101,7 +96,7 @@ describe('useCopySlicesToStore', () => {
     const { result } = renderHarness();
     open(result, { id: 'p1', targets: [] });
 
-    act(() => result.current.form.setValue('targets', [target('a')]));
+    act(() => result.current.form.setValue('targets', [formTarget('a')]));
 
     expect(storedProposal(result).targets).not.toBe(result.current.form.getValues('targets'));
     expect(() =>
@@ -111,35 +106,35 @@ describe('useCopySlicesToStore', () => {
 
   test("does not copy the previous proposal's slices when switching proposals", () => {
     const { result } = renderHarness();
-    open(result, { id: 'p1', targets: [target('a')] });
+    open(result, { id: 'p1', targets: [storeTarget('a')] });
 
-    open(result, { id: 'p2', targets: [target('z')] });
+    open(result, { id: 'p2', targets: [storeTarget('z')] });
 
-    expect(storedProposal(result).targets).toEqual([target('z')]);
-    expect(result.current.form.getValues('targets')).toEqual([target('z')]);
+    expect(storedProposal(result).targets).toEqual([storeTarget('z')]);
+    expect(result.current.form.getValues('targets')).toEqual([formTarget('z')]);
   });
 
   test('puts the form slices back when a legacy write stores an older copy', () => {
     const { result } = renderHarness();
-    open(result, { id: 'p1', targets: [target('a')] });
+    open(result, { id: 'p1', targets: [storeTarget('a')] });
 
     open(result, { ...storedProposal(result), targets: [] });
 
-    expect(storedProposal(result).targets).toEqual([target('a')]);
+    expect(storedProposal(result).targets).toEqual([storeTarget('a')]);
   });
 
   test('lets only one form copy into the store', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const first = renderHarness();
     const second = renderHarness();
-    open(first.result, { id: 'p1', targets: [target('a')] });
+    open(first.result, { id: 'p1', targets: [storeTarget('a')] });
 
-    act(() => second.result.current.form.setValue('targets', [target('other')]));
+    act(() => second.result.current.form.setValue('targets', [formTarget('other')]));
 
     expect(consoleError).toHaveBeenCalledWith(
       'useCopySlicesToStore: another form already copies into the store'
     );
-    expect(storedProposal(first.result).targets).toEqual([target('a')]);
+    expect(storedProposal(first.result).targets).toEqual([storeTarget('a')]);
     consoleError.mockRestore();
   });
 
@@ -217,7 +212,7 @@ describe('useCopySlicesToStore', () => {
   test('does nothing while no proposal is open', () => {
     const { result } = renderHarness();
 
-    act(() => result.current.form.setValue('targets', [target('a')]));
+    act(() => result.current.form.setValue('targets', [formTarget('a')]));
 
     expect(storedProposal(result)).toEqual([]);
   });

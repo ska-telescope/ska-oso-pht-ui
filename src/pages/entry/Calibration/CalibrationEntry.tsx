@@ -9,15 +9,14 @@ import {
   PAGE_CALIBRATION,
   PAGE_CALIBRATION_ADD,
   PAGE_CALIBRATION_UPDATE,
-  REFERENCE_COORDINATE_TYPE_SSO,
   WRAPPER_HEIGHT
 } from '@utils/constants.ts';
+import { REFERENCE_COORDINATE_KIND } from '@/models/proposals/targets';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
-import Target from '@/utils/types/target';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { useTheme } from '@mui/material/styles';
@@ -64,7 +63,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     []) as CalibrationStrategy[];
   const links = (useWatch({ control: form.control, name: 'targetObservation' }) ??
     []) as TargetObservation[];
-  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const targets = useWatch({ control: form.control, name: 'targets' }) ?? [];
   const observations = useWatch({ control: form.control, name: 'observations' });
 
   // A strategy handed to the page is shown until the proposal has one of its own
@@ -107,7 +106,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   /**************************************************************/
 
-  const isSSO = target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+  const isSSO = target?.referenceCoordinate.kind === REFERENCE_COORDINATE_KIND.SPECIAL;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box

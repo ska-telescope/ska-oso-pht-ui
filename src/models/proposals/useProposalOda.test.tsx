@@ -210,12 +210,13 @@ describe('useProposalOda', () => {
       ...pdm,
       observation_info: {
         ...pdm.observation_info,
+        // A coordinate system the PHT doesn't support
         targets: pdm.observation_info?.targets?.map((target) => ({
           ...target,
-          radial_velocity: undefined
+          reference_coordinate: { kind: 'altaz' }
         }))
       }
-    };
+    } as unknown as ProposalBackend;
     expect(() => mapping(malformed)).toThrow();
     mockGet.mockResolvedValue({ data: malformed });
     const { form, oda } = renderWithForm('Unsaved title');

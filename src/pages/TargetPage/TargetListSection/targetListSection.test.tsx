@@ -3,7 +3,13 @@ import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFor
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
-import { VELOCITY_TYPE } from '@utils/constants.ts';
+import {
+  newTarget,
+  RADIAL_MOTION_TYPE,
+  REFERENCE_COORDINATE_KIND,
+  type TargetInput
+} from '@/models/proposals/targets';
+import { legacyTargetsFromForm } from '@/models/proposals/legacyTargets';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import TargetListSection from './targetListSection';
@@ -34,20 +40,21 @@ const wrapper = (component: React.ReactElement) => render(tree(component));
 const clickIcon = (testId: string, index: number) =>
   fireEvent.click(within(screen.getAllByTestId(testId)[index]).getByRole('button'));
 
-// Mock proposal data
+// A valid target, so the edit dialog's fields have no errors and it can be confirmed
+const target1: TargetInput = {
+  ...newTarget('1', REFERENCE_COORDINATE_KIND.ICRS),
+  name: 'Target1',
+  referenceCoordinate: {
+    kind: REFERENCE_COORDINATE_KIND.ICRS,
+    raStr: '12:00:00.000',
+    decStr: '-45:00:00.000'
+  },
+  radialMotion: { type: RADIAL_MOTION_TYPE.REDSHIFT, redshift: 0.01 }
+};
+
+// Mock proposal data. The store holds the targets in the legacy shape.
 const mockProposal = {
-  targets: [
-    {
-      id: '1',
-      kind: 0,
-      name: 'Target1',
-      raStr: '12:00',
-      decStr: '-45:00',
-      vel: '1000',
-      redshift: '0.01',
-      velType: 'velocity'
-    }
-  ],
+  targets: legacyTargetsFromForm([target1]),
   targetObservation: [{ targetId: '1' }],
   calibrationStrategy: [] as unknown[]
 };
@@ -95,20 +102,13 @@ describe('<TargetListSection />', () => {
     wrapper(<TargetListSection />);
 
     expect(screen.getByText('Target1')).toBeInTheDocument();
-    expect(screen.getByText('12:00')).toBeInTheDocument();
-    expect(screen.getByText('-45:00')).toBeInTheDocument();
+    expect(screen.getByText('12:00:00.000')).toBeInTheDocument();
+    expect(screen.getByText('-45:00:00.000')).toBeInTheDocument();
     expect(screen.getByText('0.01')).toBeInTheDocument();
   });
 
   describe('changing targets through the form', () => {
-    // Valid coordinates, so the edit dialog's fields have no errors and it can be confirmed
-    const target1 = {
-      ...mockProposal.targets[0],
-      raStr: '12:00:00.000',
-      decStr: '-45:00:00.000',
-      velType: VELOCITY_TYPE.VELOCITY
-    };
-    const target2 = { ...target1, id: '2', name: 'Target2' };
+    const target2: TargetInput = { ...target1, id: '2', name: 'Target2' };
     const strategy = (observationIdRef: string) => ({
       observatoryDefined: true,
       id: `cal-${observationIdRef}`,
@@ -120,7 +120,7 @@ describe('<TargetListSection />', () => {
 
     beforeEach(() => {
       Object.assign(mockProposal, {
-        targets: [target1, target2],
+        targets: legacyTargetsFromForm([target1, target2]),
         targetObservation: [
           { targetId: '1', observationId: 'o1', dataProductsSDPId: 'sdp1' },
           { targetId: '2', observationId: 'o2', dataProductsSDPId: 'sdp2' }
@@ -148,7 +148,7 @@ describe('<TargetListSection />', () => {
       expect(formProbe.getValues('calibrationStrategy')).toEqual([strategy('o2')]);
     });
 
-    it('applies only the fields changed in the edit dialog', async () => {
+    it('applies the edit to the target', async () => {
       wrapper(<TargetListSection />);
 
       clickIcon('editIcon', 0);
@@ -160,16 +160,7 @@ describe('<TargetListSection />', () => {
       await waitFor(() => {
         expect(formProbe.getValues('targets')[0].name).toBe('Renamed');
       });
-      // The dialog is opened with the grid row, whose display columns are kept, as before; the
-      // redshift is cleared for a velocity target
-      expect(formProbe.getValues('targets')[0]).toEqual({
-        ...target1,
-        coord1: target1.raStr,
-        coord2: target1.decStr,
-        name: 'Renamed',
-        redshift: ''
-      });
-      expect(formProbe.getValues('targets')[1]).toEqual(target2);
+      expect(formProbe.getValues('targets')).toEqual([{ ...target1, name: 'Renamed' }, target2]);
     });
 
     it('does not let an invalid edit be confirmed', async () => {
@@ -183,6 +174,18 @@ describe('<TargetListSection />', () => {
       const confirm = within(dialog).getByRole('button', { name: 'confirmBtn.label' });
       await waitFor(() => expect(confirm).toBeDisabled());
       expect(formProbe.getValues('targets')).toEqual([target1, target2]);
+    });
+
+    it("does not let an edit take another target's name", async () => {
+      wrapper(<TargetListSection />);
+
+      clickIcon('editIcon', 0);
+      const dialog = await screen.findByRole('dialog');
+      const nameInput = within(dialog).getByRole('textbox', { name: 'name.label' });
+      fireEvent.change(nameInput, { target: { value: 'target2' } });
+
+      const confirm = within(dialog).getByRole('button', { name: 'confirmBtn.label' });
+      await waitFor(() => expect(confirm).toBeDisabled());
     });
 
     it('keeps the changes after leaving the page and coming back', async () => {

@@ -5,8 +5,7 @@ import {
   type FrequencyUnit,
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
-  VELOCITY_UNIT,
-  VELOCITY_UNITS,
+  VELOCITY_UNIT_METRES_PER_SECOND,
   TYPE_CONTINUUM_SPECTRAL,
   TIME_UNITS,
   FREQUENCY_STR_KHZ,
@@ -77,9 +76,9 @@ export const isFrequencyRangeOutOfBand = (
 export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
   const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
   // Shown in m/s below 1 km/s, otherwise in km/s
-  const unitValue = velocity < 1000 ? VELOCITY_UNIT.M_PER_S : VELOCITY_UNIT.KM_PER_S;
-  const unit = VELOCITY_UNITS.find(({ value }) => value === unitValue)!;
-  return (velocity / unit.metresPerSecond).toFixed(precision) + ' ' + unit.label;
+  const [unit, label] =
+    velocity < 1000 ? (['m / s', 'm/s'] as const) : (['km / s', 'km/s'] as const);
+  return (velocity / VELOCITY_UNIT_METRES_PER_SECOND[unit]).toFixed(precision) + ' ' + label;
 };
 
 export const helpers = {

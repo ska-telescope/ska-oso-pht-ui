@@ -2,11 +2,10 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { MockCalibratorBackendList } from '@services/axios/get/getCalibratorList/mockCalibratorListBackend.tsx';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient';
 import * as helpers from '@/utils/helpers';
-import { REFERENCE_COORDINATE_TYPE_SSO } from '@/utils/constants';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
-import Target from '@/utils/types/target';
 import { mockTarget } from '@/utils/autoLinking/mockTarget';
 import { newSvObservation, OBSERVING_MODE } from './observations';
+import { REFERENCE_COORDINATE_KIND } from './targets';
 import { mockCalibration } from '@/utils/autoLinking/mockCalibration';
 import {
   buildCalibrationStrategy,
@@ -38,7 +37,7 @@ describe('buildCalibrationStrategy', () => {
 
     const calibration = await buildCalibrationStrategy(client, {
       observation: mockObservation,
-      target: mockTarget as Target
+      target: mockTarget
     });
 
     expect(calibration).toEqual(mockCalibration);
@@ -49,7 +48,7 @@ describe('buildCalibrationStrategy', () => {
 
     const calibration = await buildCalibrationStrategy(client, {
       observation: mockObservation,
-      target: mockTarget as Target,
+      target: mockTarget,
       notes: 'Keep these'
     });
 
@@ -59,7 +58,11 @@ describe('buildCalibrationStrategy', () => {
   test('looks up no calibrators for a solar system object', async () => {
     const calibration = await buildCalibrationStrategy(client, {
       observation: mockObservation,
-      target: { ...(mockTarget as Target), kind: REFERENCE_COORDINATE_TYPE_SSO.value }
+      target: {
+        ...mockTarget,
+        name: 'Mars',
+        referenceCoordinate: { kind: REFERENCE_COORDINATE_KIND.SPECIAL, name: 'Mars' }
+      }
     });
 
     expect(calibration.calibrators).toBeNull();
@@ -71,7 +74,7 @@ describe('buildCalibrationStrategy', () => {
 
     const calibration = await buildCalibrationStrategy(client, {
       observation: mockObservation,
-      target: mockTarget as Target
+      target: mockTarget
     });
 
     expect(calibration.calibrators).toBeNull();

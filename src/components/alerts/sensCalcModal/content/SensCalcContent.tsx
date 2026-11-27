@@ -5,7 +5,6 @@ import { presentUnits, presentValue } from '@utils/present/present';
 import { FREQUENCY_STR_KHZ, SA_CUSTOM, SENSITIVITY_STATE } from '../../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TargetObservation from '@utils/types/targetObservation.tsx';
-import Target from '@utils/types/target';
 import type { ProposalType } from '@/models/proposals/proposal';
 import {
   getSensitivityDataProduct,
@@ -30,7 +29,7 @@ export default function SensCalcContent({
   const { t } = useScopedTranslation();
 
   const form = useFormContext<ProposalType>();
-  const targets = (useWatch({ control: form.control, name: 'targets' }) ?? []) as Target[];
+  const targets = useWatch({ control: form.control, name: 'targets' }) ?? [];
   const observations = useWatch({ control: form.control, name: 'observations' }) ?? [];
   const dataProducts = useWatch({ control: form.control, name: 'dataProducts' }) ?? [];
   const target = targets.find((target) => target.id === targetObservation.targetId);

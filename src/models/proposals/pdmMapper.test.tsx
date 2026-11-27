@@ -10,6 +10,7 @@ import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { getProposalSchema } from './proposal';
 import { DataProductInput } from './dataProducts';
 import { formObservationsFromLegacy } from './legacyObservations';
+import { targetsFromPdm } from './targets';
 import { PROPOSAL_STATUS, PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
@@ -41,7 +42,7 @@ describe('mapPdmToForm', () => {
       abstract: pdm.proposal_info.abstract,
       scienceCategory: 1,
       investigators: [],
-      targets: legacy.targets,
+      targets: targetsFromPdm(pdm.observation_info.targets),
       targetObservation: legacy.targetObservation,
       calibrationStrategy: legacy.calibrationStrategy,
       sciencePDF: null,

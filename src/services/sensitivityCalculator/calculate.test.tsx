@@ -1,16 +1,7 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { AxiosError, CanceledError, InternalAxiosRequestConfig } from 'axios';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
-import {
-  BAND_1_STR,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
-  REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_SSO,
-  SA_AA2,
-  SA_AA_STAR,
-  SA_CUSTOM,
-  VELOCITY_DEFINITION
-} from '@/utils/constants';
+import { BAND_1_STR, SA_AA2, SA_AA_STAR, SA_CUSTOM } from '@/utils/constants';
 import {
   getObservationSchema,
   newSvObservation,
@@ -19,7 +10,11 @@ import {
   zoomChannelWidthHz,
   type ObservationValues
 } from '@/models/proposals/observations';
-import type { TargetType } from '@/models/proposals/targets';
+import {
+  newTarget,
+  REFERENCE_COORDINATE_KIND,
+  type TargetValues
+} from '@/models/proposals/targets';
 import { DATA_PRODUCT_KIND, type DataProductInput } from '@/models/proposals/dataProducts';
 import {
   buildSensitivityRequest,
@@ -31,30 +26,34 @@ import {
 import { SENS_CALC_ERROR_KIND } from './client';
 import type { ContinuumResult, ZoomResult } from './types';
 
-const ICRS_TARGET: TargetType = {
-  id: 'target-1',
-  name: 'M1',
-  velocityDefinition: VELOCITY_DEFINITION.RADIO,
-  kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
+// A valid target: the coordinates given, with a new target's other values
+const target = (
+  id: string,
+  name: string,
+  referenceCoordinate: TargetValues['referenceCoordinate']
+): TargetValues =>
+  ({
+    ...newTarget(id, referenceCoordinate.kind),
+    name,
+    referenceCoordinate
+  }) as TargetValues;
+
+const ICRS_TARGET = target('target-1', 'M1', {
+  kind: REFERENCE_COORDINATE_KIND.ICRS,
   raStr: '05:34:31.94',
   decStr: '+22:00:52.2'
-};
+});
 
-const GALACTIC_TARGET: TargetType = {
-  id: 'target-2',
-  name: 'Galactic',
-  velocityDefinition: VELOCITY_DEFINITION.RADIO,
-  kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
+const GALACTIC_TARGET = target('target-2', 'Galactic', {
+  kind: REFERENCE_COORDINATE_KIND.GALACTIC,
   l: 10,
   b: 5
-};
+});
 
-const SSO_TARGET: TargetType = {
-  id: 'target-3',
-  name: 'Mars',
-  velocityDefinition: VELOCITY_DEFINITION.RADIO,
-  kind: REFERENCE_COORDINATE_TYPE_SSO.value
-};
+const SSO_TARGET = target('target-3', 'Mars', {
+  kind: REFERENCE_COORDINATE_KIND.SPECIAL,
+  name: 'Mars'
+});
 
 const imageDataProduct = (overrides: Record<string, unknown> = {}): DataProductInput =>
   ({

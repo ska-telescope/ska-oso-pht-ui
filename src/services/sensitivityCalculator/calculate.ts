@@ -8,8 +8,6 @@ import {
   CHANNELS_OUT_DEFAULT,
   type FrequencyUnit,
   LOW_CONTINUUM_SPECTRAL_RESOLUTION_KHZ,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
-  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SA_CUSTOM,
   TAPER_DEFAULT,
@@ -30,7 +28,7 @@ import {
   type ObservationInput,
   type ObservationValues
 } from '@/models/proposals/observations';
-import type { TargetType } from '@/models/proposals/targets';
+import { REFERENCE_COORDINATE_KIND, type TargetValues } from '@/models/proposals/targets';
 import { ImageWeighting } from '@/generated/models';
 import {
   DATA_PRODUCT_KIND,
@@ -77,10 +75,16 @@ const MID_RX_BANDS: Record<MidObservationValues['observingBand'], MidRxBand> = {
   [BAND_5B_STR]: 'Band 5b'
 };
 
-const referenceCoordinate = (target: TargetType): ReferenceCoordinate =>
-  target.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value
-    ? { kind: 'galactic', l: Number(target.l), b: Number(target.b) }
-    : { kind: 'icrs', ra_str: target.raStr ?? '', dec_str: target.decStr ?? '' };
+const referenceCoordinate = ({ referenceCoordinate: coord }: TargetValues): ReferenceCoordinate => {
+  switch (coord.kind) {
+    case REFERENCE_COORDINATE_KIND.GALACTIC:
+      return { kind: 'galactic', l: coord.l, b: coord.b };
+    case REFERENCE_COORDINATE_KIND.ICRS:
+      return { kind: 'icrs', ra_str: coord.raStr, dec_str: coord.decStr };
+    case REFERENCE_COORDINATE_KIND.SPECIAL:
+      throw new Error('The sensitivity calculator does not support solar system objects');
+  }
+};
 
 // The calculator's name for each named subarray. A custom one sends its stations or antennas.
 // The calculator has no SV subarrays: AA2 for SV is calculated as AA2.
@@ -165,7 +169,7 @@ type SpectralObservation<T> = Extract<T, { observingMode: typeof OBSERVING_MODE.
 
 const lowContinuumRequest = (
   observation: ContinuumObservation<LowObservationValues>,
-  target: TargetType,
+  target: TargetValues,
   dataProduct: DataProductInput
 ): LowContinuumRequest => ({
   ...lowArray(observation),
@@ -184,7 +188,7 @@ const lowContinuumRequest = (
 
 const midContinuumRequest = (
   observation: ContinuumObservation<MidObservationValues>,
-  target: TargetType,
+  target: TargetValues,
   dataProduct: DataProductInput
 ): MidContinuumRequest => ({
   ...midArray(observation),
@@ -202,7 +206,7 @@ const midContinuumRequest = (
 
 const lowZoomRequest = (
   observation: SpectralObservation<LowObservationValues>,
-  target: TargetType,
+  target: TargetValues,
   dataProduct: DataProductInput
 ): LowZoomRequest => ({
   ...lowArray(observation),
@@ -223,7 +227,7 @@ const lowZoomRequest = (
 
 const midZoomRequest = (
   observation: SpectralObservation<MidObservationValues>,
-  target: TargetType,
+  target: TargetValues,
   dataProduct: DataProductInput
 ): MidZoomRequest => ({
   ...midArray(observation),
@@ -304,11 +308,11 @@ export const getSensitivityDataProduct = (
  */
 export const buildSensitivityRequest = (
   observation: ObservationValues,
-  target: TargetType,
+  target: TargetValues,
   dataProduct: DataProductInput
 ): SensitivityRequest | null => {
   if (
-    target.kind === REFERENCE_COORDINATE_TYPE_SSO.value ||
+    target.referenceCoordinate.kind === REFERENCE_COORDINATE_KIND.SPECIAL ||
     observation.observingMode === OBSERVING_MODE.PST
   ) {
     return null;

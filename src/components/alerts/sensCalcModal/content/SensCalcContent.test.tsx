@@ -6,7 +6,7 @@ import { StoreProvider } from '@utils/storage/store';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import SensCalcContent from './SensCalcContent';
 import { useProposalForm } from '@/models/proposals/useProposalForm';
-import type { ProposalType } from '@/models/proposals/proposal';
+import type Target from '@/utils/types/target';
 import { SENSITIVITY_STATE } from '@/utils/constants';
 import type { Sensitivity, SensitivityValues } from '@/models/proposals/targetObservation';
 
@@ -31,7 +31,7 @@ const values = (weighted: number): SensitivityValues => ({
 const FormWithTarget = ({ children }: { children: React.ReactNode }) => {
   const form = useProposalForm({
     id: 'p1',
-    targets: [{ id: 't1', name: 'Target A' }] as ProposalType['targets'],
+    targets: [{ id: 't1', name: 'Target A' } as Target],
     observations: MockProposalFrontend.observations,
     groupObservations: MockProposalFrontend.groupObservations,
     dataProducts: MockProposalFrontend.dataProducts

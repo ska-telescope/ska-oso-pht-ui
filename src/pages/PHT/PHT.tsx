@@ -1,5 +1,4 @@
 import React from 'react';
-import Target from '@/utils/types/target';
 import { Routes, Route, useLocation, useNavigate } from 'react-router';
 import {
   AlertColorTypes,
@@ -168,7 +167,7 @@ export default function PHT({
   // first added. autoLink depends on OSD/cycle-policy data that may not have resolved yet when
   // the proposal is fetched, so this does not latch until autoLink actually becomes true.
   React.useEffect(() => {
-    const target = formMethods.getValues('targets')?.[0] as Target | undefined;
+    const target = formMethods.getValues('targets')?.[0];
     if (
       !prslId ||
       autoRepairAttemptedForIdRef.current === prslId ||

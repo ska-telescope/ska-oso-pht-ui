@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { getProposalSchema } from './proposal';
 import { getProposalFormDefaults, getProposalFormValues } from './useProposalForm';
+import { newTarget, REFERENCE_COORDINATE_KIND } from './targets';
 import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 import phtTranslations from '@/locales/en/pht.json';
 
@@ -126,7 +127,7 @@ describe('proposal form values', () => {
 
   test('each new proposal gets its own lists', () => {
     const first = getProposalFormDefaults();
-    first.targets.push({ id: 't1', name: 'M2', kind: 0, velocityDefinition: 'RADIO' });
+    first.targets.push({ ...newTarget('t1', REFERENCE_COORDINATE_KIND.ICRS), name: 'M2' });
     expect(getProposalFormDefaults().targets).toEqual([]);
   });
 

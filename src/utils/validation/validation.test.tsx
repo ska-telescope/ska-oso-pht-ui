@@ -1,13 +1,7 @@
 import { describe, it, expect, test, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { PAGE_OBSERVATION, PROPOSAL_TYPE, STATUS_ERROR, STATUS_OK } from '../constants';
-import {
-  useValidateProposal,
-  validateDeclination,
-  validateDetailsPage,
-  validateRightAscension,
-  validateTitlePage
-} from './validation';
+import { useValidateProposal, validateDetailsPage, validateTitlePage } from './validation';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
@@ -93,88 +87,5 @@ describe('validateDetailsPage', () => {
     expect(validateDetailsPage({ ...sv, observations: [observation] })).toBe(STATUS_OK);
     expect(validateDetailsPage(sv)).toBe(STATUS_ERROR);
     expect(validateDetailsPage({ ...sv, abstract: '' })).toBe(STATUS_ERROR);
-  });
-});
-
-describe('validateRightAscension', () => {
-  test('validates correct equatorial format', () => {
-    expect(validateRightAscension('12:34:56')).toBeNull();
-    expect(validateRightAscension('2:34:56')).toBeNull();
-    expect(validateRightAscension('+12:34:56')).toBeNull();
-  });
-
-  test('rejects incorrect equatorial format', () => {
-    expect(validateRightAscension('123:45:67')).toBe('0'); // Invalid hours
-    expect(validateRightAscension('12:345:67')).toBe('0'); // Invalid minutes
-    expect(validateRightAscension('12:3:67')).toBe('0'); // Invalid minutes
-    expect(validateRightAscension('12:34:567')).toBe('0'); // Invalid seconds
-    expect(validateRightAscension('12:34:5')).toBe('0'); // Invalid seconds
-    expect(validateRightAscension('12:34')).toBe('0'); // Missing seconds
-    expect(validateRightAscension('12:34:')).toBe('0'); // Missing seconds value
-    expect(validateRightAscension('')).toBe('0'); // Empty string
-    expect(validateRightAscension('abc:def:ghi')).toBe('0'); // Non-numeric input
-  });
-
-  test('validates fractional seconds', () => {
-    expect(validateRightAscension('12:34:56.789')).toBeNull(); // Valid fractional seconds
-    expect(validateRightAscension('12:34:56.789 ')).toBeNull(); // Valid with trailing whitespace
-    expect(validateRightAscension('12:34:56.')).toBeNull(); // Valid trailing dot
-  });
-
-  test('rejects out-of-range values', () => {
-    expect(validateRightAscension('91:00:00')).toBe('1'); // Hours out of range
-    expect(validateRightAscension('-91:00:00')).toBe('0'); // Negative sign → format error
-    expect(validateRightAscension('12:60:00')).toBe('0'); // Minutes > 59 is a format error (hours are fine)
-    expect(validateRightAscension('12:34:60')).toBe('0'); // Seconds >= 60 is a format error (hours are fine)
-  });
-
-  test('rejects negative values', () => {
-    expect(validateRightAscension('-12:34:56')).toBe('0');
-    expect(validateRightAscension('-12:34:56.789')).toBe('0');
-  });
-
-  test('rejects targets not visible', () => {
-    expect(validateRightAscension('50:00:00')).toBe('1');
-    expect(validateRightAscension('89:50:00')).toBe('1');
-    expect(validateRightAscension('90:00:00')).toBe('1');
-  });
-});
-
-describe('validateDeclination', () => {
-  test('validates correct equatorial format', () => {
-    expect(validateDeclination('12:34:56')).toBe(null);
-    expect(validateDeclination('2:34:56')).toBe(null);
-    expect(validateDeclination('-12:34:56')).toBe(null);
-    expect(validateDeclination('+12:34:56')).toBe(null);
-    expect(validateDeclination('-90:00:00')).toBe(null);
-  });
-
-  test('rejects incorrect equatorial format', () => {
-    expect(validateDeclination('123:45:67')).toBe('0'); // Invalid hours
-    expect(validateDeclination('12:345:67')).toBe('0'); // Invalid minutes
-    expect(validateDeclination('12:3:67')).toBe('0'); // Invalid minutes
-    expect(validateDeclination('12:34:567')).toBe('0'); // Invalid seconds
-    expect(validateDeclination('12:34:5')).toBe('0'); // Invalid seconds
-    expect(validateDeclination('12:34')).toBe('0'); // Missing seconds
-    expect(validateDeclination('12:34:')).toBe('0'); // Missing seconds value
-    expect(validateDeclination('')).toBe('0'); // Empty string
-    expect(validateDeclination('abc:def:ghi')).toBe('0'); // Non-numeric input
-  });
-
-  test('validates fractional seconds', () => {
-    expect(validateDeclination('12:34:56.789')).toBe(null); // Valid fractional seconds
-    expect(validateDeclination('-12:34:56.789')).toBe(null); // Valid negative fractional seconds
-    expect(validateDeclination('-90:00:00.0')).toBe(null); // Valid edge case with fractional seconds
-    expect(validateDeclination('12:34:56.789 ')).toBe(null); // Valid trailing whitespace
-    expect(validateDeclination('-12:34:56.789 ')).toBe(null); // Valid trailing whitespace
-    expect(validateDeclination('12:34:56.')).toBe(null); // Valid trailing dot
-    expect(validateDeclination('-12:34:56.')).toBe(null); // Valid negative trailing dot
-  });
-
-  test('rejects out-of-range values', () => {
-    expect(validateDeclination('91:00:00')).toBe('1'); // Hours out of range
-    expect(validateDeclination('-91:00:00')).toBe('1'); // Negative hours out of range
-    expect(validateDeclination('12:60:00')).toBe('0'); // Invalid format (60 min has no meaning in context of sky direction)
-    expect(validateDeclination('12:34:60')).toBe('0'); // Invalid format (60 sec has no meaning in context of sky direction)
   });
 });

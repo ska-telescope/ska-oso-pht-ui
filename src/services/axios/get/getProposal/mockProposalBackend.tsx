@@ -52,7 +52,7 @@ export const MockProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km/s'
+            unit: 'km / s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -81,7 +81,7 @@ export const MockProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km/s'
+            unit: 'km / s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -110,7 +110,7 @@ export const MockProposalBackend = {
         radial_velocity: {
           quantity: {
             value: 0,
-            unit: 'km/s'
+            unit: 'km / s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',
@@ -282,7 +282,7 @@ export const MockProposalBackendZoom = {
         radial_velocity: {
           quantity: {
             value: -3.6,
-            unit: 'km/s'
+            unit: 'km / s'
           },
           definition: 'RADIO',
           reference_frame: 'LSRK',

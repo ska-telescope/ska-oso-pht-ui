@@ -18,7 +18,7 @@ import {
   ObservingMode,
   OBSERVING_MODE
 } from '@/models/proposals/observations';
-import Target from '../types/target';
+import type { TargetInput } from '@/models/proposals/targets';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { AxiosAuthClient } from '@services/axios/axiosAuthClient/axiosAuthClient.ts';
 import { PstMode } from '@/generated/models';
@@ -82,7 +82,7 @@ export const newDataProductsForMode = (observation: ObservationInput): DataProdu
  */
 const linkObservation = async (
   form: ProposalFormAccess,
-  target: Target,
+  target: TargetInput,
   observation: ObservationInput,
   mainDataProduct: DataProductInput,
   authAxiosClient: AxiosAuthClient
@@ -123,7 +123,7 @@ const linkObservation = async (
  * if there is none yet.
  */
 export async function linkTarget(
-  target: Target,
+  target: TargetInput,
   form: ProposalFormAccess,
   authAxiosClient: AxiosAuthClient,
   minElevation: number | null
@@ -243,7 +243,7 @@ export async function setObservingMode(
   form.setValue('observations', [observation]);
   form.setValue('dataProducts', dataProducts);
 
-  const target = form.getValues('targets')?.[0] as Target | undefined;
+  const target = form.getValues('targets')?.[0];
   if (target) {
     await linkObservation(form, target, observation, dataProducts[0], authAxiosClient);
   }
