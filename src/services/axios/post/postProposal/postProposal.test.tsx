@@ -30,9 +30,7 @@ describe('PostProposal', () => {
 
     expect(mockCreateProposal).toHaveBeenCalledExactlyOnceWith({
       ...pdm,
-      status: PROPOSAL_STATUS.DRAFT,
-      submitted_on: null,
-      submitted_by: ''
+      status: PROPOSAL_STATUS.DRAFT
     });
     expect(result).toEqual({ data: pdm });
   });

@@ -1,5 +1,4 @@
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
-import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { type ApiResult, handleApiError, UNKNOWN_API_ERROR } from '../../apiResult/apiResult.ts';
 import { osoApiConfiguration } from '../../generatedClient/osoApiConfig.ts';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
@@ -11,14 +10,11 @@ async function PutProposal(
   status: string = PROPOSAL_STATUS.DRAFT
 ): Promise<ApiResult<ProposalPDM>> {
   try {
-    const submitted = status === PROPOSAL_STATUS.SUBMITTED;
+    // TODO: revisit submission requirements (submitted_on / submitted_by) once the proposal
+    //  statuses have been refactored
     const payload: ProposalPDM = {
       ...pdm,
-      // Save metadata, not proposal content. submitted_on is null when not submitted, as the ODA
-      // does not accept ''
-      status: status as ProposalPDM['status'],
-      submitted_on: submitted ? new Date().toISOString() : null,
-      submitted_by: submitted ? getUserId() : ''
+      status: status as ProposalPDM['status']
     };
 
     const result = await PPTAPIProposalPreparationApiFactory(

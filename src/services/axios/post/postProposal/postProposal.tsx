@@ -12,12 +12,11 @@ import { PPTAPIProposalPreparationApiFactory } from '@/generated';
  */
 async function PostProposal(pdm: ProposalPDM): Promise<ApiResult<ProposalPDM>> {
   try {
+    // TODO: revisit submission requirements (submitted_on / submitted_by) once the proposal
+    //  statuses have been refactored
     const payload: ProposalPDM = {
       ...pdm,
-      // Save metadata, not proposal content. submitted_on is null, as the ODA does not accept ''
-      status: PROPOSAL_STATUS.DRAFT as ProposalPDM['status'],
-      submitted_on: null,
-      submitted_by: ''
+      status: PROPOSAL_STATUS.DRAFT as ProposalPDM['status']
     };
 
     const result =
