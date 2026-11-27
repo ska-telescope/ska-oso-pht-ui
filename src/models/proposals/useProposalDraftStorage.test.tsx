@@ -50,11 +50,12 @@ describe('useProposalDraftStorage', () => {
     expect(readDraft().values.title).toBe('ABC');
   });
 
-  test('does not write a reset (e.g. a proposal loaded from the ODA)', () => {
-    const { result } = renderForm();
-    act(() => result.current.reset({ ...getProposalFormDefaults(), prslId: 'other', title: 'X' }));
+  test('writes a proposal as soon as it is opened (e.g. loaded from the ODA)', () => {
+    // No proposal is open until the load resets the form
+    const { result } = renderForm('');
+    act(() => result.current.reset({ ...getProposalFormDefaults(), prslId: PRSL_ID, title: 'X' }));
     act(() => vi.advanceTimersByTime(DRAFT_SAVE_DELAY_MS));
-    expect(window.localStorage.length).toBe(0);
+    expect(readDraft().values.title).toBe('X');
   });
 
   test('does not write when no proposal is open', () => {
@@ -64,12 +65,23 @@ describe('useProposalDraftStorage', () => {
     expect(window.localStorage.length).toBe(0);
   });
 
-  test('a reset drops an edit not yet written', () => {
+  test('closing a proposal writes its pending edit under its own ID', () => {
     const { result } = renderForm();
     act(() => result.current.setValue('title', 'New title', { shouldDirty: true }));
     act(() => result.current.reset(getProposalFormDefaults()));
+    expect(readDraft().values.title).toBe('New title');
+  });
+
+  test('switching proposal writes each under its own ID', () => {
+    const otherId = 'prsl-t0001-20260101-00002';
+    const { result } = renderForm();
+    act(() => result.current.setValue('title', 'First', { shouldDirty: true }));
+    act(() =>
+      result.current.reset({ ...getProposalFormDefaults(), prslId: otherId, title: 'Second' })
+    );
     act(() => vi.advanceTimersByTime(DRAFT_SAVE_DELAY_MS));
-    expect(window.localStorage.length).toBe(0);
+    expect(readDraft().values.title).toBe('First');
+    expect(readDraft(STORAGE_KEYS.proposalDraft(otherId)).values.title).toBe('Second');
   });
 
   test('writes a pending edit on unmount', () => {

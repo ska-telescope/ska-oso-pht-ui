@@ -7,7 +7,8 @@ import { ProposalType } from './proposal';
 export const DRAFT_SAVE_DELAY_MS = 500;
 
 /**
- * Mirrors local edits to the proposal form into localStorage, keyed by the proposal's ID.
+ * Mirrors the open proposal in the form into localStorage, keyed by the proposal's ID: as soon as
+ * it is opened, then on each edit.
  * Subscribes without re-rendering the caller, and debounces the writes.
  */
 export function useProposalDraftStorage(form: UseFormReturn<ProposalType>) {
@@ -26,16 +27,17 @@ export function useProposalDraftStorage(form: UseFormReturn<ProposalType>) {
     };
 
     const unsubscribe = subscribe({
-      formState: { values: true, isDirty: true },
-      callback: ({ values, isDirty }) => {
-        // A reset (loading, creating or closing a proposal) leaves the form clean: those are the
-        // proposal's saved values, not local edits. With no prslId, no proposal is open. The ID
-        // is taken from these values, not from state, so a switch of proposal can't store one
-        // proposal's values under another's ID.
-        if (!isDirty || !values.prslId) {
-          clearTimeout(timer);
-          timer = undefined;
-          pending = undefined;
+      formState: { values: true },
+      // Fires on edits and on resets, so a proposal is stored as soon as it is opened
+      callback: ({ values }) => {
+        // The open proposal has changed (opened, switched or closed): write the previous one's
+        // pending edit now, under its own ID. The ID is taken from these values, not from state,
+        // so one proposal's values can't be stored under another's ID.
+        if (pending && pending.prslId !== values.prslId) {
+          flush();
+        }
+        // With no prslId, no proposal is open
+        if (!values.prslId) {
           return;
         }
         pending = values;
