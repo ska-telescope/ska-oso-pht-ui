@@ -19,7 +19,7 @@ import {
   TELESCOPE_MID_NUM,
   type FrequencyUnit
 } from '@/utils/constants';
-import { calculateVelocity, convertFrequency, generateId, obTypeTransform } from '@/utils/helpers';
+import { calculateVelocity, convertFrequency, generateId } from '@/utils/helpers';
 import { isFineZoomRestricted } from '@/utils/zoomWindow';
 import {
   bandRange,
@@ -35,6 +35,8 @@ import {
   observationForMode,
   observationForSubarray,
   OBSERVING_MODE,
+  OBSERVING_MODE_TRANSLATION_KEY,
+  observingModesFor,
   spectralBandwidth,
   spectralResolutionText,
   Subarray,
@@ -54,7 +56,6 @@ import {
   setSpectralChannelsOut
 } from '@/models/proposals/observationUpdates';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import { OBSERVING_MODE_BY_LEGACY_TYPE } from '@/models/proposals/observations';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -138,12 +139,12 @@ export default function ObservationView({ index, groupIds, proposalForm }: Obser
 
   // The observing modes the subarray has
   const modeOptions = (subarray: Subarray | null) =>
-    obTypeTransform(subarrayCapabilities(osd, observation.telescope, subarray)?.cbfModes ?? []).map(
-      (type) => ({
-        label: t(`observationType.${type}`),
-        value: OBSERVING_MODE_BY_LEGACY_TYPE[type]
-      })
-    );
+    observingModesFor(
+      subarrayCapabilities(osd, observation.telescope, subarray)?.cbfModes ?? []
+    ).map((mode) => ({
+      label: t(`observationType.${OBSERVING_MODE_TRANSLATION_KEY[mode]}`),
+      value: mode
+    }));
 
   const changeBand = (band: ObservingBand) => {
     const next = observationForBand(observation, band, osd);

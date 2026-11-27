@@ -21,7 +21,6 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { setObservingMode } from '@/utils/autoLinking/AutoLinking';
 import { ObservingMode, OBSERVING_MODE, TELESCOPE } from '@/models/proposals/observations';
-import { OBSERVING_MODE_BY_LEGACY_TYPE } from '@/models/proposals/observations';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import { useWatch } from 'react-hook-form';
 import { ProposalType as ProposalFormValues } from '@/models/proposals/proposal';
@@ -121,11 +120,7 @@ export default function DetailsPage() {
   // AA2 until others are supported for SV.
   const observation = useWatch({ control: form.control, name: 'observations.0' });
   const isLow = observation ? observation.telescope === TELESCOPE.LOW : !!osdLOW;
-  // The options still use the legacy observation types
-  const observingModeOptions = useObservationTypeOptions(SA_AA2, isLow).map((option) => ({
-    ...option,
-    value: OBSERVING_MODE_BY_LEGACY_TYPE[option.value]
-  }));
+  const observingModeOptions = useObservationTypeOptions(SA_AA2, isLow);
 
   const changeObservingMode = async (mode: ObservingMode) => {
     if (mode === observation?.observingMode) return;

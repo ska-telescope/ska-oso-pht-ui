@@ -13,6 +13,7 @@ import {
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import phtTranslations from '@/locales/en/pht.json';
 import {
+  observingModesFor,
   centralFrequencyGridHz,
   getObservationSchema,
   getObservationsSchema,
@@ -704,5 +705,25 @@ describe('observation changes', () => {
       ...narrow,
       bandwidth: { value: 150, unit: 'MHz' }
     });
+  });
+});
+
+describe('observingModesFor', () => {
+  test('visibilities allow every imaging mode and pst allows PST, in that order', () => {
+    expect(observingModesFor(['vis', 'pst'])).toEqual([
+      OBSERVING_MODE.CONTINUUM,
+      OBSERVING_MODE.SPECTRAL,
+      OBSERVING_MODE.CONTINUUM_SPECTRAL,
+      OBSERVING_MODE.PST
+    ]);
+  });
+
+  test("treats 'correlation' as visibilities and leaves out unknown CBF modes", () => {
+    expect(observingModesFor(['correlation', 'unknown'])).toEqual([
+      OBSERVING_MODE.CONTINUUM,
+      OBSERVING_MODE.SPECTRAL,
+      OBSERVING_MODE.CONTINUUM_SPECTRAL
+    ]);
+    expect(observingModesFor([])).toEqual([]);
   });
 });

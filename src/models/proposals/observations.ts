@@ -17,11 +17,7 @@ import {
   SA_CUSTOM,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   TELESCOPE_LOW_NUM,
-  TELESCOPE_MID_NUM,
-  TYPE_CONTINUUM,
-  TYPE_CONTINUUM_SPECTRAL,
-  TYPE_PST,
-  TYPE_ZOOM
+  TELESCOPE_MID_NUM
 } from '@/utils/constants';
 import { calculateVelocity, convertFrequency, generateObsSetId } from '@/utils/helpers';
 import { isFineZoomRestricted, snapCentralFrequencyToChannelGridHz } from '@/utils/zoomWindow';
@@ -64,13 +60,27 @@ export const OBSERVING_MODE = {
 
 export type ObservingMode = (typeof OBSERVING_MODE)[keyof typeof OBSERVING_MODE];
 
-/** The observing mode of each observation type the observing mode options are listed by. */
-export const OBSERVING_MODE_BY_LEGACY_TYPE: Record<string, ObservingMode> = {
-  [TYPE_CONTINUUM]: OBSERVING_MODE.CONTINUUM,
-  [TYPE_CONTINUUM_SPECTRAL]: OBSERVING_MODE.CONTINUUM_SPECTRAL,
-  [TYPE_ZOOM]: OBSERVING_MODE.SPECTRAL,
-  [TYPE_PST]: OBSERVING_MODE.PST
-};
+/**
+ * The observing modes a subarray's correlator (CBF) modes allow, in the order they are offered.
+ * Visibilities ('vis', or 'correlation' in older OSD data) allow every imaging mode; CBF modes
+ * with no observing mode are left out.
+ */
+export const observingModesFor = (cbfModes: string[]): ObservingMode[] =>
+  cbfModes.flatMap((cbfMode): ObservingMode[] => {
+    switch (cbfMode) {
+      case 'vis':
+      case 'correlation':
+        return [
+          OBSERVING_MODE.CONTINUUM,
+          OBSERVING_MODE.SPECTRAL,
+          OBSERVING_MODE.CONTINUUM_SPECTRAL
+        ];
+      case 'pst':
+        return [OBSERVING_MODE.PST];
+      default:
+        return [];
+    }
+  });
 
 /** The key of each observing mode's name in the observationType translations. */
 export const OBSERVING_MODE_TRANSLATION_KEY: Record<ObservingMode, string> = {

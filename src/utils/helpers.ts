@@ -7,7 +7,6 @@ import {
   TEXT_ENTRY_PARAMS,
   VELOCITY_UNIT,
   VELOCITY_UNITS,
-  TYPE_CONTINUUM_SPECTRAL,
   TIME_UNITS,
   FREQUENCY_STR_KHZ,
   FREQUENCY_STR_MHZ,
@@ -244,23 +243,6 @@ export const getBandwidthZoom = (incObs: Observation | null | undefined): ValueU
 export const getBandwidthLowZoom = (inValue: number) => {
   const obsTelescopeArray = OSD_CONSTANTS.array[1];
   return obsTelescopeArray?.bandWidth?.find((b) => b.value === inValue);
-};
-
-/**
- * Maps the cbfModes to the Observing Modes available.
- */
-export const obTypeTransform = (inData: string[]) => {
-  const out: string[] = [];
-  inData.forEach((item) => {
-    if (item === 'vis' || item === 'correlation') {
-      out.push('continuum', 'spectral', TYPE_CONTINUUM_SPECTRAL);
-    } else if (item === 'pst') {
-      out.push('pst');
-    }
-    // everything else is ignored
-  });
-
-  return out;
 };
 
 /**

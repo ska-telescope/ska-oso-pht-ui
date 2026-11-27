@@ -10,12 +10,12 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 }));
 
 describe('useObservationTypeOptions', () => {
-  test('returns translated options for the LOW subarray cbfModes', () => {
+  test('returns the observing modes, with translated labels, for the LOW subarray cbfModes', () => {
     const { result } = renderHook(() => useObservationTypeOptions('AA2', true));
     expect(result.current).toEqual([
       { label: 'observationType.continuum', value: 'continuum' },
-      { label: 'observationType.spectral', value: 'spectral' },
-      { label: 'observationType.continuumSpectral', value: 'continuumSpectral' },
+      { label: 'observationType.spectral', value: 'spectral line' },
+      { label: 'observationType.continuumSpectral', value: 'continuum and spectral line' },
       { label: 'observationType.pst', value: 'pst' }
     ]);
   });
