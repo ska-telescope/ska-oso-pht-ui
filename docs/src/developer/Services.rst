@@ -14,8 +14,8 @@ i18n
 ====
 
 Allows for text to be displayed in the language of the browser, with English as the default.
-The data is stored in folders under public/locales, with each language in its own folder ( e.g. en ).
-In this application, all the json files needed to be called pht.json
+The data is stored in folders under src/locales, with each language in its own folder ( e.g. en ).
+In this application, all the json files needed to be called pht.json or sv.json.
 
 axios
 =====

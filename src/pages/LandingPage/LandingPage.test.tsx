@@ -1,5 +1,5 @@
-import { describe, expect, test, vi, beforeEach, Mock } from 'vitest';
-import { fireEvent, screen, render, waitFor } from '@testing-library/react';
+import { afterEach, describe, expect, test, vi, beforeEach, Mock } from 'vitest';
+import { act, fireEvent, screen, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider, storageObject } from '@utils/storage/store';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
@@ -12,10 +12,14 @@ const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
 const mockNotifyWarning = vi.hoisted(() => vi.fn());
-import { NAV, PROPOSAL_STATUS, TMP_REVIEWER_ID } from '@/utils/constants';
+import { NAV, PATH, PROPOSAL_STATUS, PROPOSAL_TYPE, TMP_REVIEWER_ID } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
+import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
+import { ProposalType } from '@/models/proposals/proposal';
+import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
+import { ObservatoryPolicy } from '@/utils/types/observatoryData';
 
 // ---- Module mocks ----
 
@@ -94,7 +98,8 @@ vi.mock('@/utils/notify/useNotify', () => ({
   })
 }));
 
-vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/utils/osd/useOSDAccessors/useOSDAccessors')>()),
   useOSDAccessors: () => ({
     isSV: false,
     osdCycleId: 'CYCLE-1',
@@ -132,14 +137,41 @@ vi.mock('@/components/alerts/proposalDisplay/ProposalDisplay', () => ({
     ) : null
 }));
 
+// Confirms the given cycle as soon as the dialog opens
+const mockPolicy = vi.hoisted(() => ({ current: {} as unknown }));
+vi.mock('@/components/alerts/cycleSelection/CycleSelection', () => ({
+  default: ({ open, onConfirm }: any) =>
+    open ? (
+      <button data-testid="cycleConfirmationButton" onClick={() => onConfirm(mockPolicy.current)}>
+        Confirm
+      </button>
+    ) : null
+}));
+
 // ---- Helpers ----
 
+// Exposes the global form, which holds the proposal being edited
+let formProbe: UseFormReturn<ProposalType>;
+const FormProbe = () => {
+  formProbe = useFormContext<ProposalType>();
+  return null;
+};
+
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
-    </StoreProvider>
-  );
+  const FormWrapper = () => {
+    const methods = useForm<ProposalType>({ defaultValues: getProposalFormDefaults() });
+    return (
+      <StoreProvider>
+        <ThemeA11yProvider>
+          <FormProvider {...methods}>
+            {component}
+            <FormProbe />
+          </FormProvider>
+        </ThemeA11yProvider>
+      </StoreProvider>
+    );
+  };
+  return render(<FormWrapper />);
 };
 
 // ---- Existing tests ----
@@ -182,16 +214,20 @@ describe('clone proposal', () => {
         id: TMP_REVIEWER_ID,
         firstName: 'Jane',
         lastName: 'Doe',
+        phdThesis: false,
+        status: 'accepted',
         pi: true,
         email: 'jane@example.com'
-      } as any,
+      },
       {
         id: 'inv-2',
         firstName: 'John',
         lastName: 'Smith',
+        phdThesis: false,
+        status: 'accepted',
         pi: false,
         email: 'john@example.com'
-      } as any
+      }
     ],
     dataProducts: [{ id: 'dp-1' } as any],
     calibrationStrategy: [],
@@ -433,8 +469,10 @@ describe('clone proposal', () => {
       firstName: 'Real',
       lastName: 'Cloner',
       email: 'real.cloner@example.com',
+      phdThesis: false,
+      status: 'accepted',
       pi: true
-    } as any;
+    };
     (PostProposal as Mock).mockResolvedValue({
       ...mockPostProposalSkeleton,
       investigators: [backendInjectedPI]
@@ -465,12 +503,68 @@ describe('clone proposal', () => {
   test('updates validation state with cloned proposal ID after cloning', async () => {
     await triggerCloneConfirm();
 
-    // After confirming the clone, we expect validateProposal to be called once for the new
-    // cloned proposal (with the new ID so that the contents and state match.
+    // After confirming the clone, the page statuses are worked out from the clone's values, so
+    // that its contents and statuses match
     await waitFor(() => {
       expect(mockValidateFn).toHaveBeenCalledWith(
-        expect.objectContaining({ id: CLONED_PROPOSAL_ID })
+        expect.objectContaining({ title: 'In a galaxy far, far away cloneProposal.suffix' })
       );
     });
+  });
+});
+
+// ---- New proposal tests ----
+
+describe('starting a new proposal', () => {
+  const policy = (type: string) =>
+    ({ cycleInformation: { cycleId: 'SKAO_2027_1' }, type }) as ObservatoryPolicy;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    (isLoggedIn as Mock).mockReturnValue(true);
+    (GetProposalList as Mock).mockResolvedValue([]);
+    (GetProposalAccessForUser as Mock).mockResolvedValue([]);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const startProposal = (type: string) => {
+    mockPolicy.current = policy(type);
+    fireEvent.click(screen.getByTestId('addSubmissionButton'));
+    fireEvent.click(screen.getByTestId('cycleConfirmationButton'));
+  };
+
+  test('gives the new proposal its own ID and the selected cycle', () => {
+    wrapper(<LandingPage />);
+    startProposal('Standard');
+
+    expect(formProbe.getValues('prslId')).toMatch(/^prp-/);
+    expect(formProbe.getValues('cycle')).toBe('SKAO_2027_1');
+    expect(mockNavigate).toHaveBeenCalledWith(PATH[1]);
+  });
+
+  test('sets the type to science verification for an SV cycle', () => {
+    wrapper(<LandingPage />);
+    startProposal('Science Verification');
+
+    expect(formProbe.getValues('proposalType')).toEqual({
+      type: PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+      subTypes: []
+    });
+  });
+
+  // Clears what an earlier proposal left in the form
+  test('leaves the type unset for a normal cycle, so the user picks it', () => {
+    wrapper(<LandingPage />);
+    act(() => {
+      formProbe.setValue('title', 'An earlier title');
+      formProbe.setValue('proposalType.type', PROPOSAL_TYPE.SCIENCE_VERIFICATION);
+    });
+    startProposal('Standard');
+
+    expect(formProbe.getValues('proposalType')).toEqual({ type: null, subTypes: [] });
+    expect(formProbe.getValues('title')).toBe('');
   });
 });

@@ -17,7 +17,7 @@ import { ProposalType } from './proposal';
 import { DATA_PRODUCT_KIND } from './dataProducts';
 import { useProposalOda } from './useProposalOda';
 import { getDetailsSchema } from './details';
-import phtTranslations from '../../../public/locales/en/pht.json';
+import phtTranslations from '@/locales/en/pht.json';
 import { InvestigatorBackend } from '@/utils/types/investigator';
 import { getProposalFormValues } from './useProposalForm';
 
@@ -29,6 +29,12 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => ({ axiosClient: { get: mockGet, put: mockPut } })
 }));
 
+// The cycles the OSD has, for the loaded proposal's own
+const mockOsdPolicies = vi.hoisted(() => ({ current: [] as unknown[] }));
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({ osdPolicies: mockOsdPolicies.current })
+}));
+
 const pdm = MockProposalBackend as ProposalBackend;
 const investigator = MockUserFrontendList[0];
 
@@ -36,7 +42,11 @@ const renderWithForm = (title = '', proposalType = PROPOSAL_TYPE.KEY_SCIENCE) =>
   const { result: form } = renderHook(() =>
     useForm<ProposalType>({
       // The other slices match the proposal being saved, as they do when seeded from the store
-      defaultValues: { ...getProposalFormValues(mapping(pdm)), title, proposalType }
+      defaultValues: {
+        ...getProposalFormValues(mapping(pdm)),
+        title,
+        proposalType: { type: proposalType, subTypes: [] }
+      }
     })
   );
   const { result: oda } = renderHook(() => useProposalOda(), {
@@ -63,11 +73,14 @@ describe('useProposalOda', () => {
 
     let loaded;
     await act(async () => {
-      loaded = await oda.current.loadFromOda('prsl-1');
+      loaded = await oda.current.loadFromOda('prp-1');
     });
 
     expect(form.current.getValues('title')).toBe(pdm.proposal_info.title);
-    expect(form.current.getValues('proposalType')).toBe(pdm.proposal_info.proposal_type.main_type);
+    expect(form.current.getValues('proposalType')).toEqual({
+      type: pdm.proposal_info.proposal_type.main_type,
+      subTypes: pdm.proposal_info.proposal_type.attributes
+    });
     expect(form.current.getValues()).not.toHaveProperty('observingMode');
     expect(form.current.getValues('abstract')).toBe(pdm.proposal_info.abstract);
     expect(form.current.getValues('scienceCategory')).toBe(1);
@@ -90,7 +103,7 @@ describe('useProposalOda', () => {
     const { form, oda } = renderWithForm();
 
     await act(async () => {
-      await oda.current.loadFromOda('prsl-1');
+      await oda.current.loadFromOda('prp-1');
     });
 
     const [observation] = mapping(pdm).observations ?? [];
@@ -109,17 +122,74 @@ describe('useProposalOda', () => {
     ]);
   });
 
-  test('Load from ODA skips the form reset when the load is no longer wanted', async () => {
-    mockGet.mockResolvedValue({ data: pdm });
-    const { form, oda } = renderWithForm('New title');
+  // The user can't add an SV observation or data products, so the load adds the defaults
+  test('Load from ODA gives an SV observation without data products its defaults', async () => {
+    mockGet.mockResolvedValue({
+      data: {
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION }
+        },
+        observation_info: {
+          ...pdm.observation_info,
+          targets: [],
+          data_product_sdps: [],
+          result_details: []
+        }
+      }
+    });
+    const { form, oda } = renderWithForm();
 
-    let loaded;
     await act(async () => {
-      loaded = await oda.current.loadFromOda('prsl-1', () => false);
+      await oda.current.loadFromOda('prp-1');
     });
 
-    expect(loaded).toBeNull();
-    expect(form.current.getValues('title')).toBe('New title');
+    const [observation] = mapping(pdm).observations ?? [];
+    expect(form.current.getValues('dataProducts').map((dp) => dp.observationId)).toEqual([
+      observation.id,
+      observation.id
+    ]);
+    expect(form.current.getValues('targetObservation')).toEqual([]);
+  });
+
+  test("Load from ODA gives a new SV observation the minimum elevation of the proposal's cycle", async () => {
+    mockOsdPolicies.current = [
+      {
+        cycleInformation: { cycleId: 'another-cycle' },
+        capabilities: { low: { basicCapabilities: { minElevationDeg: 10 } } }
+      },
+      {
+        cycleInformation: { cycleId: pdm.cycle },
+        capabilities: { low: { basicCapabilities: { minElevationDeg: 20 } } }
+      }
+    ];
+    mockGet.mockResolvedValue({
+      data: {
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          proposal_type: { main_type: PROPOSAL_TYPE.SCIENCE_VERIFICATION }
+        },
+        observation_info: {
+          ...pdm.observation_info,
+          observation_sets: [],
+          data_product_sdps: [],
+          result_details: [],
+          calibration_strategy: []
+        }
+      }
+    });
+    const { form, oda } = renderWithForm();
+
+    await act(async () => {
+      await oda.current.loadFromOda('prp-1');
+    });
+
+    expect(form.current.getValues('observations')).toEqual([
+      expect.objectContaining({ minElevation: 20 })
+    ]);
+    mockOsdPolicies.current = [];
   });
 
   test('Load from ODA returns the error and leaves the form alone on failure', async () => {
@@ -128,7 +198,7 @@ describe('useProposalOda', () => {
 
     let loaded;
     await act(async () => {
-      loaded = await oda.current.loadFromOda('prsl-1');
+      loaded = await oda.current.loadFromOda('prp-1');
     });
 
     expect(loaded).toBe('Network Error');
@@ -155,7 +225,7 @@ describe('useProposalOda', () => {
 
     let loaded;
     await act(async () => {
-      loaded = await oda.current.loadFromOda('prsl-1');
+      loaded = await oda.current.loadFromOda('prp-1');
     });
 
     expect(loaded).toEqual(expect.any(String));
@@ -175,7 +245,7 @@ describe('useProposalOda', () => {
     });
     const { form, oda } = renderWithForm('Unsaved title');
 
-    await expect(oda.current.loadFromOda('prsl-1')).resolves.toBe('error.API_UNKNOWN_ERROR');
+    await expect(oda.current.loadFromOda('prp-1')).resolves.toBe('error.API_UNKNOWN_ERROR');
     expect(form.current.getValues('title')).toBe('Unsaved title');
   });
 
@@ -197,10 +267,8 @@ describe('useProposalOda', () => {
           abstract: pdm.proposal_info.abstract,
           science_category: pdm.proposal_info.science_category,
           investigators: [],
-          proposal_type: {
-            ...expected.proposal_info.proposal_type,
-            main_type: PROPOSAL_TYPE.KEY_SCIENCE
-          }
+          // The type and its sub-types are the form's
+          proposal_type: { main_type: PROPOSAL_TYPE.KEY_SCIENCE, attributes: [] }
         }
       }
     );
@@ -257,7 +325,7 @@ describe('useProposalOda', () => {
   test.each([undefined, null, '', 'Analytical Engines'])(
     'saves edited details when an investigator organization is %s',
     async (organization) => {
-      const proposalId = 'prsl-1';
+      const proposalId = 'prp-1';
       const withInvestigator: ProposalBackend = {
         ...pdm,
         prsl_id: proposalId,
@@ -315,7 +383,7 @@ describe('useProposalOda', () => {
   test.each([undefined, null])(
     'saves edits outside Team when investigator names and email are %s and flags are omitted',
     async (value) => {
-      const proposalId = 'prsl-1';
+      const proposalId = 'prp-1';
       const withInvestigator: ProposalBackend = {
         ...pdm,
         prsl_id: proposalId,

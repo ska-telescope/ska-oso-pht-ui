@@ -16,7 +16,8 @@ import {
   TYPE_PST,
   TYPE_ZOOM,
   TYPE_ZOOM_LONG,
-  SA_AA4
+  SA_AA4,
+  PROPOSAL_TYPE
 } from '@utils/constants.ts';
 import { DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
@@ -25,7 +26,8 @@ import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { referenceCoordinateToPdm, targetsToPdm } from '@/models/proposals/targets';
 import { targetObservationToPdm } from '@/models/proposals/targetObservation';
-import { savedDataProductsAndLinks } from '@/models/proposals/dataProducts';
+import { observationInfoToSave } from '@/models/proposals/save';
+import { formObservationsFromLegacy } from '@/models/proposals/legacyObservations';
 import { calibrationStrategyToPdm } from '@/models/proposals/calibrationStrategy';
 import { investigatorToPdm } from '@/models/proposals/team';
 import type {
@@ -157,8 +159,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
         supplied: getSupplied(obs) as SuppliedTransport,
         observation_type: TYPE_ZOOM_LONG,
         spectral_resolution: obs.spectralResolution,
-        effective_resolution: obs.effectiveResolution,
-        number_of_channels: obs.zoomChannels?.toString()
+        number_of_channels: obs.zoomChannels
       };
     case TYPE_PST:
     default:
@@ -172,7 +173,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
   }
 };
 
-const getObservationsSets = (
+export const getObservationsSets = (
   incObservationsSets: Observation[] | undefined,
   incObservationGroups: GroupObservation[] | undefined
 ): ObservationSets[] => {
@@ -199,11 +200,16 @@ const getObservationsSets = (
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
   const userId = getUserId();
-  // The same data products and links as a save from the form (see mapFormToPdm)
-  const saved = savedDataProductsAndLinks(
-    proposal.dataProducts ?? [],
-    (proposal.targetObservation ?? []) as TargetObservation[]
-  );
+  // The same observations, data products, links and calibration as a save from the form (see
+  // mapFormToPdm)
+  const saved = observationInfoToSave({
+    isSV: proposal.proposalType === PROPOSAL_TYPE.SCIENCE_VERIFICATION,
+    // TODO BTN-3595 Goes with this legacy save, once its callers send the form's values instead
+    observations: formObservationsFromLegacy(proposal.observations, proposal.groupObservations),
+    dataProducts: proposal.dataProducts ?? [],
+    links: (proposal.targetObservation ?? []) as TargetObservation[],
+    calibrationStrategy: proposal.calibrationStrategy ?? []
+  });
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
@@ -233,11 +239,8 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     observation_info: {
       targets: targetsToPdm(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
-      observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
-      calibration_strategy:
-        proposal.calibrationStrategy && proposal.calibrationStrategy.length > 0
-          ? calibrationStrategyToPdm(proposal.calibrationStrategy)
-          : [],
+      observation_sets: saved.observationSets,
+      calibration_strategy: calibrationStrategyToPdm(saved.calibrationStrategy),
       data_product_sdps: saved.dataProducts,
       result_details: targetObservationToPdm(saved.links)
     }

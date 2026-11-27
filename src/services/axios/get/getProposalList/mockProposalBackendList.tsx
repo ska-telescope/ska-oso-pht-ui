@@ -76,7 +76,6 @@ const documents: DocumentTransport[] = [
 const lowObservationSet = (id: string, observationType: string): ObservationSets =>
   ({
     observation_set_id: id,
-    group_id: '',
     observing_band: BAND_LOW_STR,
     elevation: 20,
     array_details: {
@@ -95,7 +94,6 @@ const lowObservationSet = (id: string, observationType: string): ObservationSets
 const midObservationSet = (id: string, observationType: string): ObservationSets =>
   ({
     observation_set_id: id,
-    group_id: '',
     observing_band: BAND_1_STR,
     elevation: 15,
     array_details: {

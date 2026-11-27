@@ -1,6 +1,8 @@
 import React from 'react';
+import { Entity, mintSkuid } from '@ska-telescope/skuid';
 import { ButtonLogin, isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router';
+import { useFormContext } from 'react-hook-form';
 import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@utils/storage/store';
@@ -12,19 +14,21 @@ import {
   Spacer,
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
-import PutProposal from '@services/axios/put/putProposal/putProposal';
 import AddButton from '@/components/button/Add/Add';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
+import { getProposalFormValues } from '@/models/proposals/useProposalForm';
+import { ProposalType } from '@/models/proposals/proposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
-import Proposal from '@/utils/types/proposal';
+import Proposal, { NEW_PROPOSAL } from '@/utils/types/proposal';
 import TargetObservation from '@/utils/types/targetObservation';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
+  EMPTY_STATUS,
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
   NAV,
@@ -32,6 +36,7 @@ import {
   PATH,
   PROPOSAL_STATUS,
   PROPOSAL_STATUS_OPTIONS,
+  PROPOSAL_TYPE,
   SENSITIVITY_STATE
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
@@ -40,7 +45,8 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
 import { useNotify } from '@/utils/notify/useNotify';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { isSVPolicy, useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { ObservatoryPolicy } from '@/utils/types/observatoryData';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
 import TableSubmissions from '@/components/table/tableSubmissions/TableSubmissions';
@@ -52,6 +58,7 @@ export default function LandingPage() {
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const { osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
   const validateProposal = useValidateProposal();
+  const { reset } = useFormContext<ProposalType>();
   const theme = useTheme();
 
   const {
@@ -68,7 +75,6 @@ export default function LandingPage() {
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
   const [openCycleDialog, setOpenCycleDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
@@ -147,7 +153,7 @@ export default function LandingPage() {
       return false;
     } else {
       setSelectedPolicyByCycleId((response as Proposal).cycle ?? '');
-      updateAppContent1(validateProposal(response));
+      updateAppContent1(validateProposal(getProposalFormValues(response)));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;
@@ -216,7 +222,7 @@ export default function LandingPage() {
       refreshAuthToken,
       {
         ...originalProposal,
-        id: '',
+        id: mintSkuid(Entity.PRP),
         title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
         cycle: osdCycleId ?? '',
         investigators: [],
@@ -237,7 +243,7 @@ export default function LandingPage() {
         targetObservation: resetTargetObservationResults(originalProposal.targetObservation)
       };
       setProposal(clonedProposal);
-      updateAppContent1(validateProposal(clonedProposal));
+      updateAppContent1(validateProposal(getProposalFormValues(clonedProposal)));
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
         prslId: response.id,
@@ -261,17 +267,6 @@ export default function LandingPage() {
   const cloneConfirmed = () => {
     setOpenCloneDialog(false);
     createProposal();
-  };
-
-  // TODO(T9): Full cleanup needed once everything is migrated to the form
-  const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
-    if (response && !('error' in response)) {
-      setOpenDeleteDialog(false);
-      setFetchList(!fetchList);
-    } else {
-      setOpenDeleteDialog(false);
-    }
   };
 
   const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
@@ -303,13 +298,17 @@ export default function LandingPage() {
     />
   );
 
-  const cycleConfirmed = async () => {
-    if (loggedIn) {
-      navigate(PATH[1]);
-    } else {
-      setProposal(getProposal());
-      navigate(NAV[4]);
-    }
+  const cycleConfirmed = (policy: ObservatoryPolicy) => {
+    const newProposal = {
+      ...NEW_PROPOSAL,
+      id: mintSkuid(Entity.PRP),
+      cycle: policy.cycleInformation.cycleId,
+      proposalType: isSVPolicy(policy) ? PROPOSAL_TYPE.SCIENCE_VERIFICATION : undefined
+    };
+    reset(getProposalFormValues(newProposal));
+    updateAppContent1(EMPTY_STATUS);
+    updateAppContent2(newProposal);
+    navigate(PATH[1]);
   };
 
   const cycleClicked = () => (
@@ -357,16 +356,6 @@ export default function LandingPage() {
     />
   );
 
-  const deleteClicked = () => (
-    <ProposalDisplay
-      proposal={getProposal()}
-      open={openDeleteDialog}
-      onClose={() => setOpenDeleteDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel="deleteProposal.confirm"
-    />
-  );
-
   const cloneClicked = () => (
     <ProposalDisplay
       proposal={getProposal()}
@@ -382,8 +371,6 @@ export default function LandingPage() {
       proposal={getProposal()}
       open={openViewDialog}
       onClose={() => setOpenViewDialog(false)}
-      onConfirm={deleteConfirmed}
-      onConfirmLabel=""
     />
   );
 
@@ -526,7 +513,6 @@ export default function LandingPage() {
         )}
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}
       {openCycleDialog && cycleClicked()}

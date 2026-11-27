@@ -132,7 +132,7 @@ export const getReferenceCoordinate = (
   }
 };
 
-const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => {
+export const getGroupObservations = (inValue: ObservationSets[] | null | undefined) => {
   const results: any = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -255,8 +255,8 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
         observingBand
       ),
       elevation: inValue[i]?.elevation as number,
-      num15mAntennas: num13mAntennas,
-      num13mAntennas: num15mAntennas,
+      num13mAntennas: num13mAntennas,
+      num15mAntennas: num15mAntennas,
       numSubBands: numSubBands ? numSubBands : 1,
       bandwidth:
         type === TYPE_ZOOM
@@ -265,9 +265,6 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
       supplied: getSupplied(inValue[i].observation_type_details?.supplied ?? null),
       spectralResolution: String(
         (inValue[i].observation_type_details as SpectralLineSetup)?.spectral_resolution
-      ),
-      effectiveResolution: String(
-        (inValue[i].observation_type_details as SpectralLineSetup)?.effective_resolution
       ),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
@@ -282,9 +279,9 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
           : null,
       numStations: numStations,
       ...(type === TYPE_ZOOM && {
-        zoomChannels: Number(
-          (inValue[i].observation_type_details as SpectralLineSetup)?.number_of_channels
-        )
+        zoomChannels:
+          (inValue[i].observation_type_details as SpectralLineSetup)?.number_of_channels ??
+          undefined
       }),
       ...(type === TYPE_PST && {
         pstMode: PST_MODES?.find(

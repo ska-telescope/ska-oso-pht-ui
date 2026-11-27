@@ -110,13 +110,23 @@ js-e2e-deploy:
   rules: *e2e_rules
 
 js-e2e-test:
+  # SPLIT: "true" makes cypress-split (cypress.config.mjs) read GitLab's CI_NODE_INDEX/
+  # CI_NODE_TOTAL to give each job its share of the specs, balanced by the durations in SPLIT_FILE
+  parallel: 3
   variables:
-    JS_E2E_TEST_COMMAND: node scripts/cypressParallel.mjs
-    CYPRESS_PARALLEL_WORKERS: "3"
+    SPLIT: "true"
+    SPLIT_FILE: scripts/cypress-timings.json
   rules: *e2e_rules
 
+# when: always matches the template, so the environment is torn down even if the tests fail
 stop-js-e2e-test:
-  rules: *e2e_rules
+  rules:
+    - if: $CI_COMMIT_TAG
+      exists: *e2e_specs
+      variables: *e2e_tag_namespace
+      when: always
+    - exists: *e2e_specs
+      when: always
 
 info-dev-environment:
   <<: *dev_env
@@ -200,6 +210,7 @@ include:
   - template: "Verify/Accessibility.gitlab-ci.yml"
   # TS linting and unit testing
   - project: 'ska-telescope/templates-repository'
+    ref: btn-3676-remove-jstest-env
     file: 'gitlab-ci/includes/js.gitlab-ci.yml'
   # OCI
   - project: "ska-telescope/templates-repository"

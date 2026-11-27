@@ -9,26 +9,35 @@ import MappingPutProposal from '@services/axios/put/putProposal/putProposalMappi
 import { mapFormToPdm, mapPdmToForm } from './pdmMapper';
 import { getProposalSchema } from './proposal';
 import { DataProductInput } from './dataProducts';
-import { PROPOSAL_STATUS, PROPOSAL_TYPE } from '@/utils/constants';
+import { formObservationsFromLegacy } from './legacyObservations';
+import { PROPOSAL_STATUS, PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
 // A base from the legacy mapper, as on a real save, so the form's slices map back to it exactly
 const base = MappingPutProposal(mapping(pdm), PROPOSAL_STATUS.DRAFT);
 const emptySlices = {
+  prslId: pdm.prsl_id as string,
+  cycle: pdm.cycle,
   targets: [],
   targetObservation: [],
   calibrationStrategy: [],
   sciencePDF: null,
   technicalPDF: null,
-  dataProducts: []
+  dataProducts: [],
+  observations: []
 };
 
 describe('mapPdmToForm', () => {
   test('maps the PDM into form values', () => {
     const legacy = mapping(pdm);
     expect(mapPdmToForm(pdm)).toEqual({
+      prslId: pdm.prsl_id,
+      cycle: pdm.cycle,
       title: pdm.proposal_info.title,
-      proposalType: pdm.proposal_info.proposal_type.main_type,
+      proposalType: {
+        type: pdm.proposal_info.proposal_type.main_type,
+        subTypes: pdm.proposal_info.proposal_type.attributes
+      },
       abstract: pdm.proposal_info.abstract,
       scienceCategory: 1,
       investigators: [],
@@ -37,7 +46,9 @@ describe('mapPdmToForm', () => {
       calibrationStrategy: legacy.calibrationStrategy,
       sciencePDF: null,
       technicalPDF: null,
-      dataProducts: legacy.dataProducts
+      dataProducts: legacy.dataProducts,
+      // The same as seeding the form from the legacy store
+      observations: formObservationsFromLegacy(legacy.observations, legacy.groupObservations)
     });
   });
 
@@ -45,8 +56,11 @@ describe('mapPdmToForm', () => {
     const proposal = mapping(pdm);
     expect(proposal.observations?.[0]?.type).toBe('continuum');
     expect(mapPdmToForm(pdm)).not.toHaveProperty('observingMode');
-    expect(mapFormToPdm(mapPdmToForm(pdm), pdm).observation_info.observation_sets).toEqual(
-      pdm.observation_info.observation_sets
+    const saved = mapFormToPdm(mapPdmToForm(pdm), pdm).observation_info.observation_sets ?? [];
+    expect(saved.map((set) => set.observation_type_details.observation_type)).toEqual(
+      (pdm.observation_info.observation_sets ?? []).map(
+        (set) => set.observation_type_details.observation_type
+      )
     );
   });
 
@@ -86,15 +100,31 @@ describe('mapPdmToForm', () => {
     ]);
   });
 
-  test('returns empty form values when there is no PDM', () => {
-    expect(mapPdmToForm(undefined)).toEqual({
-      title: '',
-      proposalType: null,
-      abstract: '',
-      scienceCategory: null,
-      investigators: [],
-      ...emptySlices
-    });
+  // The PDM requires a proposal type, so a proposal without one fails to load
+  // A stored proposal always has its ID; the PDM makes it optional only for creating
+  test('rejects a PDM without an ID', () => {
+    expect(() => mapPdmToForm({ ...pdm, prsl_id: undefined })).toThrow();
+  });
+
+  test('rejects a PDM without a proposal type', () => {
+    expect(() =>
+      mapPdmToForm({
+        ...pdm,
+        proposal_info: { ...pdm.proposal_info, proposal_type: {} as never }
+      })
+    ).toThrow();
+  });
+
+  test('defaults missing PDM sub-types to an empty list', () => {
+    expect(
+      mapPdmToForm({
+        ...pdm,
+        proposal_info: {
+          ...pdm.proposal_info,
+          proposal_type: { main_type: PROPOSAL_TYPE.STANDARD }
+        }
+      }).proposalType
+    ).toEqual({ type: PROPOSAL_TYPE.STANDARD, subTypes: [] });
   });
 
   test.each([undefined, []])(
@@ -146,11 +176,13 @@ describe('mapFormToPdm', () => {
     const result = mapFormToPdm(
       {
         title: 'Edited title',
-        proposalType: PROPOSAL_TYPE.KEY_SCIENCE,
+        proposalType: { type: PROPOSAL_TYPE.KEY_SCIENCE, subTypes: [PROPOSAL_SUBTYPE.JOINT] },
         abstract: 'Edited abstract',
         scienceCategory: 7,
         investigators: [],
-        ...emptySlices
+        ...emptySlices,
+        prslId: 'prp-1223',
+        cycle: 'SKAO_2027_2'
       },
       pdm
     );
@@ -159,10 +191,11 @@ describe('mapFormToPdm', () => {
     expect(result.proposal_info.abstract).toBe('Edited abstract');
     expect(result.proposal_info.science_category).toBe('High Energy Cosmic Particles');
     expect(result.proposal_info.proposal_type).toEqual({
-      ...pdm.proposal_info.proposal_type,
-      main_type: PROPOSAL_TYPE.KEY_SCIENCE
+      main_type: PROPOSAL_TYPE.KEY_SCIENCE,
+      attributes: [PROPOSAL_SUBTYPE.JOINT]
     });
-    expect(result.prsl_id).toBe(pdm.prsl_id);
+    expect(result.prsl_id).toBe('prp-1223');
+    expect(result.cycle).toBe('SKAO_2027_2');
   });
 
   test('does not modify the base PDM', () => {
@@ -170,7 +203,7 @@ describe('mapFormToPdm', () => {
     mapFormToPdm(
       {
         title: 'Edited title',
-        proposalType: PROPOSAL_TYPE.STANDARD,
+        proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
         abstract: '',
         scienceCategory: null,
         investigators: [],
@@ -190,7 +223,7 @@ describe('mapFormToPdm', () => {
     const result = mapFormToPdm(
       {
         title: 'Edited title',
-        proposalType: PROPOSAL_TYPE.STANDARD,
+        proposalType: { type: PROPOSAL_TYPE.STANDARD, subTypes: [] },
         abstract: '',
         scienceCategory: null,
         investigators: [investigator],
@@ -220,12 +253,12 @@ describe('mapFormToPdm', () => {
     expect(mapFormToPdm(mapPdmToForm(base), base)).toEqual(base);
   });
 
-  test('lays targets, links and calibration from the form over the base PDM', () => {
+  test('lays targets, observations, links and calibration from the form over the base PDM', () => {
     const result = mapFormToPdm({ ...mapPdmToForm(pdm), ...emptySlices }, pdm);
     expect(result.observation_info.targets).toEqual([]);
+    expect(result.observation_info.observation_sets).toEqual([]);
     expect(result.observation_info.result_details).toEqual([]);
     expect(result.observation_info.calibration_strategy).toEqual([]);
-    expect(result.observation_info.observation_sets).toEqual(pdm.observation_info.observation_sets);
   });
 
   test('saves the valid data products and their links', () => {
