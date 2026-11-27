@@ -2,7 +2,7 @@
 import React, { createContext, use, useEffect, useMemo, useState } from 'react';
 import { GetColorsSettings } from '@utils/types/colors';
 import { loadGetColors, saveGetColors } from '@utils/storage/storage';
-import { STORAGE_KEYS } from '@utils/storage/storageKeys';
+import { STORAGE_KEYS } from '@utils/storage/storage';
 
 type GetColorsContextValue = {
   settings: GetColorsSettings;

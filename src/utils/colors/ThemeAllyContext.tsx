@@ -2,7 +2,7 @@
 import React, { createContext, use, useEffect, useMemo, useState } from 'react';
 import { ThemeA11ySettings } from '@utils/types/colors';
 import { loadThemeA11y, saveThemeA11y } from '@utils/storage/storage';
-import { STORAGE_KEYS } from '@utils/storage/storageKeys';
+import { STORAGE_KEYS } from '@utils/storage/storage';
 
 type ThemeA11yContextValue = {
   settings: ThemeA11ySettings;

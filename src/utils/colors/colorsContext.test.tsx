@@ -3,12 +3,14 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { saveGetColors } from '@utils/storage/storage';
-import { STORAGE_KEYS } from '@utils/storage/storageKeys';
+import { STORAGE_KEYS } from '@utils/storage/storage';
 import { GetColorsSettings } from '../types/colors';
 import { GetColorsProvider, useGetColors } from './colorsContext';
 
 // Mock storage functions
-vi.mock('@utils/storage/storage', () => ({
+// Keep the real STORAGE_KEYS; only mock the load/save functions
+vi.mock('@utils/storage/storage', async importOriginal => ({
+  ...(await importOriginal<typeof import('@utils/storage/storage')>()),
   loadGetColors: vi.fn(),
   saveGetColors: vi.fn()
 }));

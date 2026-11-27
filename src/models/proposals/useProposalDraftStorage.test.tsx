@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
-import { STORAGE_KEYS } from '@utils/storage/storageKeys';
+import { STORAGE_KEYS } from '@utils/storage/storage';
 import { getProposalFormDefaults, useProposalForm } from './useProposalForm';
 import { DRAFT_SAVE_DELAY_MS, useProposalDraftStorage } from './useProposalDraftStorage';
 

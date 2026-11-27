@@ -1,7 +1,12 @@
 // storage.ts
 import { GetColorsSettings, ThemeA11ySettings } from '@utils/types/colors';
 import type { ProposalType } from '@/models/proposals/proposal';
-import { STORAGE_KEYS } from './storageKeys';
+
+export const STORAGE_KEYS = {
+  appColors: 'app:getColors:v1',
+  themeA11y: 'app:themeA11y:v1',
+  proposalDraft: (prslId: string) => `pht:proposalDraft:${prslId}`
+} as const;
 
 function readJSON<T>(key: string): T | null {
   try {
