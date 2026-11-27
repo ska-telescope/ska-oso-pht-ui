@@ -18,7 +18,7 @@ import {
   REVIEW_TYPE
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
-import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import { getDownloadUrl } from '@/services/api/documents';
 import SaveButton from '../../../components/button/Save/Save';
 import SubmitButton from '@/components/button/Submit/Submit';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
@@ -137,7 +137,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const previewSignedUrl = async (id: string, label: string) => {
     try {
       const selectedFile = `${id}-` + t(label) + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const { data: signedUrl } = await getDownloadUrl(selectedFile);
+      if (!signedUrl) return null;
 
       if (label === 'pdfDownload.science.label') {
         setSciPDF(signedUrl);

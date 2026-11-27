@@ -63,20 +63,12 @@ vi.mock('../../components/info/helpPanel/HelpPanel', () => ({
 }));
 
 // Mock API calls
-vi.mock('@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl', () => ({
-  default: vi.fn().mockResolvedValue('https://upload-url')
-}));
-vi.mock('@services/axios/put/putUploadPDF/putUploadPDF', () => ({
-  default: vi.fn().mockResolvedValue({})
-}));
-vi.mock('@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl', () => ({
-  default: vi.fn().mockResolvedValue('https://download-url')
-}));
-vi.mock('@services/axios/get/getPresignedDeleteUrl/getPresignedDeleteUrl', () => ({
-  default: vi.fn().mockResolvedValue('https://delete-url')
-}));
-vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
-  default: vi.fn().mockResolvedValue({})
+vi.mock('@/services/api/documents', () => ({
+  getUploadUrl: vi.fn().mockResolvedValue({ data: 'https://upload-url' }),
+  uploadToSignedUrl: vi.fn().mockResolvedValue({ data: undefined }),
+  getDownloadUrl: vi.fn().mockResolvedValue({ data: 'https://download-url' }),
+  getDeleteUrl: vi.fn().mockResolvedValue({ data: 'https://delete-url' }),
+  deleteAtSignedUrl: vi.fn().mockResolvedValue({ data: undefined })
 }));
 
 // Mock getPdfPageCount
@@ -167,8 +159,7 @@ const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
 const makeNonPdfFile = (name = 'test.txt'): File =>
   new File(['dummy'], name, { type: 'text/plain' });
 
-import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
-import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
+import { getUploadUrl, uploadToSignedUrl } from '@/services/api/documents';
 
 describe('SciencePage', () => {
   beforeEach(() => {
@@ -255,8 +246,8 @@ describe('SciencePage', () => {
         await capturedUploadFunction!(file);
       });
 
-      expect(GetPresignedUploadUrl).toHaveBeenCalled();
-      expect(PutUploadPDF).toHaveBeenCalled();
+      expect(getUploadUrl).toHaveBeenCalled();
+      expect(uploadToSignedUrl).toHaveBeenCalled();
       expect(notifyWarning).toHaveBeenCalledWith('pdfUpload.science.warning');
     });
 
@@ -270,7 +261,7 @@ describe('SciencePage', () => {
       });
 
       expect(screen.queryByText('pdfUpload.science.sizeError')).not.toBeInTheDocument();
-      expect(GetPresignedUploadUrl).toHaveBeenCalled();
+      expect(getUploadUrl).toHaveBeenCalled();
     });
 
     it('file 100 MB + 1 byte: sizeError shown, upload blocked', async () => {
@@ -283,8 +274,8 @@ describe('SciencePage', () => {
 
       expect(screen.getByText('pdfUpload.science.sizeError')).toBeInTheDocument();
       expect(mockGetPdfPageCount).not.toHaveBeenCalled();
-      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
-      expect(PutUploadPDF).not.toHaveBeenCalled();
+      expect(getUploadUrl).not.toHaveBeenCalled();
+      expect(uploadToSignedUrl).not.toHaveBeenCalled();
       expect(notifyWarning).not.toHaveBeenCalled();
     });
 
@@ -298,8 +289,8 @@ describe('SciencePage', () => {
       });
 
       expect(screen.getByText('pdfUpload.science.pageError')).toBeInTheDocument();
-      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
-      expect(PutUploadPDF).not.toHaveBeenCalled();
+      expect(getUploadUrl).not.toHaveBeenCalled();
+      expect(uploadToSignedUrl).not.toHaveBeenCalled();
       expect(notifyWarning).not.toHaveBeenCalled();
     });
 
@@ -334,7 +325,7 @@ describe('SciencePage', () => {
       });
 
       expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
-      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
+      expect(getUploadUrl).not.toHaveBeenCalled();
       expect(notifyWarning).not.toHaveBeenCalled();
     });
 
@@ -558,7 +549,7 @@ describe('SciencePage', () => {
         await capturedUploadFunction!(goodFile);
       });
 
-      expect(GetPresignedUploadUrl).toHaveBeenCalled();
+      expect(getUploadUrl).toHaveBeenCalled();
     });
   });
 });

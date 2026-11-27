@@ -3,10 +3,10 @@ import { Box, DialogActions, DialogContent, Grid, Typography } from '@mui/materi
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
 import { presentLatex } from '@utils/present/present';
-import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import { ProposalType } from '@/models/proposals/proposal';
+import { getDownloadUrl } from '@/services/api/documents';
 import { OBSERVING_MODE_TRANSLATION_KEY } from '@/models/proposals/observations';
 import {
   NOT_SPECIFIED,
@@ -22,7 +22,6 @@ import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import ObservingType from '@/components/display/observingType/observingType';
 
@@ -52,7 +51,6 @@ export default function ProposalDisplay({
 }: ProposalDisplayProps) {
   const { t } = useScopedTranslation();
   const theme = useTheme();
-  const { axiosClient: authClient } = useAxiosAuthClient();
 
   const getFont = (bold: boolean) => (bold ? 600 : 300);
 
@@ -71,8 +69,8 @@ export default function ProposalDisplay({
   const downloadPdf = async (fileType: string) => {
     try {
       const selectedFile = `${proposal?.prslId}-` + fileType + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
-      window.open(signedUrl, '_blank');
+      const { data: signedUrl } = await getDownloadUrl(selectedFile);
+      if (signedUrl) window.open(signedUrl, '_blank');
     } catch (e) {
       new Error(t('pdfDownload.error'));
     }

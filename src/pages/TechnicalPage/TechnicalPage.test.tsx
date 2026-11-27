@@ -60,20 +60,12 @@ vi.mock('../../components/info/helpPanel/HelpPanel', () => ({
 }));
 
 // Mock API calls
-vi.mock('@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl', () => ({
-  default: vi.fn().mockResolvedValue('https://upload-url')
-}));
-vi.mock('@services/axios/put/putUploadPDF/putUploadPDF', () => ({
-  default: vi.fn().mockResolvedValue({})
-}));
-vi.mock('@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl', () => ({
-  default: vi.fn().mockResolvedValue('https://download-url')
-}));
-vi.mock('@services/axios/get/getPresignedDeleteUrl/getPresignedDeleteUrl', () => ({
-  default: vi.fn().mockResolvedValue('https://delete-url')
-}));
-vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
-  default: vi.fn().mockResolvedValue({})
+vi.mock('@/services/api/documents', () => ({
+  getUploadUrl: vi.fn().mockResolvedValue({ data: 'https://upload-url' }),
+  uploadToSignedUrl: vi.fn().mockResolvedValue({ data: undefined }),
+  getDownloadUrl: vi.fn().mockResolvedValue({ data: 'https://download-url' }),
+  getDeleteUrl: vi.fn().mockResolvedValue({ data: 'https://delete-url' }),
+  deleteAtSignedUrl: vi.fn().mockResolvedValue({ data: undefined })
 }));
 
 const wrapper = (component: React.ReactElement) => {
@@ -131,8 +123,7 @@ describe('TechnicalPage', () => {
   });
 
   // it('handles upload error gracefully', async () => {
-  //   const PutUploadPDF = require('@services/axios/put/putUploadPDF/putUploadPDF').default;
-  //   PutUploadPDF.mockResolvedValue({ error: true });
+  //   vi.mocked(uploadToSignedUrl).mockResolvedValue({ error: 'error' });
   //   wrapper(<TechnicalPage />);
   //   const uploadFn = screen.getByTestId('fileUpload').getAttribute('uploadFunction');
   //   expect(uploadFn).toBeDefined();

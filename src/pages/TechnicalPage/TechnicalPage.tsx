@@ -1,14 +1,17 @@
 import React from 'react';
+import {
+  deleteAtSignedUrl,
+  getDeleteUrl,
+  getDownloadUrl,
+  getUploadUrl,
+  uploadToSignedUrl
+} from '@/services/api/documents';
+import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Grid } from '@mui/material';
 import { useController, useFormContext } from 'react-hook-form';
 import { storageObject } from '@utils/storage/store';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
-import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
-import GetPresignedDeleteUrl from '@services/axios/get/getPresignedDeleteUrl/getPresignedDeleteUrl';
-import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import Shell from '../../components/layout/Shell/Shell';
 import { getDocumentPageStatus } from '@/models/proposals/documents';
 import { ProposalType } from '@/models/proposals/proposal';
@@ -21,7 +24,6 @@ import {
   PAGE_TECHNICAL,
   UPLOAD_MAX_WIDTH_PDF
 } from '../../utils/constants';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
@@ -50,7 +52,6 @@ export default function TechnicalPage() {
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
   const { getValues } = useFormContext<ProposalType>();
-  const { axiosClient: authClient } = useAxiosAuthClient();
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -78,12 +79,13 @@ export default function TechnicalPage() {
 
     try {
       notifyWarning(t('pdfUpload.technical.warning'));
-      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposalId}-technical.pdf`);
-      if (typeof signedUrl != 'string') {
-        setUploadStatus(FileUploadStatus.ERROR);
-        new Error('Not able to Get Technical PDF Upload URL');
-      }
-      const uploadResult = await PutUploadPDF(signedUrl, theFile);
+      const { data: signedUrl, error: urlError } = await getUploadUrl(
+        `${proposalId}-technical.pdf`
+      );
+      // Without a signed URL there is nowhere to upload to, so the upload has failed
+      const uploadResult = signedUrl
+        ? await uploadToSignedUrl(signedUrl, theFile)
+        : { error: urlError ?? UNKNOWN_API_ERROR };
       // An upload or delete takes time, so its result is dropped if another proposal was opened since
       if (getValues('prslId') !== proposalId) return;
       if (uploadResult.error) {
@@ -111,7 +113,8 @@ export default function TechnicalPage() {
     try {
       const proposalId = getValues('prslId');
       const selectedFile = `${proposalId}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const { data: signedUrl } = await getDownloadUrl(selectedFile);
+      if (!signedUrl) return;
 
       if (signedUrl === t('pdfDownload.sampleData') || technicalPDF != null) {
         window.open(signedUrl, '_blank');
@@ -124,14 +127,15 @@ export default function TechnicalPage() {
   const deletePdfUsingSignedUrl = async () => {
     try {
       const proposalId = getValues('prslId');
-      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposalId}-technical.pdf`);
-
-      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
-
-      const deleteResult = await DeletePDF(signedUrl);
+      const { data: signedUrl, error: urlError } = await getDeleteUrl(
+        `${proposalId}-technical.pdf`
+      );
+      const deleteResult = signedUrl
+        ? await deleteAtSignedUrl(signedUrl)
+        : { error: urlError ?? UNKNOWN_API_ERROR };
       if (getValues('prslId') !== proposalId) return;
 
-      if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
+      if (deleteResult.error) {
         throw new Error('Not able to delete Technical PDF');
       }
 
@@ -154,7 +158,8 @@ export default function TechnicalPage() {
     try {
       const proposalId = getValues('prslId');
       const selectedFile = `${proposalId}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const { data: signedUrl } = await getDownloadUrl(selectedFile);
+      if (!signedUrl) return;
 
       if (signedUrl === t('pdfDownload.sampleData') || technicalPDF != null) {
         setCurrentFile(signedUrl);
