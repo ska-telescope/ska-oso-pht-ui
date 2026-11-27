@@ -36,7 +36,6 @@ export default function TargetPage() {
   const getProposalState = () => application.content1 as number[];
   const validateProposal = useValidateProposal();
   const form = useFormContext<ProposalType>();
-  // The slices whose page statuses this page updates
   const [targets, targetObservation, observations, dataProducts, calibrationStrategy] = useWatch({
     control: form.control,
     name: ['targets', 'targetObservation', 'observations', 'dataProducts', 'calibrationStrategy']

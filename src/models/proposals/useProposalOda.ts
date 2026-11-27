@@ -115,12 +115,10 @@ export function useProposalOda() {
 
   const saveToOda = React.useCallback(
     async (status: string = PROPOSAL_STATUS.DRAFT): Promise<ApiResult<ProposalPDM>> =>
-      // The proposal is saved from the form, so there is nothing to save without one
       form ? saveValuesToOda(form.getValues(), status) : { error: UNKNOWN_API_ERROR },
     [form]
   );
 
-  /** Creates a proposal from the given values, then puts the proposal as created in the form. */
   const createInOda = React.useCallback(
     async (values: ProposalType): Promise<ApiResult<ProposalType>> => {
       const { data: newPdm, error: mapError } = formToPdm(values, newProposalPdm);

@@ -55,7 +55,6 @@ export default function LandingPage() {
   const { osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
   const validateProposal = useValidateProposal();
   const { reset, getValues, control } = useFormContext<ProposalType>();
-  // The proposal the dialogs show, which getTheProposal loads into the form
   const proposal = useWatch({ control }) as ProposalType;
   const theme = useTheme();
 

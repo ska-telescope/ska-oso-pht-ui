@@ -105,7 +105,6 @@ export default function ButtonUserMenu({
   };
 
   const onMenuSelect = (thePath: string) => {
-    // Leaving the editor closes the open proposal (see PHT)
     navigate(thePath);
     setAnchorEl(null);
   };

@@ -31,7 +31,6 @@ const wrapper = (component: React.ReactElement, proposal?: Partial<ProposalType>
     </StoreProvider>
   );
 };
-// A LOW AA2 continuum observation
 const lowObservation = () => newSvObservation(OBSERVING_MODE.CONTINUUM, 15);
 
 const mockOSD = vi.hoisted(() => ({ maxObservations: 1 }));

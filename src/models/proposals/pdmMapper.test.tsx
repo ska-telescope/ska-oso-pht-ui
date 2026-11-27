@@ -13,7 +13,6 @@ import { OBSERVING_MODE, observationsFromPdm } from './observations';
 import { PROPOSAL_SUBTYPE, PROPOSAL_TYPE } from '@/utils/constants';
 
 const pdm = MockProposalBackend as ProposalBackend;
-// The proposal as the form saves it. A PDM saved from the form loads and saves back unchanged.
 const saved = mapFormToPdm(mapPdmToForm(pdm));
 const emptySlices = {
   prslId: pdm.prsl_id as string,

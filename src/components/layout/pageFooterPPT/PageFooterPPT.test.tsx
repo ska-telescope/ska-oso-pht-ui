@@ -52,7 +52,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
-// Creates the proposal as sent, as the backend does (apart from adding the caller as PI)
 const mockCreateInOda = vi.hoisted(() => vi.fn());
 vi.mock('@/models/proposals/useProposalOda', () => ({
   useProposalOda: () => ({ createInOda: mockCreateInOda })

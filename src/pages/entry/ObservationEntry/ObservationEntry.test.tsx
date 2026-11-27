@@ -67,7 +67,6 @@ const FormProbe = () => {
   return null;
 };
 
-// The proposal form holds the proposal, over a standard proposal with nothing in it
 const renderWithProposal = (
   component: React.ReactElement,
   proposal: Partial<ProposalType> = {}
@@ -105,7 +104,6 @@ const select = (label: string, option: RegExp | string) => {
 };
 const addButton = () => screen.getByTestId('addObservationButtonEntry');
 
-// A LOW AA2 continuum observation
 const lowObservation = (id: string) => ({
   ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
   id

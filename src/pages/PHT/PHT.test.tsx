@@ -16,7 +16,6 @@ const mockNavigate = vi.fn();
 const mockSetHelp = vi.fn();
 const mockPathname = { current: PATH[0] };
 const mockLocationState: { current: unknown } = { current: null };
-// The form values of the proposal open when PHT mounts, over the defaults of a new proposal
 const mockOpenProposal: { current: Partial<ProposalType> } = { current: { prslId: 'prp-123' } };
 const mockApplicationContent5 = { current: { message: '', level: '', delay: 0 } as any };
 
@@ -126,7 +125,6 @@ const { mockProposal } = vi.hoisted(() => ({
   }
 }));
 
-// PHT's form, opened on mockOpenProposal as a load would leave it
 const realUseProposalForm = proposalForm.useProposalForm;
 let formSpy: ReturnType<typeof vi.spyOn>;
 beforeEach(() => {
@@ -268,7 +266,6 @@ describe('<PHT />', () => {
         PROPOSAL_STATUS.DRAFT
       );
     });
-    // Returning home closes the proposal, after its values were taken for the save
     expect(currentForm().getValues()).toEqual(proposalForm.getProposalFormDefaults());
   });
 
@@ -283,7 +280,6 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     expect(saveValuesToOda).not.toHaveBeenCalled();
-    // The proposal is still closed
     expect(currentForm().getValues()).toEqual(proposalForm.getProposalFormDefaults());
   });
 

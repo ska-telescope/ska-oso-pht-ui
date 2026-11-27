@@ -259,7 +259,6 @@ describe('clone proposal', () => {
     pi: true
   };
 
-  // The same original as the form holds it once loaded
   const originalValues = (): ProposalType => ({
     ...getProposalFormDefaults(),
     prslId: ORIGINAL_PROPOSAL_ID,
@@ -510,7 +509,6 @@ describe('clone proposal', () => {
 
     await triggerCloneConfirm();
     await waitFor(() => expect(mockCreateInOda).toHaveBeenCalledOnce());
-    // Opening the original for cloning loaded it once
     const loads = mockLoadFromOda.mock.calls.length;
 
     fireEvent.click(screen.getByTestId('editIcon'));

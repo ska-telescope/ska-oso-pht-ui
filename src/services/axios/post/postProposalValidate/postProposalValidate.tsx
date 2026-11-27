@@ -22,7 +22,6 @@ async function PostProposalValidate(values: ProposalType): Promise<ValidateServi
   try {
     const payload: ProposalPDM = {
       ...mapFormToPdm(values),
-      // Save metadata, not form state, as for a draft save
       status: PROPOSAL_STATUS.DRAFT as ProposalPDM['status'],
       submitted_on: null,
       submitted_by: ''

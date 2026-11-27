@@ -42,7 +42,6 @@ const mockStore = {
   helpComponentURL: vi.fn(),
   updateAppContent1: vi.fn()
 };
-// The proposal the form is seeded with
 let currentProposal: Partial<ProposalType> = mockProposal;
 vi.mock('@utils/storage/store', () => ({
   storageObject: {
@@ -139,7 +138,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
-// The form of the last render
 let formMethods: UseFormReturn<ProposalType>;
 const wrapper = (component: React.ReactElement) => {
   const FormWrapper = () => {

@@ -80,7 +80,6 @@ export default function GridObservationSummary({
     );
   };
 
-  // The integration time with its unit, or NOT_SPECIFIED while it's missing
   const integrationTime = ({ integrationTime }: ObservationInput) =>
     integrationTime.value === null
       ? NOT_SPECIFIED
@@ -129,7 +128,6 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('observingBand.label'),
     flex: 1,
     disableClickEventBubbling: true,
-    // An observation loaded with a band the form doesn't know has none, shown as an empty cell
     renderCell: (e: { row: ObservationInput }) =>
       e.row.observingBand ? (
         <ObservingBand telescope={TELESCOPE_NUMBER[e.row.telescope]} band={e.row.observingBand} />

@@ -9,7 +9,7 @@ import { GetColorsProvider, useGetColors } from './colorsContext';
 
 // Mock storage functions
 // Keep the real STORAGE_KEYS; only mock the load/save functions
-vi.mock('@utils/storage/storage', async importOriginal => ({
+vi.mock('@utils/storage/storage', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@utils/storage/storage')>()),
   loadGetColors: vi.fn(),
   saveGetColors: vi.fn()

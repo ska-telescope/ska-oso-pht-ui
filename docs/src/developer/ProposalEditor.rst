@@ -3,8 +3,10 @@ Proposal Editor Architecture
 
 .. note::
 
-   The migration to this architecture is still in progress. Parts of the app still use the
-   legacy proposal store and mappers. This note is removed when the migration is complete.
+   The migration to this architecture is still in progress. The text and the sequence diagram
+   describe the target state of the refactoring. Parts of the app still use the
+   legacy proposal store and mappers, and the URL does not yet contain the Proposal ID.
+   This note is removed when the migration is complete.
 
 The proposal editor keeps all editable proposal data in one proposal-wide form, built with
 `React Hook Form <https://react-hook-form.com/>`_ (RHF). Every page reads and writes its fields
@@ -28,8 +30,10 @@ Data flow
 
 The form state is the only place where the user edits the proposal. It is converted to the PDM
 only when it is sent to the backend, and rebuilt from PDM only when a proposal is created or
-loaded. A copy of the form state is kept in local storage: after a page refresh, the proposal
-is fetched from the backend and any unsaved changes from that copy are applied on top.
+loaded. A copy of the form state is kept in local storage, keyed by the proposal ID, from the
+moment the proposal is created or opened. After a page refresh, the proposal ID is taken from
+the URL and the proposal is restored from that copy, or fetched from the backend if there is
+no copy.
 
 Version conflicts are not handled yet. If the proposal were to change on the server during creation
 or editing, the unsaved changes in the form state would overwrite those on the server.

@@ -34,7 +34,6 @@ const wrapper = (component: React.ReactElement) => render(tree(component));
 const clickIcon = (testId: string, index: number) =>
   fireEvent.click(within(screen.getAllByTestId(testId)[index]).getByRole('button'));
 
-// Mock proposal data, which the form is seeded with
 const mockProposal: Pick<ProposalType, 'targets' | 'targetObservation' | 'calibrationStrategy'> = {
   targets: [
     {

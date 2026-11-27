@@ -22,7 +22,6 @@ import {
 // ---- Module mocks ----
 
 const mockState = vi.hoisted(() => ({
-  // The values the form is seeded with, over the defaults of a new proposal
   proposal: {} as Partial<ProposalType>,
   updatePageStatus: vi.fn()
 }));

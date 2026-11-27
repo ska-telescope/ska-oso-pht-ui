@@ -5,7 +5,6 @@ import { osoApiConfiguration } from '../../generatedClient/osoApiConfig.ts';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { PPTAPIProposalPreparationApiFactory } from '@/generated';
 
-/** Saves the proposal to the ODA in its PDM shape, with the given status. */
 async function PutProposal(
   pdm: ProposalPDM,
   status: string = PROPOSAL_STATUS.DRAFT

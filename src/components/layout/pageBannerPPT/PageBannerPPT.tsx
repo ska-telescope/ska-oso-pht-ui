@@ -51,7 +51,6 @@ export default function PageBannerPPT({
   const { isSV } = useOSDAccessors();
   const validateProposal = useValidateProposal();
   const form = useFormContext<ProposalType>();
-  // The open proposal, for the Save/Submit checks and the dialogs
   const proposal = useWatch({ control: form.control }) as ProposalType;
   const LG = useMediaQuery(theme.breakpoints.down('lg'), {
     defaultMatches: false,
@@ -91,7 +90,6 @@ export default function PageBannerPPT({
     }
   };
 
-  // Checks each page of the form, then the proposal as the backend would validate it
   const validateTheProposal = async (): Promise<boolean> => {
     let result = false;
     setValidationResults([]);

@@ -27,10 +27,8 @@ const values = (weighted: number): SensitivityValues => ({
   synthesizedBeamSize: { value: '1.00 x 2.00', unit: 'arcsec²' }
 });
 
-// The linked observation and data product come from the mock proposal
 const { observations, dataProducts } = mapPdmToForm(MockProposalBackend);
 
-// The linked target, observation and data product live in the form, which owns them
 const FormWithTarget = ({ children }: { children: React.ReactNode }) => (
   <TestProposalFormProvider
     values={{

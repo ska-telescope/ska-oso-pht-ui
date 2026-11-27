@@ -63,7 +63,7 @@ export interface ProposalDraft {
   values: ProposalType;
 }
 
-/** Stores the proposal form's local edits, keyed by the proposal's ID. */
+/** Stores the open proposal's form values, keyed by its ID. */
 export function saveProposalDraft(prslId: string, values: ProposalType) {
   const draft: ProposalDraft = { savedAt: new Date().toISOString(), values };
   writeJSON(STORAGE_KEYS.proposalDraft(prslId), draft);

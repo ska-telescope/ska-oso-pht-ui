@@ -17,7 +17,6 @@ export default function TestProposalFormProvider({
   osd?: ObservationOsd;
   children: React.ReactNode;
 }) {
-  // The form takes its default values once, so they are only built once
   const [initialValues] = React.useState(() => ({ ...getProposalFormDefaults(), ...values }));
   const methods = useProposalForm(osd, initialValues);
   return <FormProvider {...methods}>{children}</FormProvider>;

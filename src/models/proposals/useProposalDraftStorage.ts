@@ -28,7 +28,6 @@ export function useProposalDraftStorage(form: UseFormReturn<ProposalType>) {
 
     const unsubscribe = subscribe({
       formState: { values: true },
-      // Fires on edits and on resets, so a proposal is stored as soon as it is opened
       callback: ({ values }) => {
         // The open proposal has changed (opened, switched or closed): write the previous one's
         // pending edit now, under its own ID. The ID is taken from these values, not from state,
@@ -36,7 +35,6 @@ export function useProposalDraftStorage(form: UseFormReturn<ProposalType>) {
         if (pending && pending.prslId !== values.prslId) {
           flush();
         }
-        // With no prslId, no proposal is open
         if (!values.prslId) {
           return;
         }

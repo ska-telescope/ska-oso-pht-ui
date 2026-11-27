@@ -118,7 +118,6 @@ const link = (sensitivity?: Sensitivity) => ({
   sensitivity
 });
 
-// The observation the page shows, and the proposal the form is seeded with
 let openedObservation: ObservationInput;
 let openedProposal: Partial<ProposalType>;
 const openProposal = (proposal: {
@@ -131,7 +130,6 @@ const openProposal = (proposal: {
   openedProposal = { prslId: 'prsl-1', ...proposal } as Partial<ProposalType>;
 };
 
-// Exposes the global form, which holds the proposal
 let form: UseFormReturn<ProposalType>;
 const FormProbe = ({ onForm }: { onForm: (form: UseFormReturn<ProposalType>) => void }) => {
   onForm(useFormContext<ProposalType>());

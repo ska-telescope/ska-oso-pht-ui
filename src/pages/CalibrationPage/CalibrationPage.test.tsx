@@ -53,7 +53,6 @@ vi.mock('../entry/Calibration/CalibrationEntry', () => ({
   default: () => <div data-testid="calibrationEntryStub" />
 }));
 
-// The mock proposal's links and calibration, which are already the form's shape
 const renderWithProposal = (values: Partial<ProposalType>) =>
   wrapper(<CalibrationPage />, {
     targets: MockProposalFrontend.targets as ProposalType['targets'],

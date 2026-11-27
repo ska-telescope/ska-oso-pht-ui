@@ -23,7 +23,6 @@ vi.mock('@/generated', async (importOriginal) => ({
   })
 }));
 
-// The proposal being saved
 const pdm = MockProposalBackend as ProposalPDM;
 
 describe('PutProposal Service', () => {
@@ -59,7 +58,6 @@ describe('PutProposal Service', () => {
 
       await PutProposal(pdm, status);
 
-      // Submission metadata is only set when submitting
       expect(mockUpdateProposal).toHaveBeenCalledExactlyOnceWith(pdm.prsl_id, {
         ...pdm,
         status,

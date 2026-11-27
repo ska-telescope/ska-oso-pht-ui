@@ -17,7 +17,6 @@ import { ProposalType } from '@/models/proposals/proposal';
 import { DATA_PRODUCT_KIND, newDataProduct } from '@/models/proposals/dataProducts';
 import { newSvObservation, OBSERVING_MODE } from '@/models/proposals/observations';
 
-// A LOW continuum observation, as the form holds it
 const continuumObservation = () => ({
   ...newSvObservation(OBSERVING_MODE.CONTINUUM, 15),
   id: 'obs-1'

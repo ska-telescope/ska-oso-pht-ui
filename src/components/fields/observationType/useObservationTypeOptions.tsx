@@ -8,9 +8,6 @@ import {
   type ObservingMode
 } from '@/models/proposals/observations';
 
-/**
- * Returns the observing mode options available for the given subarray, based on its cbfModes.
- */
 export function useObservationTypeOptions(
   subarray: string,
   isLow: boolean

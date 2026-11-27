@@ -1,5 +1,6 @@
 @startuml proposalEditorDataFlow
-' Proposal editor: data flow from creating a proposal to saving, refreshing and submitting it.
+' Proposal editor: data flow from creating or opening a proposal to saving, refreshing and
+' submitting it. Shows the target design, which is not fully implemented yet.
 ' Lifelines are where the data is held; arrows are how it moves and is transformed.
 
 hide footbox
@@ -7,6 +8,7 @@ skinparam sequenceMessageAlign center
 skinparam noteBackgroundColor #FEFECE
 
 actor User
+participant "URL" as Url
 participant "formState\n(ProposalFormInput)" as Form
 database "localStorage\n(backup)" as Backup
 database "backend\n(proposal PDM)" as Backend
@@ -18,8 +20,23 @@ Form -> Backend : toPdm(values), POST
 
 alt created
   Backend --> Form : new proposal\nfromPdm(pdm), reset form
+  Form -> Backup : store ProposalFormInput
+  Form -> Url : editor URL with prsl_id
 else POST failed
   Form --> User : error message\n(stays on the Title page)
+end
+
+== Open ==
+
+User -> Form : open proposal from the landing page
+Form -> Backend : GET
+
+alt fetched
+  Backend --> Form : proposal\nfromPdm(pdm), reset form
+  Form -> Backup : store ProposalFormInput
+  Form -> Url : editor URL with prsl_id
+else fetch failed
+  Form --> User : "Something went wrong retrieving\nproposal with ID <prsl_id>"
 end
 
 == Editing ==
@@ -45,16 +62,17 @@ end
 == Refresh ==
 
 User -> Form : page refresh
-Backup --> Form : ID of the proposal being edited
-Form -> Backend : GET
+Url --> Form : prsl_id of the proposal being edited
 
-alt fetched
-  Backend --> Form : proposal\nfromPdm(pdm), reset form
-  opt backup has unsaved changes
-    Backup --> Form : apply ProposalFormInput on top
+alt backup stored for prsl_id
+  Backup --> Form : ProposalFormInput, reset form
+else no backup
+  Form -> Backend : GET
+  alt fetched
+    Backend --> Form : proposal\nfromPdm(pdm), reset form
+  else fetch failed
+    Form --> User : "Something went wrong retrieving\nproposal with ID <prsl_id>"
   end
-else fetch failed
-  Form --> User : "Something went wrong retrieving\nproposal with ID <prsl_id>"
 end
 
 ... more input and saves ...

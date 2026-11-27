@@ -201,7 +201,6 @@ export const getObservations = (inValue: ObservationSets[] | null | undefined): 
   return results;
 };
 
-/** Fetches the proposal from the ODA in its PDM shape, without mapping it. */
 export async function GetProposal(id: string): Promise<ApiResult<ProposalPDM>> {
   try {
     const result =

@@ -308,7 +308,6 @@ describe('useProposalOda', () => {
     });
     expect(mockPut.mock.calls[0][1].proposal_info).toMatchObject({
       title: 'Edited title',
-      // The type and its sub-types are the form's
       proposal_type: { main_type: PROPOSAL_TYPE.KEY_SCIENCE, attributes: [] }
     });
     expect(saved).toEqual({ data: pdm });

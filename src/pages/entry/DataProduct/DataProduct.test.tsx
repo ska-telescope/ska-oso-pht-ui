@@ -66,7 +66,6 @@ const observation = (
   id
 });
 
-// The values the form is seeded with
 let openedProposal: Partial<ProposalType>;
 const openProposal = (proposal: {
   observations: ObservationInput[];
@@ -75,7 +74,6 @@ const openProposal = (proposal: {
   openedProposal = { prslId: 'prp-1', ...proposal };
 };
 
-// Exposes the global form, which holds the proposal
 let form: UseFormReturn<ProposalType>;
 const FormProbe = ({ onForm }: { onForm: (form: UseFormReturn<ProposalType>) => void }) => {
   onForm(useFormContext<ProposalType>());

@@ -5,7 +5,7 @@ import { STORAGE_KEYS } from '@utils/storage/storage';
 import { loadThemeA11y, saveThemeA11y } from '@utils/storage/storage';
 import { ThemeA11yProvider, useThemeA11y } from './ThemeAllyContext';
 
-vi.mock('@utils/storage/storage', async importOriginal => ({
+vi.mock('@utils/storage/storage', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@utils/storage/storage')>()),
   loadThemeA11y: vi.fn(),
   saveThemeA11y: vi.fn()

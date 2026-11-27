@@ -7,7 +7,6 @@ import { DRAFT_SAVE_DELAY_MS, useProposalDraftStorage } from './useProposalDraft
 const PRSL_ID = 'prsl-t0001-20260101-00001';
 const KEY = STORAGE_KEYS.proposalDraft(PRSL_ID);
 
-// The global form with a proposal open, mirrored to localStorage as PHT does it
 const renderForm = (prslId = PRSL_ID) =>
   renderHook(() => {
     const form = useProposalForm({}, { ...getProposalFormDefaults(), prslId });
