@@ -129,12 +129,13 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('observingBand.label'),
     flex: 1,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: ObservationInput }) => (
-      <ObservingBand
-        telescope={TELESCOPE_NUMBER[e.row.telescope]}
-        band={e.row.observingBand ?? undefined}
-      />
-    )
+    // An observation loaded with a band the form doesn't know has none, shown as an empty cell
+    renderCell: (e: { row: ObservationInput }) =>
+      e.row.observingBand ? (
+        <ObservingBand telescope={TELESCOPE_NUMBER[e.row.telescope]} band={e.row.observingBand} />
+      ) : (
+        emptyCell()
+      )
   };
 
   const colObservingType = {
