@@ -118,7 +118,7 @@ stop-dev-environment:
 # to each environment's own checks, against deployments whose URLs are registered with Indigo -
 # not the per-commit e2e namespaces, which aren't.
 
-# Temporary: the dev and integration jobs don't set KUBE_HOST, so the Makefile's CI default (the
+# Temporary: the smoke jobs don't set KUBE_HOST, so the Makefile's CI default (the
 # STFC ingress load balancer) is used, as for js-e2e-test.
 # TODO: Point to real URL once double logon issue fixed.
 .smoke_test:
@@ -187,7 +187,9 @@ smoke-test-staging:
   stage: staging
   needs:
     - deploy-staging
-  variables: *staging_env_vars
+  # Not *staging_env_vars, which sets the public KUBE_HOST (see .smoke_test)
+  variables:
+    KUBE_NAMESPACE: "staging-$CI_PROJECT_NAME"
   rules:
     - if: $CI_COMMIT_TAG
 
