@@ -17,7 +17,7 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import { PanelProposal } from '@/utils/types/panelProposal';
-import Proposal from '@/utils/types/proposal';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
@@ -88,7 +88,7 @@ export const convertPanelReviewerToReviewerIdList = (
 };
 
 export const addProposalPanel = (
-  proposal: Proposal,
+  proposal: ProposalSummary,
   localPanel: Panel,
   setProposalPanels: (proposals: PanelProposal[]) => void
 ) => {
@@ -101,7 +101,7 @@ export const addProposalPanel = (
 };
 
 export const deleteProposalPanel = (
-  proposal: Proposal,
+  proposal: ProposalSummary,
   localPanel: Panel,
   setProposalPanels: Function
 ) => {
@@ -204,7 +204,7 @@ export default function PanelManagement() {
     });
   };
 
-  const proposalSelectedToggle = (proposal: Proposal, isSelected: boolean) => {
+  const proposalSelectedToggle = (proposal: ProposalSummary, isSelected: boolean) => {
     if (isSelected) {
       deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
     } else {

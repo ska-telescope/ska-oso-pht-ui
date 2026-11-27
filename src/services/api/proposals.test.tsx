@@ -2,25 +2,40 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
+import MockProposalBackendList from '@services/axios/get/getProposalList/mockProposalBackendList';
+import MockProposalSummaries from '@/models/proposals/testing/mockProposalSummaries';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
 import { UNKNOWN_API_ERROR } from './apiResult';
-import { createProposal, getProposal, updateProposal, validateProposal } from './proposals';
+import {
+  createProposal,
+  getProposal,
+  listMyProposals,
+  listReviewableProposals,
+  updateProposal,
+  validateProposal
+} from './proposals';
 
 // The error handling common to every call is tested with callApi (apiResult.test.tsx). These
 // tests cover what each call sends and how it reads the response. The form mapping, and the rules
 // for a new proposal, are tested with useProposalOda.
 
-const { mockGet, mockUpdate, mockCreate, mockValidate } = vi.hoisted(() => ({
-  mockGet: vi.fn(),
-  mockUpdate: vi.fn(),
-  mockCreate: vi.fn(),
-  mockValidate: vi.fn()
-}));
+const { mockMine, mockReviewable, mockGet, mockUpdate, mockCreate, mockValidate } = vi.hoisted(
+  () => ({
+    mockMine: vi.fn(),
+    mockReviewable: vi.fn(),
+    mockGet: vi.fn(),
+    mockUpdate: vi.fn(),
+    mockCreate: vi.fn(),
+    mockValidate: vi.fn()
+  })
+);
 
 vi.mock('./client', () => ({
   osoApiBasePath: '',
   api: {
     proposals: {
+      getProposalsForUserOsoApiV17PhtPrslsMineGet: mockMine,
+      getProposalsByStatusOsoApiV17PhtPrslsReviewableGet: mockReviewable,
       getProposalOsoApiV17PhtPrslsPrslIdGet: mockGet,
       updateProposalOsoApiV17PhtPrslsPrslIdPut: mockUpdate,
       createProposalOsoApiV17PhtPrslsCreatePost: mockCreate,
@@ -35,6 +50,26 @@ const draftMetadata = { status: PROPOSAL_STATUS.DRAFT, submitted_on: null, submi
 beforeEach(() => {
   vi.resetAllMocks();
   vi.useRealTimers();
+});
+
+describe.each([
+  ['listMyProposals', listMyProposals, mockMine],
+  ['listReviewableProposals', listReviewableProposals, mockReviewable]
+])('%s', (_name, list, mockList) => {
+  test('returns the summaries of the most recent version of each proposal', async () => {
+    mockList.mockResolvedValue({ data: MockProposalBackendList });
+    await expect(list()).resolves.toEqual({ data: MockProposalSummaries });
+  });
+
+  test('returns an empty list', async () => {
+    mockList.mockResolvedValue({ data: [] });
+    await expect(list()).resolves.toEqual({ data: [] });
+  });
+
+  test('returns the standard error when the response is not a list', async () => {
+    mockList.mockResolvedValue({ data: { not: 'a list' } });
+    await expect(list()).resolves.toEqual({ error: UNKNOWN_API_ERROR });
+  });
 });
 
 describe('getProposal', () => {

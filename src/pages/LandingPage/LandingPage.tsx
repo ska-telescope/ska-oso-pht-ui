@@ -21,10 +21,9 @@ import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { getProposalFormDefaults } from '@/models/proposals/useProposalForm';
 import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
 import { ProposalType } from '@/models/proposals/proposal';
-import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
-import Proposal from '@/utils/types/proposal';
+import { listMyProposals } from '@/services/api/proposals';
+import { listAccessForUser } from '@/services/api/proposalAccess';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
   EMPTY_STATUS,
@@ -64,7 +63,7 @@ export default function LandingPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
-  const [proposals, setProposals] = React.useState<Proposal[]>([]);
+  const [proposals, setProposals] = React.useState<ProposalSummary[]>([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
@@ -76,7 +75,6 @@ export default function LandingPage() {
   const { setHelp } = useHelp();
   useOSDAPI(setAxiosError, Boolean(loggedIn));
 
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const { loadFromOda, createInOda } = useProposalOda();
 
   const pageMounted = React.useRef(true);
@@ -99,22 +97,22 @@ export default function LandingPage() {
       /* c8 ignore end */
       if (!loggedIn) return;
 
-      const response = await GetProposalList(authClient);
-      if (typeof response === 'string') {
-        setAxiosError(response);
+      const { data: list, error } = await listMyProposals();
+      if (list) {
+        setProposals(list);
       } else {
-        setProposals(response);
+        setAxiosError(error ?? UNKNOWN_API_ERROR);
       }
     };
     const fetchAccess = async () => {
       setProposals([]);
       if (!loggedIn) return;
 
-      const response = await GetProposalAccessForUser(authClient);
-      if (typeof response === 'string') {
-        setAxiosError(response);
+      const { data: access, error } = await listAccessForUser();
+      if (access) {
+        setAccess(access);
       } else {
-        setAccess(response);
+        setAxiosError(error ?? UNKNOWN_API_ERROR);
       }
     };
     fetchData();
@@ -232,7 +230,7 @@ export default function LandingPage() {
     createProposal();
   };
 
-  const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
+  const searchableFields: (keyof ProposalSummary)[] = ['id', 'title', 'cycle', 'investigators'];
 
   function filterProposals() {
     return proposals.filter(

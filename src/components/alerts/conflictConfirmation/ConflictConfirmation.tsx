@@ -4,7 +4,7 @@ import { AlertColorTypes, DropDown } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
 import { presentLatex, trimText } from '@utils/present/present';
 import React from 'react';
-import Proposal from '../../../utils/types/proposal';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 import Alert from '../standardAlert/StandardAlert';
 import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../icon/skaoIcon/skaoIcon';
@@ -14,7 +14,7 @@ import { CONFLICT_REASONS, PAGE_CYCLE, PAGE_TITLE_ADD } from '@/utils/constants'
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ConflictConfirmationProps {
-  proposal: Proposal | null;
+  proposal: ProposalSummary | null;
   open: boolean;
   onClose: Function;
   onConfirm: Function;

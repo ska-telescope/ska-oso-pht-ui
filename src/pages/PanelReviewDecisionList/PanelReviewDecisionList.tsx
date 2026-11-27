@@ -4,8 +4,9 @@ import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components'
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
 import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
-import getProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
-import Proposal from '@/utils/types/proposal';
+import { listReviewableProposals } from '@/services/api/proposals';
+import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 import { FEASIBLE_NO, FOOTER_SPACER, PROPOSAL_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { BANNER_PMT_SPACER } from '@/utils/constants';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
@@ -26,7 +27,7 @@ export default function ReviewDecisionListPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [reset, setReset] = React.useState(false);
-  const [proposals, setProposals] = React.useState<Proposal[]>([]);
+  const [proposals, setProposals] = React.useState<ProposalSummary[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
   const { axiosClient: authClient } = useAxiosAuthClient();
@@ -89,15 +90,12 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await getProposalsReviewable(authClient);
+      const { data: list, error } = await listReviewableProposals();
 
-      if (typeof response === 'string') {
-        notifyError(response);
+      if (list) {
+        setProposals(list.filter((proposal) => proposal.status !== PROPOSAL_STATUS.SUBMITTED));
       } else {
-        const filtered = response.filter(
-          (proposal: any) => proposal.status !== PROPOSAL_STATUS.SUBMITTED
-        );
-        setProposals(filtered);
+        notifyError(error ?? UNKNOWN_API_ERROR);
       }
     };
     const fetchProposalReviewData = async () => {

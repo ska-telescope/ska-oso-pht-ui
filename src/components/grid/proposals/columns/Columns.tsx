@@ -139,7 +139,7 @@ export const getColProposalObservingMode = (t: any) => ({
     if (e.row.scienceCategory) {
       return '';
     }
-    const type = e.row.observations?.[0]?.type;
+    const type = e.row.observingType;
     return type ? <ObservingType type={type} /> : t('observingMode.notSpecified');
   }
 });

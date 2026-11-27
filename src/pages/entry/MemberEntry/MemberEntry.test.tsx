@@ -4,12 +4,17 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MemberEntry from './MemberEntry';
-import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
+import { findUserByEmail } from '@/services/api/users';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import TestProposalFormProvider from '@/models/proposals/testing/TestProposalFormProvider';
 
 let isSVFromContext: boolean;
+
+vi.mock('@/services/api/users', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/services/api/users')>()),
+  findUserByEmail: vi.fn()
+}));
 
 const isEnabled = (testId: string, enabled: boolean = true) => {
   if (enabled) {
@@ -61,7 +66,7 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<MemberEntry /> search for user', () => {
   test('search for user successfully', async () => {
-    vi.spyOn(mockService, 'default').mockResolvedValue(MockUserFrontendList[0]);
+    vi.mocked(findUserByEmail).mockResolvedValue({ data: MockUserFrontendList[0] });
     wrapper(<MemberEntry />);
     isEnabled('email');
     await enterValue('email', MockUserFrontendList[0].email);
@@ -79,9 +84,7 @@ describe('<MemberEntry /> search for user', () => {
   });
 
   test('user not found', async () => {
-    vi.spyOn(mockService, 'default').mockResolvedValue({
-      error: 'User not found'
-    } as any);
+    vi.mocked(findUserByEmail).mockResolvedValue({ error: 'User not found' });
     wrapper(<MemberEntry />);
     isEnabled('email');
     await enterValue('email', 'unknown@skao.int');

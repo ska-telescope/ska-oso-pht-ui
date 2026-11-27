@@ -18,23 +18,23 @@ import {
   getColProposalType,
   getColProposalTypeCycle
 } from './columns/Columns';
-import GetProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
-import Proposal from '@/utils/types/proposal';
+import { listReviewableProposals } from '@/services/api/proposals';
+import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 import { PROPOSAL_STATUS, DETAILS, PROPOSAL_TYPE } from '@/utils/constants';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export function filterProposals(
-  proposals: Proposal[],
+  proposals: ProposalSummary[],
   searchTerm: string,
   searchScienceCategory: string | null,
   searchProposalType: string
-): Proposal[] {
-  const fields: (keyof Proposal)[] = ['title'];
+): ProposalSummary[] {
+  const fields: (keyof ProposalSummary)[] = ['title'];
   return proposals.filter(
     (item) =>
       fields.some((field) =>
@@ -51,7 +51,7 @@ interface GridProposalsProps {
   showSearch?: boolean;
   showTitle?: boolean;
   showSelection?: boolean;
-  tickBoxClicked?: (proposal: Proposal, isProposalSelected: boolean) => void;
+  tickBoxClicked?: (proposal: ProposalSummary, isProposalSelected: boolean) => void;
 }
 
 export default function GridProposals({
@@ -65,7 +65,7 @@ export default function GridProposals({
   const { t } = useScopedTranslation();
   const { osdPolicies } = useOSDAccessors();
 
-  const [proposals, setProposals] = React.useState<Proposal[]>([]);
+  const [proposals, setProposals] = React.useState<ProposalSummary[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchScienceCategory, setSearchScienceCategory] = React.useState<string | null>(null);
   const [searchProposalType, setSearchProposalType] = React.useState('');
@@ -77,21 +77,19 @@ export default function GridProposals({
     'indeterminate'
   );
 
-  const { axiosClient: authClient } = useAxiosAuthClient();
-
   React.useEffect(() => {
     setFetchList(!fetchList);
   }, []);
 
   React.useEffect(() => {
     const fetchData = async (status: string) => {
-      const response = await GetProposalsReviewable(authClient);
+      const { data: list, error } = await listReviewableProposals();
       const prevProposals = status === PROPOSAL_STATUS.UNDER_REVIEW ? [] : proposals;
 
-      if (typeof response === 'string') {
-        setAxiosError(response);
+      if (list) {
+        setProposals([...prevProposals, ...list]);
       } else {
-        setProposals([...prevProposals, ...response]);
+        setAxiosError(error ?? UNKNOWN_API_ERROR);
       }
     };
     setProposals([]);

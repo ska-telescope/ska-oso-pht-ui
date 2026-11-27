@@ -5,8 +5,8 @@ import { StoreProvider, storageObject } from '@utils/storage/store';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import LandingPage from './LandingPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
-import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
+import { listMyProposals } from '@/services/api/proposals';
+import { listAccessForUser } from '@/services/api/proposalAccess';
 const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
@@ -22,7 +22,7 @@ import {
 } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
-import Proposal from '@/utils/types/proposal';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 import { FormProvider, useForm, useFormContext, UseFormReturn } from 'react-hook-form';
 import { ProposalType } from '@/models/proposals/proposal';
 import type { ApiResult } from '@/services/api/apiResult';
@@ -67,20 +67,12 @@ vi.mock('@/models/proposals/useProposalOda', () => ({
   })
 }));
 
-vi.mock('@/services/axios/get/getProposalList/getProposalList', () => ({
-  default: vi.fn()
+vi.mock('@/services/api/proposals', () => ({
+  listMyProposals: vi.fn()
 }));
 
-vi.mock('@/services/axios/get/getProposalAccess/user/getProposalAccessForUser', () => ({
-  default: vi.fn()
-}));
-
-vi.mock('@/services/axios/post/postProposalAccess/postProposalAccess', () => ({
-  default: vi.fn()
-}));
-
-vi.mock('@/services/axios/post/postSendEmailInvite/postSendEmailInvite', () => ({
-  default: vi.fn()
+vi.mock('@/services/api/proposalAccess', () => ({
+  listAccessForUser: vi.fn()
 }));
 
 vi.mock('@/utils/validation/validation', () => ({
@@ -93,10 +85,6 @@ vi.mock('@/utils/help/useHelp', () => ({
 
 vi.mock('@/services/axios/use/useOSDAPI/useOSDAPI', () => ({
   useOSDAPI: vi.fn()
-}));
-
-vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
-  default: () => ({ axiosClient: {}, refreshAuthToken: vi.fn() })
 }));
 
 vi.mock('@/utils/notify/useNotify', () => ({
@@ -228,24 +216,17 @@ describe('clone proposal', () => {
     }
   ];
 
-  // The original in the proposal list, which still holds legacy proposals
-  const mockRichOriginalProposal: Partial<Proposal> = {
+  // The original as the proposal list summarises it
+  const mockRichOriginalProposal: ProposalSummary = {
     id: ORIGINAL_PROPOSAL_ID,
     title: 'In a galaxy far, far away',
     status: PROPOSAL_STATUS.DRAFT,
     cycle: 'SKA_5000_2023',
-    proposalType: 'standard_proposal',
-    proposalSubType: ['coordinated_proposal'],
-    abstract: 'Detailed science abstract about the cosmos and beyond',
-    targets: [{ id: 'target-1', name: 'NGC 1275', ra: '03:19:48', dec: '+41:30:42' } as any],
-    observations: [{ id: 'obs-1', telescope: 'SKA-LOW' } as any],
-    investigators: originalInvestigators,
-    dataProducts: [{ id: 'dp-1' } as any],
-    calibrationStrategy: [],
-    groupObservations: [],
-    targetObservation: [],
-    sciencePDF: null,
-    technicalPDF: null
+    lastUpdated: '2026-01-01T00:00:00Z',
+    proposalType: PROPOSAL_TYPE.STANDARD,
+    scienceCategory: '',
+    observingType: null,
+    investigators: originalInvestigators
   };
 
   // The PI the backend adds to the clone: the person cloning, from their auth token
@@ -318,8 +299,8 @@ describe('clone proposal', () => {
       formProbe.reset(created);
       return { data: created };
     });
-    (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal]);
-    (GetProposalAccessForUser as Mock).mockResolvedValue(mockAccessList);
+    (listMyProposals as Mock).mockResolvedValue({ data: [mockRichOriginalProposal] });
+    (listAccessForUser as Mock).mockResolvedValue({ data: mockAccessList });
 
     vi.spyOn(storageObject, 'useStore').mockReturnValue({
       application: {
@@ -357,7 +338,9 @@ describe('clone proposal', () => {
     'rejects overlapping proposal loads while %s is pending',
     async (firstAction) => {
       const secondProposal = { ...mockRichOriginalProposal, id: 'prp-2' };
-      (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal, secondProposal]);
+      (listMyProposals as Mock).mockResolvedValue({
+        data: [mockRichOriginalProposal, secondProposal]
+      });
       let finishLoad!: (result: ApiResult<ProposalType>) => void;
       mockLoadFromOda.mockImplementationOnce(
         () => new Promise<ApiResult<ProposalType>>((resolve) => (finishLoad = resolve))
@@ -423,7 +406,9 @@ describe('clone proposal', () => {
 
   test('keeps proposals available after a failed load and clears the error on retry', async () => {
     const secondProposal = { ...mockRichOriginalProposal, id: 'prp-2' };
-    (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal, secondProposal]);
+    (listMyProposals as Mock).mockResolvedValue({
+      data: [mockRichOriginalProposal, secondProposal]
+    });
     mockLoadFromOda
       .mockResolvedValueOnce({ error: 'Unable to load proposal' })
       .mockResolvedValueOnce({ data: { ...originalValues(), prslId: secondProposal.id } });
@@ -507,7 +492,7 @@ describe('clone proposal', () => {
     expect(formProbe.getValues()).toMatchObject({
       prslId: sent.prslId,
       title: 'In a galaxy far, far away cloneProposal.suffix',
-      abstract: mockRichOriginalProposal.abstract,
+      abstract: originalValues().abstract,
       investigators: [backendInjectedPI]
     });
   });
@@ -544,8 +529,8 @@ describe('starting a new proposal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     (isLoggedIn as Mock).mockReturnValue(true);
-    (GetProposalList as Mock).mockResolvedValue([]);
-    (GetProposalAccessForUser as Mock).mockResolvedValue([]);
+    (listMyProposals as Mock).mockResolvedValue({ data: [] });
+    (listAccessForUser as Mock).mockResolvedValue({ data: [] });
   });
 
   afterEach(() => {

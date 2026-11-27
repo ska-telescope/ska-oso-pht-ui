@@ -16,8 +16,8 @@ import PanelManagement, {
   convertPanelProposalToProposalIdList
 } from './PanelManagement';
 import { Panel } from '@/utils/types/panel';
-import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';
-import Proposal from '@/utils/types/proposal';
+import MockProposalFrontendList from '@/models/proposals/testing/mockProposalSummaries';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 import { REVIEWER_STATUS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
@@ -110,7 +110,7 @@ describe('Adds Proposal', () => {
 
     test('should handle wrong proposal id without deleting any proposals', () => {
       const setProposalPanels = vi.fn();
-      const proposalToDelete = { id: 'non-existent-id' } as Proposal;
+      const proposalToDelete = { id: 'non-existent-id' } as ProposalSummary;
       const myPanel = panel;
       myPanel.proposals = PanelProposals;
       deleteProposalPanel(proposalToDelete, myPanel, setProposalPanels);

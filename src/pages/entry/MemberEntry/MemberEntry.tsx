@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Stack } from '@mui/material';
 import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
-import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import { useProposalOda } from '@/models/proposals/useProposalOda';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import type { ApiResult } from '@/services/api/apiResult';
@@ -14,14 +13,13 @@ import {
 } from '@utils/constants.ts';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import Investigator from '../../../utils/types/investigator';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
-import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
+import { createAccess } from '@/services/api/proposalAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import UserSearchButton from '@/components/button/Search/Search';
-import GetUserByEmail from '@/services/axios/get/getUserByEmail/getUserByEmail';
+import { findUserByEmail, sendInvite } from '@/services/api/users';
 import ResetButton from '@/components/button/Reset/Reset';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -40,7 +38,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const form = useFormContext<ProposalType>();
   const { setHelp } = useHelp();
 
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const { saveToOda } = useProposalOda();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
   const { isSV } = useOSDAccessors();
@@ -175,9 +172,9 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       role: 'Co-Investigator',
       permissions: [PROPOSAL_ACCESS_VIEW]
     };
-    const response = await PostProposalAccess(authClient, access);
-    if (typeof response === 'object' && 'error' in response) {
-      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+    const { error } = await createAccess(access);
+    if (error) {
+      notifyError(error, NOTIFICATION_DELAY_IN_SECONDS);
       return false;
     } else {
       return true;
@@ -235,9 +232,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
     notifyWarning(t('email.warning'));
-    const emailInvite = { email, prsl_id };
-    const response = await PostSendEmailInvite(authClient, emailInvite);
-    if (response && !response.error) {
+    const { data } = await sendInvite(email, prsl_id);
+    if (data) {
       notifySuccess(t('email.success'), NOTIFICATION_DELAY_IN_SECONDS);
       return true;
     } else {
@@ -248,15 +244,15 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const resolveButton = () => {
     async function searchEmail(email: string): Promise<boolean> {
-      const response = await GetUserByEmail(authClient, email);
-      if (typeof response === 'string') {
+      const { data: user } = await findUserByEmail(email);
+      if (!user) {
         notifyError(t('emailSearch.error'), NOTIFICATION_DELAY_IN_SECONDS);
         return false;
       } else {
         notifySuccess(t('emailSearch.success'));
-        setInvestigator(response);
-        setFirstName(response?.firstName ?? '');
-        setLastName(response?.lastName ?? '');
+        setInvestigator(user);
+        setFirstName(user.firstName ?? '');
+        setLastName(user.lastName ?? '');
         return true;
       }
     }

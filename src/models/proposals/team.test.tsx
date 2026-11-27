@@ -1,5 +1,14 @@
 import { describe, expect, test } from 'vitest';
-import { getTeamSchema, getTeamValues, teamFromPdm, teamToPdm } from './team';
+import {
+  getTeamSchema,
+  getTeamValues,
+  investigatorFromUser,
+  investigatorsFromPdm,
+  teamFromPdm,
+  teamToPdm
+} from './team';
+import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
+import { MockUserMSGraphList } from '@services/axios/get/getUserByEmail/mockUserMSGraph';
 import Investigator from '@/utils/types/investigator';
 
 const investigator: Investigator = {
@@ -90,5 +99,55 @@ describe('team form model', () => {
       ...backendInvestigator,
       user_id: 'new'
     });
+  });
+});
+
+describe('investigatorsFromPdm', () => {
+  test('returns no investigators for none', () => {
+    expect(investigatorsFromPdm(null)).toEqual([]);
+    expect(investigatorsFromPdm(undefined)).toEqual([]);
+    expect(investigatorsFromPdm([])).toEqual([]);
+  });
+
+  test('maps each investigator, defaulting the flags the PDM leaves out', () => {
+    expect(
+      investigatorsFromPdm([
+        {
+          user_id: 'user-1',
+          status: 'accepted',
+          given_name: 'John',
+          family_name: 'Doe',
+          email: 'john.doe@example.com',
+          for_phd: true,
+          principal_investigator: false
+        },
+        { user_id: 'user-2', status: 'pending' }
+      ])
+    ).toEqual([
+      {
+        id: 'user-1',
+        status: 'accepted',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        phdThesis: true,
+        pi: false
+      },
+      {
+        id: 'user-2',
+        status: 'pending',
+        firstName: undefined,
+        lastName: undefined,
+        email: undefined,
+        phdThesis: false,
+        pi: false
+      }
+    ]);
+  });
+});
+
+describe('investigatorFromUser', () => {
+  test('maps a directory user to a pending investigator', () => {
+    expect(MockUserMSGraphList.map(investigatorFromUser)).toEqual(MockUserFrontendList);
   });
 });

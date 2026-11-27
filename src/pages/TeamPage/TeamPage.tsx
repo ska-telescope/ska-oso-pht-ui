@@ -18,10 +18,8 @@ import {
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberAccess from './MemberAccess/MemberAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
-import PutProposalAccess from '@/services/axios/put/putProposalAccess/putProposalAccess';
-import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess/proposal/getProposalAccessForProposal';
+import { listAccessForProposal, updateAccess as saveAccess } from '@/services/api/proposalAccess';
 import { accessPI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -52,7 +50,6 @@ export default function TeamPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
   const { notifyError, notifySuccess } = useNotify();
-  const { axiosClient: authClient } = useAxiosAuthClient();
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
   const [permissions, setPermissions] = React.useState<ProposalAccess[]>([]);
   const { isSV } = useOSDAccessors();
@@ -86,9 +83,9 @@ export default function TeamPage() {
   }, [permissions]);
 
   const updateAccess = async (access: ProposalAccess) => {
-    const response = await PutProposalAccess(authClient, access);
-    if (typeof response === 'object' && 'error' in response) {
-      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+    const { error } = await saveAccess(access);
+    if (error) {
+      notifyError(error, NOTIFICATION_DELAY_IN_SECONDS);
     } else {
       notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS);
     }
@@ -109,13 +106,11 @@ export default function TeamPage() {
   }, [currentInvestigators, errors.investigators, setTheProposalState]);
 
   const fetchProposalAccessData = async () => {
-    const response = await GetProposalAccessForProposal(authClient, prslId);
-    if (typeof response === 'string') {
-      notifyError(response, NOTIFICATION_DELAY_IN_SECONDS);
-    } else if (typeof response === 'object' && 'error' in response) {
-      notifyError(response.error as string, NOTIFICATION_DELAY_IN_SECONDS);
+    const { data: access, error } = await listAccessForProposal(prslId);
+    if (!access) {
+      notifyError(error as string, NOTIFICATION_DELAY_IN_SECONDS);
     } else {
-      setPermissions(response);
+      setPermissions(access);
     }
   };
 

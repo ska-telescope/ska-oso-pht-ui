@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { InvestigatorBackend } from '@/utils/types/investigator';
-import { getInvestigators } from '@services/axios/get/getProposal/getProposal';
+import { TEAM_STATUS_TYPE_OPTIONS } from '@utils/constants.ts';
+import Investigator, { InvestigatorBackend, InvestigatorMSGraph } from '@/utils/types/investigator';
 
 const investigatorSchema = z.object({
   id: z.string(),
@@ -26,10 +26,35 @@ export const getTeamValues = (proposal?: {
   )
 });
 
+/** Maps the PDM's investigators to the app's, defaulting the flags the PDM may leave out. */
+export const investigatorsFromPdm = (
+  investigators: InvestigatorBackend[] | null | undefined
+): Investigator[] =>
+  (investigators ?? []).map((investigator) => ({
+    id: investigator.user_id as string,
+    status: investigator.status,
+    firstName: investigator.given_name ?? undefined,
+    lastName: investigator.family_name ?? undefined,
+    email: investigator.email ?? undefined,
+    phdThesis: investigator.for_phd ?? false,
+    pi: investigator.principal_investigator ?? false
+  }));
+
+/** A user found in the directory (MS Graph), as an investigator newly invited to a proposal. */
+export const investigatorFromUser = (user: InvestigatorMSGraph): Investigator => ({
+  id: user.id,
+  email: user.email,
+  firstName: user.givenName,
+  lastName: user.surname,
+  phdThesis: false,
+  status: TEAM_STATUS_TYPE_OPTIONS.pending,
+  pi: false
+});
+
 export const teamFromPdm = (
   investigators?: InvestigatorBackend[] | null
 ): { investigators: InvestigatorFormValues[] } =>
-  getTeamValues({ investigators: getInvestigators(investigators) });
+  getTeamValues({ investigators: investigatorsFromPdm(investigators) });
 
 export const investigatorToPdm = (investigator: InvestigatorFormValues): InvestigatorBackend => ({
   user_id: investigator.id,

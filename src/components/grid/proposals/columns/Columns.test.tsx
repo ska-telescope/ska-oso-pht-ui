@@ -152,7 +152,7 @@ describe('Proposal Column Definitions', () => {
     expect(col.headerName).toBe('translated(observingMode.label)');
     expect(
       col.renderCell({
-        row: { ...mockRow, scienceCategory: 4, observations: [{ type: 'continuum' }] }
+        row: { ...mockRow, scienceCategory: 4, observingType: 'continuum' }
       })
     ).toBe('');
   });
@@ -160,7 +160,7 @@ describe('Proposal Column Definitions', () => {
   it('getColProposalObservingMode shows the observation type when there is no science category', () => {
     const col = getColProposalObservingMode(t);
     const rendered = col.renderCell({
-      row: { ...mockRow, scienceCategory: null, observations: [{ type: 'pst' }] }
+      row: { ...mockRow, scienceCategory: null, observingType: 'pst' }
     }) as React.ReactElement<{ type: string }>;
     expect(rendered.props.type).toBe('pst');
   });

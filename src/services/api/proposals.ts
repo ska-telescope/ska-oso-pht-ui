@@ -1,8 +1,32 @@
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import type { Proposal as ProposalPDM } from '@/generated/models/proposal';
+import { type ProposalSummary, proposalSummariesFromPdm } from '@/models/proposals/proposalSummary';
 import { type ApiResult, callApi, UNKNOWN_API_ERROR } from './apiResult';
 import { api } from './client';
+
+/*
+ * The proposal lists.
+ */
+
+// A list response that isn't a list is malformed, so it is an error rather than an empty list
+const summariesFromList = (data: ProposalPDM[]): ProposalSummary[] => {
+  if (!Array.isArray(data)) {
+    throw new Error(UNKNOWN_API_ERROR);
+  }
+  return proposalSummariesFromPdm(data);
+};
+
+/** The proposals the user is a member of, most recently updated first. */
+export const listMyProposals = (): Promise<ApiResult<ProposalSummary[]>> =>
+  callApi(() => api.proposals.getProposalsForUserOsoApiV17PhtPrslsMineGet(), summariesFromList);
+
+/** The proposals the user can review (submitted or under review), most recently updated first. */
+export const listReviewableProposals = (): Promise<ApiResult<ProposalSummary[]>> =>
+  callApi(
+    () => api.proposals.getProposalsByStatusOsoApiV17PhtPrslsReviewableGet(),
+    summariesFromList
+  );
 
 /*
  * The proposal being edited. These calls take and give the PDM; the form's values are mapped to

@@ -4,10 +4,10 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@utils/storage/store';
 import ReviewListPage from './ReviewListPage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import getProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
+import { listReviewableProposals } from '@/services/api/proposals';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList.tsx';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import Proposal from '@/utils/types/proposal';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
 
 // ---- Module mocks ----
 
@@ -19,8 +19,8 @@ vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   };
 });
 
-vi.mock('@/services/axios/get/getProposalsReviewable/getProposalsReviewable', () => ({
-  default: vi.fn()
+vi.mock('@/services/api/proposals', () => ({
+  listReviewableProposals: vi.fn()
 }));
 
 vi.mock('@services/axios/get/getProposalReviewList/getProposalReviewList.tsx', () => ({
@@ -74,7 +74,7 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
-const mockProposal = (cycle: string): Partial<Proposal> => ({
+const mockProposal = (cycle: string): Partial<ProposalSummary> => ({
   id: 'prsl-1',
   title: 'In a galaxy far, far away',
   status: 'Submitted',
@@ -94,7 +94,7 @@ describe('<ReviewListPage />', () => {
   });
 
   test('renders correctly', async () => {
-    (getProposalsReviewable as Mock).mockResolvedValue([]);
+    (listReviewableProposals as Mock).mockResolvedValue({ data: [] });
     wrapper(<ReviewListPage />);
 
     // Wait for the proposals/reviews fetch effects to settle so their state updates land inside
@@ -108,7 +108,7 @@ describe('<ReviewListPage />', () => {
   // proposal's own cycle type (see its reviewListIsSV comment), not the wording that happened to
   // come back from the backend for whatever's currently in the live review queue.
   test('titles the list for Science Verification when the reviewed proposal is under an SV cycle', async () => {
-    (getProposalsReviewable as Mock).mockResolvedValue([mockProposal('CYCLE-SV-1')]);
+    (listReviewableProposals as Mock).mockResolvedValue({ data: [mockProposal('CYCLE-SV-1')] });
     (useOSDAccessors as Mock).mockReturnValue({
       isSV: true,
       osdCycleId: 'CYCLE-SV-1',
@@ -125,7 +125,7 @@ describe('<ReviewListPage />', () => {
   });
 
   test('titles the list for standard Proposals when the reviewed proposal is under a Proposal cycle', async () => {
-    (getProposalsReviewable as Mock).mockResolvedValue([mockProposal('CYCLE-PRP-1')]);
+    (listReviewableProposals as Mock).mockResolvedValue({ data: [mockProposal('CYCLE-PRP-1')] });
     (useOSDAccessors as Mock).mockReturnValue({
       isSV: false,
       osdCycleId: 'CYCLE-PRP-1',

@@ -21,8 +21,9 @@ import {
 } from '@utils/constants.ts';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import Proposal from '../../utils/types/proposal';
-import getProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
+import type { ProposalSummary } from '@/models/proposals/proposalSummary';
+import { listReviewableProposals } from '@/services/api/proposals';
+import { UNKNOWN_API_ERROR } from '@/services/api/apiResult';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -49,7 +50,7 @@ export default function ReviewListPage() {
 
   type FilteredItem = {
     id: string;
-    proposal: Proposal;
+    proposal: ProposalSummary;
     sciReview: ProposalReview | null;
     tecReview: ProposalReview | null;
   };
@@ -59,7 +60,7 @@ export default function ReviewListPage() {
 
   const [conflictConfirm, setConflictConfirm] = React.useState(false);
   const [conflictRow, setConflictRow] = React.useState<{
-    proposal: Proposal;
+    proposal: ProposalSummary;
     sciReview: ProposalReview;
     tecReview: ProposalReview | null;
   } | null>(null);
@@ -67,7 +68,7 @@ export default function ReviewListPage() {
   const [filteredData, setFilteredData] = React.useState<FilteredItem[]>([]);
 
   const [reset, setReset] = React.useState(false);
-  const [proposals, setProposals] = React.useState<Proposal[]>([]);
+  const [proposals, setProposals] = React.useState<ProposalSummary[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
 
   const { axiosClient: authClient } = useAxiosAuthClient();
@@ -99,17 +100,17 @@ export default function ReviewListPage() {
       }
     };
 
-    const loopProposals = (_filtered: Proposal[]) => {
+    const loopProposals = (_filtered: ProposalSummary[]) => {
       fetchProposalReviewData('1');
     };
 
     const fetchProposalData = async () => {
-      const response = await getProposalsReviewable(authClient);
-      if (typeof response === 'string') {
-        notifyError(response);
+      const { data: list, error } = await listReviewableProposals();
+      if (list) {
+        setProposals(list);
+        loopProposals(list);
       } else {
-        setProposals(response);
-        loopProposals(response);
+        notifyError(error ?? UNKNOWN_API_ERROR);
       }
     };
     fetchProposalData();

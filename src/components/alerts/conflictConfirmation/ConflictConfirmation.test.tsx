@@ -29,28 +29,11 @@ describe('<ConflictConfirmation />', () => {
           title: '',
           status: '',
           lastUpdated: '',
-          lastUpdatedBy: '',
-          createdOn: '',
-          createdBy: '',
-          version: 0,
           cycle: '',
           proposalType: 'standard_proposal',
-          proposalSubType: ['target_of_opportunity'],
-          scienceCategory: 1,
-          scienceSubCategory: undefined,
-          investigators: undefined,
-          abstract: 'This is an abstract for a proposal.',
-          sciencePDF: null,
-          scienceLoadStatus: undefined,
-          targetOption: undefined,
-          targets: undefined,
-          observations: undefined,
-          groupObservations: undefined,
-          targetObservation: undefined,
-          technicalPDF: null,
-          technicalLoadStatus: undefined,
-          pipeline: undefined,
-          calibrationStrategy: []
+          scienceCategory: '1',
+          observingType: null,
+          investigators: []
         }}
         open={true}
         onClose={mockActionClose}
