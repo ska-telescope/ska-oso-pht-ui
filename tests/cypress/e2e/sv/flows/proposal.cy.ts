@@ -15,15 +15,21 @@ import {
 
 // The app looks the calibrator up from oso-services once, and has none if that lookup fails (see
 // lookupCalibrators). The flow has occasionally failed in CI with an empty calibrator, so this
-// records each lookup, and adds them to a failure's message to show what the backend did.
+// records each lookup, adds them to a failure's message, and (afterEach) writes them to the
+// artefacts for passing tests too, to show what the backend did. Start times are UTC, to match
+// the oso-services log that stop-js-e2e-test keeps.
+const CALIBRATOR_LOOKUPS_FILE = 'tests/cypress/artefacts/calibrator-lookups.txt';
+let lookups: string[] = [];
+
 const recordCalibratorLookups = () => {
-  const lookups: string[] = [];
+  lookups = [];
   cy.intercept('POST', /\/calibrators\?/, (req) => {
-    const started = Date.now();
+    const started = new Date();
     const query = new URL(req.url).search;
-    const index = lookups.push(`${query}: no response`) - 1;
+    const lookup = (outcome: string) => `${started.toISOString()} ${query}: ${outcome}`;
+    const index = lookups.push(lookup('no response')) - 1;
     req.continue((res) => {
-      lookups[index] = `${query}: ${res.statusCode} after ${Date.now() - started}ms`;
+      lookups[index] = lookup(`${res.statusCode} after ${Date.now() - started.getTime()}ms`);
     });
   });
   cy.on('fail', (error) => {
@@ -39,6 +45,12 @@ const recordCalibratorLookups = () => {
 // would repeat the flow from the start and create another proposal.
 describe('SV proposal flow', { retries: 0 }, () => {
   afterEach(() => {
+    const test = Cypress.currentTest;
+    cy.writeFile(
+      CALIBRATOR_LOOKUPS_FILE,
+      `${test.title}\n${lookups.map((lookup) => `  ${lookup}\n`).join('') || '  none\n'}`,
+      { flag: 'a+' }
+    );
     clearLocalStorage();
   });
 

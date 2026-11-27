@@ -141,6 +141,29 @@ js-e2e-test:
   cache:
     policy: pull
 
+# BTN-3677 debugging, to remove before merge: keeps the oso-services log and what astropy
+# downloaded at runtime (with times), before the template's script uninstalls the chart. Runs
+# after every js-e2e-test job, whether or not they passed. Compare with the flow spec's
+# calibrator-lookups.txt in the js-e2e-test artefacts.
+stop-js-e2e-test:
+  before_script:
+    - mkdir -p build/debug
+    - >-
+      kubectl -n $KUBE_NAMESPACE logs -l app=ska-oso-services --all-containers --timestamps
+      --tail=-1 > build/debug/oso-services.log 2>&1 || true
+    - >-
+      kubectl -n $KUBE_NAMESPACE logs -l app=ska-oso-services --all-containers --timestamps
+      --tail=-1 --previous > build/debug/oso-services-previous.log 2>&1 || true
+    - |-
+      for pod in $(kubectl -n $KUBE_NAMESPACE get pod -l app=ska-oso-services -o name); do
+        echo "== $pod"
+        kubectl -n $KUBE_NAMESPACE exec $pod -- sh -c 'for d in "$HOME"/.cache/astropy/download/url/*/; do cat "$d/url"; echo; ls -l --time-style=full-iso "$d/contents"; done' || true
+      done > build/debug/astropy-downloads.txt 2>&1
+  artifacts:
+    when: always
+    paths:
+      - build/debug/
+
 info-dev-environment:
   <<: *dev_env
   script:
