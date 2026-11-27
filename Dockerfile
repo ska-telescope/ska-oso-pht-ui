@@ -10,7 +10,8 @@ ARG https_proxy
 WORKDIR /app
 COPY . .
 
-# install app dependencies and build the app
+# install app dependencies and build the app. Cypress is only for the tests, so skip its binary
+ENV CYPRESS_INSTALL_BINARY=0
 RUN yarn install --immutable && yarn cache clean
 
 RUN yarn build
