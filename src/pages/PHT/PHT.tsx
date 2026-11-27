@@ -62,7 +62,8 @@ import { useProposalForm } from '@/models/proposals/useProposalForm';
 import { FormProvider } from 'react-hook-form';
 import { useCopySlicesToStore } from '@/models/proposals/useCopySlicesToStore';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
-import { SaveDraftProvider } from '@/services/saveDraft/SaveDraftProvider';
+import { LastSavedProvider } from '@/services/saveDraft/LastSavedContext';
+import { AutoSaveService } from '@/services/saveDraft/AutoSaveService';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -345,7 +346,8 @@ export default function PHT({
             {/* Global form provider for proposal form management */}
             <FormProvider {...formMethods}>
               <SensitivityService />
-              <SaveDraftProvider>
+              <LastSavedProvider>
+                <AutoSaveService />
                 {REQUIRED_WIDTH ? (
                   <Routes>
                     {ROUTES.map((ROUTE) => (
@@ -355,7 +357,7 @@ export default function PHT({
                 ) : (
                   mediaSizeNotSupported()
                 )}
-              </SaveDraftProvider>
+              </LastSavedProvider>
             </FormProvider>
           </Paper>
         }
