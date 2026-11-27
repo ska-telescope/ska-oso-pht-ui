@@ -1,5 +1,6 @@
 // storage.ts
 import { GetColorsSettings, ThemeA11ySettings } from '@utils/types/colors';
+import type { ProposalType } from '@/models/proposals/proposal';
 import { STORAGE_KEYS } from './storageKeys';
 
 function readJSON<T>(key: string): T | null {
@@ -50,4 +51,15 @@ export function loadThemeA11y(): ThemeA11ySettings {
 
 export function saveThemeA11y(value: ThemeA11ySettings) {
   writeJSON(STORAGE_KEYS.themeA11y, value);
+}
+
+export interface ProposalDraft {
+  savedAt: string;
+  values: ProposalType;
+}
+
+/** Stores the proposal form's local edits, keyed by the proposal's ID. */
+export function saveProposalDraft(prslId: string, values: ProposalType) {
+  const draft: ProposalDraft = { savedAt: new Date().toISOString(), values };
+  writeJSON(STORAGE_KEYS.proposalDraft(prslId), draft);
 }

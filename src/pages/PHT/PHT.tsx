@@ -61,6 +61,7 @@ import useAxiosInterceptor from '@/services/axios/useAxiosInterceptor/useAxiosIn
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import { getProposalFormDefaults, useProposalForm } from '@/models/proposals/useProposalForm';
+import { useProposalDraftStorage } from '@/models/proposals/useProposalDraftStorage';
 import { FormProvider, useWatch } from 'react-hook-form';
 import { SensitivityService } from '@/services/sensitivityCalculator/useSensitivityService';
 
@@ -155,6 +156,7 @@ export default function PHT({
   const autoRepairAttemptedForIdRef = React.useRef<string | undefined>(undefined);
 
   const formMethods = useProposalForm({ low: osdLOW, mid: osdMID });
+  useProposalDraftStorage(formMethods);
   const { getValues, reset } = formMethods;
   const prslId = useWatch({ control: formMethods.control, name: 'prslId' });
   // The pages that edit the proposal open in the form, outside which it isn't shown: the
